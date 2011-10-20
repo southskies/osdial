@@ -191,6 +191,7 @@ $agent_log_id = get_variable("agent_log_id");
 $agentchannel = get_variable("agentchannel");
 $agentserver_ip = get_variable("agentserver_ip");
 $alt_dial = get_variable("alt_dial");
+$alt_num_status = get_variable("alt_num_status");
 $alt_phone = get_variable("alt_phone");
 $auto_dial_level = get_variable("auto_dial_level");
 $blind_transfer = get_variable("blind_transfer");
@@ -229,6 +230,8 @@ $gender = get_variable("gender");
 $hopper_id = get_variable("hopper_id");
 $hopper_add = get_variable("hopper_add");
 $hangup_all_non_reserved = get_variable("hangup_all_non_reserved");
+$inOUT = get_variable("inOUT");
+$inbound_man = get_variable("inbound_man");
 $last_name = get_variable("last_name");
 $lead_id = get_variable("lead_id");
 $length_in_sec = get_variable("length_in_sec");
@@ -244,6 +247,7 @@ $multicall_uniqueid = get_variable("multicall_uniqueid");
 $multicall_callerid = get_variable("multicall_callerid");
 $multicall_leadid = get_variable("multicall_leadid");
 $multicall_liveseconds = get_variable("multicall_liveseconds");
+$nodeletevdac = get_variable("nodeletevdac");
 $oldlead = get_variable("oldlead");
 $oldphone = get_variable("oldphone");
 $omit_phone_code = get_variable("omit_phone_code");
@@ -1040,6 +1044,95 @@ if ($ACTION == 'manDiaLonly') {
 ################################################################################
 if ($ACTION == 'manDiaLlookCaLL') {
     $MT[0]='';
+    $row='';
+    $rowx='';
+    $call_good=0;
+    if (OSDstrlen($MDnextCID)<18) {
+        echo "NO\n";
+        echo "MDnextCID $MDnextCID is not valid\n";
+        exit;
+    } else {
+        ##### look for the channel in the UPDATED osdial_manager record of the call initiation
+        $stmt=sprintf("SELECT uniqueid,channel FROM osdial_manager WHERE callerid='%s' AND server_ip='%s' AND status IN('UPDATED','DEAD') LIMIT 1;",mres($MDnextCID),mres($server_ip));
+        $rslt=mysql_query($stmt, $link);
+        if ($DB) echo "$stmt\n";
+        $VM_mancall_ct = mysql_num_rows($rslt);
+        if ($VM_mancall_ct > 0) {
+            $row=mysql_fetch_row($rslt);
+            $uniqueid =$row[0];
+            $channel =$row[1];
+            $call_output = "$uniqueid\n$channel\n";
+            $call_good++;
+        } else {
+            ### after 10 seconds, start checking for call termination in the carrier log
+            if ($DiaL_SecondS>0 and OSDpreg_match("/0$/",$DiaL_SecondS)) {
+                $stmt=sprintf("SELECT uniqueid,channel,end_epoch,isup_result FROM call_log WHERE caller_code='%s' AND server_ip='%s' ORDER BY start_time DESC LIMIT 1;",mres($MDnextCID),mres($server_ip));
+                $rslt=mysql_query($stmt, $link);
+                if ($DB) echo "$stmt\n";
+                $VM_mancallX_ct = mysql_num_rows($rslt);
+                if ($VM_mancallX_ct>0) {
+                    $row=mysql_fetch_row($rslt);
+                    $uniqueid =     $row[0];
+                    $channel =      $row[1];
+                    $end_epoch =    $row[2];
+                    $hangup_cause =  $row[3];
+
+                    #$stmt="SELECT status FROM osdial_log WHERE uniqueid='$uniqueid' AND server_ip='$server_ip' AND channel='$channel' AND status IN('BUSY','CHANUNAVAIL','CONGESTION') LIMIT 1;";
+                    $stmt=sprintf("SELECT status FROM osdial_log WHERE uniqueid='%s' AND server_ip='%s' AND channel='%s' AND (status='B' AND user='VDAD') AND status IN('CRR','CRF','CRO','CRC') LIMIT 1;",mres($uniqueid),mres($server_ip),mres($channel));
+                    $rslt=mysql_query($stmt, $link);
+                    if ($DB) echo "$stmt\n";
+                    $CL_mancall_ct = mysql_num_rows($rslt);
+                    if ($CL_mancall_ct > 0) {
+                        $row=mysql_fetch_row($rslt);
+                        $dialstatus =$row[0];
+
+                        $channel = $dialstatus;
+                        $hangup_cause_msg = "Cause: " . $hangup_cause . " - " . hangup_cause_description($hangup_cause);
+
+                        $call_output = "$uniqueid\n$channel\nERROR\n" . $hangup_cause_msg;
+                        $call_good++;
+
+                        ### Delete call record
+                        $stmt=sprintf("DELETE from osdial_auto_calls WHERE callerid='%s';",mres($MDnextCID));
+                        if ($format=='debug') echo "\n<!-- $stmt -->";
+                        $rslt=mysql_query($stmt, $link);
+                    }
+                }
+            }
+        }
+
+        if ($call_good>0) {
+            $wait_sec=0;
+            $dead_epochSQL = '';
+            $stmt=sprintf("SELECT wait_epoch,wait_sec FROM osdial_agent_log WHERE agent_log_id='%s';",mres($agent_log_id));
+            if ($DB) echo "$stmt\n";
+            $rslt=mysql_query($stmt, $link);
+            $VDpr_ct = mysql_num_rows($rslt);
+            if ($VDpr_ct > 0) {
+                $row=mysql_fetch_row($rslt);
+                $wait_sec = (($StarTtime - $row[0]) + $row[1]);
+            }
+            $stmt=sprintf("UPDATE osdial_agent_log SET wait_sec='%s',talk_epoch='%s',lead_id='%s' WHERE agent_log_id='%s';",mres($wait_sec),mres($StarTtime),mres($lead_id),mres($agent_log_id));
+            if ($format=='debug') echo "\n<!-- $stmt -->";
+            $rslt=mysql_query($stmt, $link);
+
+            $stmt=sprintf("UPDATE osdial_auto_calls SET uniqueid='%s',channel='%s' WHERE callerid='%s';",mres($uniqueid),mres($channel),mres($MDnextCID));
+            if ($format=='debug') echo "\n<!-- $stmt -->";
+            $rslt=mysql_query($stmt, $link);
+
+            $stmt=sprintf("UPDATE call_log SET uniqueid='%s',channel='%s' WHERE caller_code='%s';",mres($uniqueid),mres($channel),mres($MDnextCID));
+            if ($format=='debug') echo "\n<!-- $stmt -->";
+            $rslt=mysql_query($stmt, $link);
+
+            echo "$call_output";
+        } else {
+            echo "NO\n$DiaL_SecondS\n";
+        }
+    }
+}
+
+if ($ACTION == 'OLDmanDiaLlookCaLL') {
+    $MT[0]='';
     $row='';   $rowx='';
     if (OSDstrlen($MDnextCID)<18) {
         echo "NO\n";
@@ -1063,7 +1156,7 @@ if ($ACTION == 'manDiaLlookCaLL') {
 
                 # Create unique calleridname to track the call: MmmddhhmmssLLLLLLLLL
                 $MqueryCID = "M$CIDdate$PADlead_id";
-                $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','%s','Redirect','%s','Channel: %s','Context: osdial','Exten: 7%s','Priority: 1','CallerID: %s','Account: %s','','','','');",mres($NOW_TIME),mres($server_ip),mres($channel),mres($MqueryCID),mres($channel),mres($conf_exten),mres($MDnextCID),mres($MDnextCID));
+                $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','%s','Redirect','%s','Channel: %s','Context: osdial','Exten: 7%s','Priority: 1','CallerID: %s','Account: %s','','','','');",mres($NOW_TIME),mres($server_ip),mres($channel),mres($MDnextCID),mres($channel),mres($conf_exten),mres($MDnextCID),mres($MDnextCID));
                 if ($DB) echo "$stmt\n"; 
                 $rslt=mysql_query($stmt, $link);
             }
@@ -1099,16 +1192,19 @@ if ($ACTION == 'manDiaLlookCaLL') {
 
 
 
+
 ################################################################################
 ### manDiaLlogCALL - for manual OSDiaL logging of calls places record in
 ###                  osdial_log and then sends process to call_log entry
 ################################################################################
 if ($ACTION == 'manDiaLlogCaLL') {
     $MT[0]='';
-    $row='';   $rowx='';
+    $row='';
+    $rowx='';
 
     if ($stage == "start") {
         if ( (OSDstrlen($uniqueid)<1) || (OSDstrlen($lead_id)<1) || (OSDstrlen($list_id)<1) || (OSDstrlen($phone_number)<1) || (OSDstrlen($campaign)<1) ) {
+            debugLog('osdial_debug',"$NOW_TIME|VL_LOG_0|$uniqueid|$lead_id|$user|$list_id|$campaign|$start_epoch|$phone_number|$agent_log_id|");
             echo "LOG NOT ENTERED\n";
             echo "uniqueid $uniqueid or lead_id: $lead_id or list_id: $list_id or phone_number: $phone_number or campaign: $campaign is not valid\n";
             exit;
@@ -1122,11 +1218,36 @@ if ($ACTION == 'manDiaLlogCaLL') {
                 $row=mysql_fetch_row($rslt);
                 $user_group =		trim($row[0]);
             }
-            ##### insert log into osdial_log for manual OSDiaL call
-            $stmt=sprintf("INSERT INTO osdial_log (uniqueid,lead_id,list_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,comments,processed,user_group,server_ip) VALUES('%s','%s','%s','%s','%s','%s','INCALL','%s','%s','%s','MANUAL','N','%s','%s');",mres($uniqueid),mres($lead_id),mres($list_id),mres($campaign),mres($NOW_TIME),mres($StarTtime),mres($phone_code),mres($phone_number),mres($user),mres($user_group),mres($server_ip));
-            if ($DB) echo "$stmt\n";
+
+            $manualVLexists=0;
+            $beginUNIQUEID = OSDpreg_replace("/\..*/","",$uniqueid);
+            $stmt=sprintf("SELECT count(*) FROM osdial_log WHERE lead_id='%s' AND user='%s' AND phone_number='%s' AND uniqueid LIKE '%s%%';",mres($lead_id),mread($user),mres($phone_number),mres($beginUNIQUEID));
             $rslt=mysql_query($stmt, $link);
-            $affected_rows = mysql_affected_rows($link);
+            if ($DB) echo "$stmt\n";
+            $VL_exists_ct = mysql_num_rows($rslt);
+            if ($VL_exists_ct > 0) {
+                $row=mysql_fetch_row($rslt);
+                $manualVLexists =       $row[0];
+            }
+
+            $manualVLexistsDUP=0;
+
+            if ($manualVLexists<1) {
+                ##### insert log into osdial_log for manual OSDiaL call
+                $stmt=sprintf("INSERT INTO osdial_log (uniqueid,lead_id,list_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,comments,processed,user_group,server_ip) VALUES('%s','%s','%s','%s','%s','%s','INCALL','%s','%s','%s','MANUAL','N','%s','%s');",mres($uniqueid),mres($lead_id),mres($list_id),mres($campaign),mres($NOW_TIME),mres($StarTtime),mres($phone_code),mres($phone_number),mres($user),mres($user_group),mres($server_ip));
+                if ($DB) echo "$stmt\n";
+                $rslt=mysql_query($stmt, $link);
+                $DUPerrno = mysql_errno($link);
+                if ($DUPerrno>0) $manualVLexistsDUP=1;
+                $affected_rows = mysql_affected_rows($link);
+            }
+            if ($manualVLexists>0 or $manualVLexistsDUP>0) {
+                ##### insert log into osdial_log for manual OSDial call
+                $stmt=sprintf("UPDATE osdial_log SET list_id='%s',comments='MANUAL',user_group='%s',server_ip='%s' WHERE lead_id='%s' AND user='%s' AND phone_number='%s' AND uniqueid LIKE '%s%%';",mres($list_id),mres($user_group),mres($server_ip),mres($lead_id),mres($user),mres($phone_number),mres($beginUNIQUEID));
+                if ($DB) echo "$stmt\n";
+                $rslt=mysql_query($stmt, $link);
+                $affected_rows = mysql_affected_rows($link);
+            }
 
             if ($affected_rows > 0) {
                 echo "OSDiaL_LOG Inserted: $uniqueid|$channel|$NOW_TIME\n";
@@ -1142,6 +1263,8 @@ if ($ACTION == 'manDiaLlogCaLL') {
     }
 
     if ($stage == "end") {
+        $status_dispo='NONE';
+        if ($alt_num_status > 0) $status_dispo = 'ALTNUM';
         $LAcomments='NONE';
         $stmt=sprintf("SELECT SQL_NO_CACHE comments FROM osdial_live_agents WHERE user='%s' ORDER BY last_update_time DESC LIMIT 1;",mres($user));
         if ($format=='debug') echo "\n<!-- $stmt -->";
@@ -1150,6 +1273,11 @@ if ($ACTION == 'manDiaLlogCaLL') {
         if ($LAcnt>0) {
             $row=mysql_fetch_row($rslt);
             $LAcomments = $row[0];
+        }
+
+        if (OSDstrlen($uniqueid)<1 and $LAcomments == 'INBOUND') {
+            debugLog('osdial_debug', "$NOW_TIME|INBND_LOG_0|$uniqueid|$lead_id|$user|$inOUT|$VLA_inOUT|$start_epoch|$phone_number|$agent_log_id|");
+            $uniqueid='6666.1';
         }
 
         if ( (OSDstrlen($uniqueid)<1) || (OSDstrlen($lead_id)<1) ) {
@@ -1162,36 +1290,41 @@ if ($ACTION == 'manDiaLlogCaLL') {
             if ($start_epoch < 1000) {
                 if ($LAcomments == 'INBOUND') {
                     ##### look for the start epoch in the osdial_closer_log table
-                    $stmt=sprintf("SELECT SQL_NO_CACHE start_epoch,term_reason,closecallid,campaign_id FROM osdial_closer_log WHERE phone_number='%s' AND lead_id='%s' AND user='%s' AND call_date>'%s' ORDER BY closecallid DESC LIMIT 1;",mres($phone_number),mres($lead_id),mres($user),mres($four_hours_ago));
+                    $stmt=sprintf("SELECT SQL_NO_CACHE start_epoch,term_reason,closecallid,campaign_id,status FROM osdial_closer_log WHERE phone_number='%s' AND lead_id='%s' AND user='%s' AND call_date>'%s' ORDER BY closecallid DESC LIMIT 1;",mres($phone_number),mres($lead_id),mres($user),mres($four_hours_ago));
                 } else {
                     ##### look for the start epoch in the osdial_log table
-                    $stmt=sprintf("SELECT SQL_NO_CACHE start_epoch,term_reason,uniqueid,campaign_id FROM osdial_log WHERE uniqueid='%s' AND lead_id='%s' ORDER BY call_date DESC LIMIT 1;",mres($uniqueid),mres($lead_id));
+                    $stmt=sprintf("SELECT SQL_NO_CACHE start_epoch,term_reason,uniqueid,campaign_id,status FROM osdial_log WHERE uniqueid='%s' AND lead_id='%s' ORDER BY call_date DESC LIMIT 1;",mres($uniqueid),mres($lead_id));
+                    $VDIDselect = "VDL_UIDLID $uniqueid $lead_id";
                 }
                 $rslt=mysql_query($stmt, $link);
                 if ($DB) echo "$stmt\n";
                 $VM_mancall_ct = mysql_num_rows($rslt);
                 if ($VM_mancall_ct > 0) {
                     $row=mysql_fetch_row($rslt);
-                    $start_epoch =$row[0];
-                    $Lterm_reason =$row[1];
-                    $Luniqueid =$row[2];
-                    $Lcampaign_id =$row[3];
+                    $start_epoch =  $row[0];
+                    $Lterm_reason = $row[1];
+                    $Luniqueid =    $row[2];
+                    $Lcampaign_id = $row[3];
+                    $Lstatus =      $row[4];
                     $length_in_sec = ($StarTtime - $start_epoch);
                 } else {
                     $length_in_sec = 0;
                 }
 
                 if ( ($length_in_sec < 1) and ($LAcomments == 'INBOUND') ) {
+                    debugLog('osdial_debug',"$NOW_TIME|INBND_LOG_1|$uniqueid|$lead_id|$user|$inOUT|$length_in_sec|$Lterm_reason|$Luniqueid|$start_epoch|");
+
                     ##### start epoch in the osdial_log table, couldn't find one in osdial_closer_log
-                    $stmt=sprintf("SELECT SQL_NO_CACHE start_epoch,term_reason,campaign_id FROM osdial_log WHERE uniqueid='%s' AND lead_id='%s' ORDER BY call_date DESC LIMIT 1;",mres($uniqueid),mres($lead_id));
+                    $stmt=sprintf("SELECT SQL_NO_CACHE start_epoch,term_reason,campaign_id,status FROM osdial_log WHERE uniqueid='%s' AND lead_id='%s' ORDER BY call_date DESC LIMIT 1;",mres($uniqueid),mres($lead_id));
                     $rslt=mysql_query($stmt, $link);
                     if ($DB) echo "$stmt\n";
                     $VM_mancall_ct = mysql_num_rows($rslt);
                     if ($VM_mancall_ct > 0) {
                         $row=mysql_fetch_row($rslt);
-                        $start_epoch =$row[0];
-                        $Lterm_reason =$row[1];
-                        $Lcampaign_id =$row[2];
+                        $start_epoch =  $row[0];
+                        $Lterm_reason = $row[1];
+                        $Lcampaign_id = $row[2];
+                        $Lstatus =      $row[2];
                         $length_in_sec = ($StarTtime - $start_epoch);
                     } else {
                         $length_in_sec = 0;
@@ -1204,41 +1337,58 @@ if ($ACTION == 'manDiaLlogCaLL') {
             if (OSDstrlen($Lcampaign_id)<1) $Lcampaign_id = $campaign;
 
             if ($LAcomments == 'INBOUND') {
-                $stmt=sprintf("UPDATE osdial_closer_log SET end_epoch='%s',length_in_sec='%s' WHERE lead_id='%s' AND user='%s' AND call_date>'%s' ORDER BY call_date DESC LIMIT 1;",mres($StarTtime),mres($length_in_sec),mres($lead_id),mres($user),mres($four_hours_ago));
+                $ocl_statusSQL='';
+                if ($Lstatus == 'INCALL') $ocl_statusSQL = sprintf(",status='%s'",mres($status_dispo));
+                $stmt=sprintf("UPDATE osdial_closer_log SET end_epoch='%s',length_in_sec='%s'%s WHERE lead_id='%s' AND user='%s' AND call_date>'%s' ORDER BY call_date DESC LIMIT 1;",mres($StarTtime),mres($length_in_sec),$ocl_statusSQL,mres($lead_id),mres($user),mres($four_hours_ago));
                 if ($DB) echo "$stmt\n";
                 $rslt=mysql_query($stmt, $link);
                 $affected_rows = mysql_affected_rows($link);
                 if ($affected_rows > 0) {
                     echo "$uniqueid\n$channel\n";
+                } else {
+                    debugLog('osdial_debug',"$NOW_TIME|INBND_LOG_2|$uniqueid|$lead_id|$user|$inOUT|$length_in_sec|$Lterm_reason|$Luniqueid|$start_epoch|");
                 }
+            }
+
+            if ($config['settings']['enable_queuemetrics_logging'] > 0) {
+                $linkB=mysql_connect($config['settings']['queuemetrics_server_ip'], $config['settings']['queuemetrics_login'], $config['settings']['queuemetrics_pass']);
+                mysql_select_db($config['settings']['queuemetrics_dbname'], $linkB);
+                if ($config['settings']['use_non_latin'] > 0) $rslt=mysql_query("SET NAMES 'utf8' COLLATE 'utf8_general_ci';",$linkB);
             }
 
             if ($auto_dial_level > 0) {
                 ### check to see if campaign has alt_dial enabled
-                $stmt=sprintf("SELECT auto_alt_dial FROM osdial_campaigns WHERE campaign_id='%s';",mres($campaign));
+                $stmt=sprintf("SELECT auto_alt_dial,use_internal_dnc FROM osdial_campaigns WHERE campaign_id='%s';",mres($campaign));
                 $rslt=mysql_query($stmt, $link);
                 if ($DB) echo "$stmt\n";
                 $VAC_mancall_ct = mysql_num_rows($rslt);
                 if ($VAC_mancall_ct > 0) {
                     $row=mysql_fetch_row($rslt);
-                    $auto_alt_dial =$row[0];
+                    $auto_alt_dial =    $row[0];
+                    $use_internal_dnc = $row[1];
                 } else {
                     $auto_alt_dial = 'NONE';
                 }
-                if (OSDpreg_match("/(ALT_ONLY|ADDR3_ONLY|ALT_AND_ADDR3)/",$auto_alt_dial)) {
+                if (OSDpreg_match("/(ALT_ONLY|ADDR3_ONLY|ALT_AND_ADDR3|ALT_ADDR3_AND_AFFAP)/",$auto_alt_dial)) {
                     ### check to see if lead should be alt_dialed
-                    $stmt=sprintf("SELECT SQL_NO_CACHE alt_dial FROM osdial_auto_calls WHERE lead_id='%s';",mres($lead_id));
-                    $rslt=mysql_query($stmt, $link);
-                    if ($DB) echo "$stmt\n";
-                    $VAC_mancall_ct = mysql_num_rows($rslt);
-                    if ($VAC_mancall_ct > 0) {
-                        $row=mysql_fetch_row($rslt);
-                        $alt_dial =$row[0];
-                    } else {
-                        $alt_dial = 'NONE';
+                    if (OSDstrlen($alt_dial)<2) $alt_dial = 'NONE';
+
+                    ### check if inbound call, if so find a recent outbound call to pull alt_dial value from
+                    if ($VLA_inOUT == 'INBOUND') {
+                        $one_hour_ago = date("Y-m-d H:i:s", mktime(date("H")-1,date("i"),date("s"),date("m"),date("d"),date("Y")));
+                        ##### find a recent outbound call associated with this inbound call
+                        $stmt=sprintf("SELECT alt_dial FROM osdial_log WHERE lead_id='%s' AND status IN('DROP','XDROP') AND call_date>'%s' ORDER BY call_date DESC LIMIT 1;",mres($lead_id),mres($one_hour_ago));
+                        $rslt=mysql_query($stmt, $link);
+                        if ($DB) echo "$stmt\n";
+                        $VL_alt_ct = mysql_num_rows($rslt);
+                        if ($VL_alt_ct > 0) {
+                            $row=mysql_fetch_row($rslt);
+                            $alt_dial = $row[0];
+                        }
                     }
 
-                    if ( (OSDpreg_match("/(NONE|MAIN)/",$alt_dial)) and (OSDpreg_match("/(ALT_ONLY|ALT_AND_ADDR3)/",$auto_alt_dial)) ) {
+                    if (OSDpreg_match("/(NONE|MAIN)/",$alt_dial) and OSDpreg_match("/(ALT_ONLY|ALT_AND_ADDR3|ALT_ADDR3_AND_AFFAP)/",$auto_alt_dial)) {
+                        $alt_dial_skip=0;
                         $stmt=mres("SELECT alt_phone,gmt_offset_now,state FROM osdial_list WHERE lead_id='%s';",mres($lead_id));
                         $rslt=mysql_query($stmt, $link);
                         if ($DB) echo "$stmt\n";
@@ -1253,16 +1403,61 @@ if ($ACTION == 'manDiaLlogCaLL') {
                             $alt_phone = '';
                         }
 
-                        #TODO: Check DNC here.
-
+                        $VD_alt_dnc_count=0;
                         if (OSDstrlen($alt_phone)>5) {
-                            ### insert record into osdial_hopper for alt_phone call attempt
-                            $stmt=sprintf("INSERT INTO osdial_hopper SET lead_id='%s',campaign_id='%s',status='HOLD',list_id='%s',gmt_offset_now='%s',state='%s',alt_dial='ALT',user='',priority='25';",mres($lead_id),mres($campaign),mres($list_id),mres($gmt_offset_now),mres($state));
-                            if ($DB) echo "$stmt\n";
-                            $rslt=mysql_query($stmt, $link);
+                            if (OSDpreg_match("/Y/",$use_internal_dnc)) {
+                                if ($config['settings']['enable_multicompany']>0) {
+                                    $comp_id=0;
+                                    $dnc_method='';
+                                    $stmtA=sprintf("SELECT comp_id,dnc_method FROM osdial_companies WHERE company_id='%s';",mres((OSDsubstr($campaign,0,3)*1)-100));
+                                    $rslt=mysql_query($stmtA, $link);
+                                    if ($DB) echo "$stmtA\n";
+                                    $OC_ct = mysql_num_rows($rslt);
+                                    if ($OC_ct > 0) {
+                                        $row=mysql_fetch_row($rslt);
+                                        $comp_id = $row[0];
+                                        $dnc_method = $row[1];
+                                    }
+                                    if (OSDpreg_match("/COMPANY|BOTH/",$dnc_method)) {
+                                        $stmtA=sprintf("SELECT SQL_NO_CACHE count(*) FROM osdial_dnc_company WHERE company_id='%s' AND (phone_number='%s' OR phone_number='%s');",mres($comp_id),mres($alt_phone),mres(OSDsubstr($alt_phone,0,3)."XXXXXXX"));
+                                        $rslt=mysql_query($stmtA, $link);
+                                        if ($DB) echo "$stmtA\n";
+                                        $ODC_ct = mysql_num_rows($rslt);
+                                        if ($ODC_ct > 0) {
+                                            $row=mysql_fetch_row($rslt);
+                                            $VD_alt_dnc_count += $row[0];
+                                        }
+                                    }
+                                    if (OSDpreg_match("/COMPANY/",$dnc_method)) $alt_dial_skip++;
+                                }
+
+                                if ($alt_dial_skip==0) {
+                                    $stmtA=sprintf("SELECT count(*) FROM osdial_dnc WHERE phone_number='%s';",mres($alt_phone));
+                                    $rslt=mysql_query($stmtA, $link);
+                                    if ($DB) echo "$stmtA\n";
+                                    $VLAP_dnc_ct = mysql_num_rows($rslt);
+                                    if ($VLAP_dnc_ct > 0) {
+                                        $row=mysql_fetch_row($rslt);
+                                        $VD_alt_dnc_count += $row[0];
+                                    }
+                                }
+                            }
+
+                            if ($VD_alt_dnc_count < 1) {
+                                ### insert record into osdial_hopper for alt_phone call attempt
+                                $stmt=sprintf("INSERT INTO osdial_hopper SET lead_id='%s',campaign_id='%s',status='HOLD',list_id='%s',gmt_offset_now='%s',state='%s',alt_dial='ALT',user='',priority='25';",mres($lead_id),mres($campaign),mres($list_id),mres($gmt_offset_now),mres($state));
+                                if ($DB) echo "$stmt\n";
+                                $rslt=mysql_query($stmt, $link);
+                            } else {
+                                $alt_dial_skip=1;
+                            }
+                        } else {
+                            $alt_dial_skip=1;
                         }
+                        if ($alt_dial_skip>0) $alt_dial='ALT';
                     }
-                    if ( ( (OSDpreg_match("/(ALT)/",$alt_dial)) and (OSDpreg_match("/ALT_AND_ADDR3/",$auto_alt_dial)) ) or ( (OSDpreg_match("/(NONE|MAIN)/",$alt_dial)) and (OSDpreg_match("/ADDR3_ONLY/",$auto_alt_dial)) ) ) {
+                    if ( (OSDpreg_match("/(ALT)/",$alt_dial) and OSDpreg_match("/ALT_AND_ADDR3|ALT_ADDR3_AND_AFFAP/",$auto_alt_dial)) or (OSDpreg_match("/(NONE|MAIN)/",$alt_dial) and OSDpreg_match("/ADDR3_ONLY/",$auto_alt_dial)) ) {
+                        $addr3_dial_skip=0;
                         $stmt=sprintf("SELECT address3,gmt_offset_now,state FROM osdial_list WHERE lead_id='%s';",mres($lead_id));
                         $rslt=mysql_query($stmt, $link);
                         if ($DB) echo "$stmt\n";
@@ -1277,18 +1472,139 @@ if ($ACTION == 'manDiaLlogCaLL') {
                             $address3 = '';
                         }
 
-                        #TODO: Check DNC here.
-
+                        $VD_addr3_dnc_count=0;
                         if (OSDstrlen($address3)>5) {
-                            ### insert record into osdial_hopper for address3 call attempt
-                            $stmt=sprintf("INSERT INTO osdial_hopper SET lead_id='%s',campaign_id='%s',status='HOLD',list_id='%s',gmt_offset_now='%s',state='%s',alt_dial='ADDR3',user='',priority='20';",mres($lead_id),mres($campaign),mres($list_id),mres($gmt_offset_now),mres($state));
-                            if ($DB) echo "$stmt\n";
+                            if (OSDpreg_match("/Y/",$use_internal_dnc)) {
+                                if ($config['settings']['enable_multicompany']>0) {
+                                    $comp_id=0;
+                                    $dnc_method='';
+                                    $stmtA=sprintf("SELECT comp_id,dnc_method FROM osdial_companies WHERE company_id='%s';",mres((OSDsubstr($campaign,0,3)*1)-100));
+                                    $rslt=mysql_query($stmtA, $link);
+                                    if ($DB) echo "$stmtA\n";
+                                    $OC_ct = mysql_num_rows($rslt);
+                                    if ($OC_ct > 0) {
+                                        $row=mysql_fetch_row($rslt);
+                                        $comp_id = $row[0];
+                                        $dnc_method = $row[1];
+                                    }
+                                    if (OSDpreg_match("/COMPANY|BOTH/",$dnc_method)) {
+                                        $stmtA=sprintf("SELECT SQL_NO_CACHE count(*) FROM osdial_dnc_company WHERE company_id='%s' AND (phone_number='%s' OR phone_number='%s');",mres($comp_id),mres($address3),mres(OSDsubstr($address3,0,3)."XXXXXXX"));
+                                        $rslt=mysql_query($stmtA, $link);
+                                        if ($DB) echo "$stmtA\n";
+                                        $ODC_ct = mysql_num_rows($rslt);
+                                        if ($ODC_ct > 0) {
+                                            $row=mysql_fetch_row($rslt);
+                                            $VD_addr3_dnc_count += $row[0];
+                                        }
+                                    }
+                                    if (OSDpreg_match("/COMPANY/",$dnc_method)) $addr3_dial_skip++;
+                                }
+
+                                if ($VD_addr3_dnc_count < 1) {
+                                    $stmtA=sprintf("SELECT count(*) FROM osdial_dnc WHERE phone_number='%s';",mres($address3));
+                                    $rslt=mysql_query($stmtA, $link);
+                                    if ($DB) echo "$stmtA\n";
+                                    $VLAP_dnc_ct = mysql_num_rows($rslt);
+                                    if ($VLAP_dnc_ct > 0) {
+                                        $row=mysql_fetch_row($rslt);
+                                        $VD_addr3_dnc_count += $row[0];
+                                    }
+                                }
+                            }
+
+                            if ($VD_addr3_dnc_count < 1) {
+                                ### insert record into osdial_hopper for address3 call attempt
+                                $stmt=sprintf("INSERT INTO osdial_hopper SET lead_id='%s',campaign_id='%s',status='HOLD',list_id='%s',gmt_offset_now='%s',state='%s',alt_dial='ADDR3',user='',priority='20';",mres($lead_id),mres($campaign),mres($list_id),mres($gmt_offset_now),mres($state));
+                                if ($DB) echo "$stmt\n";
+                                $rslt=mysql_query($stmt, $link);
+                            } else {
+                                $addr3_dial_skip=1;
+                            }
+                        } else {
+                            $addr3_dial_skip=1;
+                        }
+                        if ($addr3_dial_skip>0) $alt_dial='ADDR3';
+                    }
+                    if (OSDpreg_match("/(ADDR3|AFFAP)/",$alt_dial) and OSDpreg_match("/ALT_ADDR3_AND_AFFAP/",$auto_alt_dial)) {
+                        $affap_dial_skip=0;
+                        $VD_affap_dnc_count=0;
+                        $aff_number = '';
+                        $cur_aff = 1;
+                        if ($alt_dial!='ADDR3') $cur_aff = (substr($alt_dial,5) * 1) + 1;
+                        while ($cur_aff<10) {
+                            $stmt=sprintf("SELECT SQL_NO_CACHE value FROM osdial_list_fields WHERE field_id=(SELECT id FROM osdial_campaign_fields WHERE name='AFFAP%s') AND lead_id='%s';",mres($cur_aff),mres($lead_id));
                             $rslt=mysql_query($stmt, $link);
+                            if ($DB) echo "$stmt\n";
+                            $VAC_mancall_ct = mysql_num_rows($rslt);
+                            if ($VAC_mancall_ct > 0) {
+                                $row=mysql_fetch_row($rslt);
+                                $affap = $row[0];
+                                $affap = OSDpreg_replace("/[^0-9]/","",$affap);
+                            } else {
+                                $affap = '';
+                            }
+
+                            if (OSDstrlen($affap)>5) {
+                                $stmtA=sprintf("SELECT gmt_offset_now,state FROM osdial_list WHERE lead_id='%s';",mres($lead_id));
+                                $rslt=mysql_query($stmtA, $link);
+                                if ($DB) echo "$stmtA\n";
+                                $OL_ct = mysql_num_rows($rslt);
+                                if ($OL_ct > 0) {
+                                    $row=mysql_fetch_row($rslt);
+                                    $gmt_offset_now = $row[0];
+                                    $state = $row[0];
+                                }
+
+                                if (OSDpreg_match("/Y/",$use_internal_dnc)) {
+                                    if ($config['settings']['enable_multicompany']>0) {
+                                        $comp_id=0;
+                                        $dnc_method='';
+                                        $stmtA=sprintf("SELECT comp_id,dnc_method FROM osdial_companies WHERE company_id='%s';",mres((OSDsubstr($campaign,0,3)*1)-100));
+                                        $rslt=mysql_query($stmtA, $link);
+                                        if ($DB) echo "$stmtA\n";
+                                        $OC_ct = mysql_num_rows($rslt);
+                                        if ($OC_ct > 0) {
+                                            $row=mysql_fetch_row($rslt);
+                                            $comp_id = $row[0];
+                                            $dnc_method = $row[1];
+                                        }
+                                        if (OSDpreg_match("/COMPANY|BOTH/",$dnc_method)) {
+                                            $stmtA=sprintf("SELECT SQL_NO_CACHE count(*) FROM osdial_dnc_company WHERE company_id='%s' AND (phone_number='%s' OR phone_number='%s');",mres($comp_id),mres($affap),mres(OSDsubstr($affap,0,3)."XXXXXXX"));
+                                            $rslt=mysql_query($stmtA, $link);
+                                            if ($DB) echo "$stmtA\n";
+                                            $ODC_ct = mysql_num_rows($rslt);
+                                            if ($ODC_ct > 0) {
+                                                $row=mysql_fetch_row($rslt);
+                                                $VD_affap_dnc_count += $row[0];
+                                            }
+                                        }
+                                        if (OSDpreg_match("/COMPANY/",$dnc_method)) $affap_dial_skip++;
+                                    }
+
+                                    if ($affap_dial_skip==0) {
+                                        $stmtA=sprintf("SELECT count(*) FROM osdial_dnc WHERE phone_number='%s';",mres($affap));
+                                        $rslt=mysql_query($stmtA, $link);
+                                        if ($DB) echo "$stmtA\n";
+                                        $VLAP_dnc_ct = mysql_num_rows($rslt);
+                                        if ($VLAP_dnc_ct > 0) {
+                                            $row=mysql_fetch_row($rslt);
+                                            $VD_affap_dnc_count += $row[0];
+                                        }
+                                    }
+                                }
+
+                                if ($VD_affap_dnc_count < 1) {
+                                    ### insert record into osdial_hopper for affap call attempt
+                                    $stmt=sprintf("INSERT INTO osdial_hopper SET lead_id='%s',campaign_id='%s',status='HOLD',list_id='%s',gmt_offset_now='%s',state='%s',alt_dial='AFFAP%s',user='',priority='20';",mres($lead_id),mres($campaign),mres($list_id),mres($gmt_offset_now),mres($state),mres($cur_aff));
+                                    if ($DB) echo "$stmt\n";
+                                    $rslt=mysql_query($stmt, $link);
+                                    $cur_aff=10;
+                                }
+                            }
+                            if ($VD_affap_dnc_count>0 or OSDstrlen($aff_number)<=5) $cur_aff++;
                         }
                     }
                 }
-
-                #TODO: Add support for ALT_ADDR3_AND_AFFAP dialing.
 
                 if ($config['settings']['enable_queuemetrics_logging'] > 0) {
                     ### check to see if lead should be alt_dialed
@@ -1328,19 +1644,19 @@ if ($ACTION == 'manDiaLlogCaLL') {
                     }
 
                     if ($caller_complete < 1) {
-                        $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='Agent/%s',verb='COMPLETEAGENT',data1='%s',data2='%s',data3='1',serverid='%s';",mres($StarTtime),mres($MDnextCID),mres($campaign),mres($user),mres($CLstage),mres($length_in_sec),mres($config['settings']['queuemetrics_log_id']));
-                        if ($DB) echo "$stmt\n";
-                        $rslt=mysql_query($stmt, $linkB);
-                        $affected_rows = mysql_affected_rows($linkB);
+                        $term_reason='AGENT';
+                    } else {
+                        $term_reason='CALLER';
                     }
-
                     mysql_close($linkB);
                 }
 
-                ### delete call record from  osdial_auto_calls
-                $stmt=sprintf("DELETE FROM osdial_auto_calls WHERE lead_id='%s' AND campaign_id='%s' AND uniqueid='%s';",mres($lead_id),mres($campaign),mres($uniqueid));
-                if ($DB) echo "$stmt\n";
-                $rslt=mysql_query($stmt, $link);
+                if ($nodeletevdac<1) {
+                    ### delete call record from  osdial_auto_calls
+                    $stmt=sprintf("DELETE FROM osdial_auto_calls WHERE lead_id='%s' AND campaign_id='%s' AND uniqueid='%s';",mres($lead_id),mres($campaign),mres($uniqueid));
+                    if ($DB) echo "$stmt\n";
+                    $rslt=mysql_query($stmt, $link);
+                }
 
                 $random = (rand(1000000, 9999999) + 10000000);
                 $stmt=sprintf("UPDATE osdial_live_agents SET status='PAUSED',uniqueid='',lead_id='',callerid='',channel='',call_server_ip='',last_call_finish='%s',random_id='%s',comments='DISPO' WHERE user='%s' AND server_ip='%s';",mres($NOW_TIME),mres($random),mres($user),mres($server_ip));
@@ -1353,7 +1669,18 @@ if ($ACTION == 'manDiaLlogCaLL') {
                         mysql_select_db($config['settings']['queuemetrics_dbname'], $linkB);
                         if ($config['settings']['use_non_latin'] > 0) $rslt=mysql_query("SET NAMES 'utf8' COLLATE 'utf8_general_ci';",$linkB);
 
-                        $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='NONE',queue='NONE',agent='Agent/%s',verb='PAUSEALL',serverid='%s';",mres($StarTtime),mres($user),mres($config['settings']['queuemetrics_log_id']));
+                        $data4SQL='';
+                        $stmt=sprintf("SELECT queuemetrics_phone_environment FROM osdial_campaigns WHERE campaign_id='%s' AND queuemetrics_phone_environment!='';",mres($campaign));
+                        $rslt=mysql_query($stmt, $link);
+                        if ($DB) echo "$stmt\n";
+                        $cqpe_ct = mysql_num_rows($rslt);
+                        if ($cqpe_ct > 0) {
+                            $row=mysql_fetch_row($rslt);
+                            $data4SQL = sprintf(",data4='%s'",mres($row[0]));
+                        }
+
+
+                        $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='NONE',queue='NONE',agent='Agent/%s',verb='PAUSEALL',serverid='%s'%s;",mres($StarTtime),mres($user),mres($config['settings']['queuemetrics_log_id']),$data4SQL);
                         if ($DB) echo "$stmt\n";
                         $rslt=mysql_query($stmt, $linkB);
                         $affected_rows = mysql_affected_rows($linkB);
@@ -1389,7 +1716,17 @@ if ($ACTION == 'manDiaLlogCaLL') {
                     mysql_select_db($config['settings']['queuemetrics_dbname'], $linkB);
                     if ($config['settings']['use_non_latin'] > 0) $rslt=mysql_query("SET NAMES 'utf8' COLLATE 'utf8_general_ci';",$linkB);
 
-                    $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='Agent/%s',verb='COMPLETEAGENT',data1='%s',data2='%s',data3='1',serverid='%s';",mres($StarTtime),mres($MDnextCID),mres($campaign),mres($user),mres($CLstage),mres($length_in_sec),mres($config['settings']['queuemetrics_log_id']));
+                    $data4SQL='';
+                    $stmt=sprintf("SELECT queuemetrics_phone_environment FROM osdial_campaigns WHERE campaign_id='%s' AND queuemetrics_phone_environment!='';",mres($campaign));
+                    $rslt=mysql_query($stmt, $link);
+                    if ($DB) echo "$stmt\n";
+                    $cqpe_ct = mysql_num_rows($rslt);
+                    if ($cqpe_ct > 0) {
+                        $row=mysql_fetch_row($rslt);
+                        $data4SQL = sprintf(",data4='%s'",mres($row[0]));
+                    }
+
+                    $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='Agent/%s',verb='COMPLETEAGENT',data1='%s',data2='%s',data3='1',serverid='%s'%s;",mres($StarTtime),mres($MDnextCID),mres($campaign),mres($user),mres($CLstage),mres($length_in_sec),mres($config['settings']['queuemetrics_log_id']),$data4SQL);
                     if ($DB) echo "$stmt\n";
                     $rslt=mysql_query($stmt, $linkB);
                     $affected_rows = mysql_affected_rows($linkB);
@@ -1397,9 +1734,11 @@ if ($ACTION == 'manDiaLlogCaLL') {
                     mysql_close($linkB);
                 }
 
-                $stmt=sprintf("DELETE FROM osdial_auto_calls WHERE lead_id='%s' AND campaign_id='%s' AND callerid LIKE 'M%%';",mres($lead_id),mres($campaign));
-                if ($DB) echo "$stmt\n";
-                $rslt=mysql_query($stmt, $link);
+                if ($nodeletevdac<1) {
+                    $stmt=sprintf("DELETE FROM osdial_auto_calls WHERE lead_id='%s' AND campaign_id='%s' AND callerid LIKE 'M%%';",mres($lead_id),mres($campaign));
+                    if ($DB) echo "$stmt\n";
+                    $rslt=mysql_query($stmt, $link);
+                }
 
                 $random = (rand(1000000, 9999999) + 10000000);
                 $stmt=sprintf("UPDATE osdial_live_agents SET status='PAUSED',uniqueid='',lead_id='',callerid='',channel='',call_server_ip='',last_call_finish='%s',random_id='%s',comments='DISPO' where user='%s' and server_ip='%s';",mres($NOW_TIME),mres($random),mres($user),mres($server_ip));
@@ -1412,7 +1751,17 @@ if ($ACTION == 'manDiaLlogCaLL') {
                         mysql_select_db($config['settings']['queuemetrics_dbname'], $linkB);
                         if ($config['settings']['use_non_latin'] > 0) $rslt=mysql_query("SET NAMES 'utf8' COLLATE 'utf8_general_ci';",$linkB);
 
-                        $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='NONE',queue='NONE',agent='Agent/%s',verb='PAUSEALL',serverid='%s';",mres($StarTtime),mres($user),mres($config['settings']['queuemetrics_log_id']));
+                        $data4SQL='';
+                        $stmt=sprintf("SELECT queuemetrics_phone_environment FROM osdial_campaigns WHERE campaign_id='%s' AND queuemetrics_phone_environment!='';",mres($campaign));
+                        $rslt=mysql_query($stmt, $link);
+                        if ($DB) echo "$stmt\n";
+                        $cqpe_ct = mysql_num_rows($rslt);
+                        if ($cqpe_ct > 0) {
+                            $row=mysql_fetch_row($rslt);
+                            $data4SQL = sprintf(",data4='%s'",mres($row[0]));
+                        }
+
+                        $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='NONE',queue='NONE',agent='Agent/%s',verb='PAUSEALL',serverid='%s'%s;",mres($StarTtime),mres($user),mres($config['settings']['queuemetrics_log_id']),$data4SQL);
                         if ($DB) echo "$stmt\n";
                         $rslt=mysql_query($stmt, $linkB);
                         $affected_rows = mysql_affected_rows($linkB);
@@ -1427,13 +1776,15 @@ if ($ACTION == 'manDiaLlogCaLL') {
 
                 if ( (OSDpreg_match("/NONE/",$term_reason)) or (OSDpreg_match("/NONE/",$Lterm_reason)) or (OSDstrlen($Lterm_reason) < 1) ) {
                     ### check to see if lead should be alt_dialed
-                    $stmt=sprintf("SELECT SQL_NO_CACHE term_reason,uniqueid from osdial_log WHERE uniqueid='%s' AND lead_id='%s' ORDER BY call_date DESC LIMIT 1;",mres($uniqueid),mres($lead_id));
+                    $stmt=sprintf("SELECT SQL_NO_CACHE term_reason,uniqueid,status FROM osdial_log WHERE uniqueid='%s' AND lead_id='%s' ORDER BY call_date DESC LIMIT 1;",mres($uniqueid),mres($lead_id));
                     $rslt=mysql_query($stmt, $link);
                     $VAC_qm_ct = mysql_num_rows($rslt);
                     if ($VAC_qm_ct > 0) {
                         $row=mysql_fetch_row($rslt);
-                        $Lterm_reason  = $row[0];
-                        $Luniqueid  = $row[1];
+                        $Lterm_reason = $row[0];
+                        $Luniqueid =    $row[1];
+                        $Lstatus =      $row[2];
+                        $VDIDselect =   "VDL_UIDLID $uniqueid $lead_id";
                     }
                     if (OSDpreg_match("/CALLER/",$Lterm_reason)) {
                         $SQLterm = "";
@@ -1443,30 +1794,40 @@ if ($ACTION == 'manDiaLlogCaLL') {
                 }
 
                 ### check to see if the osdial_log record exists, if not, insert it
-                $stmt=sprintf("SELECT SQL_NO_CACHE count(*) FROM osdial_log WHERE uniqueid='%s' AND lead_id='%s';",mres($uniqueid),mres($lead_id));
+                $manualVLexists=0;
+                $beginUNIQUEID = OSDpreg_replace("/\..*/","",$uniqueid);
+                $stmt=sprintf("SELECT status FROM osdial_log WHERE lead_id='%s' AND user='%s' AND phone_number='%s' AND uniqueid LIKE '%s%%';",mres($lead_id),mres($user),mres($phone_number),mres($beginUNIQUEID));
                 $rslt=mysql_query($stmt, $link);
-                $VAC_vld_ct = mysql_num_rows($rslt);
-                if ($VAC_vld_ct > 0) {
+                if ($DB) echo "$stmt\n";
+                $manualVLexists = mysql_num_rows($rslt);
+                if ($manualVLexists > 0) {
                     $row=mysql_fetch_row($rslt);
-                    $VLD_count  = $row[0];
-                    if ($VLD_count < 1) {
-                        ##### insert log into osdial_log for manual OSDiaL call
-                        $stmt=sprintf("INSERT INTO osdial_log (uniqueid,lead_id,list_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,comments,processed,user_group,server_ip) VALUES('%s','%s','%s','%s','%s','%s','DONEM','%s','%s','%s','MANUAL','N','%s','%s');",mres($uniqueid),mres($lead_id),mres($list_id),mres($campaign),mres($NOW_TIME),mres($StarTtime),mres($phone_code),mres($phone_number),mres($user),mres($user_group),mres($server_ip));
-                        if ($DB) echo "$stmt\n";
-                        $rslt=mysql_query($stmt, $link);
-                        $affected_rows = mysql_affected_rows($link);
+                    $VDstatus =     $row[0];
+                }
 
-                        if ($affected_rows > 0) {
-                            echo "OSDiaL_LOG Inserted: $uniqueid|$channel|$NOW_TIME\n";
-                            echo "$StarTtime\n";
-                        } else {
-                            echo "LOG NOT ENTERED\n";
-                        }
+                if ($manualVLexists < 1) {
+                    ##### insert log into osdial_log for manual OSDial call
+                    $stmt=sprintf("INSERT INTO osdial_log (uniqueid,lead_id,list_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,comments,processed,user_group,server_ip) VALUES('%s','%s','%s','%s','%s','%s','DONEM','%s','%s','%s','MANUAL','N','%s','%s');",mres($uniqueid),mres($lead_id),mres($list_id),mres($campaign),mres($NOW_TIME),mres($StarTtime),mres($phone_code),mres($phone_number),mres($user),mres($user_group),mres($server_ip));
+                    if ($DB) echo "$stmt\n";
+                    $rslt=mysql_query($stmt, $link);
+                    $affected_rows = mysql_affected_rows($link);
+
+                    if ($affected_rows > 0) {
+                        echo "OSDiaL_LOG Inserted: $uniqueid|$channel|$NOW_TIME\n";
+                        echo "$StarTtime\n";
+                    } else {
+                        echo "LOG NOT ENTERED\n";
                     }
+                } else {
+                    $stmt=sprintf("UPDATE osdial_log SET uniqueid='%s' WHERE lead_id='%s' AND user='%s' AND phone_number='%s' AND uniqueid LIKE '%s%%';",mres($uniqueid),mres($lead_id),mres($user),mres($phone_number),mres($beginUNIQUEID));;
+                    if ($DB) echo "$stmt\n";
+                    $rslt=mysql_query($stmt, $link);
+                    $affected_rows = mysql_affected_rows($link);
                 }
 
                 ##### update the duration and end time in the osdial_log table
-                $stmt=sprintf("UPDATE osdial_log SET %send_epoch='%s',length_in_sec='%s' WHERE uniqueid='%s' AND lead_id='%s' AND user='%s' ORDER BY call_date DESC LIMIT 1;",$SQLterm,mres($StarTtime),mres($length_in_sec),mres($uniqueid),mres($lead_id),mres($user));
+                if ($VDstatus == 'INCALL') $ol_statusSQL = sprintf(",status='%s'",mres($status_dispo));
+                $stmt=sprintf("UPDATE osdial_log SET %send_epoch='%s',length_in_sec='%s'%s WHERE uniqueid='%s' AND lead_id='%s' AND user='%s' ORDER BY call_date DESC LIMIT 1;",$SQLterm,mres($StarTtime),mres($length_in_sec),$ol_statusSQL,mres($uniqueid),mres($lead_id),mres($user));
                 if ($DB) echo "$stmt\n";
                 $rslt=mysql_query($stmt, $link);
                 $affected_rows = mysql_affected_rows($link);
@@ -1487,8 +1848,9 @@ if ($ACTION == 'manDiaLlogCaLL') {
                     $VAC_qm_ct = mysql_num_rows($rslt);
                     if ($VAC_qm_ct > 0) {
                         $row=mysql_fetch_row($rslt);
-                        $Lterm_reason  = $row[0];
-                        $Luniqueid  = $row[1];
+                        $Lterm_reason = $row[0];
+                        $Lclosecallid = $row[1];
+                        $VDIDselect =   "VDCL_LID4HOUR $lead_id $four_hours_ago";
                     }
                     if (OSDpreg_match("/CALLER/",$Lterm_reason)) {
                         $SQLterm = "";
@@ -1507,7 +1869,11 @@ if ($ACTION == 'manDiaLlogCaLL') {
                 }
 
                 if ($config['settings']['enable_queuemetrics_logging'] > 0) {
-                    if ( (OSDstrlen($QL_term) > 0) and ($leaving_threeway > 0) ) {
+                    $linkB=mysql_connect($config['settings']['queuemetrics_server_ip'], $config['settings']['queuemetrics_login'], $config['settings']['queuemetrics_pass']);
+                    mysql_select_db($config['settings']['queuemetrics_dbname'], $linkB);
+                    if ($config['settings']['use_non_latin'] > 0) $rslt=mysql_query("SET NAMES 'utf8' COLLATE 'utf8_general_ci';",$linkB);
+
+                    if (OSDstrlen($QL_term) > 0 and $leaving_threeway > 0) {
                         $stmt=sprintf("SELECT count(*) FROM queue_log WHERE call_id='%s' AND verb='COMPLETEAGENT' AND queue='%s';",mres($MDnextCID),mres($Lcampaign_id));
                         $rslt=mysql_query($stmt, $linkB);
                         if ($DB) echo "$stmt\n";
@@ -1517,7 +1883,17 @@ if ($ACTION == 'manDiaLlogCaLL') {
                             $agent_complete = $row[0];
                         }
                         if ($agent_complete < 1) {
-                            $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='Agent/%s',verb='COMPLETEAGENT',data1='%s',data2='%s',data3='1',serverid='%s';",mres($StarTtime),mres($MDnextCID),mres($Lcampaign_id),mres($user),mres($CLstage),mres($length_in_sec),mres($config['settings']['queuemetrics_log_id']));
+                            $data4SQL='';
+                            $stmt=sprintf("SELECT queuemetrics_phone_environment FROM osdial_campaigns WHERE campaign_id='%s' AND queuemetrics_phone_environment!='';",mres($campaign));
+                            $rslt=mysql_query($stmt, $link);
+                            if ($DB) echo "$stmt\n";
+                            $cqpe_ct = mysql_num_rows($rslt);
+                            if ($cqpe_ct > 0) {
+                                $row=mysql_fetch_row($rslt);
+                                $data4SQL = sprintf(",data4='%s'",mres($row[0]));
+                            }
+
+                            $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='Agent/%s',verb='COMPLETEAGENT',data1='%s',data2='%s',data3='1',serverid='%s'%s;",mres($StarTtime),mres($MDnextCID),mres($Lcampaign_id),mres($user),mres($CLstage),mres($length_in_sec),mres($config['settings']['queuemetrics_log_id']),$data4SQL);
                             if ($DB) echo "$stmt\n";
                             $rslt=mysql_query($stmt, $linkB);
                             $affected_rows = mysql_affected_rows($linkB);
@@ -1583,7 +1959,7 @@ if ($ACTION == 'manDiaLlogCaLL') {
             }
 
             ### if a conference call or 3way call was attempted, then hangup all channels except for the agentchannel
-            if ( ( ($conf_dialed > 0) or ($hangup_all_non_reserved > 0) ) and ($leaving_threeway < 1) and ($blind_transfer < 1) ) {
+            if (($conf_dialed>0 or $hangup_all_non_reserved>0) and $leaving_threeway<1 and $blind_transfer<1) {
                 $loop_count=0;
                 while($loop_count < $total_hangup) {
                     if (OSDstrlen($hangup_channels[$loop_count])>5) {
@@ -1650,24 +2026,47 @@ if ($ACTION == 'manDiaLlogCaLL') {
         }
 
         $talk_sec=0;
-        $talk_epochSQL='';
+        $talk_epochSQL=''; 
+        $lead_id_commentsSQL='';
         $StarTtime = date("U");
-        $stmt=sprintf("SELECT SQL_NO_CACHE talk_epoch,talk_sec,wait_sec FROM osdial_agent_log WHERE agent_log_id='%s';",mres($agent_log_id));
+        $stmt=sprintf("SELECT SQL_NO_CACHE talk_epoch,talk_sec,wait_sec,wait_epoch,lead_id,comments FROM osdial_agent_log WHERE agent_log_id='%s';",mres($agent_log_id));
         if ($DB) echo "$stmt\n";
         $rslt=mysql_query($stmt, $link);
 
         $VDpr_ct = mysql_num_rows($rslt);
         if ($VDpr_ct > 0) {
             $row=mysql_fetch_row($rslt);
-            if ( (OSDpreg_match("/NULL/",$row[0])) or ($row[0] < 1000) ) {
+            if (OSDpreg_match("/NULL/",$row[0]) or $row[0] < 1000) {
                 $talk_epochSQL=sprintf(",talk_epoch='%s'",mres($StarTtime));
-                $row[0]=$row[2];
+                $row[0]=$row[3];
             }
             $talk_sec = (($StarTtime - $row[0]) + $row[1]);
             if ($talk_sec<0) $talk_sec=0;
-            $stmt=sprintf("UPDATE osdial_agent_log set talk_sec='%s',dispo_epoch='%s',uniqueid='%s'%s where agent_log_id='%s';",mres($talk_sec),mres($StarTtime),mres($uniqueid),$talk_epochSQL,mres($agent_log_id));
-            if ($format=='debug') echo "\n<!-- $stmt -->";
-            $rslt=mysql_query($stmt, $link);
+            if (($auto_dial_level<1 or OSDpreg_match('/^M/',$MDnextCID)) and $inbound_man>0) {
+                if (OSDpreg_match("/NULL/",$row[5]) or OSDstrlen($row[5])<1) {
+                    $lead_id_commentsSQL .= ",comments='MANUAL'";
+                }
+                if (OSDpreg_match("/NULL/",$row[4]) or $row[4]<1 or OSDstrlen($row[4])<1) {
+                    $lead_id_commentsSQL .= sprintf(",lead_id='%s'",mres($lead_id));
+                }
+            }
+        }
+
+        $stmt=sprintf("UPDATE osdial_agent_log set talk_sec='%s',dispo_epoch='%s',uniqueid='%s'%s%s where agent_log_id='%s';",mres($talk_sec),mres($StarTtime),mres($uniqueid),$talk_epochSQL,$lead_id_commentsSQL,mres($agent_log_id));
+        if ($format=='debug') echo "\n<!-- $stmt -->";
+        $rslt=mysql_query($stmt, $link);
+
+        ### if queuemetrics_dispo_pause dispo tag is enabled, log it here
+        if (OSDstrlen($config['settings']['queuemetrics_dispo_pause'])>0) {
+            $linkB=mysql_connect($config['settings']['queuemetrics_server_ip'], $config['settings']['queuemetrics_login'], $config['settings']['queuemetrics_pass']);
+            mysql_select_db($config['settings']['queuemetrics_dbname'], $linkB);
+            if ($config['settings']['use_non_latin'] > 0) $rslt=mysql_query("SET NAMES 'utf8' COLLATE 'utf8_general_ci';",$linkB);
+
+            $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='NONE',agent='Agent/%s',verb='PAUSEREASON',serverid='%s',data1='%s';",mres($StarTtime),mres($MDnextCID),mres($user),mres($config['settings']['queuemetrics_log_id']),mres($config['settings']['queuemetrics_dispo_pause']));
+            if ($DB) echo "$stmt\n";
+            $rslt=mysql_query($stmt, $linkB);
+            $affected_rows = mysql_affected_rows($linkB);
+            mysql_close($linkB);
         }
     }
 }
