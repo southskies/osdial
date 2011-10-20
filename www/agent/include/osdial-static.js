@@ -165,12 +165,13 @@
 // place 3way and customer into other conference and fake-hangup the lines
 	function leave_3way_call(tempvarattempt) {
 		debug("<b>leave_3way_call:</b> tempvarattempt=" + tempvarattempt,2);
+		threeway_end=0;
 		leaving_threeway=1;
-		mainxfer_send_redirect('3WAY','','',tempvarattempt);
 
 		if (customerparked > 0) {
 			mainxfer_send_redirect('FROMParK',lastcustchannel,lastcustserverip);
 		}
+		mainxfer_send_redirect('3WAY','','',tempvarattempt);
 
 		//document.getElementById("callchannel").innerHTML = '';
 		//document.osdial_form.callserverip.value = '';
@@ -394,6 +395,7 @@
 		debug("<b>check_for_conf_calls:</b> taskconfnum=" + taskconfnum + " taskforce=" + taskforce,5);
 		if (typeof(xmlhttprequestcheckconf) == "undefined") {
 			//alert (xmlhttprequestcheckconf == xmlhttpSendConf);
+			xmlhttprequestcheckconf_wait = 0;
 			custchannellive--;
 			if ( (agentcallsstatus == '1') || (callholdstatus == '1') ) {
 				campagentstatct++;
@@ -626,6 +628,24 @@
 					}
 				}
 			}
+		} else {
+			if (xmlhttprequestcheckconf) {
+				xmlhttprequestcheckconf_wait++;
+				if (xmlhttprequestcheckconf_wait >= conf_check_attempts) {
+					// Abort AJAX Request, due to timeout.
+					// The handler must take care of cleanup.
+					// alert("xmlhttprequestcheckconf: Abort (Wait > 3 sec)");
+					xmlhttprequestcheckconf.abort();
+				}
+			}
+			if (xmlhttprequestcheckconf_wait >= conf_check_attempts_cleanup) {
+				// In case the handler function fails to do cleanup, cleanup manually.
+				xmlhttprequestcheckconf_wait = 0;
+				delete xmlhttprequestcheckconf;
+				xmlhttprequestcheckconf = undefined;
+			} else {
+				xmlhttprequestcheckconf = undefined;
+			}
 		}
 	}
 
@@ -818,9 +838,9 @@
 				var redirecttype_test = document.osdial_form.xfernumber.value;
 				var XfeRSelecT = document.getElementById("XfeRGrouP");
 				var regRXFvars = new RegExp("CXFER","g");
-				var redirecttype = 'RedirectXtra';
+				var redirecttype = 'RedirectXtraNeW';
 				if (redirecttype_test.match(regRXFvars) && local_consult_xfers > 0) {
-					redirecttype = 'RedirectXtraCX';
+					redirecttype = 'RedirectXtraCXNeW';
 				}
 				DispO3waychannel = redirectvalue;
 				DispO3wayXtrAchannel = redirectXTRAvalue;
@@ -875,6 +895,7 @@
 					var XfeRRedirecToutput_array=XfeRRedirecToutput.split("|");
 					var XFRDop = XfeRRedirecToutput_array[0];
 					if (XFRDop == "NeWSessioN") {
+						threeway_end=1;
 						document.getElementById("callchannel").innerHTML = '';
 						document.osdial_form.callserverip.value = '';
 						dialedcall_send_hangup();
@@ -953,18 +974,19 @@
 
 // ################################################################################
 // Insert or update the osdial_log entry for a customer call
-	function DialLog(taskMDstage) {
-		debug("<b>DialLog:</b> taskMDstage=" + taskMDstage,2);
+	function DialLog(taskMDstage,nodeletevdac) {
+		debug("<b>DialLog:</b> taskMDstage=" + taskMDstage + " nodeletevdac=" + nodeletevdac,2);
+		var alt_num_status=0;
 		if (taskMDstage == "start") {
 			var MDlogEPOCH = 0;
-            var UID_test = document.osdial_form.uniqueid.value;
-            if (UID_test.length < 4)
-                {
-                UID_test = epoch_sec + '.' + random;
-                document.osdial_form.uniqueid.value = UID_test;
-                }
+			var UID_test = document.osdial_form.uniqueid.value;
+			if (UID_test.length < 4) {
+				UID_test = epoch_sec + '.' + random;
+				document.osdial_form.uniqueid.value = UID_test;
+			}
 		} else if (alt_phone_dialing == 1) {
 			if (document.osdial_form.DiaLAltPhonE.checked==true) {
+				alt_num_status = 1;
 				reselect_alt_dial = 1;
 				alt_dial_active = 1;
 				alt_dial_menu = 1;
@@ -975,14 +997,16 @@
 		var xmlhttp=getXHR();
 		if (xmlhttp) { 
 			var manual_dialcode = ''+document.osdial_form.phone_code.value;
+			var inOUT = 'OUT';
+			if (VDCL_group_id.length>1) inOUT='IN';
 			if (manual_dialcode!='1' && manual_dialcode.substring(0,1)!='0') manual_dialcode = '011' + manual_dialcode;
-			manDiaLlog_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLlogCaLL&stage=" + taskMDstage + "&uniqueid=" + document.osdial_form.uniqueid.value + 
+			manDiaLlog_query = "format=text&server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLlogCaLL&stage=" + taskMDstage + "&uniqueid=" + document.osdial_form.uniqueid.value + 
 			"&user=" + user + "&pass=" + pass + "&campaign=" + campaign + 
 			"&lead_id=" + document.osdial_form.lead_id.value + 
 			"&list_id=" + document.osdial_form.list_id.value + 
 			"&length_in_sec=0&phone_code=" + manual_dialcode + 
 			"&phone_number=" + lead_dial_number + 
-			"&exten=" + extension + "&channel=" + lastcustchannel + "&start_epoch=" + MDlogEPOCH + "&auto_dial_level=" + auto_dial_level + "&VDstop_rec_after_each_call=" + VDstop_rec_after_each_call + "&conf_silent_prefix=" + conf_silent_prefix + "&protocol=" + protocol + "&extension=" + extension + "&ext_context=" + ext_context + "&conf_exten=" + session_id + "&user_abb=" + user_abb + "&agent_log_id=" + agent_log_id + "&MDnextCID=" + LasTCID + "&alt_dial=" + dialed_label + "&DB=0" + "&agentchannel=" + agentchannel + "&conf_dialed=" + conf_dialed + "&leaving_threeway=" + leaving_threeway + "&hangup_all_non_reserved=" + hangup_all_non_reserved + "&blind_transfer=" + blind_transfer;;
+			"&exten=" + extension + "&channel=" + lastcustchannel + "&start_epoch=" + MDlogEPOCH + "&auto_dial_level=" + auto_dial_level + "&VDstop_rec_after_each_call=" + VDstop_rec_after_each_call + "&conf_silent_prefix=" + conf_silent_prefix + "&protocol=" + protocol + "&extension=" + extension + "&ext_context=" + ext_context + "&conf_exten=" + session_id + "&user_abb=" + user_abb + "&agent_log_id=" + agent_log_id + "&MDnextCID=" + LasTCID + "&inOUT=" + inOUT + "&alt_dial=" + dialed_label + "&DB=0" + "&agentchannel=" + agentchannel + "&conf_dialed=" + conf_dialed + "&leaving_threeway=" + leaving_threeway + "&hangup_all_non_reserved=" + hangup_all_non_reserved + "&blind_transfer=" + blind_transfer + "&dial_method" + dial_method + "&nodeletevdac=" + nodeletevdac + "&alt_num_status=" + alt_num_status;
 			xmlhttp.open('POST', 'vdc_db_query.php'); 
 			xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 			//document.getElementById("busycallsdebug").innerHTML = "vdc_db_query.php?" + manDiaLlog_query;
@@ -1246,7 +1270,7 @@
 		}
 		var xmlhttp=getXHR();
 		if (xmlhttp) { 
-			manDiaLlook_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLlookCaLL&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&MDnextCID=" + CIDcheck + "&agent_log_id=" + agent_log_id + "&lead_id=" + document.osdial_form.lead_id.value;
+			manDiaLlook_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=OLDmanDiaLlookCaLL&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&MDnextCID=" + CIDcheck + "&agent_log_id=" + agent_log_id + "&lead_id=" + document.osdial_form.lead_id.value;
 			xmlhttp.open('POST', 'vdc_db_query.php'); 
 			xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 			xmlhttp.send(manDiaLlook_query); 
@@ -1467,6 +1491,7 @@
 						osdalert("call was not placed, there was an error:" + MDOnextResponse);
 					} else {
 						MD_channel_look=1;
+						custchannellive=1;
 
 						var status_display_number = formatPhone(document.osdial_form.phone_code.value,dialed_number);
 
@@ -1690,7 +1715,7 @@
 
 // ################################################################################
 // Send Hangup command for customer call connected to the conference now to Manager
-	function dialedcall_send_hangup(dispowindow,hotkeysused,altdispo) {
+	function dialedcall_send_hangup(dispowindow,hotkeysused,altdispo,nodeletevdac) {
 		debug("<b>dialedcall_send_hangup:</b> dispowindow=" + dispowindow + " hotkeysused=" + hotkeysused + " altdispo=" + altdispo,2);
 		//var form_cust_channel = document.osdial_form.callchannel.value;
 		var form_cust_channel = document.getElementById("callchannel").innerHTML;
@@ -1704,7 +1729,7 @@
 		var process_post_hangup=0;
 		if ( (RedirecTxFEr < 1) && ( (MD_channel_look==1) || (auto_dial_level == 0) ) ) {
 			MD_channel_look=0;
-			DialTimeHangup();
+			DialTimeHangup('MAIN');
 		}
 		if (form_cust_channel.length > 3) {
 			var xmlhttp=getXHR();
@@ -1712,7 +1737,7 @@
 				var queryCID = "HLvdcW" + epoch_sec + user_abb;
 				var hangupvalue = customer_channel;
 				//osdalert(auto_dial_level + "|" + CalLCID + "|" + customer_server_ip + "|" + hangupvalue + "|" + VD_live_call_secondS,30);
-				custhangup_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=Hangup&format=text&user=" + user + "&pass=" + pass + "&channel=" + hangupvalue + "&call_server_ip=" + customer_server_ip + "&queryCID=" + queryCID + "&auto_dial_level=" + auto_dial_level + "&CalLCID=" + CalLCID + "&secondS=" + VD_live_call_secondS + "&exten=" + session_id;
+				custhangup_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=Hangup&format=text&user=" + user + "&pass=" + pass + "&channel=" + hangupvalue + "&call_server_ip=" + customer_server_ip + "&queryCID=" + queryCID + "&auto_dial_level=" + auto_dial_level + "&CalLCID=" + CalLCID + "&secondS=" + VD_live_call_secondS + "&exten=" + session_id + "&campaign=" + group + "&stage=CALLHANGUP&nodeletevdac=" + nodeletevdac + "&log_campaign=" + campaign;
 				xmlhttp.open('POST', 'manager_send.php'); 
 				xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 				xmlhttp.send(custhangup_query); 
@@ -1741,7 +1766,7 @@
 			CalLCID = '';
 
 		//	UPDATE OSDIAL_LOG ENTRY FOR THIS CALL PROCESS
-			DialLog("end");
+			DialLog("end",nodeletevdac);
 			conf_dialed=0;
 			if (dispowindow == 'NO') {
 				open_dispo_screen=0;
@@ -1774,6 +1799,7 @@
 			document.osdial_form.callserverip.value = '';
 			lastcustchannel='';
 			lastcustserverip='';
+			MDchannel='';
 
 			if( document.images ) { document.images['livecall'].src = image_livecall_OFF.src;}
 			document.getElementById("WebFormSpan").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_webform_OFF.gif\" width=145 height=16 border=0 alt=\"Web Form\">";
@@ -1931,8 +1957,8 @@
 
 // ################################################################################
 // Send Hangup command for any Local call that is not in the quiet(7) entry - used to stop manual dials even if no connect
-	function DialTimeHangup() {
-		debug("<b>DialTimeHangup:</b>",2);
+	function DialTimeHangup(tasktypecall) {
+		debug("<b>DialTimeHangup:</b> tasktypecall:" + tasktypecall,2);
 		if (RedirecTxFEr < 1 && leaving_threeway<1) {
 			//osdalert("RedirecTxFEr|" + RedirecTxFEr,30);
 			MD_channel_look=0;
@@ -3633,7 +3659,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				cid = lead_cust2_cid;
 				cid_name = lead_cust2_cid;
 			}
-			manDiaLnext_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLnextCaLL&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&campaign=" + campaign + "&ext_context=" + ext_context + "&dial_context=" + dial_context + "&dial_timeout=" + dial_timeout + "&dial_prefix=" + dial_prefix + "&campaign_cid=" + cid + "&campaign_cid_name=" + cid_name + "&preview=" + man_preview + "&agent_log_id=" + agent_log_id + "&callback_id=" + mdnCBid + "&lead_id=" + mdnBDleadid + "&phone_code=" + mdnDiaLCodE + "&phone_number=" + mdnPhonENumbeR + "&list_id=" + mdnLisT_id + "&stage=" + mdnStagE  + "&use_internal_dnc=" + use_internal_dnc + "&omit_phone_code=" + omit_phone_code;
+			manDiaLnext_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLnextCaLL&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&campaign=" + campaign + "&ext_context=" + ext_context + "&dial_context=" + dial_context + "&dial_timeout=" + dial_timeout + "&dial_prefix=" + dial_prefix + "&campaign_cid=" + cid + "&campaign_cid_name=" + cid_name + "&preview=" + man_preview + "&agent_log_id=" + agent_log_id + "&callback_id=" + mdnCBid + "&lead_id=" + mdnBDleadid + "&phone_code=" + mdnDiaLCodE + "&phone_number=" + mdnPhonENumbeR + "&list_id=" + mdnLisT_id + "&stage=" + mdnStagE  + "&use_internal_dnc=" + use_internal_dnc + "&omit_phone_code=" + omit_phone_code + "&inbound_man=" + inbound_man;
 			debug("ManualDialNext: manDiaLnext_query: " + manDiaLnext_query,4);
 			cid = campaign_cid;
 			cid_name = campaign_cid_name;
