@@ -188,7 +188,7 @@ $t->open("$telnet_host");
 if ($DBasterisk_version =~ /^1\.6|^1\.8/) {
 	$t->waitfor('/1\n$/');			# print login
 	my($s, $usec) = gettimeofday();
-	$t->print("Action: Login\nActionID: $usec\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\nEvents: off\n\n");
+	$t->print("Action: Login\nActionID: U$usec~Login\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
 } else {
 	$t->waitfor('/0\n$/');			# print login
 	$t->print("Action: Login\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
@@ -281,7 +281,7 @@ $t->open("$telnet_host");
 if ($DBasterisk_version =~ /^1\.6|^1\.8/) {
 	$t->waitfor('/1\n$/');			# print login
 	my($s, $usec) = gettimeofday();
-	$t->print("Action: Login\nActionID: $usec\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\nEvents: off\n\n");
+	$t->print("Action: Login\nActionID: U$usec~Login\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
 } else {
 	$t->waitfor('/0\n$/');			# print login
 	$t->print("Action: Login\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
