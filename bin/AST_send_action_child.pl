@@ -189,7 +189,7 @@ if ($action) {
 	if ($asterisk_version =~ /^1\.6|^1\.8/) {
 		$tn->waitfor('/1\n$/');			# print login
 		my($s, $usec) = gettimeofday();
-		$tn->print("Action: Login\nActionID: U$usec~Login\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\nEvents: off\n\n");
+		$tn->print("Action: Login\nActionID: U$usec~Login\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
 		$action_id = 'ActionID: M' . $man_id if ($man_id);
 	} else {
 		$tn->waitfor('/0\n$/');			# print login
