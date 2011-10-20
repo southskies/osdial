@@ -49,8 +49,8 @@ function get_krh($link, $tbl, $flds="*", $srt="", $whr="", $lmt="") {
     }
     $krhstmt="SELECT " . $flds . " FROM " . $tbl . $whr . $srt . $lmt;
     $krhrslt=mysql_query($krhstmt, $link);
-    while ($krhrow = mysql_fetch_array($krhrslt, MYSQL_BOTH)) {
-        $krhrows[$krhrow[0]] = $krhrow;
+    while ($krhrow = mysql_fetch_assoc($krhrslt)) {
+        $krhrows[] = $krhrow;
     }
     return $krhrows;
 }
@@ -61,7 +61,7 @@ function get_first_record($link, $tbl, $flds="*", $whr="") {
     }
     $gfrstmt="SELECT SQL_NO_CACHE " . $flds . " FROM " . $tbl . $whr . ' LIMIT 1';
     $gfrrslt=mysql_query($gfrstmt, $link);
-    $gfrrow = mysql_fetch_array($gfrrslt, MYSQL_BOTH);
+    $gfrrow = mysql_fetch_assoc($gfrrslt);
     return $gfrrow;
 }
 
@@ -500,6 +500,75 @@ function OSDsubstr($instr,$instart,$inlen) {
     global $config;
     if ($config['settings']['use_non_latin']==1) return mb_substr($instr,$instart,$inlen,'utf8');
     return substr($instr,$instart,$inlen);
+}
+
+function hangup_cause_description($isup) {
+    $hangup_cause_dictionary = array(
+        0 => "Unspecified. No other cause codes applicable.",
+        1 => "Unallocated (unassigned) number.",
+        2 => "No route to specified transit network (national use).",
+        3 => "No route to destination.",
+        6 => "Channel unacceptable.",
+        7 => "Call awarded, being delivered in an established channel.",
+        16 => "Normal call clearing.",
+        17 => "User busy.",
+        18 => "No user responding.",
+        19 => "No answer from user (user alerted).",
+        20 => "Subscriber absent.",
+        21 => "Call rejected.",
+        22 => "Number changed.",
+        23 => "Redirection to new destination.",
+        25 => "Exchange routing error.",
+        27 => "Destination out of order.",
+        28 => "Invalid number format (address incomplete).",
+        29 => "Facilities rejected.",
+        30 => "Response to STATUS INQUIRY.",
+        31 => "Normal, unspecified.",
+        34 => "No circuit/channel available.",
+        38 => "Network out of order.",
+        41 => "Temporary failure.",
+        42 => "Switching equipment congestion.",
+        43 => "Access information discarded.",
+        44 => "Requested circuit/channel not available.",
+        50 => "Requested facility not subscribed.",
+        52 => "Outgoing calls barred.",
+        54 => "Incoming calls barred.",
+        57 => "Bearer capability not authorized.",
+        58 => "Bearer capability not presently available.",
+        63 => "Service or option not available, unspecified.",
+        65 => "Bearer capability not implemented.",
+        66 => "Channel type not implemented.",
+        69 => "Requested facility not implemented.",
+        79 => "Service or option not implemented, unspecified.",
+        81 => "Invalid call reference value.",
+        88 => "Incompatible destination.",
+        95 => "Invalid message, unspecified.",
+        96 => "Mandatory information element is missing.",
+        97 => "Message type non-existent or not implemented.",
+        98 => "Message not compatible with call state or message type non-existent or not implemented.",
+        99 => "Information element / parameter non-existent or not implemented.",
+        100 => "Invalid information element contents.",
+        101 => "Message not compatible with call state.",
+        102 => "Recovery on timer expiry.",
+        103 => "Parameter non-existent or not implemented - passed on (national use).",
+        111 => "Protocol error, unspecified.",
+        127 => "Interworking, unspecified.",
+        487 => "Originator cancel.",
+        500 => "Crash.",
+        501 => "System shutdown.",
+        502 => "Lose race.",
+        503 => "Manager request.",
+        600 => "Blind transfer.",
+        601 => "Attended transfer.",
+        602 => "Allotted timeout.",
+        603 => "User challenge.",
+        604 => "Media timeout.",
+        605 => "Picked off.",
+        606 => "User not registered.",
+        607 => "Progress timeout."
+    );
+    if (isset($hangup_cause_dictionary[$isup])) return $hangup_cause_dictionary[$isup];
+    return "Unknown ISUP Result Code.";
 }
 
 ?>
