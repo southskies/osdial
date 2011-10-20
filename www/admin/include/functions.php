@@ -52,8 +52,8 @@ function get_krh($link, $tbl, $flds="*", $srt="", $whr="", $lmt="") {
     $krhstmt="SELECT " . $flds . " FROM " . $tbl . $whr . $srt . $lmt;
     $krhrslt=mysql_query($krhstmt, $link);
     if ($DB) echo "\n<!--$krhstmt-->\n";
-    while ($krhrow = mysql_fetch_array($krhrslt, MYSQL_BOTH)) {
-        $krhrows[$krhrow[0]] = $krhrow;
+    while ($krhrow = mysql_fetch_assoc($krhrslt)) {
+        $krhrows[] = $krhrow;
     }
     return $krhrows;
 }
@@ -64,7 +64,7 @@ function get_first_record($link, $tbl, $flds="*", $whr="") {
     }
     $gfrstmt="SELECT " . $flds . " FROM " . $tbl . $whr . ' LIMIT 1';
     $gfrrslt=mysql_query($gfrstmt, $link);
-    $gfrrow = mysql_fetch_array($gfrrslt, MYSQL_BOTH);
+    $gfrrow = mysql_fetch_assoc($gfrrslt);
     return $gfrrow;
 }
 
