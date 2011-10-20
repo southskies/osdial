@@ -151,6 +151,10 @@ while ($one_day_interval > 0) {
 
 		 	while (my $vdm = $sthA->fetchrow_hashref) {
 
+				my $stmtA = "UPDATE osdial_manager SET status='SENT' WHERE man_id='" . $vdm->{man_id} . "' AND status='QUEUE';";
+				print STDERR "\n|$stmtA|\n" if ($DB);
+				$affected_rows = $dbhA->do($stmtA);
+
 				print STDERR $vdm->{man_id} . "|" . $vdm->{uniqueid} . "|" . $vdm->{channel} . "|" .
 					$vdm->{action} . "|" . $vdm->{callerid} . "\n" if ($DB);
 
@@ -232,14 +236,10 @@ while ($one_day_interval > 0) {
 			#		$launch = "SENT " . $vdm->{man_id} . "  " . $vdm->{callerid} . ' ' . $vdm->{uniqueid} . ' ' . $vdm->{channel};
 			#		eventLogger($conf{'PATHlogs'}, 'launch', $launch);;
 
-					my $stmtA = "UPDATE osdial_manager set status='SENT' where man_id='" . $vdm->{man_id} . "'";
-					print STDERR "\n|$stmtA|\n" if ($DB);
-					$affected_rows = $dbhA->do($stmtA);
-
 					$event_string = "SQL_QUERY|$stmtA|";
 					eventLogger($conf{'PATHlogs'}, 'process', $event_string);
 				} else {
-					$stmtA = "UPDATE osdial_manager set status='DEAD' where man_id='" . $vdm->{man_id} . "'";
+					$stmtA = "UPDATE osdial_manager SET status='DEAD' WHERE man_id='" . $vdm->{man_id} . "';";
 					print STDERR "\n|$stmtA|\n" if ($DB);
 					$affected_rows = $dbhA->do($stmtA);
 					$event_string="COMMAND NOT SENT, SQL_QUERY|$stmtA|";
