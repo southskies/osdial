@@ -460,7 +460,6 @@ function debugLog($filename, $output) {
 function OSDstrlen($instr) {
     global $config;
     if (is_array($instr)) {
-        debugLog('osdial_debug',"STRLEN got array\n".print_r($instr,TRUE)."\n");
         return 0;
     }
     if ($config['settings']['use_non_latin']==1) return mb_strlen($instr,'utf8');
