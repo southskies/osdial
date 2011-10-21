@@ -528,9 +528,9 @@
 									} else if ( channelfieldA.match(/^Local\/386.....@osdial/) ) {
 										var hide_channel=1;
 									} else if (volumecontrol_active!=1) {
-										live_conf_HTML = live_conf_HTML + "<tr bgcolor=\"" + row_color + "\"><td><font class=\"log_text\">" + loop_ct + "</td><td><font class=\"" + chan_name_color + "\">" + channelfieldA + "</td><td><font class=\"log_text\"><a href=\"#\" onclick=\"livehangup_send_hangup('" + channelfieldA + "');return false;\">HANGUP</a></td><td></td></tr>";
+										live_conf_HTML = live_conf_HTML + "<tr id=\"channel_row_"+loop_ct+"\" bgcolor=\"" + row_color + "\"><td><font class=\"log_text\">" + loop_ct + "</td><td><font class=\"" + chan_name_color + "\">" + channelfieldA + "</td><td><font class=\"log_text\"><a href=\"#\" onclick=\"livehangup_send_hangup('" + channelfieldA + "');return false;\">HANGUP</a></td><td></td></tr>";
 									} else {
-										live_conf_HTML += "<tr height=30 bgcolor=\"" + row_color + "\">";
+										live_conf_HTML += "<tr id=\"channel_row_"+loop_ct+"\" height=30 bgcolor=\"" + row_color + "\">";
 										live_conf_HTML += "<td><font class=\"log_text\">" + loop_ct + "</td>";
 										live_conf_HTML += "<td><font class=\"" + chan_name_color + "\">" + channelfieldA + "</td>";
 										live_conf_HTML += "<td><font class=\"log_text\"><a href=\"#\" onclick=\"livehangup_send_hangup('" + channelfieldA + "');return false;\">HANGUP</a></td>";
@@ -595,7 +595,7 @@
 									if (LMAalter > 0) {
 										LMAcount++;
 									}
-									if (agentchannel==channelfieldA){agentphonelive++;}
+									if (agentchannel==channelfieldA){agentphonelive=loop_ct;}
 									ARY_ct++;
 								}
 								//var debug_LMA = LMAcontent_match+"|"+LMAcontent_change+"|"+LMAcount+"|"+live_conf_calls+"|"+LMAe[0]+LMAe[1]+LMAe[2]+LMAe[3]+LMAe[4]+LMAe[5];
@@ -608,6 +608,7 @@
 								if (LMAcontent_change > 0) {
 									if (conf_channels_xtra_display == 1) {
 										document.getElementById("outboundcallsspan").innerHTML = live_conf_HTML;
+										document.getElementById("channel_row_"+agentphonelive).style.backgroundColor = '#AFCFD7';
 									}
 								}
 								nochannelinsession=0;
@@ -885,6 +886,7 @@
 			}
 
 
+			debug("<b>mainxfer_send_redirect:</b> xferredirect_query=" + xferredirect_query,2);
 			xmlhttp.open('POST', 'manager_send.php'); 
 			xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 			xmlhttp.send(xferredirect_query); 
@@ -892,8 +894,10 @@
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 					var XfeRRedirecToutput = null;
 					XfeRRedirecToutput = xmlhttp.responseText;
-					var XfeRRedirecToutput_array=XfeRRedirecToutput.split("|");
-					var XFRDop = XfeRRedirecToutput_array[0];
+					debug("<b>mainxfer_send_redirect:</b> xferredirect_query result=" +XfeRRedirecToutput,2);
+					var XfeRRedirecToutput_array=XfeRRedirecToutput.split("\n");
+					var XfeRNLsplit=XfeRRedirecToutput_array[0].split("|");
+					var XFRDop = XfeRNLsplit[0];
 					if (XFRDop == "NeWSessioN") {
 						threeway_end=1;
 						document.getElementById("callchannel").innerHTML = '';
@@ -903,7 +907,7 @@
 						document.osdial_form.xferchannel.value = '';
 						xfercall_send_hangup();
 
-						session_id = XfeRRedirecToutput_array[1];
+						session_id = XfeRNLsplit[1];
 						document.getElementById("sessionIDspan").innerHTML = session_id;
 
 						//alert("session_id changed to: " + session_id);
@@ -950,12 +954,12 @@
                                 reselect_alt_dial=0;
                                 DispoSelect_submit();
                         } else if (taskvar == 'XfeRBLIND') {
-                                document.osdial_form.DispoSelection.value = 'XFER';
                                 dialedcall_send_hangup('NO');
                               	alt_dial_active=0;
+                              	alt_dial_menu=0;
                                 reselect_alt_dial=0;
-				document.osdial_form.DispoSelectStop.checked=true;
-                                DispoSelect_submit();
+                                showDiv('DispoSelectBox');
+                                DispoSelectContent_create('XFER','');
                         } else {
                                 dialedcall_send_hangup();
                         }
