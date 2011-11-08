@@ -74,7 +74,7 @@ require_once('admin/templates/' . $template . '/display.php');
 <?php } ?>
 <br><br><br>
 
-<table bgcolor=#56734F align=center border=0 align=center width=546 height=381 cellpadding=0 cellspacing=0 background="admin/templates/<?php echo $template; ?>/images/osdial-bg.png"> 
+<table align=center border=0 align=center width=546 height=381 cellpadding=0 cellspacing=0 background="admin/templates/<?php echo $template; ?>/images/osdial-bg.png"> 
 <tr>
     <td>
     
