@@ -25,7 +25,7 @@ require_once('admin/templates/' . $template . '/display.php');
     function osdfont(id,phrase,krnon) {
         var let = new Array();
         var krn = new Array();
-        var images = 'admin/templates/<?php echo $template;?>/images/';
+        var images = 'admin/templates/<?php echo $template; ?>/images/';
         if (krnon == undefined)
             krnon = 1;
 
@@ -74,11 +74,10 @@ require_once('admin/templates/' . $template . '/display.php');
 <?php } ?>
 <br><br><br>
 
-<table bgcolor=#56734F align=center border=0 align=center width=546 height=381 cellpadding=0 cellspacing=0 background="admin/templates/<?php echo $template; ?>/images/osdial-bg.png">
+<table bgcolor=#56734F align=center border=0 align=center width=546 height=381 cellpadding=0 cellspacing=0 background="admin/templates/<?php echo $template; ?>/images/osdial-bg.png"> 
 <tr>
     <td>
     
-        <!-- <table border=0 align=center width=546 height=381 cellpadding=0 cellspacing=0> -->
         <table border=0 align=center width=546 height=331 cellpadding=0 cellspacing=0>
         <tr>
             <td align=center colspan=2 valign=middle height=140>
