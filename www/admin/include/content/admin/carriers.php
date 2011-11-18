@@ -283,12 +283,12 @@ if ($ADD=="2carrier") {
         ### SUB=2  Added Carrier
         } elseif ($SUB==2) {
             $SUB=1;
-            if (OSDstrlen($carrier_name) < 3 or OSDstrlen($carrier_protocol) < 1) {
+            if (OSDstrlen($carrier_name) < 2 or OSDstrlen($carrier_protocol) < 1) {
                 echo "<br><font color=red>CARRIER NOT ADDED - Please go back and look at the data you entered\n";
                 echo "<br>carrier_name must be at least 2 characters.\n";
                 echo "<br>carrier_protocol_config must be at least 10 characters.</font><br>\n";
             } else {
-                $stmt=sprintf("SELECT count(*) FROM osdial_carriers WHERE name='%s';",mres($carrier_name));
+                $stmt=sprintf("SELECT count(*) FROM osdial_carriers WHERE name='%s' AND protocol='%s';",mres($carrier_name),mres($carrier_protocol));
                 $rslt=mysql_query($stmt, $link);
                 $row=mysql_fetch_row($rslt);
                 if ($row[0] > 0) {
@@ -412,12 +412,12 @@ if ($ADD=="4carrier") {
         ### SUB=2  Modify Carrier
         } elseif ($SUB==2) {
             $SUB=1;
-            if ($carrier_id < 1 or OSDstrlen($carrier_name) < 3) {
+            if ($carrier_id < 1 or OSDstrlen($carrier_name) < 2) {
                 echo "<br><font color=red>CARRIER NOT MODIFIED - Please go back and look at the data you entered\n";
                 echo "<br>carrier_id not set: $carrier_id\n";
                 echo "<br>carrier_name must be at least 2 characters: $carrier_name</font><br>\n";
             } else {
-                $stmt=sprintf("SELECT count(*) FROM osdial_carriers WHERE name='%s' AND id!='%s';",mres($carrier_name),mres($carrier_id));
+                $stmt=sprintf("SELECT count(*) FROM osdial_carriers WHERE name='%s' AND protocol='%s' AND id!='%s';",mres($carrier_name),mres($carrier_protocol),mres($carrier_id));
                 $rslt=mysql_query($stmt, $link);
                 $row=mysql_fetch_row($rslt);
                 if ($row[0] > 0) {
