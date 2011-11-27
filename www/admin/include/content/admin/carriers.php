@@ -1011,7 +1011,7 @@ if ($ADD == "3carrier") {
             echo "      <td title=\"Dialplan\">D</td>\n";
             echo "      <td align=center>LINKS</td>\n";
             echo "    </tr>\n";
-            $servers = get_krh($link, 'servers', '*','',"active='Y' AND server_profile IN ('AIO','DIALER')",'');
+            $servers = get_krh($link, 'servers', '*,INET_ATON(server_ip) AS aton','aton ASC',"active='Y' AND server_profile IN ('AIO','DIALER')",'');
             if (is_array($servers)) {
                 $c=0;
                 foreach ($servers as $server) {
@@ -1052,7 +1052,7 @@ if ($ADD == "3carrier") {
             echo "      <td>Destination</td>\n";
             echo "      <td align=center>LINKS</td>\n";
             echo "    </tr>\n";
-            $dids = get_krh($link, 'osdial_carrier_dids', '*','id ASC',sprintf("carrier_id='%s'",mres($carrier_id)),'');
+            $dids = get_krh($link, 'osdial_carrier_dids', '*','did ASC',sprintf("carrier_id='%s'",mres($carrier_id)),'');
             if (is_array($dids)) {
                 $c=0;
                 foreach ($dids as $did) {
