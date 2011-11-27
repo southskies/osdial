@@ -1809,6 +1809,246 @@ Through the use of system statuses, you can have statuses that exist for campaig
 Through the use of system status categories, you can group together statuses to allow for statistical analysis on a group of statuses. The Category ID must be 2-20 characters in length with no spaces, the name must be 2-50 characters in length, the description is optional and Time On <?php echo $t1; ?> Display defines whether that status will be one of the upto 4 statuses that can be calculated and displayed on the Time On <?php echo $t1; ?> Real-Time report.</B>
 
 
+<br/><br/><br/><br/>
+
+<b><font size=3>CARRIERS</font></b><br/>
+The carrier configuration pages allow you to add Telephone Service Providers using standards based telephony protocols. The two primary VoIP protocols available are SIP and IAX2. The configuration uses Asterisk-based formatting for the Protocol Configuration, Registration Information, and Dialplan/Extensions. There are several selectable templates to assist you in entering in your configuration. The defaults provided by the templates should work without additional modification.<br/>
+For more information on protocol-specific Asterisk configuration, try one of the following resources:<br/>
+<a href="http://www.voip-info.org/wiki/view/Asterisk+config+sip.conf">http://www.voip-info.org/wiki/view/Asterisk+config+sip.conf</a><br/>
+<a href="http://www.voip-info.org/wiki/view/Asterisk+config+iax.conf">http://www.voip-info.org/wiki/view/Asterisk+config+sip.conf</a><br/>
+<br/>
+As a rule of thumb, you should always modify the <b>/etc/asterisk/sip.conf</b> and <b>/etc/asterisk/iax.conf</b> configuration files and add a reference to your servers external IP address. Add the following line both files and replace <b>66.77.88.99</b> with you external IP address:<br/>
+<center>
+<table border=1>
+<tr valign=top><td width=300><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2><b>/etc/asterisk/sip/conf</b></font></td><td width=300><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2><b>/etc/asterisk/iaxconf</b></font></td></tr>
+<tr valign=top><td><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2><i>[general]<br/>
+port = 5060<br/>
+bindaddr = 0.0.0.0<br/>
+context = incoming<br/>
+registertimeout=300<br/>
+localnet=10.0.0.0/255.0.0.0<br/>
+localnet=192.168.0.0/255.255.0.0<br/>
+allowguest=no<br/>
+<b>externip=66.77.88.99</b><br/>
+<br/>
+#include osdial_sip.conf</i></font></td>
+<td><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2><i>[general]<br/>
+bindport=4569<br/>
+iaxcompat=yes<br/>
+bandwidth=high<br/>
+allow=all<br/>
+allow=gsm<br/>
+jitterbuffer=no<br/>
+tos=0x18<br/>
+allowguest=no<br/>
+context=incoming<br/>
+<b>externip=66.77.88.99</b><br/>
+<br/>
+#include osdial_iax.conf</i></font></td></tr>
+</table>
+</center>
+
+<br/>
+<a name="carriers-name">
+<br/>
+<b>Name -</b> A unique name for this carrier. The name should be greater than two alpha-numberic characters, a-z, A-Z, and 0-9. This name must also exactly match the context ID in the Protocol Configuration for this carrier. So, if the carrier name is "genericSIP", then the Protocol Configuration should start with the context ID "[genericSIP]".  
+
+<br/>
+<a name="carriers-description">
+<br/>
+<b>Description -</b> A short summary of the carrier that will be displayed in the carrier list.
+
+<br/>
+<a name="carriers-active">
+<br/>
+<b>Active -</b> If set to <b>N</b>, these configuration settings will not be generated and parsed with Asterisk. If set to <b>Y</b>, the carrier will be parsed and made available to Asterisk for use.
+
+<br/>
+<a name="carriers-selectable">
+<br/>
+<b>Selectable -</b> If set to <b>N</b>, the carrier cannot be selected under as a default under System Settings or as an option under Campaigns. If set to <b>Y</b>, the carrier can be selected as a default under System Settings or as an option under Campaigns.
+
+<br/>
+<a name="carriers-protocol">
+<br/>
+<b>Protocol -</b> The following protocol options are available: <b>SIP</b>- VoIP Service, <b>IAX2</b>- VoIP Service, <b>DAHDI</b>- Digital/Analog Lines, <b>EXTERNAL</b>- Custom Asterisk Protocol/Dialplan.
+
+<br/>
+<a name="carriers-protocol_config">
+<br/>
+<b>Protocol Config -</b> Any Asterisk compatible configuration context for the selected protocol. Try using a template and modifying the default configuration for that template with the information given by your provider. If you have a Sangoma Netborder Call Progress Analyzer, you can enable it by adding the following settings to your carrier context:<br/><b>outboundproxy=[ip.of.netborder.cpa]</b><br/><b>enable-netborder-cpa=yes</b><br/>
+
+<br/>
+<a name="carriers-registrations">
+<br/>
+<b>Registrations -</b> Registrations allow you to dynamically connect to your provider using a given set of credentials, this is required if your provider does not use IP-based authentication or you have a dynamic IP address.<br/><br/>
+Format using a Host that does not have a matching Protocol Config entry:<br/>
+user[:secret[:authuser]]@host[:port][/extension]<br/>
+<b>johndoe:abc1234@99.88.77.66:5060</b><br/><br/>
+Format using a Host which you have defined in your Protocol Config:<br/>
+user[:secret[:authuser]]@carrier_name[/extension]<br/>
+<b>johndoe:abc1234@genericSIP</b><br/>
+
+<br/>
+<a name="carriers-dialplan">
+<br/>
+<b>Dialplan -</b> Any Asterisk compatible extension configuration mapping. The default settings for this field should not be changed unless you know what you are doing.
+
+<br/>
+<a name="carriers-strip_msd">
+<br/>
+<b>Strip MSD -</b> Strip the <b>1</b> off of any dialed number. This option only works when using the default dialplan configuration.
+
+<br/>
+<a name="carriers-allow_international">
+<br/>
+<b>Allow International -</b> When set to <br>Y</b>, the dialplan will allow international numbers to be dialed. This option only works when using the default dialplan configuration. Default is <b>N</b>
+
+<br/>
+<a name="carriers-default_callerid">
+<br/>
+<b>Default Caller ID -</b> The Caller ID to use if not specified in the campaign or if number is dialed directly from an extension. This option only works when using the default dialplan configuration.
+
+<br/>
+<a name="carriers-default_areacode">
+<br/>
+<b>Default Areacode -</b> If 7-digits the contents of this field will prefix the number dialed. This option only works when using the default dialplan configuration.
+
+<br/>
+<a name="carriers-default_prefix">
+<br/>
+<b>Default Prefix -</b> This field allows for more complex dialplans to be created and used based on the dialed prefix. This option only works when using the default dialplan configuration. Default is <b>9</b>.
+
+<br/>
+<a name="carriers-failover">
+<br/>
+<b>Failover Carrier -</b> The next carrier to try should the <b>Failover Condition</b> be met. Be careful not to create loops, using CarrerA-&gt;[Failover]-&gt;CarrierB and CarrierB-&gt;[Failover]-&gt;CarrierA would be very bad.
+
+<br/>
+<a name="carriers-failover_condition">
+<br/>
+<b>Failover Condition -</b> The condition used to trigger a call being attempted on the <b>Failover Carrier</b>. <b>CHANUNAVAIL</b>- Failure to contact carrier, <b>CONGESTION</b>- Carrier contacted but could not complete call, <b>BOTH</b>- Either CHANUNAVAIL or CONGESTION.
+
+<br/><br/><br/><br/>
+
+<b><font size=3>CARRIERS - SERVER SPECIFIC SETTINGS</font></b><br/>
+This section provides a method of overriding the Protocol Configuration, Registions, or Dialplan based on the server that this configuration is running on.
+
+<br/>
+<a name="carrier_servers-protocol_config">
+<br/>
+<b>Protocol Config -</b> Any Asterisk compatible configuration context for the selected protocol. Try using a template and modifying the default configuration for that template with the information given by your provider. If you have a Sangoma Netborder Call Progress Analyzer, you can enable it by adding the following settings to your carrier context:<br/><b>outboundproxy=[ip.of.netborder.cpa]</b><br/><b>enable-netborder-cpa=yes</b><br/>
+
+<br/>
+<a name="carrier_servers-registrations">
+<br/>
+<b>Registrations -</b> Registrations allow you to dynamically connect to your provider using a given set of credentials, this is required if your provider does not use IP-based authentication or you have a dynamic IP address.<br/><br/>
+Format using a Host that does not have a matching Protocol Config entry:<br/>
+user[:secret[:authuser]]@host[:port][/extension]<br/>
+<b>johndoe:abc1234@99.88.77.66:5060</b><br/><br/>
+Format using a Host which you have defined in your Protocol Config:<br/>
+user[:secret[:authuser]]@carrier_name[/extension]<br/>
+<b>johndoe:abc1234@genericSIP</b><br/>
+
+<br/>
+<a name="carrier_servers-dialplan">
+<br/>
+<b>Dialplan -</b> Any Asterisk compatible extension configuration mapping. The default settings for this field should not be changed unless you know what you are doing.
+
+<br/><br/><br/><br/>
+
+<b><font size=3>CARRIERS - DIDs</font></b><br/>
+<b>DID</b> stands for Direct Inward Dialing.  It is the name normally given to an Inbound Phone number assigned to you by your carrier.
+
+<br/>
+<a name="carrier_dids-did">
+<br/>
+<b>DID -</b> The inbound phone number given to you by your carrier that you are configuring. Asterisk extension wildcards may be used in this field.
+
+<br/>
+<a name="carrier_dids-did_action">
+<br/>
+<b>DID Action -</b> The action you would like to occur when this number is called. Available actions are <b>INGROUP</b>- Send call to an inbound queue for handling by agents, <b>PHONE</b>- Send call to a configured phone, <b>EXTENSION</b>- Send to call to a custom Asterisk contact and extension, <b>VOICEMAIL</b>- Send call to voicemail box. See table below for the options available for each action.<br>
+
+<table border=1>
+  <tr valign=top><td><b><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>INGROUP</font></b></td>
+  <td>
+<font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>
+<a name="carrier_dids-ingroups">
+<b>InGroup -</b> The Inbound queue (InGroup) to send the call to. When creating a new DID, a new InGroup will automatically be created for you based on the DID. When modifying the DID, you must select from the available InGroups.<br/>You may at any time add an InGroup by selecting <b>In-Groups-&gt;Add A New In-Group</b> from the main menu.
+<br/>
+<a name="carrier_dids-server_allocation">
+<br/>
+<b>Server Allocation -</b> The method used to distribute calls to multiple configured dialers. The options are: <b>LO</b>- Use Home-Server and failover to other servers as needed, <b>LB</b>- Load Balance evenly between servers, <b>SO</b>- Home-Server only.
+<br/>
+<a name="carrier_dids-park_file">
+<br/>
+<b>Park File -</b> This is where you can customize the on-hold music for this InGroup. Place file in the /var/lib/asterisk/sounds directory on each dialer OR use the <b>Setup-&gt;Media</b> configuration section to upload or record new files. 
+<br/>
+<a name="carrier_dids-initial_status">
+<br/>
+<b>Initial Status -</b> The status to assign the call should a new lead be created.  Default is <b>INBND</b>.
+<br/>
+<a name="carrier_dids-lookup_method">
+<br/>
+<b>Lookup Method -</b> The method used to match the call with an existing lead.<br>
+<table border=1>
+<tr valign=top><td width=5%></td><td><b><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>CID</font></b></td><td><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>CID received, add record with phone number, to list specified by <b>Default List ID</b>.</font></td></tr>
+<tr valign=top><td></td><td><b><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>CIDLOOKUP</font></b></td><td><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>Lookup CID to find record in whole system, if not found add to list specified by <b>Default List ID</b>.</font></td></tr>
+<tr valign=top><td></td><td><b><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>CIDLOOKUPRL</font></b></td><td><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>Restrict lookup to one list specified by <b>Default List ID</b>, if not found, add to same list.</font></td></tr>
+<tr valign=top><td></td><td><b><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>CIDLOOKUPRC</font></b></td><td><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>Restrict lookup to one campaign specified by <b>Search Campaign</b>, if not found, add to list specified by <b>Default List ID</b>.</font></td></tr>
+<tr valign=top><td></td><td><b><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>ANI</font></b></td><td><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>ANI received, add record with phone number, if not found add to list specified by <b>Default List ID</b>.</font></td></tr>
+<tr valign=top><td></td><td><b><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>ANILOOKUP</font></b></td><td><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>Lookup ANI to find record in whole system, if not found add to list specified by <b>Default List ID</b>.</font></td></tr>
+<tr valign=top><td></td><td><b><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>ANILOOKUPRL</font></b></td><td><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>Restrict lookup to one list specified by <b>Default List ID</b>, if not found, add to same list.</font></td></tr>
+<tr valign=top><td></td><td><b><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>CLOSER</font></b></td><td><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>Closer calls from OSDIAL fronters.</font></td></tr>
+<tr valign=top><td></td><td><b><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>3DIGITID</font></b></td><td><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>Enter 3 digit code to go to agent.</font></td></tr>
+<tr valign=top><td></td><td><b><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>4DIGITID</font></b></td><td><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>Enter 4 digit code to go to agent.</font></td></tr>
+<tr valign=top><td></td><td><b><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>5DIGITID</font></b></td><td><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>Enter 5 digit code to go to agent.</font></td></tr>
+<tr valign=top><td></td><td><b><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>10DIGITID</font></b></td><td><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>Enter 10 digit code to go to agent.</font></td></tr>
+</table>
+<br/>
+<a name="carrier_dids-default_list_id">
+<br/>
+<b>Default List ID -</b> Default list to use when creating new leads from inbound calls which could not be matched to an existing lead using the selected <b>Lookup Method</b>. This field also specifies the List ID to search when using the list based <b>Lookup Methods</b>, <b>CIDLOOKUPRL</b> or <b>ANILOOKUPRL</b>.
+<br/>
+<a name="carrier_dids-default_phone_code">
+<br/>
+<b>Default Phone Code -</b> The default phone (country) code to assign to a newly created lead from an inbound call that could not be matched to an existing lead using the selected <b>Lookup Method</b>.  Default is <b>1</b> (North America).
+<br/>
+<a name="carrier_dids-search_campagin">
+<br/>
+<b>Search Campaign -</b> This field specifies the Campaign ID to search when using the campaign based <b>Lookup Methods</b>, <b>CIDLOOKUPRC</b> or <b>ANILOOKUPRC</b>.
+</font>
+  </td></tr>
+  <tr valign=top><td><b><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>PHONE</font></b></td>
+  <td>
+<font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>
+<a name="carrier_dids-phone">
+<b>Phone -</b> The configured phone to send calls destined for this DID. To configure new phones,<br/>select <b>Setup-&gt;Phones-&gt;Add A New Phone</b> from the main menu.
+</font>
+  </td></tr>
+  <tr valign=top><td><b><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>EXTENSION</font></b></td>
+  <td>
+<font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>
+When adding custom extension to OSDial, use the file <b>/etc/asterisk/osdial_extensions_custom.conf</b>.  This will ensure that your changes do not get overwritten.<br/>
+<a name="carrier_dids-extension_context">
+<br/>
+<b>Extension Context -</b> The Asterisk extension context/section to use when routing inbound calls for this DID.
+<br/>
+<a name="carrier_dids-extension">
+<br/>
+<b>Extension -</b> The Asterisk extension within <b>Extension Context</b> to use when routing inbound calls for this DID.
+</font>
+  </td></tr>
+  <tr valign=top><td><b><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>VOICEMAIL</font></b></td>
+  <td>
+<font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>
+<a name="carrier_dids-voicemail">
+<b>Voicemail -</b> Send calls destined for this DID directly to a phone's voicemail box. To configure new phones and voicemail boxes,<br/>select <b>Setup-&gt;Phones-&gt;Add A New Phone</b> from the main menu.
+</font>
+  </td></tr>
+</table>
+
 <br><br><br><br>
 
 <b><font size=3>Multi-Company Configuration</font></b><br><br>
