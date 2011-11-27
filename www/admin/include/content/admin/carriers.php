@@ -129,11 +129,11 @@ if ($ADD=="1carrier") {
             echo "        <option>CIDLOOKUP</option>\n";
             echo "        <option>CIDLOOKUPRL</option>\n";
             echo "        <option>CIDLOOKUPRC</option>\n";
-            echo "        <option>CLOSER</option>\n";
             echo "        <option>ANI</option>\n";
             echo "        <option>ANILOOKUP</option>\n";
             echo "        <option>ANILOOKUPRL</option>\n";
             echo "        <option>ANILOOKUPRC</option>\n";
+            echo "        <option>CLOSER</option>\n";
             echo "        <option>3DIGITID</option>\n";
             echo "        <option>4DIGITID</option>\n";
             echo "        <option>5DIGITID</option>\n";
@@ -160,7 +160,7 @@ if ($ADD=="1carrier") {
             $krh = get_krh($link, 'osdial_campaigns', '*','',sprintf('campaign_id IN %s',$LOG['allowed_campaignsSQL']),'');
             echo format_select_options($krh, 'campaign_id', 'campaign_name', '', "-- NONE --",'');
             echo "      </select>\n";
-            echo "      $NWB#carrier_dids-ingroup$NWE\n";
+            echo "      $NWB#carrier_dids-search_campaign$NWE\n";
             echo "    </td>\n";
             echo "  </tr>\n";
 
@@ -774,7 +774,7 @@ if ($ADD == "3carrier") {
             $krh = get_krh($link, 'osdial_campaigns', '*','',sprintf('campaign_id IN %s',$LOG['allowed_campaignsSQL']),'');
             echo format_select_options($krh, 'campaign_id', 'campaign_name', $gfr['search_campaign'], "-- NONE --",'');
             echo "      </select>\n";
-            echo "      $NWB#carrier_dids-ingroup$NWE\n";
+            echo "      $NWB#carrier_dids-search_campaign$NWE\n";
             echo "    </td>\n";
             echo "  </tr>\n";
 
@@ -829,7 +829,8 @@ if ($ADD == "3carrier") {
             $regcnt = count(explode("\n",$carrier_registrations));
             echo "      <textarea name=carrier_registrations id=carrier_registrations rows=\"$regcnt\" cols=100 wrap=off style=\"font-size:9px;\">" . $carrier_registrations . "</textarea>\n";
             echo "      $NWB#carrier_servers-registrations$NWE<br>\n";
-            echo "      <span style=\"color:$default_text;font-size:10pt;font-style:italic;\">user[:secret[:authuser]]@host[:port][/extension]</span>\n";
+            echo "      <span style=\"color:$default_text;font-size:10pt;font-style:italic;\">user[:secret[:authuser]]@carrier_name[/extension]<br/>\n";
+            echo "      user[:secret[:authuser]]@host[:port][/extension]</span>\n";
             echo "    </td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows valign=top>\n";
@@ -927,7 +928,8 @@ if ($ADD == "3carrier") {
             $regcnt = count(explode("\n",$gfr['registrations']));
             echo "      <textarea name=carrier_registrations id=carrier_registrations rows=\"$regcnt\" cols=100 wrap=off style=\"font-size:9px;\">" . $gfr['registrations'] . "</textarea>\n";
             echo "      $NWB#carriers-registrations$NWE<br>\n";
-            echo "      <span style=\"color:$default_text;font-size:10pt;font-style:italic;\">user[:secret[:authuser]]@host[:port][/extension]</span>\n";
+            echo "      <span style=\"color:$default_text;font-size:10pt;font-style:italic;\">user[:secret[:authuser]]@carrier_name[/extension]<br/>\n";
+            echo "      user[:secret[:authuser]]@host[:port][/extension]</span>\n";
             echo "    </td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows valign=top>\n";
