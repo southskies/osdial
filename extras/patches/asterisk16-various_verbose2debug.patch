@@ -1,0 +1,287 @@
+diff -Naur asterisk-1.6.2.10-orig/apps/app_dial.c asterisk-1.6.2.10/apps/app_dial.c
+--- asterisk-1.6.2.10-orig/apps/app_dial.c	2010-03-31 13:49:07.000000000 -0400
++++ asterisk-1.6.2.10/apps/app_dial.c	2010-07-03 05:09:32.000000000 -0400
+@@ -1022,12 +1022,12 @@
+ 					case AST_FRAME_IMAGE:
+ 					case AST_FRAME_TEXT:
+ 						if (ast_write(in, f)) {
+-							ast_log(LOG_WARNING, "Unable to write frame\n");
++							ast_log(LOG_DEBUG, "Unable to write frame\n");
+ 						}
+ 						break;
+ 					case AST_FRAME_HTML:
+ 						if (!ast_test_flag64(outgoing, DIAL_NOFORWARDHTML) && ast_channel_sendhtml(in, f->subclass, f->data.ptr, f->datalen) == -1) {
+-							ast_log(LOG_WARNING, "Unable to send URL\n");
++							ast_log(LOG_DEBUG, "Unable to send URL\n");
+ 						}
+ 						break;
+ 					default:
+diff -Naur asterisk-1.6.2.10-orig/apps/app_meetme.c asterisk-1.6.2.10/apps/app_meetme.c
+--- asterisk-1.6.2.10-orig/apps/app_meetme.c	2010-06-23 17:15:53.000000000 -0400
++++ asterisk-1.6.2.10/apps/app_meetme.c	2010-07-03 05:09:32.000000000 -0400
+@@ -3227,7 +3227,7 @@
+ 								*/
+ 								for (cur = conf->transframe[idx]; cur; cur = AST_LIST_NEXT(cur, frame_list)) {
+ 									if (ast_write(chan, cur)) {
+-										ast_log(LOG_WARNING, "Unable to write frame to channel %s\n", chan->name);
++										ast_log(LOG_DEBUG, "Unable to write frame to channel %s\n", chan->name);
+ 										break;
+ 									}
+ 								}
+@@ -3251,7 +3251,7 @@
+ 							ast_frame_adjust_volume(&fr, user->listen.actual);
+ 						}
+ 						if (can_write(chan, confflags) && ast_write(chan, &fr) < 0) {
+-							ast_log(LOG_WARNING, "Unable to write frame to channel %s\n", chan->name);
++							ast_log(LOG_DEBUG, "Unable to write frame to channel %s\n", chan->name);
+ 						}
+ 						if (musiconhold && mohtempstopped && confsilence > MEETME_DELAYDETECTENDTALK) {
+ 							mohtempstopped = 0;
+@@ -3259,7 +3259,7 @@
+ 						}
+ 					}
+ 				} else {
+-					ast_log(LOG_WARNING, "Failed to read frame: %s\n", strerror(errno));
++					ast_log(LOG_DEBUG, "Failed to read frame: %s\n", strerror(errno));
+ 				}
+ 			}
+ 			lastmarked = currentmarked;
+@@ -4012,7 +4012,7 @@
+ 	}
+ 
+ 	if (!cnf) {
+-		ast_log(LOG_WARNING, "Conference number '%s' not found!\n", args.confno);
++		ast_log(LOG_DEBUG, "Conference number '%s' not found!\n", args.confno);
+ 		AST_LIST_UNLOCK(&confs);
+ 		pbx_builtin_setvar_helper(chan, "MEETMEADMINSTATUS", "NOTFOUND");
+ 		return 0;
+diff -Naur asterisk-1.6.2.10-orig/channels/chan_alsa.c asterisk-1.6.2.10/channels/chan_alsa.c
+--- asterisk-1.6.2.10-orig/channels/chan_alsa.c	2010-03-02 14:12:26.000000000 -0500
++++ asterisk-1.6.2.10/channels/chan_alsa.c	2010-07-03 05:09:32.000000000 -0400
+@@ -524,7 +524,7 @@
+ 		ast_moh_stop(chan);
+ 		break;
+ 	default:
+-		ast_log(LOG_WARNING, "Don't know how to display condition %d on %s\n", cond, chan->name);
++		ast_log(LOG_DEBUG, "Don't know how to display condition %d on %s\n", cond, chan->name);
+ 		res = -1;
+ 	}
+ 
+diff -Naur asterisk-1.6.2.10-orig/channels/chan_oss.c asterisk-1.6.2.10/channels/chan_oss.c
+--- asterisk-1.6.2.10-orig/channels/chan_oss.c	2010-06-09 18:20:09.000000000 -0400
++++ asterisk-1.6.2.10/channels/chan_oss.c	2010-07-03 05:09:32.000000000 -0400
+@@ -483,7 +483,7 @@
+ 	o->lastopen = ast_tvnow();
+ 	fd = o->sounddev = open(o->device, mode | O_NONBLOCK);
+ 	if (fd < 0) {
+-		ast_log(LOG_WARNING, "Unable to re-open DSP device %s: %s\n", o->device, strerror(errno));
++		ast_log(LOG_DEBUG, "Unable to re-open DSP device %s: %s\n", o->device, strerror(errno));
+ 		return -1;
+ 	}
+ 	if (o->owner)
+@@ -771,7 +771,7 @@
+ 		ast_moh_stop(c);
+ 		break;
+ 	default:
+-		ast_log(LOG_WARNING, "Don't know how to display condition %d on %s\n", cond, c->name);
++		ast_log(LOG_DEBUG, "Don't know how to display condition %d on %s\n", cond, c->name);
+ 		return -1;
+ 	}
+ 
+diff -Naur asterisk-1.6.2.10-orig/channels/chan_sip.c asterisk-1.6.2.10/channels/chan_sip.c
+--- asterisk-1.6.2.10-orig/channels/chan_sip.c	2010-06-28 13:37:21.000000000 -0400
++++ asterisk-1.6.2.10/channels/chan_sip.c	2010-07-03 05:09:32.000000000 -0400
+@@ -8330,13 +8330,13 @@
+ 				memset(&p->t38.their_parms, 0, sizeof(p->t38.their_parms));
+ 			}
+ 		} else {
+-			ast_log(LOG_WARNING, "Unsupported SDP media type in offer: %s\n", m);
++			ast_log(LOG_DEBUG, "Unsupported SDP media type in offer: %s\n", m);
+ 			continue;
+ 		}
+ 
+ 		/* Check for number of ports */
+ 		if (numberofports > 1)
+-			ast_log(LOG_WARNING, "SDP offered %d ports for media, not supported by Asterisk. Will try anyway...\n", numberofports);
++			ast_log(LOG_DEBUG, "SDP offered %d ports for media, not supported by Asterisk. Will try anyway...\n", numberofports);
+ 		
+ 
+ 
+@@ -17889,7 +17889,7 @@
+ 	case 408: /* Request timeout */
+ 	case 481: /* Call leg does not exist */
+ 		/* Could be REFER caused INVITE with replaces */
+-		ast_log(LOG_WARNING, "Re-invite to non-existing call leg on other UA. SIP dialog '%s'. Giving up.\n", p->callid);
++		ast_log(LOG_DEBUG, "Re-invite to non-existing call leg on other UA. SIP dialog '%s'. Giving up.\n", p->callid);
+ 		xmitres = transmit_request(p, SIP_ACK, seqno, XMIT_UNRELIABLE, FALSE);
+ 		if (p->owner)
+ 			ast_queue_control(p->owner, AST_CONTROL_CONGESTION);
+@@ -17967,7 +17967,7 @@
+ 					wait = ast_random() % 2000;
+ 				}
+ 				p->waitid = ast_sched_add(sched, wait, sip_reinvite_retry, dialog_ref(p, "passing dialog ptr into sched structure based on waitid for sip_reinvite_retry."));
+-				ast_log(LOG_WARNING, "just did sched_add waitid(%d) for sip_reinvite_retry for dialog %s in handle_response_invite\n", p->waitid, p->callid);
++				ast_log(LOG_DEBUG, "just did sched_add waitid(%d) for sip_reinvite_retry for dialog %s in handle_response_invite\n", p->waitid, p->callid);
+ 				ast_debug(2, "Reinvite race. Waiting %d secs before retry\n", wait);
+ 			}
+ 		}
+@@ -18124,7 +18124,7 @@
+ 		/* A transfer with Replaces did not work */
+ 		/* OEJ: We should Set flag, cancel the REFER, go back
+ 		to original call - but right now we can't */
+-		ast_log(LOG_WARNING, "Remote host can't match REFER request to call '%s'. Giving up.\n", p->callid);
++		ast_log(LOG_DEBUG, "Remote host can't match REFER request to call '%s'. Giving up.\n", p->callid);
+ 		if (p->owner)
+ 			ast_queue_control(p->owner, AST_CONTROL_CONGESTION);
+ 		pvt_set_needdestroy(p, "received 481 response");
+@@ -18553,13 +18553,13 @@
+ 			} else if (sipmethod == SIP_BYE) {
+ 				/* The other side has no transaction to bye,
+ 				just assume it's all right then */
+-				ast_log(LOG_WARNING, "Remote host can't match request %s to call '%s'. Giving up.\n", sip_methods[sipmethod].text, p->callid);
++				ast_log(LOG_DEBUG, "Remote host can't match request %s to call '%s'. Giving up.\n", sip_methods[sipmethod].text, p->callid);
+ 			} else if (sipmethod == SIP_CANCEL) {
+ 				/* The other side has no transaction to cancel,
+ 				just assume it's all right then */
+-				ast_log(LOG_WARNING, "Remote host can't match request %s to call '%s'. Giving up.\n", sip_methods[sipmethod].text, p->callid);
++				ast_log(LOG_DEBUG, "Remote host can't match request %s to call '%s'. Giving up.\n", sip_methods[sipmethod].text, p->callid);
+ 			} else {
+-				ast_log(LOG_WARNING, "Remote host can't match request %s to call '%s'. Giving up.\n", sip_methods[sipmethod].text, p->callid);
++				ast_log(LOG_DEBUG, "Remote host can't match request %s to call '%s'. Giving up.\n", sip_methods[sipmethod].text, p->callid);
+ 				/* Guessing that this is not an important request */
+ 			}
+ 			break;
+diff -Naur asterisk-1.6.2.10-orig/channels/chan_usbradio.c asterisk-1.6.2.10/channels/chan_usbradio.c
+--- asterisk-1.6.2.10-orig/channels/chan_usbradio.c	2010-06-03 13:32:04.000000000 -0400
++++ asterisk-1.6.2.10/channels/chan_usbradio.c	2010-07-03 05:09:32.000000000 -0400
+@@ -1533,7 +1533,7 @@
+ 		sprintf(device,"/dev/dsp%d",o->devicenum);
+ 	fd = o->sounddev = open(device, mode | O_NONBLOCK);
+ 	if (fd < 0) {
+-		ast_log(LOG_WARNING, "Unable to re-open DSP device %d: %s\n", o->devicenum, strerror(errno));
++		ast_log(LOG_DEBUG, "Unable to re-open DSP device %d: %s\n", o->devicenum, strerror(errno));
+ 		return -1;
+ 	}
+ 	if (o->owner)
+diff -Naur asterisk-1.6.2.10-orig/main/channel.c asterisk-1.6.2.10/main/channel.c
+--- asterisk-1.6.2.10-orig/main/channel.c	2010-06-10 15:50:35.000000000 -0400
++++ asterisk-1.6.2.10/main/channel.c	2010-07-03 05:09:32.000000000 -0400
+@@ -1041,7 +1041,7 @@
+ 
+ 	if ((queued_frames + new_frames > 128 || queued_voice_frames + new_voice_frames > 96)) {
+ 		int count = 0;
+-		ast_log(LOG_WARNING, "Exceptionally long %squeue length queuing to %s\n", queued_frames + new_frames > 128 ? "" : "voice ", chan->name);
++		ast_log(LOG_DEBUG, "Exceptionally long %squeue length queuing to %s\n", queued_frames + new_frames > 128 ? "" : "voice ", chan->name);
+ 		AST_LIST_TRAVERSE_SAFE_BEGIN(&chan->readq, cur, frame_list) {
+ 			/* Save the most recent frame */
+ 			if (!AST_LIST_NEXT(cur, frame_list)) {
+diff -Naur asterisk-1.6.2.10-orig/main/dnsmgr.c asterisk-1.6.2.10/main/dnsmgr.c
+--- asterisk-1.6.2.10-orig/main/dnsmgr.c	2010-06-16 16:41:40.000000000 -0400
++++ asterisk-1.6.2.10/main/dnsmgr.c	2010-07-03 05:11:31.000000000 -0400
+@@ -172,7 +172,7 @@
+ 	if (!ast_get_ip_or_srv(&tmp, entry->name, entry->service) && inaddrcmp(&tmp, entry->result)) {
+ 		ast_copy_string(iabuf, ast_inet_ntoa(entry->result->sin_addr), sizeof(iabuf));
+ 		ast_copy_string(iabuf2, ast_inet_ntoa(tmp.sin_addr), sizeof(iabuf2));
+-		ast_log(LOG_NOTICE, "dnssrv: host '%s' changed from %s:%d to %s:%d\n", 
++		ast_log(LOG_DEBUG, "dnssrv: host '%s' changed from %s:%d to %s:%d\n", 
+ 			entry->name, iabuf, ntohs(entry->result->sin_port), iabuf2, ntohs(tmp.sin_port));
+ 		*entry->result = tmp;
+ 		changed = entry->changed = 1;
+diff -Naur asterisk-1.6.2.10-orig/main/pbx.c asterisk-1.6.2.10/main/pbx.c
+--- asterisk-1.6.2.10-orig/main/pbx.c	2010-06-15 14:27:32.000000000 -0400
++++ asterisk-1.6.2.10/main/pbx.c	2010-07-03 05:09:32.000000000 -0400
+@@ -9298,7 +9298,7 @@
+ 
+ 	device = ast_event_get_ie_str(event, AST_EVENT_IE_DEVICE);
+ 	if (ast_strlen_zero(device)) {
+-		ast_log(LOG_ERROR, "Received invalid event that had no device IE\n");
++		ast_log(LOG_DEBUG, "Received invalid event that had no device IE\n");
+ 		return;
+ 	}
+ 
+diff -Naur asterisk-1.6.2.10-orig/main/rtp.c asterisk-1.6.2.10/main/rtp.c
+--- asterisk-1.6.2.10-orig/main/rtp.c	2010-05-19 10:47:14.000000000 -0400
++++ asterisk-1.6.2.10/main/rtp.c	2010-07-03 05:09:32.000000000 -0400
+@@ -1140,7 +1140,7 @@
+ 		ast_debug(0, "- RTP 3389 Comfort noise event: Level %d (len = %d)\n", rtp->lastrxformat, len);
+ 
+ 	if (!(ast_test_flag(rtp, FLAG_3389_WARNING))) {
+-		ast_log(LOG_NOTICE, "Comfort noise support incomplete in Asterisk (RFC 3389). Please turn off on client if possible. Client IP: %s\n",
++		ast_log(LOG_DEBUG, "Comfort noise support incomplete in Asterisk (RFC 3389). Please turn off on client if possible. Client IP: %s\n",
+ 			ast_inet_ntoa(rtp->them.sin_addr));
+ 		ast_set_flag(rtp, FLAG_3389_WARNING);
+ 	}
+@@ -1622,14 +1622,14 @@
+ 	if (res < 0) {
+ 		ast_assert(errno != EBADF);
+ 		if (errno != EAGAIN) {
+-			ast_log(LOG_WARNING, "RTP Read error: %s.  Hanging up.\n", strerror(errno));
++			ast_log(LOG_DEBUG, "RTP Read error: %s.  Hanging up.\n", strerror(errno));
+ 			return NULL;
+ 		}
+ 		return &ast_null_frame;
+ 	}
+ 	
+ 	if (res < hdrlen) {
+-		ast_log(LOG_WARNING, "RTP Read too short\n");
++		ast_log(LOG_DEBUG, "RTP Read too short\n");
+ 		return &ast_null_frame;
+ 	}
+ 
+@@ -1738,7 +1738,7 @@
+ 	}
+ 
+ 	if (res < hdrlen) {
+-		ast_log(LOG_WARNING, "RTP Read too short (%d, expecting %d)\n", res, hdrlen);
++		ast_log(LOG_DEBUG, "RTP Read too short (%d, expecting %d)\n", res, hdrlen);
+ 		return AST_LIST_FIRST(&frames) ? AST_LIST_FIRST(&frames) : &ast_null_frame;
+ 	}
+ 
+diff -Naur asterisk-1.6.2.10-orig/res/res_agi.c asterisk-1.6.2.10/res/res_agi.c
+--- asterisk-1.6.2.10-orig/res/res_agi.c	2010-06-16 14:50:11.000000000 -0400
++++ asterisk-1.6.2.10/res/res_agi.c	2010-07-03 05:09:32.000000000 -0400
+@@ -963,7 +963,7 @@
+ 		fflush(stdout);
+ 		_exit(1);
+ 	}
+-	ast_verb(3, "Launched AGI Script %s\n", script);
++	ast_verb(6, "Launched AGI Script %s\n", script);
+ 	fds[0] = toast[0];
+ 	fds[1] = fromast[1];
+ 	if (efd)
+@@ -1211,7 +1211,7 @@
+ 	if ((vfs = ast_openvstream(chan, argv[2], chan->language)))
+ 		ast_debug(1, "Ooh, found a video stream, too\n");
+ 
+-	ast_verb(3, "Playing '%s' (escape_digits=%s) (sample_offset %ld)\n", argv[2], edigits, sample_offset);
++	ast_verb(6, "Playing '%s' (escape_digits=%s) (sample_offset %ld)\n", argv[2], edigits, sample_offset);
+ 
+ 	ast_seekstream(fs, 0, SEEK_END);
+ 	max_length = ast_tellstream(fs);
+@@ -1267,7 +1267,7 @@
+ 	if ((vfs = ast_openvstream(chan, argv[2], chan->language)))
+ 		ast_debug(1, "Ooh, found a video stream, too\n");
+ 
+-	ast_verb(3, "Playing '%s' (escape_digits=%s) (timeout %d)\n", argv[2], edigits, timeout);
++	ast_verb(6, "Playing '%s' (escape_digits=%s) (timeout %d)\n", argv[2], edigits, timeout);
+ 
+ 	ast_seekstream(fs, 0, SEEK_END);
+ 	max_length = ast_tellstream(fs);
+@@ -1724,7 +1724,7 @@
+ 	if (argc < 2)
+ 		return RESULT_SHOWUSAGE;
+ 
+-	ast_verb(3, "AGI Script Executing Application: (%s) Options: (%s)\n", argv[1], argc >= 3 ? argv[2] : "");
++	ast_verb(6, "AGI Script Executing Application: (%s) Options: (%s)\n", argv[1], argc >= 3 ? argv[2] : "");
+ 
+ 	if ((app_to_exec = pbx_findapp(argv[1]))) {
+ 		if(!strcasecmp(argv[1], PARK_APP_NAME)) {
+@@ -2941,7 +2941,7 @@
+ 
+ 			if (!buf[0]) {
+ 				/* Program terminated */
+-				ast_verb(3, "<%s>AGI Script %s completed, returning %d\n", chan->name, request, returnstatus);
++				ast_verb(6, "<%s>AGI Script %s completed, returning %d\n", chan->name, request, returnstatus);
+ 				if (pid > 0)
+ 					waitpid(pid, status, 0);
+ 				/* No need to kill the pid anymore, since they closed us */

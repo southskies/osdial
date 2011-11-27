@@ -1,0 +1,61 @@
+diff -Naur asterisk-1.6.2.9-orig/main/audiohook.c asterisk-1.6.2.9/main/audiohook.c
+--- asterisk-1.6.2.9-orig/main/audiohook.c	2010-04-29 11:35:38.000000000 -0400
++++ asterisk-1.6.2.9/main/audiohook.c	2010-06-03 18:42:51.000000000 -0400
+@@ -138,14 +138,14 @@
+ 
+ 	if (ast_test_flag(audiohook, AST_AUDIOHOOK_TRIGGER_SYNC) && other_factory_samples && (our_factory_ms - other_factory_ms > AST_AUDIOHOOK_SYNC_TOLERANCE)) {
+ 		if (option_debug)
+-			ast_log(LOG_DEBUG, "Flushing audiohook %p so it remains in sync\n", audiohook);
++			ast_debug(8, "Flushing audiohook %p so it remains in sync\n", audiohook);
+ 		ast_slinfactory_flush(factory);
+ 		ast_slinfactory_flush(other_factory);
+ 	}
+ 
+ 	if (ast_test_flag(audiohook, AST_AUDIOHOOK_SMALL_QUEUE) && (our_factory_samples > 640 || other_factory_samples > 640)) {
+ 		if (option_debug) {
+-			ast_log(LOG_DEBUG, "Audiohook %p has stale audio in its factories. Flushing them both\n", audiohook);
++			ast_debug(8, "Audiohook %p has stale audio in its factories. Flushing them both\n", audiohook);
+ 		}
+ 		ast_slinfactory_flush(factory);
+ 		ast_slinfactory_flush(other_factory);
+@@ -212,19 +212,19 @@
+ 
+ 	if (!usable_read && !usable_write) {
+ 		/* If both factories are unusable bail out */
+-		ast_debug(1, "Read factory %p and write factory %p both fail to provide %zd samples\n", &audiohook->read_factory, &audiohook->write_factory, samples);
++		ast_debug(8, "Read factory %p and write factory %p both fail to provide %zd samples\n", &audiohook->read_factory, &audiohook->write_factory, samples);
+ 		return NULL;
+ 	}
+ 
+ 	/* If we want to provide only a read factory make sure we aren't waiting for other audio */
+ 	if (usable_read && !usable_write && (ast_tvdiff_ms(ast_tvnow(), audiohook->write_time) < (samples/8)*2)) {
+-		ast_debug(3, "Write factory %p was pretty quick last time, waiting for them.\n", &audiohook->write_factory);
++		ast_debug(8, "Write factory %p was pretty quick last time, waiting for them.\n", &audiohook->write_factory);
+ 		return NULL;
+ 	}
+ 
+ 	/* If we want to provide only a write factory make sure we aren't waiting for other audio */
+ 	if (usable_write && !usable_read && (ast_tvdiff_ms(ast_tvnow(), audiohook->read_time) < (samples/8)*2)) {
+-		ast_debug(3, "Read factory %p was pretty quick last time, waiting for them.\n", &audiohook->read_factory);
++		ast_debug(8, "Read factory %p was pretty quick last time, waiting for them.\n", &audiohook->read_factory);
+ 		return NULL;
+ 	}
+ 
+@@ -245,7 +245,7 @@
+ 			}
+ 		}
+ 	} else if (option_debug)
+-		ast_log(LOG_DEBUG, "Failed to get %d samples from read factory %p\n", (int)samples, &audiohook->read_factory);
++		ast_debug(8, "Failed to get %d samples from read factory %p\n", (int)samples, &audiohook->read_factory);
+ 
+ 	/* Move on to the write factory... if there are enough samples, read them in */
+ 	if (usable_write) {
+@@ -264,7 +264,7 @@
+ 			}
+ 		}
+ 	} else if (option_debug)
+-		ast_log(LOG_DEBUG, "Failed to get %d samples from write factory %p\n", (int)samples, &audiohook->write_factory);
++		ast_debug(8, "Failed to get %d samples from write factory %p\n", (int)samples, &audiohook->write_factory);
+ 
+ 	/* Basically we figure out which buffer to use... and if mixing can be done here */
+ 	if (!read_buf && !write_buf)

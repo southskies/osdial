@@ -1,0 +1,230 @@
+diff -Naur asterisk-1.6.2.2-orig/apps/app_amd.c asterisk-1.6.2.2/apps/app_amd.c
+--- asterisk-1.6.2.2-orig/apps/app_amd.c	2009-12-02 12:11:09.000000000 -0500
++++ asterisk-1.6.2.2/apps/app_amd.c	2010-02-04 01:20:16.000000000 -0500
+@@ -34,6 +34,7 @@
+ #include "asterisk/module.h"
+ #include "asterisk/lock.h"
+ #include "asterisk/channel.h"
++#include "asterisk/cli.h"
+ #include "asterisk/dsp.h"
+ #include "asterisk/pbx.h"
+ #include "asterisk/config.h"
+@@ -143,6 +144,14 @@
+ /* Set to the lowest ms value provided in amd.conf or application parameters */
+ static int dfltMaxWaitTimeForFrame  = 50;
+ 
++static int amddebug = 0;
++
++static char *amd_do_debug(struct ast_cli_entry *e, int cmd, struct ast_cli_args *a);
++
++static struct ast_cli_entry cli_amd[] = {
++	AST_CLI_DEFINE(amd_do_debug, "Enable/Disable AMD Debugging")
++};
++
+ static void isAnsweringMachine(struct ast_channel *chan, void *data)
+ {
+ 	int res = 0;
+@@ -188,7 +197,8 @@
+ 		AST_APP_ARG(argMaximumWordLength);
+ 	);
+ 
+-	ast_verb(3, "AMD: %s %s %s (Fmt: %d)\n", chan->name ,chan->cid.cid_ani, chan->cid.cid_rdnis, chan->readformat);
++	if (amddebug)
++		ast_verbose("AMD: %s %s %s (Fmt: %d)\n", chan->name ,chan->cid.cid_ani, chan->cid.cid_rdnis, chan->readformat);
+ 
+ 	/* Lets parse the arguments. */
+ 	if (!ast_strlen_zero(parse)) {
+@@ -231,8 +241,9 @@
+ 		maxWaitTimeForFrame = betweenWordsSilence;
+ 
+ 	/* Now we're ready to roll! */
+-	ast_verb(3, "AMD: initialSilence [%d] greeting [%d] afterGreetingSilence [%d] "
+-		"totalAnalysisTime [%d] minimumWordLength [%d] betweenWordsSilence [%d] maximumNumberOfWords [%d] silenceThreshold [%d] maximumWordLength [%d] \n",
++	if (amddebug)
++		ast_verbose("AMD: initialSilence [%d] greeting [%d] afterGreetingSilence [%d] "
++			"totalAnalysisTime [%d] minimumWordLength [%d] betweenWordsSilence [%d] maximumNumberOfWords [%d] silenceThreshold [%d] maximumWordLength [%d] \n",
+ 				initialSilence, greeting, afterGreetingSilence, totalAnalysisTime,
+ 				minimumWordLength, betweenWordsSilence, maximumNumberOfWords, silenceThreshold, maximumWordLength);
+ 
+@@ -261,8 +272,8 @@
+ 
+ 		/* If we fail to read in a frame, that means they hung up */
+ 		if (!(f = ast_read(chan))) {
+-			ast_verb(3, "AMD: Channel [%s]. HANGUP\n", chan->name);
+-			ast_debug(1, "Got hangup\n");
++			if (amddebug)
++				ast_verbose("AMD: Channel [%s]. HANGUP\n", chan->name);
+ 			strcpy(amdStatus, "HANGUP");
+ 			res = 1;
+ 			break;
+@@ -277,7 +288,8 @@
+ 
+ 			iTotalTime += framelength;
+ 			if (iTotalTime >= totalAnalysisTime) {
+-				ast_verb(3, "AMD: Channel [%s]. Too long...\n", chan->name );
++				if (amddebug)
++					ast_verbose("AMD: Channel [%s]. Too long...\n", chan->name );
+ 				ast_frfree(f);
+ 				strcpy(amdStatus , "NOTSURE");
+ 				sprintf(amdCause , "TOOLONG-%d", iTotalTime);
+@@ -298,19 +310,22 @@
+ 				if (silenceDuration >= betweenWordsSilence) {
+ 					if (currentState != STATE_IN_SILENCE ) {
+ 						previousState = currentState;
+-						ast_verb(3, "AMD: Channel [%s]. Changed state to STATE_IN_SILENCE\n", chan->name);
++						if (amddebug)
++							ast_verbose("AMD: Channel [%s]. Changed state to STATE_IN_SILENCE\n", chan->name);
+ 					}
+ 					/* Find words less than word duration */
+ 					if (consecutiveVoiceDuration < minimumWordLength && consecutiveVoiceDuration > 0){
+-						ast_verb(3, "AMD: Channel [%s]. Short Word Duration: %d\n", chan->name, consecutiveVoiceDuration);
++						if (amddebug)
++							ast_verbose("AMD: Channel [%s]. Short Word Duration: %d\n", chan->name, consecutiveVoiceDuration);
+ 					}
+ 					currentState  = STATE_IN_SILENCE;
+ 					consecutiveVoiceDuration = 0;
+ 				}
+ 
+ 				if (inInitialSilence == 1  && silenceDuration >= initialSilence) {
+-					ast_verb(3, "AMD: Channel [%s]. ANSWERING MACHINE: silenceDuration:%d initialSilence:%d\n",
+-						chan->name, silenceDuration, initialSilence);
++					if (amddebug)
++						ast_verbose("AMD: Channel [%s]. ANSWERING MACHINE: silenceDuration:%d initialSilence:%d\n",
++							chan->name, silenceDuration, initialSilence);
+ 					ast_frfree(f);
+ 					strcpy(amdStatus , "MACHINE");
+ 					sprintf(amdCause , "INITIALSILENCE-%d-%d", silenceDuration, initialSilence);
+@@ -319,8 +334,9 @@
+ 				}
+ 				
+ 				if (silenceDuration >= afterGreetingSilence  &&  inGreeting == 1) {
+-					ast_verb(3, "AMD: Channel [%s]. HUMAN: silenceDuration:%d afterGreetingSilence:%d\n",
+-						chan->name, silenceDuration, afterGreetingSilence);
++					if (amddebug)
++						ast_verbose("AMD: Channel [%s]. HUMAN: silenceDuration:%d afterGreetingSilence:%d\n",
++							chan->name, silenceDuration, afterGreetingSilence);
+ 					ast_frfree(f);
+ 					strcpy(amdStatus , "HUMAN");
+ 					sprintf(amdCause , "HUMAN-%d-%d", silenceDuration, afterGreetingSilence);
+@@ -336,19 +352,22 @@
+ 				   number of words if my previous state was Silence, which means that I moved into a word. */
+ 				if (consecutiveVoiceDuration >= minimumWordLength && currentState == STATE_IN_SILENCE) {
+ 					iWordsCount++;
+-					ast_verb(3, "AMD: Channel [%s]. Word detected. iWordsCount:%d\n", chan->name, iWordsCount);
++					if (amddebug)
++						ast_verbose("AMD: Channel [%s]. Word detected. iWordsCount:%d\n", chan->name, iWordsCount);
+ 					previousState = currentState;
+ 					currentState = STATE_IN_WORD;
+ 				}
+ 				if (consecutiveVoiceDuration >= maximumWordLength){
+-					ast_verb(3, "AMD: Channel [%s]. Maximum Word Length detected. [%d]\n", chan->name, consecutiveVoiceDuration);
++					if (amddebug)
++						ast_verbose("AMD: Channel [%s]. Maximum Word Length detected. [%d]\n", chan->name, consecutiveVoiceDuration);
+ 					ast_frfree(f);
+ 					strcpy(amdStatus , "MACHINE");
+ 					sprintf(amdCause , "MAXWORDLENGTH-%d", consecutiveVoiceDuration);
+ 					break;
+ 				}
+ 				if (iWordsCount >= maximumNumberOfWords) {
+-					ast_verb(3, "AMD: Channel [%s]. ANSWERING MACHINE: iWordsCount:%d\n", chan->name, iWordsCount);
++					if (amddebug)
++						ast_verbose("AMD: Channel [%s]. ANSWERING MACHINE: iWordsCount:%d\n", chan->name, iWordsCount);
+ 					ast_frfree(f);
+ 					strcpy(amdStatus , "MACHINE");
+ 					sprintf(amdCause , "MAXWORDS-%d-%d", iWordsCount, maximumNumberOfWords);
+@@ -357,7 +376,8 @@
+ 				}
+ 
+ 				if (inGreeting == 1 && voiceDuration >= greeting) {
+-					ast_verb(3, "AMD: Channel [%s]. ANSWERING MACHINE: voiceDuration:%d greeting:%d\n", chan->name, voiceDuration, greeting);
++					if (amddebug)
++						ast_verbose("AMD: Channel [%s]. ANSWERING MACHINE: voiceDuration:%d greeting:%d\n", chan->name, voiceDuration, greeting);
+ 					ast_frfree(f);
+ 					strcpy(amdStatus , "MACHINE");
+ 					sprintf(amdCause , "LONGGREETING-%d-%d", voiceDuration, greeting);
+@@ -366,14 +386,14 @@
+ 				}
+ 
+ 				if (voiceDuration >= minimumWordLength ) {
+-					if (silenceDuration > 0)
+-						ast_verb(3, "AMD: Channel [%s]. Detected Talk, previous silence duration: %d\n", chan->name, silenceDuration);
++					if (silenceDuration > 0 && amddebug)
++						ast_verbose("AMD: Channel [%s]. Detected Talk, previous silence duration: %d\n", chan->name, silenceDuration);
+ 					silenceDuration = 0;
+ 				}
+ 				if (consecutiveVoiceDuration >= minimumWordLength && inGreeting == 0) {
+ 					/* Only go in here once to change the greeting flag when we detect the 1st word */
+-					if (silenceDuration > 0)
+-						ast_verb(3, "AMD: Channel [%s]. Before Greeting Time:  silenceDuration: %d voiceDuration: %d\n", chan->name, silenceDuration, voiceDuration);
++					if (silenceDuration > 0 && amddebug)
++						ast_verbose("AMD: Channel [%s]. Before Greeting Time:  silenceDuration: %d voiceDuration: %d\n", chan->name, silenceDuration, voiceDuration);
+ 					inInitialSilence = 0;
+ 					inGreeting = 1;
+ 				}
+@@ -385,7 +405,8 @@
+ 	
+ 	if (!res) {
+ 		/* It took too long to get a frame back. Giving up. */
+-		ast_verb(3, "AMD: Channel [%s]. Too long...\n", chan->name);
++		if (amddebug)
++			ast_verbose("AMD: Channel [%s]. Too long...\n", chan->name);
+ 		strcpy(amdStatus , "NOTSURE");
+ 		sprintf(amdCause , "TOOLONG-%d", iTotalTime);
+ 	}
+@@ -478,11 +499,17 @@
+ 
+ static int unload_module(void)
+ {
++	/* Unegister all CLI functions for AMD */
++	ast_cli_unregister_multiple(cli_amd, ARRAY_LEN(cli_amd));
++
+ 	return ast_unregister_application(app);
+ }
+ 
+ static int load_module(void)
+ {
++	/* Register all CLI functions for AMD */
++	ast_cli_register_multiple(cli_amd, ARRAY_LEN(cli_amd));
++
+ 	if (load_config(0))
+ 		return AST_MODULE_LOAD_DECLINE;
+ 	if (ast_register_application_xml(app, amd_exec))
+@@ -497,6 +524,38 @@
+ 	return AST_MODULE_LOAD_SUCCESS;
+ }
+ 
++/*! \brief Turn on AMD debugging (CLI command) */
++static char *amd_do_debug(struct ast_cli_entry *e, int cmd, struct ast_cli_args *a)
++{
++	int oldamddebug = amddebug;
++	char *what;
++
++	if (cmd == CLI_INIT) {
++		e->command = "amd set debug {on|off}";
++		e->usage =
++			"Usage: amd set debug {on|off}\n"
++			"       Globally enables or disables verbose AMD output.\n";
++		return NULL;
++	} else if (cmd == CLI_GENERATE) {
++		return NULL;
++	}
++
++	what = a->argv[e->args-1];      /* guaranteed to exist */
++	if (a->argc == e->args) {       /* on/off */
++		if (!strcasecmp(what, "on")) {
++			amddebug = 1;
++			ast_cli(a->fd, "AMD Debugging %senabled\n", oldamddebug ? "re-" : "");
++			return CLI_SUCCESS;
++		} else if (!strcasecmp(what, "off")) {
++			amddebug = 0;
++			ast_cli(a->fd, "AMD Debugging Disabled\n");
++			return CLI_SUCCESS;
++		}
++	}
++	return CLI_SHOWUSAGE;   /* default, failure */
++}
++
++
+ AST_MODULE_INFO(ASTERISK_GPL_KEY, AST_MODFLAG_DEFAULT, "Answering Machine Detection Application",
+ 		.load = load_module,
+ 		.unload = unload_module,

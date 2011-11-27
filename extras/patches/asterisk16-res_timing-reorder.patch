@@ -1,0 +1,24 @@
+diff -Naur asterisk-1.6.2.18-orig/res/res_timing_dahdi.c asterisk-1.6.2.18/res/res_timing_dahdi.c
+--- asterisk-1.6.2.18-orig/res/res_timing_dahdi.c	2009-06-09 12:28:50.000000000 -0400
++++ asterisk-1.6.2.18/res/res_timing_dahdi.c	2011-05-17 01:58:58.000000000 -0400
+@@ -55,7 +55,7 @@
+ 
+ static struct ast_timing_interface dahdi_timing = {
+ 	.name = "DAHDI",
+-	.priority = 100,
++	.priority = 200,
+ 	.timer_open = dahdi_timer_open,
+ 	.timer_close = dahdi_timer_close,
+ 	.timer_set_rate = dahdi_timer_set_rate,
+diff -Naur asterisk-1.6.2.18-orig/res/res_timing_timerfd.c asterisk-1.6.2.18/res/res_timing_timerfd.c
+--- asterisk-1.6.2.18-orig/res/res_timing_timerfd.c	2011-01-19 12:08:01.000000000 -0500
++++ asterisk-1.6.2.18/res/res_timing_timerfd.c	2011-05-17 01:59:07.000000000 -0400
+@@ -51,7 +51,7 @@
+ 
+ static struct ast_timing_interface timerfd_timing = {
+ 	.name = "timerfd",
+-	.priority = 200,
++	.priority = 175,
+ 	.timer_open = timerfd_timer_open,
+ 	.timer_close = timerfd_timer_close,
+ 	.timer_set_rate = timerfd_timer_set_rate,

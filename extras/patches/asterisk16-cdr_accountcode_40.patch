@@ -1,0 +1,168 @@
+diff -Naur asterisk-1.6.2.2-orig/cdr/cdr_sqlite.c asterisk-1.6.2.2/cdr/cdr_sqlite.c
+--- asterisk-1.6.2.2-orig/cdr/cdr_sqlite.c	2008-11-20 12:48:58.000000000 -0500
++++ asterisk-1.6.2.2/cdr/cdr_sqlite.c	2010-02-09 01:06:30.000000000 -0500
+@@ -78,7 +78,7 @@
+ "	billsec		INTEGER,"
+ "	disposition	INTEGER,"
+ "	amaflags	INTEGER,"
+-"	accountcode	VARCHAR(20)"
++"	accountcode	VARCHAR(40)"
+ #if LOG_UNIQUEID
+ "	,uniqueid	VARCHAR(32)"
+ #endif
+diff -Naur asterisk-1.6.2.2-orig/cdr/cdr_tds.c asterisk-1.6.2.2/cdr/cdr_tds.c
+--- asterisk-1.6.2.2-orig/cdr/cdr_tds.c	2008-11-29 12:57:39.000000000 -0500
++++ asterisk-1.6.2.2/cdr/cdr_tds.c	2010-02-09 01:05:10.000000000 -0500
+@@ -32,7 +32,7 @@
+  * Last changed on: 07/27/2004 20:01
+ 
+ CREATE TABLE [dbo].[cdr] (
+-	[accountcode] [varchar] (20) NULL ,
++	[accountcode] [varchar] (40) NULL ,
+ 	[src] [varchar] (80) NULL ,
+ 	[dst] [varchar] (80) NULL ,
+ 	[dcontext] [varchar] (80) NULL ,
+@@ -116,7 +116,7 @@
+ 	int res = -1;
+ 	int attempt = 1;
+ 
+-	accountcode = anti_injection(cdr->accountcode, 20);
++	accountcode = anti_injection(cdr->accountcode, 40);
+ 	src         = anti_injection(cdr->src, 80);
+ 	dst         = anti_injection(cdr->dst, 80);
+ 	dcontext    = anti_injection(cdr->dcontext, 80);
+diff -Naur asterisk-1.6.2.2-orig/doc/res_config_sqlite.txt asterisk-1.6.2.2/doc/res_config_sqlite.txt
+--- asterisk-1.6.2.2-orig/doc/res_config_sqlite.txt	2009-08-03 16:58:48.000000000 -0400
++++ asterisk-1.6.2.2/doc/res_config_sqlite.txt	2010-02-09 01:17:24.000000000 -0500
+@@ -49,7 +49,7 @@
+ 	billsec		INT(11)		NOT NULL	DEFAULT 0,
+ 	disposition	VARCHAR(45)	NOT NULL	DEFAULT '',
+ 	amaflags	INT(11)		NOT NULL	DEFAULT 0,
+-	accountcode	VARCHAR(20)	NOT NULL	DEFAULT '',
++	accountcode	VARCHAR(40)	NOT NULL	DEFAULT '',
+ 	uniqueid	VARCHAR(32)	NOT NULL	DEFAULT '',
+ 	userfield	VARCHAR(255)	NOT NULL	DEFAULT '',
+ 	PRIMARY KEY	(id)
+@@ -65,7 +65,7 @@
+ 	host		VARCHAR(31)	NOT NULL	DEFAULT '',
+ 	nat		VARCHAR(5)	NOT NULL	DEFAULT 'no',
+ 	type		VARCHAR(6)	NOT NULL	DEFAULT 'friend',
+-	accountcode	VARCHAR(20)			DEFAULT NULL,
++	accountcode	VARCHAR(40)			DEFAULT NULL,
+ 	amaflags	VARCHAR(13)			DEFAULT NULL,
+ 	callgroup	VARCHAR(10)			DEFAULT NULL,
+ 	callerid	VARCHAR(80)			DEFAULT NULL,
+diff -Naur asterisk-1.6.2.2-orig/doc/tex/asterisk/node215.html asterisk-1.6.2.2/doc/tex/asterisk/node215.html
+--- asterisk-1.6.2.2-orig/doc/tex/asterisk/node215.html	2010-02-02 15:07:56.000000000 -0500
++++ asterisk-1.6.2.2/doc/tex/asterisk/node215.html	2010-02-09 01:15:39.000000000 -0500
+@@ -63,7 +63,7 @@
+ <P>
+ 
+ <UL>
+-<LI>accountcode:  What account number to use, (string, 20 characters)
++<LI>accountcode:  What account number to use, (string, 40 characters)
+ </LI>
+ <LI>src:  Caller*ID number (string, 80 characters)
+ </LI>
+diff -Naur asterisk-1.6.2.2-orig/doc/tex/asterisk/node219.html asterisk-1.6.2.2/doc/tex/asterisk/node219.html
+--- asterisk-1.6.2.2-orig/doc/tex/asterisk/node219.html	2010-02-02 15:07:56.000000000 -0500
++++ asterisk-1.6.2.2/doc/tex/asterisk/node219.html	2010-02-09 01:15:51.000000000 -0500
+@@ -169,7 +169,7 @@
+ 		        [billsec]       [int]                   NOT NULL ,
+ 		        [disposition]   [varchar] (45)          NOT NULL ,
+ 		        [amaflags]      [int]                   NOT NULL ,
+-		        [accountcode]   [varchar] (20)          NOT NULL ,
++		        [accountcode]   [varchar] (40)          NOT NULL ,
+ 		        [uniqueid]      [varchar] (150)         NOT NULL ,
+ 		        [userfield]     [varchar] (255)         NOT NULL
+ 		)
+diff -Naur asterisk-1.6.2.2-orig/doc/tex/asterisk/node220.html asterisk-1.6.2.2/doc/tex/asterisk/node220.html
+--- asterisk-1.6.2.2-orig/doc/tex/asterisk/node220.html	2010-02-02 15:07:56.000000000 -0500
++++ asterisk-1.6.2.2/doc/tex/asterisk/node220.html	2010-02-09 01:15:27.000000000 -0500
+@@ -110,7 +110,7 @@
+ <UL>
+ <LI><PRE>
+ 		CREATE TABLE cdr (
+-		        [accountcode]   [varchar] (20)          NULL ,
++		        [accountcode]   [varchar] (40)          NULL ,
+ 		        [src]           [varchar] (80)          NULL ,
+ 		        [dst]           [varchar] (80)          NULL ,
+ 		        [dcontext]      [varchar] (80)          NULL ,
+diff -Naur asterisk-1.6.2.2-orig/doc/tex/asterisk/node222.html asterisk-1.6.2.2/doc/tex/asterisk/node222.html
+--- asterisk-1.6.2.2-orig/doc/tex/asterisk/node222.html	2010-02-02 15:07:56.000000000 -0500
++++ asterisk-1.6.2.2/doc/tex/asterisk/node222.html	2010-02-09 01:16:18.000000000 -0500
+@@ -102,7 +102,7 @@
+                 billsec       int                   NOT NULL ,
+                 disposition   varchar (45)          NOT NULL ,
+                 amaflags      int                   NOT NULL ,
+-                accountcode   varchar (20)          NOT NULL ,
++                accountcode   varchar (40)          NOT NULL ,
+                 uniqueid      varchar (150)         NOT NULL ,
+                 userfield     varchar (255)         NOT NULL
+         );
+diff -Naur asterisk-1.6.2.2-orig/doc/tex/billing.tex asterisk-1.6.2.2/doc/tex/billing.tex
+--- asterisk-1.6.2.2-orig/doc/tex/billing.tex	2009-06-23 19:58:26.000000000 -0400
++++ asterisk-1.6.2.2/doc/tex/billing.tex	2010-02-09 01:15:00.000000000 -0500
+@@ -18,7 +18,7 @@
+ \section{CDR Fields}
+ 
+ \begin{itemize}
+-   \item accountcode:  What account number to use, (string, 20 characters)
++   \item accountcode:  What account number to use, (string, 40 characters)
+    \item src:  Caller*ID number (string, 80 characters)
+    \item dst:  Destination extension (string, 80 characters)
+    \item dcontext:  Destination context (string, 80 characters)
+diff -Naur asterisk-1.6.2.2-orig/doc/tex/cdrdriver.tex asterisk-1.6.2.2/doc/tex/cdrdriver.tex
+--- asterisk-1.6.2.2-orig/doc/tex/cdrdriver.tex	2009-06-23 19:58:26.000000000 -0400
++++ asterisk-1.6.2.2/doc/tex/cdrdriver.tex	2010-02-09 01:16:51.000000000 -0500
+@@ -111,7 +111,7 @@
+ 		        [billsec]       [int]                   NOT NULL ,
+ 		        [disposition]   [varchar] (45)          NOT NULL ,
+ 		        [amaflags]      [int]                   NOT NULL ,
+-		        [accountcode]   [varchar] (20)          NOT NULL ,
++		        [accountcode]   [varchar] (40)          NOT NULL ,
+ 		        [uniqueid]      [varchar] (150)         NOT NULL ,
+ 		        [userfield]     [varchar] (255)         NOT NULL
+ 		)
+@@ -169,7 +169,7 @@
+ \begin{astlisting}
+ \begin{verbatim}
+ 		CREATE TABLE cdr (
+-		        [accountcode]   [varchar] (20)          NULL ,
++		        [accountcode]   [varchar] (40)          NULL ,
+ 		        [src]           [varchar] (80)          NULL ,
+ 		        [dst]           [varchar] (80)          NULL ,
+ 		        [dcontext]      [varchar] (80)          NULL ,
+@@ -239,7 +239,7 @@
+                 billsec       int                   NOT NULL ,
+                 disposition   varchar (45)          NOT NULL ,
+                 amaflags      int                   NOT NULL ,
+-                accountcode   varchar (20)          NOT NULL ,
++                accountcode   varchar (40)          NOT NULL ,
+                 uniqueid      varchar (150)         NOT NULL ,
+                 userfield     varchar (255)         NOT NULL
+         );
+diff -Naur asterisk-1.6.2.2-orig/include/asterisk/cdr.h asterisk-1.6.2.2/include/asterisk/cdr.h
+--- asterisk-1.6.2.2-orig/include/asterisk/cdr.h	2009-12-18 18:04:44.000000000 -0500
++++ asterisk-1.6.2.2/include/asterisk/cdr.h	2010-02-09 01:18:15.000000000 -0500
+@@ -59,7 +59,7 @@
+ /*@} */
+ 
+ #define AST_MAX_USER_FIELD			256
+-#define AST_MAX_ACCOUNT_CODE		20
++#define AST_MAX_ACCOUNT_CODE		40
+ 
+ /* Include channel.h after relevant declarations it will need */
+ #include "asterisk/channel.h"
+diff -Naur asterisk-1.6.2.2-orig/res/res_config_sqlite.c asterisk-1.6.2.2/res/res_config_sqlite.c
+--- asterisk-1.6.2.2-orig/res/res_config_sqlite.c	2009-08-10 15:36:38.000000000 -0400
++++ asterisk-1.6.2.2/res/res_config_sqlite.c	2010-02-09 01:17:48.000000000 -0500
+@@ -546,7 +546,7 @@
+ "	billsec		INT(11)		NOT NULL	DEFAULT 0,\n"
+ "	disposition	VARCHAR(45)	NOT NULL	DEFAULT '',\n"
+ "	amaflags	INT(11)		NOT NULL	DEFAULT 0,\n"
+-"	accountcode	VARCHAR(20)	NOT NULL	DEFAULT '',\n"
++"	accountcode	VARCHAR(40)	NOT NULL	DEFAULT '',\n"
+ "	uniqueid	VARCHAR(32)	NOT NULL	DEFAULT '',\n"
+ "	userfield	VARCHAR(255)	NOT NULL	DEFAULT '',\n"
+ "	PRIMARY KEY	(id)\n"

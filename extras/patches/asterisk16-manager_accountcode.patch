@@ -1,0 +1,254 @@
+diff -Naur asterisk-1.6.2.2-p/apps/app_dial.c asterisk-1.6.2.2/apps/app_dial.c
+--- asterisk-1.6.2.2-p/apps/app_dial.c	2010-02-10 00:38:28.000000000 -0500
++++ asterisk-1.6.2.2/apps/app_dial.c	2010-02-10 00:38:44.000000000 -0500
+@@ -685,11 +685,13 @@
+ 		"Destination: %s\r\n"
+ 		"CallerIDNum: %s\r\n"
+ 		"CallerIDName: %s\r\n"
++		"AccountCode: %s\r\n"
+ 		"UniqueID: %s\r\n"
+ 		"DestUniqueID: %s\r\n"
+ 		"Dialstring: %s\r\n",
+ 		src->name, dst->name, S_OR(src->cid.cid_num, "<unknown>"),
+-		S_OR(src->cid.cid_name, "<unknown>"), src->uniqueid,
++		S_OR(src->cid.cid_name, "<unknown>"),
++		S_OR(src->accountcode, ""), src->uniqueid,
+ 		dst->uniqueid, dialstring ? dialstring : "");
+ }
+ 
+diff -Naur asterisk-1.6.2.2-p/apps/app_meetme.c asterisk-1.6.2.2/apps/app_meetme.c
+--- asterisk-1.6.2.2-p/apps/app_meetme.c	2010-02-10 00:38:28.000000000 -0500
++++ asterisk-1.6.2.2/apps/app_meetme.c	2010-02-10 01:32:43.000000000 -0500
+@@ -2463,11 +2463,13 @@
+ 				"Meetme: %s\r\n"
+ 				"Usernum: %d\r\n"
+ 				"CallerIDnum: %s\r\n"
+-			      	"CallerIDname: %s\r\n",
++			      	"CallerIDname: %s\r\n"
++			      	"AccountCode: %s\r\n",
+ 			      	chan->name, chan->uniqueid, conf->confno, 
+ 				user->user_no,
+ 				S_OR(user->chan->cid.cid_num, "<unknown>"),
+-				S_OR(user->chan->cid.cid_name, "<unknown>")
++				S_OR(user->chan->cid.cid_name, "<unknown>"),
++				S_OR(user->chan->accountcode, "")
+ 				);
+ 		sent_event = 1;
+ 	}
+@@ -3328,11 +3330,13 @@
+ 				      "Usernum: %d\r\n"
+ 				      "CallerIDNum: %s\r\n"
+ 				      "CallerIDName: %s\r\n"
++				      "AccountCode: %s\r\n"
+ 				      "Duration: %ld\r\n",
+ 				      chan->name, chan->uniqueid, conf->confno, 
+ 				      user->user_no,
+ 				      S_OR(user->chan->cid.cid_num, "<unknown>"),
+ 				      S_OR(user->chan->cid.cid_name, "<unknown>"),
++				      S_OR(user->chan->accountcode, ""),
+ 				      (long)(now.tv_sec - user->jointime));
+ 		}
+ 
+diff -Naur asterisk-1.6.2.2-p/apps/app_queue.c asterisk-1.6.2.2/apps/app_queue.c
+--- asterisk-1.6.2.2-p/apps/app_queue.c	2010-02-10 00:38:28.000000000 -0500
++++ asterisk-1.6.2.2/apps/app_queue.c	2010-02-10 00:38:44.000000000 -0500
+@@ -2007,10 +2007,11 @@
+ 		q->count++;
+ 		res = 0;
+ 		manager_event(EVENT_FLAG_CALL, "Join",
+-			"Channel: %s\r\nCallerIDNum: %s\r\nCallerIDName: %s\r\nQueue: %s\r\nPosition: %d\r\nCount: %d\r\nUniqueid: %s\r\n",
++			"Channel: %s\r\nCallerIDNum: %s\r\nCallerIDName: %s\r\nAccountCode: %s\r\nQueue: %s\r\nPosition: %d\r\nCount: %d\r\nUniqueid: %s\r\n",
+ 			qe->chan->name,
+ 			S_OR(qe->chan->cid.cid_num, "unknown"), /* XXX somewhere else it is <unknown> */
+ 			S_OR(qe->chan->cid.cid_name, "unknown"),
++			S_OR(qe->chan->accountcode, ""),
+ 			q->name, qe->pos, q->count, qe->chan->uniqueid );
+ 		ast_debug(1, "Queue '%s' Join, Channel '%s', Position '%d'\n", q->name, qe->chan->name, qe->pos );
+ 	}
+@@ -2600,6 +2601,7 @@
+ 					"DestinationChannel: %s\r\n"
+ 					"CallerIDNum: %s\r\n"
+ 					"CallerIDName: %s\r\n"
++					"AccountCode: %s\r\n"
+ 					"Context: %s\r\n"
+ 					"Extension: %s\r\n"
+ 					"Priority: %d\r\n"
+@@ -2608,6 +2610,7 @@
+ 					qe->parent->name, tmp->interface, tmp->member->membername, qe->chan->name, tmp->chan->name,
+ 					tmp->chan->cid.cid_num ? tmp->chan->cid.cid_num : "unknown",
+ 					tmp->chan->cid.cid_name ? tmp->chan->cid.cid_name : "unknown",
++					tmp->chan->accountcode ? tmp->chan->accountcode : "",
+ 					qe->chan->context, qe->chan->exten, qe->chan->priority, qe->chan->uniqueid,
+ 					qe->parent->eventwhencalled == QUEUE_EVENT_VARIABLES ? vars2manager(qe->chan, vars, sizeof(vars)) : "");
+ 		ast_verb(3, "Called %s\n", tmp->interface);
+diff -Naur asterisk-1.6.2.2-p/main/channel.c asterisk-1.6.2.2/main/channel.c
+--- asterisk-1.6.2.2-p/main/channel.c	2010-02-10 00:38:28.000000000 -0500
++++ asterisk-1.6.2.2/main/channel.c	2010-02-10 01:33:57.000000000 -0500
+@@ -987,7 +987,7 @@
+ 			ast_state2str(state),
+ 			S_OR(cid_num, ""),
+ 			S_OR(cid_name, ""),
+-			tmp->accountcode,
++			S_OR(tmp->accountcode, ""),
+ 			S_OR(exten, ""),
+ 			S_OR(context, ""),
+ 			tmp->uniqueid);
+@@ -1783,12 +1783,14 @@
+ 			"Uniqueid: %s\r\n"
+ 			"CallerIDNum: %s\r\n"
+ 			"CallerIDName: %s\r\n"
++			"AccountCode: %s\r\n"
+ 			"Cause: %d\r\n"
+ 			"Cause-txt: %s\r\n",
+ 			chan->name,
+ 			chan->uniqueid,
+ 			S_OR(chan->cid.cid_num, "<unknown>"),
+ 			S_OR(chan->cid.cid_name, "<unknown>"),
++			S_OR(chan->accountcode, ""),
+ 			chan->hangupcause,
+ 			ast_cause2str(chan->hangupcause)
+ 			);
+@@ -4648,11 +4650,13 @@
+ 				"Channel: %s\r\n"
+ 				"CallerIDNum: %s\r\n"
+ 				"CallerIDName: %s\r\n"
++				"AccountCode: %s\r\n"
+ 				"Uniqueid: %s\r\n"
+ 				"CID-CallingPres: %d (%s)\r\n",
+ 				chan->name,
+ 				S_OR(chan->cid.cid_num, ""),
+ 				S_OR(chan->cid.cid_name, ""),
++				S_OR(chan->accountcode, ""),
+ 				chan->uniqueid,
+ 				chan->cid.cid_pres,
+ 				ast_describe_caller_presentation(chan->cid.cid_pres)
+@@ -5096,10 +5100,12 @@
+ 		      "ChannelStateDesc: %s\r\n"
+ 		      "CallerIDNum: %s\r\n"
+ 		      "CallerIDName: %s\r\n"
++		      "AccountCode: %s\r\n"
+ 		      "Uniqueid: %s\r\n",
+ 		      chan->name, chan->_state, ast_state2str(chan->_state),
+ 		      S_OR(chan->cid.cid_num, ""),
+ 		      S_OR(chan->cid.cid_name, ""),
++		      S_OR(chan->accountcode, ""),
+ 		      chan->uniqueid);
+ 
+ 	return 0;
+@@ -5355,12 +5361,14 @@
+ 		      "Uniqueid1: %s\r\n"
+ 		      "Uniqueid2: %s\r\n"
+ 		      "CallerID1: %s\r\n"
+-		      "CallerID2: %s\r\n",
++		      "CallerID2: %s\r\n"
++		      "AccountCode: %s\r\n",
+ 			onoff ? "Link" : "Unlink",
+ 			type == 1 ? "core" : "native",
+ 			c0->name, c1->name, c0->uniqueid, c1->uniqueid, 
+ 			S_OR(c0->cid.cid_num, ""), 
+-			S_OR(c1->cid.cid_num, ""));
++			S_OR(c1->cid.cid_num, ""), 
++			S_OR(c0->accountcode, ""));
+ }
+ 
+ static void update_bridge_vars(struct ast_channel *c0, struct ast_channel *c1)
+@@ -5637,8 +5645,9 @@
+ 					      "Uniqueid1: %s\r\n"
+ 					      "Uniqueid2: %s\r\n"
+ 					      "CallerID1: %s\r\n"
+-					      "CallerID2: %s\r\n",
+-					      c0->name, c1->name, c0->uniqueid, c1->uniqueid, c0->cid.cid_num, c1->cid.cid_num);
++					      "CallerID2: %s\r\n"
++					      "AccountCode: %s\r\n",
++					      c0->name, c1->name, c0->uniqueid, c1->uniqueid, c0->cid.cid_num, c1->cid.cid_num, c0->accountcode);
+ 
+ 				/* Update bridges for realtime channells */
+ 				if (ast_check_realtime("channels")) {
+@@ -5786,8 +5795,9 @@
+ 		      "Uniqueid1: %s\r\n"
+ 		      "Uniqueid2: %s\r\n"
+ 		      "CallerID1: %s\r\n"
+-		      "CallerID2: %s\r\n",
+-		      c0->name, c1->name, c0->uniqueid, c1->uniqueid, c0->cid.cid_num, c1->cid.cid_num);
++		      "CallerID2: %s\r\n"
++		      "AccountCode: %s\r\n",
++		      c0->name, c1->name, c0->uniqueid, c1->uniqueid, c0->cid.cid_num, c1->cid.cid_num, c0->accountcode);
+ 
+ 	/* Update bridges for realtime channells */
+ 	if (ast_check_realtime("channels")) {
+diff -Naur asterisk-1.6.2.2-p/main/features.c asterisk-1.6.2.2/main/features.c
+--- asterisk-1.6.2.2-p/main/features.c	2010-02-10 00:38:28.000000000 -0500
++++ asterisk-1.6.2.2/main/features.c	2010-02-10 01:34:20.000000000 -0500
+@@ -775,11 +775,13 @@
+ 		"Timeout: %ld\r\n"
+ 		"CallerIDNum: %s\r\n"
+ 		"CallerIDName: %s\r\n"
++		"AccountCode: %s\r\n"
+ 		"Uniqueid: %s\r\n",
+ 		pu->parkingexten, pu->chan->name, pu->parkinglot->name, event_from ? event_from : "",
+ 		(long)pu->start.tv_sec + (long)(pu->parkingtime/1000) - (long)time(NULL),
+ 		S_OR(pu->chan->cid.cid_num, "<unknown>"),
+ 		S_OR(pu->chan->cid.cid_name, "<unknown>"),
++		S_OR(pu->chan->accountcode, ""),
+ 		pu->chan->uniqueid
+ 		);
+ 
+@@ -2941,12 +2943,14 @@
+ 		"Parkinglot: %s\r\n"
+ 		"CallerIDNum: %s\r\n"
+ 		"CallerIDName: %s\r\n"
++		"AccountCode: %s\r\n"
+ 		"UniqueID: %s\r\n",
+ 		pu->parkingexten, 
+ 		pu->chan->name,
+ 		pu->parkinglot->name,
+ 		S_OR(pu->chan->cid.cid_num, "<unknown>"),
+ 		S_OR(pu->chan->cid.cid_name, "<unknown>"),
++		S_OR(pu->chan->accountcode, ""),
+ 		pu->chan->uniqueid
+ 		);
+ }
+@@ -3368,10 +3372,12 @@
+ 			"Channel: %s\r\n"
+ 			"From: %s\r\n"
+ 			"CallerIDNum: %s\r\n"
+-			"CallerIDName: %s\r\n",
++			"CallerIDName: %s\r\n"
++			"AccountCode: %s\r\n",
+ 			pu->parkingexten, pu->chan->name, chan->name,
+ 			S_OR(pu->chan->cid.cid_num, "<unknown>"),
+-			S_OR(pu->chan->cid.cid_name, "<unknown>")
++			S_OR(pu->chan->cid.cid_name, "<unknown>"),
++			S_OR(pu->chan->accountcode, "")
+ 			);
+ 
+ 		ast_free(pu);
+diff -Naur asterisk-1.6.2.2-p/main/manager.c asterisk-1.6.2.2/main/manager.c
+--- asterisk-1.6.2.2-p/main/manager.c	2010-02-10 00:38:28.000000000 -0500
++++ asterisk-1.6.2.2/main/manager.c	2010-02-10 01:34:56.000000000 -0500
+@@ -1969,7 +1969,7 @@
+ 			"Channel: %s\r\n"
+ 			"CallerIDNum: %s\r\n"
+ 			"CallerIDName: %s\r\n"
+-			"Accountcode: %s\r\n"
++			"AccountCode: %s\r\n"
+ 			"ChannelState: %d\r\n"
+ 			"ChannelStateDesc: %s\r\n"
+ 			"Context: %s\r\n"
+@@ -2351,12 +2351,14 @@
+ 		"Reason: %d\r\n"
+ 		"Uniqueid: %s\r\n"
+ 		"CallerIDNum: %s\r\n"
+-		"CallerIDName: %s\r\n",
++		"CallerIDName: %s\r\n"
++		"AccountCode: %s\r\n",
+ 		in->idtext, ast_strlen_zero(in->idtext) ? "" : "\r\n", res ? "Failure" : "Success", 
+ 		chan ? chan->name : requested_channel, in->context, in->exten, reason, 
+ 		chan ? chan->uniqueid : "<null>",
+ 		S_OR(in->cid_num, "<unknown>"),
+-		S_OR(in->cid_name, "<unknown>")
++		S_OR(in->cid_name, "<unknown>"),
++		S_OR(in->account, "")
+ 		);
+ 
+ 	/* Locked by ast_pbx_outgoing_exten or ast_pbx_outgoing_app */

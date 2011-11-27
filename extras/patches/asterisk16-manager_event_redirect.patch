@@ -1,0 +1,122 @@
+diff -Naur asterisk-1.6.2.18-rc1-orig/main/manager.c asterisk-1.6.2.18-rc1/main/manager.c
+--- asterisk-1.6.2.18-rc1-orig/main/manager.c	2011-02-02 19:15:07.000000000 -0500
++++ asterisk-1.6.2.18-rc1/main/manager.c	2011-04-27 06:35:29.000000000 -0400
+@@ -2124,6 +2124,7 @@
+ "	*Exten: Extension to transfer to\n"
+ "	*Context: Context to transfer to\n"
+ "	*Priority: Priority to transfer to\n"
++"	Account: Account Code\n"
+ "	ActionID: Optional Action id for message matching.\n";
+ 
+ /*! \brief  action_redirect: The redirect manager command */
+@@ -2134,6 +2135,7 @@
+ 	const char *exten = astman_get_header(m, "Exten");
+ 	const char *context = astman_get_header(m, "Context");
+ 	const char *priority = astman_get_header(m, "Priority");
++	const char *account = astman_get_header(m, "Account");
+ 	struct ast_channel *chan, *chan2 = NULL;
+ 	int pi = 0;
+ 	int res;
+@@ -2158,6 +2160,16 @@
+ 	}
+ 	if (ast_check_hangup(chan)) {
+ 		astman_send_error(s, m, "Redirect failed, channel not up.");
++		manager_event(EVENT_FLAG_CALL, "RedirectStatus",
++			"Channel: %s\r\n"
++			"Exten: %s\r\n"
++			"Context: %s\r\n"
++			"Priority: %s\r\n"
++			"AccountCode: %s\r\n"
++			"Uniqueid: %s\r\n"
++			"Reason: %s\r\n"
++			"Status: %s\r\n",
++			chan->name, exten, context, priority, account, chan->uniqueid, "Channel not up.", "Failure");
+ 		ast_channel_unlock(chan);
+ 		return 0;
+ 	}
+@@ -2165,6 +2177,19 @@
+ 		chan2 = ast_get_channel_by_name_locked(name2);
+ 	if (chan2 && ast_check_hangup(chan2)) {
+ 		astman_send_error(s, m, "Redirect failed, extra channel not up.");
++		manager_event(EVENT_FLAG_CALL, "RedirectStatus",
++			"Channel: %s\r\n"
++			"ExtraChannel: %s\r\n"
++			"Exten: %s\r\n"
++			"Context: %s\r\n"
++			"Priority: %s\r\n"
++			"AccountCode: %s\r\n"
++			"Uniqueid: %s\r\n"
++			"ExtraUniqueid: %s\r\n"
++			"Reason: %s\r\n"
++			"Status: %s\r\n"
++			"ExtraStatus: %s\r\n",
++			chan->name, chan2->name, exten, context, priority, account, chan->uniqueid, chan2->uniqueid, "Extra channel not up.", "Failure", "Failure");
+ 		ast_channel_unlock(chan);
+ 		ast_channel_unlock(chan2);
+ 		return 0;
+@@ -2187,14 +2212,61 @@
+ 			} else {
+ 				res = -1;
+ 			}
+-			if (!res)
++			if (!res) {
+ 				astman_send_ack(s, m, "Dual Redirect successful");
+-			else
++				manager_event(EVENT_FLAG_CALL, "RedirectStatus",
++					"Channel: %s\r\n"
++					"ExtraChannel: %s\r\n"
++					"Exten: %s\r\n"
++					"Context: %s\r\n"
++					"Priority: %s\r\n"
++					"AccountCode: %s\r\n"
++					"Uniqueid: %s\r\n"
++					"ExtraUniqueid: %s\r\n"
++					"Status: %s\r\n"
++					"ExtraStatus: %s\r\n",
++					chan->name, chan2->name, exten, context, priority, account, chan->uniqueid, chan2->uniqueid, "Success", "Success");
++			} else {
+ 				astman_send_error(s, m, "Secondary redirect failed");
+-		} else
++				manager_event(EVENT_FLAG_CALL, "RedirectStatus",
++					"Channel: %s\r\n"
++					"ExtraChannel: %s\r\n"
++					"Exten: %s\r\n"
++					"Context: %s\r\n"
++					"Priority: %s\r\n"
++					"AccountCode: %s\r\n"
++					"Uniqueid: %s\r\n"
++					"ExtraUniqueid: %s\r\n"
++					"Reason: %s\r\n"
++					"Status: %s\r\n"
++					"ExtraStatus: %s\r\n",
++					chan->name, "", exten, context, priority, account, chan->uniqueid, "", "Secondary redirect failed.", "Success", "Failure");
++			}
++		} else {
+ 			astman_send_ack(s, m, "Redirect successful");
+-	} else
++			manager_event(EVENT_FLAG_CALL, "RedirectStatus",
++				"Channel: %s\r\n"
++				"Exten: %s\r\n"
++				"Context: %s\r\n"
++				"Priority: %s\r\n"
++				"AccountCode: %s\r\n"
++				"Uniqueid: %s\r\n"
++				"Status: %s\r\n",
++				chan->name, exten, context, priority, account, chan->uniqueid, "Success");
++		}
++	} else {
+ 		astman_send_error(s, m, "Redirect failed");
++		manager_event(EVENT_FLAG_CALL, "RedirectStatus",
++			"Channel: %s\r\n"
++			"Exten: %s\r\n"
++			"Context: %s\r\n"
++			"Priority: %s\r\n"
++			"AccountCode: %s\r\n"
++			"Uniqueid: %s\r\n"
++			"Reason: %s\r\n"
++			"Status: %s\r\n",
++			chan->name, exten, context, priority, account, chan->uniqueid, "Redirect failed.", "Failure");
++	}
+ 	if (chan)
+ 		ast_channel_unlock(chan);
+ 	if (chan2)

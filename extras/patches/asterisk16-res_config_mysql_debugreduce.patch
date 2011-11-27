@@ -1,0 +1,217 @@
+diff -Naur asterisk-addons-1.6.2.1-orig/res/res_config_mysql.c asterisk-addons-1.6.2.1/res/res_config_mysql.c
+--- asterisk-addons-1.6.2.1-orig/res/res_config_mysql.c	2009-12-08 13:42:33.000000000 -0500
++++ asterisk-addons-1.6.2.1/res/res_config_mysql.c	2010-06-03 14:20:05.000000000 -0400
+@@ -368,7 +368,7 @@
+ 	}
+ 	va_end(ap);
+ 
+-	ast_debug(1, "MySQL RealTime: Retrieve SQL: %s\n", ast_str_buffer(sql));
++	ast_debug(5, "MySQL RealTime: Retrieve SQL: %s\n", ast_str_buffer(sql));
+ 
+ 	/* Execution. */
+ 	if (mysql_real_query(&dbh->handle, ast_str_buffer(sql), ast_str_strlen(sql))) {
+@@ -401,7 +401,7 @@
+ 			}
+ 		}
+ 	} else {
+-		ast_debug(1, "MySQL RealTime: Could not find any rows in table %s.\n", table);
++		ast_debug(5, "MySQL RealTime: Could not find any rows in table %s.\n", table);
+ 	}
+ 
+ 	release_database(dbh);
+@@ -491,7 +491,7 @@
+ 
+ 	va_end(ap);
+ 
+-	ast_debug(1, "MySQL RealTime: Retrieve SQL: %s\n", ast_str_buffer(sql));
++	ast_debug(5, "MySQL RealTime: Retrieve SQL: %s\n", ast_str_buffer(sql));
+ 
+ 	/* Execution. */
+ 	if (mysql_real_query(&dbh->handle, ast_str_buffer(sql), ast_str_strlen(sql))) {
+@@ -528,7 +528,7 @@
+ 			ast_category_append(cfg, cat);
+ 		}
+ 	} else {
+-		ast_debug(1, "MySQL RealTime: Could not find any rows in table %s.\n", table);
++		ast_debug(5, "MySQL RealTime: Could not find any rows in table %s.\n", table);
+ 	}
+ 
+ 	release_database(dbh);
+@@ -629,7 +629,7 @@
+ 	ESCAPE_STRING(buf, lookup);
+ 	ast_str_append(&sql, 0, " WHERE %s = '%s'", keyfield, ast_str_buffer(buf));
+ 
+-	ast_debug(1, "MySQL RealTime: Update SQL: %s\n", ast_str_buffer(sql));
++	ast_debug(5, "MySQL RealTime: Update SQL: %s\n", ast_str_buffer(sql));
+ 
+ 	/* Execution. */
+ 	if (mysql_real_query(&dbh->handle, ast_str_buffer(sql), ast_str_strlen(sql))) {
+@@ -643,7 +643,7 @@
+ 	release_table(table);
+ 	release_database(dbh);
+ 
+-	ast_debug(1, "MySQL RealTime: Updated %llu rows on table: %s\n", numrows, tablename);
++	ast_debug(5, "MySQL RealTime: Updated %llu rows on table: %s\n", numrows, tablename);
+ 
+ 	/* From http://dev.mysql.com/doc/mysql/en/mysql-affected-rows.html
+ 	 * An integer greater than zero indicates the number of rows affected
+@@ -749,7 +749,7 @@
+ 
+ 	ast_str_append(&sql, 0, " %s", ast_str_buffer(where));
+ 
+-	ast_debug(1, "MySQL RealTime: Update SQL: %s\n", ast_str_buffer(sql));
++	ast_debug(5, "MySQL RealTime: Update SQL: %s\n", ast_str_buffer(sql));
+ 
+ 	/* Execution. */
+ 	if (mysql_real_query(&dbh->handle, ast_str_buffer(sql), ast_str_strlen(sql))) {
+@@ -762,7 +762,7 @@
+ 	numrows = mysql_affected_rows(&dbh->handle);
+ 	release_database(dbh);
+ 
+-	ast_debug(1, "MySQL RealTime: Updated %llu rows on table: %s\n", numrows, tablename);
++	ast_debug(5, "MySQL RealTime: Updated %llu rows on table: %s\n", numrows, tablename);
+ 
+ 	/* From http://dev.mysql.com/doc/mysql/en/mysql-affected-rows.html
+ 	 * An integer greater than zero indicates the number of rows affected
+@@ -828,7 +828,7 @@
+ 	}
+ 	va_end(ap);
+ 	ast_str_append(&sql, 0, "%s)", ast_str_buffer(sql2));
+-	ast_debug(1,"MySQL RealTime: Insert SQL: %s\n", ast_str_buffer(sql));
++	ast_debug(5,"MySQL RealTime: Insert SQL: %s\n", ast_str_buffer(sql));
+ 
+ 	/* Execution. */
+ 	if (mysql_real_query(&dbh->handle, ast_str_buffer(sql), ast_str_strlen(sql))) {
+@@ -841,7 +841,7 @@
+ 	insertid = mysql_insert_id(&dbh->handle);
+ 	release_database(dbh);
+ 
+-	ast_debug(1, "MySQL RealTime: row inserted on table: %s, id: %llu\n", table, insertid);
++	ast_debug(5, "MySQL RealTime: row inserted on table: %s, id: %llu\n", table, insertid);
+ 
+ 	/* From http://dev.mysql.com/doc/mysql/en/mysql-affected-rows.html
+ 	 * An integer greater than zero indicates the number of rows affected
+@@ -897,7 +897,7 @@
+ 	}
+ 	va_end(ap);
+ 
+-	ast_debug(1, "MySQL RealTime: Delete SQL: %s\n", ast_str_buffer(sql));
++	ast_debug(5, "MySQL RealTime: Delete SQL: %s\n", ast_str_buffer(sql));
+ 
+ 	/* Execution. */
+ 	if (mysql_real_query(&dbh->handle, ast_str_buffer(sql), ast_str_strlen(sql))) {
+@@ -909,7 +909,7 @@
+ 	numrows = mysql_affected_rows(&dbh->handle);
+ 	release_database(dbh);
+ 
+-	ast_debug(1, "MySQL RealTime: Deleted %llu rows on table: %s\n", numrows, table);
++	ast_debug(5, "MySQL RealTime: Deleted %llu rows on table: %s\n", numrows, table);
+ 
+ 	/* From http://dev.mysql.com/doc/mysql/en/mysql-affected-rows.html
+ 	 * An integer greater than zero indicates the number of rows affected
+@@ -946,7 +946,7 @@
+ 
+ 	ast_str_set(&sql, 0, "SELECT category, var_name, var_val, cat_metric FROM %s WHERE filename='%s' and commented=0 ORDER BY filename, cat_metric desc, var_metric asc, category, var_name, var_val, id", table, file);
+ 
+-	ast_debug(1, "MySQL RealTime: Static SQL: %s\n", ast_str_buffer(sql));
++	ast_debug(5, "MySQL RealTime: Static SQL: %s\n", ast_str_buffer(sql));
+ 
+ 	/* We now have our complete statement; Lets connect to the server and execute it. */
+ 	if (!mysql_reconnect(dbh)) {
+@@ -955,15 +955,15 @@
+ 
+ 	if (mysql_real_query(&dbh->handle, ast_str_buffer(sql), ast_str_strlen(sql))) {
+ 		ast_log(LOG_WARNING, "MySQL RealTime: Failed to query database. Check debug for more info.\n");
+-		ast_debug(1, "MySQL RealTime: Query: %s\n", ast_str_buffer(sql));
+-		ast_debug(1, "MySQL RealTime: Query Failed because: %s\n", mysql_error(&dbh->handle));
++		ast_debug(5, "MySQL RealTime: Query: %s\n", ast_str_buffer(sql));
++		ast_debug(5, "MySQL RealTime: Query Failed because: %s\n", mysql_error(&dbh->handle));
+ 		release_database(dbh);
+ 		return NULL;
+ 	}
+ 
+ 	if ((result = mysql_store_result(&dbh->handle))) {
+ 		num_rows = mysql_num_rows(result);
+-		ast_debug(1, "MySQL RealTime: Found %llu rows.\n", num_rows);
++		ast_debug(5, "MySQL RealTime: Found %llu rows.\n", num_rows);
+ 
+ 		/* There might exist a better way to access the column names other than counting,
+ 		 * but I believe that would require another loop that we don't need. */
+@@ -1089,7 +1089,7 @@
+ 		/* Execution. */
+ 		if (mysql_real_query(&dbh->handle, ast_str_buffer(sql), ast_str_strlen(sql))) {
+ 			ast_log(LOG_WARNING, "MySQL RealTime: Failed to query database: %s\n", mysql_error(&dbh->handle));
+-			ast_debug(1, "MySQL RealTime: Query: %s\n", ast_str_buffer(sql));
++			ast_debug(5, "MySQL RealTime: Query: %s\n", ast_str_buffer(sql));
+ 			res = -1;
+ 		}
+ 	} while (0);
+@@ -1339,8 +1339,8 @@
+ 				/* Execution. */
+ 				if (mysql_real_query(&table->database->handle, ast_str_buffer(sql), ast_str_strlen(sql))) {
+ 					ast_log(LOG_WARNING, "MySQL RealTime: Failed to query database. Check debug for more info.\n");
+-					ast_debug(1, "MySQL RealTime: Query: %s\n", ast_str_buffer(sql));
+-					ast_debug(1, "MySQL RealTime: Query Failed because: %s\n", mysql_error(&table->database->handle));
++					ast_debug(5, "MySQL RealTime: Query: %s\n", ast_str_buffer(sql));
++					ast_debug(5, "MySQL RealTime: Query Failed because: %s\n", mysql_error(&table->database->handle));
+ 				} else {
+ 					table_altered = 1;
+ 				}
+@@ -1535,15 +1535,15 @@
+ 	}
+ 
+ 	if (!ast_strlen_zero(conn->host)) {
+-		ast_debug(1, "MySQL RealTime host: %s\n", conn->host);
+-		ast_debug(1, "MySQL RealTime port: %i\n", conn->port);
++		ast_debug(5, "MySQL RealTime host: %s\n", conn->host);
++		ast_debug(5, "MySQL RealTime port: %i\n", conn->port);
+ 	} else
+-		ast_debug(1, "MySQL RealTime socket: %s\n", conn->sock);
+-	ast_debug(1, "MySQL RealTime database name: %s\n", conn->name);
+-	if(conn->charset)
+-		ast_debug(1, "MySQL RealTime charset: %s\n", conn->charset);
+-	ast_debug(1, "MySQL RealTime user: %s\n", conn->user);
+-	ast_debug(1, "MySQL RealTime password: %s\n", conn->pass);
++		ast_debug(5, "MySQL RealTime socket: %s\n", conn->sock);
++	ast_debug(5, "MySQL RealTime database name: %s\n", conn->name);
++	if(conn->charset)
++		ast_debug(5, "MySQL RealTime charset: %s\n", conn->charset);
++	ast_debug(5, "MySQL RealTime user: %s\n", conn->user);
++	ast_debug(5, "MySQL RealTime password: %s\n", conn->pass);
+ 
+ 	return 1;
+ }
+@@ -1567,13 +1567,13 @@
+ 			 * (as of 5.0.3) so we have to set that option here. */
+ 			mysql_options(&conn->handle, MYSQL_OPT_RECONNECT, &trueval);
+ #endif
+-			ast_debug(1, "MySQL RealTime: Successfully connected to database.\n");
++			ast_debug(5, "MySQL RealTime: Successfully connected to database.\n");
+ 			conn->connected = 1;
+ 			conn->connect_time = time(NULL);
+ 			return 1;
+ 		} else {
+ 			ast_log(LOG_ERROR, "MySQL RealTime: Failed to connect database server %s on %s (err %d). Check debug for more info.\n", conn->name, !ast_strlen_zero(conn->host) ? conn->host : conn->sock, mysql_errno(&conn->handle));
+-			ast_debug(1, "MySQL RealTime: Cannot Connect (%d): %s\n", mysql_errno(&conn->handle), mysql_error(&conn->handle));
++			ast_debug(5, "MySQL RealTime: Cannot Connect (%d): %s\n", mysql_errno(&conn->handle), mysql_error(&conn->handle));
+ 			conn->connected = 0;
+ 			conn->connect_time = 0;
+ 			return 0;
+@@ -1585,7 +1585,7 @@
+ 			conn->connected = 0;
+ 			conn->connect_time = 0;
+ 			ast_log(LOG_ERROR, "MySQL RealTime: Ping failed (%d).  Trying an explicit reconnect.\n", mysql_errno(&conn->handle));
+-			ast_debug(1, "MySQL RealTime: Server Error (%d): %s\n", mysql_errno(&conn->handle), mysql_error(&conn->handle));
++			ast_debug(5, "MySQL RealTime: Server Error (%d): %s\n", mysql_errno(&conn->handle), mysql_error(&conn->handle));
+ 			goto reconnect_tryagain;
+ 		}
+ 
+@@ -1599,7 +1599,7 @@
+ 			return 0;
+ 		}
+ 
+-		ast_debug(1, "MySQL RealTime: Connection okay.\n");
++		ast_debug(5, "MySQL RealTime: Connection okay.\n");
+ 		return 1;
+ 	}
+ }

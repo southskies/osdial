@@ -1,0 +1,142 @@
+
+Author: Lott Caskey <lottcaskey@gmail.com>
+License: GPLv3
+
+The patch adds the 'astsounddir' option to /etc/asterisk/asterisk.conf.
+This allows you to override Asterisk's sound directory without needing to
+make symlinks.  If /mnt/ramdisk/sounds is present it will default the sounds
+location from /var/lib/asterisk/sounds to /mnt/ramdisk/sounds.
+
+
+diff -Naur asterisk-1.6.2.16-rc1-orig/apps/app_dial.c asterisk-1.6.2.16-rc1/apps/app_dial.c
+--- asterisk-1.6.2.16-rc1-orig/apps/app_dial.c	2010-11-24 12:03:16.000000000 -0500
++++ asterisk-1.6.2.16-rc1/apps/app_dial.c	2010-12-21 01:08:43.000000000 -0500
+@@ -1456,7 +1456,7 @@
+ 		   call is actually dialed  */
+ 
+ 		/* make sure the priv-callerintros dir actually exists */
+-		snprintf(pa->privintro, sizeof(pa->privintro), "%s/sounds/priv-callerintros", ast_config_AST_DATA_DIR);
++		snprintf(pa->privintro, sizeof(pa->privintro), "%s/priv-callerintros", ast_config_AST_SOUND_DIR);
+ 		if ((res = ast_mkdir(pa->privintro, 0755))) {
+ 			ast_log(LOG_WARNING, "privacy: can't create directory priv-callerintros: %s\n", strerror(res));
+ 			return -1;
+diff -Naur asterisk-1.6.2.16-rc1-orig/build_tools/make_defaults_h asterisk-1.6.2.16-rc1/build_tools/make_defaults_h
+--- asterisk-1.6.2.16-rc1-orig/build_tools/make_defaults_h	2008-01-24 17:58:10.000000000 -0500
++++ asterisk-1.6.2.16-rc1/build_tools/make_defaults_h	2010-12-21 01:08:43.000000000 -0500
+@@ -21,6 +21,7 @@
+ 
+ #define DEFAULT_DATA_DIR   "${INSTALL_PATH}${ASTDATADIR}"
+ #define DEFAULT_KEY_DIR    "${INSTALL_PATH}${ASTDATADIR}/keys"
++#define DEFAULT_SOUND_DIR   "${INSTALL_PATH}${ASTDATADIR}/sounds"
+ 
+ #define DEFAULT_SPOOL_DIR  "${INSTALL_PATH}${ASTSPOOLDIR}"
+ #define DEFAULT_TMP_DIR    "${INSTALL_PATH}${ASTSPOOLDIR}/tmp"
+diff -Naur asterisk-1.6.2.16-rc1-orig/include/asterisk/paths.h asterisk-1.6.2.16-rc1/include/asterisk/paths.h
+--- asterisk-1.6.2.16-rc1-orig/include/asterisk/paths.h	2007-12-20 04:55:05.000000000 -0500
++++ asterisk-1.6.2.16-rc1/include/asterisk/paths.h	2010-12-21 01:08:43.000000000 -0500
+@@ -35,5 +35,6 @@
+ extern const char *ast_config_AST_RUN_GROUP;
+ extern const char *ast_config_AST_RUN_USER;
+ extern const char *ast_config_AST_SYSTEM_NAME;
++extern const char *ast_config_AST_SOUND_DIR;
+ 
+ #endif /* _ASTERISK_PATHS_H */
+diff -Naur asterisk-1.6.2.16-rc1-orig/main/app.c asterisk-1.6.2.16-rc1/main/app.c
+--- asterisk-1.6.2.16-rc1-orig/main/app.c	2010-05-17 14:44:53.000000000 -0400
++++ asterisk-1.6.2.16-rc1/main/app.c	2010-12-21 01:08:43.000000000 -0500
+@@ -481,7 +481,7 @@
+ 		if (filename[0] == '/') {
+ 			ast_copy_string(tmpf, filename, sizeof(tmpf));
+ 		} else {
+-			snprintf(tmpf, sizeof(tmpf), "%s/%s/%s", ast_config_AST_DATA_DIR, "sounds", filename);
++			snprintf(tmpf, sizeof(tmpf), "%s/%s", ast_config_AST_SOUND_DIR, filename);
+ 		}
+ 		if ((fd = open(tmpf, O_RDONLY)) < 0) {
+ 			ast_log(LOG_WARNING, "Unable to open file '%s': %s\n", tmpf, strerror(errno));
+diff -Naur asterisk-1.6.2.16-rc1-orig/main/asterisk.c asterisk-1.6.2.16-rc1/main/asterisk.c
+--- asterisk-1.6.2.16-rc1-orig/main/asterisk.c	2010-11-29 02:27:09.000000000 -0500
++++ asterisk-1.6.2.16-rc1/main/asterisk.c	2010-12-21 02:41:41.000000000 -0500
+@@ -233,6 +233,7 @@
+ 	char agi_dir[PATH_MAX];
+ 	char run_dir[PATH_MAX];
+ 	char key_dir[PATH_MAX];
++	char sound_dir[PATH_MAX];
+ 
+ 	char config_file[PATH_MAX];
+ 	char db_path[PATH_MAX];
+@@ -256,6 +257,7 @@
+ const char *ast_config_AST_AGI_DIR	= cfg_paths.agi_dir;
+ const char *ast_config_AST_KEY_DIR	= cfg_paths.key_dir;
+ const char *ast_config_AST_RUN_DIR	= cfg_paths.run_dir;
++const char *ast_config_AST_SOUND_DIR	= cfg_paths.sound_dir;
+ 
+ const char *ast_config_AST_DB		= cfg_paths.db_path;
+ const char *ast_config_AST_PID		= cfg_paths.pid_path;
+@@ -485,7 +487,14 @@
+ 	ast_cli(a->fd, "  Configuration directory:     %s\n", ast_config_AST_CONFIG_DIR);
+ 	ast_cli(a->fd, "  Module directory:            %s\n", ast_config_AST_MODULE_DIR);
+ 	ast_cli(a->fd, "  Spool directory:             %s\n", ast_config_AST_SPOOL_DIR);
++	ast_cli(a->fd, "  Var directory:               %s\n", ast_config_AST_VAR_DIR);
++	ast_cli(a->fd, "  Monitor directory:           %s\n", ast_config_AST_MONITOR_DIR);
++	ast_cli(a->fd, "  Data directory:              %s\n", ast_config_AST_DATA_DIR);
+ 	ast_cli(a->fd, "  Log directory:               %s\n", ast_config_AST_LOG_DIR);
++	ast_cli(a->fd, "  AGI directory:               %s\n", ast_config_AST_AGI_DIR);
++	ast_cli(a->fd, "  Key directory:               %s\n", ast_config_AST_KEY_DIR);
++	ast_cli(a->fd, "  Run directory:               %s\n", ast_config_AST_RUN_DIR);
++	ast_cli(a->fd, "  Sounds directory:            %s\n", ast_config_AST_SOUND_DIR);
+ 	ast_cli(a->fd, "\n\n");
+ 	return CLI_SUCCESS;
+ }
+@@ -2833,6 +2842,7 @@
+ 	struct ast_variable *v;
+ 	char *config = DEFAULT_CONFIG_FILE;
+ 	char hostname[MAXHOSTNAMELEN] = "";
++	struct stat st;
+ 	struct ast_flags config_flags = { 0 };
+ 	struct {
+ 		unsigned int dbdir:1;
+@@ -2861,6 +2871,12 @@
+ 	ast_copy_string(cfg_paths.socket_path, DEFAULT_SOCKET, sizeof(cfg_paths.socket_path));
+ 	ast_copy_string(cfg_paths.run_dir, DEFAULT_RUN_DIR, sizeof(cfg_paths.run_dir));
+ 
++	if (stat("/mnt/ramdisk/sounds", &st)==0) {
++ 		snprintf(cfg_paths.sound_dir, sizeof(cfg_paths.sound_dir), "/mnt/ramdisk/sounds");
++	} else {
++ 		snprintf(cfg_paths.sound_dir, sizeof(cfg_paths.sound_dir), "%s", DEFAULT_SOUND_DIR);
++	}
++
+ 	ast_set_default_eid(&ast_eid_default);
+ 
+ 	/* no asterisk.conf? no problem, use buildtime config! */
+@@ -2909,6 +2925,8 @@
+ 			ast_copy_string(cfg_paths.run_dir, v->value, sizeof(cfg_paths.run_dir));
+ 		} else if (!strcasecmp(v->name, "astmoddir")) {
+ 			ast_copy_string(cfg_paths.module_dir, v->value, sizeof(cfg_paths.module_dir));
++		} else if (!strcasecmp(v->name, "astsounddir")) {
++			ast_copy_string(cfg_paths.sound_dir, v->value, sizeof(cfg_paths.sound_dir));
+ 		}
+ 	}
+ 
+diff -Naur asterisk-1.6.2.16-rc1-orig/main/file.c asterisk-1.6.2.16-rc1/main/file.c
+--- asterisk-1.6.2.16-rc1-orig/main/file.c	2010-10-06 09:48:27.000000000 -0400
++++ asterisk-1.6.2.16-rc1/main/file.c	2010-12-21 01:08:43.000000000 -0500
+@@ -245,7 +245,7 @@
+ 
+ /*!
+  * \brief construct a filename. Absolute pathnames are preserved,
+- * relative names are prefixed by the sounds/ directory.
++ * relative names are prefixed by the ast_config_AST_SOUND_DIR directory.
+  * The wav49 suffix is replaced by 'WAV'.
+  * Returns a malloc'ed string to be freed by the caller.
+  */
+@@ -262,8 +262,8 @@
+ 			fn = NULL;
+ 		}
+ 	} else {
+-		if (asprintf(&fn, "%s/sounds/%s.%s",
+-			     ast_config_AST_DATA_DIR, filename, ext) < 0) {
++		if (asprintf(&fn, "%s/%s.%s",
++			     ast_config_AST_SOUND_DIR, filename, ext) < 0) {
+ 			ast_log(LOG_WARNING, "asprintf() failed: %s\n", strerror(errno));
+ 			fn = NULL;
+ 		}
