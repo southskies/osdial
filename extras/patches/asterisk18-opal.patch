@@ -1,0 +1,139 @@
+diff -Naur asterisk-1.6.2.14-orig/autoconf/ast_check_openh323.m4 asterisk-1.6.2.14/autoconf/ast_check_openh323.m4
+--- asterisk-1.6.2.14-orig/autoconf/ast_check_openh323.m4	2009-03-17 16:53:55.000000000 -0400
++++ asterisk-1.6.2.14/autoconf/ast_check_openh323.m4	2010-11-10 00:00:56.000000000 -0500
+@@ -5,6 +5,17 @@
+ if test "${OPENH323DIR:-unset}" != "unset" ; then
+   AC_CHECK_HEADER(${OPENH323DIR}/version.h, HAS_OPENH323=1, )
+ fi
++OPENH323_PKGCONFIG=
++PKG_CHECK_MODULES(OPENH323, opal, [
++  set -x
++  OPENH323_LIB="${OPENH323_LIBS}"
++  HAS_OPENH323=1
++  OPENH323_PKGCONFIG=1
++  set +x
++],[
++  echo >&2 "ptlib not found through pkg-config"
++  exit 30
++]) 
+ if test "${HAS_OPENH323:-unset}" = "unset" ; then
+   AC_CHECK_HEADER(${PWLIBDIR}/../openh323/version.h, OPENH323DIR="${PWLIBDIR}/../openh323"; HAS_OPENH323=1, )
+   if test "${HAS_OPENH323:-unset}" != "unset" ; then
+@@ -52,7 +63,7 @@
+   fi
+ fi
+ 
+-if test "${HAS_OPENH323:-unset}" != "unset" ; then
++if test "${HAS_OPENH323:-unset}" != "unset" && test "${OPENH323_PKGCONFIG}" = ''; then
+   if test "${OPENH323_INCDIR:-unset}" = "unset"; then
+     OPENH323_INCDIR="${OPENH323DIR}/include"
+   fi
+diff -Naur asterisk-1.6.2.14-orig/autoconf/ast_check_pwlib.m4 asterisk-1.6.2.14/autoconf/ast_check_pwlib.m4
+--- asterisk-1.6.2.14-orig/autoconf/ast_check_pwlib.m4	2010-07-23 13:06:17.000000000 -0400
++++ asterisk-1.6.2.14/autoconf/ast_check_pwlib.m4	2010-11-10 00:00:56.000000000 -0500
+@@ -87,6 +87,13 @@
+ PWLIB_INCDIR=
+ PWLIB_LIBDIR=
+ AC_LANG_PUSH([C++])
++PKG_PROG_PKG_CONFIG
++PWLIB_PKGCONFIG=
++PKG_CHECK_MODULES(PWLIB, ptlib, [
++  PWLIB_LIB="${PWLIB_LIBS}"
++  HAS_PWLIB=1
++  PWLIB_PKGCONFIG=1
++]) 
+ if test "${PWLIBDIR:-unset}" != "unset" ; then
+   AC_CHECK_HEADER(${PWLIBDIR}/version.h, HAS_PWLIB=1, )
+ fi
+@@ -147,7 +154,7 @@
+ #  exit
+ #fi
+ 
+-if test "${HAS_PWLIB:-unset}" != "unset" ; then
++if test "${HAS_PWLIB:-unset}" != "unset" && test "$PWLIB_PKGCONFIG" = ''; then
+   if test "${PWLIBDIR:-unset}" = "unset" ; then
+     if test "${PTLIB_CONFIG:-unset}" != "unset" ; then
+       PWLIBDIR=`$PTLIB_CONFIG --prefix`
+@@ -190,6 +197,7 @@
+   AC_LANG_POP([C++])
+ ])
+ 
++dnl AST_CHECK_PWLIB_VERSION([PWLib], [PWLIB], [ptbuildopts.h], [1], [9], [2], [P[[WT]]LIB_VERSION])
+ AC_DEFUN([AST_CHECK_PWLIB_VERSION], [
+ 	if test "x$7" != "x"; then
+ 	   	VNAME="$7"
+@@ -197,7 +205,7 @@
+ 	   	VNAME="$2_VERSION"
+ 	fi
+ 
+-	if test "${HAS_$2:-unset}" != "unset"; then
++	if test "${HAS_$2:-unset}" != "unset" && test "${$2_PKGCONFIG}" = ''; then
+ 		$2_VERSION=`grep "$VNAME" ${$2_INCDIR}/$3 | sed -e 's/[[[:space:]]]\{1,\}/ /g' | cut -f3 -d ' ' | sed -e 's/"//g'`
+ 		$2_MAJOR_VERSION=`echo ${$2_VERSION} | cut -f1 -d.`
+ 		$2_MINOR_VERSION=`echo ${$2_VERSION} | cut -f2 -d.`
+@@ -224,22 +232,37 @@
+ 		fi
+ 	fi
+ ])
+-
++dnl                 AST_CHECK_PWLIB_BUILD([PWLib], [PWLIB],
++dnl                     [Define if your system has the PWLib libraries.],
++dnl                     [#include "ptlib.h"],
++dnl                     [int q = (int) PTime::IsDaylightSavings();])
+ AC_DEFUN([AST_CHECK_PWLIB_BUILD], [
+ 	if test "${HAS_$2:-unset}" != "unset"; then
+ 	   AC_MSG_CHECKING($1 installation validity)
+ 
+ 	   saved_cppflags="${CPPFLAGS}"
+ 	   saved_libs="${LIBS}"
++set -x
++	   echo >&2 "$2_LIB = <${$2_LIB}>"
+ 	   if test "${$2_LIB:-unset}" != "unset"; then
+-	      LIBS="${LIBS} ${$2_LIB} $7"
++	      if test "${PTLIB_CONFIG}" != ''; then
++	         LIBS="${LIBS} ${$2_LIB}"
++	      else
++	         LIBS="${LIBS} ${$2_LIB} $7"
++	      fi
+ 	   else
+     	      LIBS="${LIBS} -L${$2_LIBDIR} -l${PLATFORM_$2} $7"
+ 	   fi
+-	   CPPFLAGS="${CPPFLAGS} -I${$2_INCDIR} $6"
++	   if test "${$2_CFLAGS}" = ""; then
++	      CPPFLAGS="${CPPFLAGS} -I${$2_INCDIR} $6"
++	   else
++	      CPPFLAGS="${CPPFLAGS} ${$2_CFLAGS}"
++	   fi
++set +x
+ 
+ 	   AC_LANG_PUSH([C++])
+ 
++	   set -x
+ 	   AC_LINK_IFELSE(
+ 		[AC_LANG_PROGRAM([$4],[$5])],
+ 		[	AC_MSG_RESULT(yes) 
+@@ -249,6 +272,7 @@
+ 			ac_cv_lib_$2="no" 
+ 		]
+ 		)
++	   set +x
+ 
+ 	   AC_LANG_POP([C++])
+ 
+diff -Naur asterisk-1.6.2.14-orig/configure.ac asterisk-1.6.2.14/configure.ac
+--- asterisk-1.6.2.14-orig/configure.ac	2010-09-09 21:16:32.000000000 -0400
++++ asterisk-1.6.2.14/configure.ac	2010-11-10 00:02:26.000000000 -0500
+@@ -1616,9 +1616,10 @@
+ 	AST_CHECK_PWLIB_BUILD([OpenH323], [OPENH323],
+ 		[Define if your system has the OpenH323 libraries.],
+ 		[#include "ptlib.h"
+-		#include "h323.h"
+-		#include "h323ep.h"],
+-		[H323EndPoint ep = H323EndPoint();],
++		#include <opal/opal/manager.h>
++		#include <opal/h323/h323.h>
++		#include <opal/h323/h323ep.h>],
++		[OpalManager om = OpalManager(); H323EndPoint ep = H323EndPoint(om);],
+ 		[${PWLIB_INCLUDE}], [${PWLIB_LIB}])
+ fi
+ 

@@ -1,0 +1,276 @@
+diff -Naur asterisk-1.8.5.0-orig/apps/app_dial.c asterisk-1.8.5.0/apps/app_dial.c
+--- asterisk-1.8.5.0-orig/apps/app_dial.c	2011-06-29 11:34:47.000000000 -0400
++++ asterisk-1.8.5.0/apps/app_dial.c	2011-07-15 21:22:10.000000000 -0400
+@@ -772,6 +772,7 @@
+ 		"CallerIDName: %s\r\n"
+ 		"ConnectedLineNum: %s\r\n"
+ 		"ConnectedLineName: %s\r\n"
++		"AccountCode: %s\r\n"
+ 		"UniqueID: %s\r\n"
+ 		"DestUniqueID: %s\r\n"
+ 		"Dialstring: %s\r\n",
+@@ -780,6 +781,7 @@
+ 		S_COR(src->caller.id.name.valid, src->caller.id.name.str, "<unknown>"),
+ 		S_COR(src->connected.id.number.valid, src->connected.id.number.str, "<unknown>"),
+ 		S_COR(src->connected.id.name.valid, src->connected.id.name.str, "<unknown>"),
++		S_OR(src->accountcode, ""),
+ 		src->uniqueid, dst->uniqueid,
+ 		dialstring ? dialstring : "");
+ }
+diff -Naur asterisk-1.8.5.0-orig/apps/app_meetme.c asterisk-1.8.5.0/apps/app_meetme.c
+--- asterisk-1.8.5.0-orig/apps/app_meetme.c	2011-06-17 14:38:40.000000000 -0400
++++ asterisk-1.8.5.0/apps/app_meetme.c	2011-07-15 21:22:10.000000000 -0400
+@@ -2682,12 +2682,14 @@
+ 			"Usernum: %d\r\n"
+ 			"CallerIDnum: %s\r\n"
+ 			"CallerIDname: %s\r\n"
++		      	"AccountCode: %s\r\n"
+ 			"ConnectedLineNum: %s\r\n"
+ 			"ConnectedLineName: %s\r\n",
+ 			chan->name, chan->uniqueid, conf->confno,
+ 			user->user_no,
+ 			S_COR(user->chan->caller.id.number.valid, user->chan->caller.id.number.str, "<unknown>"),
+ 			S_COR(user->chan->caller.id.name.valid, user->chan->caller.id.name.str, "<unknown>"),
++			S_OR(user->chan->accountcode, ""),
+ 			S_COR(user->chan->connected.id.number.valid, user->chan->connected.id.number.str, "<unknown>"),
+ 			S_COR(user->chan->connected.id.name.valid, user->chan->connected.id.name.str, "<unknown>")
+ 			);
+@@ -3742,6 +3744,7 @@
+ 				"CallerIDName: %s\r\n"
+ 				"ConnectedLineNum: %s\r\n"
+ 				"ConnectedLineName: %s\r\n"
++				"AccountCode: %s\r\n"
+ 				"Duration: %ld\r\n",
+ 				chan->name, chan->uniqueid, conf->confno,
+ 				user->user_no,
+@@ -3749,6 +3752,7 @@
+ 				S_COR(user->chan->caller.id.name.valid, user->chan->caller.id.name.str, "<unknown>"),
+ 				S_COR(user->chan->connected.id.number.valid, user->chan->connected.id.number.str, "<unknown>"),
+ 				S_COR(user->chan->connected.id.name.valid, user->chan->connected.id.name.str, "<unknown>"),
++				S_OR(user->chan->accountcode, ""),
+ 				(long)(now.tv_sec - user->jointime));
+ 		}
+ 
+diff -Naur asterisk-1.8.5.0-orig/apps/app_queue.c asterisk-1.8.5.0/apps/app_queue.c
+--- asterisk-1.8.5.0-orig/apps/app_queue.c	2011-06-29 14:16:45.000000000 -0400
++++ asterisk-1.8.5.0/apps/app_queue.c	2011-07-15 21:22:57.000000000 -0400
+@@ -2519,6 +2519,7 @@
+ 			"CallerIDName: %s\r\n"
+ 			"ConnectedLineNum: %s\r\n"
+ 			"ConnectedLineName: %s\r\n"
++			"AccountCode: %s\r\n"
+ 			"Queue: %s\r\n"
+ 			"Position: %d\r\n"
+ 			"Count: %d\r\n"
+@@ -2528,6 +2529,7 @@
+ 			S_COR(qe->chan->caller.id.name.valid, qe->chan->caller.id.name.str, "unknown"),
+ 			S_COR(qe->chan->connected.id.number.valid, qe->chan->connected.id.number.str, "unknown"),/* XXX somewhere else it is <unknown> */
+ 			S_COR(qe->chan->connected.id.name.valid, qe->chan->connected.id.name.str, "unknown"),
++			S_OR(qe->chan->accountcode, ""),
+ 			q->name, qe->pos, q->count, qe->chan->uniqueid );
+ 		ast_debug(1, "Queue '%s' Join, Channel '%s', Position '%d'\n", q->name, qe->chan->name, qe->pos );
+ 	}
+@@ -3163,6 +3165,7 @@
+ 			"CallerIDName: %s\r\n"
+ 			"ConnectedLineNum: %s\r\n"
+ 			"ConnectedLineName: %s\r\n"
++			"AccountCode: %s\r\n"
+ 			"Context: %s\r\n"
+ 			"Extension: %s\r\n"
+ 			"Priority: %d\r\n"
+@@ -3173,6 +3176,7 @@
+ 			S_COR(tmp->chan->caller.id.name.valid, tmp->chan->caller.id.name.str, "unknown"),
+ 			S_COR(tmp->chan->connected.id.number.valid, tmp->chan->connected.id.number.str, "unknown"),
+ 			S_COR(tmp->chan->connected.id.name.valid, tmp->chan->connected.id.name.str, "unknown"),
++			tmp->chan->accountcode ? tmp->chan->accountcode : "",
+ 			qe->chan->context, qe->chan->exten, qe->chan->priority, qe->chan->uniqueid,
+ 			qe->parent->eventwhencalled == QUEUE_EVENT_VARIABLES ? vars2manager(qe->chan, vars, sizeof(vars)) : "");
+ 		ast_verb(3, "Called %s\n", tmp->interface);
+diff -Naur asterisk-1.8.5.0-orig/main/channel.c asterisk-1.8.5.0/main/channel.c
+--- asterisk-1.8.5.0-orig/main/channel.c	2011-06-29 12:18:39.000000000 -0400
++++ asterisk-1.8.5.0/main/channel.c	2011-07-15 21:25:07.000000000 -0400
+@@ -1333,7 +1333,7 @@
+ 			ast_state2str(state),
+ 			S_OR(cid_num, ""),
+ 			S_OR(cid_name, ""),
+-			tmp->accountcode,
++			S_OR(tmp->accountcode, ""),
+ 			S_OR(exten, ""),
+ 			S_OR(context, ""),
+ 			tmp->uniqueid);
+@@ -2820,6 +2820,7 @@
+ 		"CallerIDName: %s\r\n"
+ 		"ConnectedLineNum: %s\r\n"
+ 		"ConnectedLineName: %s\r\n"
++		"AccountCode: %s\r\n"
+ 		"Cause: %d\r\n"
+ 		"Cause-txt: %s\r\n",
+ 		chan->name,
+@@ -2828,6 +2829,7 @@
+ 		S_COR(chan->caller.id.name.valid, chan->caller.id.name.str, "<unknown>"),
+ 		S_COR(chan->connected.id.number.valid, chan->connected.id.number.str, "<unknown>"),
+ 		S_COR(chan->connected.id.name.valid, chan->connected.id.name.str, "<unknown>"),
++		S_OR(chan->accountcode, ""),
+ 		chan->hangupcause,
+ 		ast_cause2str(chan->hangupcause)
+ 		);
+@@ -6186,11 +6188,13 @@
+ 		"Channel: %s\r\n"
+ 		"CallerIDNum: %s\r\n"
+ 		"CallerIDName: %s\r\n"
++		"AccountCode: %s\r\n"
+ 		"Uniqueid: %s\r\n"
+ 		"CID-CallingPres: %d (%s)\r\n",
+ 		chan->name,
+ 		S_COR(chan->caller.id.number.valid, chan->caller.id.number.str, ""),
+ 		S_COR(chan->caller.id.name.valid, chan->caller.id.name.str, ""),
++		S_OR(chan->accountcode, ""),
+ 		chan->uniqueid,
+ 		pres,
+ 		ast_describe_caller_presentation(pres)
+@@ -6761,12 +6765,14 @@
+ 		"CallerIDName: %s\r\n"
+ 		"ConnectedLineNum: %s\r\n"
+ 		"ConnectedLineName: %s\r\n"
++		"AccountCode: %s\r\n"
+ 		"Uniqueid: %s\r\n",
+ 		chan->name, chan->_state, ast_state2str(chan->_state),
+ 		S_COR(chan->caller.id.number.valid, chan->caller.id.number.str, ""),
+ 		S_COR(chan->caller.id.name.valid, chan->caller.id.name.str, ""),
+ 		S_COR(chan->connected.id.number.valid, chan->connected.id.number.str, ""),
+ 		S_COR(chan->connected.id.name.valid, chan->connected.id.name.str, ""),
++		S_OR(chan->accountcode, ""),
+ 		chan->uniqueid);
+ 
+ 	return 0;
+@@ -7042,13 +7048,15 @@
+ 		"Uniqueid1: %s\r\n"
+ 		"Uniqueid2: %s\r\n"
+ 		"CallerID1: %s\r\n"
+-		"CallerID2: %s\r\n",
++		"CallerID2: %s\r\n"
++		"AccountCode: %s\r\n",
+ 		onoff ? "Link" : "Unlink",
+ 		type == 1 ? "core" : "native",
+ 		c0->name, c1->name,
+ 		c0->uniqueid, c1->uniqueid,
+ 		S_COR(c0->caller.id.number.valid, c0->caller.id.number.str, ""),
+-		S_COR(c1->caller.id.number.valid, c1->caller.id.number.str, ""));
++		S_COR(c1->caller.id.number.valid, c1->caller.id.number.str, ""),
++		S_OR(c0->accountcode, ""));
+ }
+ 
+ static void update_bridge_vars(struct ast_channel *c0, struct ast_channel *c1)
+@@ -7300,11 +7308,13 @@
+ 					"Uniqueid1: %s\r\n"
+ 					"Uniqueid2: %s\r\n"
+ 					"CallerID1: %s\r\n"
+-					"CallerID2: %s\r\n",
++					"CallerID2: %s\r\n"
++					"AccountCode: %s\r\n",
+ 					c0->name, c1->name,
+ 					c0->uniqueid, c1->uniqueid,
+ 					S_COR(c0->caller.id.number.valid, c0->caller.id.number.str, "<unknown>"),
+-					S_COR(c1->caller.id.number.valid, c1->caller.id.number.str, "<unknown>"));
++					S_COR(c1->caller.id.number.valid, c1->caller.id.number.str, "<unknown>"),
++					S_OR(c0->accountcode, ""));
+ 
+ 				ast_debug(1, "Returning from native bridge, channels: %s, %s\n", c0->name, c1->name);
+ 
+@@ -7375,11 +7385,13 @@
+ 		"Uniqueid1: %s\r\n"
+ 		"Uniqueid2: %s\r\n"
+ 		"CallerID1: %s\r\n"
+-		"CallerID2: %s\r\n",
++		"CallerID2: %s\r\n"
++		"AccountCode: %s\r\n",
+ 		c0->name, c1->name,
+ 		c0->uniqueid, c1->uniqueid,
+ 		S_COR(c0->caller.id.number.valid, c0->caller.id.number.str, "<unknown>"),
+-		S_COR(c1->caller.id.number.valid, c1->caller.id.number.str, "<unknown>"));
++		S_COR(c1->caller.id.number.valid, c1->caller.id.number.str, "<unknown>"),
++		S_OR(c0->accountcode, ""));
+ 
+ 	/* Update bridges for realtime channells */
+ 	if (ast_check_realtime("channels")) {
+diff -Naur asterisk-1.8.5.0-orig/main/features.c asterisk-1.8.5.0/main/features.c
+--- asterisk-1.8.5.0-orig/main/features.c	2011-06-23 14:23:21.000000000 -0400
++++ asterisk-1.8.5.0/main/features.c	2011-07-15 21:26:36.000000000 -0400
+@@ -1159,6 +1159,7 @@
+ 		"CallerIDName: %s\r\n"
+ 		"ConnectedLineNum: %s\r\n"
+ 		"ConnectedLineName: %s\r\n"
++		"AccountCode: %s\r\n"
+ 		"Uniqueid: %s\r\n",
+ 		pu->parkingexten, pu->chan->name, pu->parkinglot->name, event_from ? event_from : "",
+ 		(long)pu->start.tv_sec + (long)(pu->parkingtime/1000) - (long)time(NULL),
+@@ -1166,6 +1167,7 @@
+ 		S_COR(pu->chan->caller.id.name.valid, pu->chan->caller.id.name.str, "<unknown>"),
+ 		S_COR(pu->chan->connected.id.number.valid, pu->chan->connected.id.number.str, "<unknown>"),
+ 		S_COR(pu->chan->connected.id.name.valid, pu->chan->connected.id.name.str, "<unknown>"),
++		S_OR(pu->chan->accountcode, ""),
+ 		pu->chan->uniqueid
+ 		);
+ 
+@@ -4044,6 +4046,7 @@
+ 		"CallerIDName: %s\r\n"
+ 		"ConnectedLineNum: %s\r\n"
+ 		"ConnectedLineName: %s\r\n"
++		"AccountCode: %s\r\n"
+ 		"UniqueID: %s\r\n",
+ 		pu->parkingexten, 
+ 		pu->chan->name,
+@@ -4052,6 +4055,7 @@
+ 		S_COR(pu->chan->caller.id.name.valid, pu->chan->caller.id.name.str, "<unknown>"),
+ 		S_COR(pu->chan->connected.id.number.valid, pu->chan->connected.id.number.str, "<unknown>"),
+ 		S_COR(pu->chan->connected.id.name.valid, pu->chan->connected.id.name.str, "<unknown>"),
++		S_OR(pu->chan->accountcode, ""),
+ 		pu->chan->uniqueid
+ 		);
+ }
+@@ -4529,12 +4533,14 @@
+ 			"CallerIDNum: %s\r\n"
+ 			"CallerIDName: %s\r\n"
+ 			"ConnectedLineNum: %s\r\n"
+-			"ConnectedLineName: %s\r\n",
++			"ConnectedLineName: %s\r\n"
++			"AccountCode: %s\r\n",
+ 			pu->parkingexten, pu->chan->name, chan->name,
+ 			S_COR(pu->chan->caller.id.number.valid, pu->chan->caller.id.number.str, "<unknown>"),
+ 			S_COR(pu->chan->caller.id.name.valid, pu->chan->caller.id.name.str, "<unknown>"),
+ 			S_COR(pu->chan->connected.id.number.valid, pu->chan->connected.id.number.str, "<unknown>"),
+-			S_COR(pu->chan->connected.id.name.valid, pu->chan->connected.id.name.str, "<unknown>")
++			S_COR(pu->chan->connected.id.name.valid, pu->chan->connected.id.name.str, "<unknown>"),
++			S_OR(pu->chan->accountcode, "")
+ 			);
+ 
+ 		ast_free(pu);
+diff -Naur asterisk-1.8.5.0-orig/main/manager.c asterisk-1.8.5.0/main/manager.c
+--- asterisk-1.8.5.0-orig/main/manager.c	2011-06-17 14:51:16.000000000 -0400
++++ asterisk-1.8.5.0/main/manager.c	2011-07-15 21:27:26.000000000 -0400
+@@ -3200,7 +3200,7 @@
+ 			"CallerIDName: %s\r\n"
+ 			"ConnectedLineNum: %s\r\n"
+ 			"ConnectedLineName: %s\r\n"
+-			"Accountcode: %s\r\n"
++			"AccountCode: %s\r\n"
+ 			"ChannelState: %d\r\n"
+ 			"ChannelStateDesc: %s\r\n"
+ 			"Context: %s\r\n"
+@@ -3600,12 +3600,14 @@
+ 		"Reason: %d\r\n"
+ 		"Uniqueid: %s\r\n"
+ 		"CallerIDNum: %s\r\n"
+-		"CallerIDName: %s\r\n",
++		"CallerIDName: %s\r\n"
++		"AccountCode: %s\r\n",
+ 		in->idtext, ast_strlen_zero(in->idtext) ? "" : "\r\n", res ? "Failure" : "Success",
+ 		chan ? chan->name : requested_channel, in->context, in->exten, reason,
+ 		chan ? chan->uniqueid : "<null>",
+ 		S_OR(in->cid_num, "<unknown>"),
+-		S_OR(in->cid_name, "<unknown>")
++		S_OR(in->cid_name, "<unknown>"),
++		S_OR(in->account, "")
+ 		);
+ 
+ 	/* Locked by ast_pbx_outgoing_exten or ast_pbx_outgoing_app */

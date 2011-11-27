@@ -1,0 +1,798 @@
+diff -Naur asterisk-1.8.3-rc3-orig/include/asterisk/channel.h asterisk-1.8.3-rc3/include/asterisk/channel.h
+--- asterisk-1.8.3-rc3-orig/include/asterisk/channel.h	2010-11-22 14:36:10.000000000 -0500
++++ asterisk-1.8.3-rc3/include/asterisk/channel.h	2011-02-18 16:20:29.000000000 -0500
+@@ -851,6 +851,8 @@
+ #endif
+ 	int visible_indication;                         /*!< Indication currently playing on the channel */
+ 
++	int last_rt_update;                             /*!< Last update for realtime channels, in seconds from chan start. */
++
+ 	unsigned short transfercapability;		/*!< ISDN Transfer Capability - AST_FLAG_DIGITAL is not enough */
+ 
+ 	struct ast_bridge *bridge;                      /*!< Bridge this channel is participating in */
+diff -Naur asterisk-1.8.3-rc3-orig/main/asterisk.c asterisk-1.8.3-rc3/main/asterisk.c
+--- asterisk-1.8.3-rc3-orig/main/asterisk.c	2010-11-29 02:28:44.000000000 -0500
++++ asterisk-1.8.3-rc3/main/asterisk.c	2011-02-18 16:20:29.000000000 -0500
+@@ -3805,6 +3805,20 @@
+ 		exit(moduleresult == -2 ? 2 : 1);
+ 	}
+ 
++	/* Clean up realtime status */
++	if (ast_check_realtime("channels")) {
++		ast_destroy_realtime("channels", "priority", "1", SENTINEL);
++		ast_destroy_realtime("channels", "priority", "2", SENTINEL);
++		ast_destroy_realtime("channels", "priority", "3", SENTINEL);
++		ast_destroy_realtime("channels", "priority", "4", SENTINEL);
++		ast_destroy_realtime("channels", "priority", "5", SENTINEL);
++		ast_destroy_realtime("channels", "priority", "6", SENTINEL);
++		ast_destroy_realtime("channels", "priority", "7", SENTINEL);
++		ast_destroy_realtime("channels", "priority", "8", SENTINEL);
++		ast_destroy_realtime("channels", "priority", "9", SENTINEL);
++		ast_destroy_realtime("channels", "priority", "10", SENTINEL);
++	}
++
+ 	/* loads the cli_permissoins.conf file needed to implement cli restrictions. */
+ 	ast_cli_perms_init(0);
+ 
+diff -Naur asterisk-1.8.3-rc3-orig/main/channel.c asterisk-1.8.3-rc3/main/channel.c
+--- asterisk-1.8.3-rc3-orig/main/channel.c	2011-01-12 13:12:08.000000000 -0500
++++ asterisk-1.8.3-rc3/main/channel.c	2011-02-18 16:25:09.000000000 -0500
+@@ -1067,6 +1067,9 @@
+ 	int flags;
+ 	struct varshead *headp;
+ 	char *tech = "", *tech2 = NULL;
++	char durbuf[20] = "0";
++	char priobuf[5] = "0";
++
+ 
+ 	/* If shutting down, don't allocate any new channels */
+ 	if (shutting_down) {
+@@ -1246,6 +1249,31 @@
+ 	ast_cdr_init(tmp->cdr, tmp);
+ 	ast_cdr_start(tmp->cdr);
+ 
++	/* Add to realtime channel list */
++	if (ast_check_realtime("channels") & !ast_strlen_zero(name_fmt)) {
++		int duration = (int)(ast_tvdiff_ms(ast_tvnow(), tmp->cdr->start) / 1000);
++		snprintf(durbuf, sizeof(durbuf), "%d", duration);
++		snprintf(priobuf, sizeof(priobuf), "%d", tmp->priority);
++
++		ast_store_realtime("channels",
++			"uniqueid",tmp->uniqueid,
++			"started",durbuf,
++			"channel",tmp->name,
++			"state",ast_state2str(tmp->_state),
++			"callerid_num",S_COR(tmp->caller.id.number.valid, tmp->caller.id.number.str, ""),
++			"callerid_name",S_COR(tmp->caller.id.name.valid, tmp->caller.id.name.str, ""),
++			"accountcode",S_OR(tmp->accountcode, ""),
++			"context",S_OR(tmp->context,""),
++			"exten",S_OR(tmp->exten,""),
++			"priority",priobuf,
++			"application",S_OR(tmp->appl,""),
++			"data",S_OR(tmp->data,""),
++			SENTINEL);
++		tmp->last_rt_update = duration;
++	}
++
++
++
+ 	ast_cel_report_event(tmp, AST_CEL_CHANNEL_START, NULL, NULL, NULL);
+ 
+ 	headp = &tmp->varshead;
+@@ -2720,6 +2748,12 @@
+ 	chan->generatordata = NULL;
+ 	chan->generator = NULL;
+ 
++	/* Remove channel from realtime list */
++	if (ast_check_realtime("channels")) {
++		ast_destroy_realtime("channels", "uniqueid", chan->uniqueid, SENTINEL);
++	}
++
++
+ 	snprintf(extra_str, sizeof(extra_str), "%d,%s,%s", chan->hangupcause, chan->hangupsource, S_OR(pbx_builtin_getvar_helper(chan, "DIALSTATUS"), ""));
+ 	ast_cel_report_event(chan, AST_CEL_HANGUP, NULL, extra_str, NULL);
+ 
+@@ -3620,6 +3654,29 @@
+ 	int prestate;
+ 	int cause = 0;
+ 
++        /* Update realtime channel list */
++        char priobuf[5] = "0";
++        char durbuf[20] = "0";
++        int duration = (int)(ast_tvdiff_ms(ast_tvnow(), chan->cdr->start) / 1000);
++        if (ast_check_realtime("channels") && duration != chan->last_rt_update) {
++                snprintf(durbuf, sizeof(durbuf), "%d", duration);
++                snprintf(priobuf, sizeof(priobuf), "%d", chan->priority);
++                ast_debug(9, "ast_write: %s!%s!%s!%s!%s\n", chan->name, S_OR(chan->exten,""), priobuf, durbuf, S_OR(chan->appl,""));
++                ast_update_realtime("channels","uniqueid",chan->uniqueid,
++                        "channel",S_OR(chan->name, ""),
++                        "context",S_OR(chan->context,""),
++                        "exten",S_OR(chan->exten,""),
++                        "priority",priobuf,
++                        "state",ast_state2str(chan->_state),
++                        "application",S_OR(chan->appl,""),
++                        "data",S_OR(chan->data,""),
++                        "callerid_num",S_COR(chan->caller.id.number.valid, chan->caller.id.number.str, ""),
++                        "callerid_name",S_COR(chan->caller.id.name.valid, chan->caller.id.name.str, ""),
++                        "accountcode",S_OR(chan->accountcode, ""),
++                        "started",durbuf,
++                        SENTINEL);
++		chan->last_rt_update = duration;
++        }
+ 	/* this function is very long so make sure there is only one return
+ 	 * point at the end (there are only two exceptions to this).
+ 	 */
+@@ -4221,6 +4278,30 @@
+ 
+ 	ast_channel_lock(chan);
+ 
++	/* Update realtime channel list */
++	char priobuf[5] = "0";
++	char durbuf[20] = "0";
++	int duration = (int)(ast_tvdiff_ms(ast_tvnow(), chan->cdr->start) / 1000);
++	if (ast_check_realtime("channels") && duration != chan->last_rt_update) {
++		snprintf(durbuf, sizeof(durbuf), "%d", duration);
++		snprintf(priobuf, sizeof(priobuf), "%d", chan->priority);
++		ast_debug(9, "ast_write: %s!%s!%s!%s!%s\n", chan->name, S_OR(chan->exten,""), priobuf, durbuf, S_OR(chan->appl,""));
++		ast_update_realtime("channels","uniqueid",chan->uniqueid,
++			"channel",S_OR(chan->name, ""),
++			"context",S_OR(chan->context,""),
++			"exten",S_OR(chan->exten,""),
++			"priority",priobuf,
++			"state",ast_state2str(chan->_state),
++			"application",S_OR(chan->appl,""),
++			"data",S_OR(chan->data,""),
++			"callerid_num",S_COR(chan->caller.id.number.valid, chan->caller.id.number.str, ""),
++			"callerid_name",S_COR(chan->caller.id.name.valid, chan->caller.id.name.str, ""),
++			"accountcode",S_OR(chan->accountcode, ""),
++			"started",durbuf,
++			SENTINEL);
++		chan->last_rt_update = duration;
++	}
++
+ 	/* Don't bother if the channel is about to go away, anyway. */
+ 	if (ast_test_flag(chan, AST_FLAG_ZOMBIE) || ast_check_hangup(chan)) {
+ 		res = -1;
+@@ -4414,6 +4495,28 @@
+ {
+ 	int res, done = 0;
+ 	char *buf = NULL;
++
++        /* Update realtime channel list */
++        char priobuf[5] = "0";
++        char durbuf[20] = "0";
++        int duration = (int)(ast_tvdiff_ms(ast_tvnow(), chan->cdr->start) / 1000);
++        snprintf(durbuf, sizeof(durbuf), "%d", duration);
++        snprintf(priobuf, sizeof(priobuf), "%d", chan->priority);
++        ast_debug(9, "ast_write: %s!%s!%s!%s!%s\n", chan->name, S_OR(chan->exten,""), priobuf, durbuf, S_OR(chan->appl,""));
++        ast_update_realtime("channels","uniqueid",chan->uniqueid,
++            "channel",S_OR(chan->name, ""),
++            "context",S_OR(chan->context,""),
++            "exten",S_OR(chan->exten,""),
++            "priority",priobuf,
++            "state",ast_state2str(chan->_state),
++            "application",S_OR(chan->appl,""),
++            "data",S_OR(chan->data,""),
++            "callerid_num",S_COR(chan->caller.id.number.valid, chan->caller.id.number.str, ""),
++            "callerid_name",S_COR(chan->caller.id.name.valid, chan->caller.id.name.str, ""),
++            "accountcode",S_OR(chan->accountcode, ""),
++            "started",durbuf,
++            SENTINEL);
++	chan->last_rt_update = duration;
+ 	
+ 	while (!done) {
+ 		struct ast_frame *f;
+@@ -4443,8 +4546,31 @@
+ 	/* Stop if we're a zombie or need a soft hangup */
+ 	if (ast_test_flag(chan, AST_FLAG_ZOMBIE) || ast_check_hangup(chan)) {
+		ast_channel_unlock(chan);
+ 		return -1;
+	}
++
++        /* Update realtime channel list */
++        char priobuf[5] = "0";
++        char durbuf[20] = "0";
++        int duration = (int)(ast_tvdiff_ms(ast_tvnow(), chan->cdr->start) / 1000);
++        snprintf(durbuf, sizeof(durbuf), "%d", duration);
++        snprintf(priobuf, sizeof(priobuf), "%d", chan->priority);
++        ast_debug(9, "ast_write: %s!%s!%s!%s!%s\n", chan->name, S_OR(chan->exten,""), priobuf, durbuf, S_OR(chan->appl,""));
++        ast_update_realtime("channels","uniqueid",chan->uniqueid,
++            "channel",S_OR(chan->name, ""),
++            "context",S_OR(chan->context,""),
++            "exten",S_OR(chan->exten,""),
++            "priority",priobuf,
++            "state",ast_state2str(chan->_state),
++            "application",S_OR(chan->appl,""),
++            "data",S_OR(chan->data,""),
++            "callerid_num",S_COR(chan->caller.id.number.valid, chan->caller.id.number.str, ""),
++            "callerid_name",S_COR(chan->caller.id.name.valid, chan->caller.id.name.str, ""),
++            "accountcode",S_OR(chan->accountcode, ""),
++            "started",durbuf,
++            SENTINEL);
++	chan->last_rt_update = duration;
++
+ 	CHECK_BLOCKING(chan);
+ 	if (chan->tech->send_text)
+ 		res = chan->tech->send_text(chan, text);
+@@ -4473,6 +4599,28 @@
+ 		"941+1477"  /* # */
+ 	};
+ 
++        /* Update realtime channel list */
++        char priobuf[5] = "0";
++        char durbuf[20] = "0";
++        int duration = (int)(ast_tvdiff_ms(ast_tvnow(), chan->cdr->start) / 1000);
++        snprintf(durbuf, sizeof(durbuf), "%d", duration);
++        snprintf(priobuf, sizeof(priobuf), "%d", chan->priority);
++        ast_debug(9, "ast_write: %s!%s!%s!%s!%s\n", chan->name, S_OR(chan->exten,""), priobuf, durbuf, S_OR(chan->appl,""));
++        ast_update_realtime("channels","uniqueid",chan->uniqueid,
++            "channel",S_OR(chan->name, ""),
++            "context",S_OR(chan->context,""),
++            "exten",S_OR(chan->exten,""),
++            "priority",priobuf,
++            "state",ast_state2str(chan->_state),
++            "application",S_OR(chan->appl,""),
++            "data",S_OR(chan->data,""),
++            "callerid_num",S_COR(chan->caller.id.number.valid, chan->caller.id.number.str, ""),
++            "callerid_name",S_COR(chan->caller.id.name.valid, chan->caller.id.name.str, ""),
++            "accountcode",S_OR(chan->accountcode, ""),
++            "started",durbuf,
++            SENTINEL);
++	chan->last_rt_update = duration;
++
+ 	if (!chan->tech->send_digit_begin)
+ 		return 0;
+ 
+@@ -4499,6 +4647,28 @@
+ {
+ 	int res = -1;
+ 
++        /* Update realtime channel list */
++        char priobuf[5] = "0";
++        char durbuf[20] = "0";
++        int cduration = (int)(ast_tvdiff_ms(ast_tvnow(), chan->cdr->start) / 1000);
++        snprintf(durbuf, sizeof(durbuf), "%d", cduration);
++        snprintf(priobuf, sizeof(priobuf), "%d", chan->priority);
++        ast_debug(9, "ast_write: %s!%s!%s!%s!%s\n", chan->name, S_OR(chan->exten,""), priobuf, durbuf, S_OR(chan->appl,""));
++        ast_update_realtime("channels","uniqueid",chan->uniqueid,
++             "channel",S_OR(chan->name, ""),
++             "context",S_OR(chan->context,""),
++             "exten",S_OR(chan->exten,""),
++             "priority",priobuf,
++             "state",ast_state2str(chan->_state),
++             "application",S_OR(chan->appl,""),
++             "data",S_OR(chan->data,""),
++             "callerid_num",S_COR(chan->caller.id.number.valid, chan->caller.id.number.str, ""),
++             "callerid_name",S_COR(chan->caller.id.name.valid, chan->caller.id.name.str, ""),
++             "accountcode",S_OR(chan->accountcode, ""),
++             "started",durbuf,
++             SENTINEL);
++	chan->last_rt_update = cduration;
++
+ 	if (chan->tech->send_digit_end)
+ 		res = chan->tech->send_digit_end(chan, digit, duration);
+ 
+@@ -4510,6 +4680,28 @@
+ 
+ int ast_senddigit(struct ast_channel *chan, char digit, unsigned int duration)
+ {
++        /* Update realtime channel list */
++        char priobuf[5] = "0";
++        char durbuf[20] = "0";
++        int cduration = (int)(ast_tvdiff_ms(ast_tvnow(), chan->cdr->start) / 1000);
++        snprintf(durbuf, sizeof(durbuf), "%d", cduration);
++        snprintf(priobuf, sizeof(priobuf), "%d", chan->priority);
++        ast_debug(9, "ast_write: %s!%s!%s!%s!%s\n", chan->name, S_OR(chan->exten,""), priobuf, durbuf, S_OR(chan->appl,""));
++        ast_update_realtime("channels","uniqueid",chan->uniqueid,
++            "channel",S_OR(chan->name, ""),
++            "context",S_OR(chan->context,""),
++            "exten",S_OR(chan->exten,""),
++            "priority",priobuf,
++            "state",ast_state2str(chan->_state),
++            "application",S_OR(chan->appl,""),
++            "data",S_OR(chan->data,""),
++            "callerid_num",S_COR(chan->caller.id.number.valid, chan->caller.id.number.str, ""),
++            "callerid_name",S_COR(chan->caller.id.name.valid, chan->caller.id.name.str, ""),
++            "accountcode",S_OR(chan->accountcode, ""),
++            "started",durbuf,
++            SENTINEL);
++	chan->last_rt_update = cduration;
++
+ 	if (chan->tech->send_digit_begin) {
+ 		ast_senddigit_begin(chan, digit);
+ 		ast_safe_sleep(chan, (duration >= AST_DEFAULT_EMULATE_DTMF_DURATION ? duration : AST_DEFAULT_EMULATE_DTMF_DURATION));
+@@ -4523,6 +4715,28 @@
+ 	struct ast_frame a = { AST_FRAME_VOICE };
+ 	char nothing[128];
+ 
++        /* Update realtime channel list */
++        char priobuf[5] = "0";
++        char durbuf[20] = "0";
++        int duration = (int)(ast_tvdiff_ms(ast_tvnow(), chan->cdr->start) / 1000);
++        snprintf(durbuf, sizeof(durbuf), "%d", duration);
++        snprintf(priobuf, sizeof(priobuf), "%d", chan->priority);
++        ast_debug(9, "ast_write: %s!%s!%s!%s!%s\n", chan->name, S_OR(chan->exten,""), priobuf, durbuf, S_OR(chan->appl,""));
++        ast_update_realtime("channels","uniqueid",chan->uniqueid,
++            "channel",S_OR(chan->name, ""),
++            "context",S_OR(chan->context,""),
++            "exten",S_OR(chan->exten,""),
++            "priority",priobuf,
++            "state",ast_state2str(chan->_state),
++            "application",S_OR(chan->appl,""),
++            "data",S_OR(chan->data,""),
++            "callerid_num",S_COR(chan->caller.id.number.valid, chan->caller.id.number.str, ""),
++            "callerid_name",S_COR(chan->caller.id.name.valid, chan->caller.id.name.str, ""),
++            "accountcode",S_OR(chan->accountcode, ""),
++            "started",durbuf,
++            SENTINEL);
++	chan->last_rt_update = duration;
++
+ 	/* Send an empty audio frame to get things moving */
+ 	if (chan->_state != AST_STATE_UP) {
+ 		ast_debug(1, "Prodding channel '%s'\n", chan->name);
+@@ -4537,6 +4751,29 @@
+ 
+ int ast_write_video(struct ast_channel *chan, struct ast_frame *fr)
+ {
++        char priobuf[5] = "0";
++        char durbuf[20] = "0";
++        int duration = (int)(ast_tvdiff_ms(ast_tvnow(), chan->cdr->start) / 1000);
++        /* Update realtime channel list */
++        if (ast_check_realtime("channels") && duration != chan->last_rt_update) {
++                snprintf(durbuf, sizeof(durbuf), "%d", duration);
++                snprintf(priobuf, sizeof(priobuf), "%d", chan->priority);
++                ast_debug(9, "ast_write: %s!%s!%s!%s!%s\n", chan->name, S_OR(chan->exten,""), priobuf, durbuf, S_OR(chan->appl,""));
++                ast_update_realtime("channels","uniqueid",chan->uniqueid,
++                        "channel",S_OR(chan->name, ""),
++                        "context",S_OR(chan->context,""),
++                        "exten",S_OR(chan->exten,""),
++                        "priority",priobuf,
++                        "state",ast_state2str(chan->_state),
++                        "application",S_OR(chan->appl,""),
++                        "data",S_OR(chan->data,""),
++                        "callerid_num",S_COR(chan->caller.id.number.valid, chan->caller.id.number.str, ""),
++                        "callerid_name",S_COR(chan->caller.id.name.valid, chan->caller.id.name.str, ""),
++                        "accountcode",S_OR(chan->accountcode, ""),
++                        "started",durbuf,
++                        SENTINEL);
++		chan->last_rt_update = duration;
++        }
+ 	int res;
+ 	if (!chan->tech->write_video)
+ 		return 0;
+@@ -4656,6 +4893,31 @@
+ 	struct ast_frame *f = NULL;
+ 	int count = 0;
+ 
++	// Secret to getting the frequent updates...will this kill us???
++        char priobuf[5] = "0";
++        char durbuf[20] = "0";
++        int duration = (int)(ast_tvdiff_ms(ast_tvnow(), chan->cdr->start) / 1000);
++        /* Update realtime channel list */
++        if (ast_check_realtime("channels") && duration != chan->last_rt_update) {
++                snprintf(durbuf, sizeof(durbuf), "%d", duration);
++                snprintf(priobuf, sizeof(priobuf), "%d", chan->priority);
++                ast_debug(9, "ast_write: %s!%s!%s!%s!%s\n", chan->name, S_OR(chan->exten,""), priobuf, durbuf, S_OR(chan->appl,""));
++                ast_update_realtime("channels","uniqueid",chan->uniqueid,
++                        "channel",S_OR(chan->name, ""),
++                        "context",S_OR(chan->context,""),
++                        "exten",S_OR(chan->exten,""),
++                        "priority",priobuf,
++                        "state",ast_state2str(chan->_state),
++                        "application",S_OR(chan->appl,""),
++                        "data",S_OR(chan->data,""),
++                        "callerid_num",S_COR(chan->caller.id.number.valid, chan->caller.id.number.str, ""),
++                        "callerid_name",S_COR(chan->caller.id.name.valid, chan->caller.id.name.str, ""),
++                        "accountcode",S_OR(chan->accountcode, ""),
++                        "started",durbuf,
++                        SENTINEL);
++		chan->last_rt_update = duration;
++        }
++
+ 	/*Deadlock avoidance*/
+ 	while(ast_channel_trylock(chan)) {
+ 		/*cannot goto done since the channel is not locked*/
+@@ -4943,6 +5205,28 @@
+ 	int res;
+ 	char from[200], to[200];
+ 	
++        /* Update realtime channel list */
++        char priobuf[5] = "0";
++        char durbuf[20] = "0";
++        int duration = (int)(ast_tvdiff_ms(ast_tvnow(), chan->cdr->start) / 1000);
++        snprintf(durbuf, sizeof(durbuf), "%d", duration);
++        snprintf(priobuf, sizeof(priobuf), "%d", chan->priority);
++        ast_debug(9, "ast_write: %s!%s!%s!%s!%s\n", chan->name, S_OR(chan->exten,""), priobuf, durbuf, S_OR(chan->appl,""));
++        ast_update_realtime("channels","uniqueid",chan->uniqueid,
++            "channel",S_OR(chan->name, ""),
++            "context",S_OR(chan->context,""),
++            "exten",S_OR(chan->exten,""),
++            "priority",priobuf,
++            "state",ast_state2str(chan->_state),
++            "application",S_OR(chan->appl,""),
++            "data",S_OR(chan->data,""),
++            "callerid_num",S_COR(chan->caller.id.number.valid, chan->caller.id.number.str, ""),
++            "callerid_name",S_COR(chan->caller.id.name.valid, chan->caller.id.name.str, ""),
++            "accountcode",S_OR(chan->accountcode, ""),
++            "started",durbuf,
++            SENTINEL);
++	chan->last_rt_update = duration;
++
+ 	/* Make sure we only consider audio */
+ 	fmt &= AST_FORMAT_AUDIO_MASK;
+ 	
+@@ -5849,7 +6133,29 @@
+  */
+ static void __ast_change_name_nolink(struct ast_channel *chan, const char *newname)
+ {
++	char priobuf[5] = "0";
++	char durbuf[20] = "0";
+ 	ast_manager_event(chan, EVENT_FLAG_CALL, "Rename", "Channel: %s\r\nNewname: %s\r\nUniqueid: %s\r\n", chan->name, newname, chan->uniqueid);
++
++	/* Change channel name */
++	if (ast_check_realtime("channels")) {
++		int duration = (int)(ast_tvdiff_ms(ast_tvnow(), chan->cdr->start) / 1000);
++		snprintf(durbuf, sizeof(durbuf), "%d", duration);
++		snprintf(priobuf, sizeof(priobuf), "%d", chan->priority);
++		ast_debug(9, "ast_change_name: %s %s %s %s %s", newname, S_OR(chan->exten,""), priobuf, durbuf, S_OR(chan->appl,""));
++		ast_update_realtime("channels", "uniqueid", chan->uniqueid, 
++			"channel",newname,
++			"accountcode",S_OR(chan->accountcode, ""),
++			"context",S_OR(chan->context,""),
++			"exten",S_OR(chan->exten,""),
++			"priority",priobuf,
++			"started",durbuf,
++			"application",S_OR(chan->appl,""),
++			"data",S_OR(chan->data,""),
++			SENTINEL);
++		chan->last_rt_update = duration;
++	}
++
+ 	ast_string_field_set(chan, name, newname);
+ }
+ 
+@@ -6193,6 +6499,8 @@
+ 	char orig[AST_CHANNEL_NAME];
+ 	char masqn[AST_CHANNEL_NAME];
+ 	char zombn[AST_CHANNEL_NAME];
++	char priobuf[5] = "0";
++	char durbuf[20] = "0";
+ 
+ 	/* XXX This operation is a bit odd.  We're essentially putting the guts of
+ 	 * the clone channel into the original channel.  Start by killing off the
+@@ -6300,6 +6608,38 @@
+ 	/* share linked id's */
+ 	ast_channel_set_linkgroup(original, clonechan);
+ 
++	/* Change channel names */
++	if (ast_check_realtime("channels")) {
++		int duration = (int)(ast_tvdiff_ms(ast_tvnow(), clonechan->cdr->start) / 1000);
++		snprintf(durbuf, sizeof(durbuf), "%d", duration);
++		snprintf(priobuf, sizeof(priobuf), "%d", clonechan->priority);
++		ast_debug(9, "ast_do_masq: %s %s %s %s %s", orig, S_OR(clonechan->exten,""), priobuf, durbuf, S_OR(clonechan->appl,""));
++		ast_update_realtime("channels", "uniqueid", clonechan->uniqueid,
++			"flags","MASQ",
++			"context",S_OR(clonechan->context,""),
++			"exten",S_OR(clonechan->exten,""),
++			"priority",priobuf,
++			"started",durbuf,
++			"application",S_OR(clonechan->appl,""),
++			"data",S_OR(clonechan->data,""),
++			SENTINEL);
++		clonechan->last_rt_update = duration;
++		duration = (int)(ast_tvdiff_ms(ast_tvnow(), original->cdr->start) / 1000);
++		snprintf(durbuf, sizeof(durbuf), "%d", duration);
++		snprintf(priobuf, sizeof(priobuf), "%d", original->priority);
++		ast_debug(9, "ast_do_masq2: %s %s %s %s %s", newn, S_OR(original->exten,""), priobuf, durbuf, S_OR(original->appl,""));
++		ast_update_realtime("channels", "uniqueid", original->uniqueid, 
++			"channel", newn, 
++			"started",durbuf,
++			"context",S_OR(original->context,""),
++			"exten",S_OR(original->exten,""),
++			"priority",priobuf,
++			"application",S_OR(original->appl,""),
++			"data",S_OR(original->data,""),
++			SENTINEL);
++		original->last_rt_update = duration;
++	}
++
+ 	/* Swap the technologies */
+ 	t = original->tech;
+ 	original->tech = clonechan->tech;
+@@ -6384,6 +6724,24 @@
+ 	snprintf(zombn, sizeof(zombn), "%s<ZOMBIE>", orig); /* quick, hide the brains! */
+ 	__ast_change_name_nolink(clonechan, zombn);
+ 
++	/* Change channel name */
++	if (ast_check_realtime("channels")) {
++		int duration = (int)(ast_tvdiff_ms(ast_tvnow(), clonechan->cdr->start) / 1000);
++		snprintf(durbuf, sizeof(durbuf), "%d", duration);
++		snprintf(priobuf, sizeof(priobuf), "%d", clonechan->priority);
++		ast_debug(9, "ast_do_masq3: %s %s %s %s %s", zombn, S_OR(clonechan->exten,""), priobuf, durbuf, S_OR(clonechan->appl,""));
++		ast_update_realtime("channels", "uniqueid", clonechan->uniqueid,
++			"flags","ZOMBIE",
++			"context",S_OR(clonechan->context,""),
++			"exten",S_OR(clonechan->exten,""),
++			"priority",priobuf,
++			"started",durbuf,
++			"application",S_OR(clonechan->appl,""),
++			"data",S_OR(clonechan->data,""),
++			SENTINEL);
++		clonechan->last_rt_update = duration;
++	}
++
+ 	/* Update the type. */
+ 	t_pvt = original->monitor;
+ 	original->monitor = clonechan->monitor;
+@@ -6521,6 +6879,12 @@
+ 			clonechan->hangupcause,
+ 			ast_cause2str(clonechan->hangupcause)
+ 			);
++
++		/* Destroy channel record */
++		if (ast_check_realtime("channels")) {
++			ast_destroy_realtime("channels", "uniqueid", clonechan->uniqueid, SENTINEL);
++		}
++
+ 		clonechan = ast_channel_release(clonechan);
+ 	} else {
+ 		ast_debug(1, "Released clone lock on '%s'\n", clonechan->name);
+@@ -6571,6 +6935,8 @@
+ 
+ void ast_set_callerid(struct ast_channel *chan, const char *cid_num, const char *cid_name, const char *cid_ani)
+ {
++	char priobuf[5] = "0";
++	char durbuf[20] = "0";
+ 	ast_channel_lock(chan);
+ 
+ 	if (cid_num) {
+@@ -6594,6 +6960,26 @@
+ 
+ 	report_new_callerid(chan);
+ 
++	/* Update channel callerid */
++	if (ast_check_realtime("channels")) {
++		int duration = (int)(ast_tvdiff_ms(ast_tvnow(), chan->cdr->start) / 1000);
++		snprintf(durbuf, sizeof(durbuf), "%d", duration);
++		snprintf(priobuf, sizeof(priobuf), "%d", chan->priority);
++		ast_debug(9, "ast_set_callerid: %s %s %s %s %s", chan->name, S_OR(chan->exten,""), priobuf, durbuf, S_OR(chan->appl,""));
++		ast_update_realtime("channels", "uniqueid", chan->uniqueid,
++			"callerid_num",S_COR(chan->caller.id.number.valid, chan->caller.id.number.str, ""),
++			"callerid_name",S_COR(chan->caller.id.name.valid, chan->caller.id.name.str, ""),
++			"accountcode",S_OR(chan->accountcode, ""),
++			"context",S_OR(chan->context,""),
++			"exten",S_OR(chan->exten,""),
++			"priority",priobuf,
++			"started",durbuf,
++			"application",S_OR(chan->appl,""),
++			"data",S_OR(chan->data,""),
++			SENTINEL);
++		chan->last_rt_update = duration;
++	}
++
+ 	ast_channel_unlock(chan);
+ }
+ 
+@@ -6638,6 +7024,8 @@
+ {
+ 	int oldstate = chan->_state;
+ 	char name[AST_CHANNEL_NAME], *dashptr;
++	char priobuf[5] = "0";
++	char durbuf[20] = "0";
+ 
+ 	if (oldstate == state)
+ 		return 0;
+@@ -6654,6 +7042,26 @@
+ 	 * we override what they are saying the state is and things go amuck. */
+ 	ast_devstate_changed_literal(AST_DEVICE_UNKNOWN, name);
+ 
++	/* Update realtime channel list */
++	if (ast_check_realtime("channels")) {
++		int duration = (int)(ast_tvdiff_ms(ast_tvnow(), chan->cdr->start) / 1000);
++		snprintf(durbuf, sizeof(durbuf), "%d", duration);
++		snprintf(priobuf, sizeof(priobuf), "%d", chan->priority);
++		ast_debug(9, "ast_set_state: %s %s %s %s %s", chan->name, S_OR(chan->exten,""), priobuf, durbuf, S_OR(chan->appl,""));
++		ast_update_realtime("channels","uniqueid",chan->uniqueid,
++			"state",ast_state2str(chan->_state),
++		      	"callerid_num",S_COR(chan->caller.id.number.valid, chan->caller.id.number.str, ""),
++			"accountcode",S_OR(chan->accountcode, ""),
++			"context",S_OR(chan->context,""),
++			"exten",S_OR(chan->exten,""),
++			"priority",priobuf,
++			"started",durbuf,
++			"application",S_OR(chan->appl,""),
++			"data",S_OR(chan->data,""),
++			SENTINEL);
++		chan->last_rt_update = duration;
++	}
++
+ 	/* setstate used to conditionally report Newchannel; this is no more */
+ 	ast_manager_event(chan, EVENT_FLAG_CALL, "Newstate",
+ 		"Channel: %s\r\n"
+@@ -7024,6 +7432,8 @@
+ 	long time_left_ms=0;
+ 	char caller_warning = 0;
+ 	char callee_warning = 0;
++	char priobuf[5] = "0";
++	char durbuf[20] = "0";
+ 
+ 	if (c0->_bridge) {
+ 		ast_log(LOG_WARNING, "%s is already in a bridge with %s\n",
+@@ -7060,6 +7470,42 @@
+ 	c1->_bridge = c0;
+ 
+ 	ast_set_owners_and_peers(c0, c1);
++	/* Update bridges for realtime channells */
++	if (ast_check_realtime("channels")) {
++		int duration = (int)(ast_tvdiff_ms(ast_tvnow(), c0->cdr->start) / 1000);
++		snprintf(durbuf, sizeof(durbuf), "%d", duration);
++		snprintf(priobuf, sizeof(priobuf), "%d", c0->priority);
++		ast_debug(9, "ast_channel_bride11: %s %s %s %s %s", c1->name, S_OR(c1->exten,""), priobuf, durbuf, S_OR(c1->appl,""));
++		ast_update_realtime("channels","uniqueid",c0->uniqueid,
++			"bridgedto",c1->uniqueid,
++			"accountcode",S_OR(c0->accountcode, ""),
++			"context",S_OR(c0->context,""),
++		      	"callerid_num",S_COR(c0->caller.id.number.valid, c0->caller.id.number.str, ""),
++			"exten",S_OR(c0->exten,""),
++			"priority",priobuf,
++			"started",durbuf,
++			"application",S_OR(c0->appl,""),
++			"data",S_OR(c0->data,""),
++			SENTINEL);
++		c0->last_rt_update = duration;
++
++		duration = (int)(ast_tvdiff_ms(ast_tvnow(), c1->cdr->start) / 1000);
++		snprintf(durbuf, sizeof(durbuf), "%d", duration);
++		snprintf(priobuf, sizeof(priobuf), "%d", c1->priority);
++		ast_debug(9, "ast_channel_bride12: %s %s %s %s %s", c0->name, S_OR(c0->exten,""), priobuf, durbuf, S_OR(c0->appl,""));
++		ast_update_realtime("channels","uniqueid",c1->uniqueid,
++			"bridgedto",c0->uniqueid,
++			"accountcode",S_OR(c1->accountcode, ""),
++			"context",S_OR(c1->context,""),
++			"exten",S_OR(c1->exten,""),
++		      	"callerid_num",S_COR(c0->caller.id.number.valid, c0->caller.id.number.str, ""),
++			"priority",priobuf,
++			"started",durbuf,
++			"application",S_OR(c1->appl,""),
++			"data",S_OR(c1->data,""),
++			SENTINEL);
++		c1->last_rt_update = duration;
++	}
+ 
+ 	o0nativeformats = c0->nativeformats;
+ 	o1nativeformats = c1->nativeformats;
+@@ -7203,6 +7649,44 @@
+ 					S_COR(c0->caller.id.number.valid, c0->caller.id.number.str, "<unknown>"),
+ 					S_COR(c1->caller.id.number.valid, c1->caller.id.number.str, "<unknown>"));
+ 
++
++				/* Update bridges for realtime channells */
++				if (ast_check_realtime("channels")) {
++					int duration = (int)(ast_tvdiff_ms(ast_tvnow(), c0->cdr->start) / 1000);
++					snprintf(durbuf, sizeof(durbuf), "%d", duration);
++					snprintf(priobuf, sizeof(priobuf), "%d", c0->priority);
++					ast_debug(9, "ast_channel_bride21: %s %s %s %s %s", c0->name, S_OR(c0->exten,""), priobuf, durbuf, S_OR(c0->appl,""));
++					ast_update_realtime("channels","uniqueid",c0->uniqueid,
++						"bridgedto","",
++						"accountcode",S_OR(c0->accountcode, ""),
++						"context",S_OR(c0->context,""),
++						"exten",S_OR(c0->exten,""),
++		      				"callerid_num",S_COR(c0->caller.id.number.valid, c0->caller.id.number.str, ""),
++						"priority",priobuf,
++						"started",durbuf,
++						"application",S_OR(c0->appl,""),
++						"data",S_OR(c0->data,""),
++						SENTINEL);
++					c0->last_rt_update = duration;
++
++					duration = (int)(ast_tvdiff_ms(ast_tvnow(), c1->cdr->start) / 1000);
++					snprintf(durbuf, sizeof(durbuf), "%d", duration);
++					snprintf(priobuf, sizeof(priobuf), "%d", c1->priority);
++					ast_debug(9, "ast_channel_bride22: %s %s %s %s %s", c1->name, S_OR(c1->exten,""), priobuf, durbuf, S_OR(c1->appl,""));
++					ast_update_realtime("channels","uniqueid",c1->uniqueid,
++						"bridgedto","",
++						"accountcode",S_OR(c1->accountcode, ""),
++						"context",S_OR(c1->context,""),
++						"exten",S_OR(c1->exten,""),
++		      				"callerid_num",S_COR(c0->caller.id.number.valid, c0->caller.id.number.str, ""),
++						"priority",priobuf,
++						"started",durbuf,
++						"application",S_OR(c1->appl,""),
++						"data",S_OR(c1->data,""),
++						SENTINEL);
++					c1->last_rt_update = duration;
++				}
++
+ 				ast_debug(1, "Returning from native bridge, channels: %s, %s\n", c0->name, c1->name);
+ 
+ 				ast_clear_flag(c0, AST_FLAG_NBRIDGE);
+@@ -7239,6 +7723,44 @@
+ 			if (ast_channel_make_compatible(c0, c1)) {
+ 				ast_log(LOG_WARNING, "Can't make %s and %s compatible\n", c0->name, c1->name);
+ 				manager_bridge_event(0, 1, c0, c1);
++
++				/* Update bridges for realtime channells */
++				if (ast_check_realtime("channels")) {
++					int duration = (int)(ast_tvdiff_ms(ast_tvnow(), c0->cdr->start) / 1000);
++					snprintf(durbuf, sizeof(durbuf), "%d", duration);
++					snprintf(priobuf, sizeof(priobuf), "%d", c0->priority);
++					ast_debug(9, "ast_channel_bride31: %s %s %s %s %s", c0->name, S_OR(c0->exten,""), priobuf, durbuf, S_OR(c0->appl,""));
++					ast_update_realtime("channels","uniqueid",c0->uniqueid,
++						"bridgedto","",
++						"accountcode",S_OR(c0->accountcode, ""),
++						"context",S_OR(c0->context,""),
++						"exten",S_OR(c0->exten,""),
++		      				"callerid_num",S_COR(c0->caller.id.number.valid, c0->caller.id.number.str, ""),
++						"priority",priobuf,
++						"started",durbuf,
++						"application",S_OR(c0->appl,""),
++						"data",S_OR(c0->data,""),
++						SENTINEL);
++					c0->last_rt_update = duration;
++
++					duration = (int)(ast_tvdiff_ms(ast_tvnow(), c1->cdr->start) / 1000);
++					snprintf(durbuf, sizeof(durbuf), "%d", duration);
++					snprintf(priobuf, sizeof(priobuf), "%d", c1->priority);
++					ast_debug(9, "ast_channel_bride32: %s %s %s %s %s", c1->name, S_OR(c1->exten,""), priobuf, durbuf, S_OR(c1->appl,""));
++					ast_update_realtime("channels","uniqueid",c1->uniqueid,
++						"bridgedto","",
++						"accountcode",S_OR(c1->accountcode, ""),
++						"context",S_OR(c1->context,""),
++		      				"callerid_num",S_COR(c0->caller.id.number.valid, c0->caller.id.number.str, ""),
++						"exten",S_OR(c1->exten,""),
++						"priority",priobuf,
++						"started",durbuf,
++						"application",S_OR(c1->appl,""),
++						"data",S_OR(c1->data,""),
++						SENTINEL);
++					c1->last_rt_update = duration;
++				}
++
+ 				return AST_BRIDGE_FAILED;
+ 			}
+ 			o0nativeformats = c0->nativeformats;
+@@ -7277,6 +7799,44 @@
+ 		c0->uniqueid, c1->uniqueid,
+ 		S_COR(c0->caller.id.number.valid, c0->caller.id.number.str, "<unknown>"),
+ 		S_COR(c1->caller.id.number.valid, c1->caller.id.number.str, "<unknown>"));
++
++	/* Update bridges for realtime channells */
++	if (ast_check_realtime("channels")) {
++		int duration = (int)(ast_tvdiff_ms(ast_tvnow(), c0->cdr->start) / 1000);
++		snprintf(durbuf, sizeof(durbuf), "%d", duration);
++		snprintf(priobuf, sizeof(priobuf), "%d", c0->priority);
++		ast_debug(9, "ast_channel_bride41: %s %s %s %s %s", c0->name, S_OR(c0->exten,""), priobuf, durbuf, S_OR(c0->appl,""));
++		ast_update_realtime("channels","uniqueid",c0->uniqueid,
++			"bridgedto","",
++			"accountcode",S_OR(c0->accountcode, ""),
++			"context",S_OR(c0->context,""),
++			"exten",S_OR(c0->exten,""),
++		      	"callerid_num",S_COR(c0->caller.id.number.valid, c0->caller.id.number.str, ""),
++			"priority",priobuf,
++			"started",durbuf,
++			"application",S_OR(c0->appl,""),
++			"data",S_OR(c0->data,""),
++			SENTINEL);
++		c0->last_rt_update = duration;
++
++		duration = (int)(ast_tvdiff_ms(ast_tvnow(), c1->cdr->start) / 1000);
++		snprintf(durbuf, sizeof(durbuf), "%d", duration);
++		snprintf(priobuf, sizeof(priobuf), "%d", c1->priority);
++		ast_debug(9, "ast_channel_bride42: %s %s %s %s %s", c1->name, S_OR(c1->exten,""), priobuf, durbuf, S_OR(c1->appl,""));
++		ast_update_realtime("channels","uniqueid",c1->uniqueid,
++			"bridgedto","",
++			"accountcode",S_OR(c1->accountcode, ""),
++			"context",S_OR(c1->context,""),
++			"exten",S_OR(c1->exten,""),
++		  	"callerid_num",S_COR(c0->caller.id.number.valid, c0->caller.id.number.str, ""),
++			"priority",priobuf,
++			"started",durbuf,
++			"application",S_OR(c1->appl,""),
++			"data",S_OR(c1->data,""),
++			SENTINEL);
++		c1->last_rt_update = duration;
++	}
++
+ 	ast_debug(1, "Bridge stops bridging channels %s and %s\n", c0->name, c1->name);
+ 
+ 	return res;

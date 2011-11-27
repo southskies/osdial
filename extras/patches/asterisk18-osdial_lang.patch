@@ -1,0 +1,43 @@
+diff -Naur asterisk-1.6.2.16-rc1-orig/main/file.c asterisk-1.6.2.16-rc1/main/file.c
+--- asterisk-1.6.2.16-rc1-orig/main/file.c	2010-10-06 09:48:27.000000000 -0400
++++ asterisk-1.6.2.16-rc1/main/file.c	2010-12-23 11:06:06.000000000 -0500
+@@ -613,6 +613,12 @@
+ 		}
+ 	}
+ 
++	/* Try OSDial as language */
++	char *osdiallang = "osdial";
++	if ((res = fileexists_test(filename, fmt, osdiallang, buf, buflen)) > 0) {
++		return res;
++	}
++
+ 	return 0;
+ }
+ 
+@@ -639,7 +645,7 @@
+ 	}
+ 	if (preflang == NULL)
+ 		preflang = "";
+-	buflen = strlen(preflang) + strlen(filename) + 4;
++	buflen = strlen(preflang) + strlen(filename) + 10;
+ 	buf = alloca(buflen);
+ 	if (buf == NULL)
+ 		return NULL;
+@@ -673,7 +679,7 @@
+ 
+ 	if (preflang == NULL)
+ 		preflang = "";
+-	buflen = strlen(preflang) + strlen(filename) + 4;
++	buflen = strlen(preflang) + strlen(filename) + 10;
+ 	buf = alloca(buflen);
+ 	if (buf == NULL)
+ 		return NULL;
+@@ -921,7 +927,7 @@
+ 
+ 	if (preflang == NULL)
+ 		preflang = "";
+-	buflen = strlen(preflang) + strlen(filename) + 4;	/* room for everything */
++	buflen = strlen(preflang) + strlen(filename) + 10;	/* room for everything */
+ 	buf = alloca(buflen);
+ 	if (buf == NULL)
+ 		return 0;
