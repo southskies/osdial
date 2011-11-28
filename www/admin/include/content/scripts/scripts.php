@@ -571,11 +571,11 @@ if ($ADD==4111111) {
             if ($script_button_id == "") {
                 $stype = "SCRIPT";
                 $sid = $script_id;
-                $stmt=sprintf("UPDATE osdial_scripts SET script_name='$script_name',script_comments='$script_comments',script_text='$script_text',active='$active' WHERE script_id='$script_id';",mres($script_name),mres($script_comments),mres($script_text),mres($active),mres($script_id));
+                $stmt=sprintf("UPDATE osdial_scripts SET script_name='%s',script_comments='%s',script_text='%s',active='%s' WHERE script_id='%s';",mres($script_name),mres($script_comments),mres($script_text),mres($active),mres($script_id));
             } else {
                 $stype = "BUTTON/OBJECTION";
                 $sid = $script_id . ":" . $script_button_id;
-                $stmt=sprintf("UPDATE osdial_script_buttons SET script_button_label='$script_name',script_button_description='$script_comments',script_button_text='$script_text' WHERE script_id='%s' AND script_button_id='%s';",mres($script_name),mres($script_comments),mres($script_text),mres($script_id),mres($script_button_id));
+                $stmt=sprintf("UPDATE osdial_script_buttons SET script_button_label='%s',script_button_description='%s',script_button_text='%s' WHERE script_id='%s' AND script_button_id='%s';",mres($script_name),mres($script_comments),mres($script_text),mres($script_id),mres($script_button_id));
             }
 		    $rslt=mysql_query($stmt, $link);
 
