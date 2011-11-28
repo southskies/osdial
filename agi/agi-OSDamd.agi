@@ -46,16 +46,18 @@ use OSDial;
 my $prog = 'agi-OSDamd.agi';
 my $DB=0;
 
-my $osdial = OSDial->new('DB'=>$DB);
-$osdial->AGI($prog);
+my $osdial = OSDial->new(DB=>$DB);
 
+$osdial->AGI($prog);
 my $AGI = $osdial->AGI();
 
-my $CIDlead_id = (substr($AGI->{'accountcode'}, 11, 9) + 0);
-$osdial->agi_output("+++++ OSD amd START : |$CIDlead_id|",1);
+my $accountcode = $AGI->{'accountcode'};
+my $CIDlead_id = (substr($accountcode, 11, 9) + 0);
+
+$osdial->agi_output("+++++ OSD amd START : |$CIDlead_id|$accountcode|",1);
 
 ########## FIND osdial_auto_calls record ##########
-my $acret = $osdial->sql_query(sprintf("SELECT * FROM osdial_auto_calls WHERE callerid='%s' ORDER BY auto_call_id DESC LIMIT 1;"),$osdial->mres($AGI->{accountcode}));
+my $acret = $osdial->sql_query(sprintf("SELECT * FROM osdial_auto_calls WHERE callerid='%s' ORDER BY auto_call_id DESC LIMIT 1;",$osdial->mres($accountcode)));
 
 # Use Asterisk AMD if not using Sangoma Netborder CPA.
 if (defined($acret->{campaign_id}) and $acret->{campaign_id} ne "") {
@@ -64,17 +66,21 @@ if (defined($acret->{campaign_id}) and $acret->{campaign_id} ne "") {
 	my $carrier_id = $osdial->{settings}{default_carrier_id};
 	$carrier_id = $campret->{carrier_id} if (defined($campret->{carrier_id}) and $campret->{carrier_id}>0);
 
-	my $using_netborder_cpa=0;
-	$using_netborder_cpa = $osdial->sql_query(sprintf("SELECT count(*) FROM osdial_carriers WHERE id='%s' AND protocol='SIP' AND (protocol_config LIKE '%%enable_netborder_cpa%%yes%%' OR protocol_config LIKE '%%enable_netborder_cpa%%on%%' OR protocol_config LIKE '%%enable_netborder_cpa%%true%%' OR protocol_config LIKE '%%enable_netborder_cpa%%1%%');",$osdial->mres($carrier_id))) if ($carrier_id>0);
+	my $ocres = $osdial->sql_query(sprintf("SELECT count(*) AS count FROM osdial_carriers WHERE id='%s' AND protocol='SIP' AND (protocol_config LIKE '%%enable_netborder_cpa%%yes%%' OR protocol_config LIKE '%%enable_netborder_cpa%%on%%' OR protocol_config LIKE '%%enable_netborder_cpa%%true%%' OR protocol_config LIKE '%%enable_netborder_cpa%%1%%');",$osdial->mres($carrier_id))) if ($carrier_id>0);
+	my $using_netborder_cpa=$ocres->{count};
 
-	$AGI->exec('AMD','3500,1250,500,5000,120,50,4,256') if ($using_netborder_cpa<1);
+	$osdial->agi_output("NBNBN OSD amd : |$carrier_id|$using_netborder_cpa|",1);
+	if ($using_netborder_cpa<1) {
+		$osdial->agi_output("EEEEE OSD amd starting AMD");
+		$AGI->exec('AMD','3500,1250,500,5000,120,50,4,256')
+	}
 }
 
 my $AMDSTATUS = $AGI->get_variable('AMDSTATUS');
 my $AMDCAUSE = $AGI->get_variable('AMDCAUSE');
 
 $osdial->agi_output("AAAAA AMD results: |$AMDSTATUS|$AMDCAUSE|");
-$osdial->event_logger("AMD_log", "$CIDlead_id|$AMDSTATUS|$AMDCAUSE|" . $AGI->{'accountcode'} . "|");
+$osdial->event_logger("AMD_log", "$CIDlead_id|$AMDSTATUS|$AMDCAUSE|" . $accountcode . "|");
 
 
 ##################################################################################
@@ -93,7 +99,7 @@ if ($AMDSTATUS =~ /PERSON|HUMAN|NOTSURE|HANGUP/) {
 	$osdial->agi_output("--    OSD osdial_list update: |$affected_rows|$CIDlead_id");
 
 	########## DELETE osdial_auto_calls entry ##########
-	my $affected_rows = $osdial->sql_execute(sprintf("DELETE FROM osdial_auto_calls WHERE callerid='%s' ORDER BY auto_call_id DESC LIMIT 1;",$osdial->mres($AGI->{accountcode})));
+	my $affected_rows = $osdial->sql_execute(sprintf("DELETE FROM osdial_auto_calls WHERE callerid='%s' ORDER BY auto_call_id DESC LIMIT 1;",$osdial->mres($accountcode)));
 	$osdial->agi_output("--    VDAC record deleted: |$affected_rows|$CIDlead_id|");
 
 	########## FIND AND UPDATE osdial_log ##########
@@ -102,7 +108,7 @@ if ($AMDSTATUS =~ /PERSON|HUMAN|NOTSURE|HANGUP/) {
 		$osdial->agi_output("no VDL record found: $CIDlead_id");
 		$osdial->sql_execute(sprintf("INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,length_in_sec,end_epoch,server_ip) VALUES('%s','%s','%s',NOW(),NOW(),'AA','%s','%s','VDAD','N','3',NOW()+3,'%s')"),$osdial->mres($AGI->{uniqueid}),$osdial->mres($CIDlead_id),$osdial->mres($acret->{campaign_id}),$osdial->mres($acret->{phone_code}),$osdial->mres($acret->{phone_number}),$osdial->mres($osdial->{VARserver_ip}));
 	} else {
-		$osdial->sql_execute("UPDATE osdial_log set status='AA',end_epoch=NOW(),length_in_sec=NOW()-start_epoch where uniqueid='" . $AGI->{'uniqueid'} . "' AND lead_id='$CIDlead_id' ORDER BY call_date DESC LIMIT 1;");
+		$osdial->sql_execute(sprintf("UPDATE osdial_log SET status='AA',end_epoch=NOW(),length_in_sec=NOW()-start_epoch WHERE uniqueid='%s' AND lead_id='%s' ORDER BY call_date DESC LIMIT 1;",$osdial->mres($AGI->{'uniqueid'}),$osdial->mres($CIDlead_id)));
 	}
 
 
