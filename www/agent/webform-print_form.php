@@ -14,7 +14,7 @@ foreach ($_POST as $k => $v) {
 
 # Some additional formatting.
 $fields['DATE'] = date('m-d-Y');
-$fields['date_of_birth'] = OSDsubstr($fields['date_of_birth'],5) . '-' . OSDsubstr($fields['date_of_birth'],0,4);
+$fields['date_of_birth'] = OSDsubstr($fields['date_of_birth'],5,OSDstrlen($fields['date_of_birth'])) . '-' . OSDsubstr($fields['date_of_birth'],0,4);
 $fields['phone_number'] = OSDsubstr($fields['phone_number'],0,3) . '-' . OSDsubstr($fields['phone_number'],3,3) . '-' . OSDsubstr($fields['phone_number'],6,4);
 $fields['alt_phone'] = OSDsubstr($fields['alt_phone'],0,3) . '-' . OSDsubstr($fields['alt_phone'],3,3) . '-' . OSDsubstr($fields['alt_phone'],6,4);
 

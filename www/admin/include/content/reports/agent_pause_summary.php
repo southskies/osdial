@@ -72,7 +72,7 @@ function report_agent_pause_summary() {
     if ($LOG['multicomp_user'] > 0) {
         $company_prefix = $LOG['company_prefix'];
         if (OSDsubstr($agent,0,3) == $LOG['company_prefix']) {
-            $agent = OSDsubstr($agent,3);
+            $agent = OSDsubstr($agent,3,OSDstrlen($agent));
         }
     }
 

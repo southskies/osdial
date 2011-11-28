@@ -555,7 +555,7 @@ if ($ADD==3)
         $pcomp='';
         if ($LOG['multicomp']>0 and OSDpreg_match($LOG['companiesRE'],$row[1])) {
             echo "<font color=$default_text>" . OSDsubstr($row[1],0,3) . "</font>&nbsp;";
-            echo "<b>" . OSDsubstr($row[1],3) . "</b>";
+            echo "<b>" . OSDsubstr($row[1],3,OSDstrlen($row[1])) . "</b>";
             $pcomp = OSDsubstr($row[1],0,3);
         } else {
             echo "<b>$row[1]</b>";
@@ -1154,7 +1154,7 @@ echo "  </tr>\n";
 		    echo "  <tr class=\"row font1\" " . bgcolor($o) . " ondblclick=\"window.location='$PHP_SELF?ADD=3&user=$row[1]';\">\n";
             echo "    <td><a href=\"$PHP_SELF?ADD=3&user=$row[1]\">";
             if (($LOG['multicomp'] > 0 and OSDpreg_match($LOG['companiesRE'],$row[1])) or $LOG['multcomp_user'] > 0) {
-                echo OSDsubstr($row[1],0,3) . "&nbsp;" . OSDsubstr($row[1],3);;
+                echo OSDsubstr($row[1],0,3) . "&nbsp;" . OSDsubstr($row[1],3,OSDstrlen($row[1]));;
             } else {
                 echo $row[1];
             }

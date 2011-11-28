@@ -43,7 +43,7 @@ function report_phone_stats() {
     if ($LOG['multicomp_user'] > 0) {
         $company_prefix = $LOG['company_prefix'];
         if (OSDsubstr($phone_extension,0,3) == $LOG['company_prefix']) {
-            $phone_extension = OSDsubstr($phone_extension,3);
+            $phone_extension = OSDsubstr($phone_extension,3,OSDstrlen($phone_extension));
         }
     }
     

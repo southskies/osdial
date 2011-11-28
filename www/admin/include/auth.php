@@ -45,7 +45,7 @@ if (!isset($osdial_skip_auth)) {
 		    Header("HTTP/1.0 401 Unauthorized");
 	    }
 	    echo "<script language=\"javascript\">\n";
-	    echo "window.location = '$config[settings][admin_home_url]';\n";
+	    echo "window.location = '".$config['settings']['admin_home_url']."';\n";
 	    echo "</script>\n";
         $fps = "OSDIAL|FORCELOGOUT|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|||\n";
         $failexit=1;
@@ -78,7 +78,7 @@ if (!isset($osdial_skip_auth)) {
     if ($failexit==0) $fps = "OSDIAL|GOOD|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|" . $LOG['full_name'] . "|" . $LOG['allowed_campaignsSTR'] . "|\n";
     # Log error at end...
     if (!empty($fps) and $WeBRooTWritablE > 0) {
-        $fp = fopen($WeBServeRRooT . "/admin/project_auth_entries.txt", "a");
+        $fp = fopen($config['PATHweb'] . "/admin/project_auth_entries.txt", "a");
         fwrite ($fp, $fps);
         fclose($fp);
     }
@@ -90,6 +90,7 @@ if (!isset($osdial_skip_auth)) {
 
 function osdial_authenticate($user, $password) {
     global $link;
+    global $config;
     $LOG = get_first_record($link, 'osdial_users', '*', sprintf("user='%s' AND pass='%s'",mres($user),mres($password)) );
     $auth=count($LOG);
     $LOG['error'] = 0;
@@ -113,7 +114,7 @@ function osdial_authenticate($user, $password) {
         $LOG['multicomp_user'] = 0;
         $LOG['company_prefix'] = '';
         $LOG['company_id'] = 0;
-        if ($config['settings']['enable_multicompany'] == 1 and file_exists($WeBServeRRooT . convert_uudecode("H+V%D;6EN+VEN8VQU9&4O8V]N=&5N=\"]A9&UI;B]C;VUP86YY+G!H<```\n`"))) {
+        if ($config['settings']['enable_multicompany'] == 1 and file_exists($config['PATHweb'] . convert_uudecode("H+V%D;6EN+VEN8VQU9&4O8V]N=&5N=\"]A9&UI;B]C;VUP86YY+G!H<```\n`"))) {
             $LOG['multicomp'] = 1;
             if ($config['settings']['multicompany_admin'] == $LOG['user']) {
                 $LOG['multicomp_admin'] = 1;

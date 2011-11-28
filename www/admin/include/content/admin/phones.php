@@ -257,7 +257,7 @@ if ($ADD==31111111111) {
         $ext = $row[0];
         if ($LOG['multicomp'] > 0 and !OSDpreg_match('/\/|@/',$row[0]) and OSDpreg_match($LOG['companiesRE'],$row[0])) {
             echo "<font color=$default_text>" . $row[12] . "</font>";
-            if ($row[12] == OSDsubstr($row[0],0,3)) $ext = OSDsubstr($row[0],3);
+            if ($row[12] == OSDsubstr($row[0],0,3)) $ext = OSDsubstr($row[0],3,OSDstrlen($row[0]));
         }
         echo "<input type=text name=extension size=20 maxlength=100 value=\"" . $ext . "\">";
         echo "$NWB#phones-extension$NWE</td></tr>\n";
@@ -267,7 +267,7 @@ if ($ADD==31111111111) {
         if ($LOG['multicomp'] > 0) {
             if (OSDpreg_match('/SIP|IAX/',$row[16]) and OSDpreg_match($LOG['companiesRE'],$row[1])) {
                 echo "<font color=$default_text>" . $row[12] . "</font>";
-                if ($row[12] == OSDsubstr($row[1],0,3)) $dpn = OSDsubstr($row[1],3);
+                if ($row[12] == OSDsubstr($row[1],0,3)) $dpn = OSDsubstr($row[1],3,OSDstrlen($row[1]));
             }
         }
         echo "<input type=text name=dialplan_number size=15 maxlength=20 value=\"$dpn\">";
@@ -276,7 +276,7 @@ if ($ADD==31111111111) {
         $plog = $row[6];
         if ($LOG['multicomp'] > 0 and OSDpreg_match($LOG['companiesRE'],$row[6])) {
             echo "<font color=$default_text>" . $row[12] . "</font>";
-            if ($row[12] == OSDsubstr($row[6],0,3)) $plog = OSDsubstr($row[6],3);
+            if ($row[12] == OSDsubstr($row[6],0,3)) $plog = OSDsubstr($row[6],3,OSDstrlen($row[6]));
         }
         echo "<input type=text name=login size=10 maxlength=10 value=\"" . $plog . "\">";
         echo "$NWB#phones-login$NWE</td></tr>\n";
@@ -285,7 +285,7 @@ if ($ADD==31111111111) {
         $vmb = $row[2];
         if ($LOG['multicomp'] > 0 and OSDpreg_match($LOG['companiesRE'],$row[2])) {
             echo "<font color=$default_text>" . $row[12] . "</font>";
-            if ($row[12] == OSDsubstr($row[2],0,3)) $vmb = OSDsubstr($row[2],3);
+            if ($row[12] == OSDsubstr($row[2],0,3)) $vmb = OSDsubstr($row[2],3,OSDstrlen($row[2]));
         }
         echo "<input type=text name=voicemail_id size=10 maxlength=10 value=\"$vmb\">";
         echo " (digits only)$NWB#phones-voicemail_id$NWE</td></tr>\n";
@@ -459,7 +459,7 @@ if ($ADD==10000000000) {
         echo "  <tr " . bgcolor($o) ." class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=31111111111&extension=$row[0]&server_ip=$row[5]';\">\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=31111111111&extension=$row[0]&server_ip=$row[5]\">";
         if ($LOG['multicomp'] and !OSDpreg_match('/\/|@/',$row[0]) and OSDpreg_match($LOG['companiesRE'],$row[0])) {
-            echo $row[12] . "&nbsp;" . OSDsubstr($row[0],3);
+            echo $row[12] . "&nbsp;" . OSDsubstr($row[0],3,OSDstrlen($row[0]));
         } else {
             echo $row[0];
         }

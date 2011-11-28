@@ -148,7 +148,7 @@ if ( (OSDstrlen($exten)<1) or (OSDstrlen($protocol)<3) ) {
             if ($call_time_SEC < 10) $call_time_SEC = "0$call_time_SEC";
             $call_time_MS = "$call_time_M_int:$call_time_SEC";
 
-            if ($number_dialed == 'extension') $row[2] = OSDsubstr($row[2],-10);
+            if ($number_dialed == 'extension') $row[2] = OSDsubstr($row[2],-10,OSDstrlen($row[2]));
             echo "$row[0] ~$row[1] ~$row[2] ~$call_time_MS|";
         }
         echo "\n";

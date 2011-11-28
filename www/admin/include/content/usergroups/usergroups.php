@@ -308,7 +308,7 @@ if ($ADD==311111) {
             echo "        <input type=hidden name=company_id value=$LOG[company_id]>\n";
         }
         $mcug = $user_group;
-        if ($LOG['multicomp']>0 and OSDpreg_match($LOG['companiesRE'],$user_group)) $mcug = OSDsubstr($user_group,3);
+        if ($LOG['multicomp']>0 and OSDpreg_match($LOG['companiesRE'],$user_group)) $mcug = OSDsubstr($user_group,3,OSDstrlen($user_group));
         echo "        <input type=text name=user_group size=15 maxlength=20 value=\"$mcug\">\n";
         echo "        $NWB#osdial_user_groups-user_group$NWE\n";
         echo "      </td>\n";

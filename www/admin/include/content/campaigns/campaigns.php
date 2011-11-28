@@ -2222,7 +2222,7 @@ if ($ADD==34)
 
         echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=3111111&script_id=$script_id\">Script</a>: </td><td align=left>";
         if ($LOG['mutlicomp_user'] > 0) {
-            echo OSDsubstr($script_id,3);
+            echo OSDsubstr($script_id,3,OSDstrlen($script_id));
         } else {
             echo $script_id;
         }
