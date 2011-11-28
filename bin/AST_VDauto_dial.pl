@@ -308,6 +308,7 @@ while($one_day_interval > 0)
 		@DBIPusecidareacodemap=@MT;
 		@DBIPcarrier_id=@MT;
 		@DBIPcarrier_context=@MT;
+		@DBIPuse_internal_dnc=@MT;
 
 		$active_line_counter=0;
 		$user_counter=0;
@@ -514,7 +515,7 @@ while($one_day_interval > 0)
 
 			### grab the dial_level and multiply by active agents to get your goalcalls
 			$DBIPadlevel[$user_CIPct]=0;
-			$stmtA = "SELECT auto_dial_level,local_call_time,dial_timeout,dial_prefix,campaign_cid,active,campaign_vdad_exten,closer_campaigns,omit_phone_code,available_only_ratio_tally,auto_alt_dial,campaign_allow_inbound,answers_per_hour_limit,campaign_call_time,dial_method,use_custom2_callerid,campaign_cid_name,use_cid_areacode_map,carrier_id FROM osdial_campaigns WHERE campaign_id='" . $osdial->mres($DBIPcampaign[$user_CIPct]) . "';";
+			$stmtA = "SELECT auto_dial_level,local_call_time,dial_timeout,dial_prefix,campaign_cid,active,campaign_vdad_exten,closer_campaigns,omit_phone_code,available_only_ratio_tally,auto_alt_dial,campaign_allow_inbound,answers_per_hour_limit,campaign_call_time,dial_method,use_custom2_callerid,campaign_cid_name,use_cid_areacode_map,carrier_id,use_internal_dnc FROM osdial_campaigns WHERE campaign_id='" . $osdial->mres($DBIPcampaign[$user_CIPct]) . "';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -549,6 +550,7 @@ while($one_day_interval > 0)
 					$DBIPcampaigncidname[$user_CIPct] =	"$aryA[16]";
 					$DBIPusecidareacodemap[$user_CIPct] =	"$aryA[17]";
 					$DBIPcarrier_id[$user_CIPct] =  $aryA[18];
+					$DBIPuse_internal_dnc[$user_CIPct] =  $aryA[19];
 				$rec_count++;
 				}
 			$sthA->finish();
@@ -933,15 +935,16 @@ while($one_day_interval > 0)
 							while ($sthArows > $rec_count)
 								{
 								@aryA = $sthA->fetchrow_array;
-									$list_id =					"$aryA[7]";
-									$gmt_offset_now	=			"$aryA[8]";
-									$called_since_last_reset =	"$aryA[9]";
-									$phone_code	=				"$aryA[10]";
-									$phone_number =				"$aryA[11]";
-									$address3 =					"$aryA[18]";
-									$alt_phone =				"$aryA[26]";
-									$called_count =				"$aryA[30]";
-									$custom2 =				"$aryA[31]";
+									$ld_status =			$aryA[3];
+									$list_id =			$aryA[7];
+									$gmt_offset_now	=		$aryA[8];
+									$called_since_last_reset =	$aryA[9];
+									$phone_code	=		$aryA[10];
+									$phone_number =			$aryA[11];
+									$address3 =			$aryA[18];
+									$alt_phone =			$aryA[26];
+									$called_count =			$aryA[30];
+									$custom2 =			$aryA[31];
 
 									$rec_countCUSTDATA++;
 								$rec_count++;
@@ -950,6 +953,64 @@ while($one_day_interval > 0)
 
 							$phone_code =~ s/^011|^010|^00//;
 							$phone_code = '011' . $phone_code if ($phone_code ne '1' and substr($phone_code,0,1) ne '0');
+
+							# DNC Check.
+							if ($ld_status =~ /^DNC$|^DNCE$|^DNCL$|^DNCC$/) {
+								$event_string = "DNC: Lead status is already a DNC, removing entry from hopper.|$ld_status|$lead_id|";
+								&event_logger;
+								$stmtA = "DELETE FROM osdial_hopper WHERE lead_id='$lead_id';";
+								$affected_rows = $dbhA->do($stmtA);
+							 	$rec_countCUSTDATA=0;
+							} else {
+								$DNClead=0;
+								if ($DBIPuse_internal_dnc[$user_CIPct] =~ /Y/) {
+									$event_string = "DNC: Check for DNC: $phone_number - $DBIPuse_internal_dnc[$user_CIPct]";
+									&event_logger;
+									$dncsskip=0;
+									if ($enable_multicompany > 0) {
+										$comp_id=0;
+										$dnc_method='';
+										$stmtA="SELECT id,dnc_method FROM osdial_companies WHERE id='" . $osdial->mres((substr($DBIPcampaign[$user_CIPct],0,3) * 1) - 100) . "';";
+										$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+										$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+										if (@aryA = $sthA->fetchrow_array) {
+											$comp_id = $aryA[0];
+											$dnc_method = $aryA[1];
+										}
+										$sthA->finish();
+										if ($dnc_method =~ /COMPANY|BOTH/) {
+											$stmtA="SELECT count(*) FROM osdial_dnc_company WHERE company_id='$comp_id' AND (phone_number='$phone_number' OR phone_number='" . substr($phone_number,0,3) . "XXXXXXX');";
+											$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+											$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+											@aryA = $sthA->fetchrow_array;
+											$DNClead += $aryA[0];
+											$sthA->finish();
+										}
+										if ($dnc_method =~ /COMPANY/) {
+											$dncsskip++;
+										}
+									}
+
+									if ($dncsskip==0) {
+										$stmtA="SELECT count(*) FROM osdial_dnc WHERE (phone_number='$phone_number' OR phone_number='" . substr($phone_number,0,3) . "XXXXXXX');";
+										$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+										$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+										@aryA = $sthA->fetchrow_array;
+										$DNClead += $aryA[0];
+										$sthA->finish();
+									}
+
+									if ($DNClead>0) {
+										$event_string = "DNC: Flagging lead, removing entry from hopper.|$phone_number|$lead_id|";
+										&event_logger;
+										$stmtA = "UPDATE osdial_list SET status='DNCL' WHERE lead_id='$lead_id';";
+										$affected_rows = $dbhA->do($stmtA);
+										$stmtA = "DELETE FROM osdial_hopper WHERE lead_id='$lead_id';";
+										$affected_rows = $dbhA->do($stmtA);
+							 			$rec_countCUSTDATA=0;
+									}
+								}
+							}
 
 							if ($rec_countCUSTDATA)
 								{
