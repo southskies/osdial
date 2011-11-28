@@ -1676,7 +1676,7 @@ function ivr_file_text_options($link, $name, $val, $size, $maxsize) {
 
 function list_id_list($link) {
     $llist = array();
-    $lkrh = get_krh($link, 'osdial_lists', '*','list_id ASC',"list_id>='20'",'');
+    $lkrh = get_krh($link, 'osdial_lists', '*','list_id ASC',"list_id>='20' AND active='Y'",'');
     if (is_array($lkrh)) {
         $lkeys = array();
         foreach ($lkrh as $ol) {
