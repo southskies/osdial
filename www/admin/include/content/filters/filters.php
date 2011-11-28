@@ -115,7 +115,6 @@ if ($ADD==41111111)
 		}
 	 else
 		{
-		$lead_filter_sql = mysql_real_escape_string($lead_filter_sql);
 		$stmt=sprintf("UPDATE osdial_lead_filters SET lead_filter_name='%s',lead_filter_comments='%s',lead_filter_sql='%s' WHERE lead_filter_id='%s';",mres($lead_filter_name),mres($lead_filter_comments),mres($lead_filter_sql),mres($lead_filter_id));
 		$rslt=mysql_query($stmt, $link);
 
