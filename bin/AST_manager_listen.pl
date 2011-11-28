@@ -287,7 +287,7 @@ while($one_day_interval > 0) {
 
 				# Got hangup on channel, update manager.
 				} elsif ($ame{event} =~ /Hangup/i) {
-					if ($ame{accountcode} =! /DCagcW/) {
+					if ($ame{accountcode} !~ /DCagcW/) {
 						my $stmtA = sprintf("UPDATE osdial_manager SET status='DEAD',channel='%s' WHERE server_ip='%s' AND uniqueid='%s' AND callerid NOT LIKE 'DCagcW%';",$ame{channel},$osdial->{VARserver_ip},$ame{uniqueid});
 						my $affected_rows1 = $osdial->sql_execute($stmtA);
 						print "|$affected_rows1 HANGUPs updated|$stmtA|\n" if ($DB);
@@ -342,7 +342,7 @@ while($one_day_interval > 0) {
 						}
 					}
 
-				} elsif ($ame{event} =~ /Newstate/i and $ame{accountcode} =! /DCagcW/) {
+				} elsif ($ame{event} =~ /Newstate/i and $ame{accountcode} !~ /DCagcW/) {
 					if ($ame{accountcode} eq "") {
 						$logmsg = "Unhandled newstate (" . $ame{state} . ") on channel, no accountcode.";
 					} elsif ($ame{state} =~ /Dialing/i) {
@@ -394,6 +394,20 @@ while($one_day_interval > 0) {
 					my $stmtA = sprintf("UPDATE osdial_manager SET status='UPDATED',channel='%s',uniqueid='%s' WHERE server_ip='%s' AND callerid='%s';", $ame{destination}, $ame{destuniqueid}, $osdial->{VARserver_ip}, $ame{accountcode});
 					my $affected_rows = $osdial->sql_execute($stmtA);
 					$logmsg = "Dial on manual non-local channel. ($affected_rows)"
+
+				##### look for CPD event from Sangoma Netborder Call Progress Analysis
+				} elsif ($ame{event} =~ /CPAResult/) {
+					if (  defined($ame{accountcode}) and $ame{accountcode} !~ /(^$|UNKNOWN)/
+					  and defined($ame{channel})     and $ame{channel}     !~ /(^$|UNKNOWN)/
+					  and defined($ame{uniqueid})    and $ame{uniqueid}    !~ /(^$|UNKNOWN)/
+					  and defined($ame{cparesult})   and $ame{cparesult}   !~ /^$/) {
+ 						my $lead_id = (substr($ame{accountcode}, 11, 9) + 0);
+						my $stmtA=sprintf("INSERT INTO osdial_cpa_log SET callerid='%s',uniqueid='%s',lead_id='%s',server_ip='%s',channel='%s',cpa_result='%s',cpa_detailed_result='%s',cpa_call_id='%s',cpa_reference_id='%s',cpa_campaign_name='%s',event_date=NOW();",$osdial->mres($ame{accountcode}),$osdial->mres($ame{uniqueid}),$osdial->mres($lead_id),$osdial->mres($osdial->{VARserver_ip}),$osdial->mres($ame{channel}),$osdial->mres($ame{cparesult}),$osdial->mres($ame{cpadetailedresult}),$osdial->mres($ame{cpacallid}),$osdial->mres($ame{cpareferenceid}),$osdial->mres($ame{cpacampaignname}));
+						my $affected_rows = $osdial->sql_execute($stmtA);
+						$logmsg = sprintf("%s: Adding log entry. channel:%s uniqueid:%s lead_id:%s cpa_result:%s. (%s)",$ame{event},$ame{channel},$ame{uniqueid},$lead_id,$ame{cparesult},$affected_rows);
+					} else {
+						$logmsg = sprintf("%s: Missing required header. channel:%s uniqueid:%s cpa_result:%s.",$ame{event},$ame{channel},$ame{uniqueid},$ame{cparesult});
+					}
 
 				} elsif ($ame{event} ne "") {
 					$logmsg = "Unhandled event (" . $ame{event} . ").";

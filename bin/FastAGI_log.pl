@@ -719,34 +719,67 @@ sub process_request {
 			}
 
 			if ($channel =~ /^Local/ and $channel !~ /^Local[\/\*\#]87......\@/) {
-				if ( ($PRI =~ /^PRI$/) && ($accountcode =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/) && ( ($dialstatus =~ /BUSY|CONGESTION/) || ($hangup_cause =~ /^27$|^29$|^34$|^38$/) || ( ($dialstatus =~ /CHANUNAVAIL/) && ($hangup_cause =~ /^1$|^28$/) ) ) ) {
-					if ($dialstatus =~ /CONGESTION/) {
-						$VDL_status='CRC';
-						$VDAC_status = 'BUSY';
-					} elsif ($dialstatus =~ /BUSY/) {
-						$VDL_status = 'B';
-						$VDAC_status = 'BUSY';
-					} elsif ($dialstatus =~ /CHANUNAVAIL/) {
-						$VDL_status = 'DC';
-						$VDAC_status = 'DISCONNECT';
+				my $cpa_found=0;
+ 				if ($callerid =~ /^V\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/) {
+					sleep(1);
+					$stmtA = "SELECT cpa_result,cpa_detailed_result FROM osdial_cpa_log WHERE callerid='$accountcode' AND cpa_result NOT IN('Voice','Unknown','???','') ORDER BY id DESC LIMIT 1;";
+					if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+					$sthArows=$sthA->rows;
+					if ($sthArows > 0) {
+						@aryA = $sthA->fetchrow_array;
+						$cpa_result             = $aryA[0];
+						$cpa_detailed_result    = $aryA[1];
+						$cpa_result = "License-Reject" if ($cpa_detailed_result =~ /license/i);
+						if ($cpa_result =~ /Busy/i)              {$VDL_status='CPRB';   $VDAC_status='BUSY';       $cpa_found++;}
+						if ($cpa_result =~ /All-Trunks-Busy/i)   {$VDL_status='CPRATB'; $VDAC_status='CONGESTION'; $cpa_found++;}
+						if ($cpa_result =~ /Reject/i)            {$VDL_status='CPRCR';  $VDAC_status='CONGESTION'; $cpa_found++;}
+						if ($cpa_result =~ /License-Reject/i)    {$VDL_status='CPRLR';  $VDAC_status='CONGESTION'; $cpa_found++;}
+						if ($cpa_result =~ /Unknown/i)           {$VDL_status='CPRUNK'; $VDAC_status='CPA';        $cpa_found++;}
+						if ($cpa_result =~ /Sit-No-Circuit/i)    {$VDL_status='CPRSNC'; $VDAC_status='CONGESTION'; $cpa_found++;}
+						if ($cpa_result =~ /Sit-Reorder/i)       {$VDL_status='CPRSRO'; $VDAC_status='CONGESTION'; $cpa_found++;}
+						if ($cpa_result =~ /Sit-Intercept/i)     {$VDL_status='CPRSIC'; $VDAC_status='DISCONNECT'; $cpa_found++;}
+						if ($cpa_result =~ /Sit-Unknown/i)       {$VDL_status='CPRSIO'; $VDAC_status='DISCONNECT'; $cpa_found++;}
+						if ($cpa_result =~ /Sit-Vacant/i)        {$VDL_status='CPRSVC'; $VDAC_status='DISCONNECT'; $cpa_found++;}
+						if ($cpa_result =~ /No-Answer/i)         {$VDL_status='CPRNA';  $VDAC_status='CPA';        $cpa_found++;}
+						if ($cpa_result =~ /Fax|Modem/i)         {$VDL_status='CPSFAX'; $VDAC_status='CPA';        $cpa_found++;}
+						if ($cpa_result =~ /Answering-Machine/i) {$VDL_status='CPSAA';  $VDAC_status='CPA';        $cpa_found++;}
+						if ($cpa_result =~ /\?\?\?/i)            {$VDL_status='CPSUNK'; $VDAC_status='CPA';        $cpa_found++;}
 					}
+					$sthA->finish();
+				}
 
-					if ($hangup_cause =~ /^38$/) {
-						# Carrier Failure
-						$VDL_status = 'CRF';
-						$VDAC_status = 'BUSY';
-					} elsif ($hangup_cause =~ /^29$/) {
-						# Carrier Rejected
-						$VDL_status = 'CRR';
-						$VDAC_status = 'BUSY';
-					} elsif ($hangup_cause =~ /^27$/) {
-						# Destination Out of Order
-						$VDL_status = 'CRO';
-						$VDAC_status = 'BUSY';
-					} elsif ($hangup_cause =~ /^34$/) {
-						# General Congestion
-						$VDL_status = 'CRC';
-						$VDAC_status = 'BUSY';
+				if ($PRI =~ /^PRI$/ && $accountcode =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/ && ( ($dialstatus =~ /BUSY|CONGESTION/ || $hangup_cause =~ /^27$|^29$|^34$|^38$/ || ( $dialstatus =~ /CHANUNAVAIL/ && $hangup_cause =~ /^1$|^28$/ ) ) || $cpa_found>0) ) {
+					if ($cpa_found<1) {
+						if ($dialstatus =~ /CONGESTION/) {
+							$VDL_status='CRC';
+							$VDAC_status='CONGESTION';
+						} elsif ($dialstatus =~ /BUSY/) {
+							$VDL_status='B';
+							$VDAC_status='BUSY';
+						} elsif ($dialstatus =~ /CHANUNAVAIL/) {
+							$VDL_status='DC';
+							$VDAC_status='DISCONNECT';
+						}
+
+						if ($hangup_cause =~ /^38$/) {
+							# Carrier Failure
+							$VDL_status='CRF';
+							$VDAC_status='CONGESTION';
+						} elsif ($hangup_cause =~ /^29$/) {
+							# Carrier Rejected
+							$VDL_status='CRR';
+							$VDAC_status='CONGESTION';
+						} elsif ($hangup_cause =~ /^27$/) {
+							# Destination Out of Order
+							$VDL_status='CRO';
+							$VDAC_status='CONGESTION';
+						} elsif ($hangup_cause =~ /^34$/) {
+							# General Congestion
+							$VDL_status='CRC';
+							$VDAC_status='CONGESTION';
+						}
 					}
 
 					$stmtA = "UPDATE osdial_list SET status='" . $osdial->mres($VDL_status) . "' WHERE lead_id='$CIDlead_id';";
@@ -790,7 +823,7 @@ sub process_request {
 					$dbhA->disconnect();
 				} else {
 					if ($AGILOG) {
-						$agi_string = "--   VD_hangup Local DEBUG: |$PRI|$accountcode|$dialstatus|$hangup_cause|";
+						$agi_string = "--   VD_hangup Local DEBUG: |$PRI|$accountcode|$dialstatus|$hangup_cause|$cpa_found|";
 						&agi_output;
 					}
 				}

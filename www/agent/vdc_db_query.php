@@ -1078,7 +1078,7 @@ if ($ACTION == 'manDiaLlookCaLL') {
                     $hangup_cause =  $row[3];
 
                     #$stmt="SELECT status FROM osdial_log WHERE uniqueid='$uniqueid' AND server_ip='$server_ip' AND channel='$channel' AND status IN('BUSY','CHANUNAVAIL','CONGESTION') LIMIT 1;";
-                    $stmt=sprintf("SELECT status FROM osdial_log WHERE uniqueid='%s' AND server_ip='%s' AND channel='%s' AND (status='B' AND user='VDAD') AND status IN('CRR','CRF','CRO','CRC') LIMIT 1;",mres($uniqueid),mres($server_ip),mres($channel));
+                    $stmt=sprintf("SELECT status FROM osdial_log WHERE uniqueid='%s' AND server_ip='%s' AND channel='%s' AND ((status IN('B','CPRB') AND user='VDAD') OR status IN('CRR','CRF','CRO','CRC','CPRUNK','CPRNA','CPRATB','CPRCR','CPRLR','CPRSNC','CPRSRO','CPRSIC','CPRSIO','CPRSVC','CPSHU','CPSUNK')) LIMIT 1;",mres($uniqueid),mres($server_ip),mres($channel));
                     $rslt=mysql_query($stmt, $link);
                     if ($DB) echo "$stmt\n";
                     $CL_mancall_ct = mysql_num_rows($rslt);

@@ -1275,42 +1275,98 @@ while($one_day_interval > 0)
                                                         $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
                                                         @aryA = $sthA->fetchrow_array;
                                                         $orig_status = $aryA[0];
+							$sthA->finish();
 	
 							if ($CLstatus =~ /BUSY/) {
 								$CLnew_status = 'B';
-							} else {
-								if ($CLstatus =~ /DISCONNECT/) {
-									$CLnew_status = 'DC';
-								} else {
-									$CLnew_status = 'NA';
+							} elsif ($CLstatus =~ /DISCONNECT/) {
+								$CLnew_status = 'DC';
+							} elsif ($CLstatus =~ /CONGESTION/) {
+								$CLnew_status = 'NA';
+							}
+
+							$stmtA=sprintf("SELECT cpa_result FROM osdial_cpa_log WHERE callerid='%s' ORDER BY id DESC LIMIT 1;",$osdial->mres($KLcallerid[$kill_vac]));
+							if ($DB) {$event_string = "|$stmtA|";   &event_logger;}
+							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+							$sthArows=$sthA->rows;
+							if ($sthArows > 0) {
+								@aryA = $sthA->fetchrow_array;
+								$cpa_result             = $aryA[0];
+								$cpa_detailed_result    = $aryA[1];
+								if ($cpa_result ne "") {
+									$cpa_result = "License-Reject" if ($cpa_detailed_result =~ /license/i);
+									if ($cpa_result =~ /Busy/i)              {$orig_status='CPRB';   $CLnew_status='B';}
+									if ($cpa_result =~ /All-Trunks-Busy/i)   {$orig_status='CPRATB'; $CLnew_status='NA';}
+									if ($cpa_result =~ /Reject/i)            {$orig_status='CPRCR';  $CLnew_status='NA';}
+									if ($cpa_result =~ /License-Reject/i)    {$orig_status='CPRLR';  $CLnew_status='NA';}
+									if ($cpa_result =~ /Sit-No-Circuit/i)    {$orig_status='CPRSNC'; $CLnew_status='NA';}
+									if ($cpa_result =~ /Sit-Reorder/i)       {$orig_status='CPRSRO'; $CLnew_status='NA';}
+									if ($cpa_result =~ /Unknown/i)           {$orig_status='CPRUNK'; $CLnew_status='NA';}
+									if ($cpa_result =~ /No-Answer/i)         {$orig_status='CPRNA';  $CLnew_status='NA';}
+									if ($cpa_result =~ /\?\?\?/i)            {$orig_status='CPSUNK'; $CLnew_status='NA';}
+									if ($cpa_result =~ /Sit-Intercept/i)     {$orig_status='CPRSIC'; $CLnew_status='DC';}
+									if ($cpa_result =~ /Sit-Unknown/i)       {$orig_status='CPRSIO'; $CLnew_status='DC';}
+									if ($cpa_result =~ /Sit-Vacant/i)        {$orig_status='CPRSVC'; $CLnew_status='DC';}
+									if ($cpa_result =~ /Fax|Modem/i)         {$orig_status='CPSFAX'; $CLnew_status='FAX';}
+									if ($cpa_result =~ /Answering-Machine/i) {$orig_status='CPSAA';  $CLnew_status='AA';}
 								}
 							}
-							if ($CLstatus =~ /LIVE/) {$CLnew_status = 'DROP';}
-							else 
-								{
+							$sthA->finish();
+
+
+							if ($CLstatus =~ /LIVE/) {
+								$CLnew_status = 'DROP';
+							} else {
 								$CLstage=0;
 								$end_epoch = $now_date_epoch;
                                                                 $OL_status = $CLnew_status;
-                                                                $OL_status = $orig_status if ($orig_status =~ /^CR/);
-								$stmtA = "INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,length_in_sec,end_epoch,server_ip) values('$CLuniqueid','$CLlead_id','" . $osdial->mres($CLcampaign_id) . "','$SQLdate','$now_date_epoch','" . $osdial->mres($OL_status) . "','$CLphone_code','$CLphone_number','VDAD','N','$CLstage','$end_epoch','$VARserver_ip')";
+                                                                $OL_status = $orig_status if ($orig_status =~ /^CRF$|^CRR$|^CRO$|^CRC$/);
+                                                                $OL_status = $orig_status if ($orig_status =~ /^CPRATB$|^CPRCR$|^CPRLR$|^CPRSNC$|^CPRSRO$|^CPRUNK$|^CPRNA$|^CPSUNK$/);
+                                                                $OL_status = $orig_status if ($orig_status =~ /^CPRSIC$|^CPRSIO$|^CPRSVC$|^CPRB$|^CPSFAX$|^CPSAA$/);
+								$insertVLuser = 'VDAD';
+								$insertVLcount=0;
+								if ($KLcallerid[$kill_vac] =~ /^M\d\d\d\d\d\d\d\d\d\d/) {
+									$beginUNIQUEID = $CLuniqueid;
+									$beginUNIQUEID =~ s/\..*//gi;
+									$insertVLuser = $CLuser;
+									$stmtA=sprintf("SELECT count(*) FROM osdial_log WHERE lead_id='%s' AND user='%s' AND phone_number='%s' AND uniqueid LIKE '%s%%';",$osdial->mres($CLlead_id),$osdial->mres($CLuser),$osdial->mres($CLphone_number),$osdial->mres($beginUNIQUEID));
+									if ($DB) {$event_string = "|$stmtA|";   &event_logger;}
+									$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+									$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+									$sthArowsVL=$sthA->rows;
+									if ($sthArowsVL > 0) {
+										@aryA = $sthA->fetchrow_array;
+										$insertVLcount =        $aryA[0];
+									}
+									$sthA->finish();
+								}
+
+								if ($insertVLcount < 1) {
+									$stmtA=sprintf("INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,length_in_sec,end_epoch,server_ip) VALUES('%s','%s','%s','%s','%s','%s','%s','%s','VDAD','N','%s','%s','%s')",$osdial->mres($CLuniqueid),$osdial->mres($CLlead_id),$osdial->mres($CLcampaign_id),$osdial->mres($SQLdate),$osdial->mres($now_date_epoch),$osdial->mres($OL_status),$osdial->mres($CLphone_code),$osdial->mres($CLphone_number),$osdial->mres($CLstage),$osdial->mres($end_epoch),$osdial->mres($VARserver_ip));
 									if($M){print STDERR "\n|$stmtA|\n";}
-								$affected_rows = $dbhA->do($stmtA);
-	
-								$event_string = "|     dead NA call added to log $CLuniqueid|$CLlead_id|$CLphone_number|$CLstatus|$OL_status|$CLnew_status|$affected_rows|";
-							 	&event_logger;
-	
+									$affected_rows = $dbhA->do($stmtA);
+									$event_string = "|     dead NA call added to log $CLuniqueid|$CLlead_id|$CLphone_number|$CLstatus|$OL_status|$CLnew_status|$affected_rows|";
+							 		&event_logger;
+								} else {
+									$stmtA=sprintf("UPDATE osdial_log SET status='%s',length_in_sec='%s',end_epoch='%s',alt_dial='%s' WHERE lead_id='%s' AND user='%s' AND phone_number='%s' AND uniqueid LIKE '%s%%';",$osdial->mres($OL_status),$osdial->mres($CLstage),$osdial->mres($end_epoch),$osdial->mres($CLalt_dial),$osdial->mres($CLlead_id),$osdial->mres($CLuser),$osdial->mres($CLphone_number),$osdial->mres($beginUNIQUEID));
+									if($M){print STDERR "\n|$stmtA|\n";}
+									$affected_rows = $dbhA->do($stmtA);
+									$event_string = "|     dead NA call updated to log $CLuniqueid|$CLlead_id|$CLphone_number|$CLstatus|$OL_status|$CLnew_status|$affected_rows|";
+							 		&event_logger;
 								}
 	
-							if ($CLlead_id > 0)
-								{
+							}
+	
+							if ($CLlead_id > 0) {
 								$stmtA = "UPDATE osdial_list SET status='" . $osdial->mres($CLnew_status) . "' WHERE lead_id='$CLlead_id'";
 								$affected_rows = $dbhA->do($stmtA);
 	
 								if ($affected_rows > 0) {
 									$event_string = "|     dead call vac lead marked $CLnew_status|$CLlead_id|$CLphone_number|$CLstatus|";
 							 		&event_logger;
-									}
 								}
+							}
 	
 							$stmtA = "UPDATE osdial_live_agents SET status='PAUSED',random_id='10' WHERE callerid='$KLcallerid[$kill_vac]';";
 							$affected_rows = $dbhA->do($stmtA);

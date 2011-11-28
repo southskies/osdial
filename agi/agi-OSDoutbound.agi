@@ -118,6 +118,7 @@ if ($osd->sql_execute($stmt)) {
 
 		$osd->sql_connect('QM',$osd->{settings}{queuemetrics_dbname},$osd->{settings}{queuemetrics_server_ip},'3306',$osd->{settings}{queuemetrics_login},$osd->{settings}{queuemetrics_pass});
 		$stmt = sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='NONE',verb='ENTERQUEUE',data2='%s',serverid='%s';",$secX,$osd->AGI->{accountcode},$oac->{campaign_id},$data2,$osd->{settings}{queuemetrics_log_id});
+		$osd->sql_execute($stmt,'QM');
 		$osd->sql_disconnect('QM');
 	}
 	##### END QUEUEMETRICS LOGGING #####
@@ -149,6 +150,112 @@ while ($drop_timer <= $campaign->{drop_call_seconds}) {
 			$drop_seconds = $drop_timer if ($drop_timer < $campaign->{drop_call_seconds});
 			$drop_timer += $campaign->{drop_call_seconds};
 		}
+	}
+
+
+	# Sangoma Netborder CPA
+	my $stmt=sprintf("SELECT * FROM osdial_cpa_log WHERE callerid='%s' AND cpa_result NOT IN('Voice','Unknown','???','') AND status='NEW' ORDER BY id DESC LIMIT 1;",$osd->mres($osd->AGI->{accountcode}));
+	my $cpares = $osd->sql_query($stmt);
+	if (defined($cpares->{cpa_result}) and $cpares->{cpa_result} ne "") {
+		my $cpa_found=0;
+		my %cpa_res2status = {
+			'Busy'              => 'CPRB',
+			'Unknown'           => 'CPRUNK',
+			'No-Answer'         => 'CPRNA',
+			'All-Trunks-Busy'   => 'CPRATB',
+			'Reject'            => 'CPRCR',
+			'License-Reject'    => 'CPRLR',
+			'Sit-No-Circuit'    => 'CPRSNC',
+			'Sit-Reorder'       => 'CPRSRO',
+			'Sit-Intercept'     => 'CPRSIC',
+			'Sit-Unknown'       => 'CPRSIO',
+			'Sit-Vacant'        => 'CPRSVC',
+			'Post-Reject'       => 'CPSHU',
+			'Answering-Machine' => 'CPSAA',
+			'Fax'               => 'CPSFAX',
+			'Modem'             => 'CPSFAX',
+			'Unknown'           => 'CPSUNK',
+			'Voice'             => 'CPSHMN',
+			'???'               => 'CPSUNK',
+		};
+		my %cpa_status2status = {
+			'CPRB'   => 'B',
+			'CPRUNK' => 'NA',
+			'CPRNA'  => 'NA',
+			'CPRATB' => 'NA',
+			'CPRCR'  => 'NA',
+			'CPRLR'  => 'NA',
+			'CPRSNC' => 'NA',
+			'CPRSRO' => 'NA',
+			'CPRSIC' => 'DC',
+			'CPRSIO' => 'DC',
+			'CPRSVC' => 'DC',
+			'CPSHU'  => 'NA',
+			'CPSAA'  => 'AA',
+			'CPSFAX' => 'FAX',
+			'CPSUNK' => 'INCALL',
+			'CPSHMN' => 'INCALL'
+		};
+		$cpares->{cpa_result} = "License-Reject" if ($cpares->{cpa_detailed_result} =~ /license/i);
+		my $olog_result=$cpares->{cpa_result};
+		$olog_result=$cpa_res2status{$cpares->{cpa_result}} if (defined($cpa_res2status{$cpares->{cpa_result}}));
+		my $olist_result=$cpares->{cpa_result};
+		$olist_result=$cpa_status2status{$cpares->{cpa_result}} if (defined($cpa_status2status{$cpares->{cpa_result}}));
+
+		$drop_seconds = $campaign->{drop_call_seconds} if ($drop_seconds < 1);
+
+		my $CPADROPexten="";
+		if ($campaign->{amd_send_to_vmx} =~ /(Y|CUSTOM)/ and $olog_result !~ /FAX/) {
+			$CPADROPexten = "8321";
+			$osd->AGI->set_variable('AMDSTATUS', "CPAMACHINE");
+			$osd->AGI->set_variable('AMDCAUSE', $cpares->{cpa_result});
+		} else {
+			my $stmt=sprintf("DELETE FROM osdial_auto_calls WHERE callerid='%s' ORDER BY call_time DESC LIMIT 1;",$osd->mres($osd->AGI->{accountcode}));
+			my $affected_rows = $osd->sql_execute($stmt);
+			$osd->agi_output("--    OSDAD CPD osdac record deleted: |".$affected_rows."|".$campaign->{campaign_id}."|");
+		}
+
+		my $stmt = sprintf("UPDATE osdial_log SET status='%s',end_epoch='%s',length_in_sec='%s',term_reason='AGENT' WHERE uniqueid='%s';",$osd->mres($olog_result),$osd->mres($now_date_epoch),$osd->mres($drop_seconds),$osd->mres($osd->AGI->{uniqueid}));
+		my $affected_rows = $osd->sql_execute($stmt);
+		$osd->agi_output("|$stmt|");
+		$osd->agi_output("--    OSDAD osdial_log update: |$affected_rows|" . $osd->AGI->{uniqueid});
+
+		my $stmt = sprintf("UPDATE osdial_list SET status='%s' WHERE lead_id='%s';",$osd->mres($olist_result),$osd->mres($CIDlead_id));
+		my $affected_rows = $osd->sql_execute($stmt);
+		$osd->agi_output("|$stmt|");
+		$osd->agi_output("--    OSDAD osdial_list update: |$affected_rows|$CIDlead_id");
+
+		my $stmt = sprintf("UPDATE osdial_cpa_log SET status='PROCESSED',seconds='%s' WHERE callerid='%s' AND cpa_result IN('Answering-Machine','Fax') AND status='NEW';",$osd->mres($drop_timer),$osd->mres($osd->AGI->{accountcode}));
+		my $affected_rows = $osd->sql_execute($stmt);
+		$osd->agi_output("|$stmt|");
+		$osd->agi_output("--    OSDAD osdial_cpa_log update: |$affected_rows|$drop_timer");
+
+		if ($osd->{settings}{enable_queuemetrics_logging} > 0) {
+			$osd->sql_connect('QM',$osd->{settings}{queuemetrics_dbname},$osd->{settings}{queuemetrics_server_ip},'3306',$osd->{settings}{queuemetrics_login},$osd->{settings}{queuemetrics_pass});
+			my $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='NONE',verb='EXITWITHTIMEOUT',data1='%s',serverid='%s';",$osd->mres($secX),$osd->mres($osd->AGI->{accountcode}),$osd->mres($oac->{campaign_id}),'1',$osd->mres($osd->{settings}{queuemetrics_log_id}));
+			$osd->sql_execute($stmt,'QM');
+			my $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='NONE',verb='CALLSTATUS',data1='%s',serverid='%s';",$osd->mres($secX),$osd->mres($osd->AGI->{accountcode}),$osd->mres($oac->{campaign_id}),$osd->mres($olog_result),$osd->mres($osd->{settings}{queuemetrics_log_id}));
+			$osd->sql_execute($stmt,'QM');
+			$osd->sql_disconnect('QM');
+		}
+
+		### use STDOUT to send call to proper DROP location
+		my $VHqueryCID = "VH$CIDdate$CPADROPexten";
+
+		if (length($CPADROPexten)>0) {
+			$osd->AGI->stream_file("sip-silence");
+
+			$osd->agi_output("exiting the OSDAD app, CPA transferring call to $CPADROPexten");
+			$osd->AGI->set_context($osd->{server}{ext_context});
+			$osd->AGI->set_extension($CPADROPexten);
+			$osd->AGI->set_priority(1);
+		} else {
+			my $stmt=sprintf("INSERT INTO osdial_manager VALUES ('','','%s','NEW','N','%s','','Hangup','%s','Channel: %s','','','','','','','','','')",$osd->mres($SQLdate),$osd->mres($osd->{VARserver_ip}),$osd->mres($VHqueryCID),$osd->mres($osd->AGI->{channel}));
+			my $affected_rows=$osd->sql_execute($stmt);
+			$osd->agi_output("--    OSDAD call_hungup CPD timout: |$CIDlead_id|$VHqueryCID|".$osd->AGI->{channel}."|insert to osdial_manager");
+			$osd->AGI->hangup();
+		}
+		exit;
 	}
 
 
@@ -239,6 +346,7 @@ while ($drop_timer <= $campaign->{drop_call_seconds}) {
 			if ($osd->{settings}{enable_queuemetrics_logging} > 0) {
 				$osd->sql_connect('QM',$osd->{settings}{queuemetrics_dbname},$osd->{settings}{queuemetrics_server_ip},'3306',$osd->{settings}{queuemetrics_login},$osd->{settings}{queuemetrics_pass});
 				$stmt = sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='NONE',verb='ENTERQUEUE',data2='%s',serverid='%s';",$secX,$osd->AGI->{accountcode},$oac->{campaign_id},$drop_timer,$osd->{settings}{queuemetrics_log_id});
+				$osd->sql_execute($stmt,'QM');
 				$osd->sql_disconnect('QM');
 			}
 
@@ -309,6 +417,7 @@ if ($drop_timer >= $campaign->{drop_call_seconds}) {
 		if ($osd->{settings}{enable_queuemetrics_logging} > 0) {
 			$osd->sql_connect('QM',$osd->{settings}{queuemetrics_dbname},$osd->{settings}{queuemetrics_server_ip},'3306',$osd->{settings}{queuemetrics_login},$osd->{settings}{queuemetrics_pass});
 			$stmt = sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='NONE',verb='ENTERQUEUE',data2='%s',serverid='%s';",$secX,$osd->AGI->{accountcode},$oac->{campaign_id},'1',$osd->{settings}{queuemetrics_log_id});
+			$osd->sql_execute($stmt,'QM');
 			$osd->sql_disconnect('QM');
 		}
 

@@ -242,6 +242,13 @@ sub get_campaign_stats {
 			my $status   = $sret2->{status};
 			my $category = $sret2->{category};
 			$category    = 'UNDEFINED' if ($category eq '');
+			# Categorize IVR statuses.
+			$category    = 'SALE'      if ($status =~ /^VAXFER$|^VEXFER$|^VIXFER$/);
+			$category    = 'CONTACT'   if ($status =~ /^VDNC$|^VNI$|^VPLAY$|^VPU$|^VTO$/);
+			# Categorize CPA statuses.
+			$category    = 'SYSTEM'    if ($status =~ /^CPRATB$|^CPRCR$|^CPRLR$|^CPRSNC$|^CPRSRO$|^CPRSIC$|^CPRSIO$|^CPRSVC$/);
+			$category    = 'NOCONTACT' if ($status =~ /^CPRB$|^CPRNA$|^CPSHU$|^CPSAA$|^CPSFAX$/);
+			$category    = 'CONTACT'   if ($status =~ /^CPSHMN$|^CPSUNK$/);
 			$statusref->{$campaign}{$status}{$category} = 0;
 			$statusref->{$campaign}{$status}{$category} = 1 if ($sret2->{human_answered} eq 'Y');
 		}
@@ -395,12 +402,12 @@ sub get_campaign_stats {
 					sprintf("%.2f", (($cdata->{$campaign}{campaign}{drops_onemin} / $cdata->{$campaign}{campaign}{calls_onemin}) * 100)) if ($cdata->{$campaign}{campaign}{calls_onemin}>0);
 
 				# AMD
-				$cdata->{$campaign}{campaign}{amd_onemin}++          if ($status =~ /^AA$|^AL$|^AM$/);;
-				$cdata->{$campaign}{server}{$server}{amd_onemin}++   if ($status =~ /^AA$|^AL$|^AM$/);;
+				$cdata->{$campaign}{campaign}{amd_onemin}++          if ($status =~ /^AA$|^AL$|^AM$|^CPSAA$|^CPSFAX$/);;
+				$cdata->{$campaign}{server}{$server}{amd_onemin}++   if ($status =~ /^AA$|^AL$|^AM$|^CPSAA$|^CPSFAX$/);;
 
 				# Failed Calls.
-				$cdata->{$campaign}{campaign}{failed_onemin}++       if ($status =~ /^CRC$|^CRO$|^CRF$|^CRR$/);;
-				$cdata->{$campaign}{server}{$server}{failed_onemin}++ if ($status =~ /^CRC$|^CRO$|^CRF$|^CRR$/);;
+				$cdata->{$campaign}{campaign}{failed_onemin}++       if ($status =~ /^CRC$|^CRO$|^CRF$|^CRR$|^CPRATB$|^CPRCR$|^CPRLR$|^CPRSNC$|^CPRSRO$|^CPRSIC$|^CPRSIO$|^CPRSVC$/);;
+				$cdata->{$campaign}{server}{$server}{failed_onemin}++ if ($status =~ /^CRC$|^CRO$|^CRF$|^CRR$|^CPRATB$|^CPRCR$|^CPRLR$|^CPRSNC$|^CPRSRO$|^CPRSIC$|^CPRSIO$|^CPRSVC$/);;
 			}
 		}
 	}
