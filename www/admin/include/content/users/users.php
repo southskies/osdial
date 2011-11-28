@@ -1092,7 +1092,9 @@ if (OSDpreg_match("/LEVELUP/",$stage)) {$SQLorder='order by user_level asc';   $
 if (OSDpreg_match("/LEVELDOWN/",$stage)) {$SQLorder='order by user_level desc';   $LEVELlink='stage=LEVELUP';}
 if (OSDpreg_match("/GROUPUP/",$stage)) {$SQLorder='order by user_group asc';   $GROUPlink='stage=GROUPDOWN';}
 if (OSDpreg_match("/GROUPDOWN/",$stage)) {$SQLorder='order by user_group desc';   $GROUPlink='stage=GROUPUP';}
-    if ($LOG['multicomp'] > 0) {
+    if ($LOG['multicomp_admin'] > 0) {
+	    $stmt = sprintf("SELECT * from osdial_users WHERE user NOT IN ('PBX-IN','PBX-OUT') %s %s %s %s %s %s",$letSQL,$numSQL,$levelSQL,$groupSQL,$viewdisabledSQL,$SQLorder);
+    } elseif ($LOG['multicomp'] > 0) {
 	    $stmt = sprintf("SELECT * from osdial_users WHERE user LIKE '%s__%%' AND user_group IN %s AND user NOT IN ('PBX-IN','PBX-OUT') %s %s %s %s %s %s",mres($LOG['company_prefix']),$LOG['allowed_usergroupsSQL'],$letSQL,$numSQL,$levelSQL,$groupSQL,$viewdisabledSQL,$SQLorder);
     } else {
 	    $stmt = sprintf("SELECT * from osdial_users WHERE user_group IN %s AND user NOT IN ('PBX-IN','PBX-OUT') %s %s %s %s %s %s",$LOG['allowed_usergroupsSQL'],$letSQL,$numSQL,$levelSQL,$groupSQL,$viewdisabledSQL,$SQLorder);
