@@ -23,6 +23,7 @@
 use strict;
 use OSDial;
 use Getopt::Long;
+use Time::HiRes ('gettimeofday','usleep','sleep');
 $|++;
 
 my $prog = "OSDcampaign_stats.pl";
@@ -34,7 +35,7 @@ my ($DB, $DBX, $CLOhelp, $CLOcampaign, $CLOrecalc, $CLOloops, $CLOdelay);
 
 ### begin parsing run-time options ###
 $CLOloops = 1000000;
-$CLOdelay = 2;
+$CLOdelay = 1;
 $CLOrecalc = 10;
 
 
@@ -82,6 +83,7 @@ my $start_time = 0;
 my $end_time = 0;
 while ($loop < $CLOloops) {
 	$start_time = time();
+	print "  -- OSDcampaign_stats.pl: Entering loop. $calc\n" if ($osdial->{DB}>1);
 	if ($calc >= $CLOrecalc) {
 		my $camp_stats = get_campaign_stats($osdial,$CLOcampaign);
 		print "  -- OSDcampaign_stats.pl: Stats collection completed.\n" if ($osdial->{DB}>0);
@@ -171,6 +173,7 @@ sub set_campaign_stats {
 				$shdone++;
 			}
 		}
+		usleep(1*10*1000);
 	}
 	chop($cinsmulti);
 	chop($ainsmulti);
@@ -178,14 +181,17 @@ sub set_campaign_stats {
 	if ($chdone>0) {
 		print "  -- OSDcampaign_stats.pl: set_campaign_stats: cins: " . $cinshead . $cinsmulti . $cinsonupd . "\n\n\n" if ($osdial->{DB}>1);
 		$osdial->sql_execute($cinshead . $cinsmulti . $cinsonupd);
+		usleep(1*100*1000);
 	}
 	if ($ahdone>0) {
 		print "  -- OSDcampaign_stats.pl: set_campaign_stats: ains: " . $ainshead . $ainsmulti . $ainsonupd . "\n\n\n" if ($osdial->{DB}>1);
 		$osdial->sql_execute($ainshead . $ainsmulti . $ainsonupd);
+		usleep(1*100*1000);
 	}
 	if ($shdone>0) {
 		print "  -- OSDcampaign_stats.pl: set_campaign_stats: sins: " . $sinshead . $sinsmulti . $sinsonupd . "\n\n\n" if ($osdial->{DB}>1);
 		$osdial->sql_execute($sinshead . $sinsmulti . $sinsonupd);
+		usleep(1*100*1000);
 	}
 	return 1;
 }
@@ -216,6 +222,7 @@ sub get_campaign_stats {
 			push @scorder, $vscid;
 		}
 	}
+	usleep(1*100*1000);
 
 
 	# Build initial data stucture for stat collection, $cdata.
@@ -251,7 +258,10 @@ sub get_campaign_stats {
 			$category    = 'CONTACT'   if ($status =~ /^CPSHMN$|^CPSUNK$/);
 			$statusref->{$campaign}{$status}{$category} = 0;
 			$statusref->{$campaign}{$status}{$category} = 1 if ($sret2->{human_answered} eq 'Y');
+
+			usleep(1*10*1000);
 		}
+		usleep(1*10*1000);
 	}
 	$osdial->sql_execute("UPDATE osdial_campaigns SET campaign_stats_refresh='N';");
 
@@ -263,11 +273,12 @@ sub get_campaign_stats {
 		$category    = 'UNDEFINED' if ($category eq '');
 		$statusref->{$campaign}{$status}{$category} = 0;
 		$statusref->{$campaign}{$status}{$category} = 1 if ($sret->{human_answered} eq 'Y');
+		usleep(1*1*1000);
 	}
 
 
 	# Start campaign stat data collection
-	while (my $res = $osdial->sql_query(sprintf("SELECT campaign_id,user,status,server_ip,start_epoch FROM osdial_log WHERE call_date BETWEEN '%s' AND '%s';",$osdial->mres($today.' 00:00:00'),$osdial->mres($osdial->get_datetime()) )) ) {
+	while (my $res = $osdial->sql_query(sprintf("SELECT campaign_id,user,status,server_ip,start_epoch FROM osdial_log WHERE call_date BETWEEN '%s' AND '%s';",$osdial->mres($today.' 00:00:00'),$osdial->mres($osdial->get_datetime($secX)) )) ) {
 		if ($res->{campaign_id} ne "") {
 			my $agent    = $res->{user};
 			my $campaign = uc($res->{campaign_id});
@@ -410,6 +421,8 @@ sub get_campaign_stats {
 				$cdata->{$campaign}{server}{$server}{failed_onemin}++ if ($status =~ /^CRC$|^CRO$|^CRF$|^CRR$|^CPRATB$|^CPRCR$|^CPRLR$|^CPRSNC$|^CPRSRO$|^CPRSIC$|^CPRSIO$|^CPRSVC$/);;
 			}
 		}
+
+		usleep(1*1*1000);
 	}
 	return $cdata;
 }
