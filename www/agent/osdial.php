@@ -2814,12 +2814,13 @@ flush();
 
                                     $ets = explode(',',$email_templates);
                                     foreach ($ets as $eto) {
+                                        $eto = ltrim(rtrim($eto,"'"),"'");
                                         $et = get_first_record($link, 'osdial_email_templates', '*', sprintf("et_id='%s' AND active='Y'",mres($eto)) );
                                         echo "      <tr title=\"$desc\">\n";
                                         echo "        <td width=95 align=left colspan=2>\n";
                                         echo "          <div style=\"overflow:hidden;white-space:nowrap;\">\n";
-                                        echo "            <input type=checkbox style=\"font-size:10px;\" name=ETids id=ET" . $et['et_id'] . " value=" . $et['et_id'] . " class=cust_form>\n";
-                                        echo "            <font color=$form_fc class=body_text style=\"font-size:10px;\"><label for=ET" . $et['et_id'] . ">&nbsp;" . $et['et_name'] . "</label></font>\n";
+                                        echo "            <input type=checkbox style=\"font-size:10px;\" name=ETids id=\"ET" . $et['et_id'] . "\" value=\"" . $et['et_id'] . "\" class=cust_form>\n";
+                                        echo "            <font color=$form_fc class=body_text style=\"font-size:10px;\"><label for=\"ET" . $et['et_id'] . "\">&nbsp;" . $et['et_name'] . "</label></font>\n";
                                         echo "          </div>\n";
                                         echo "        </td>\n";
                                         echo "        <td align=center>\n";
