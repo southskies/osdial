@@ -127,7 +127,7 @@ while ($one_day_interval > 0) {
 	my $affected_rows;
 	my $NEW_actions;
 	while ($endless_loop > 0) {
-		my $stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_manager WHERE server_ip='" . $conf{VARserver_ip} . "' AND status='NEW';";
+		my $stmtA = "SELECT count(*) FROM osdial_manager WHERE server_ip='" . $conf{VARserver_ip} . "' AND status='NEW';";
 	    	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	 	my $NEW_actions = ($sthA->fetchrow_array)[0];
@@ -143,7 +143,7 @@ while ($one_day_interval > 0) {
 		}
 
 		if ($affected_rows) {
-			my $stmtA = "SELECT SQL_NO_CACHE * FROM osdial_manager WHERE server_ip='" . $conf{VARserver_ip} . "' AND status='QUEUE' ORDER BY entry_date DESC LIMIT 1;";
+			my $stmtA = "SELECT * FROM osdial_manager WHERE server_ip='" . $conf{VARserver_ip} . "' AND status='QUEUE' ORDER BY entry_date DESC LIMIT 1;";
 			eventLogger($conf{'PATHlogs'}, 'process', "SQL_QUERY|" . $stmtA . "|");
 
 			my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -175,7 +175,7 @@ while ($one_day_interval > 0) {
 				if ($originate_command =~ /Action: Hangup|Action: Redirect/) {
 					$SENDNOW=0;
 					print STDERR "\n|checking for dead call before executing|" . $vdm->{callerid} . "|" . $vdm->{uniqueid} . "|\n" if ($DB);
-					my $stmtB = "SELECT SQL_NO_CACHE count(*) FROM osdial_manager WHERE server_ip='" . $conf{VARserver_ip} . "' AND callerid='" . $vdm->{callerid} . "' AND status='DEAD';";
+					my $stmtB = "SELECT count(*) FROM osdial_manager WHERE server_ip='" . $conf{VARserver_ip} . "' AND callerid='" . $vdm->{callerid} . "' AND status='DEAD';";
 					my $sthB = $dbhA->prepare($stmtB) or die "preparing: ",$dbhA->errstr;
 					$sthB->execute or die "executing: $stmtA ", $dbhA->errstr;
 					my $dead_count = ($sthB->fetchrow_array)[0];
@@ -253,8 +253,8 @@ while ($one_day_interval > 0) {
 			### sleep for 1 hundredth of a second
 			usleep(1*10*1000);
 		} else {
-			### sleep for 5 hundredths of a second
-			usleep(5*10*1000);
+			### sleep for 10 hundredths of a second
+			usleep(1*100*1000);
 		}
 
 		$endless_loop--;
