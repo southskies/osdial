@@ -34,7 +34,7 @@ my ($DB, $DBX, $CLOhelp, $CLOcampaign, $CLOrecalc, $CLOloops, $CLOdelay);
 
 ### begin parsing run-time options ###
 $CLOloops = 1000000;
-$CLOdelay = 1;
+$CLOdelay = 2;
 $CLOrecalc = 10;
 
 
@@ -267,7 +267,7 @@ sub get_campaign_stats {
 
 
 	# Start campaign stat data collection
-	while (my $res = $osdial->sql_query("SELECT SQL_NO_CACHE osdial_log.* FROM osdial_log JOIN osdial_campaigns ON (osdial_log.campaign_id=osdial_campaigns.campaign_id) where call_date >= '$today';")) {
+	while (my $res = $osdial->sql_query(sprintf("SELECT campaign_id,user,status,server_ip,start_epoch FROM osdial_log WHERE call_date BETWEEN '%s' AND '%s';",$osdial->mres($today.' 00:00:00'),$osdial->mres($osdial->get_datetime()) )) ) {
 		if ($res->{campaign_id} ne "") {
 			my $agent    = $res->{user};
 			my $campaign = uc($res->{campaign_id});
