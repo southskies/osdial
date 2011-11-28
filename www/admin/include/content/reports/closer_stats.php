@@ -1023,7 +1023,7 @@ function report_closer_stats() {
     $export .= "<input type=hidden name=\"row" . $CSVrows . "\" value=\"Agent|Calls|Time|Average\">";
     $CSVrows++;
     
-    $stmt="select osdial_closer_log.user,full_name,count(*),sum(length_in_sec),avg(length_in_sec) from osdial_closer_log,osdial_users where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $group_SQLand and osdial_closer_log.user is not null and length_in_sec is not null and length_in_sec > 0 and osdial_closer_log.user=osdial_users.user group by osdial_closer_log.user;";
+    $stmt=sprintf("SELECT osdial_closer_log.user,full_name,count(*),sum(length_in_sec),avg(length_in_sec) FROM osdial_closer_log JOIN osdial_users ON (osdial_closer_log.user=osdial_users.user) WHERE call_date BETWEEN '%s' AND '%s' %s AND osdial_closer_log.user IS NOT NULL AND length_in_sec IS NOT NULL AND osdial_closer_log.status IS NOT NULL GROUP BY osdial_closer_log.user;",mres($query_date_BEGIN),mres($query_date_END),$group_SQLand);
     $rslt=mysql_query($stmt, $link);
     if ($DB) {$html .= "$stmt\n";}
     $users_to_print = mysql_num_rows($rslt);
