@@ -180,7 +180,7 @@ function report_agent_performance_detail() {
             if (OSDstrlen($time_BEGIN) < 6) {$time_BEGIN = "00:00:00";}
             if (OSDstrlen($time_END) < 6) {$time_END = "23:59:59";}
         }
-        $query_date_BEGIN = "$start_date $time_BEGIN";
+        $query_date_BEGIN = "$query_date $time_BEGIN";
         $query_date_BEGIN = dateToServer($link,'first',$query_date_BEGIN,$webClientAdjGMT,'',$webClientDST,0);
         $query_date_END = "$end_date $time_END";
         $query_date_END = dateToServer($link,'first',$query_date_END,$webClientAdjGMT,'',$webClientDST,0);
