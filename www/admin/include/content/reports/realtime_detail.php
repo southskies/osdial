@@ -1145,7 +1145,7 @@ function report_realtime_detail() {
                 if ($call_time_M_int >= 2) {$G='<span class="wait3">'; $EG='</span>';}
             }
 
-            if ($agent_pause_codes_active>0) $pausecode = $pausecode . sprintf('%-'.(6-OSDstrwidth($pausecode)-1).'s',' ') . ' ' . $LNcenterbar . ' ';
+            if ($agent_pause_codes_active>0) $pausecode = $pausecode . sprintf('%-'.(6-OSDstrwidth($pausecode)).'s',' ') . ' ' . $LNcenterbar . ' ';
 
             $L='';
             $R='';
