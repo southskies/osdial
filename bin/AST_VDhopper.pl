@@ -83,6 +83,24 @@ $DB=0;  # Debug flag, set to 0 for no debug messages, On an active system this w
 $US='__';
 @MT=();
 
+use Proc::ProcessTable;
+
+# check how many instances of the hopper are running.
+my $running=0;
+my $proctab = new Proc::ProcessTable;
+print "Processes " . scalar($proctab) . "\n" if ($DBX);
+foreach my $proc (@{$proctab->table}) {
+	if ($proc->exec eq "/usr/bin/perl" and $proc->cmndline =~ /AST_VDhopper/) {
+		print $proc->exec . "    " . $proc->cmndline . "     " . $proc->pid . "\n" if ($DB);
+		$running++;
+	}
+}
+if ($running>1) {
+	print STDERR "ERROR: There are already more than 1 hopper instance running.\n\n";
+	exit 1
+}
+
+
 # options
 $insert_auto_CB_to_hopper	= 1; # set to 1 to automatically insert ANYONE callbacks into the hopper
 
