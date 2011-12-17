@@ -26,7 +26,7 @@
 ######################
 
 if ($ADD==111111) {
-    if (($LOG['modify_usergroups'] == 1 and $LOG['allowed_campaignsALL'] > 0) OR (OSDpreg_match('/^(admin|6666)$/',$PHP_AUTH_USER) and $LOG['user_level']>=9)) {
+    if (($LOG['modify_usergroups'] == 1 and $LOG['allowed_campaignsALL'] > 0) OR (OSDpreg_match('/^(admin|6666)$/',$LOG['user']) and $LOG['user_level']>=9)) {
         echo "<center>\n";
         echo "  <br><font color=$default_text size=+1>ADD NEW AGENTS GROUP</font><br><br>\n";
         echo "  <form action=$PHP_SELF method=POST>\n";
@@ -93,7 +93,7 @@ if ($ADD==211111) {
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
                 $fp = fopen ("./admin_changes_log.txt", "a");
-                fwrite ($fp, "$date|ADD A NEW USER GROUP ENTRY     |$PHP_AUTH_USER|$ip|$stmt|\n");
+                fwrite ($fp, "$date|ADD A NEW USER GROUP ENTRY     |$LOG['user']|$ip|$stmt|\n");
                 fclose($fp);
             }
         }
@@ -111,7 +111,7 @@ if ($ADD==411111) {
         $preuser_group = $user_group;
         if ($LOG['multicomp'] > 0) $preuser_group = (($company_id * 1) + 100) . $user_group;
 
-        if ($LOG['allowed_campaignsALL'] < 1 and !(OSDpreg_match('/^(admin|6666)$/',$PHP_AUTH_USER) and $LOG['user_level']>=9)) {
+        if ($LOG['allowed_campaignsALL'] < 1 and !(OSDpreg_match('/^(admin|6666)$/',$LOG['user']) and $LOG['user_level']>=9)) {
             echo "<br><font color=red>USER GROUP NOT MODIFIED - You may only view your User Group resources.</font><br>\n";
         } elseif ( (OSDstrlen($user_group) < 2) or (OSDstrlen($group_name) < 2) ) {
             echo "<br><font color=red>USER GROUP NOT MODIFIED - Please go back and look at the data you entered\n";
@@ -173,7 +173,7 @@ if ($ADD==411111) {
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
                 $fp = fopen ("./admin_changes_log.txt", "a");
-                fwrite ($fp, "$date|MODIFY USER GROUP ENTRY     |$PHP_AUTH_USER|$ip|$stmt|\n");
+                fwrite ($fp, "$date|MODIFY USER GROUP ENTRY     |$LOG[user]|$ip|$stmt|\n");
                 fclose($fp);
             }
         }
@@ -188,7 +188,7 @@ if ($ADD==411111) {
 ######################
 
 if ($ADD==511111) {
-    if ($LOG['allowed_campaignsALL'] < 1 and !(OSDpreg_match('/^(admin|6666)$/',$PHP_AUTH_USER) and $LOG['user_level']>=9)) {
+    if ($LOG['allowed_campaignsALL'] < 1 and !(OSDpreg_match('/^(admin|6666)$/',$LOG['user']) and $LOG['user_level']>=9)) {
         echo "<br><font color=red>USER GROUP NOT DELETED - You may only view your User Group resources.</font><br>\n";
     } elseif ( (OSDstrlen($user_group) < 2) or ($LOG['delete_user_groups'] < 1) ) {
         echo "<br><font color=red>USER GROUP NOT DELETED - Please go back and look at the data you entered\n";
@@ -205,7 +205,7 @@ if ($ADD==511111) {
 ######################
 
 if ($ADD==611111) {
-    if ($LOG['allowed_campaignsALL'] < 1 and !(OSDpreg_match('/^(admin|6666)$/',$PHP_AUTH_USER) and $LOG['user_level']>=9)) {
+    if ($LOG['allowed_campaignsALL'] < 1 and !(OSDpreg_match('/^(admin|6666)$/',$LOG['user']) and $LOG['user_level']>=9)) {
         echo "<br><font color=red>USER GROUP NOT DELETED - You may only view your User Group resources.</font><br>\n";
     } elseif ( (OSDstrlen($user_group) < 2) or ($CoNfIrM != 'YES') or ($LOG['delete_user_groups'] < 1) ) {
         echo "<br><font color=red>USER GROUP NOT DELETED - Please go back and look at the data you entered\n";
@@ -223,7 +223,7 @@ if ($ADD==611111) {
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
                 $fp = fopen ("./admin_changes_log.txt", "a");
-                fwrite ($fp, "$date|!DELETING USRGROUP!!|$PHP_AUTH_USER|$ip|user_group='$user_group'|\n");
+                fwrite ($fp, "$date|!DELETING USRGROUP!!|$LOG[user]|$ip|user_group='$user_group'|\n");
                 fclose($fp);
             }
             echo "<br><b><font color=$default_text>USER GROUP DELETION COMPLETED: $user_group</font></b>\n";
