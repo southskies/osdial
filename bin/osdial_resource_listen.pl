@@ -48,6 +48,7 @@ while (1) {
 			}
 		} else {
 			$osdial = $interface;
+			my %thesehosts;
 			while (my $sret = $interface->sql_query("SELECT SQL_NO_CACHE * FROM server_stats WHERE update_time>NOW()-1000;")) {
 				my %kvh;
 				foreach my $key (keys %{$sret}) {
@@ -58,8 +59,12 @@ while (1) {
 				if ($kvh{ip} =~ /$osdial->{WEBserver_stats_regex}/ or $kvh{host} =~ /$osdial->{WEBserver_stats_regex}/) {
 					my $ip = new Net::IP($kvh{ip});
 					$hosts{$ip->intip()} = \%kvh;
+					$thesehosts{$ip->intip()} = 1;
 					$count++;
 				}
+			}
+			foreach my $host (keys %hosts) {
+				delete $hosts{$host} if (!defined($thesehosts{$host}));
 			}
 		}
 		if ($count>0) {
