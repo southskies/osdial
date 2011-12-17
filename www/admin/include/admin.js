@@ -269,16 +269,29 @@ Date.prototype.addDays = function(days) {
 var cgexp = new Date();
 cgexp.setTime(cgexp.getTime() + 24*60*60*1000);
 
-var webClientGMT = -((new Date()).getTimezoneOffset()/60);
+var webClientDate = new Date();
+var webClientGMT = -(webClientDate.getTimezoneOffset()/60);
 document.cookie = "webClientGMT=" + webClientGMT + "; expires=" + cgexp;
 
 var webClientDST = 0;
 var dstchk = new Date();
+var dstchk1 = new Date();
+var dstchk7 = new Date();
 dstchk.setDate(1);
-for (var i=0; i<12; i++) {
-	dstchk.setMonth(i);
-	var webClientGMTtmp = -(dstchk.getTimezoneOffset()/60);
-	if (webClientGMT >= webClientGMTtmp) webClientDST=1;
+dstchk1.setDate(1);
+dstchk7.setDate(1);
+dstchk1.setMonth(0);
+dstchk7.setMonth(6);
+var janGMTtmp = -(dstchk1.getTimezoneOffset()/60);
+var julGMTtmp = -(dstchk7.getTimezoneOffset()/60);
+// January and July do not have the same GMT Offset...check if we are in DST.
+if (janGMTtmp != julGMTtmp) { 
+	var nodstgmt = 13;
+	for (var i=0; i<12; i++) {
+		dstchk.setMonth(i);
+		var webClientGMTmonth = -(dstchk.getTimezoneOffset()/60);
+		if (nodstgmt > webClientGMTmonth) nodstgmt = webClientGMTmonth;
+	}
+	if (webClientGMT != nodstgmt) webClientDST=1;
 }
 document.cookie = "webClientDST=" + webClientDST + "; expires=" + cgexp;
-
