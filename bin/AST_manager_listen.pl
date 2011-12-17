@@ -251,28 +251,31 @@ while($one_day_interval > 0) {
 
 				# Clear conference when meetme ends.
 				} elsif ($ame{event} =~ /MeetmeEnd/i) {
-					my $stmtA = sprintf("SELECT * FROM conferences WHERE server_ip='%s' AND conf_exten='%s' LIMIT 1;",$osdial->{VARserver_ip}, $ame{meetme});
-					my $cret = $osdial->sql_query($stmtA);
-					if ($cret->{extension} ne "") {
-						my $stmtA = sprintf("UPDATE conferences SET extension='' WHERE server_ip='%s' AND conf_exten='%s';",$osdial->{VARserver_ip}, $ame{meetme});
-						my $affected_rows = $osdial->sql_execute($stmtA);
-						print "|$affected_rows Conference cleared|$stmtA\n|" if ($DB);
-						$logmsg = "End of Meetme conference ".$ame{meetme}." for " . $cret->{extension} .". ($affected_rows)";
-					}
+					# Following statements were hanging up on manual dials...
+					#my $stmtA = sprintf("SELECT * FROM conferences WHERE server_ip='%s' AND conf_exten='%s' LIMIT 1;",$osdial->{VARserver_ip}, $ame{meetme});
+					#my $cret = $osdial->sql_query($stmtA);
+					#if ($cret->{extension} ne "") {
+					#	my $stmtA = sprintf("UPDATE conferences SET extension='' WHERE server_ip='%s' AND conf_exten='%s';",$osdial->{VARserver_ip}, $ame{meetme});
+					#	my $affected_rows = $osdial->sql_execute($stmtA);
+					#	print "|$affected_rows Conference cleared|$stmtA\n|" if ($DB);
+					#	$logmsg = "End of Meetme conference ".$ame{meetme}." for " . $cret->{extension} .". ($affected_rows)";
+					#}
 
 					my $stmtA = sprintf("SELECT * FROM osdial_conferences WHERE server_ip='%s' AND conf_exten='%s' LIMIT 1;",$osdial->{VARserver_ip}, $ame{meetme});
 					my $ocret = $osdial->sql_query($stmtA);
 					if ($ocret->{extension} ne "") {
+						# We still want to clear the empty 3WAY channels when they hangup.
 						if ($ocret->{extension} =~ /3WAY/) {
 							my $stmtA = sprintf("UPDATE osdial_conferences SET extension='',leave_3way='0',leave_3way_datetime=NOW() WHERE server_ip='%s' AND conf_exten='%s';", $osdial->{VARserver_ip}, $ame{meetme});
 							my $affected_rows = $osdial->sql_execute($stmtA);
 							print "|$affected_rows 3WAY OSDial Conference cleared|$stmtA\n|" if ($DB);
 							$logmsg = "End of Meetme 3WAY osdial_conference ".$ame{meetme}." for ".$ocret->{extension}.". ($affected_rows)";
-						} else {
-							my $stmtA = sprintf("UPDATE osdial_conferences SET extension='' WHERE server_ip='%s' AND conf_exten='%s';", $osdial->{VARserver_ip}, $ame{meetme});
-							my $affected_rows = $osdial->sql_execute($stmtA);
-							print "|$affected_rows OSDial Conference cleared|$stmtA\n|" if ($DB);
-							$logmsg = "End of Meetme osdial_conference ".$ame{meetme}." for ".$ocret->{extension}.". ($affected_rows)";
+						# Following statements were hanging up on manual dials...
+						#} else {
+						#	my $stmtA = sprintf("UPDATE osdial_conferences SET extension='' WHERE server_ip='%s' AND conf_exten='%s';", $osdial->{VARserver_ip}, $ame{meetme});
+						#	my $affected_rows = $osdial->sql_execute($stmtA);
+						#	print "|$affected_rows OSDial Conference cleared|$stmtA\n|" if ($DB);
+						#	$logmsg = "End of Meetme osdial_conference ".$ame{meetme}." for ".$ocret->{extension}.". ($affected_rows)";
 						}
 					}
 
@@ -294,7 +297,7 @@ while($one_day_interval > 0) {
 						if ($ame{calleridname} =~ /^OSDial#/ and $ame{channel} =~ /^Local\/.*@.*-....;.*$/) {
 							$ame{channel} =~ s/-....;.*$//;
 						}
-						my $stmtA = sprintf("UPDATE osdial_manager SET status='DEAD',uniqueid='%s' WHERE server_ip='%s' AND channel='%s' AND uniqueid='' AND action='Hangup' AND callerid NOT LIKE 'DCagcW%';",$ame{uniqueid},$osdial->{VARserver_ip},$ame{channel});
+						my $stmtA = sprintf("UPDATE osdial_manager SET status='DEAD',uniqueid='%s' WHERE server_ip='%s' AND channel='%s' AND action='Hangup' AND callerid NOT LIKE 'DCagcW%';",$ame{uniqueid},$osdial->{VARserver_ip},$ame{channel});
 						my $affected_rows2 = $osdial->sql_execute($stmtA);
 						print "|$affected_rows2 HANGUPs updated|$stmtA|\n" if ($DB);
 						$logmsg = "Hangup on channel, update manager AS DEAD. ($affected_rows1) ($affected_rows2)";
