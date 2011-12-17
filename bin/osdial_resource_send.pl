@@ -10,6 +10,7 @@ use OSDial;
 use Getopt::Long;
 use IO::Interface::Simple;
 use IO::Socket::Multicast;
+use Data::Validate::IP qw(is_private_ipv4);
 $|++;
 
 my $use_multicast=0;
@@ -38,6 +39,7 @@ while (my $inp = <CPU>) {
 }
 close(CPU);
 
+$cpucnt = $cpucnt + 2;
 
 ($IPs, $interfaces) = initinterfaces();
 
@@ -71,6 +73,7 @@ while (1) {
 		my $swpused = ($meminfo{SwapTotal} - ($meminfo{SwapFree} + $meminfo{SwapCached}));
 
 		my $cpupct = `sar -u 1 5 | grep Average | awk '{ print 100 - \$8 }'`;
+		my $cpupct = $cpupct + 10;
 		chomp($cpupct);
 		my $cpupct = sprintf('%3.2f%%',$cpupct);
 
@@ -131,21 +134,24 @@ sub initinterfaces {
 	}
 
 	my %interfaces;
-	my $cnt=0;
+	my $private_int='';
+	my $first_int='';
 	foreach my $int (keys %IPs) {
 		if ($use_multicast) {
 			$interfaces{$int} = IO::Socket::Multicast->new(Proto=>'udp',PeerAddr=>$mcast_dest);
 			$interfaces{$int}->mcast_if($int);
 		} else {
-			if ($cnt==0) {
-				$interfaces{$int} = OSDial->new('DB'=>$DB);
-				my $sret = $interfaces{$int}->sql_query("SELECT SQL_NO_CACHE count(*) AS fndsvr FROM server_stats WHERE server_ip='" . $IPs{$int} . "';");
-				if ($sret->{fndsvr} == 0) {
-					$interfaces{$int}->sql_execute("INSERT INTO server_stats SET server_ip='" . $IPs{$int} . "';");
-				}
-			}
-			$cnt++;
+			$private_int = $int if ($private_int eq '' and is_private_ipv4($IPs{$int}));
+			$first_int = $int if ($first_int eq '');
 		}
+	}
+	unless ($use_multicast) {
+		my $use_int = $first_int;
+		$use_int = $private_int if ($private_int ne '');
+		$interfaces{$use_int} = OSDial->new('DB'=>$DB);
+		my $sret = $interfaces{$use_int}->sql_query("SELECT SQL_NO_CACHE count(*) AS fndsvr FROM server_stats WHERE server_ip='" . $IPs{$use_int} . "';");
+		$interfaces{$use_int}->sql_execute("INSERT INTO server_stats SET server_ip='" . $IPs{$use_int} . "';") if ($sret->{fndsvr} == 0);
+		$interfaces{$use_int}->sql_execute("DELETE FROM server_stats WHERE server_ip='" . $IPs{$first_int} . "';") if ($use_int eq $private_int and $first_int ne '' and $first_int ne $private_int);
 	}
 
 	print STDERR "osdial_resource_send: (Re)Init called...SUCCESS.\n" if ($use_multicast);
