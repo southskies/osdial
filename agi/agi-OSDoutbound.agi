@@ -250,7 +250,7 @@ while ($drop_timer <= $campaign->{drop_call_seconds}) {
 			$osd->AGI->set_extension($CPADROPexten);
 			$osd->AGI->set_priority(1);
 		} else {
-			my $stmt=sprintf("INSERT INTO osdial_manager VALUES ('','','%s','NEW','N','%s','','Hangup','%s','Channel: %s','','','','','','','','','')",$osd->mres($SQLdate),$osd->mres($osd->{VARserver_ip}),$osd->mres($VHqueryCID),$osd->mres($osd->AGI->{channel}));
+			my $stmt=sprintf("INSERT INTO osdial_manager VALUES ('','','%s','NEW','N','%s','%s','Hangup','%s','Channel: %s','','','','','','','','','')",$osd->mres($SQLdate),$osd->mres($osd->{VARserver_ip}),$osd->mres($osd->AGI->{channel}),$osd->mres($VHqueryCID),$osd->mres($osd->AGI->{channel}));
 			my $affected_rows=$osd->sql_execute($stmt);
 			$osd->agi_output("--    OSDAD call_hungup CPD timout: |$CIDlead_id|$VHqueryCID|".$osd->AGI->{channel}."|insert to osdial_manager");
 			$osd->AGI->hangup();
@@ -440,7 +440,7 @@ if ($drop_timer >= $campaign->{drop_call_seconds}) {
 		$osd->AGI->set_priority(1);
 	} else {
 		### insert a NEW record to the osdial_manager table to be processed
-		$stmt = sprintf("INSERT INTO osdial_manager VALUES ('','','%s','NEW','N','%s','','Hangup','%s','Channel: %s','','','','','','','','','')",$SQLdate,$osd->{VARserver_ip},$VHqueryCID,$osd->AGI->{channel});
+		$stmt = sprintf("INSERT INTO osdial_manager VALUES ('','','%s','NEW','N','%s','%s','Hangup','%s','Channel: %s','','','','','','','','','')",$SQLdate,$osd->{VARserver_ip},$osd->AGI->{channel},$VHqueryCID,$osd->AGI->{channel});
 		$affected_rows = $osd->sql_execute($stmt);
 		$osd->agi_output("|$stmt|") if ($DB);
 		$osd->agi_output("--    VDAD call_hungup timout: |$VHqueryCID|$DROPexten|" . $osd->AGI->{channel} . "|insert to osdial_manager");

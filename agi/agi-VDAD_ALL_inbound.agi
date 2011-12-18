@@ -655,7 +655,7 @@ if ( ($hm < $ct_default_start) || ($hm > $ct_default_stop) ) {
 
 	if ($after_hours_action =~ /HANGUP/) {
 		### insert a NEW record to the osdial_manager table to hangup the channel
-		$stmtA = "INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Hangup','$VHqueryCID','Channel: $channel','','','','','','','','','');";
+		$stmtA = "INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','$channel','Hangup','$VHqueryCID','Channel: $channel','','','','','','','','','');";
 		$affected_rows = $dbhA->do($stmtA);  
 		if ($AGILOG) {$agi_string = "--    VDCL call_hungup after hours: |$VHqueryCID|$VDADconf_exten|$channel|insert to osdial_manager";   &agi_output;}
 	} elsif ($after_hours_action =~ /MESSAGE/) {
@@ -663,7 +663,7 @@ if ( ($hm < $ct_default_start) || ($hm > $ct_default_stop) ) {
 		$AGI->stream_file("$after_hours_message_filename");
 		#sleep(1);
 		### insert a NEW record to the osdial_manager table to hangup the channel
-		$stmtA = "INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Hangup','$VHqueryCID','Channel: $channel','','','','','','','','','');";
+		$stmtA = "INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','$channel','Hangup','$VHqueryCID','Channel: $channel','','','','','','','','','');";
 		$affected_rows = $dbhA->do($stmtA);  
 		if ($AGILOG) {$agi_string = "--    VDCL call_hungup after hours: |$VHqueryCID|$VDADconf_exten|$channel|insert to osdial_manager";   &agi_output;}
 	}
@@ -1404,7 +1404,7 @@ if ($drop_timer > $DROP_TIME) {
 		checkresult();
 	} else {
 		### insert a NEW record to the osdial_manager table to be processed
-		$stmtA = "INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Hangup','$VHqueryCID','Channel: $channel','','','','','','','','','')";
+		$stmtA = "INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','$channel','Hangup','$VHqueryCID','Channel: $channel','','','','','','','','','')";
 		$affected_rows = $dbhA->do($stmtA);  
 		if ($AGILOG) {$agi_string = "--    VDCL call_hungup timout: |$VHqueryCID|$VDADconf_exten|$channel|insert to osdial_manager";   &agi_output;}
 	}

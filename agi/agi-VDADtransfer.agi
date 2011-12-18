@@ -712,7 +712,7 @@ if ($drop_seconds < 1)
 	else
 		{
 		### insert a NEW record to the osdial_manager table to be processed
-		$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$VARserver_ip','','Hangup','$VHqueryCID','Channel: $channel','','','','','','','','','')";
+		$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$VARserver_ip','$channel','Hangup','$VHqueryCID','Channel: $channel','','','','','','','','','')";
 		$affected_rows = $dbhA->do($stmtA);
 		if ($AGILOG) {$agi_string = "--    VDAD call_hungup timout: |$VHqueryCID|$VDADconf_exten|$channel|insert to osdial_manager";   &agi_output;}
 		}
