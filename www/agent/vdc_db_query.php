@@ -1988,7 +1988,7 @@ if ($ACTION == 'manDiaLlogCaLL') {
             $loop_count=0;
             while($loop_count < $total_rec) {
                 if (OSDstrlen($rec_channels[$loop_count])>5) {
-                    $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Hangup','RH12345%s','Channel: %s','','','','','','','','','');",mres($NOW_TIME),mres($server_ip),mres($StarTtime.$loop_count),mres($rec_channels[$loop_count]));
+                    $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','%s','Hangup','RH12345%s','Channel: %s','','','','','','','','','');",mres($NOW_TIME),mres($server_ip),mres($rec_channels[$loop_count]),mres($StarTtime.$loop_count),mres($rec_channels[$loop_count]));
                     if ($format=='debug') echo "\n<!-- $stmt -->";
                     $rslt=mysql_query($stmt, $link);
 

@@ -485,7 +485,7 @@ if ($ACTION=="Hangup") {
                 }
             }
 
-            $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Hangup','%s','Channel: %s','','','','','','','','','');",mres($NOW_TIME),mres($call_server_ip),mres($queryCID),mres($channel));
+            $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','%s','Hangup','%s','Channel: %s','','','','','','','','','');",mres($NOW_TIME),mres($call_server_ip),mres($channel),mres($queryCID),mres($channel));
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
             echo "Hangup command sent for Channel $channel on $call_server_ip\n";
@@ -842,7 +842,7 @@ if ($ACTION=="RedirectXtraCXNeW") {
                 if ($format=='debug') echo "\n<!-- $stmt -->";
                 $rslt=mysql_query($stmt, $link);
 
-                $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Hangup','%s','Channel: %s','','','','','','','','','');",mres($NOW_TIME),mres($server_ip),mres($queryCID),mres($extrachannel));
+                $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','%s','Hangup','%s','Channel: %s','','','','','','','','','');",mres($NOW_TIME),mres($server_ip),mres($extrachannel),mres($queryCID),mres($extrachannel));
                 if ($format=='debug') echo "\n<!-- $stmt -->";
                 $rslt=mysql_query($stmt, $link);
 
@@ -1007,7 +1007,7 @@ if ($ACTION=="RedirectXtraCX") {
                 if ($format=='debug') echo "\n<!-- $stmt -->";
                 $rslt=mysql_query($stmt, $link);
 
-                $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Hangup','%s','Channel: %s','','','','','','','','','');",mres($NOW_TIME),mres($server_ip),mres($queryCID),mres($extrachannel));
+                $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','%s','Hangup','%s','Channel: %s','','','','','','','','','');",mres($NOW_TIME),mres($server_ip),mres($extrachannel),mres($queryCID),mres($extrachannel));
                 if ($format=='debug') echo "\n<!-- $stmt -->";
                 $rslt=mysql_query($stmt, $link);
 
@@ -1506,7 +1506,12 @@ if ( ($ACTION=="MonitorConf") || ($ACTION=="StopMonitorConf") ) {
     } else {
 
         if ($ACTION=="MonitorConf") {
-            $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Originate','%s','Channel: %s','Context: %s','Exten: %s','Priority: %s','Callerid: %s','Account: %s','','','','');",mres($NOW_TIME),mres($server_ip),mres($filename),mres($channel),mres($ext_context),mres($exten),mres($ext_priority),mres($filename),mres($CalLCID));
+            $CIDdate = date("mdHis");
+            $PADlead_id = sprintf("%09s", $lead_id);
+            while (OSDstrlen($PADlead_id) > 9) $PADlead_id = OSDsubstr($PADlead_id, 0, -1);
+            $queryCID = "W$CIDdate$PADlead_id";
+
+            $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Originate','%s','Channel: %s','Context: %s','Exten: %s','Priority: %s','Callerid: %s','Account: %s','','','','');",mres($NOW_TIME),mres($server_ip),mres($queryCID),mres($channel),mres($ext_context),mres($exten),mres($ext_priority),mres($filename),mres($queryCID));
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
 
@@ -1551,7 +1556,7 @@ if ( ($ACTION=="MonitorConf") || ($ACTION=="StopMonitorConf") ) {
             }
             $i=0;
             while ($h>$i) {
-                $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Hangup','RH12345%s','Channel: %s','','','','','','','','','');",mres($NOW_TIME),mres($server_ip),mres($StarTtime.$i),mres($HUchannel[$i]));
+                $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','%s','Hangup','RH12345%s','Channel: %s','','','','','','','','','');",mres($NOW_TIME),mres($server_ip),mres($HUchannel[$i]),mres($StarTtime.$i),mres($HUchannel[$i]));
                 if ($format=='debug') echo "\n<!-- $stmt -->";
                 $rslt=mysql_query($stmt, $link);
                 $i++;
