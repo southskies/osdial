@@ -135,7 +135,7 @@ while ($one_day_interval > 0) {
 	    	$sthA->finish();
 
 		if ($NEW_actions) {
-			my $stmtA = "UPDATE osdial_manager SET status='QUEUE' WHERE server_ip='" . $conf{VARserver_ip} . "' AND status='NEW' ORDER BY entry_date LIMIT 1;";
+			my $stmtA = "UPDATE osdial_manager SET status='QUEUE' WHERE server_ip='" . $conf{VARserver_ip} . "' AND status='NEW' ORDER BY man_id LIMIT 1;";
 			$affected_rows = $dbhA->do($stmtA);
 			print STDERR "rows updated to QUEUE: |$affected_rows|\n" if ($DB);
 		} else {
@@ -143,7 +143,7 @@ while ($one_day_interval > 0) {
 		}
 
 		if ($affected_rows) {
-			my $stmtA = "SELECT * FROM osdial_manager WHERE server_ip='" . $conf{VARserver_ip} . "' AND status='QUEUE' ORDER BY entry_date DESC LIMIT 1;";
+			my $stmtA = "SELECT * FROM osdial_manager WHERE server_ip='" . $conf{VARserver_ip} . "' AND status='QUEUE' ORDER BY man_id LIMIT 1;";
 			eventLogger($conf{'PATHlogs'}, 'process', "SQL_QUERY|" . $stmtA . "|");
 
 			my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
