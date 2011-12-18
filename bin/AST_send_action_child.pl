@@ -52,6 +52,7 @@ use strict;
 use Getopt::Long;
 use Net::Telnet;
 use Time::HiRes qw(gettimeofday);
+use OSDial;
 
 ### Initialize date/time vars ###
 my $secX = time(); #Start time
@@ -188,9 +189,12 @@ if ($action) {
 	my $action_id = '';
 	if ($asterisk_version =~ /^1\.6|^1\.8/) {
 		$tn->waitfor('/1\n$/');			# print login
+		$action_id = 'ActionID: ';
+		$action_id .= 'M' . $man_id if ($man_id);
 		my($s, $usec) = gettimeofday();
-		$tn->print("Action: Login\nActionID: U$usec~Login\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
-		$action_id = 'ActionID: M' . $man_id if ($man_id);
+		my $usid = sprintf('U%d.%06d',$s,$usec);
+		$action_id .= '~'.$usid;
+		$tn->print("Action: Login\n$action_id~Login\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
 	} else {
 		$tn->waitfor('/0\n$/');			# print login
 		$tn->print("Action: Login\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
@@ -210,8 +214,7 @@ if ($action) {
 		#	--END COMMAND--
 		my $meetme_command = "Action: Command\nCommand: meetme list $cmd_line_k\n\n";
 		if ($asterisk_version =~ /^1\.6|^1\.8/) {
-			my($s, $usec) = gettimeofday();
-			$meetme_command = "Action: Command\nActionID: U$usec~Command\nCommand: meetme list $cmd_line_k\n\n";
+			$meetme_command = "Action: Command\n$action_id~Command\nCommand: meetme list $cmd_line_k\n\n";
 		}
 		print nowDate() . "|$SYSLOG|\n$meetme_command";
 
@@ -261,35 +264,58 @@ if ($action) {
 	sleep(1);
 	
 	my $data1;  # ? Useless ?
-	if ($FULL_LOG and $SYSLOG) {
-		my $event_string = "1|" . $data1 . "|";
-		foreach my $channel (@list_channels) {
-			$event_string .= $channel;
-		}
-		my $read_input_buf = $tn->get(Errmode => "return",
-			Timeout => 1);
-		$event_string .= $read_input_buf;
-		eventLogger($PATHlogs,'full',$event_string);
+	my $event_string='';
+	my $res_count = 1;
+	foreach my $channel (@list_channels) {
+		$event_string .= $res_count . '|' . $data1 . '|' . $channel;
+		$res_count++;
 	}
+	my $read_input_buf = $tn->get(Errmode => "return",
+		Timeout => 1);
+	$event_string .= $read_input_buf;
+	my @res_line = split(/\n/, $read_input_buf);
+	my %ame;
+	foreach my $rline (@res_line) {
+		if ($rline =~ /: /) {
+			my ($clkey, $clval) = split(/: /,$rline);
+			$clkey = lc($clkey);
+			$ame{$clkey} = $clval;
+		}
+	}
+	if ($ame{response} eq 'Error') {
+		if ($ame{actionid} =~ /Hangup$/i and $ame{message} =~ /No such channel/i) {
+			my ($man_id,$usec_id,$action) = split(/~/,$ame{actionid});
+			$man_id =~ s/^M//;
+			$usec_id =~ s/^U//;
+			if ($man_id ne '') {
+				my $osdial = OSDial->new('DB'=>$DB);
+				$osdial->sql_execute(sprintf("UPDATE osdial_manager SET status='DEAD' WHERE man_id='%s';",$man_id));
+				$event_string .= "*** Marking failed command ($man_id) as DEAD.\n";
+			}
+		}
+	}
+	eventLogger($PATHlogs,'full',$event_string) if ($FULL_LOG and $SYSLOG);
+
 
 	$tn->buffer_empty;
 	#@hangup = $tn->cmd(String => "Action: Logoff\n\n", Prompt => "/.*/"); 
 	if ($asterisk_version =~ /^1\.6|^1\.8/) {
-		my($s, $usec) = gettimeofday();
-		$tn->cmd(String => "Action: Logoff\nActionID: U$usec~Logoff\n\n", Prompt => "/.*/"); 
+		$tn->cmd(String => "Action: Logoff\n$action_id~Logoff\n\n", Prompt => "/.*/"); 
 	} else {
 		$tn->cmd(String => "Action: Logoff\n\n", Prompt => "/.*/"); 
 	}
 	sleep(1);
 
+	my $event_string='';
+	my $res_count = 1;
+	foreach my $channel (@list_channels) {
+		$event_string .= $res_count . '|' . $data1 . '|' . $channel;
+		$res_count++;
+	}
+	my $read_input_buf = $tn->get(Errmode => "return",
+		Timeout => 1);
+	$event_string .= $read_input_buf;
 	if ($FULL_LOG and $SYSLOG) {
-		my $event_string = "2|" . $data1 . "|";
-		foreach my $channel (@list_channels) {
-			$event_string .= $channel;
-		}
-		my $read_input_buf = $tn->get(Errmode => "return",
-			Timeout => 1);
-		$event_string .= $read_input_buf;
 		eventLogger($PATHlogs,'full',$event_string);
 	}
 
