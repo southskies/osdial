@@ -1768,7 +1768,7 @@ function dateCalcServerLocalGMTOffset($svrGMT, $locGMT, $locisDST, $tzsecs) {
 
     $dcsret = array();
 
-    $srvGMT = $srvGMT * 1;
+    $svrGMT = $svrGMT * 1;
     $dcsret['svrsname'] = $tzoffsets[$svrGMT];
     $svrGMTname = $tzrefid[$dcsret['svrsname']];
     $svrtz = new Date_TimeZone($svrGMTname);
@@ -1799,7 +1799,7 @@ function dateToLocal($link, $svrip, $cnvdate, $locGMT, $fmt="", $locisDST, $addl
     if (empty($fmt)) $fmt=$config['settings']['default_date_format'];
     if ($config['settings']['use_browser_timezone_offset']=='N') return date($fmt, $dsecs);
 
-    if ($svrip>-27 and $svrip<27 and $svrip!='first') {
+    if (is_numeric($svrip) and $svrip>-27 and $svrip<27 and $svrip!='first') {
         $svrGMT = $svrip * 1;
     } else {
         $server = get_first_record($link, 'servers', '*', sprintf("server_ip='%s'", mres($svrip)));
@@ -1842,7 +1842,7 @@ function dateToServer($link, $svrip, $cnvdate, $locGMT, $fmt="", $locisDST, $add
     if (empty($fmt)) $fmt='Y-m-d H:i:s';
     if ($config['settings']['use_browser_timezone_offset']=='N') return date($fmt, $dsecs);
 
-    if ($svrip>-27 and $svrip<27 and $svrip!='first') {
+    if (is_numeric($svrip) and $svrip>-27 and $svrip<27 and $svrip!='first') {
         $svrGMT = $svrip * 1;
     } else {
         $server = get_first_record($link, 'servers', '*', sprintf("server_ip='%s'", mres($svrip)));
