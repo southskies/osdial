@@ -21,8 +21,8 @@
 #
 #
 # Includes
-require("include/dbconnect.php");
-require("include/functions.php");
+require_once("include/dbconnect.php");
+require_once("include/functions.php");
 
 $mimetype = get_variable("mimetype");
 $filename = get_variable("filename");
