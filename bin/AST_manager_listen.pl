@@ -156,6 +156,11 @@ while($one_day_interval > 0) {
 	while($endless_loop > 0) {
                 #$tn->print("Action:\n");
                 $tn->print("Action: Ping\n\n") if ($endless_loop % 10 == 0);
+		if ($endless_loop % 600 == 0) {
+			$osdial->event_logger('listen_process', "Restarting MySQL connection (every 600 cycles).");
+                	$osdial->sql_disconnect();
+                	$osdial->sql_connect();
+		}
 
 		### sleep for 10 hundredths of a second
 		#usleep(1*10*1000);
