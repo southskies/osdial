@@ -74,14 +74,12 @@ while (1) {
 		my $swpused = ($meminfo{SwapTotal} - ($meminfo{SwapFree} + $meminfo{SwapCached}));
 
 		my $cpupct = `sar -u 1 5 | grep Average | awk '{ print 100 - \$8 }'`;
-		my $cpupct = $cpupct + 10;
+		my $cpupct = $cpupct + 0;
 		chomp($cpupct);
 		my $cpupct = sprintf('%3.2f%%',$cpupct);
 
 		my $timestamp = `date +\%Y\%m\%d\%H\%M\%S`;
 		chomp $timestamp;
-		my $timestampSQL = `date "+\%Y-\%m-\%d \%H:\%M:\%S"`;
-		chomp $timestampSQL;
 
 		my %kvh;
 		$kvh{ip} = $IPs->{$int};
