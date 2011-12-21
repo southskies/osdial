@@ -3229,6 +3229,15 @@ if ($ACTION == 'updateDISPO') {
         echo "Dispo Choice $dispo or lead_id $lead_id is not valid\n";
         exit;
     } else {
+        $phone_local_gmt = $phone_local_gmt * 1;
+        $tzs = parseTimezones();
+        $tzoffsets = $tzs['tzoffsets'];
+        $tzrefid = $tzs['tzrefid'];
+        $phoneGMTname = $tzrefid[$tzoffsets[$phone_local_gmt]];
+        $phonetz = new Date_TimeZone($phoneGMTname);
+        $phoneDST = $phonetz->inDaylightTime(new Date(time()));
+        $phoneDST = $phoneDST * 1;
+
         $random = (rand(1000000, 9999999) + 10000000);
         $stmt=sprintf("UPDATE osdial_live_agents SET comments='',lead_id='',last_call_finish='%s',random_id='%s' WHERE user='%s' AND server_ip='%s';",mres($NOW_TIME),mres($random),mres($user),mres($server_ip));
         if ($format=='debug') echo "\n<!-- $stmt -->";
@@ -3243,7 +3252,8 @@ if ($ACTION == 'updateDISPO') {
         $rslt=mysql_query($stmt, $link);
 
         if ($dispo_choice == 'PD') {
-            $stmt=sprintf("UPDATE osdial_list SET post_date='%s' WHERE lead_id='%s';",mres(dateToServer($link,$server_ip,$PostDatETimE,$phone_local_gmt-date('I'),'',date('I'),0)),mres($lead_id));
+            $adjPOSTdate = dateToServer($link,$server_ip,$PostDatETimE,$phone_local_gmt,'',$phoneDST,0);
+            $stmt=sprintf("UPDATE osdial_list SET post_date='%s' WHERE lead_id='%s';",mres($adjPOSTdate),mres($lead_id));
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
         }
@@ -3349,7 +3359,8 @@ if ($ACTION == 'updateDISPO') {
 
         ### CALLBACK ENTRY
         if ( ($dispo_choice == 'CBHOLD') and (OSDstrlen($CallBackDatETimE)>10) ) {
-            $stmt=sprintf("INSERT INTO osdial_callbacks (lead_id,list_id,campaign_id,status,entry_time,callback_time,user,recipient,comments,user_group) VALUES('%s','%s','%s','ACTIVE','%s','%s','%s','%s','%s','%s');",mres($lead_id),mres($list_id),mres($campaign),mres($NOW_TIME),mres(dateToServer($link,$server_ip,$CallBackDatETimE,$phone_local_gmt-date('I'),'',date('I'),0)),mres($user),mres($recipient),mres($comments),mres($user_group));
+            $adjCBdate = dateToServer($link,$server_ip,$CallBackDatETimE,$phone_local_gmt,'',$phoneDST,0);
+            $stmt=sprintf("INSERT INTO osdial_callbacks (lead_id,list_id,campaign_id,status,entry_time,callback_time,user,recipient,comments,user_group) VALUES('%s','%s','%s','ACTIVE','%s','%s','%s','%s','%s','%s');",mres($lead_id),mres($list_id),mres($campaign),mres($NOW_TIME),mres($adjCBdate),mres($user),mres($recipient),mres($comments),mres($user_group));
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
         }
@@ -3388,7 +3399,7 @@ if ($ACTION == 'updateDISPO') {
             mysql_close($linkB);
         }
 
-        echo 'Lead ' . $lead_id . ' has been changed to ' . $dispo_choice . " Status\nNext agent_log_id:\n" . $agent_log_id . "\n";
+        echo 'Lead ' . $lead_id . ' has been changed to ' . $dispo_choice . " Status - phoneGMTname:$phoneGMTname phoneDST:$phoneDST sip:$server_ip pgmt: $phone_local_gmt CBdate:$CallBackDatETimE adjCBdate:$adjCBdate\nNext agent_log_id:\n" . $agent_log_id . "\n";
     }
 }
 
