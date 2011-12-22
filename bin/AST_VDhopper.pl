@@ -1226,9 +1226,9 @@ foreach(@campaign_id)
 			foreach(@list_mixARY)
 				{
 				if ($x > 0) {$list_mix_dialableSQL .= " or ";}
-				@list_mix_stepARY = $osdial->mres(split(/\|/,$list_mixARY[$x]));
-				$list_mix_stepARY[3] =~ s/ /\',\'/gi;
-				$list_mix_stepARY[3] =~ s/^\',|,\'-//gi;
+				@list_mix_stepARY = split(/\|/,$list_mixARY[$x]);
+				$list_mix_stepARY[3] =~ s/ /','/gi;
+				$list_mix_stepARY[3] =~ s/^',|,'-//gi;
 				if ($DBX) {print "     LM $x ++$list_mixARY[$x]++ |$list_mix_stepARY[0]|$list_mix_stepARY[2]|$list_mix_stepARY[3]|\n";}
 				$list_mix_dialableSQL .= "(list_id='" . $osdial->mres($list_mix_stepARY[0]) . "' and status IN($list_mix_stepARY[3]))";
 
