@@ -91,7 +91,7 @@ if ($ADD==45)
 		{
 		echo "<br><B><font color=$default_text>CAMPAIGN LEAD MODIFIED: $campaign_id - $status - $attempt_delay</font></B>\n";
 
-		$stmt=sprintf("UPDATE osdial_lead_recycle SET attempt_delay='%s',attempt_maximum='%s',active='%s' WHERE campaign_id='%s' AND status='%s';",mres($attempt_delay),mres($attempt_maximum),mre($active),mres($campaign_id),mres($status));
+		$stmt=sprintf("UPDATE osdial_lead_recycle SET attempt_delay='%s',attempt_maximum='%s',active='%s' WHERE campaign_id='%s' AND status='%s';",mres($attempt_delay),mres($attempt_maximum),mres($active),mres($campaign_id),mres($status));
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
