@@ -93,7 +93,7 @@ if ($ADD==211111) {
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
                 $fp = fopen ("./admin_changes_log.txt", "a");
-                fwrite ($fp, "$date|ADD A NEW USER GROUP ENTRY     |$LOG['user']|$ip|$stmt|\n");
+                fwrite ($fp, "$date|ADD A NEW USER GROUP ENTRY     |$LOG[user]|$ip|$stmt|\n");
                 fclose($fp);
             }
         }
