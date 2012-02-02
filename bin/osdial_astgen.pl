@@ -890,9 +890,13 @@ sub gen_carriers {
 		}
 
 	}
+	my $extreload = "extensions reload";
+	if ($asterisk_version =~ /^1\.6|^1\.8/) {
+		$extreload = "dialplan reload";
+	}
 	write_reload($sip_config,'osdial_sip_carriers','sip reload');
 	write_reload($iax_config,'osdial_iax_carriers','iax2 reload');
-	write_reload($dialplan,'osdial_extensions_carriers','extensions reload');
+	write_reload($dialplan,'osdial_extensions_carriers',$extreload);
 	return ($sip_registrations, $iax_registrations, $default_carrier_context, $default_carrier_prefix);
 }
 
