@@ -483,7 +483,7 @@ function report_agent_performance_detail() {
             $tid = "$Tfull_name ($Tuser)";
             $table .= "        <tr " . bgcolor($m) . " class=\"row\" style=\"font-size: 8pt;\">\n";
             $table .= "          <td align=left title=\"$tid\" nowrap>$Tfull_name</td>\n";
-            $table .= "          <td align=left title=\"$tid\">$Tuser</td>\n";
+            $table .= "          <td align=left title=\"$tid\">".OSDpreg_replace('/ /','&nbsp;',$Tuser)."</td>\n";
             $table .= "          <td align=right title=\"$tid Total Calls: $Tcalls\">$Tcalls</td>\n";
             #$table .= "          <td align=right title=\"$tid\">$Tnew_Calls</td>\n";
             $table .= "          <td align=right title=\"$tid Total Time: $Tcalls\">$USERtime_MS</td>\n";
