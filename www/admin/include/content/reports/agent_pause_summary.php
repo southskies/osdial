@@ -98,7 +98,7 @@ function report_agent_pause_summary() {
     if ($agent) {
         $agentSQL = sprintf("AND osdial_agent_log.user='%s'", $company_prefix . mres($agent));
 
-        $stmt=sprintf("SELECT full_name,user_group FROM osdial_users WHERE user_group IN %s AND user='%s';",$LOG['allowed_usergroupsSQL'],mre($company_prefix.$agent));
+        $stmt=sprintf("SELECT full_name,user_group FROM osdial_users WHERE user_group IN %s AND user='%s';",$LOG['allowed_usergroupsSQL'],mres($company_prefix.$agent));
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
         $full_name = $row[0];
