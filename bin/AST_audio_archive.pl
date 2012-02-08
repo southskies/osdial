@@ -55,6 +55,7 @@ my $DBX=0;
 my $VERBOSE=0;
 my $TEST=0;
 my $HELP=0;
+my $RECLOC=0;
 
 my $CPS=2;
 my $NODATEDIR=1;
@@ -75,7 +76,8 @@ if (scalar @ARGV) {
 		'size_checks!' => \$use_size_checks,
 		'clear_lock!' => \$clear_lock,
 		'nodatedir!' => \$NODATEDIR,
-		'CPS=i' => \$CPS
+		'CPS=i' => \$CPS,
+		'recording_location=s' => \$RECLOC
 	);
 	$DB=1 if ($VERBOSE);
 	$DBX=1 if ($VERBOSE>1);
@@ -94,6 +96,7 @@ if (scalar @ARGV) {
 		print "size_checks- $use_size_checks\n";
 		print "nodatedir    $NODATEDIR\n";
 		print "CPS-         $CPS\n";
+		print "recording_location $RECLOC\n";
 		print "\n";
 	}
 	if ($HELP) {
@@ -107,6 +110,7 @@ if (scalar @ARGV) {
 		print "  [--clear_lock] = Remove lock file.\n";
 		print "  [--size_checks] = Use file-size check instead of open-file check.\n";
 		print "  [--CPS] = Size checks per second.\n";
+		print "  [--recording_location] = Directory to find recordings in (defaults to PATHmonitor).\n";
 		exit;
 	}
 }
@@ -167,6 +171,8 @@ if ($osdial->{configuration}{ArchiveHostname} ne "") {
 }
 
 my $dir2 = $osdial->{PATHmonitor};
+$dir2 = $RECLOC if ($RECLOC ne "" and -d $RECLOC);
+
 
 opendir(FILE, "$dir2/");
 
