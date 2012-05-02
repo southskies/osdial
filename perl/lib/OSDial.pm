@@ -535,6 +535,7 @@ sub sql_connect {
 		$self->debug(5,'sql_connect',"Connecting to dbh %s at DSN: %s.",$dbh,$dsn);
 		$self->{_sql}{$dbh}{dbh} = DBI->connect($dsn,$dbuser,$dbpass) or die '  -- OSDial: sql_connect:  ERROR ' . $self->{_sql}{$dbh}{dbh}->errstr;
 		$self->{_sql}{$dbh}{dbh}{PrintError} = 0;
+		$self->{_sql}{$dbh}{dbh}{mysql_auto_reconnect} = 1;
 		$self->{_sql}{$dbh}{connected} = 1;
 	}
 }
