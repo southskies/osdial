@@ -42,7 +42,7 @@ if ($ADD==131 && $SUB==2 && $LOG['user_level'] > 8 && $LOG['export_leads'] > 0) 
     } elseif ($sall) {
         $swhere = sprintf("list_id='%s'",mres($list_id));
     } else {
-        $swhere = sprintf("list_id='%s' AND %s)",mres($list_id),chop($swhere, 'OR'));
+        $swhere = sprintf("list_id='%s' AND %s)",mres($list_id),chop($swhere, 'OR '));
     }
 
     foreach ($fields as $field) {
