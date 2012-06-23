@@ -312,7 +312,7 @@ while($one_day_interval > 0) {
 
 				# Fired when a channel is renamed during a call.
 				} elsif ($ame{event} =~ /Rename/i) {
-					my $stmtA = sprintf("UPDATE osdial_manager SET status='UPDATED',channel='%s',uniqueid='%s' WHERE server_ip='%s' AND channel='%s' LIMIT 1;", $ame{newname}, $ame{uniqueid}, $osdial->{VARserver_ip}, $ame{channel});
+					my $stmtA = sprintf("UPDATE osdial_manager SET status='UPDATED',channel='%s' WHERE server_ip='%s' AND uniqueid='%s' AND callerid='%s' LIMIT 1;", $ame{newname}, $osdial->{VARserver_ip}, $ame{uniqueid}, $ame{accountcode});
 					my $affected_rows = $osdial->sql_execute($stmtA);
 					print "|$affected_rows RENAMEs updated|$stmtA|\n" if ($DB);
 					$logmsg = $ame{event} . " on channel, update manager. ($affected_rows)";
@@ -402,6 +402,15 @@ while($one_day_interval > 0) {
 					my $stmtA = sprintf("UPDATE osdial_manager SET status='UPDATED',channel='%s',uniqueid='%s' WHERE server_ip='%s' AND callerid='%s';", $ame{destination}, $ame{destuniqueid}, $osdial->{VARserver_ip}, $ame{accountcode});
 					my $affected_rows = $osdial->sql_execute($stmtA);
 					$logmsg = "Dial on manual non-local channel. ($affected_rows)"
+
+				#} elsif ($ame{event} =~ /Dial/i and $ame{subevent} =~ /End/i) {
+				#	my $stmtA = sprintf("SELECT channel,count(*) AS cnt FROM osdial_manager WHERE server_ip='%s' AND callerid='%s' AND status='DEAD' GROUP BY channel;",$osdial->{VARserver_ip}, $ame{accountcode});
+				#	while (my $eret = $osdial->sql_query($stmtA)) {
+				#		my $stmtB = sprintf("DELETE FROM osdial_manager WHERE server_ip='%s' AND channel='%s' AND status='DEAD';", $osdial->{VARserver_ip}, $eret->{channel});
+				#		my $affected_rows = $osdial->sql_execute($stmtB,'DEL');
+				#		$logmsg .= "Dial Ended on ".$ame{accountcode}." ".$eret->{channel}." Removed osdial_manager entry ($affected_rows)\n";
+				#	}
+
 
 				##### look for CPD event from Sangoma Netborder Call Progress Analysis
 				} elsif ($ame{event} =~ /CPAResult/) {
