@@ -258,8 +258,10 @@ while ( $master_loop < $CLOloops ) {
 		}
 		$sthA->finish();
 		my $event_string = "|$campaign_id[$i]|$hopper_ready_count|$diff_ratio_updater|";
-		print "$i     $event_string\n" if ($DBX);
-		eventLogger($config->{PATHlogs},"adapt" . $event_ext,$event_string) if ($SYSLOG);
+		if ($dial_method[$i] =~ /ADAPT/ and ($hopper_ready_count>0 or $diff_ratio_updater%10==0)) {
+			print "$i     $event_string\n" if ($DBX);
+			eventLogger($config->{PATHlogs},"adapt" . $event_ext,$event_string) if ($SYSLOG);
+		}
 
 		##### IF THERE ARE NO LEADS IN THE HOPPER FOR THE CAMPAIGN WE DO NOT WANT TO ADJUST THE DIAL_LEVEL
 		if ( $hopper_ready_count > 0 ) {
