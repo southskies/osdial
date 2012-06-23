@@ -1308,7 +1308,7 @@ sub process_request {
 							$cur_aff = 1;
 							$cur_aff = (substr($VD_alt_dial,5) * 1) + 1 if ($VD_alt_dial ne 'ADDR3');
 							while ($cur_aff < 10) {
-								$stmtA="SELECT SQL_NO_CACHE value FROM osdial_list_fields WHERE field_id=(SELECT id FROM osdial_campaign_fields WHERE name='AFFAP$cur_aff') AND lead_id='$VD_lead_id';";
+								$stmtA="SELECT SQL_NO_CACHE value FROM osdial_list_fields WHERE field_id=(SELECT id FROM osdial_campaign_fields WHERE name='AFFAP$cur_aff' LIMIT 1) AND lead_id='$VD_lead_id';";
 								$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 								$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 								$sthArows=$sthA->rows;

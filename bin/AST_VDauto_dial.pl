@@ -1055,7 +1055,7 @@ while($one_day_interval > 0)
 									if ( ($alt_dial =~ /AFFAP/) && ($DBIPautoaltdial[$user_CIPct] =~ /AFFAP/) )
 										{
 										$aff_number='';
-										$stmtA="SELECT SQL_NO_CACHE value FROM osdial_list_fields WHERE field_id=(SELECT id FROM osdial_campaign_fields WHERE name='" . $osdial->mres($alt_dial) . "') AND lead_id='$lead_id';";
+										$stmtA="SELECT SQL_NO_CACHE value FROM osdial_list_fields WHERE field_id=(SELECT id FROM osdial_campaign_fields WHERE name='" . $osdial->mres($alt_dial) . "' LIMIT 1) AND lead_id='$lead_id';";
 										$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 										$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 										$sthArows=$sthA->rows;
@@ -1376,6 +1376,10 @@ while($one_day_interval > 0)
 							$sthA->finish();
 
 
+							if (($dialtime_log >= $call_timeout or $dialtime_catch >= $call_timeout) and $CLstatus =~ /SENT/) {
+								$CLnew_status='NA';
+							}
+
 							if ($CLstatus =~ /LIVE/) {
 								$CLnew_status = 'DROP';
 							} else {
@@ -1587,7 +1591,7 @@ while($one_day_interval > 0)
 										$cur_aff = (substr($CLalt_dial,5) * 1) + 1;
 									}
 									while ($cur_aff < 10) {
-										$stmtA="SELECT SQL_NO_CACHE value FROM osdial_list_fields WHERE field_id=(SELECT id FROM osdial_campaign_fields WHERE name='AFFAP$cur_aff') AND lead_id='$CLlead_id';";
+										$stmtA="SELECT SQL_NO_CACHE value FROM osdial_list_fields WHERE field_id=(SELECT id FROM osdial_campaign_fields WHERE name='AFFAP$cur_aff' LIMIT 1) AND lead_id='$CLlead_id';";
 										$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 										$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 										$sthArows=$sthA->rows;

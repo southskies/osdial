@@ -1531,7 +1531,7 @@ if ($ACTION == 'manDiaLlogCaLL') {
                         $cur_aff = 1;
                         if ($alt_dial!='ADDR3') $cur_aff = (substr($alt_dial,5) * 1) + 1;
                         while ($cur_aff<10) {
-                            $stmt=sprintf("SELECT SQL_NO_CACHE value FROM osdial_list_fields WHERE field_id=(SELECT id FROM osdial_campaign_fields WHERE name='AFFAP%s') AND lead_id='%s';",mres($cur_aff),mres($lead_id));
+                            $stmt=sprintf("SELECT SQL_NO_CACHE value FROM osdial_list_fields WHERE field_id=(SELECT id FROM osdial_campaign_fields WHERE name='AFFAP%s' LIMIT 1) AND lead_id='%s';",mres($cur_aff),mres($lead_id));
                             $rslt=mysql_query($stmt, $link);
                             if ($DB) echo "$stmt\n";
                             $VAC_mancall_ct = mysql_num_rows($rslt);
