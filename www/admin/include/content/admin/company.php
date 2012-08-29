@@ -35,7 +35,7 @@ if ($ADD=="11comp") {
         echo "  <td align=right>Default Server IP: </td>\n";
         echo "  <td align=left>\n";
         echo "    <select name=server_ip>\n";
-        $servers = get_krh($link, 'servers', '*','','','');
+        $servers = get_krh($link, 'servers', '*,INET_ATON(server_ip) AS aton','aton ASC',"active='Y' AND server_profile IN ('AIO','DIALER')",'');
         foreach ($servers as $server) {
             echo "      <option value=\"$server[server_ip]\">$server[server_ip] - $server[server_id]</option>\n";
         }
@@ -74,40 +74,40 @@ if ($ADD=="21comp") {
             echo "<br><br>\n";
             # Add inital sample configuration.
             $pins = "INSERT INTO phones VALUES ";
-            $pins .= sprintf("('%s1001','%s1001','%s1001','','','%s','%s1001','1001','ACTIVE','Y','SIP','Ext %s 1001','%s','NA',0,0,'SIP','%s','cron','1234','','','','8301','8302','8301','park','8612','8309','8501','85026666666666','osdial','local/8500998@osdial','Zap/g2/','/usr/bin/mozilla','/usr/local/perl_TK','http://localhost/test_callerid_output.php','http://localhost/test_osdial_output.php','1','1','1','0','0','1','1','1','1','1','1','1','0',1000,'0','1','1','','asterisk','cron','1234',3306,'','asterisk','cron','1234',3306,'%s1001','0',''),",$cmp,$cmp,$cmp,$server_ip,$cmp,$cmp,$cmp,$local_gmt,$cmp);
-            $pins .= sprintf("('%s1002','%s1002','%s1002','','','%s','%s1002','1002','ACTIVE','Y','SIP','Ext %s 1002','%s','NA',0,0,'SIP','%s','cron','1234','','','','8301','8302','8301','park','8612','8309','8501','85026666666666','osdial','local/8500998@osdial','Zap/g2/','/usr/bin/mozilla','/usr/local/perl_TK','http://localhost/test_callerid_output.php','http://localhost/test_osdial_output.php','1','1','1','0','0','1','1','1','1','1','1','1','0',1000,'0','1','1','','asterisk','cron','1234',3306,'','asterisk','cron','1234',3306,'%s1002','0',''),",$cmp,$cmp,$cmp,$server_ip,$cmp,$cmp,$cmp,$local_gmt,$cmp);
-            $pins .= sprintf("('%s9999','9999','%s9999','','','%s','%s9999','9999','ACTIVE','Y','Test','Test Phone','%s','NA',0,0,'EXTERNAL','%s','cron','1234','','','','8301','8302','8301','park','8612','8309','8501','85026666666666','osdial','local/8500998@osdial','Zap/g2/','/usr/bin/mozilla','/usr/local/perl_TK','http://localhost/test_callerid_output.php','http://localhost/test_osdial_output.php','1','1','1','0','0','1','1','1','1','1','1','1','0',1000,'0','1','1','','asterisk','cron','1234',3306,'','asterisk','cron','1234',3306,'%s9999','0','');",$cmp,$cmp,$server_ip,$cmp,$cmp,$local_gmt,$cmp);
+            $pins .= sprintf("('%s1001','%s1001','%s1001','','','%s','%s1001','1001','ACTIVE','Y','SIP','Ext %s 1001','%s','NA',0,0,'SIP','%s','cron','1234','','','','8301','8302','8301','park','8612','8309','8501','85026666666666','osdial','local/8500998@osdial','Zap/g2/','/usr/bin/mozilla','/usr/local/perl_TK','http://localhost/test_callerid_output.php','http://localhost/test_osdial_output.php','1','1','1','0','0','1','1','1','1','1','1','1','0',1000,'0','1','1','','asterisk','cron','1234',3306,'','asterisk','cron','1234',3306,'%s1001','0','','1234',''),",$cmp,$cmp,$cmp,$server_ip,$cmp,$cmp,$cmp,$local_gmt,$cmp);
+            $pins .= sprintf("('%s1002','%s1002','%s1002','','','%s','%s1002','1002','ACTIVE','Y','SIP','Ext %s 1002','%s','NA',0,0,'SIP','%s','cron','1234','','','','8301','8302','8301','park','8612','8309','8501','85026666666666','osdial','local/8500998@osdial','Zap/g2/','/usr/bin/mozilla','/usr/local/perl_TK','http://localhost/test_callerid_output.php','http://localhost/test_osdial_output.php','1','1','1','0','0','1','1','1','1','1','1','1','0',1000,'0','1','1','','asterisk','cron','1234',3306,'','asterisk','cron','1234',3306,'%s1002','0','','1234',''),",$cmp,$cmp,$cmp,$server_ip,$cmp,$cmp,$cmp,$local_gmt,$cmp);
+            $pins .= sprintf("('%s9999','9999','%s9999','','','%s','%s9999','9999','ACTIVE','Y','Test','Test Phone','%s','NA',0,0,'EXTERNAL','%s','cron','1234','','','','8301','8302','8301','park','8612','8309','8501','85026666666666','osdial','local/8500998@osdial','Zap/g2/','/usr/bin/mozilla','/usr/local/perl_TK','http://localhost/test_callerid_output.php','http://localhost/test_osdial_output.php','1','1','1','0','0','1','1','1','1','1','1','1','0',1000,'0','1','1','','asterisk','cron','1234',3306,'','asterisk','cron','1234',3306,'%s9999','0','','1234','');",$cmp,$cmp,$server_ip,$cmp,$cmp,$local_gmt,$cmp);
             $rslt=mysql_query($pins, $link);
-            echo "<font size=1 color=$default_text>SAMPLE PHONE CONFIGURATION ADDED</font><br>\n";
+            echo "<font size=1 color=$default_text>SAMPLE PHONE CONFIGURATION ADDED - ".mysql_affected_rows()."</font><br>\n";
 
             $uins = "INSERT INTO osdial_users VALUES ";
-            $uins .= sprintf("('','%sadmin','admin','Admin %s',9,'%sADMIN','','','1','1','1','1','1','1','1','1','1','1','1','1','0','1','1','','1','0','1','1','1','1','1','0','1','1','1','1','1','1','1','1','1','1','1','1','DISABLED','NOT_ACTIVE',-1,'1','1','1','1','0'),",$cmp,$cmp,$cmp);
-            $uins .= sprintf("('','%s1001','1001','Agent %s 1001',4,'%sAGENTS','','','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','','1','1','1','1','1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','DISABLED','NOT_ACTIVE',-1,'1','0','0','0','0'),",$cmp,$cmp,$cmp);
-            $uins .= sprintf("('','%s1002','1002','Agent %s 1002',4,'%sAGENTS','','','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','','1','1','1','1','1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','DISABLED','NOT_ACTIVE',-1,'1','0','0','0','0');",$cmp,$cmp,$cmp);
+            $uins .= sprintf("('','%sadmin','admin','Admin %s',9,'%sADMIN','','','1','1','1','1','1','1','1','1','1','1','1','1','0','1','1','','1','0','1','1','1','1','1','0','1','1','1','1','1','1','1','1','1','1','1','1','DISABLED','NOT_ACTIVE',-1,'1','1','1','1','0','','1','1','1'),",$cmp,$cmp,$cmp);
+            $uins .= sprintf("('','%s1001','1001','Agent %s 1001',4,'%sAGENTS','','','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','','1','1','1','1','1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','DISABLED','NOT_ACTIVE',-1,'1','0','0','0','0','','1','0','0'),",$cmp,$cmp,$cmp);
+            $uins .= sprintf("('','%s1002','1002','Agent %s 1002',4,'%sAGENTS','','','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','','1','1','1','1','1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','DISABLED','NOT_ACTIVE',-1,'1','0','0','0','0','','1','0','0');",$cmp,$cmp,$cmp);
             $rslt=mysql_query($uins, $link);
-            echo "<font size=1 color=$default_text>SAMPLE USER CONFIGURATION ADDED</font><br>\n";
+            echo "<font size=1 color=$default_text>SAMPLE USER CONFIGURATION ADDED - ".mysql_affected_rows()."</font><br>\n";
 
-            $ugins = "INSERT INTO osdial_user_groups (user_group,group_name,allowed_campaigns) VALUES ";
-            $ugins .= sprintf("('%sADMIN','OSDIAL ADMINISTRATORS',' -ALL-CAMPAIGNS- - -'),('%sAGENTS','Agent User Group',' -ALL-CAMPAIGNS- - -');",$cmp,$cmp);
+            $ugins = "INSERT INTO osdial_user_groups (user_group,group_name,allowed_campaigns,allowed_scripts,allowed_email_templates,allowed_ingroups) VALUES ";
+            $ugins .= sprintf("('%sADMIN','OSDIAL ADMINISTRATORS',' -ALL-CAMPAIGNS- - -',' -ALL-SCRIPTS- -',' -ALL-EMAIL-TEMPLATES- -',' -ALL-INGROUPS- -'),('%sAGENTS','Agent User Group',' -ALL-CAMPAIGNS- - -',' -ALL-SCRIPTS- -',' -ALL-EMAIL-TEMPLATES- -',' -ALL-INGROUPS- -');",$cmp,$cmp);
             $rslt=mysql_query($ugins, $link);
-            echo "<font size=1 color=$default_text>SAMPLE USERGROUP CONFIGURATION ADDED</font><br>\n";
+            echo "<font size=1 color=$default_text>SAMPLE USERGROUP CONFIGURATION ADDED - ".mysql_affected_rows()."</font><br>\n";
 
             $sins = "INSERT INTO osdial_scripts VALUES ";
             $sins .= sprintf("('%sTEST','Test Script','Just a quick test','Hello Mr/Mrs [[last_name]],<br><br>We are calling you at [[phone_number]].<br><br>Your address is:<br>[[address1]]<br>[[city]], [[state]] [[postal_code]]<br><br>Thank-you','Y');",$cmp);
             $rslt=mysql_query($sins, $link);
-            echo "<font size=1 color=$default_text>SAMPLE SCRIPT ADDED</font><br>\n";
+            echo "<font size=1 color=$default_text>SAMPLE SCRIPT ADDED - ".mysql_affected_rows()."</font><br>\n";
 
             $olins = "INSERT INTO osdial_lists VALUES ";
-            $olins .= sprintf("(%s998,'Default inbound list','%sTEST','N',NULL,NULL,NULL,'N',NULL,'',0,'',''),",$cmp,$cmp);
-            $olins .= sprintf("(%s999,'Default manual list','%sTEST','N',NULL,NULL,NULL,'N',NULL,'',0,'','');",$cmp,$cmp);
+            $olins .= sprintf("(%s998,'Default inbound list','%sTEST','N',NULL,NULL,NULL,'N',NULL,'',0,'','',''),",$cmp,$cmp);
+            $olins .= sprintf("(%s999,'Default manual list','%sTEST','N',NULL,NULL,NULL,'N',NULL,'',0,'','','');",$cmp,$cmp);
             $rslt=mysql_query($olins, $link);
-            echo "<font size=1 color=$default_text>SAMPLE LISTS ADDED</font><br>\n";
+            echo "<font size=1 color=$default_text>SAMPLE LISTS ADDED - ".mysql_affected_rows()."</font><br>\n";
 
 
             $ocins = "INSERT INTO osdial_campaigns VALUES ";
-            $ocins .= sprintf("('%sTEST','Test Campaign %s','Y','','','','','','DOWN','8301','park','/osdial/agent/webform_redirect.php','Y',200,'0','oldest_call_finish','24hours','',28,'9','0000000000','8368','8309','ONDEMAND','CAMPAIGN_AGENT_FULLDATE_CUSTPHONE','','NONE','8320','Y','','','','','N','Y','NONE',8,'Y','8307','Y',0,'Wrapup Call','','Y',0,'N','MANUAL','N',3,'3.0','2100','0',0,'AUTO','NONE',' A AA B N NA DC -','N','Test Campaign','2010-03-08 00:19:25','N',NULL,' A AA AL AM B CALLBK DROP NEW N NA -','N','Y','DISABLED','Y',%s999,'---NONE---','','/osdial/agent/webform_redirect.php','Y',0,'',10,'Y','Y','Y','NORMAL','N','2008-01-01 00:00:00','','CAMPAIGN');",$cmp,$cmp,$cmp);
+            $ocins .= sprintf("('%sTEST','Test Campaign %s','Y','','','','','','DOWN','8301','park','/osdial/agent/webform_redirect.php','Y',200,'0','oldest_call_finish','24hours','',28,'9','0000000000','8368','8309','ONDEMAND','CAMPAIGN_AGENT_FULLDATE_CUSTPHONE','','NONE','8320','Y','','','','','N','Y','NONE',8,'Y','8307','Y',0,'Wrapup Call','','Y',0,'N','MANUAL','N',3,'3.0','2100','0',0,'AUTO','NONE',' A AA B N NA DC -','N','Test Campaign','2010-03-08 00:19:25','N',NULL,' A AA AL AM B CALLBK DROP NEW N NA -','N','Y','DISABLED','Y',%s999,'---NONE---','','/osdial/agent/webform_redirect.php','Y',0,'',10,'Y','Y','Y','NORMAL','N','2008-01-01 00:00:00','','CAMPAIGN','N','%s','','N','N','N','N','N','N','N','N','N','N','N');",$cmp,$cmp,$cmp,$system_settings['default_carrier_id']);
             $rslt=mysql_query($ocins, $link);
-            echo "<font size=1 color=$default_text>SAMPLE CAMPAIGN ADDED</font><br>\n";
+            echo "<font size=1 color=$default_text>SAMPLE CAMPAIGN ADDED - ".mysql_affected_rows()."</font><br>\n";
 
             $ochkins = "INSERT INTO osdial_campaign_hotkeys VALUES ";
             $ochkins .= sprintf("('N','1','No Answer','Y','%sTEST',''),",$cmp);
@@ -116,7 +116,7 @@ if ($ADD=="21comp") {
             $ochkins .= sprintf("('CALLBK','4','Call Back','Y','%sTEST',''),",$cmp);
             $ochkins .= sprintf("('SALE','5','Sale Made','Y','%sTEST','');",$cmp);
             $rslt=mysql_query($ochkins, $link);
-            echo "<font size=1 color=$default_text>SAMPLE CAMPAIGN-HOTKEYS ADDED</font><br>\n";
+            echo "<font size=1 color=$default_text>SAMPLE CAMPAIGN-HOTKEYS ADDED - ".mysql_affected_rows()."</font><br>\n";
 
             echo "<br>";
         }
