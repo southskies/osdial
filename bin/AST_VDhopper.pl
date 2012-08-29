@@ -1406,7 +1406,7 @@ foreach(@campaign_id)
 			if ($lead_order[$i] =~ /^DOWN PHONE/) {$order_stmt = 'order by phone_number, lead_id asc';}
 			if ($lead_order[$i] =~ /^UP COUNT/) {$order_stmt = 'order by called_count desc, lead_id asc';}
 			if ($lead_order[$i] =~ /^DOWN COUNT/) {$order_stmt = 'order by called_count, lead_id desc';}
-			if ($lead_order[$i] =~ /^RANDOM/) {$order_stmt = 'order by RAND()';}
+			if ($lead_order[$i] =~ /RANDOM/) {$order_stmt = 'order by RAND()';}
 			if ($lead_order[$i] =~ /^DOWN TZ/) {$order_stmt = 'order by gmt_offset_now desc, lead_id asc';}
 			if ($lead_order[$i] =~ /^UP TZ/) {$order_stmt = 'order by gmt_offset_now desc, lead_id desc';}
 			if ($lead_order[$i] =~ /^UP TZ LAST NAME/) {$order_stmt = 'order by gmt_offset_now desc, last_name desc, lead_id asc';}
