@@ -106,16 +106,20 @@ $script_text =		$row[3];
 $script_text = "<span style=\"display:block;\" id=\"SCRIPT_MAIN\">" . $script_text . "</span>";
 $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='" . $script_id . "'",'');
 $hidebuttons = "document.getElementById('SCRIPT_MAIN').style.display='none';";
-foreach ($buttons as $button) {
-    $hidebuttons .= "document.getElementById('SCRIPT_" . $button['script_button_id'] . "').style.display='none';";
+if (is_array($buttons)) {
+    foreach ($buttons as $button) {
+        $hidebuttons .= "document.getElementById('SCRIPT_" . $button['script_button_id'] . "').style.display='none';";
+    }
 }
 
 
-foreach ($buttons as $button) {
-    $script_text .= "<span style=\"display:none;\" id=\"SCRIPT_" . $button['script_button_id'] . "\">";
-    $script_text .= "<center><input type=\"button\" value=\"TOP\" onclick=\"$hidebuttons document.getElementById('SCRIPT_MAIN').style.display='block';\"></center><br>";
-    $script_text .= $button['script_button_text'];
-    $script_text .= "</span>";
+if (is_array($buttons)) {
+    foreach ($buttons as $button) {
+        $script_text .= "<span style=\"display:none;\" id=\"SCRIPT_" . $button['script_button_id'] . "\">";
+        $script_text .= "<center><input type=\"button\" value=\"TOP\" onclick=\"$hidebuttons document.getElementById('SCRIPT_MAIN').style.display='block';\"></center><br>";
+        $script_text .= $button['script_button_text'];
+        $script_text .= "</span>";
+    }
 }
 
 if (OSDpreg_match("/iframe src/i",$script_text)) {
@@ -270,9 +274,11 @@ $script_text = OSDpreg_replace('/\[\[custom2\]\]/',           $custom2,$script_t
 $script_text = OSDpreg_replace('/\[\[EFcustom2\]\]/',         $EFcustom2,$script_text);
 
 $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='" . $script_id . "'",'');
-foreach ($buttons as $button) {
-    $script_text = OSDpreg_replace('/\{\{' . $button['script_button_id'] . '\}\}/imU', '{{' . $button['script_button_id'] . ':' . $button['script_button_label'] . '}}',$script_text);
-    $script_text = OSDpreg_replace('/\{\{' . $button['script_button_id'] . ':(.*)\}\}/imU', '<input type="button" value="$1" onclick="' . $hidebuttons . ' document.getElementById(\'SCRIPT_' . $button['script_button_id'] . '\').style.display=\'block\';">',$script_text);
+if (is_array($buttons)) {
+    foreach ($buttons as $button) {
+        $script_text = OSDpreg_replace('/\{\{' . $button['script_button_id'] . '\}\}/imU', '{{' . $button['script_button_id'] . ':' . $button['script_button_label'] . '}}',$script_text);
+        $script_text = OSDpreg_replace('/\{\{' . $button['script_button_id'] . ':(.*)\}\}/imU', '<input type="button" value="$1" onclick="' . $hidebuttons . ' document.getElementById(\'SCRIPT_' . $button['script_button_id'] . '\').style.display=\'block\';">',$script_text);
+    }
 }
 
 $script_text = OSDpreg_replace('/\{\{DISPO:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="alert(\'Disposition as $1 and Hangup\');">',$script_text);
@@ -438,15 +444,21 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                 // Add some values to the list box
 <?php
     $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'",'');
-    foreach ($forms as $form) {
-	    $fcamps = OSDpreg_split('/,/',$form['campaigns']);
-	    foreach ($fcamps as $fcamp) {
-            $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'",'');
-            foreach ($fields as $field) {
-                echo "      mlbaf.add('" . $form['name'] . '_' . $field['name'] . "','" . $form['name'] . '_' . $field['name'] . "');\n";
-			}
-		}
-	}
+    if (is_array($forms)) {
+        foreach ($forms as $form) {
+	        $fcamps = OSDpreg_split('/,/',$form['campaigns']);
+            if (is_array($fcamps)) {
+	            foreach ($fcamps as $fcamp) {
+                    $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'",'');
+                    if (is_array($fields)) {
+                        foreach ($fields as $field) {
+                            echo "      mlbaf.add('" . $form['name'] . '_' . $field['name'] . "','" . $form['name'] . '_' . $field['name'] . "');\n";
+                        }
+			        }
+                }
+		    }
+	    }
+    }
 ?>
 
                 // Return the new listbox instance
@@ -484,8 +496,10 @@ tinyMCE.init({
     if ($LOG['multicomp_admin'] > 0) {
         $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
         echo "<select name=company_id>\n";
-        foreach ($comps as $comp) {
-            echo "<option value=$comp[id]>" . (($comp['id'] * 1) + 100) . ": " . $comp['name'] . "</option>\n";
+        if (is_array($comps)) {
+            foreach ($comps as $comp) {
+                echo "<option value=$comp[id]>" . (($comp['id'] * 1) + 100) . ": " . $comp['name'] . "</option>\n";
+            }
         }
         echo "</select>\n";
     } elseif ($LOG['multicomp']>0) {
@@ -791,15 +805,21 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                 });
 <?php
     $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'",'');
-    foreach ($forms as $form) {
-	    $fcamps = OSDpreg_split('/,/',$form['campaigns']);
-	    foreach ($fcamps as $fcamp) {
-            $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'",'');
-            foreach ($fields as $field) {
-                echo "      mlbaf.add('" . $form['name'] . '_' . $field['name'] . "','" . $form['name'] . '_' . $field['name'] . "');\n";
-			}
-		}
-	}
+    if (is_array($forms)) {
+        foreach ($forms as $form) {
+	        $fcamps = OSDpreg_split('/,/',$form['campaigns']);
+            if (is_array($fcamps)) {
+	            foreach ($fcamps as $fcamp) {
+                    $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'",'');
+                    if (is_array($fields)) {
+                        foreach ($fields as $field) {
+                            echo "      mlbaf.add('" . $form['name'] . '_' . $field['name'] . "','" . $form['name'] . '_' . $field['name'] . "');\n";
+			            }
+		            }
+	            }
+            }
+        }
+    }
 ?>
                 return mlbaf;
 
@@ -815,9 +835,11 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                 });
 <?php
     $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='$script_id'",'');
-    foreach ($buttons as $button) {
-        echo "      mlb.add('" . $button['script_button_id'] . ': ' . $button['script_button_label'] . "','" . $button['script_button_id'] . "');\n";
-	}
+    if (is_array($buttons)) {
+        foreach ($buttons as $button) {
+            echo "      mlb.add('" . $button['script_button_id'] . ': ' . $button['script_button_label'] . "','" . $button['script_button_id'] . "');\n";
+	    }
+    }
 ?>
                 return mlb;
 
@@ -842,12 +864,14 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
     $DBnormal='';
     $DBwebform1='';
     $DBwebform2='';
-    foreach ($DBdispo as $DBcode => $DBdesc) {
-        $DBdefault .= "      mldb.add('" . $DBcode . " <!-- \"" . $DBdesc . "\" (Use Campaign/InGroup submit method) -->','DISPO:" . $DBcode . ":" . $DBdesc . "',{title : '" . $DBdesc . "'});\n";
-        $DBnormal .= "      mldb.add('NORMAL:" . $DBcode . " <!-- \"" . $DBdesc . "\" (NORMAL submit method, no webforms) -->','DISPO_NORMAL:" . $DBcode . ":" . $DBdesc . "',{title : '" . $DBdesc . "'});\n";
-        $DBwebform1 .= "      mldb.add('WEBFORM1:" . $DBcode . " <!-- \"" . $DBdesc . "\" (WEBFORM1 submit method) -->','DISPO_WEBFORM1:" . $DBcode . ":" . $DBdesc . "',{title : '" . $DBdesc . "'});\n";
-        $DBwebform2 .= "      mldb.add('WEBFORM2:" . $DBcode . " <!-- \"" . $DBdesc . "\" (WEBFORM2 submit method) -->','DISPO_WEBFORM2:" . $DBcode . ":" . $DBdesc . "',{title : '" . $DBdesc . "'});\n";
-	}
+    if (is_array($DBdispo)) {
+        foreach ($DBdispo as $DBcode => $DBdesc) {
+            $DBdefault .= "      mldb.add('" . $DBcode . " <!-- \"" . $DBdesc . "\" (Use Campaign/InGroup submit method) -->','DISPO:" . $DBcode . ":" . $DBdesc . "',{title : '" . $DBdesc . "'});\n";
+            $DBnormal .= "      mldb.add('NORMAL:" . $DBcode . " <!-- \"" . $DBdesc . "\" (NORMAL submit method, no webforms) -->','DISPO_NORMAL:" . $DBcode . ":" . $DBdesc . "',{title : '" . $DBdesc . "'});\n";
+            $DBwebform1 .= "      mldb.add('WEBFORM1:" . $DBcode . " <!-- \"" . $DBdesc . "\" (WEBFORM1 submit method) -->','DISPO_WEBFORM1:" . $DBcode . ":" . $DBdesc . "',{title : '" . $DBdesc . "'});\n";
+            $DBwebform2 .= "      mldb.add('WEBFORM2:" . $DBcode . " <!-- \"" . $DBdesc . "\" (WEBFORM2 submit method) -->','DISPO_WEBFORM2:" . $DBcode . ":" . $DBdesc . "',{title : '" . $DBdesc . "'});\n";
+	    }
+    }
     echo $DBdefault . $DBwebform1 . $DBwebform2 . $DBnormal;
 ?>
                 return mldb;
@@ -976,19 +1000,21 @@ tinyMCE.init({
         echo "  </tr>\n";
         $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='" . $script_id . "'",'');
         $cnt = 0;
-        foreach ($buttons as $button) {
-            echo '  <form action="' . $PHP_SELF . '" method="POST">';
-            echo '  <input type="hidden" name="ADD" value="' . $ADD . '">';
-            echo '  <input type="hidden" name="SUB" value="' . $button['script_button_id'] . '">';
-	        echo "  <input type=hidden name=script_id value=\"$script_id\">\n";
-            echo "  <tr " . bgcolor($cnt) . " class=\"row font1\">\n";
-            echo "      <td align=center>" . $button['script_button_id'] . "</td>\n";
-            echo "      <td align=center>" . $button['script_button_label'] . "</td>\n";
-            echo "      <td align=center>" . $button['script_button_description'] . "</td>\n";
-            echo "      <td align=center class=tabbutton1><input type=submit value=\"Edit\"></td>\n";
-            echo "  </tr>\n";
-            echo "  </form>\n";
-            $cnt++;
+        if (is_array($buttons)) {
+            foreach ($buttons as $button) {
+                echo '  <form action="' . $PHP_SELF . '" method="POST">';
+                echo '  <input type="hidden" name="ADD" value="' . $ADD . '">';
+                echo '  <input type="hidden" name="SUB" value="' . $button['script_button_id'] . '">';
+	            echo "  <input type=hidden name=script_id value=\"$script_id\">\n";
+                echo "  <tr " . bgcolor($cnt) . " class=\"row font1\">\n";
+                echo "      <td align=center>" . $button['script_button_id'] . "</td>\n";
+                echo "      <td align=center>" . $button['script_button_label'] . "</td>\n";
+                echo "      <td align=center>" . $button['script_button_description'] . "</td>\n";
+                echo "      <td align=center class=tabbutton1><input type=submit value=\"Edit\"></td>\n";
+                echo "  </tr>\n";
+                echo "  </form>\n";
+                $cnt++;
+            }
         }
         echo '  <form action="' . $PHP_SELF . '" method="POST">';
         echo '  <input type="hidden" name="ADD" value="' . $ADD . '">';
