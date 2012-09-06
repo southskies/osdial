@@ -42,8 +42,10 @@ while (1) {
 				}
 				if ($kvh{ip} =~ /$osdial->{WEBserver_stats_regex}/ or $kvh{host} =~ /$osdial->{WEBserver_stats_regex}/) {
 					my $ip = new Net::IP($kvh{ip});
-					$hosts{$ip->intip()} = \%kvh;
-					$count++;
+					if (defined($ip)) {
+						$hosts{$ip->intip()} = \%kvh;
+						$count++;
+					}
 				}
 			}
 		} else {
@@ -58,9 +60,11 @@ while (1) {
 				$kvh{timestamp} = $kvh{server_timestamp};
 				if ($kvh{ip} =~ /$osdial->{WEBserver_stats_regex}/ or $kvh{host} =~ /$osdial->{WEBserver_stats_regex}/) {
 					my $ip = new Net::IP($kvh{ip});
-					$hosts{$ip->intip()} = \%kvh;
-					$thesehosts{$ip->intip()} = 1;
-					$count++;
+					if (defined($ip)) {
+						$hosts{$ip->intip()} = \%kvh;
+						$thesehosts{$ip->intip()} = 1;
+						$count++;
+					}
 				}
 			}
 			foreach my $host (keys %hosts) {
