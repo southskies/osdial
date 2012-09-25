@@ -62,11 +62,13 @@ function report_call_stats() {
     $NOW_DATE = date("Y-m-d");
     $NOW_TIME = date("Y-m-d H:i:s");
     $STARTtime = date("U");
-    if (!isset($group)) {$group = '';}
+    $tgroup = Array();
+    $tgroup[] = '--ALL--';
     if (!isset($query_date)) {$query_date = $NOW_DATE;}
     if (!isset($end_date)) {$end_date = $NOW_DATE;}
     if ($query_date == '') {$query_date = $NOW_DATE;}
     if ($end_date == '') {$end_date = $NOW_DATE;}
+    if ($group == '') {$group = $tgroup;}
     
     $stmt=sprintf("SELECT campaign_id FROM osdial_campaigns WHERE campaign_id IN %s;",$LOG['allowed_campaignsSQL']);
     $rslt=mysql_query($stmt, $link);
@@ -81,6 +83,8 @@ function report_call_stats() {
 
     $i=0;
     $group_string='|';
+    $group_SQL='';
+    $groupQS='';
     $group_ct = count($group);
     $group_list = '';
     while($i < $group_ct) {
@@ -139,7 +143,7 @@ function report_call_stats() {
     $html .= "        <tr>\n";
     $html .= "          <td colspan=3 align=center>\n";
     $html .= "            <font face=\"dejavu sans,verdana,sans-serif\" color=$default_text size=2>\n";
-    if (OSDstrlen($group[0]) > 1) {
+    if (isset($group[0]) && OSDstrlen($group[0]) > 1) {
         $html .= "              <a href=\"./admin.php?ADD=34&campaign_id=$group[0]\">MODIFY</a> | \n";
     } else {
         $html .= "              <a href=\"./admin.php?ADD=10\">CAMPAIGNS</a> | \n";
@@ -196,7 +200,7 @@ function report_call_stats() {
     
 
     # If no campaign, return now.
-    if (OSDstrlen($group[0]) < 1) {
+    if (isset($group[0]) && OSDstrlen($group[0]) < 1) {
         $html .= "    </td>\n";
         $html .= "  </tr>\n";
         $html .= "</table>\n";
@@ -219,6 +223,8 @@ function report_call_stats() {
     $stmt = "SELECT closer_campaigns FROM osdial_campaigns $group_SQL;";
     $rslt=mysql_query($stmt, $link);
     $ccamps_to_print = mysql_num_rows($rslt);
+    $closer_campaigns = '';
+    $closer_campaignsSQL = '';
     $c=0;
     while ($ccamps_to_print > $c) {
         $row=mysql_fetch_row($rslt);
@@ -231,6 +237,8 @@ function report_call_stats() {
     $closer_campaignsSQL = OSDpreg_replace("/,$/",'',$closer_campaignsSQL);
     $closer_SQLand = "and campaign_id IN($closer_campaignsSQL)";
 
+    $ccprint='';
+    $ccprint2='';
     if ($use_closer_log) {
         $stmt="SELECT count(*),sum(length_in_sec) FROM ((select uniqueid,length_in_sec from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $group_SQLand) UNION (select uniqueid,length_in_sec from osdial_closer_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $closer_SQLand)) AS t;";
         $ccprint = OSDpreg_replace("/'',/","",$closer_campaignsSQL);
@@ -290,6 +298,7 @@ function report_call_stats() {
     $rslt=mysql_query($stmt, $link);
     if ($DB) {$html .= "$stmt\n";}
     $statuses_to_print = mysql_num_rows($rslt);
+    $camp_ANS_STAT_SQL='';
     $p=0;
     while ($p < $statuses_to_print) {
         $row=mysql_fetch_row($rslt);
@@ -656,13 +665,13 @@ function report_call_stats() {
         if ($comment_grouping) {
             $stmt="SELECT count(*),status,sum(length_in_sec),comments FROM ((select uniqueid,status,length_in_sec,comments from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END'  $group_SQLand) UNION (select uniqueid,status,length_in_sec,comments from osdial_closer_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END'  $closer_SQLand)) AS t group by status,comments;";
         } else {
-            $stmt="SELECT count(*),status,sum(length_in_sec) FROM ((select uniqueid,status,length_in_sec from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END'  $group_SQLand) UNION (select uniqueid,status,length_in_sec from osdial_closer_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END'  $closer_SQLand)) AS t group by status;";
+            $stmt="SELECT count(*),status,sum(length_in_sec),'' FROM ((select uniqueid,status,length_in_sec from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END'  $group_SQLand) UNION (select uniqueid,status,length_in_sec from osdial_closer_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END'  $closer_SQLand)) AS t group by status;";
         }
     } else {
         if ($comment_grouping) {
             $stmt="select count(*),status,sum(length_in_sec),comments from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END'  $group_SQLand group by status,comments;";
         } else {
-            $stmt="select count(*),status,sum(length_in_sec) from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END'  $group_SQLand group by status;";
+            $stmt="select count(*),status,sum(length_in_sec),'' from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END'  $group_SQLand group by status;";
         }
     }
     $cnvrate = Array();
@@ -777,6 +786,8 @@ function report_call_stats() {
         $i++;
     }
     
+    $aTOTALhours='0:00:00';
+    $aTOTALrate = '0.00';
     if ($TOTALcalls < 1) {
         $TOTALhours = '0:00:00';
         $TOTALavg = '0:00:00';
@@ -931,6 +942,7 @@ function report_call_stats() {
     $TOTCATcalls=0;
     $TOTCATcontact=0;
     $TOTCATsale=0;
+    $TOTCATconversion=0;
     $found_undef=0;
     $r=0;
     $r2=0;
@@ -1282,7 +1294,7 @@ function report_call_stats() {
     $last_full_record=0;
     $i=0;
     $h=0;
-    while ($i < 96) {
+    while ($i <= 96) {
         if ($use_closer_log) {
             $stmt="SELECT count(*) FROM ((select uniqueid from osdial_log where call_date >= '$query_date $h:00:00' and call_date <= '$query_date $h:14:59' $group_SQLand) UNION (select uniqueid from osdial_closer_log where call_date >= '$query_date $h:00:00' and call_date <= '$query_date $h:14:59' $closer_SQLand)) AS t;";
         } else {

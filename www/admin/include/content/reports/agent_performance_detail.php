@@ -164,6 +164,8 @@ function report_agent_performance_detail() {
     $export .= "<input type=hidden name=\"name\" value=\"css\">\n";
 
     if ($group) {
+        $time_BEGIN='00:00:00';
+        $time_END='23:59:59';
         if ($shift == 'AM') {
             $time_BEGIN=$AM_shift_BEGIN;
             $time_END=$AM_shift_END;
@@ -316,6 +318,13 @@ function report_agent_performance_detail() {
 
 
         ### BEGIN loop through each user ###
+        $TOTcalls=0;
+        $TOTnew_calls=0;
+        $TOTtime=0;
+        $TOTtotTALK=0;
+        $TOTtotWAIT=0;
+        $TOTtotPAUSE=0;
+        $TOTtotDISPO=0;
         $m=0;
         while ($m < $k) {
             $Suser=$usersARY[$m];

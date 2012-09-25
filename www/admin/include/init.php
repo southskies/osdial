@@ -194,6 +194,7 @@ if ( ( (OSDstrlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($
     $groups_list='';
     $groups_value='';
     $XFERgroups_list='';
+    $XFERgroups_value='';
     $RANKgroups_list="<tr class=tabheader><td>&nbsp;</td><td align=left>INBOUND GROUP</td><td align=center>RANK</td><td align=right>CALLS</td></tr>\n";
     $groups_listTAB="<tr class=tabheader><td>&nbsp;</td><td align=left>INBOUND GROUP</td></tr>\n";
     $XFERgroups_listTAB="<tr class=tabheader><td>&nbsp;</td><td align=left>TRANSFER GROUP</td></tr>\n";

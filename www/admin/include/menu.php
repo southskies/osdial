@@ -24,6 +24,7 @@
 
 # Default menu
 if (!isset($ADD))   {$ADD=0;}
+if (!isset($sh))    {$sh='';}
 
 # Users
 if ($ADD==0)			{$hh='users';		$title = "Users List";}

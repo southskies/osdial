@@ -1105,9 +1105,9 @@ if (OSDpreg_match("/GROUPDOWN/",$stage)) {$SQLorder='order by user_group desc'; 
     echo "<center><br><font size=+1 color=$default_text>AGENTS</font><br>\n";
     echo "<font color=$default_text size=-1>";
     if ($viewdisabled == '1') {
-        echo "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&viewdisabled=0&let=$let&num=$snum\">(Hide Disabled Users)</a>";
+        echo "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&viewdisabled=0&let=$let&num=$num\">(Hide Disabled Users)</a>";
     } else {
-        echo "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&viewdisabled=1&let=$let&num=$snum\">(Show Disabled Users)</a>";
+        echo "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&viewdisabled=1&let=$let&num=$num\">(Show Disabled Users)</a>";
     }
     echo "</font><br>\n";
 
@@ -1155,7 +1155,7 @@ echo "  </tr>\n";
         if ($row[5] != "VIRTUAL") {
 		    echo "  <tr class=\"row font1\" " . bgcolor($o) . " ondblclick=\"window.location='$PHP_SELF?ADD=3&user=$row[1]';\">\n";
             echo "    <td><a href=\"$PHP_SELF?ADD=3&user=$row[1]\">";
-            if (($LOG['multicomp'] > 0 and OSDpreg_match($LOG['companiesRE'],$row[1])) or $LOG['multcomp_user'] > 0) {
+            if (($LOG['multicomp'] > 0 and OSDpreg_match($LOG['companiesRE'],$row[1])) or $LOG['multicomp_user'] > 0) {
                 echo OSDsubstr($row[1],0,3) . "&nbsp;" . OSDsubstr($row[1],3,OSDstrlen($row[1]));;
             } else {
                 echo $row[1];

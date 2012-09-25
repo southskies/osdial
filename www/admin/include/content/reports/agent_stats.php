@@ -207,6 +207,7 @@ function report_agent_stats() {
         $rslt=mysql_query($stmt, $link);
         $events_to_print = mysql_num_rows($rslt);
         
+        $total_login_time=0;
         $total_calls=0;
         $o=0;
         $event_start_seconds='';
@@ -483,16 +484,24 @@ function report_agent_stats() {
         $u=0;
         while ($logs_to_print > $u) {
             $row=mysql_fetch_row($rslt);
-            $Slocation = OSDpreg_replace("/^\/\//", "/", $row[11]);
-            $location = $Slocation;
+            $location = $row[11];
             $locshort = ellipse($location,30,true);
+            $recloc = $location;
             if (OSDpreg_match("/http/",$location) or OSDpreg_match("/^\//",$location)) {
-                $location = "<a target=\"_new\" title=\"$location\" href=\"$location\">$locshort</a>";
+                $svraddr = $_SERVER['SERVER_ADDR'];
+                if (isset($_SERVER['HTTP_HOST']) and !empty($_SERVER['HTTP_HOST'])) $svraddr = $_SERVER['HTTP_HOST'];
+                if (!OSDpreg_match("/^http:\/\//", $svraddr)) $svraddr = "http://".$svraddr;
+                if (OSDpreg_match("/^\/\//", $recloc)) $recloc = OSDpreg_replace("/^\/\//","/",$recloc);
+                if (OSDpreg_match("/^http:\/\//", $recloc)) $recloc = OSDpreg_replace("/^http:\/\//",$svraddr."/archive/http://",$recloc);
+                if (OSDpreg_match("/^\/archive\/http:\/\//", $recloc)) $recloc = OSDpreg_replace("/^\/archive\/http:\/\//",$svraddr."/archive/http://",$recloc);
+                $location = "<a target=\"_new\" title=\"$location\" href=\"$recloc\">$locshort</a>";
+            } else {
+                $location = "<a title=\"$location\" href=\"#\">$locshort</a>";
             }
         
             $u++;
             $event = OSDpreg_replace("/ /", "&nbsp;", $row[4]);
-            $table .= "  <tr " . bgcolor($u) . " class=\"row font1\" ondblclick=\"openNewWindow('$Slocation');\" style=\"white-space:nowrap;\">\n";
+            $table .= "  <tr " . bgcolor($u) . " class=\"row font1\" ondblclick=\"openNewWindow('$recloc');\" style=\"white-space:nowrap;\">\n";
             $table .= "    <td title=\"Record #: $u\">$u</td>\n";
             $table .= "    <td align=left title=\"Lead #: $row[12]\"><a href=\"$PHP_SELF?ADD=1121&lead_id=$row[12]\" target=\"_blank\">$row[12]</a></td>\n";
             $table .= "    <td align=center title=\"Date/Time: $event\">" . OSDpreg_replace("/ /", "&nbsp;", dateToLocal($link,$row[2],$row[4],$webClientAdjGMT,'',$webClientDST,1)) . "</td>\n";

@@ -169,7 +169,7 @@ function report_realtime_detail() {
     $html .= "   .b4 {color: white; background-color: #0000FF}\n";
 
 
-    $stmt=sprintf("SELECT group_id,group_color FROM osdial_inbound_groups WHERE group_id IN %s OR group_id LIKE 'A2A_%s%%';",$LOG['allowed_ingroupsSQL'],$company_prefix);
+    $stmt=sprintf("SELECT group_id,group_color FROM osdial_inbound_groups WHERE group_id IN %s OR group_id LIKE 'A2A_%s%%';",$LOG['allowed_ingroupsSQL'],$LOG['company_prefix']);
     $rslt=mysql_query($stmt, $link);
     if ($DB) {$html .= "$stmt\n";}
     $INgroups_to_print = mysql_num_rows($rslt);
@@ -240,7 +240,7 @@ function report_realtime_detail() {
     $html .= "<font size=2>";
 
     if (!OSDpreg_match('/^XXXX/',$group)) $html .= "&nbsp;-&nbsp;<a href=\"./admin.php?ADD=31&campaign_id=$group\">Modify</a>";
-    if ($LOG['view_realtime_summary']) $html .= "&nbsp;-&nbsp;<a href=\"$PHP_SELF?ADD=$ADD&SUB=" . ($SUB - 1) . "&group=$group&RR=$RR&DB=$DB&adastats=$adastats\">Summary</a>&nbsp;-&nbsp;\n";
+    if ($LOG['view_agent_realtime_summary']) $html .= "&nbsp;-&nbsp;<a href=\"$PHP_SELF?ADD=$ADD&SUB=" . ($SUB - 1) . "&group=$group&RR=$RR&DB=$DB&adastats=$adastats\">Summary</a>&nbsp;-&nbsp;\n";
     $html .= "<br></font>\n";
     $html .= "</font>";
 

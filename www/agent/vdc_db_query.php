@@ -278,6 +278,7 @@ $user = get_variable("user");
 $user_abb = get_variable("user_abb");
 $VDstop_rec_after_each_call = get_variable("VDstop_rec_after_each_call");
 $vendor_lead_code = get_variable("vendor_lead_code");
+$wrapup = get_variable("wrapup");
 
 
 #if ($config['settings']['use_non_latin'] < 1) {
@@ -2055,18 +2056,19 @@ if ($ACTION == 'manDiaLlogCaLL') {
         if ($format=='debug') echo "\n<!-- $stmt -->";
         $rslt=mysql_query($stmt, $link);
 
-        ### if queuemetrics_dispo_pause dispo tag is enabled, log it here
-        if (OSDstrlen($config['settings']['queuemetrics_dispo_pause'])>0) {
-            $linkB=mysql_connect($config['settings']['queuemetrics_server_ip'], $config['settings']['queuemetrics_login'], $config['settings']['queuemetrics_pass']);
-            mysql_select_db($config['settings']['queuemetrics_dbname'], $linkB);
-            if ($config['settings']['use_non_latin'] > 0) $rslt=mysql_query("SET NAMES 'utf8' COLLATE 'utf8_general_ci';",$linkB);
+        #TODO - Add queuemetrics_dispo_pause to system_settings table.
+        #### if queuemetrics_dispo_pause dispo tag is enabled, log it here
+        #if (OSDstrlen($config['settings']['queuemetrics_dispo_pause'])>0) {
+        #    $linkB=mysql_connect($config['settings']['queuemetrics_server_ip'], $config['settings']['queuemetrics_login'], $config['settings']['queuemetrics_pass']);
+        #    mysql_select_db($config['settings']['queuemetrics_dbname'], $linkB);
+        #    if ($config['settings']['use_non_latin'] > 0) $rslt=mysql_query("SET NAMES 'utf8' COLLATE 'utf8_general_ci';",$linkB);
 
-            $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='NONE',agent='Agent/%s',verb='PAUSEREASON',serverid='%s',data1='%s';",mres($StarTtime),mres($MDnextCID),mres($user),mres($config['settings']['queuemetrics_log_id']),mres($config['settings']['queuemetrics_dispo_pause']));
-            if ($DB) echo "$stmt\n";
-            $rslt=mysql_query($stmt, $linkB);
-            $affected_rows = mysql_affected_rows($linkB);
-            mysql_close($linkB);
-        }
+        #    $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='NONE',agent='Agent/%s',verb='PAUSEREASON',serverid='%s',data1='%s';",mres($StarTtime),mres($MDnextCID),mres($user),mres($config['settings']['queuemetrics_log_id']),mres($config['settings']['queuemetrics_dispo_pause']));
+        #    if ($DB) echo "$stmt\n";
+        #    $rslt=mysql_query($stmt, $linkB);
+        #    $affected_rows = mysql_affected_rows($linkB);
+        #    mysql_close($linkB);
+        #}
     }
 }
 
@@ -3358,6 +3360,7 @@ if ($ACTION == 'updateDISPO') {
 
 
         ### CALLBACK ENTRY
+        $adjCBdate='';
         if ( ($dispo_choice == 'CBHOLD') and (OSDstrlen($CallBackDatETimE)>10) ) {
             $adjCBdate = dateToServer($link,$server_ip,$CallBackDatETimE,$phone_local_gmt,'',$phoneDST,0);
             $stmt=sprintf("INSERT INTO osdial_callbacks (lead_id,list_id,campaign_id,status,entry_time,callback_time,user,recipient,comments,user_group) VALUES('%s','%s','%s','ACTIVE','%s','%s','%s','%s','%s','%s');",mres($lead_id),mres($list_id),mres($campaign),mres($NOW_TIME),mres($adjCBdate),mres($user),mres($recipient),mres($comments),mres($user_group));

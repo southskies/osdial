@@ -105,6 +105,7 @@ $result = new SimpleXMLElement(OSDpreg_replace('/(^<\?.*$|\n)/m',"",OSDpreg_repl
 $result->status['start'] = $start;
 $result->status['start_epoch'] = $start_epoch;
 
+$mime_type='text/xml';
 if (preg_match('/^Y$|^YES$|^T$|^TRUE$|^1$/i',$xml['vdcompat'])) {
     $xml['vdcompat'] = 1;
     $mimetype = "text/html";
@@ -272,7 +273,7 @@ if ($xml['function'] == "version") {
     }
     # Validate Company Access.
     if ($status != "ERROR") {
-        if ($system_settings['enable_multicompany'] > 0) {
+        if ($config['settings']['enable_multicompany'] > 0) {
             $comp = get_first_record($link, 'osdial_companies', '*', sprintf("id='%s'",((OSDsubstr($xml['user'],0,3) * 1) - 100) ));
             if ($comp['api_access'] < 1) {
                 $status = "ERROR";
@@ -392,7 +393,7 @@ if ($xml['function'] == "version") {
         $dncs=0;
         $dncsskip=0;
 
-        if ($system_settings['enable_multicompany'] > 0) {
+        if ($config['settings']['enable_multicompany'] > 0) {
             if (preg_match('/COMPANY|BOTH/',$comp['dnc_method'])) {
                 $dnc_where = sprintf("company_id='%s' AND phone_number='%s'",$comp['id'],mres($xml->params->phone_number));
                 if ($xml['debug'] > 0) $debug .= "DNC_COMP_WHERE: " . $dnc_where . "\n";

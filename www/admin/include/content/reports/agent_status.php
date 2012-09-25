@@ -145,7 +145,7 @@ function report_agent_status() {
             $table .= "<center><font color=red>You do not have permission to view this page</font></center>\n";
         } else {
             $table .= "<table align=center width=100%>\n";
-            $table .= "<tr class=font2><td align=right width=50%>Run Date:</td><td align=left width=50%>" . date($system_settings['default_date_format']) . "</td></tr>\n";
+            $table .= "<tr class=font2><td align=right width=50%>Run Date:</td><td align=left width=50%>" . date($config['settings']['default_date_format']) . "</td></tr>\n";
             $table .= "<tr class=font2><td align=right>Agent ID:</td><td align=left>$agent</td></tr>\n";
             $table .= "<tr class=font2><td align=right>Agent Full Name:</td><td align=left>$full_name</td></tr>\n";
             $table .= "<tr class=font2><td align=right>Agent Group:</td><td align=left>" . mclabel($user_group) . "</td></tr>\n";

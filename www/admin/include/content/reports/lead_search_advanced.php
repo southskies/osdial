@@ -347,6 +347,8 @@ function report_lead_search_advanced($lsa_seg='form') {
                 }
             }
         }
+        $countWHR='';
+        $searchTZWHR='';
         if ($timezoneIN != "") {
             $timezoneIN = rtrim($timezoneIN,",");
             $timezoneCNTIN = rtrim($timezoneCNTIN,",");
@@ -519,6 +521,7 @@ function report_lead_search_advanced($lsa_seg='form') {
         $form .= "    <td align=right><font size=2>AreaCode or PhoneNumber</font></td>\n";
         $form .= "    <td align=left>\n";
         $form .= "      <input type=text name=phone_number value=\"$phone_number\" size=10 maxlength=20>\n";
+        $check='';
         if ($phone_search_alt == 1) $check = " checked";
         $form .= "      <input type=checkbox name=phone_search_alt id=phone_seach_alt value=1$check> <font size=1><label for=phone_search_alt>Alternates</label></font>\n";
         $form .= "    </td>\n";
@@ -1218,7 +1221,18 @@ function report_lead_search_advanced($lsa_seg='form') {
                     if ($row[0] > 0) {
                         $rslt2=mysql_query(sprintf("SELECT location FROM recording_log WHERE lead_id='%s' ORDER BY recording_id DESC LIMIT 1;",$row[0]), $link);
                         $row2=mysql_fetch_row($rslt2);
-                        $row[] = 'http://' . $_SERVER['SERVER_ADDR'] . $row2[0];
+                        $recloc=$row2[0];
+                        if ($recloc != "") {
+                            $svraddr = $_SERVER['SERVER_ADDR'];
+                            if (isset($_SERVER['HTTP_HOST']) and !empty($_SERVER['HTTP_HOST'])) $svraddr = $_SERVER['HTTP_HOST'];
+                            if (!OSDpreg_match("/^http:\/\//", $svraddr)) $svraddr = "http://".$svraddr;
+                            if (OSDpreg_match("/^\/\//", $recloc)) $recloc = OSDpreg_replace("/^\/\//","/",$recloc);
+                            if (OSDpreg_match("/^http:\/\//", $recloc)) $recloc = OSDpreg_replace("/^http:\/\//",$svraddr."/archive/http://",$recloc);
+                            if (OSDpreg_match("/^\/archive\/http:\/\//", $recloc)) $recloc = OSDpreg_replace("/^\/archive\/http:\/\//",$svraddr."/archive/http://",$recloc);
+                            $row[] = $recloc;
+                        } else {
+                            $row[] = "";
+                        }
                         if (is_array($affields)) {
                             foreach ($affields as $affield) {
                                 $rslt2=mysql_query(sprintf("SELECT value FROM osdial_list_fields WHERE lead_id='%s' AND field_id='%s' LIMIT 1;",$row[0],$affield), $link);
@@ -1284,7 +1298,13 @@ function report_lead_search_advanced($lsa_seg='form') {
                     $data .= "    <td nowrap align=center title=\"$row[35]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . ellipse($row[35],10,false) . "</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$recloc\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>";
                     if ($recloc != "") {
-                        $data .= "<a target=\"_new\" href=\"http://" . $_SERVER['SERVER_ADDR'] . "$recloc\">[rec]</a>";
+                        $svraddr = $_SERVER['SERVER_ADDR'];
+                        if (isset($_SERVER['HTTP_HOST']) and !empty($_SERVER['HTTP_HOST'])) $svraddr = $_SERVER['HTTP_HOST'];
+                        if (!OSDpreg_match("/^http:\/\//", $svraddr)) $svraddr = "http://".$svraddr;
+                        if (OSDpreg_match("/^\/\//", $recloc)) $recloc = OSDpreg_replace("/^\/\//","/",$recloc);
+                        if (OSDpreg_match("/^http:\/\//", $recloc)) $recloc = OSDpreg_replace("/^http:\/\//",$svraddr."/archive/http://",$recloc);
+                        if (OSDpreg_match("/^\/archive\/http:\/\//", $recloc)) $recloc = OSDpreg_replace("/^\/archive\/http:\/\//",$svraddr."/archive/http://",$recloc);
+                        $data .= "<a target=\"_new\" href=\"".$recloc."\">[rec]</a>";
                     }
                     $data .= "</font></td>\n";
                     $data .= "  </tr>\n";

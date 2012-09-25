@@ -381,7 +381,11 @@ if ($ADD==311) {
         while ($statuses_to_print > $o) {
             $rowx=mysql_fetch_row($rslt);
 	    
-            $lead_list['count'] = ($lead_list['count'] + $rowx[2]);
+            if (isset($lead_list['count'])) {
+                $lead_list['count'] = ($lead_list['count'] + $rowx[2]);
+            } else {
+                $lead_list['count'] = $rowx[2];
+            }
             if ($rowx[1] == 'N') {
                 $since_reset = 'N';
                 $since_resetX = 'Y';
@@ -389,8 +393,16 @@ if ($ADD==311) {
                 $since_reset = 'Y';
                 $since_resetX = 'N';
             } 
-            $lead_list[$since_reset][$rowx[0]] = ($lead_list[$since_reset][$rowx[0]] + $rowx[2]);
-            $lead_list[$since_reset.'_count'] = ($lead_list[$since_reset.'_count'] + $rowx[2]);
+            if (isset($lead_list[$since_reset][$rowx[0]])) {
+                $lead_list[$since_reset][$rowx[0]] = ($lead_list[$since_reset][$rowx[0]] + $rowx[2]);
+            } else {
+                $lead_list[$since_reset][$rowx[0]] = $rowx[2];
+            }
+            if (isset($lead_list[$since_reset.'_count'])) {
+                $lead_list[$since_reset.'_count'] = ($lead_list[$since_reset.'_count'] + $rowx[2]);
+            } else {
+                $lead_list[$since_reset.'_count'] = $rowx[2];
+            }
             #If opposite side is not set, it may not in the future so give it a value of zero
             if (!isset($lead_list[$since_resetX][$rowx[0]])) {
                 $lead_list[$since_resetX][$rowx[0]]=0;
@@ -422,12 +434,12 @@ if ($ADD==311) {
 
         echo "  <tr class=tabfooter>\n";
         echo "    <td colspan=2>SUBTOTALS</td>\n";
-        echo "    <td align=right>" . $lead_list[Y_count] . "</td>\n";
-        echo "    <td align=right>" . $lead_list[N_count] . "</td>\n";
+        echo "    <td align=right>" . $lead_list['Y_count'] . "</td>\n";
+        echo "    <td align=right>" . $lead_list['N_count'] . "</td>\n";
         echo "  </tr>\n";
         echo "  <tr class=tabfooter>\n";
         echo "    <td colspan=2>TOTAL</td>\n";
-        echo "    <td colspan=2 align=center><b>" . $lead_list[count] . "</td>\n";
+        echo "    <td colspan=2 align=center><b>" . $lead_list['count'] . "</td>\n";
         echo "  </tr>\n";
 
         echo "</table></center><br>\n";
@@ -455,7 +467,11 @@ if ($ADD==311) {
         while ($statuses_to_print > $o) {
             $rowx=mysql_fetch_row($rslt);
 
-            $lead_list['count'] = ($lead_list['count'] + $rowx[2]);
+            if (isset($lead_list['count'])) {
+                $lead_list['count'] = ($lead_list['count'] + $rowx[2]);
+            } else {
+                $lead_list['count'] = $rowx[2];
+            }
             if ($rowx[1] == 'N') {
                 $since_reset = 'N';
                 $since_resetX = 'Y';
@@ -463,8 +479,16 @@ if ($ADD==311) {
                 $since_reset = 'Y';
                 $since_resetX = 'N';
             } 
-            $lead_list[$since_reset][$rowx[0]] = ($lead_list[$since_reset][$rowx[0]] + $rowx[2]);
-            $lead_list[$since_reset.'_count'] = ($lead_list[$since_reset.'_count'] + $rowx[2]);
+            if (isset($lead_list[$since_reset][$rowx[0]])) {
+                $lead_list[$since_reset][$rowx[0]] = ($lead_list[$since_reset][$rowx[0]] + $rowx[2]);
+            } else {
+                $lead_list[$since_reset][$rowx[0]] = $rowx[2];
+            }
+            if (isset($lead_list[$since_reset.'_count'])) {
+                $lead_list[$since_reset.'_count'] = ($lead_list[$since_reset.'_count'] + $rowx[2]);
+            } else {
+                $lead_list[$since_reset.'_count'] = $rowx[2];
+            }
             #If opposite side is not set, it may not in the future so give it a value of zero
             if (!isset($lead_list[$since_resetX][$rowx[0]])) {
                 $lead_list[$since_resetX][$rowx[0]]=0;
@@ -498,12 +522,12 @@ if ($ADD==311) {
 
         echo "  <tr class=tabfooter>\n";
         echo "    <td>SUBTOTALS</td>\n";
-        echo "    <td align=right>" . $lead_list[Y_count] . "</td>\n";
-        echo "    <td align=right>" . $lead_list[N_count] . "</td>\n";
+        echo "    <td align=right>" . $lead_list['Y_count'] . "</td>\n";
+        echo "    <td align=right>" . $lead_list['N_count'] . "</td>\n";
         echo "  </tr>\n";
         echo "  <tr class=tabfooter>\n";
         echo "    <td>TOTAL</td>\n";
-        echo "    <td colspan=2 align=center>" . $lead_list[count] . "</td>\n";
+        echo "    <td colspan=2 align=center>" . $lead_list['count'] . "</td>\n";
         echo "  </tr>\n";
 
         echo "</table></center><br>\n";
@@ -539,9 +563,13 @@ if ($ADD==311) {
             $count_statuses[$o]			= "$rowx[0]";
             $count_called[$o]			= "$rowx[1]";
             $count_count[$o]			= "$rowx[2]";
-            $all_called_count[$rowx[1]] = ($all_called_count[$rowx[1]] + $rowx[2]);
+            if (isset($all_called_count[$$rowx[1]])) {
+                $all_called_count[$rowx[1]] = ($all_called_count[$rowx[1]] + $rowx[2]);
+            } else {
+                $all_called_count[$rowx[1]] = $rowx[2];
+            }
 
-            if ( (OSDstrlen($status[$sts]) < 1) or ($status[$sts] != "$rowx[0]") ) {
+            if ( !isset($status[$sts]) or (OSDstrlen($status[$sts]) < 1 or $status[$sts] != "$rowx[0]") ) {
                 if ($first_row) {
                     $first_row=0;
                 } else {
@@ -553,7 +581,11 @@ if ($ADD==311) {
                     $all_called_first = $status_called_first[$sts];
                 }
             }
-            $leads_in_sts[$sts] = ($leads_in_sts[$sts] + $rowx[2]);
+            if (isset($leads_in_sts[$sts])) {
+                $leads_in_sts[$sts] = ($leads_in_sts[$sts] + $rowx[2]);
+            } else {
+                $leads_in_sts[$sts] = $rowx[2];
+            }
             $status_called_last[$sts] = "$rowx[1]";
             if ($status_called_last[$sts] > $all_called_last) {
                 $all_called_last = $status_called_last[$sts];
@@ -663,9 +695,13 @@ if ($ADD==311) {
             $count_statuses[$o]			= "$rowx[0]";
             $count_called[$o]			= "$rowx[1]";
             $count_count[$o]			= "$rowx[2]";
-            $all_called_count[$rowx[1]] = ($all_called_count[$rowx[1]] + $rowx[2]);
+            if (isset($all_called_count[$rowx[1]])) {
+                $all_called_count[$rowx[1]] = ($all_called_count[$rowx[1]] + $rowx[2]);
+            } else {
+                $all_called_count[$rowx[1]] = $rowx[2];
+            }
 
-            if ( (OSDstrlen($status[$sts]) < 1) or ($status[$sts] != "$rowx[0]") ) {
+            if (!isset($status[$sts]) or (OSDstrlen($status[$sts]) < 1 or $status[$sts] != "$rowx[0]") ) {
                 if ($first_row) {
                     $first_row=0;
                 } else {
@@ -677,7 +713,11 @@ if ($ADD==311) {
                     $all_called_first = $status_called_first[$sts];
                 }
             }
-            $leads_in_sts[$sts] = ($leads_in_sts[$sts] + $rowx[2]);
+            if (isset($leads_in_sts[$sts])) {
+                $leads_in_sts[$sts] = ($leads_in_sts[$sts] + $rowx[2]);
+            } else {
+                $leads_in_sts[$sts] = $rowx[2];
+            }
             $status_called_last[$sts] = "$rowx[1]";
             if ($status_called_last[$sts] > $all_called_last) {
                 $all_called_last = $status_called_last[$sts];

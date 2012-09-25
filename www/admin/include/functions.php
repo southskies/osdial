@@ -55,7 +55,7 @@ function get_krh($link, $tbl, $flds="*", $srt="", $whr="", $lmt="") {
     while ($krhrow = mysql_fetch_assoc($krhrslt)) {
         $krhrows[] = $krhrow;
     }
-    return $krhrows;
+    if (isset($krhrows)) return $krhrows;
 }
 
 function get_first_record($link, $tbl, $flds="*", $whr="") {
@@ -114,7 +114,7 @@ function format_select_options($krh, $kkey, $kval, $ksel="!", $kdef="", $kcomp=f
         if ($kkey != $kval) {
                 $optlabel .= '- ' . $ele[$kval];
                 $optstyle = ' style="font-family:monospace;';
-                if ($ele['active']=='N') $optstyle .= 'color:#800000;';
+                if (isset($ele['active']) && $ele['active']=='N') $optstyle .= 'color:#800000;';
                 $optstyle .= '"';
         }
         $optlabel = OSDpreg_replace('/ /','&nbsp;',$optlabel);

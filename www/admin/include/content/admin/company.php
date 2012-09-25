@@ -105,7 +105,7 @@ if ($ADD=="21comp") {
 
 
             $ocins = "INSERT INTO osdial_campaigns VALUES ";
-            $ocins .= sprintf("('%sTEST','Test Campaign %s','Y','','','','','','DOWN','8301','park','/osdial/agent/webform_redirect.php','Y',200,'0','oldest_call_finish','24hours','',28,'9','0000000000','8368','8309','ONDEMAND','CAMPAIGN_AGENT_FULLDATE_CUSTPHONE','','NONE','8320','Y','','','','','N','Y','NONE',8,'Y','8307','Y',0,'Wrapup Call','','Y',0,'N','MANUAL','N',3,'3.0','2100','0',0,'AUTO','NONE',' A AA B N NA DC -','N','Test Campaign','2010-03-08 00:19:25','N',NULL,' A AA AL AM B CALLBK DROP NEW N NA -','N','Y','DISABLED','Y',%s999,'---NONE---','','/osdial/agent/webform_redirect.php','Y',0,'',10,'Y','Y','Y','NORMAL','N','2008-01-01 00:00:00','','CAMPAIGN','N','%s','','N','N','N','N','N','N','N','N','N','N','N');",$cmp,$cmp,$cmp,$system_settings['default_carrier_id']);
+            $ocins .= sprintf("('%sTEST','Test Campaign %s','Y','','','','','','DOWN','8301','park','/osdial/agent/webform_redirect.php','Y',200,'0','oldest_call_finish','24hours','',28,'9','0000000000','8368','8309','ONDEMAND','CAMPAIGN_AGENT_FULLDATE_CUSTPHONE','','NONE','8320','Y','','','','','N','Y','NONE',8,'Y','8307','Y',0,'Wrapup Call','','Y',0,'N','MANUAL','N',3,'3.0','2100','0',0,'AUTO','NONE',' A AA B N NA DC -','N','Test Campaign','2010-03-08 00:19:25','N',NULL,' A AA AL AM B CALLBK DROP NEW N NA -','N','Y','DISABLED','Y',%s999,'---NONE---','','/osdial/agent/webform_redirect.php','Y',0,'',10,'Y','Y','Y','NORMAL','N','2008-01-01 00:00:00','','CAMPAIGN','N','%s','','N','N','N','N','N','N','N','N','N','N','N');",$cmp,$cmp,$cmp,$config['settings']['default_carrier_id']);
             $rslt=mysql_query($ocins, $link);
             echo "<font size=1 color=$default_text>SAMPLE CAMPAIGN ADDED - ".mysql_affected_rows()."</font><br>\n";
 
@@ -201,7 +201,7 @@ if ($ADD=="31comp") {
         echo "<input type=hidden name=ADD value=41comp>\n";
         echo "<input type=hidden name=company_id value=$comp[id]>\n";
         echo "<table width=$section_width cellspacing=3>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Company Prefix: </td><td align=left><font color=$default_text>" . (($comp[id] * 1) + 100) . "</font></td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Company Prefix: </td><td align=left><font color=$default_text>" . (($comp['id'] * 1) + 100) . "</font></td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Company Name: </td><td align=left><input type=text name=company_name size=30 maxlength=100 value=\"$comp[name]\">$NWB#companies-company_name$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Status: </td><td align=left><select name=company_status><option>INACTIVE</option><option>ACTIVE</option><option>SUSPENDED</option><option>TERMINATED</option><option selected>$comp[status]</option></select>$NWB#companies-status$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Enable Campaign IVR: </td><td align=left><select name=company_enable_campaign_ivr><option>0</option><option>1</option><option selected>$comp[enable_campaign_ivr]</option></select>$NWB#companies-enable_campaign_ivr$NWE</td></tr>\n";
@@ -266,7 +266,7 @@ if ($ADD=="10comp") {
         $comps = get_krh($link, 'osdial_companies', '*','','','');
         foreach ($comps as $comp) {
             echo "  <tr " . bgcolor($c++) . " class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=31comp&company_id=$comp[id]';\">\n";
-            echo "    <td><a href=\"$PHP_SELF?ADD=31comp&company_id=$comp[id]\">" . (($comp[id] * 1) + 100) . "</a></td>\n";
+            echo "    <td><a href=\"$PHP_SELF?ADD=31comp&company_id=$comp[id]\">" . (($comp['id'] * 1) + 100) . "</a></td>\n";
             echo "    <td>$comp[status]</td>\n";
             echo "    <td>$comp[name]</td>\n";
             echo "    <td align=center><a href=\"$PHP_SELF?ADD=31comp&company_id=$comp[id]\">MODIFY</a></td>\n";

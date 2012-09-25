@@ -110,7 +110,7 @@ if ($ADD==1121) {
 		        echo "<br>osdial_callback record $callback_id changed to $CBrecipient for user $CBuser.<br>\n";
             }
 
-            if ($VARclient == 'OSDR') {
+            if (isset($VARclient) && $VARclient == 'OSDR') {
                 if ($confirm_sale > 0) {
                     if (OSDstrlen($confirm_id) > 0) {
                         $stmt = sprintf("UPDATE osdial_list SET status='%s' WHERE lead_id='%s';",mres($confirm_status),mres($confirm_id));
@@ -141,7 +141,7 @@ if ($ADD==1121) {
 			        $call_log .= "    <td align=left>$row[7]</td>\n";
 			        $call_log .= "    <td align=left>$row[8]</td>\n";
                     if ($LOG['view_agent_stats']) {
-			            $call_log .= "    <td align=left><a href=\"admin.php?ADD=999999&SUB=21&agent=$row[11]\" target=\"_blank\">$row[11]</a></td>\n";
+			            $call_log .= "    <td align=left><a href=\"admin.php?ADD=999999&SUB=21&agent=$row[11]&begin_date=".OSDsubstr($row[4],0,10)."&end_date=".OSDsubstr($row[4],0,10)."\" target=\"_blank\">$row[11]</a></td>\n";
                     } else {
 			            $call_log .= "    <td align=left>$row[11]</td>\n";
                     }
@@ -171,7 +171,7 @@ if ($ADD==1121) {
 			        $agent_log .= "    <td>" . dateToLocal($link,$row[2],$row[3],$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";
 			        $agent_log .= "    <td align=left>$row[5]</td>\n";
                     if ($LOG['view_agent_stats']) {
-			            $agent_log .= "    <td align=left><a href=\"admin.php?ADD=999999&SUB=21&agent=$row[11]\" target=\"_blank\">$row[1]</a></td>\n";
+			            $agent_log .= "    <td align=left><a href=\"admin.php?ADD=999999&SUB=21&agent=$row[1]&begin_date=".OSDsubstr($row[3],0,10)."&end_date=".OSDsubstr($row[3],0,10)."\" target=\"_blank\">$row[1]</a></td>\n";
                     } else {
 			            $agent_log .= "    <td align=left>$row[1]</td>\n";
                     }
@@ -205,7 +205,7 @@ if ($ADD==1121) {
 			        $closer_log .= "    <td align=left>$row[7]</td>\n";
 			        $closer_log .= "    <td align=left>$row[8]</td>\n";
                     if ($LOG['view_agent_stats']) {
-			            $closer_log .= "    <td align=left><a href=\"admin.php?&ADD=999999&SUB=21&agent=$row[11]\" target=\"_blank\">$row[11]</a></td>\n";
+			            $closer_log .= "    <td align=left><a href=\"admin.php?&ADD=999999&SUB=21&agent=$row[11]&begin_date=".OSDsubstr($row[4],0,10)."&end_date=".OSDsubstr($row[4],0,10)."\" target=\"_blank\">$row[11]</a></td>\n";
                     } else {
 			            $closer_log .= "    <td align=left>$row[11]</td>\n";
                     }
@@ -245,9 +245,9 @@ if ($ADD==1121) {
 		        echo "    <input type=hidden name=parked_time value=\"$parked_time\">\n";
 
                 echo "    <font color=$default_text size=2>Call information: $ld[first_name] $ld[last_name] - $ld[phone_number]<br></font>\n";
-                $ldtzoff = $ld[gmt_offset_now];
-                if (date('I') != '0') $ldtzoff = $ld[gmt_offset_now] - 1;
-                $llctsecs = (strtotime($ld[last_local_call_time])-3600);
+                $ldtzoff = $ld['gmt_offset_now'];
+                if (date('I') != '0') $ldtzoff = $ld['gmt_offset_now'] - 1;
+                $llctsecs = (strtotime($ld['last_local_call_time'])-3600);
                 if ($llctsecs > 0) {
                     echo "    <font color=$default_text size=2>Last Call Time: " . dateToLocal($link,$ldtzoff,date('Y-m-d H:i:s',$llctsecs),$ldtzoff,'',$webClientDST,1) . "<br></font>\n";
                 }
@@ -344,7 +344,7 @@ if ($ADD==1121) {
 	            echo "          <td align=right>Post Date:&nbsp;</td>\n";
 		        echo "          <td align=left><input type=text name=post_date size=19 maxlength=19 value=\"$ld[post_date]\"><font size=1> (YYYY-MM-DD HH:MM:SS)</font></td>\n";
                 echo "        </tr>\n";
-                if ($ld[cost] == 0) $ld[cost] = '0.000';
+                if ($ld['cost'] == 0) $ld['cost'] = '0.000';
 		        echo "        <tr bgcolor=$oddrows>\n";
 	            echo "          <td align=right>Lead Cost:&nbsp;</td>\n";
 		        echo "          <td align=left><input type=text name=cost size=6 maxlength=6 value=\"$ld[cost]\"></td>\n";
@@ -708,19 +708,25 @@ if ($ADD==1121) {
                 if (is_array($rlogs)) {
 	                foreach ($rlogs as $rl) {
 		                $location = $rl['location'];
-		                $locat = ellipse($location,27,true);
-		                if (OSDpreg_match("/http/",$location) or OSDpreg_match("/^\/\//", $location)) {
-			                $location = OSDpreg_replace("/^\/\//","/",$location);
-			                $location = "<a href=\"$location\">$locat</a>";
+		                $locshort = ellipse($location,27,true);
+                        $recloc = $location;
+		                if (OSDpreg_match("/http/",$location) or OSDpreg_match("/^\//", $location)) {
+                            $svraddr = $_SERVER['SERVER_ADDR'];
+                            if (isset($_SERVER['HTTP_HOST']) and !empty($_SERVER['HTTP_HOST'])) $svraddr = $_SERVER['HTTP_HOST'];
+                            if (!OSDpreg_match("/^http:\/\//", $svraddr)) $svraddr = "http://".$svraddr;
+                            if (OSDpreg_match("/^\/\//", $recloc)) $recloc = OSDpreg_replace("/^\/\//","/",$recloc);
+                            if (OSDpreg_match("/^http:\/\//", $recloc)) $recloc = OSDpreg_replace("/^http:\/\//",$svraddr."/archive/http://",$recloc);
+                            if (OSDpreg_match("/^\/archive\/http:\/\//", $recloc)) $recloc = OSDpreg_replace("/^\/archive\/http:\/\//",$svraddr."/archive/http://",$recloc);
+			                $location = "<a target=\"_new\" title=\"$location\" href=\"$recloc\">$locshort</a>";
 		                } else {
-			                $location = $locat;
+			                $location = "<a title=\"$location\" href=\"#\">$locshort</a>";
 		                }
                         if ($u==0) $wfv['recording_id'] = $rl['recording_id'];
 		                $u++;
-		                echo "      <tr " . bgcolor($u) . " class=\"row font1\" title=\"Date/Time: $rl[starttime]\" style=\"white-space:nowrap;\">\n";
+		                echo "      <tr " . bgcolor($u) . " class=\"row font1\" title=\"Date/Time: $rl[start_time]\" style=\"white-space:nowrap;\">\n";
 		                echo "        <td>$u</td>\n";
 		                echo "        <td align=left>" . $rl['lead_id'] . "</td>\n";
-		                echo "        <td align=left>" . dateToLocal($link,$rl['server_ip'],$rl['starttime'],$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";
+		                echo "        <td align=left>" . dateToLocal($link,$rl['server_ip'],$rl['start_time'],$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";
 		                echo "        <td align=left>" . $rl['length_in_sec'] . "</td>\n";
 		                echo "        <td align=left>" . $rl['recording_id'] . "</td>\n";
 		                echo "        <td align=center>" . $rl['filename'] . "</td>\n";
@@ -738,7 +744,7 @@ if ($ADD==1121) {
                 echo "        <td colspan=8></td>\n";
                 echo "      </tr>\n";
 	            echo "    </table>\n";
-                if ($VARclient == 'OSDR') {
+                if (isset($VARclient) && $VARclient == 'OSDR') {
                     if ($ld['status'] == "SALE") {
                         echo '<form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
 		                echo '<input type="hidden" name="DB" value="' . $DB . '">';

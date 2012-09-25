@@ -248,7 +248,7 @@ $DB=OSDpreg_replace('[^0-9a-z]','',$DB);
 
 $forever_stop=0;
 
-if ($force_logout) {
+if (isset($force_logout)) {
     echo "You have now logged out. Thank you\n";
     exit;
 }
@@ -350,6 +350,23 @@ if ($server_port == '80' or $server_port == '443') {
 $t1="OSDial"; if (OSDpreg_match('/^Sli/',$config['settings']['agent_template'])) $t1=$config['settings']['agent_template'];
 $agcPAGE = $HTTPprotocol . $server_name . $server_port .$script_name;
 $agcDIR = OSDpreg_replace('/osdial.php/','',$agcPAGE);
+
+$VD_pause_codes_ct=0;
+$VARpause_codes='';
+$VARpause_code_names='';
+$VARcid_areacodes='';
+$VARcid_areacode_numbers='';
+$VARcid_areacode_names='';
+$INgrpCT=0;
+$default_xfer_group_name='';
+$MMscripttexts='';
+$MMscriptnames='';
+$MMscriptids='';
+$VARxfergroupsnames='';
+$HKxferextens='';
+$HKstatusnames='';
+$HKstatuses='';
+$HKhotkeys='';
 
 echo "<html>\n";
 echo "<head>\n";
@@ -839,7 +856,7 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
                 $j=0;
                 while ($j < $VD_statuses_ct) {
                     $row=mysql_fetch_row($rslt);
-                    if ($row[2] > 0 and OSDpreg_match('/^$|^1$/',$DISPstatus[$row[0]])) {
+                    if ($row[2] > 0 and isset($DISPstatus[$row[0]]) and OSDpreg_match('/^$|^1$/',$DISPstatus[$row[0]])) {
                         $PSstatuses[$row[0]] = $row[1];
                     }
                     $j++;
@@ -2022,7 +2039,7 @@ flush();
                     <br><b><font color=<?php echo $mandial_fc; ?>>New Manual Dial Lead For </font><font color=<?php echo $mandial_bfc; ?>><?php echo $VD_login; ?></font><font color=<?php echo $mandial_fc; ?>> In Campaign </font><font color=<?php echo $mandial_bfc; ?>><?php echo $VD_campaign; ?></font></b>
                     <font color=<?php echo $mandial_fc; ?>>
                         <br><br>Enter information below for the new lead you wish to call.<br>
-                        <?php  if (OSDpreg_match("/X/",dial_prefix)) {
+                        <?php  if (OSDpreg_match("/X/",$dial_prefix)) {
                             echo "Note: a dial prefix of $dial_prefix will be added to the beginning of this number<br>\n";
                         } ?>
                         Note: all new manual dial leads will go into list <?php echo $manual_dial_list_id; ?><br><br>
@@ -2839,6 +2856,7 @@ flush();
                                 foreach ($forms as $form) {
                                     foreach (OSDpreg_split('/,/',$form['campaigns']) as $fcamp) {
                                         if ($fcamp == 'ALL' or OSDstrtoupper($fcamp) == OSDstrtoupper($VD_campaign)) {
+                                            $cssvis='';
                                             if ($cnt > 0) {
                                                 $cssvis = 'visibility:hidden;';
                                             }

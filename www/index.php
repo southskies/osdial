@@ -2,7 +2,7 @@
 require_once('admin/include/dbconnect.php');
 require_once('admin/include/functions.php');
 require_once('admin/include/variables.php');
-$template=$system_settings['admin_template'];
+$template=$config['settings']['admin_template'];
 if (empty($template)) $template='default';
 require_once('admin/templates/' . $template . '/display.php');
 ?>
@@ -84,7 +84,7 @@ require_once('admin/templates/' . $template . '/display.php');
                 <div id="company"></div>
                 <script>
 <?php
-        $c = $system_settings['company_name'];
+        $c = $config['settings']['company_name'];
         $klen = 2;
         if (strlen($c) < 20 or (strlen($c) >= 20 && preg_match('/............... /',$c))) {
                 $klen = 1;

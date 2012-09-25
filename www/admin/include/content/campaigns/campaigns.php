@@ -254,7 +254,7 @@ if ($ADD==21)
                     $stmt=sprintf("UPDATE osdial_user_groups SET allowed_campaigns=' %s -' WHERE user_group='%s';",mres(implode(" ",$LOG['allowed_campaigns'])),mres($LOG['user_group']));  
                     $rslt=mysql_query($stmt, $link);
                 }
-                $carrier_id = $system_settings['default_carrier_id'];
+                $carrier_id = $config['settings']['default_carrier_id'];
                 $ets = implode(',',$email_templates);
                 $stmt=sprintf("INSERT INTO osdial_campaigns (campaign_id,campaign_name,campaign_description,active,dial_status_a,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,campaign_script,get_call_launch,campaign_changedate,campaign_stats_refresh,list_order_mix,web_form_address2,allow_tab_switch,campaign_call_time,carrier_id,email_templates) values('%s','%s','%s','%s','NEW','DOWN','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','Y','DISABLED','%s','%s','%s','%s','%s');",mres($campaign_id),mres($campaign_name),mres($campaign_description),mres($active),mres($park_ext),mres($park_file_name),mres($web_form_address),mres($allow_closers),mres($hopper_level),mres($auto_dial_level),mres($next_agent_call),mres($local_call_time),mres($voicemail_ext),mres($script_id),mres($get_call_launch),mres($SQLdate),mres($web_form_address2),mres($allow_tab_switch),mres($campaign_call_time),mres($carrier_id),mres($ets));
                 $rslt=mysql_query($stmt, $link);
@@ -1321,7 +1321,7 @@ if ($ADD==31) {
         echo "            <select name=carrier_id>\n";
         $krh = get_krh($link, 'osdial_carriers', '*','',"active='Y' AND selectable='Y'",'');
         $carrier_label = "** USE MANUAL CONFIGURATION **";
-        if ($system_settings['default_carrier_id'] > 0) {
+        if ($config['settings']['default_carrier_id'] > 0) {
             $carrier_label = "** USE SYSTEM DEFAULT **";
         }
         echo format_select_options($krh, 'id', 'name', $carrier_id, $carrier_label,'');
@@ -1676,6 +1676,7 @@ if ($ADD==31) {
             $stmt=sprintf("SELECT * FROM osdial_campaign_statuses WHERE campaign_id='%s';",mres($campaign_id));
             $rslt=mysql_query($stmt, $link);
             $statuses_to_print = mysql_num_rows($rslt);
+            $AScategory='';
             $o=0;
             while ($statuses_to_print > $o) {
                 $rowx=mysql_fetch_row($rslt);
@@ -2004,6 +2005,8 @@ if ($ADD==34)
         $stmt="SELECT * FROM osdial_statuses ORDER BY status;";
         $rslt=mysql_query($stmt, $link);
         $statuses_to_print = mysql_num_rows($rslt);
+        $LRstatuses_list='';
+        $HKstatuses_list='';
         $statuses_list='';
         $dial_statuses_list='';
         $o=0;
@@ -2221,7 +2224,7 @@ if ($ADD==34)
         echo "</select> $NWB#osdial_campaigns-adaptive_intensity$NWE</td></tr>\n";
 
         echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=3111111&script_id=$script_id\">Script</a>: </td><td align=left>";
-        if ($LOG['mutlicomp_user'] > 0) {
+        if ($LOG['multicomp_user'] > 0) {
             echo OSDsubstr($script_id,3,OSDstrlen($script_id));
         } else {
             echo $script_id;

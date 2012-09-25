@@ -64,6 +64,8 @@ function report_lead_performance_list() {
 
     $i=0;
     $group_string='|';
+    $group_SQL='';
+    $groupQS='';
     $group_ct = count($group);
     while($i < $group_ct) {
         $group_string .= "$group[$i]|";
@@ -100,6 +102,8 @@ function report_lead_performance_list() {
     $rslt=mysql_query($stmt, $link);
     if ($DB) $html .= "$stmt\n";
     $sc_to_print = mysql_num_rows($rslt);
+    $CSCcontacts = Array();
+    $CSCsales = Array();
     $c=0;
     $s=0;
     $i=0;
@@ -131,6 +135,8 @@ function report_lead_performance_list() {
         $j++;
     }
 
+    $SCcontacts='';
+    $SCsales='';
     $csc_ct = count($CSCcontacts);
     $i=0;
     while($i < $csc_ct) {
@@ -316,6 +322,10 @@ function report_lead_performance_list() {
 
         ksort($dates);
 
+        $TOTcost    = 0;
+        $TOTcalls   = 0;
+        $TOTcontacts= 0;
+        $TOTsales   = 0;
         $TOTnewcost    = 0;
         $TOTnewleads   = 0;
         $TOTnewcontacts= 0;
@@ -323,14 +333,14 @@ function report_lead_performance_list() {
         $i = 0;
         foreach ($dates as $period => $data) {
             
-            $newleads    = $data['newleads'] * 1;
-            $newcontacts = $data['newcontacts'] * 1;
-            $newsales    = $data['newsales'] * 1;
-            $newcost     = $data['newcost'] * 1;
-            $calls       = $data['calls'] * 1;
-            $contacts    = $data['contacts'] * 1;
-            $sales       = $data['sales'] * 1;
-            $cost        = $data['cost'] * 1;
+            if (isset($data['newleads']))    $newleads    = $data['newleads'] * 1;
+            if (isset($data['newcontacts'])) $newcontacts = $data['newcontacts'] * 1;
+            if (isset($data['newsales']))    $newsales    = $data['newsales'] * 1;
+            if (isset($data['newcost']))     $newcost     = $data['newcost'] * 1;
+            if (isset($data['calls']))       $calls       = $data['calls'] * 1;
+            if (isset($data['contacts']))    $contacts    = $data['contacts'] * 1;
+            if (isset($data['sales']))       $sales       = $data['sales'] * 1;
+            if (isset($data['cost']))        $cost        = $data['cost'] * 1;
 
             $cnt_closing_pct = "0%";
             if ($contacts > 0) $cnt_closing_pct = sprintf('%3.2f',(($sales / $contacts) * 100)) . "%";

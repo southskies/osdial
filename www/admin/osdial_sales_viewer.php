@@ -25,31 +25,39 @@ header("Pragma: no-cache");
 #
 
 
-if (isset($_GET["dcampaign"]))					{$dcampaign=$_GET["dcampaign"];}
-	elseif (isset($_POST["dcampaign"]))			{$dcampaign=$_POST["dcampaign"];}
-if (isset($_GET["submit_report"]))				{$submit_report=$_GET["submit_report"];}
-	elseif (isset($_POST["submit_report"]))		{$submit_report=$_POST["submit_report"];}
-if (isset($_GET["list_ids"]))					{$list_ids=$_GET["list_ids"];}
-	elseif (isset($_POST["list_ids"]))			{$list_ids=$_POST["list_ids"];}
-if (isset($_GET["sales_number"]))				{$sales_number=$_GET["sales_number"];}
-	elseif (isset($_POST["sales_number"]))		{$sales_number=$_POST["sales_number"];}
-if (isset($_GET["sales_time_frame"]))			{$sales_time_frame=$_GET["sales_time_frame"];}
-	elseif (isset($_POST["sales_time_frame"]))	{$sales_time_frame=$_POST["sales_time_frame"];}
-if (isset($_GET["forc"]))						{$forc=$_GET["forc"];}
-	elseif (isset($_POST["forc"]))				{$forc=$_POST["forc"];}
+#if (isset($_GET["dcampaign"]))					{$dcampaign=$_GET["dcampaign"];}
+#	elseif (isset($_POST["dcampaign"]))			{$dcampaign=$_POST["dcampaign"];}
+#if (isset($_GET["submit_report"]))				{$submit_report=$_GET["submit_report"];}
+#	elseif (isset($_POST["submit_report"]))		{$submit_report=$_POST["submit_report"];}
+#if (isset($_GET["list_ids"]))					{$list_ids=$_GET["list_ids"];}
+#	elseif (isset($_POST["list_ids"]))			{$list_ids=$_POST["list_ids"];}
+#if (isset($_GET["sales_number"]))				{$sales_number=$_GET["sales_number"];}
+#	elseif (isset($_POST["sales_number"]))		{$sales_number=$_POST["sales_number"];}
+#if (isset($_GET["sales_time_frame"]))			{$sales_time_frame=$_GET["sales_time_frame"];}
+#	elseif (isset($_POST["sales_time_frame"]))	{$sales_time_frame=$_POST["sales_time_frame"];}
+#if (isset($_GET["forc"]))						{$forc=$_GET["forc"];}
+#	elseif (isset($_POST["forc"]))				{$forc=$_POST["forc"];}
 
-include("include/dbconnect.php");
-include($WeBServeRRooT . "/admin/include/functions.php");
-include($WeBServeRRooT . "/admin/include/variables.php");
-include($WeBServeRRooT . "/admin/include/auth.php");
-include($WeBServeRRooT . "/admin/templates/default/display.php");
-include($WeBServeRRooT . "/admin/templates/" . $system_settings['admin_template'] . "/display.php");
+require_once("include/dbconnect.php");
+require_once($WeBServeRRooT . "/admin/include/functions.php");
+require_once($WeBServeRRooT . "/admin/include/variables.php");
+require_once($WeBServeRRooT . "/admin/include/auth.php");
+require_once($WeBServeRRooT . "/admin/templates/default/display.php");
+require_once($WeBServeRRooT . "/admin/templates/" . $config['settings']['admin_template'] . "/display.php");
+
+$dcampaign = get_variable("dcampaign");
+$submit_report = get_variable("submit_report");
+$list_ids = get_variable("list_ids");
+$sales_number = get_variable("sales_number");
+$sales_time_frame = get_variable("sales_time_frame");
+$forc = get_variable("forc");
+
 
 echo "<html>\n";
 echo "<head>\n";
 echo "  <title>OSDIAL recent sales lookup</title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/default/styles.css\" media=\"screen\">\n";
-echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $system_settings['admin_template'] . "/styles.css\" media=\"screen\">\n";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $config['settings']['admin_template'] . "/styles.css\" media=\"screen\">\n";
 echo "<script language=\"JavaScript1.2\">\n";
 echo "  function GatherListIDs() {\n";
 echo "    var ListIDstr=\"\";\n";
@@ -89,23 +97,23 @@ echo "              <tr>\n";
 echo "                <td align=right width=200 nowrap><font class=font2>Campaign:</td>\n";
 echo "                <td align=left>\n";
 echo "                  <select name=\"dcampaign\" onChange=\"this.form.submit();\">\n";
-if ($dcampaign) {
-    $stmt="SELECT campaign_id, campaign_name FROM osdial_campaigns WHERE campaign_id='$dcampaign';";
+if (isset($dcampaign)) {
+    $stmt="SELECT campaign_id, campaign_name FROM osdial_campaigns WHERE campaign_id='$dcampaign' ORDER BY campaign_id;";
     $rslt=mysql_query($stmt, $link);
     while ($row=mysql_fetch_array($rslt)) {
-        echo "                  <option value='$row[campaign_id]' selected>" . mclabel($row[campaign_id]) . " - $row[campaign_name]</option>\n";
+        echo "                  <option value='$row[campaign_id]' selected>" . mclabel($row['campaign_id']) . " - $row[campaign_name]</option>\n";
     }
 } 
 echo "                  <option value=''>----------- Select -----------</option>\n";
-$stmt=sprintf("SELECT distinct vc.campaign_id, vc.campaign_name FROM osdial_campaigns vc, osdial_lists vl WHERE vc.campaign_id=vl.campaign_id AND vc.campaign_id IN %s ORDER BY vc.campaign_name ASC;",$LOG['allowed_campaignsSQL']);
+$stmt=sprintf("SELECT distinct vc.campaign_id, vc.campaign_name FROM osdial_campaigns vc, osdial_lists vl WHERE vc.campaign_id=vl.campaign_id AND vc.campaign_id IN %s ORDER BY vc.campaign_id;",$LOG['allowed_campaignsSQL']);
 $rslt=mysql_query($stmt, $link);
 while ($row=mysql_fetch_array($rslt)) {
-    echo "                  <option value='$row[campaign_id]'>" . mclabel($row[campaign_id]) . " - $row[campaign_name]</option>\n";
+    echo "                  <option value='$row[campaign_id]'>" . mclabel($row['campaign_id']) . " - $row[campaign_name]</option>\n";
 }
 echo "                  </select>\n";
 echo "                </td>\n";
 echo "              </tr>\n";
-if ($dcampaign) {
+if (isset($dcampaign)) {
     echo "              <tr bgcolor='$oddrows'>\n";
     echo "                <td align=right width=200 nowrap><font class=font2>List ID(s) #:<br><span class=font1>(optional)</span></td>\n";
     echo "                <td align=left>\n";
@@ -158,7 +166,7 @@ echo "        <!-- <tr><th colspan=3><input type=checkbox name=weekly_report val
 echo "        <tr><td colspan=3 align=center><font class=font1>** - sorted by call date</font></td></tr>\n";
 echo "      </table>\n";
 echo "      </form>\n";
-if ($submit_report && $list_ids) {
+if (isset($submit_report) && isset($list_ids)) {
 
 	$now=date("YmdHis");
 	$list_id_clause="and v.list_id in (";
@@ -169,14 +177,14 @@ if ($submit_report && $list_ids) {
 	$list_id_clause=substr($list_id_clause, 0, -2);
 	$list_id_clause.=")";
 
-	if ($sales_number && $sales_number>0) {
+	if (isset($sales_number) && $sales_number>0) {
 		$sales_number=preg_replace("/[^0-9]/", "", $sales_number);
 		$limit_clause="limit $sales_number";
 	} else {
 		$sales_number=0;
 		$limit_clause="";
 	}
-	if ($sales_time_frame && $sales_time_frame>0) {
+	if (isset($sales_time_frame) && $sales_time_frame>0) {
 		$hours=$sales_time_frame/60;
 		$timestamp=date("YmdHis", mktime(date("H"),(date("i")-$sales_time_frame),date("s"),date("m"),date("d"),date("Y")));
 	} else {
@@ -198,7 +206,7 @@ if ($submit_report && $list_ids) {
     if ($i == 0) $statSQL = "'SALE'";
 
 	$dfile=fopen("discover_stmts.txt", "w");
-	if ($forc=="C") {
+	if (isset($forc) && $forc=="C") {
 		$stmt="select v.first_name, v.last_name, v.phone_number, vl.call_date, v.lead_id, u.full_name, '', v.status from osdial_users u, osdial_list v, osdial_log vl where vl.call_date>='$timestamp' and vl.lead_id=v.lead_id and v.status IN ($statSQL) $list_id_clause and vl.user=u.user order by call_date desc $limit_clause";
 	} else {
 		$stmt="select v.first_name, v.last_name, v.phone_number, vl.call_date, v.lead_id, vl.user, vl.closer, v.status from osdial_list v, osdial_xfer_log vl where vl.call_date>='$timestamp' and vl.lead_id=v.lead_id and v.status IN ($statSQL) $list_id_clause order by call_date desc $limit_clause";
@@ -223,7 +231,7 @@ if ($submit_report && $list_ids) {
 		$rec_rslt=mysql_query($rec_stmt, $link);
 		$rec_row=mysql_fetch_row($rec_rslt);
 
-		if ($forc=="F") {
+		if (isset($forc) && $forc=="F") {
 			$rep_stmt="select full_name from osdial_users where user='$row[5]'";
 			$rep_rslt=mysql_query($rep_stmt, $link);
 			$fr_row=mysql_fetch_array($rep_rslt);
@@ -263,7 +271,7 @@ if ($submit_report && $list_ids) {
 	    passthru("$WeBServeRRooT/admin/spreadsheet_sales_viewer.pl $list_ids $sales_number $timestamp $forc $now $dcampaign");
 	    flush();
 	    echo "<table align=center border=0 cellpadding=3 cellspacing=5 width=700><tr bgcolor='$oddrows'>";
-	    if ($forc=="F") {
+	    if (isset($forc) && $forc=="F") {
 		    echo "<th width='50%'><font size='2'><a href='osdial_fronter_report_$now.xls'>View complete Excel fronter report for this shift</a></font></th>";
 	    }
 	    echo "<th width='50%'><font size='2'<a href='osdial_closer_report_$now.xls'>View complete Excel sales report for this shift</a></font></th>";

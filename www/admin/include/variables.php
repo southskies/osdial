@@ -92,8 +92,10 @@ $past_month_date = date("Y-m-d H:i:s",$month_old);
 $week_old = mktime(0, 0, 0, date("m"), date("d")-7,  date("Y"));
 $past_week_date = date("Y-m-d H:i:s",$week_old);
 
-$PHP_AUTH_USER=$_SERVER['PHP_AUTH_USER'];
-$PHP_AUTH_PW=$_SERVER['PHP_AUTH_PW'];
+$PHP_AUTH_USER='';
+$PHP_AUTH_PW='';
+if (isset($_SERVER['PHP_AUTH_USER'])) $PHP_AUTH_USER=$_SERVER['PHP_AUTH_USER'];
+if (isset($_SERVER['PHP_AUTH_PW'])) $PHP_AUTH_PW=$_SERVER['PHP_AUTH_PW'];
 $PHP_SELF=$_SERVER['PHP_SELF'];
 
 $t1="OSDial"; if (preg_match("/^Sli/",$config['settings']['admin_template'])) $t1=$config['settings']['admin_template'];
@@ -794,6 +796,7 @@ $use_browser_timezone_offset = get_variable("use_browser_timezone_offset");
 $use_internal_dnc = get_variable("use_internal_dnc");
 $use_non_latin = get_variable("use_non_latin");
 $user = get_variable("user");
+$usergroup = get_variable("usergroup");
 $user_group = get_variable("user_group");
 $user_level = get_variable("user_level");
 $user_start = get_variable("user_start");
