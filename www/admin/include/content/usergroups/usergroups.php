@@ -345,7 +345,7 @@ if ($ADD==311111) {
             echo "    <tr bgcolor=$oddrows class=\"row font1\">\n";
             echo "      <td align=center class=tabinput><input type=checkbox name=campaigns_values[] id=campaigns_values" . $campaign['campaign_id'] . " value=\"" . $campaign['campaign_id'] . "\" $sel onclick=\"document.getElementById('campaigns_values').checked=false;\"></td>\n";
             $ccstyle=''; if ($campaign['active']=='N') $ccstyle=' style="color:#800000;"';
-            echo "      <td align=left $ccstyle><label for=campaigns_values" . $campaign['campaign_id'] . ">" . $campaign['campaign_id'] . ' - ' . $campaign['campaign_name'] . "</label></td>\n";
+            echo "      <td align=left $ccstyle><label for=campaigns_values" . $campaign['campaign_id'] . ">" . mclabel($campaign['campaign_id']) . ' - ' . $campaign['campaign_name'] . "</label></td>\n";
             echo "    </tr>\n";
         }
         echo "    <tr class=tabfooter><td align=center colspan=2 class=tabbutton nowrap><input type=submit name=SUBMIT value=SUBMIT>$NWB#osdial_user_groups-allowed_campaigns$NWE</td></tr>\n";
@@ -379,7 +379,7 @@ if ($ADD==311111) {
                 echo "    <tr bgcolor=$oddrows class=\"row font1\">\n";
                 echo "      <td align=center class=tabinput><input type=checkbox name=ingroups_values[] id=ingroups_values" . $ingroup['group_id'] . " value=\"" . $ingroup['group_id'] . "\" $sel onclick=\"document.getElementById('ingroups_values').checked=false;\"></td>\n";
                 $igstyle=''; if ($ingroup['active']=='N') $igstyle=' style="color:#800000;"';
-                echo "      <td align=left $igstyle><label for=ingroups_values" . $ingroup['group_id'] . ">" . $ingroup['group_id'] . ' - ' . $ingroup['group_name'] . "</label></td>\n";
+                echo "      <td align=left $igstyle><label for=ingroups_values" . $ingroup['group_id'] . ">" . mclabel($ingroup['group_id']) . ' - ' . $ingroup['group_name'] . "</label></td>\n";
                 echo "    </tr>\n";
             }
         }
@@ -411,7 +411,7 @@ if ($ADD==311111) {
             echo "    <tr bgcolor=$oddrows class=\"row font1\">\n";
             echo "      <td align=center class=tabinput><input type=checkbox name=scripts_values[] id=scripts_values" . $script['script_id'] . " value=\"" . $script['script_id'] . "\" $sel onclick=\"document.getElementById('scripts_values').checked=false;\"></td>\n";
             $scstyle=''; if ($script['active']=='N') $scstyle=' style="color:#800000;"';
-            echo "      <td align=left $scstyle><label for=scripts_values" . $script['script_id'] . ">" . $script['script_id'] . ' - ' . $script['script_name'] . "</label></td>\n";
+            echo "      <td align=left $scstyle><label for=scripts_values" . $script['script_id'] . ">" . mclabel($script['script_id']) . ' - ' . $script['script_name'] . "</label></td>\n";
             echo "    </tr>\n";
         }
         echo "    <tr class=tabfooter><td align=center colspan=2 class=tabbutton nowrap><input type=submit name=SUBMIT value=SUBMIT>$NWB#osdial_user_groups-allowed_scripts$NWE</td></tr>\n";
@@ -442,7 +442,7 @@ if ($ADD==311111) {
                 echo "    <tr bgcolor=$oddrows class=\"row font1\">\n";
                 echo "      <td align=center class=tabinput><input type=checkbox name=emails_values[] id=emails_values" . $email['et_id'] . " value=\"" . $email['et_id'] . "\" $sel onclick=\"document.getElementById('emails_values').checked=false;\"></td>\n";
                 $etstyle=''; if ($email['active']=='N') $etstyle=' style="color:#800000;"';
-                echo "      <td align=left $etstyle><label for=emails_values" . $email['et_id'] . ">" . $email['et_id'] . ' - ' . $email['et_name'] . "</label></td>\n";
+                echo "      <td align=left $etstyle><label for=emails_values" . $email['et_id'] . ">" . mclabel($email['et_id']) . ' - ' . $email['et_name'] . "</label></td>\n";
                 echo "    </tr>\n";
             }
             echo "    <tr class=tabfooter><td align=center colspan=2 class=tabbutton nowrap><input type=submit name=SUBMIT value=SUBMIT>$NWB#osdial_user_groups-allowed_email_templates$NWE</td></tr>\n";

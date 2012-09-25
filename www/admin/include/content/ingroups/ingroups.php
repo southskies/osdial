@@ -545,7 +545,13 @@ if ($ADD==3111)
     echo "    <td align=center>CALLS TODAY</td>\n";
     echo "  </tr>\n";
 
-		$stmt=sprintf("SELECT osdial_users.user,full_name,group_rank,calls_today FROM osdial_inbound_group_agents JOIN osdial_users ON (osdial_inbound_group_agents.user=osdial_users.user) WHERE group_id='%s' AND closer_campaigns LIKE '%% %s %%' ORDER BY osdial_users.user;",mres($group_id),mres($group_id));
+        if ($LOG['multicomp_admin'] > 0) {
+		    $stmt=sprintf("SELECT osdial_users.user,full_name,group_rank,calls_today FROM osdial_inbound_group_agents JOIN osdial_users ON (osdial_inbound_group_agents.user=osdial_users.user) WHERE group_id='%s' AND closer_campaigns LIKE '%% %s %%' AND SUBSTRING(osdial_users.user,1,3)=SUBSTRING(group_id,1,3) ORDER BY osdial_users.user;",mres($group_id),mres($group_id));
+        } elseif ($LOG['multicomp'] > 0) {
+		    $stmt=sprintf("SELECT osdial_users.user,full_name,group_rank,calls_today FROM osdial_inbound_group_agents JOIN osdial_users ON (osdial_inbound_group_agents.user=osdial_users.user) WHERE group_id='%s' AND closer_campaigns LIKE '%% %s %%' AND osdial_users.user LIKE '%s__%%' ORDER BY osdial_users.user;",mres($group_id),mres($group_id),mres($LOG['company_prefix']));
+        } else {
+		    $stmt=sprintf("SELECT osdial_users.user,full_name,group_rank,calls_today FROM osdial_inbound_group_agents JOIN osdial_users ON (osdial_inbound_group_agents.user=osdial_users.user) WHERE group_id='%s' AND closer_campaigns LIKE '%% %s %%' ORDER BY osdial_users.user;",mres($group_id),mres($group_id));
+        }
 		$rsltx=mysql_query($stmt, $link);
 		$users_to_print = mysql_num_rows($rsltx);
 

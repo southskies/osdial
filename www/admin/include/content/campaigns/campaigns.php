@@ -2320,7 +2320,13 @@ if ($ADD==34)
         echo "    <td align=center>CALLS</td>\n";
         echo "  </tr>\n";
 
-            $stmt=sprintf("SELECT osdial_users.user,full_name,campaign_rank,calls_today FROM osdial_campaign_agents JOIN osdial_users ON (osdial_campaign_agents.user=osdial_users.user) WHERE campaign_id='$campaign_id' ORDER BY osdial_users.user;",mres($campaign_id));
+        if ($LOG['multicomp_admin'] > 0) {
+            $stmt=sprintf("SELECT osdial_users.user,full_name,campaign_rank,calls_today FROM osdial_campaign_agents JOIN osdial_users ON (osdial_campaign_agents.user=osdial_users.user) WHERE campaign_id='%s' AND SUBSTRING(osdial_users.user,1,3)=SUBSTRING(campaign_id,1,3) ORDER BY osdial_users.user;",mres($campaign_id));
+        } elseif ($LOG['multicomp'] > 0) {
+            $stmt=sprintf("SELECT osdial_users.user,full_name,campaign_rank,calls_today FROM osdial_campaign_agents JOIN osdial_users ON (osdial_campaign_agents.user=osdial_users.user) WHERE campaign_id='%s' AND osdial_users.user LIKE '%s__%%' ORDER BY osdial_users.user;",mres($campaign_id),mres($LOG['company_prefix']));
+        } else {
+            $stmt=sprintf("SELECT osdial_users.user,full_name,campaign_rank,calls_today FROM osdial_campaign_agents JOIN osdial_users ON (osdial_campaign_agents.user=osdial_users.user) WHERE campaign_id='%s' ORDER BY osdial_users.user;",mres($campaign_id));
+        }
             $rsltx=mysql_query($stmt, $link);
             $users_to_print = mysql_num_rows($rsltx);
 

@@ -60,16 +60,29 @@ if ( ( (OSDstrlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($
                 $campaign_rank=$_POST["RANK_$campaign_id_values[$o]"];
             }
 
-            if ($ranks_to_print > 0) {
-                $stmt=sprintf("UPDATE osdial_campaign_agents SET campaign_rank='%s',campaign_weight='%s' WHERE campaign_id='%s' AND user='%s';",mres($campaign_rank),mres($campaign_rank),mres($campaign_id_values[$o]),mres($user));
+            if ($LOG['multicomp_admin'] > 0) {
+                # Do nothing.
+            } elseif ($LOG['multicomp'] > 0) {
+                if ($ranks_to_print > 0) {
+                    $stmt=sprintf("UPDATE osdial_campaign_agents SET campaign_rank='%s',campaign_weight='%s' WHERE campaign_id='%s' AND user='%s' AND user LIKE '%s__%%';",mres($campaign_rank),mres($campaign_rank),mres($campaign_id_values[$o]),mres($user),mres($LOG['company_prefix']));
+                    $rslt=mysql_query($stmt, $link);
+                } else {
+                    $stmt=sprintf("INSERT INTO osdial_campaign_agents SET campaign_rank='%s',campaign_weight='%s',campaign_id='%s',user='%s' AND user LIKE '%s__%%';",mres($campaign_rank),mres($campaign_rank),mres($campaign_id_values[$o]),mres($user),mres($LOG['company_prefix']));
+                    $rslt=mysql_query($stmt, $link);
+                }
+                $stmt=sprintf("UPDATE osdial_live_agents SET campaign_weight='%s' WHERE campaign_id='%s' AND user='%s' AND user LIKE '%s__%%';",mres($campaign_rank),mres($campaign_id_values[$o]),mres($user),mres($LOG['company_prefix']));
                 $rslt=mysql_query($stmt, $link);
             } else {
-                $stmt=sprintf("INSERT INTO osdial_campaign_agents SET campaign_rank='%s',campaign_weight='%s',campaign_id='%s',user='%s';",mres($campaign_rank),mres($campaign_rank),mres($campaign_id_values[$o]),mres($user));
+                if ($ranks_to_print > 0) {
+                    $stmt=sprintf("UPDATE osdial_campaign_agents SET campaign_rank='%s',campaign_weight='%s' WHERE campaign_id='%s' AND user='%s';",mres($campaign_rank),mres($campaign_rank),mres($campaign_id_values[$o]),mres($user));
+                    $rslt=mysql_query($stmt, $link);
+                } else {
+                    $stmt=sprintf("INSERT INTO osdial_campaign_agents SET campaign_rank='%s',campaign_weight='%s',campaign_id='%s',user='%s';",mres($campaign_rank),mres($campaign_rank),mres($campaign_id_values[$o]),mres($user));
+                    $rslt=mysql_query($stmt, $link);
+                }
+                $stmt=sprintf("UPDATE osdial_live_agents SET campaign_weight='%s' WHERE campaign_id='%s' AND user='%s';",mres($campaign_rank),mres($campaign_id_values[$o]),mres($user));
                 $rslt=mysql_query($stmt, $link);
             }
-
-            $stmt=sprintf("UPDATE osdial_live_agents SET campaign_weight='%s' WHERE campaign_id='%s' AND user='%s';",mres($campaign_rank),mres($campaign_id_values[$o]),mres($user));
-            $rslt=mysql_query($stmt, $link);
         } else {
             $campaign_rank = $SELECT_campaign_rank;
         }
@@ -213,16 +226,29 @@ if ( ( (OSDstrlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($
                 $group_rank=$_POST["RANK_$group_id_values[$o]"];
             }
 
-            if ($ranks_to_print > 0) {
-                $stmt=sprintf("UPDATE osdial_inbound_group_agents SET group_rank='%s',group_weight='%s' WHERE group_id='%s' AND user='%s';",mres($group_rank),mres($group_rank),mres($group_id_values[$o]),mres($user));
+            if ($LOG['multicomp_admin'] > 0) {
+                # Do nothing.
+            } elseif ($LOG['multicomp'] > 0) {
+                if ($ranks_to_print > 0) {
+                    $stmt=sprintf("UPDATE osdial_inbound_group_agents SET group_rank='%s',group_weight='%s' WHERE group_id='%s' AND user='%s' AND user LIKE '%s__%%';",mres($group_rank),mres($group_rank),mres($group_id_values[$o]),mres($user),mres($LOG['company_prefix']));
+                    $rslt=mysql_query($stmt, $link);
+                } else {
+                    $stmt=sprintf("INSERT INTO osdial_inbound_group_agents SET group_rank='%s',group_weight='%s',group_id='%s',user='%s' AND user LIKE '%s__%%';",mres($group_rank),mres($group_rank),mres($group_id_values[$o]),mres($user),mres($LOG['company_prefix']));
+                    $rslt=mysql_query($stmt, $link);
+                }
+                $stmt=sprintf("UPDATE osdial_live_inbound_agents SET group_weight='%s' WHERE group_id='%s' AND user='%s' AND user LIKE '%s__%%';",mres($group_rank),mres($group_id_values[$o]),mres($user),mres($LOG['company_prefix']));
                 $rslt=mysql_query($stmt, $link);
             } else {
-                $stmt=sprintf("INSERT INTO osdial_inbound_group_agents SET group_rank='%s',group_weight='%s',group_id='%s',user='$user';",mres($group_rank),mres($group_rank),mres($group_id_values[$o]),mres($user));
+                if ($ranks_to_print > 0) {
+                    $stmt=sprintf("UPDATE osdial_inbound_group_agents SET group_rank='%s',group_weight='%s' WHERE group_id='%s' AND user='%s';",mres($group_rank),mres($group_rank),mres($group_id_values[$o]),mres($user));
+                    $rslt=mysql_query($stmt, $link);
+                } else {
+                    $stmt=sprintf("INSERT INTO osdial_inbound_group_agents SET group_rank='%s',group_weight='%s',group_id='%s',user='%s';",mres($group_rank),mres($group_rank),mres($group_id_values[$o]),mres($user));
+                    $rslt=mysql_query($stmt, $link);
+                }
+                $stmt=sprintf("UPDATE osdial_live_inbound_agents SET group_weight='%s' WHERE group_id='%s' AND user='%s';",mres($group_rank),mres($group_id_values[$o]),mres($user));
                 $rslt=mysql_query($stmt, $link);
             }
-
-            $stmt=sprintf("UPDATE osdial_live_inbound_agents SET group_weight='%s' WHERE group_id='%s' AND user='%s';",mres($group_rank),mres($group_id_values[$o]),mres($user));
-            $rslt=mysql_query($stmt, $link);
         } else {
             $group_rank = $SELECT_group_rank;
         }

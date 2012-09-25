@@ -207,7 +207,7 @@ function osdial_authenticate($user, $password) {
                 if (OSDpreg_match('/\-ALL\-SCRIPTS\-/',$LOGas)) {
                     $LOG['allowed_scriptsALL'] = 1;
                     # Pack all the valid Scripts
-                    $oss = get_krh($link, 'osdial_scripts', 'script_id','','','');
+                    $oss = get_krh($link, 'osdial_scripts', 'script_id','',sprintf("script_id LIKE '%s__%%'",$LOG['company_prefix']),'');
                     if (is_array($oss)) {
                         foreach ($oss as $os) {
                             $LOGasA[] = $os['script_id'];
@@ -227,7 +227,7 @@ function osdial_authenticate($user, $password) {
                 if (OSDpreg_match('/\-ALL\-EMAIL\-TEMPLATES\-/',$LOGae)) {
                     $LOG['allowed_email_templatesALL'] = 1;
                     # Pack all the valid Scripts
-                    $oets = get_krh($link, 'osdial_email_templates', 'et_id','','','');
+                    $oets = get_krh($link, 'osdial_email_templates', 'et_id','',sprintf("et_id LIKE '%s__%%'",$LOG['company_prefix']),'');
                     if (is_array($oets)) {
                         foreach ($oets as $oet) {
                             $LOGaeA[] = $oet['et_id'];
