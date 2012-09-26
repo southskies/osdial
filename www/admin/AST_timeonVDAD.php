@@ -143,15 +143,15 @@ echo "OSDIAL: Agents Time On Calls           $NOW_TIME    <a href=\"$PHP_SELF?se
 
 if ($closer_display>0)
 {
-echo "+------------+------------+--------+-----------+---------------------+--------+----------+---------+--------------+--------+\n";
-echo "| STATION    | PHONE      | USER   | SESSIONID | CHANNEL             | STATUS | CALLTIME | MINUTES | CAMPAIGN     | FRONT  |\n";
-echo "+------------+------------+--------+-----------+---------------------+--------+----------+---------+--------------+--------+\n";
+echo "+------------+------------+----------------------+-----------+---------------------+--------+----------+---------+------------------------+-------------+\n";
+echo "| STATION    | PHONE      | USER                 | SESSIONID | CHANNEL             | STATUS | CALLTIME | MINUTES | CAMPAIGN               | FRONT       |\n";
+echo "+------------+------------+----------------------+-----------+---------------------+--------+----------+---------+------------------------+-------------+\n";
 }
 else
 {
-echo "+------------+------------+--------+-----------+---------------------+--------+----------+---------+\n";
-echo "| STATION    | PHONE      | USER   | SESSIONID | CHANNEL             | STATUS | CALLTIME | MINUTES |\n";
-echo "+------------+------------+--------+-----------+---------------------+--------+----------+---------+\n";
+echo "+------------+------------+----------------------+-----------+---------------------+--------+----------+---------+\n";
+echo "| STATION    | PHONE      | USER                 | SESSIONID | CHANNEL             | STATUS | CALLTIME | MINUTES |\n";
+echo "+------------+------------+----------------------+-----------+---------------------+--------+----------+---------+\n";
 }
 
 $stmt="select extension,user,conf_exten,channel,status,last_call_time,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),uniqueid,lead_id from osdial_live_agents where status NOT IN('PAUSED') and server_ip='" . mysql_real_escape_string($server_ip) . "' order by extension;";
@@ -232,7 +232,7 @@ $talking_to_print = mysql_num_rows($rslt);
 		$extension[$i] = preg_replace('/Local\//',"",$Sextension[$i]);
 		$extension[$i] =		sprintf("%-10s", $extension[$i]);
 			while(strlen($extension[$i])>10) {$extension[$i] = substr("$extension[$i]", 0, -1);}
-		$user[$i] =				sprintf("%-6s", $Suser[$i]);
+		$user[$i] =				sprintf("%-20s", $Suser[$i]);
 		$sessionid[$i] =		sprintf("%-9s", $Ssessionid[$i]);
 		$channel[$i] =			sprintf("%-19s", $Schannel[$i]);
 			$cc[$i]=0;
@@ -299,13 +299,13 @@ $talking_to_print = mysql_num_rows($rslt);
 			if ($camp_to_print > 0)
 				{
 				$row=mysql_fetch_row($rslt);
-				$campaign = sprintf("%-12s", $row[0]);
+				$campaign = sprintf("%-22s", $row[0]);
 				$camp_color = $row[0];
 				}
 			else
-				{$campaign = 'DEAD        ';   	$camp_color = 'DEAD';}
+				{$campaign = 'DEAD                  ';   	$camp_color = 'DEAD';}
 			if (preg_match("/READY|PAUSED|CLOSER/",$status[$i]))
-				{$campaign = '            ';   	$camp_color = '';}
+				{$campaign = '                      ';   	$camp_color = '';}
 
 			$stmt="select user from osdial_xfer_log where lead_id='$lead_id[$i]' and closer='$closer[$i]' order by call_date desc limit 1;";
 			$rslt=mysql_query($stmt, $link);
@@ -314,10 +314,10 @@ $talking_to_print = mysql_num_rows($rslt);
 			if ($xfer_to_print > 0)
 				{
 				$row=mysql_fetch_row($rslt);
-				$fronter = sprintf("%-6s", $row[0]);
+				$fronter = sprintf("%-9s", $row[0]);
 				}
 			else
-				{$fronter = '      ';}
+				{$fronter = '           ';}
 
 			$G = '';		$EG = '';
 			$G="<SPAN class=\"$camp_color\"><B>"; $EG='</B></SPAN>';
@@ -328,7 +328,7 @@ $talking_to_print = mysql_num_rows($rslt);
 
 			$i++;
 			}
-		echo "+------------+------------+--------+-----------+---------------------+--------+----------+---------+--------------+--------+\n";
+		echo "+------------+------------+----------------------+-----------+---------------------+--------+----------+---------+------------------------+-------------+\n";
 		echo "  $i agents logged in on server $server_ip\n\n";
 	#	echo "  <SPAN class=\"blue\"><B>          </SPAN> - 5 minutes or more on call</B>\n";
 	#	echo "  <SPAN class=\"purple\"><B>          </SPAN> - Over 10 minutes on call</B>\n";
@@ -358,12 +358,12 @@ $talking_to_print = mysql_num_rows($rslt);
 ###### OUTBOUND CALLS
 ###################################################################################
 #echo "\n\n";
-echo "----------------------------------------------------------------------------------------";
+echo "--------------------------------------------------------------------------------------------------";
 echo "\n\n";
 echo "OSDIAL: Time On VDAD            TRUNK SHORT: $balanceSHORT              $NOW_TIME\n\n";
-echo "+---------------------+--------+--------------+--------------------+----------+---------+\n";
-echo "| CHANNEL             | STATUS | CAMPAIGN     | PHONE NUMBER       | CALLTIME | MINUTES |\n";
-echo "+---------------------+--------+--------------+--------------------+----------+---------+\n";
+echo "+---------------------+--------+------------------------+--------------------+----------+---------+\n";
+echo "| CHANNEL             | STATUS | CAMPAIGN               | PHONE NUMBER       | CALLTIME | MINUTES |\n";
+echo "+---------------------+--------+------------------------+--------------------+----------+---------+\n";
 
 $stmt="select channel,status,campaign_id,phone_code,phone_number,call_time,UNIX_TIMESTAMP(call_time) from osdial_auto_calls where status NOT IN('XFER') and server_ip='" . mysql_real_escape_string($server_ip) . "' order by auto_call_id desc;";
 $rslt=mysql_query($stmt, $link);
@@ -393,7 +393,7 @@ $parked_to_print = mysql_num_rows($rslt);
 			if (strlen($start_time) <= 8) {$cd=101;}
 			}
 		$status =			sprintf("%-6s", $row[1]);
-		$campaign =			sprintf("%-12s", $row[2]);
+		$campaign =			sprintf("%-22s", $row[2]);
 			$all_phone = "$row[3]$row[4]";
 		$number_dialed =	sprintf("%-18s", $all_phone);
 		$call_time_S = ($STARTtime - $row[6]);
@@ -416,7 +416,7 @@ $parked_to_print = mysql_num_rows($rslt);
 		$i++;
 		}
 
-		echo "+---------------------+--------+--------------+--------------------+----------+---------+\n";
+		echo "+---------------------+--------+------------------------+--------------------+----------+---------+\n";
 		echo "  $i calls being placed on server $server_ip\n\n";
 
 		echo "  <SPAN class=\"green\"><B>          </SPAN> - LIVE CALL WAITING</B>\n";
