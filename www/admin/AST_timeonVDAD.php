@@ -110,7 +110,7 @@ if ($closer_display>0)
 <?php
 echo "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8\">\n";
 echo"<META HTTP-EQUIV=Refresh CONTENT=\"4; URL=$PHP_SELF?server_ip=$server_ip&DB=$DB&reset_counter=$reset_counter&closer_display=$closer_display\">\n";
-echo "<TITLE>OSDIAL: Time On VDAD</TITLE></HEAD><BODY BGCOLOR=WHITE marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>\n";
+echo "<TITLE>OSDIAL: Time On VDAD</TITLE></HEAD><BODY marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>\n";
 
 $short_header=1;
 
@@ -139,7 +139,7 @@ echo "SERVER: $server_ip\n";
 if ($closer_display>0) {$closer_display_reverse=0;   $closer_reverse_link='DEFAULT';}
 else {$closer_display_reverse=1;   $closer_reverse_link='CLOSER';}
 
-echo "OSDIAL: Agents Time On Calls           $NOW_TIME    <a href=\"$PHP_SELF?server_ip=$server_ip&DB=$DB&reset_counter=$reset_counter&closer_display=$closer_display_reverse\">$closer_reverse_link</a> | <a href=\"./admin.php?ADD=999999\">REPORTS</a>\n\n";
+echo "OSDIAL: Agents Time On Calls           $NOW_TIME    <a href=\"$PHP_SELF?server_ip=$server_ip&DB=$DB&reset_counter=$reset_counter&closer_display=$closer_display_reverse\">$closer_reverse_link</a>\n\n";
 
 if ($closer_display>0)
 {

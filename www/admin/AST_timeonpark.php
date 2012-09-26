@@ -102,10 +102,10 @@ if ($reset_counter > 7)
 <?php
 echo "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8\">\n";
 echo"<META HTTP-EQUIV=Refresh CONTENT=\"7; URL=$PHP_SELF?server_ip=$server_ip&DB=$DB&reset_counter=$reset_counter\">\n";
-echo "<TITLE>OSDIAL: Time On Park</TITLE></HEAD><BODY BGCOLOR=WHITE>\n";
+echo "<TITLE>OSDIAL: Time On Park</TITLE></HEAD><BODY>\n";
 echo "<PRE><FONT SIZE=3>\n\n";
 
-echo "OSDIAL: Time On Park         $NOW_TIME    <a href=\"./admin.php?ADD=999999\">REPORTS</a>\n\n";
+echo "OSDIAL: Time On Park         $NOW_TIME    \n\n";
 echo "+------------+-----------------+---------------------+---------+\n";
 echo "| CHANNEL    | GROUP           | START TIME          | MINUTES |\n";
 echo "+------------+-----------------+---------------------+---------+\n";
