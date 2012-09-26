@@ -606,7 +606,7 @@ if ($ADD==100000000000) {
         echo "    <td>$row[4]</td>\n";
         echo "    <td align=center>$row[3]</td>\n";
         echo "    <td colspan=2 align=center>\n";
-        echo "      <a href=\"/sysinfo/$row[2]/psi/index.php\" target=\"_new\">SYSINFO</a>&nbsp;|&nbsp;\n";
+        echo "      <a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=/sysinfo/$row[2]/psi/index.php\">SYSINFO</a>&nbsp;|&nbsp;\n";
         echo "      <a href=\"$PHP_SELF?ADD=311111111111&server_id=$row[0]\">MODIFY</a>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
