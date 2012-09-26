@@ -21,6 +21,42 @@
 * #
 */
 
+// Globals
+var oac_timer = null;
+var oac_last_script = '';
+var oac_last_params = '';
+var oac_last_delay = 0;
+
+
+// ################################################################################
+// getXHR() - Returns an xmlhttprequest or MS equiv.
+var getXHR = function () {
+    var xmlhttp=false;
+    try {
+        xmlhttp = new XMLHttpRequest();
+        if (xmlhttp) getXHR = function() { return new XMLHttpRequest(); };
+    } catch(e) {
+        var msxml = ['MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP', 'Microsoft.XMLHTTP'];
+        for (var i=0, len = msxml.length; i < len; ++i) {
+            try {
+                xmlhttp = new ActiveXObject(msxml[i]);
+                if (xmlhttp) {
+                    if (i==0) {
+                        getXHR = function() { return new ActiveXObject('MSXML2.XMLHTTP.3.0'); };
+                    } else if (i==1) {
+                        getXHR = function() { return new ActiveXObject('MSXML2.XMLHTTP'); };
+                    } else if (i==2) {
+                        getXHR = function() { return new ActiveXObject('Microsoft.XMLHTTP'); };
+                    }
+                }
+                break;
+            } catch(e) {}
+        }
+    }
+    return xmlhttp;
+}
+
+
 
 // List Mix status add and remove
 function mod_mix_status(stage,vcl_id,entry) {
@@ -237,6 +273,52 @@ function ParseFileName() {
 			document.forms[0].leadfile_name.value=filename;
 		}
 	}
+}
+
+function stopOAC() {
+    if (oac_timer!=null) {
+        clearTimeout(oac_timer);
+        oac_timer=null;
+    }
+}
+
+function resumeOAC() {
+    if (oac_timer==null && oac_last_delay!=0) {
+        oac_timer = setTimeout(function() { refreshOAC(oac_last_script,oac_last_params,oac_last_delay); }, oac_last_delay);
+    }
+}
+
+function refreshOAC(script,params,delay) {
+    var xmlhttp=getXHR();
+    //console.log(script+' : '+unescape(params)+' : '+delay);
+    if (xmlhttp) {
+	async=true;
+        xmlhttp.open('POST', script, async);
+        xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
+        handleresponse = function() {
+            if (!async || xmlhttp.readyState == 4) {
+		if (xmlhttp.status == 200) {
+                	htmlcontent = xmlhttp.responseText;
+  			document.getElementById("content").innerHTML = htmlcontent;
+		}
+		if (oac_timer!=null) {
+			clearTimeout(oac_timer);
+			oac_timer=null;
+		}
+    		oac_last_script=script;
+    		oac_last_params=params;
+    		oac_last_delay=delay;
+            	oac_timer = setTimeout(function() { refreshOAC(script,params,delay); }, delay);
+            }
+	}
+        xmlhttp.send(unescape(params));
+	if (async) {
+        	xmlhttp.onreadystatechange = handleresponse;
+	} else {
+		handleresponse();
+	}
+        delete xmlhttp;
+    }
 }
 
 

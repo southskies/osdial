@@ -25,11 +25,13 @@
 require_once("include/includes.php");
 
 
-# Main Panel Header
-require_once("include/header.php");
+if (empty($OAC)) {
+    # Main Panel Header
+    require_once("include/header.php");
 
-# Main Panel Content
-echo "<div class=content>";
+    # Main Panel Content
+    echo "<div class=content id=content>";
+}
 echo "<table width=100% class=maintable bgcolor=$maintable_color cellpadding=0 cellspacing=0 align=center>\n";
 echo "  <tr>\n";
 echo "    <td align=left colspan=10>\n";
@@ -38,9 +40,11 @@ echo "      <br /><br /><br /><br /><br />\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>";
-echo "</div>";
+if (empty($OAC)) {
+    echo "</div>";
 
-# Main Panel Footers
-require_once("include/footer.php");
+    # Main Panel Footers
+    require_once("include/footer.php");
+}
 
 exit;

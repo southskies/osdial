@@ -610,6 +610,8 @@ $next_agent_call = get_variable("next_agent_call");
 $no_hopper_leads_logins = get_variable("no_hopper_leads_logins");
 $number_of_lines = get_variable("number_of_lines");
 
+$useOAC = get_variable("useOAC");
+$OAC = get_variable("OAC");
 $OK_to_process = get_variable("OK_to_process");
 $old_campaign_id = get_variable("old_campaign_id");
 $old_conf_exten = get_variable("old_conf_exten");

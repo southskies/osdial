@@ -1639,7 +1639,7 @@ if ($ADD==31) {
 
         echo "<a href=\"$PHP_SELF?ADD=999999&SUB=28&group=$campaign_id\">Click here to see what leads are in the hopper right now</a><br><br>\n";
         echo "<a href=\"$PHP_SELF?ADD=81&campaign_id=$campaign_id\">Click here to see all CallBack Holds in this campaign</a><br><br>\n";
-        if ($LOG['view_agent_realtime']) echo "<a href=\"$PHP_SELF?ADD=999999&SUB=12&group=$campaign_id\">Click here to see a Time On Dialer report for this campaign</a></font><br><br>\n";
+        if ($LOG['view_agent_realtime']) echo "<a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12&group=$campaign_id\">Click here to see a Time On Dialer report for this campaign</a></font><br><br>\n";
         echo "</b></center>\n";
         }
 
@@ -2307,7 +2307,7 @@ if ($ADD==34)
 
         echo "<a href=\"$PHP_SELF?ADD=999999&SUB=28&group=$campaign_id\">Click here to see what leads are in the hopper right now</a><br><br>\n";
         echo "<a href=\"$PHP_SELF?ADD=81&campaign_id=$campaign_id\">Click here to see all CallBack Holds in this campaign</a><br><br>\n";
-        if ($LOG['view_agent_realtime']) echo "<a href=\"$PHP_SELF?ADD=999999&SUB=12&group=$campaign_id\">Click here to see a Time On Dialer report for this campaign</a></font><br><br>\n";
+        if ($LOG['view_agent_realtime']) echo "<a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12&group=$campaign_id\">Click here to see a Time On Dialer report for this campaign</a></font><br><br>\n";
         echo "</b></center>\n";
 
         echo "<br>\n";

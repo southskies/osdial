@@ -34,8 +34,10 @@ echo "<html>\n";
 echo "<head>\n";
 echo "  <!-- SESSION_ID: " . session_id() . " -->\n";
 echo "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n";
+$oacjs='';
 if ($ADD==999999 && ($SUB==11 || $SUB==12 || $SUB==13 || $SUB==14)) {
-    if (!isset($RR)) $RR=4;
+    if (empty($RR) and !empty($useOAC)) $RR=2;
+    if (empty($RR)) $RR=4;
     if ($RR <1) $RR=4;
     $metadetail = '';
     if ($SUB==12 || $SUB==14) {
@@ -43,7 +45,13 @@ if ($ADD==999999 && ($SUB==11 || $SUB==12 || $SUB==13 || $SUB==14)) {
         $metadetail .= "&group=$group&campaign_id=$campaign_id&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname";
         $metadetail .= "&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo";
     }
-    echo "  <meta http-equiv=Refresh content=\"$RR; URL=$PHP_SELF?ADD=$ADD&SUB=$SUB&RR=$RR&DB=$DB&adastats=$adastats$metadetail\">\n";
+    if (empty($OAC)) {
+        if (!empty($useOAC)) {
+            $oacjs="setTimeout(function() { refreshOAC('$PHP_SELF','".urlencode("useOAC=$useOAC&OAC=$useOAC&ADD=$ADD&SUB=$SUB&RR=$RR&DB=$DB&adastats=$adastats$metadetail")."',".($RR*1000)."); }, ".($RR*1000).");";
+        } else {
+            echo "  <meta http-equiv=Refresh content=\"$RR; URL=$PHP_SELF?ADD=$ADD&SUB=$SUB&RR=$RR&DB=$DB&adastats=$adastats$metadetail\">\n";
+        }
+    }
 }
 echo "  <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/".$config['settings']['admin_template']."/styles.css\" media=\"screen\">\n";
 echo "  <link rel=\"stylesheet\" type=\"text/css\" href=\"styles-print.css\" media=\"print\">\n";
@@ -57,7 +65,7 @@ require('include/EditableSelect.js');
 echo "  </script>\n";
 echo "</head>\n";
 
-echo "<body bgcolor=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0 onload=\"updateClock(); setInterval('updateClock()', 1000 )\" onunload=\"stop()\">\n";
+echo "<body bgcolor=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0 onload=\"updateClock(); setInterval('updateClock()', 1000 ); $oacjs\" onunload=\"stop()\">\n";
 
 echo "<script language=\"JavaScript\">\n";
 echo "document.write(getCalendarStyles());\n";
@@ -309,7 +317,7 @@ if (OSDstrlen($campaigns_hh) > 1) {
         echo "        <td align=center bgcolor=$camp_copy_color colspan=2><span class=\"font2 $fgfont_copy\"><a href=\"$PHP_SELF?ADD=12\">Copy Campaign</a></span></td>\n";
 
         if ($LOG['view_agent_realtime_summary']) echo "        <td align=center bgcolor=$camp_real_color colspan=2>
-			<span class=\"font2 $fgfont_real\"><a href=\"$PHP_SELF?ADD=999999&SUB=13\"> Real-Time Campaigns Summary </a></span></td>\n";
+			<span class=\"font2 $fgfont_real\"><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=13\"> Real-Time Campaigns Summary </a></span></td>\n";
 
 		echo "        <td align=center bgcolor=$subcamp_color colspan=2></td>\n";
         echo "      </span>\n";
@@ -366,7 +374,7 @@ echo "        <tr class='no-ul' bgcolor=$admin_color2>\n";
                 $cauth++;
             }
             echo "          <td align=center bgcolor=$camp_real_color>";
-            if ($LOG['view_agent_realtime']) echo "<a href=\"$PHP_SELF?ADD=999999&SUB=14&group=$campaign_id&campaign_id=$campaign_id\"><span class=\"font2 fgnavy\">Real-Time</span></a>";
+            if ($LOG['view_agent_realtime']) echo "<a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=14&group=$campaign_id&campaign_id=$campaign_id\"><span class=\"font2 fgnavy\">Real-Time</span></a>";
             echo "</td>\n";
             if ($cauth) {
                 echo "          <td colspan=$cauth align=center bgcolor=$camp_real_color><span class=\"font2 fgnavy\">&nbsp;</span></td>\n";

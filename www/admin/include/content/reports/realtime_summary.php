@@ -50,7 +50,8 @@ function report_realtime_summary() {
         $i++;
     }
     
-    if (!isset($RR)) $RR=4;
+    if (!empty($useOAC) and empty($RR)) $RR=2;
+    if (empty($RR)) $RR=4;
     if ($RR==0) $RR=4;
     
     
@@ -58,6 +59,7 @@ function report_realtime_summary() {
     $html .= "<div class=no-ul>";
     
     $html .= "<form action=$PHP_SELF method=POST>\n";
+    $html .= "<input type=hidden name=useOAC value=$useOAC>\n";
     $html .= "<input type=hidden name=ADD value=$ADD>\n";
     $html .= "<input type=hidden name=SUB value=$SUB>\n";
     $html .= "<input type=hidden name=adastats value=$adastats\n";
@@ -69,37 +71,45 @@ function report_realtime_summary() {
     $html .= "<br><p class=centered><font color=$default_text size=+1>ALL CAMPAIGNS SUMMARY</font><br><br>";
     $html .= "<font color=$default_text size=-1>Update:&nbsp;";
     if ($RR==38400) $html .= "<font size=+1>";
-    $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">Daily</a>&nbsp;&nbsp;";
+    $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">Daily</a>&nbsp;&nbsp;";
     if ($RR==3600) {
         $html .= "<font size=+1>";
     } else {
         $html .= "<font size=-1>";
     }
-    $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=3600&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">Hourly</a>&nbsp;&nbsp;";
+    $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=3600&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">Hourly</a>&nbsp;&nbsp;";
     if ($RR==600) {
         $html .= "<font size=+1>";
     } else {
         $html .= "<font size=-1>";
     }
-    $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=600&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">10min</a>&nbsp;&nbsp;";
+    $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=600&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">10min</a>&nbsp;&nbsp;";
     if ($RR==30) {
         $html .= "<font size=+1>";
     } else {
         $html .= "<font size=-1>";
     }
-    $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=30&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">30sec</a>&nbsp;&nbsp;";
+    $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=30&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">30sec</a>&nbsp;&nbsp;";
     if ($RR==4) {
         $html .= "<font size=+1>";
     } else {
         $html .= "<font size=-1>";
     }
-    $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=4&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">4sec</a>&nbsp;&nbsp;";
+    $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=4&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">4sec</a>&nbsp;&nbsp;";
+    if (!empty($useOAC)) {
+        if ($RR==2) {
+            $html .= "<font size=+1>";
+        } else {
+            $html .= "<font size=-1>";
+        }
+        $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=2&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">2sec</a>&nbsp;&nbsp;";
+    }
     $html .= "</font>";
     $html .= "&nbsp;-&nbsp;&nbsp;";
     if ($adastats<2) {
-        $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=2&cpuinfo=$cpuinfo\"><font size=1>VIEW MORE SETTINGS</font></a>";
+        $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=2&cpuinfo=$cpuinfo\"><font size=1>VIEW MORE SETTINGS</font></a>";
     } else {
-        $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=1&cpuinfo=$cpuinfo\"><font size=1>VIEW LESS SETTINGS</font></a>";
+        $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=1&cpuinfo=$cpuinfo\"><font size=1>VIEW LESS SETTINGS</font></a>";
     }
     $html .= "</p>\n\n";
     
@@ -113,7 +123,7 @@ function report_realtime_summary() {
         $group = $groups[$k];
         $group_name = $group_names[$k];
         $rdlink = mclabel($group) . " - $group_name";
-        if ($LOG['view_agent_realtime']) $rdlink = "<a href=\"./admin.php?ADD=$ADD&SUB=" . ($SUB + 1) . "&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">" . mclabel($group) . " - $group_name</a>";
+        if ($LOG['view_agent_realtime']) $rdlink = "<a href=\"./admin.php?useOAC=$useOAC&ADD=$ADD&SUB=" . ($SUB + 1) . "&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">" . mclabel($group) . " - $group_name</a>";
         $html .= "<hr><font class=realtimeindents size=-1><b>$rdlink</b> &nbsp; - &nbsp; ";
         $html .= "<a href=\"./admin.php?ADD=31&campaign_id=$group\">Modify</a> </font>\n";
         
@@ -486,14 +496,14 @@ function report_realtime_summary() {
         $html .= "<br><br><br>";
         $html .= "<center>";
         if ($cpuinfo == 0 ) {
-            $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&cpuinfo=0\"><font size=1><b>STANDARD INFO</b></font></a>";
+            $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&cpuinfo=0\"><font size=1><b>STANDARD INFO</b></font></a>";
             $html .= " - ";
-            $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&cpuinfo=1\"><font size=1>EXTENDED INFO</font></a>";
+            $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&cpuinfo=1\"><font size=1>EXTENDED INFO</font></a>";
             eval("\$html .= \"" . file_get_contents($pref . 'resources.txt') . "\";");
         } else {
-            $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&cpuinfo=0\"><font size=1>STANDARD INFO</font></a>";
+            $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&cpuinfo=0\"><font size=1>STANDARD INFO</font></a>";
             $html .= " - ";
-            $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&cpuinfo=1\"><font size=1><b>EXTENDED INFO</b></font></a>";
+            $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&cpuinfo=1\"><font size=1><b>EXTENDED INFO</b></font></a>";
             eval("\$html .= \"" . file_get_contents($pref . 'resources-xtd.txt') . "\";");
         }
         $html .= "</center>";

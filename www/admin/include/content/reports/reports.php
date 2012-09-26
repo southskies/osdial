@@ -56,14 +56,14 @@ if ($LOG['view_reports']==1) {
         echo "<font size=4 color=$default_text><br><center>SERVER STATS AND REPORTS</center></font><br><br>";
 
         echo "<ul>";
-        if ($LOG['view_agent_realtime']) echo "<li><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?ADD=999999&SUB=12\">Agent Realtime (per campaign)</a></font>\n";
-        if ($LOG['view_agent_realtime_sip_listen']) echo "<li><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?ADD=999999&SUB=12&SIPmonitorLINK=1\">Agent Realtime w/SIP Listen</a></font>\n";
-        if ($LOG['view_agent_realtime_sip_barge']) echo "<li><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?ADD=999999&SUB=12&SIPmonitorLINK=2\">Agent Realtime w/SIP Barge</a></font>\n";
-        if ($LOG['view_agent_realtime_sip_barge']) echo "<li><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?ADD=999999&SUB=12&SIPmonitorLINK=3\">Agent Realtime w/SIP Whisper</a></font>\n";
-        if ($LOG['view_agent_realtime_iax_listen']) echo "<li><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?ADD=999999&SUB=12&IAXmonitorLINK=1\">Agent Realtime w/IAX Listen</a></font>\n";
-        if ($LOG['view_agent_realtime_iax_barge']) echo "<li><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?ADD=999999&SUB=12&IAXmonitorLINK=2\">Agent Realtime w/IAX Barge</a></font>\n";
-        if ($LOG['view_agent_realtime_iax_barge']) echo "<li><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?ADD=999999&SUB=12&IAXmonitorLINK=3\">Agent Realtime w/IAX Whisper</a></font>\n";
-        if ($LOG['view_agent_realtime_summary']) echo "<li><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?ADD=999999&SUB=11\">Agent Realtime Summary (all campaigns)</a></font>\n";
+        if ($LOG['view_agent_realtime']) echo "<li><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12\">Agent Realtime (per campaign)</a></font>\n";
+        if ($LOG['view_agent_realtime_sip_listen']) echo "<li><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12&SIPmonitorLINK=1\">Agent Realtime w/SIP Listen</a></font>\n";
+        if ($LOG['view_agent_realtime_sip_barge']) echo "<li><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12&SIPmonitorLINK=2\">Agent Realtime w/SIP Barge</a></font>\n";
+        if ($LOG['view_agent_realtime_sip_barge']) echo "<li><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12&SIPmonitorLINK=3\">Agent Realtime w/SIP Whisper</a></font>\n";
+        if ($LOG['view_agent_realtime_iax_listen']) echo "<li><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12&IAXmonitorLINK=1\">Agent Realtime w/IAX Listen</a></font>\n";
+        if ($LOG['view_agent_realtime_iax_barge']) echo "<li><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12&IAXmonitorLINK=2\">Agent Realtime w/IAX Barge</a></font>\n";
+        if ($LOG['view_agent_realtime_iax_barge']) echo "<li><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12&IAXmonitorLINK=3\">Agent Realtime w/IAX Whisper</a></font>\n";
+        if ($LOG['view_agent_realtime_summary']) echo "<li><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=11\">Agent Realtime Summary (all campaigns)</a></font>\n";
         echo "</ul>";
         echo "<ul>";
         if ($LOG['view_agent_pause_summary']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=25\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Agent Pause Summary</a></font>";
