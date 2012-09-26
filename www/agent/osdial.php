@@ -367,6 +367,8 @@ $HKxferextens='';
 $HKstatusnames='';
 $HKstatuses='';
 $HKhotkeys='';
+$VARstatuses='';
+$VARstatusnames='';
 
 echo "<html>\n";
 echo "<head>\n";
@@ -824,8 +826,6 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
                 } else {
                     $selectableSQL = "1=1 AND";
                 }
-                $VARstatuses='';
-                $VARstatusnames='';
                 $DISPstatus = Array();
                 $PSstatuses = Array();
                 $statuses = Array();
@@ -856,7 +856,7 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
                 $j=0;
                 while ($j < $VD_statuses_ct) {
                     $row=mysql_fetch_row($rslt);
-                    if ($row[2] > 0 and isset($DISPstatus[$row[0]]) and OSDpreg_match('/^$|^1$/',$DISPstatus[$row[0]])) {
+                    if ($row[2] > 0 and (!isset($DISPstatus[$row[0]]) or OSDpreg_match('/^$|^1$/',$DISPstatus[$row[0]]))) {
                         $PSstatuses[$row[0]] = $row[1];
                     }
                     $j++;
