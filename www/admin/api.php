@@ -300,6 +300,20 @@ if ($xml['function'] == "version") {
         $vdreason = "add_lead INVALID PHONE NUMBER";
     }
 
+    # Last name length check.
+    if (OSDstrlen($xml->params->last_name) < 2 and $status != "ERROR") {
+        $status = "ERROR";
+        $reason = "Last Name must be 2 or more characters..";
+        $vdreason = "add_lead INVALID LAST NAME";
+    }
+
+    # First name length check.
+    if (OSDstrlen($xml->params->first_name) < 2 and $status != "ERROR") {
+        $status = "ERROR";
+        $reason = "First Name must be 2 or more characters..";
+        $vdreason = "add_lead INVALID FIRST NAME";
+    }
+
     # DOB validation
     if (OSDstrlen($xml->params->date_of_birth) > 1 and $status != "ERROR") {
         $dm = Array();
@@ -427,7 +441,7 @@ if ($xml['function'] == "version") {
     }
 
     # Duplicate Checks
-    if ($xml->params->duplicate_check == "") $xml->params->duplicate_check = "DUPLIST";
+    if ($xml->params->duplicate_check == "" and $status != "ERROR") $xml->params->duplicate_check = "DUPLIST";
     if (!preg_match('/(^NO$|^N$|^F$|^FALSE$|^0$)/',$xml->params->duplicate_check) and $status != "ERROR") {
         $dup_error = '';
         $dup_error2 = '';
