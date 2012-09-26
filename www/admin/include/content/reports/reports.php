@@ -28,13 +28,10 @@
 ######################
 if ($LOG['view_reports']==1) {
     if ($ADD==999999 and $SUB=='') {
-        $stmt="SELECT * from osdial_conferences order by conf_exten";
-        $rslt=mysql_query($stmt, $link);
-        $phones_to_print = mysql_num_rows($rslt);
 
-        $stmt="select * from servers;";
+        $stmt="SELECT * FROM servers;";
         $rslt=mysql_query($stmt, $link);
-        if ($DB) {echo "$stmt\n";}
+        if ($DB) echo "$stmt\n";
         $servers_to_print = mysql_num_rows($rslt);
         $i=0;
         while ($i < $servers_to_print) {
@@ -43,6 +40,7 @@ if ($LOG['view_reports']==1) {
             $server_description[$i] =   $row[1];
             $server_ip[$i] =            $row[2];
             $active[$i] =               $row[3];
+            $profile[$i] =              $row[22];
             $i++;
         }
 
@@ -101,30 +99,42 @@ if ($LOG['view_reports']==1) {
         echo "</font></td></tr></table>\n";
 
         if ($LOG['multicomp_user'] == 0 and $LOG['view_server_times']) {
-            echo "<center><pre><table frame=box cellpadding=0 cellspacing=4>";
-            echo "<tr>";
-            echo "  <td align=center><font color=$default_text>&nbsp;Server&nbsp;&nbsp;</td>";
-            echo "  <td align=center><font color=$default_text>&nbsp;Description&nbsp;&nbsp;</td>";
-            echo "  <td align=center><font color=$default_text>&nbsp;IP Address&nbsp;&nbsp;</td>";
-            echo "  <td align=center><font color=$default_text>&nbsp;Active&nbsp;&nbsp;</td>";
-            echo "  <td align=center><font color=$default_text>&nbsp;Dialer Time&nbsp;&nbsp;</td>";
-            echo "  <td align=center><font color=$default_text>&nbsp;Park Time&nbsp;&nbsp;</td>";
-            echo "  <td align=center><font color=$default_text>&nbsp;Closer/Inbound Time&nbsp;</td>";
+            echo "<center><pre><table width=$section_width cellspacing=1 bgcolor=grey>";
+            echo "<tr class=tabheader>";
+            echo "  <td align=center>Server</td>";
+            echo "  <td align=center>Description</td>";
+            echo "  <td align=center>IP Address</td>";
+            echo "  <td align=center>Active</td>";
+            echo "  <td align=center>Vitals</td>";
+            echo "  <td align=center colspan=3>Dialer Session Time</td>";
             echo "  </tr>";
 
             $o=0;
             while ($servers_to_print > $o) {
-                echo "<tr>";
-                echo "  <td align=center>$server_id[$o]</td>\n";
-                echo "  <td align=center>$server_description[$o]</td>\n";
-                echo "  <td align=center>$server_ip[$o]</td>\n";
-                echo "  <td align=center>$active[$o]</td>\n";
-                echo "  <td align=center><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_timeonVDAD.php?server_ip=$server_ip[$o]\">LINK</a></td>\n";
-                echo "  <td align=center><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_timeonpark.php?server_ip=$server_ip[$o]\">LINK</a></td>\n";
-                echo "  <td align=center><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_timeonVDAD.php?server_ip=$server_ip[$o]%26closer_display=1\">LINK</a></td>\n";
+                echo "<tr ".bgcolor($o)." class=row>";
+                echo "  <td align=left><font face=\"dejavu sans,verdana,sans-serif\" size=2>&nbsp;$server_id[$o]</font></td>\n";
+                echo "  <td align=left><font face=\"dejavu sans,verdana,sans-serif\" size=2>&nbsp;$server_description[$o]</font></td>\n";
+                echo "  <td align=right><font face=\"dejavu sans,verdana,sans-serif\" size=2>$server_ip[$o]&nbsp;</font></td>\n";
+                echo "  <td align=center><font face=\"dejavu sans,verdana,sans-serif\" size=2>$active[$o]</font></td>\n";
+                if ($active[$o] == 'N') {
+                    echo "  <td align=center title=\"Not Active\"><font color=red>-----</font></td>\n";
+                    echo "  <td align=center title=\"Not Active\"><font color=red>-----</font></td>\n";
+                    echo "  <td align=center title=\"Not Active\"><font color=red>-----</font></td>\n";
+                    echo "  <td align=center title=\"Not Active\"><font color=red>-----</font></td>\n";
+                } else {
+                    echo "  <td align=center><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=/sysinfo/$server_ip[$o]/psi/index.php\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>SYSINFO</font></a></td>\n";
+                    if ($profile[$o]=='AIO' or $profile[$o]=='DIALER') {
+                        echo "  <td align=center><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_timeonVDAD.php?server_ip=$server_ip[$o]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>AGENTS/CHANNELS</font></a></td>\n";
+                        echo "  <td align=center><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_timeonpark.php?server_ip=$server_ip[$o]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>PARKING</font></a></td>\n";
+                        echo "  <td align=center><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_timeonVDAD.php?server_ip=$server_ip[$o]%26closer_display=1\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>INBOUND/CLOSERS</font></a></td>\n";
+                    } else {
+                        echo "  <td align=center colspan=3 title=\"Not a Dialer\"></td>\n";
+                    }
+                }
                 echo "</tr>";
                 $o++;
             }
+            echo "  <tr class=tabfooter><td colspan=8></td></tr>\n";
             echo "</table></pre></center>\n";
         }
 
