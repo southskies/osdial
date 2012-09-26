@@ -482,625 +482,110 @@ function dialable_leads($DB, $link, $local_call_time, $dial_statuses, $camp_list
     }
 }
 
-function lookup_gmt($phone_code,$USarea,$state,$LOCAL_GMT_OFF_STD,$Shour,$Smin,$Ssec,$Smon,$Smday,$Syear,$postalgmt,$postal_code)
-{
-require("dbconnect.php");
+function dstcalc($method,$time) {
 
-$postalgmt_found=0;
-if ( (OSDpreg_match("/POSTAL/",$postalgmt)) && (OSDstrlen($postal_code)>4) )
-	{
-	if (OSDpreg_match('/^1$/', $phone_code))
-		{
-		$stmt="select * from osdial_postal_codes where country_code='$phone_code' and postal_code LIKE \"$postal_code%\";";
-		$rslt=mysql_query($stmt, $link);
-		$pc_recs = mysql_num_rows($rslt);
-		if ($pc_recs > 0)
-			{
-			$row=mysql_fetch_row($rslt);
-			$gmt_offset =	$row[2];	 $gmt_offset = OSDpreg_replace("/\+/","",$gmt_offset);
-			$dst =			$row[3];
-			$dst_range =	$row[4];
-			$PC_processed++;
-			$postalgmt_found++;
-			}
-		}
-	}
-if ($postalgmt_found < 1)
-	{
-	$PC_processed=0;
-	### UNITED STATES ###
-	if ($phone_code =='1')
-		{
-		$stmt="select * from osdial_phone_codes where country_code='$phone_code' and areacode='$USarea';";
-		$rslt=mysql_query($stmt, $link);
-		$pc_recs = mysql_num_rows($rslt);
-		if ($pc_recs > 0)
-			{
-			$row=mysql_fetch_row($rslt);
-			$gmt_offset =	$row[4];	 $gmt_offset = OSDpreg_replace("/\+/","",$gmt_offset);
-			$dst =			$row[5];
-			$dst_range =	$row[6];
-			$PC_processed++;
-			}
-		}
-	### MEXICO ###
-	if ($phone_code =='52')
-		{
-		$stmt="select * from osdial_phone_codes where country_code='$phone_code' and areacode='$USarea';";
-		$rslt=mysql_query($stmt, $link);
-		$pc_recs = mysql_num_rows($rslt);
-		if ($pc_recs > 0)
-			{
-			$row=mysql_fetch_row($rslt);
-			$gmt_offset =	$row[4];	 $gmt_offset = OSDpreg_replace("/\+/","",$gmt_offset);
-			$dst =			$row[5];
-			$dst_range =	$row[6];
-			$PC_processed++;
-			}
-		}
-	### AUSTRALIA ###
-	if ($phone_code =='61')
-		{
-		$stmt="select * from osdial_phone_codes where country_code='$phone_code' and state='$state';";
-		$rslt=mysql_query($stmt, $link);
-		$pc_recs = mysql_num_rows($rslt);
-		if ($pc_recs > 0)
-			{
-			$row=mysql_fetch_row($rslt);
-			$gmt_offset =	$row[4];	 $gmt_offset = OSDpreg_replace("/\+/","",$gmt_offset);
-			$dst =			$row[5];
-			$dst_range =	$row[6];
-			$PC_processed++;
-			}
-		}
-	### ALL OTHER COUNTRY CODES ###
-	if (!$PC_processed)
-		{
-		$PC_processed++;
-		$stmt="select * from osdial_phone_codes where country_code='$phone_code';";
-		$rslt=mysql_query($stmt, $link);
-		$pc_recs = mysql_num_rows($rslt);
-		if ($pc_recs > 0)
-			{
-			$row=mysql_fetch_row($rslt);
-			$gmt_offset =	$row[4];	 $gmt_offset = OSDpreg_replace("/\+/","",$gmt_offset);
-			$dst =			$row[5];
-			$dst_range =	$row[6];
-			$PC_processed++;
-			}
-		}
-	}
+        $nlet['F'] = 1;
+        $nlet['S'] = 2;
+        $nlet['T'] = 3;
+        $nlet['L'] = 5;
 
-### Find out if DST to raise the gmt offset ###
-$AC_GMT_diff = ($gmt_offset - $LOCAL_GMT_OFF_STD);
-$AC_localtime = mktime(($Shour + $AC_GMT_diff), $Smin, $Ssec, $Smon, $Smday, $Syear);
-	$hour = date("H",$AC_localtime);
-	$min = date("i",$AC_localtime);
-	$sec = date("s",$AC_localtime);
-	$mon = date("m",$AC_localtime);
-	$mday = date("d",$AC_localtime);
-	$wday = date("w",$AC_localtime);
-	$year = date("Y",$AC_localtime);
-$dsec = ( ( ($hour * 3600) + ($min * 60) ) + $sec );
+        $dlet['M'] = 1;
+        $dlet['S'] = 0;
 
-$AC_processed=0;
-if ( (!$AC_processed) and ($dst_range == 'SSM-FSN') )
-	{
-	if ($DBX) {print "     Second Sunday March to First Sunday November\n";}
-	#**********************************************************************
-	# SSM-FSN
-	#     This is returns 1 if Daylight Savings Time is in effect and 0 if 
-	#       Standard time is in effect.
-	#     Based on Second Sunday March to First Sunday November at 2 am.
-	#     INPUTS:
-	#       mm              INTEGER       Month.
-	#       dd              INTEGER       Day of the month.
-	#       ns              INTEGER       Seconds into the day.
-	#       dow             INTEGER       Day of week (0=Sunday, to 6=Saturday)
-	#     OPTIONAL INPUT:
-	#       timezone        INTEGER       hour difference UTC - local standard time
-	#                                      (DEFAULT is blank)
-	#                                     make calculations based on UTC time, 
-	#                                     which means shift at 10:00 UTC in April
-	#                                     and 9:00 UTC in October
-	#     OUTPUT: 
-	#                       INTEGER       1 = DST, 0 = not DST
-	#
-	# S  M  T  W  T  F  S
-	# 1  2  3  4  5  6  7
-	# 8  9 10 11 12 13 14
-	#15 16 17 18 19 20 21
-	#22 23 24 25 26 27 28
-	#29 30 31
-	# 
-	# S  M  T  W  T  F  S
-	#    1  2  3  4  5  6
-	# 7  8  9 10 11 12 13
-	#14 15 16 17 18 19 20
-	#21 22 23 24 25 26 27
-	#28 29 30 31
-	# 
-	#**********************************************************************
+        $mlet['F'] = 2;
+        $mlet['M'] = 3;
+        $mlet['A'] = 4;
+        $mlet['S'] = 9;
+        $mlet['O'] = 10;
+        $mlet['N'] = 11;
 
-		$USACAN_DST=0;
-		$mm = $mon;
-		$dd = $mday;
-		$ns = $dsec;
-		$dow= $wday;
+        list($start,$end) = OSDpreg_split('/\-/',$method);
+        $sn = OSDsubstr($start,0,1);
+        $sd = OSDsubstr($start,1,1);
+        $sm = OSDsubstr($start,2,1);
+        $en = OSDsubstr($end,0,1);
+        $ed = OSDsubstr($end,1,1);
+        $em = OSDsubstr($end,2,1);
 
-		if ($mm < 3 || $mm > 11) {
-		$USACAN_DST=0;   
-		} elseif ($mm >= 4 and $mm <= 10) {
-		$USACAN_DST=1;   
-		} elseif ($mm == 3) {
-		if ($dd > 13) {
-			$USACAN_DST=1;   
-		} elseif ($dd >= ($dow+8)) {
-			if ($timezone) {
-			if ($dow == 0 and $ns < (7200+$timezone*3600)) {
-				$USACAN_DST=0;   
-			} else {
-				$USACAN_DST=1;   
-			}
-			} else {
-			if ($dow == 0 and $ns < 7200) {
-				$USACAN_DST=0;   
-			} else {
-				$USACAN_DST=1;   
-			}
-			}
-		} else {
-			$USACAN_DST=0;   
-		}
-		} elseif ($mm == 11) {
-		if ($dd > 7) {
-			$USACAN_DST=0;   
-		} elseif ($dd < ($dow+1)) {
-			$USACAN_DST=1;   
-		} elseif ($dow == 0) {
-			if ($timezone) { # UTC calculations
-			if ($ns < (7200+($timezone-1)*3600)) {
-				$USACAN_DST=1;   
-			} else {
-				$USACAN_DST=0;   
-			}
-			} else { # local time calculations
-			if ($ns < 7200) {
-				$USACAN_DST=1;   
-			} else {
-				$USACAN_DST=0;   
-			}
-			}
-		} else {
-			$USACAN_DST=0;   
-		}
-		} # end of month checks
-	if ($DBX) {print "     DST: $USACAN_DST\n";}
-	if ($USACAN_DST) {$gmt_offset++;}
-	$AC_processed++;
-	}
+        $sy = date('Y',$time);
+        $ey = date('Y',$time);
+        if ($mlet[$em]<$mlet[$sm]) $ey++;
 
-if ( (!$AC_processed) and ($dst_range == 'FSA-LSO') )
-	{
-	if ($DBX) {print "     First Sunday April to Last Sunday October\n";}
-	#**********************************************************************
-	# FSA-LSO
-	#     This is returns 1 if Daylight Savings Time is in effect and 0 if 
-	#       Standard time is in effect.
-	#     Based on first Sunday in April and last Sunday in October at 2 am.
-	#**********************************************************************
-		
-		$USA_DST=0;
-		$mm = $mon;
-		$dd = $mday;
-		$ns = $dsec;
-		$dow= $wday;
+        $dststart_date = Date_Calc::NWeekdayOfMonth($nlet[$sn],$dlet[$sd],$mlet[$sm],$sy,'%Y-%m-%d');
+        if (!isset($dststart_date) or empty($dststart_date)) $dststart_date = Date_Calc::NWeekdayOfMonth($nlet[$sn]-1,$dlet[$sd],$mlet[$sm],$sy,'%Y-%m-%d');
+        list ($dsy,$dsm,$dsd) = OSDpreg_split('/\-/',$dststart_date);
+        $dststart = mktime(2,0,0,$dsm,$dsd,$dsy);
 
-		if ($mm < 4 || $mm > 10) {
-		$USA_DST=0;
-		} elseif ($mm >= 5 and $mm <= 9) {
-		$USA_DST=1;
-		} elseif ($mm == 4) {
-		if ($dd > 7) {
-			$USA_DST=1;
-		} elseif ($dd >= ($dow+1)) {
-			if ($timezone) {
-			if ($dow == 0 and $ns < (7200+$timezone*3600)) {
-				$USA_DST=0;
-			} else {
-				$USA_DST=1;
-			}
-			} else {
-			if ($dow == 0 and $ns < 7200) {
-				$USA_DST=0;
-			} else {
-				$USA_DST=1;
-			}
-			}
-		} else {
-			$USA_DST=0;
-		}
-		} elseif ($mm == 10) {
-		if ($dd < 25) {
-			$USA_DST=1;
-		} elseif ($dd < ($dow+25)) {
-			$USA_DST=1;
-		} elseif ($dow == 0) {
-			if ($timezone) { # UTC calculations
-			if ($ns < (7200+($timezone-1)*3600)) {
-				$USA_DST=1;
-			} else {
-				$USA_DST=0;
-			}
-			} else { # local time calculations
-			if ($ns < 7200) {
-				$USA_DST=1;
-			} else {
-				$USA_DST=0;
-			}
-			}
-		} else {
-			$USA_DST=0;
-		}
-		} # end of month checks
+        $dstend_date = Date_Calc::NWeekdayOfMonth($nlet[$en],$dlet[$ed],$mlet[$em],$ey,'%Y-%m-%d');
+        if (!isset($dstend_date) or empty($dstend_date)) $dstend_date = Date_Calc::NWeekdayOfMonth($nlet[$en]-1,$dlet[$ed],$mlet[$em],$ey,'%Y-%m-%d');
+        list ($dey,$dem,$ded) = OSDpreg_split('/\-/',$dstend_date);
+        $dstend = mktime(2,0,0,$dem,$ded,$dey);
 
-	if ($DBX) {print "     DST: $USA_DST\n";}
-	if ($USA_DST) {$gmt_offset++;}
-	$AC_processed++;
-	}
+        $dstval=0;
+        if ($time >= $dststart && $time <= $dstend) $dstval++;
 
-if ( (!$AC_processed) and ($dst_range == 'LSM-LSO') )
-	{
-	if ($DBX) {print "     Last Sunday March to Last Sunday October\n";}
-	#**********************************************************************
-	#     This is s 1 if Daylight Savings Time is in effect and 0 if 
-	#       Standard time is in effect.
-	#     Based on last Sunday in March and last Sunday in October at 1 am.
-	#**********************************************************************
-		
-		$GBR_DST=0;
-		$mm = $mon;
-		$dd = $mday;
-		$ns = $dsec;
-		$dow= $wday;
+        return $dstval;
+}
 
-		if ($mm < 3 || $mm > 10) {
-		$GBR_DST=0;
-		} elseif ($mm >= 4 and $mm <= 9) {
-		$GBR_DST=1;
-		} elseif ($mm == 3) {
-		if ($dd < 25) {
-			$GBR_DST=0;
-		} elseif ($dd < ($dow+25)) {
-			$GBR_DST=0;
-		} elseif ($dow == 0) {
-			if ($timezone) { # UTC calculations
-			if ($ns < (3600+($timezone-1)*3600)) {
-				$GBR_DST=0;
-			} else {
-				$GBR_DST=1;
-			}
-			} else { # local time calculations
-			if ($ns < 3600) {
-				$GBR_DST=0;
-			} else {
-				$GBR_DST=1;
-			}
-			}
-		} else {
-			$GBR_DST=1;
-		}
-		} elseif ($mm == 10) {
-		if ($dd < 25) {
-			$GBR_DST=1;
-		} elseif ($dd < ($dow+25)) {
-			$GBR_DST=1;
-		} elseif ($dow == 0) {
-			if ($timezone) { # UTC calculations
-			if ($ns < (3600+($timezone-1)*3600)) {
-				$GBR_DST=1;
-			} else {
-				$GBR_DST=0;
-			}
-			} else { # local time calculations
-			if ($ns < 3600) {
-				$GBR_DST=1;
-			} else {
-				$GBR_DST=0;
-			}
-			}
-		} else {
-			$GBR_DST=0;
-		}
-		} # end of month checks
-		if ($DBX) {print "     DST: $GBR_DST\n";}
-	if ($GBR_DST) {$gmt_offset++;}
-	$AC_processed++;
-	}
-if ( (!$AC_processed) and ($dst_range == 'LSO-LSM') )
-	{
-	if ($DBX) {print "     Last Sunday October to Last Sunday March\n";}
-	#**********************************************************************
-	#     This is s 1 if Daylight Savings Time is in effect and 0 if 
-	#       Standard time is in effect.
-	#     Based on last Sunday in October and last Sunday in March at 1 am.
-	#**********************************************************************
-		
-		$AUS_DST=0;
-		$mm = $mon;
-		$dd = $mday;
-		$ns = $dsec;
-		$dow= $wday;
 
-		if ($mm < 3 || $mm > 10) {
-		$AUS_DST=1;
-		} elseif ($mm >= 4 and $mm <= 9) {
-		$AUS_DST=0;
-		} elseif ($mm == 3) {
-		if ($dd < 25) {
-			$AUS_DST=1;
-		} elseif ($dd < ($dow+25)) {
-			$AUS_DST=1;
-		} elseif ($dow == 0) {
-			if ($timezone) { # UTC calculations
-			if ($ns < (3600+($timezone-1)*3600)) {
-				$AUS_DST=1;
-			} else {
-				$AUS_DST=0;
-			}
-			} else { # local time calculations
-			if ($ns < 3600) {
-				$AUS_DST=1;
-			} else {
-				$AUS_DST=0;
-			}
-			}
-		} else {
-			$AUS_DST=0;
-		}
-		} elseif ($mm == 10) {
-		if ($dd < 25) {
-			$AUS_DST=0;
-		} elseif ($dd < ($dow+25)) {
-			$AUS_DST=0;
-		} elseif ($dow == 0) {
-			if ($timezone) { # UTC calculations
-			if ($ns < (3600+($timezone-1)*3600)) {
-				$AUS_DST=0;
-			} else {
-				$AUS_DST=1;
-			}
-			} else { # local time calculations
-			if ($ns < 3600) {
-				$AUS_DST=0;
-			} else {
-				$AUS_DST=1;
-			}
-			}
-		} else {
-			$AUS_DST=1;
-		}
-		} # end of month checks						
-	if ($DBX) {print "     DST: $AUS_DST\n";}
-	if ($AUS_DST) {$gmt_offset++;}
-	$AC_processed++;
-	}
+function lookup_gmt($phone_code,$USarea,$state,$LOCAL_GMT_OFF_STD,$Shour,$Smin,$Ssec,$Smon,$Smday,$Syear,$postalgmt,$postal_code) {
+    require('dbconnect.php');
 
-if ( (!$AC_processed) and ($dst_range == 'FSO-LSM') )
-	{
-	if ($DBX) {print "     First Sunday October to Last Sunday March\n";}
-	#**********************************************************************
-	#   TASMANIA ONLY
-	#     This is s 1 if Daylight Savings Time is in effect and 0 if 
-	#       Standard time is in effect.
-	#     Based on first Sunday in October and last Sunday in March at 1 am.
-	#**********************************************************************
-		
-		$AUST_DST=0;
-		$mm = $mon;
-		$dd = $mday;
-		$ns = $dsec;
-		$dow= $wday;
+    $postalgmt_found=0;
+    if (OSDpreg_match("/POSTAL/",$postalgmt) && OSDstrlen($postal_code)>4) {
+        if (OSDpreg_match('/^1$/', $phone_code)) {
+            $stmt="SELECT * FROM osdial_postal_codes WHERE country_code='$phone_code' AND postal_code LIKE '$postal_code%';";
+            $rslt=mysql_query($stmt, $link);
+            $pc_recs = mysql_num_rows($rslt);
+            if ($pc_recs>0) {
+                $row=mysql_fetch_row($rslt);
+                $gmt_offset = $row[2];
+                $gmt_offset = OSDpreg_replace("/\+/","",$gmt_offset);
+                $dst = $row[3];
+                $dst_range = $row[4];
+                $PC_processed++;
+                $postalgmt_found++;
+            }
+        }
+    }
+    if ($postalgmt_found<1) {
+        $PC_processed=0;
+        $stmt='';
+        if ($phone_code=='1' or $phone_code=='52') {
+            ### US, Canada, and Mexico
+            $stmt="SELECT * FROM osdial_phone_codes WHERE country_code='$phone_code' AND areacode='$USarea';";
+        } elseif ($phone_code=='61') {
+	        ### Australia
+            $stmt="SELECT * FROM osdial_phone_codes WHERE country_code='$phone_code' AND state='$state';";
+        } else {
+            ### All others
+            $stmt="SELECT * FROM osdial_phone_codes WHERE country_code='$phone_code';";
+        }
+        $rslt=mysql_query($stmt, $link);
+        $pc_recs = mysql_num_rows($rslt);
+        if ($pc_recs>0) {
+            $row=mysql_fetch_row($rslt);
+            $gmt_offset = $row[4];
+            $gmt_offset = OSDpreg_replace("/\+/","",$gmt_offset);
+            $dst = $row[5];
+            $dst_range = $row[6];
+            $PC_processed++;
+        }
+    }
 
-		if ($mm < 3 || $mm > 10) {
-		$AUST_DST=1;
-		} elseif ($mm >= 4 and $mm <= 9) {
-		$AUST_DST=0;
-		} elseif ($mm == 3) {
-		if ($dd < 25) {
-			$AUST_DST=1;
-		} elseif ($dd < ($dow+25)) {
-			$AUST_DST=1;
-		} elseif ($dow == 0) {
-			if ($timezone) { # UTC calculations
-			if ($ns < (3600+($timezone-1)*3600)) {
-				$AUST_DST=1;
-			} else {
-				$AUST_DST=0;
-			}
-			} else { # local time calculations
-			if ($ns < 3600) {
-				$AUST_DST=1;
-			} else {
-				$AUST_DST=0;
-			}
-			}
-		} else {
-			$AUST_DST=0;
-		}
-		} elseif ($mm == 10) {
-		if ($dd > 7) {
-			$AUST_DST=1;
-		} elseif ($dd >= ($dow+1)) {
-			if ($timezone) {
-			if ($dow == 0 and $ns < (7200+$timezone*3600)) {
-				$AUST_DST=0;
-			} else {
-				$AUST_DST=1;
-			}
-			} else {
-			if ($dow == 0 and $ns < 3600) {
-				$AUST_DST=0;
-			} else {
-				$AUST_DST=1;
-			}
-			}
-		} else {
-			$AUST_DST=0;
-		}
-		} # end of month checks						
-	if ($DBX) {print "     DST: $AUST_DST\n";}
-	if ($AUST_DST) {$gmt_offset++;}
-	$AC_processed++;
-	}
-if ( (!$AC_processed) and ($dst_range == 'FSO-TSM') )
-	{
-	if ($DBX) {print "     First Sunday October to Third Sunday March\n";}
-	#**********************************************************************
-	#     This is s 1 if Daylight Savings Time is in effect and 0 if 
-	#       Standard time is in effect.
-	#     Based on first Sunday in October and third Sunday in March at 1 am.
-	#**********************************************************************
-		
-		$NZL_DST=0;
-		$mm = $mon;
-		$dd = $mday;
-		$ns = $dsec;
-		$dow= $wday;
+    ### Find out if DST to raise the gmt offset ###
+    $AC_GMT_diff = ($gmt_offset - $LOCAL_GMT_OFF_STD);
+    $AC_localtime = mktime(($Shour + $AC_GMT_diff), $Smin, $Ssec, $Smon, $Smday, $Syear);
 
-		if ($mm < 3 || $mm > 10) {
-		$NZL_DST=1;
-		} elseif ($mm >= 4 and $mm <= 9) {
-		$NZL_DST=0;
-		} elseif ($mm == 3) {
-		if ($dd < 14) {
-			$NZL_DST=1;
-		} elseif ($dd < ($dow+14)) {
-			$NZL_DST=1;
-		} elseif ($dow == 0) {
-			if ($timezone) { # UTC calculations
-			if ($ns < (3600+($timezone-1)*3600)) {
-				$NZL_DST=1;
-			} else {
-				$NZL_DST=0;
-			}
-			} else { # local time calculations
-			if ($ns < 3600) {
-				$NZL_DST=1;
-			} else {
-				$NZL_DST=0;
-			}
-			}
-		} else {
-			$NZL_DST=0;
-		}
-		} elseif ($mm == 10) {
-		if ($dd > 7) {
-			$NZL_DST=1;
-		} elseif ($dd >= ($dow+1)) {
-			if ($timezone) {
-			if ($dow == 0 and $ns < (7200+$timezone*3600)) {
-				$NZL_DST=0;
-			} else {
-				$NZL_DST=1;
-			}
-			} else {
-			if ($dow == 0 and $ns < 3600) {
-				$NZL_DST=0;
-			} else {
-				$NZL_DST=1;
-			}
-			}
-		} else {
-			$NZL_DST=0;
-		}
-		} # end of month checks						
-	if ($DBX) {print "     DST: $NZL_DST\n";}
-	if ($NZL_DST) {$gmt_offset++;}
-	$AC_processed++;
-	}
+    if (OSDpreg_match('/[FSTL][MS][FMASON]\-[FSTL][MS][FMASON]/',$dst_range)) {
+        $dstval = dstcalc($dst_range,$AC_localtime);
+        if ($dstval) $gmt_offset++;
+    }
 
-if ( (!$AC_processed) and ($dst_range == 'TSO-LSF') )
-	{
-	if ($DBX) {print "     Third Sunday October to Last Sunday February\n";}
-	#**********************************************************************
-	# TSO-LSF
-	#     This is returns 1 if Daylight Savings Time is in effect and 0 if 
-	#       Standard time is in effect. Brazil
-	#     Based on Third Sunday October to Last Sunday February at 1 am.
-	#**********************************************************************
-		
-		$BZL_DST=0;
-		$mm = $mon;
-		$dd = $mday;
-		$ns = $dsec;
-		$dow= $wday;
-
-		if ($mm < 2 || $mm > 10) {
-		$BZL_DST=1;   
-		} elseif ($mm >= 3 and $mm <= 9) {
-		$BZL_DST=0;   
-		} elseif ($mm == 2) {
-		if ($dd < 22) {
-			$BZL_DST=1;   
-		} elseif ($dd < ($dow+22)) {
-			$BZL_DST=1;   
-		} elseif ($dow == 0) {
-			if ($timezone) { # UTC calculations
-			if ($ns < (3600+($timezone-1)*3600)) {
-				$BZL_DST=1;   
-			} else {
-				$BZL_DST=0;   
-			}
-			} else { # local time calculations
-			if ($ns < 3600) {
-				$BZL_DST=1;   
-			} else {
-				$BZL_DST=0;   
-			}
-			}
-		} else {
-			$BZL_DST=0;   
-		}
-		} elseif ($mm == 10) {
-		if ($dd < 22) {
-			$BZL_DST=0;   
-		} elseif ($dd < ($dow+22)) {
-			$BZL_DST=0;   
-		} elseif ($dow == 0) {
-			if ($timezone) { # UTC calculations
-			if ($ns < (3600+($timezone-1)*3600)) {
-				$BZL_DST=0;   
-			} else {
-				$BZL_DST=1;   
-			}
-			} else { # local time calculations
-			if ($ns < 3600) {
-				$BZL_DST=0;   
-			} else {
-				$BZL_DST=1;   
-			}
-			}
-		} else {
-			$BZL_DST=1;   
-		}
-		} # end of month checks
-	if ($DBX) {print "     DST: $BZL_DST\n";}
-	if ($BZL_DST) {$gmt_offset++;}
-	$AC_processed++;
-	}
-
-if (!$AC_processed)
-	{
-	if ($DBX) {print "     No DST Method Found\n";}
-	if ($DBX) {print "     DST: 0\n";}
-	$AC_processed++;
-	}
-
-$ret = Array();
-$ret[] = $gmt_offset;
-$ret[] = $postalgmt_found;
-return $ret;
+    $ret = Array();
+    $ret[] = $gmt_offset;
+    $ret[] = $postalgmt_found;
+    return $ret;
 }
 
 function getloadavg() {
