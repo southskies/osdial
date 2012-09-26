@@ -86,6 +86,8 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 $slash_star = '\*';
 
 
+$del_stmt="DELETE FROM osdial_phone_codes;";
+$dbhA->do($del_stmt);
 #### BEGIN osdial_phone_codes population from phone_codes_GMT.txt file ####
 open(codefile, "$PATHhome/phone_codes_GMT.txt") || die "can't open $PATHhome/phone_codes_GMT.txt: $!\n";
 @codefile = <codefile>;
@@ -127,6 +129,8 @@ print STDERR "$pc\n";
 #### END osdial_phone_codes population from phone_codes_GMT.txt file ####
 
 
+$del_stmt="DELETE FROM osdial_postal_codes;";
+$dbhA->do($del_stmt);
 #### BEGIN osdial_postal_codes population from GMT_USA_zip.txt file ####
 open(zipfile, "$PATHhome/GMT_USA_zip.txt") || die "can't open $PATHhome/GMT_USA_zip.txt: $!\n";
 @zipfile = <zipfile>;
