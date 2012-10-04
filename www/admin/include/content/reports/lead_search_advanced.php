@@ -1266,7 +1266,7 @@ function report_lead_search_advanced($lsa_seg='form') {
                     $row=mysql_fetch_array($rslt, MYSQL_BOTH);
                     $recloc = '';
                     if ($row[0] > 0) {
-                        $rslt2=mysql_query(sprintf("SELECT location FROM recording_log WHERE lead_id='%s' ORDER BY recording_id DESC LIMIT 1;",$row[0]), $link);
+                        $rslt2=mysql_query(sprintf("SELECT location FROM recording_log WHERE lead_id='%s' LIMIT 1;",$row[0]), $link);
                         $row2=mysql_fetch_row($rslt2);
                         $recloc = $row2[0];
                     }
