@@ -181,10 +181,13 @@ sub gatherEntries {
 	$where .=   "AND osdial_list.list_id=osdial_lists.list_id)";
 
 	# Find recordings which match criteria and insert into the osdial_transfers table.
-	$insert = "INSERT IGNORE INTO qc_transfers (qc_server_id,qc_recording_id) ";
-	$insert .= "SELECT SQL_NO_CACHE " . $qcs->{id} . " AS qc_server_id,qc_recordings.id AS qc_recording_id ";
-	$insert .= "FROM qc_recordings,recording_log,osdial_list,osdial_lists ";
-	$insert .=  "WHERE " . $where . $swhere . ";";
+	$insert = "INSERT INTO qc_transfers (qc_server_id,qc_recording_id) ";
+	$insert .= "SELECT prej.qc_server_id,prej.qc_recording_id FROM ";
+	$insert .= "  (SELECT " . $qcs->{id} . " AS qc_server_id,qc_recordings.id AS qc_recording_id ";
+	$insert .= "    FROM qc_recordings,recording_log,osdial_list,osdial_lists ";
+	$insert .= "    WHERE " . $where . $swhere . ") AS prej ";
+	$insert .= "LEFT JOIN qc_transfers AS sqct ON (sqct.qc_server_id=prej.qc_server_id AND sqct.qc_recording_id=prej.qc_recording_id) ";
+	$insert .= "WHERE sqct.id IS NULL ON DUPLICATE KEY UPDATE qc_transfers.status=qc_transfers.status;";
 
 	print "$insert|\n" if($verbose > 2);
 	$insts = $dbhA->do($insert) unless ($CLOtest);
