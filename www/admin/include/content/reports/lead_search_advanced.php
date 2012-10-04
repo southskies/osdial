@@ -119,12 +119,12 @@ function report_lead_search_advanced($lsa_seg='form') {
             $count = 0;
         $sort = get_variable("sort");
         if ($sort == "")
-            $sort = "called_count";
+            $sort = "lead_id";
         $direction = get_variable("direction");
         if ($direction == "")
             $direction = "ASC";
 
-        $searchWHR = " WHERE 1=1";
+        $searchWHR = " WHERE lead_id>0";
 
         $pageURL ="?ADD=$ADD&SUB=$SUB&last_name=$last_name&first_name=$first_name&phone_number=$phone_number&phone_search_alt=$phone_search_alt&lead_id=$lead_id&city=$city&postal_code=$postal_code&email=$email";
         $pageURL.="&entry_date_start=$orig_entry_date_start&entry_date_end=$orig_entry_date_end&modify_date_start=$orig_modify_date_start&modify_date_end=$orig_modify_date_end";
