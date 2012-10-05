@@ -57,5 +57,80 @@ ALTER TABLE osdial_lists ADD INDEX campaign (campaign_id);##|##
 ALTER TABLE recording_log MODIFY filename varchar(100) NOT NULL DEFAULT '', MODIFY lead_id int(9) unsigned NOT NULL DEFAULT '0', MODIFY user varchar(20) NOT NULL DEFAULT '', MODIFY start_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00';##|##
  ## Optimizing recording_log by removing NULL indexes.  This may take a awhile, do not interrupt!!!;
 
+ALTER TABLE qc_recordings MODIFY filename varchar(255) NOT NULL DEFAULT '', MODIFY location varchar(255) NOT NULL DEFAULT '';##|##
+ ## Optimizing qc_recordings by removing NULL indexes.  This may take a awhile, do not interrupt!!!;
+
+ALTER TABLE qc_transfers MODIFY status enum('NOTFOUND','PENDING','SUCCESS','FAILURE') NOT NULL DEFAULT 'PENDING', MODIFY last_attempt datetime NOT NULL DEFAULT '0000-00-00 00:00:00', MODIFY archive_filename varchar(255) NOT NULL DEFAULT '', MODIFY remote_location varchar(255) NOT NULL DEFAULT '';##|##
+ ## Optimizing qc_transfers by removing NULL indexes.  This may take a awhile, do not interrupt!!!;
+
+
+
+
+ALTER TABLE osdial_users MODIFY user varchar(20) NOT NULL DEFAULT '';##|##
+ ## Optimizing osdial_users by removing NULL indexes.  This may take a awhile, do not interrupt!!!;
+
+ALTER TABLE qc_servers MODIFY active enum('Y','N') NOT NULL DEFAULT 'Y';##|##
+ ## Optimizing qc_servers by removing NULL indexes.  This may take a awhile, do not interrupt!!!;
+
+ALTER TABLE park_log MODIFY parked_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00';##|##
+ ## Optimizing park_log by removing NULL indexes.  This may take a awhile, do not interrupt!!!;
+
+ALTER TABLE call_log MODIFY channel varchar(100) NOT NULL DEFAULT '', MODIFY server_ip varchar(15) NOT NULL DEFAULT '', MODIFY caller_code varchar(20) NOT NULL DEFAULT '', MODIFY start_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00', MODIFY end_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00';##|##
+ ## Optimizing call_log by removing NULL indexes.  This may take a awhile, do not interrupt!!!;
+ALTER TABLE configuration MODIFY name varchar(50) NOT NULL DEFAULT '';##|##
+ ## Optimizing configuration by removing NULL indexes.  This may take a awhile, do not interrupt!!!;
+ALTER TABLE live_inbound_log MODIFY phone_ext varchar(40) DEFAULT '', MODIFY start_time datetime DEFAULT '0000-00-00 00:00:00';##|##
+ ## Optimizing live_inbound_log by removing NULL indexes.  This may take a awhile, do not interrupt!!!;
+ALTER TABLE osdial_agent_log MODIFY event_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00', MODIFY lead_id int(9) unsigned NOT NULL DEFAULT '0', MODIFY campaign_id varchar(20) NOT NULL DEFAULT '';##|##
+ ## Optimizing osdial_agent_log by removing NULL indexes.  This may take a awhile, do not interrupt!!!;
+ALTER TABLE osdial_log MODIFY call_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00';##|##
+ ## Optimizing call_log by removing NULL indexes.  This may take a awhile, do not interrupt!!!;
+ALTER TABLE osdial_auto_calls MODIFY uniqueid varchar(20) NOT NULL DEFAULT '', MODIFY callerid varchar(20) NOT NULL DEFAULT '', MODIFY call_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00';##|##
+ ## Optimizing osdial_auto_calls by removing NULL indexes.  This may take a awhile, do not interrupt!!!;
+
+ALTER TABLE osdial_callbacks MODIFY lead_id int(9) unsigned NOT NULL DEFAULT '0', MODIFY status varchar(10) NOT NULL DEFAULT '', MODIFY callback_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00';##|##
+ ## Optimizing osdial_callbasks by removing NULL indexes.  This may take a awhile, do not interrupt!!!;
+
+ALTER TABLE osdial_carrier_dids MODIFY carrier_id int(11) NOT NULL DEFAULT '0';##|##
+ ## Optimizing osdial_carrier_dids by removing NULL indexes.  This may take a awhile, do not interrupt!!!;
+
+ALTER TABLE osdial_closer_log MODIFY call_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00', MODIFY phone_number varchar(12) NOT NULL DEFAULT '';##|##
+ ## Optimizing osdial_closer_log by removing NULL indexes.  This may take a awhile, do not interrupt!!!;
+
+ALTER TABLE osdial_inbound_group_agents MODIFY user varchar(20) NOT NULL DEFAULT '', MODIFY group_id varchar(20) NOT NULL DEFAULT '';##|##
+ ## Optimizing osdial_inbound_group_agents by removing NULL indexes.  This may take a awhile, do not interrupt!!!;
+
+ALTER TABLE osdial_ivr MODIFY campaign_id varchar(20) NOT NULL DEFAULT '';##|##
+ ## Optimizing osdial_ivr by removing NULL indexes.  This may take a awhile, do not interrupt!!!;
+
+ALTER TABLE osdial_ivr_options MODIFY ivr_id int(11) NOT NULL DEFAULT '0';##|##
+ ## Optimizing osdial_ivr_options by removing NULL indexes.  This may take a awhile, do not interrupt!!!;
+
+ALTER TABLE osdial_list_pins MODIFY entry_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00', MODIFY phone_number varchar(12) NOT NULL DEFAULT '', MODIFY lead_id int(9) unsigned NOT NULL DEFAULT '0';##|##
+ ## Optimizing osdial_list_pins by removing NULL indexes.  This may take a awhile, do not interrupt!!!;
+
+ALTER TABLE osdial_live_agents MODIFY user varchar(20) NOT NULL DEFAULT '', MODIFY uniqueid varchar(20) NOT NULL DEFAULT '', MODIFY callerid varchar(20) NOT NULL DEFAULT '', MODIFY random_id int(8) unsigned NOT NULL DEFAULT '0', MODIFY last_call_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00', MODIFY last_call_finish datetime NOT NULL DEFAULT '0000-00-00 00:00:00';
+ALTER TABLE osdial_live_inbound_agents MODIFY group_id varchar(20)  NOT NULL DEFAULT '', MODIFY group_weight tinyint(1) unsigned NOT NULL DEFAULT '0';##|##
+ ## Optimizing osdial_live_agents by removing NULL indexes.  This may take a awhile, do not interrupt!!!;
+
+ALTER TABLE osdial_xfer_log MODIFY call_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00', MODIFY phone_number varchar(20) NOT NULL DEFAULT '';##|##
+ ## Optimizing osdial_xfer_log by removing NULL indexes.  This may take a awhile, do not interrupt!!!;
+
+ALTER TABLE osdial_user_log MODIFY user varchar(20) NOT NULL DEFAULT '';##|##
+ ## Optimizing osdial_user_log by removing NULL indexes.  This may take a awhile, do not interrupt!!!;
+
+ALTER TABLE osdial_script_button_log MODIFY script_id varchar(40) NOT NULL DEFAULT '';##|##
+ ## Optimizing osdial_script_button by removing NULL indexes.  This may take a awhile, do not interrupt!!!;
+
+ALTER TABLE osdial_postal_codes MODIFY country_code smallint(5) unsigned NOT NULL DEFAULT '0';##|##
+ ## Optimizing osdial_postal_codes by removing NULL indexes.  This may take a awhile, do not interrupt!!!;
+
+ALTER TABLE osdial_phone_codes MODIFY country_code smallint(5) unsigned NOT NULL DEFAULT '0';##|##
+ ## Optimizing osdial_phone_codes by removing NULL indexes.  This may take a awhile, do not interrupt!!!;
+
+ALTER TABLE osdial_manager MODIFY uniqueid varchar(20) NOT NULL DEFAULT '', MODIFY callerid varchar(20) NOT NULL DEFAULT '';##|##
+ ## Optimizing osdial_manager by removing NULL indexes.  This may take a awhile, do not interrupt!!!;
+
+
 UPDATE system_settings SET version='2.3.0.094',last_update_check=DATE_SUB(NOW(), INTERVAL 1 DAY);##|##
  ##    Updating database to version 2.3.0.094 and clearing last_update_check flag.;
