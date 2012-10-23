@@ -240,21 +240,24 @@ install-asterisk-sample-config:
 	@echo "Installing documents in $(DESTDIR)$(PATHdocs)..."
 	@install -d -m 755 $(DESTDIR)$(PATHdocs)/conf_examples
 	@install -d -m 755 $(DESTDIR)$(PATHdocs)/api
+	#@install -d -m 755 $(DESTDIR)$(PATHdocs)/extras
 	@install -p -m 644 ./docs/*.txt $(DESTDIR)$(PATHdocs)
 	@install -p -m 644 ./docs/copyright $(DESTDIR)$(PATHdocs)
 	@install -p -m 644 ./docs/conf_examples/*.conf $(DESTDIR)$(PATHdocs)/conf_examples
 	@install -p -m 644 ./docs/conf_examples/*.osdial $(DESTDIR)$(PATHdocs)/conf_examples
 	@install -p -m 644 ./docs/api/* $(DESTDIR)$(PATHdocs)/api
-	@install -p -m 644 ./extras/firewall.sh $(DESTDIR)$(PATHdocs)
-	@install -p -m 644 ./extras/osdial-template-example.tgz $(DESTDIR)$(PATHdocs)
-	@install -p -m 644 ./extras/httpd-osdial.conf $(DESTDIR)$(PATHdocs)
-	@install -p -m 644 ./extras/httpd-osdial-archive.conf $(DESTDIR)$(PATHdocs)
-	@install -p -m 644 ./extras/httpd-osdial-ari.conf $(DESTDIR)$(PATHdocs)
-	@install -p -m 644 ./extras/httpd-osdial-psi.conf $(DESTDIR)$(PATHdocs)
-	@install -p -m 644 ./extras/my.cnf $(DESTDIR)$(PATHdocs)
-	@install -p -m 644 ./extras/osdial.conf $(DESTDIR)$(PATHdocs)
-	@install -p -m 644 ./extras/osdial.cron $(DESTDIR)$(PATHdocs)
-	@install -p -m 644 ./extras/php.ini $(DESTDIR)$(PATHdocs)
+	##@install -p -m 644 ./extras/firewall.sh $(DESTDIR)$(PATHdocs)
+	##@install -p -m 644 ./extras/osdial-template-example.tgz $(DESTDIR)$(PATHdocs)
+	##@install -p -m 644 ./extras/httpd-osdial.conf $(DESTDIR)$(PATHdocs)
+	##@install -p -m 644 ./extras/httpd-osdial-archive.conf $(DESTDIR)$(PATHdocs)
+	##@install -p -m 644 ./extras/httpd-osdial-ari.conf $(DESTDIR)$(PATHdocs)
+	##@install -p -m 644 ./extras/httpd-osdial-psi.conf $(DESTDIR)$(PATHdocs)
+	##@install -p -m 644 ./extras/my.cnf $(DESTDIR)$(PATHdocs)
+	##@install -p -m 644 ./extras/osdial.conf $(DESTDIR)$(PATHdocs)
+	##@install -p -m 644 ./extras/osdial.cron $(DESTDIR)$(PATHdocs)
+	##@install -p -m 644 ./extras/php.ini $(DESTDIR)$(PATHdocs)
+	#@install -p ./extras $(DESTDIR)$(PATHdocs)
+	@cp -a ./extras $(DESTDIR)$(PATHdocs)
 	@install -p -m 644 ./AUTHORS $(DESTDIR)$(PATHdocs)
 	@install -p -m 644 ./ChangeLog $(DESTDIR)$(PATHdocs)
 	@install -p -m 644 ./COPYING $(DESTDIR)$(PATHdocs)
