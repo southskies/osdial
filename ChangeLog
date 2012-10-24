@@ -1,5 +1,19 @@
 2012-10-24  Lott Caskey <lottcaskey@gmail.com>
 
+	* [r1601] extras/fail2ban/action.d/mail-buffered.conf,
+	  extras/fail2ban/action.d/mail-digx-whois.conf,
+	  extras/fail2ban/action.d/mail-whois.conf,
+	  extras/fail2ban/action.d/mail.conf,
+	  extras/fail2ban/action.d/sendmail-buffered.conf,
+	  extras/fail2ban/action.d/sendmail-digx-whois.conf,
+	  extras/fail2ban/action.d/sendmail-whois-lines.conf,
+	  extras/fail2ban/action.d/sendmail-whois.conf,
+	  extras/fail2ban/action.d/sendmail.conf: Add short hostnames to
+	  Subject in email. Add full hostname in parts of message body.
+	* [r1600] extras/fail2ban/action.d/mail-whois-lines.conf: Condense
+	  lines so fail2ban.log is readable.
+	* [r1599] extras/osdial.spec: Update spec file.
+	* [r1598] ChangeLog: ChangLog updates.
 	* [r1597] extras/fail2ban/jail.conf: Put OSDial centric rules at
 	  top. Remove unusable tcpwrapper rules. Set bantime and findtime
 	  defaults for asterisk/apache/vsftpd rules. Set maxretries. Turn
