@@ -750,7 +750,7 @@ sub process_request {
 					$sthA->finish();
 				}
 
-				if ($PRI =~ /^PRI$/ && $accountcode =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/ && ( ($dialstatus =~ /BUSY|CONGESTION/ || $hangup_cause =~ /^27$|^29$|^34$|^38$/ || ( $dialstatus =~ /CHANUNAVAIL/ && $hangup_cause =~ /^1$|^28$/ ) ) || $cpa_found>0) ) {
+				if ($PRI =~ /^PRI$/ && $accountcode =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/ && ( ($dialstatus =~ /BUSY|CONGESTION/ || $hangup_cause =~ /^18$|^19$|^21$|^22$|^27$|^29$|^34$|^38$|^102$/ || ( $dialstatus =~ /CHANUNAVAIL/ && $hangup_cause =~ /^1$|^2$|^28$|^111$/ ) ) || $cpa_found>0) ) {
 					if ($cpa_found<1) {
 						if ($dialstatus =~ /CONGESTION/) {
 							$VDL_status='CRC';
@@ -763,11 +763,11 @@ sub process_request {
 							$VDAC_status='DISCONNECT';
 						}
 
-						if ($hangup_cause =~ /^38$/) {
+						if ($hangup_cause =~ /^18$|^38$|^102$/) {
 							# Carrier Failure
 							$VDL_status='CRF';
 							$VDAC_status='CONGESTION';
-						} elsif ($hangup_cause =~ /^29$/) {
+						} elsif ($hangup_cause =~ /^21$|^29$|^111$/) {
 							# Carrier Rejected
 							$VDL_status='CRR';
 							$VDAC_status='CONGESTION';
@@ -775,10 +775,14 @@ sub process_request {
 							# Destination Out of Order
 							$VDL_status='CRO';
 							$VDAC_status='CONGESTION';
-						} elsif ($hangup_cause =~ /^34$/) {
+						} elsif ($hangup_cause =~ /^19$|^34$/) {
 							# General Congestion
 							$VDL_status='CRC';
 							$VDAC_status='CONGESTION';
+						} elsif ($hangup_cause =~ /^22$/) {
+							# Number Changed 
+							$VDL_status='DC';
+							$VDAC_status='DISCONNECT';
 						}
 					}
 
