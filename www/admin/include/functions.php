@@ -1477,4 +1477,31 @@ function mb_vsprintf($format, $argv, $encoding=null) {
 }
 
 
+// Returns a word cased status category ID for display.
+function get_status_category_ucwords($catid) {
+    global $config;
+    $newcatid='';
+
+    if (OSDpreg_match('/^(IVR|CPA)$/i',$catid)) {
+        # if IVR or CPA do not adjust.
+        $newcatid=$catid;
+    } elseif ($catid=="NOCONTACT") {
+        # If NOCONTACT, add special casing.
+        $newcatid="NoContact";
+    } else {
+        # Everything else can be handled by the mb_convert_case or ucwords functions.
+        $newcatid=OSDstrtolower($catid);
+        if ($config['settings']['use_non_latin']==1) {
+            $newcatid=mb_convert_case($newcatid, MB_CASE_TITLE, 'UTF-8');
+        } else {
+            $newcatid=ucwords($newcatid);
+        }
+    }
+    # Add 's' to end of CONTACT, NOCONTACT, SALE to make plural.
+    if (OSDpreg_match('/^(CONTACT|NOCONTACT|SALE)$/i',$newcatid)) $newcatid.='s';
+
+    return $newcatid;
+}
+
+
 ?>

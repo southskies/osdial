@@ -261,29 +261,29 @@ function report_realtime_summary() {
         $html .= "</tr>";
         $html .= "<tr>";
         if (!OSDpreg_match('/NULL/',$VSCcat1) and OSDstrlen($VSCcat1)>0) {
-            $html .= "<td align=right><font size=2 color=$default_text><B>$VSCcat1:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1tally&nbsp;&nbsp;&nbsp;</td>\n";
+            $html .= "<td align=right><font size=2 color=$default_text><B>".get_status_category_ucwords($VSCcat1).":</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1tally&nbsp;&nbsp;&nbsp;</td>\n";
         }
         if (!OSDpreg_match('/NULL/',$VSCcat2) and OSDstrlen($VSCcat2)>0) {
-            $html .= "<td align=right><font size=2 color=$default_text><B>$VSCcat2:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat2tally&nbsp;&nbsp;&nbsp;</td>\n";
+            $html .= "<td align=right><font size=2 color=$default_text><B>".get_status_category_ucwords($VSCcat2).":</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat2tally&nbsp;&nbsp;&nbsp;</td>\n";
         }
         if (!OSDpreg_match('/NULL/',$VSCcat3) and OSDstrlen($VSCcat3)>0) { 
-            $html .= "<td align=right><font size=2 color=$default_text><B>$VSCcat3:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat3tally&nbsp;&nbsp;&nbsp;</td>\n";
+            $html .= "<td align=right><font size=2 color=$default_text><B>".get_status_category_ucwords($VSCcat3).":</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat3tally&nbsp;&nbsp;&nbsp;</td>\n";
         }
         if (!OSDpreg_match('/NULL/',$VSCcat4) and OSDstrlen($VSCcat4)>0) {
-            $html .= "<td align=right><font size=2 color=$default_text><B>$VSCcat4:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat4tally&nbsp;&nbsp;&nbsp;</td>\n";
+            $html .= "<td align=right><font size=2 color=$default_text><B>".get_status_category_ucwords($VSCcat4).":</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat4tally&nbsp;&nbsp;&nbsp;</td>\n";
         }
         $html .= "</tr><tr>";
         if (!OSDpreg_match('/NULL/',$VSCcat1) and OSDstrlen($VSCcat1)>0) {
-            $html .= "<td align=right><font size=2 color=$default_text><B>$VSCcat1/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1hourtally&nbsp;&nbsp;&nbsp;</td>\n";
+            $html .= "<td align=right><font size=2 color=$default_text><B>".get_status_category_ucwords($VSCcat1)."/Hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1hourtally&nbsp;&nbsp;&nbsp;</td>\n";
         }
         if (!OSDpreg_match('/NULL/',$VSCcat2) and OSDstrlen($VSCcat2)>0) {
-            $html .= "<td align=right><font size=2 color=$default_text><B>$VSCcat2/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat2hourtally&nbsp;&nbsp;&nbsp;</td>\n";
+            $html .= "<td align=right><font size=2 color=$default_text><B>".get_status_category_ucwords($VSCcat2)."/Hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat2hourtally&nbsp;&nbsp;&nbsp;</td>\n";
         }
         if (!OSDpreg_match('/NULL/',$VSCcat3) and OSDstrlen($VSCcat3)>0) { 
-            $html .= "<td align=right><font size=2 color=$default_text><B>$VSCcat3/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat3hourtally&nbsp;&nbsp;&nbsp;</td>\n";
+            $html .= "<td align=right><font size=2 color=$default_text><B>".get_status_category_ucwords($VSCcat3)."/Hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat3hourtally&nbsp;&nbsp;&nbsp;</td>\n";
         }
         if (!OSDpreg_match('/NULL/',$VSCcat4) and OSDstrlen($VSCcat4)>0) {
-            $html .= "<td align=right><font size=2 color=$default_text><B>$VSCcat4/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat4hourtally&nbsp;&nbsp;&nbsp;</td>\n";
+            $html .= "<td align=right><font size=2 color=$default_text><B>".get_status_category_ucwords($VSCcat4)."/Hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat4hourtally&nbsp;&nbsp;&nbsp;</td>\n";
         }
         
         $html .= "</tr>";
