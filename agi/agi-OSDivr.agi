@@ -624,7 +624,7 @@ sub stream_and_get_dtmf {
 		$total_digits = '';
 		$stream =~ s/\..*$//;
 		my $interrupt_digit = stream_file_tts($stream,'0123456789#*');
-		if ($interrupt_digit) {
+		if ($interrupt_digit>0) {
 			my $int_digit=chr($interrupt_digit);
 			if (!$int_digit =~ /$valid_pat/) {
 				$dcount = 1;
