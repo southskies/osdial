@@ -815,7 +815,7 @@ while($one_day_interval > 0)
 							}
 						}
 
-						$stmtA = "UPDATE osdial_live_agents SET random_id='$VD_random[$z]',last_call_finish='$SQLdate',lead_id='',uniqueid='',callerid='',channel='' WHERE user='" . $osdial->mres($VD_user[$z]) . "' AND server_ip='$server_ip';";
+						$stmtA = "UPDATE osdial_live_agents SET random_id='$VD_random[$z]',last_call_finish='$SQLdate',lead_id='0',uniqueid='',callerid='',channel='' WHERE user='" . $osdial->mres($VD_user[$z]) . "' AND server_ip='$server_ip';";
 						$affected_rows = $dbhA->do($stmtA);
 						$stmtA = "UPDATE osdial_live_agents SET status='READY' WHERE user='" . $osdial->mres($VD_user[$z]) . "' AND server_ip='$server_ip';";
 						my $Baffected_rows = $dbhA->do($stmtA);
