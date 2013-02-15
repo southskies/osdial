@@ -597,8 +597,14 @@ sub gen_conferences {
 		$mtm2 .= "conf => " . $sret->{conf_exten} . "\n";
 	}
 	$cnf2 .= "exten => 487487,1,Playback(sip-silence)\n";
-	$cnf2 .= "exten => 487487,n,AGI(agi-OSDivr.agi,\${EXTEN})\n";
+	$cnf2 .= "exten => 487487,n,AGI(agi-OSDivr-old.agi,\${EXTEN})\n";
 	$cnf2 .= "exten => 487487,n,Hangup()\n";
+	$cnf2 .= "exten => _487488,1,Playback(sip-silence)\n";
+	$cnf2 .= "exten => _487488,n,AGI(agi-OSDivr.agi,\${EXTEN})\n";
+	$cnf2 .= "exten => _487488,n,Hangup()\n";
+	$cnf2 .= "exten => _487489.,1,Playback(sip-silence)\n";
+	$cnf2 .= "exten => _487489.,n,ChanSpy(,g(\${EXTEN:6})qo)\n";
+	$cnf2 .= "exten => _487489.,n,Hangup()\n";
 	$cnf .= ";\n; OSDIAL Virtual Agent Conferences\n";
 	$cnf .= $cnf2;
 	$mtm .= ";\n; OSDIAL Virtual Agent Conferences\n";
