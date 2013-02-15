@@ -964,10 +964,9 @@ while ($drop_timer <= $DROP_TIME) {
 				#}
 				$alertVDADremDIALstr = "$VDADremDIALstr";
 				$alertVDADremDIALstr .= "9$VDADconf_exten";
-				$VDADremDIALstr .= "7$VDADconf_exten";
 
 				### if agent alert exten is not disabled, then trigger the alert and wait
-				if ($agent_alert_exten !~ /X/i) {
+				if ($agent_alert_exten !~ /X/i and $VDADconf_exten !~ /^87......$|^687......$|^787......$/) {
 					$VHqueryCID = "VH$CIDdate$VDADconf_exten";
 
 					### insert a NEW record to the osdial_manager table to play the alert message to the agent
@@ -977,8 +976,6 @@ while ($drop_timer <= $DROP_TIME) {
 
 					usleep(1 * $agent_alert_delay * 1000);
 				}
-
-				if ($AGILOG) {$agi_string = "exiting VDAD app, transferring call to $VDADremDIALstr";   &agi_output;}
 
 				$AGI->stream_file('sip-silence'); # stop music-on-hold process
 
@@ -1004,12 +1001,23 @@ while ($drop_timer <= $DROP_TIME) {
 				}
 
 				if ($VDADconf_exten =~ /^87......$|^687......$|^787......$/) {
-					$stmtA="INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$accountcode','Channel: Local/$VDADremDIALstr\@$ext_context','Context: $ext_context','Exten: 487487','Priority: 1','Account: $accountcode','','','','','');";
+					if (defined($osdial->{VARoldivr})) {
+						$VDADremDIALstr .= "7$VDADconf_exten";
+						$stmtA="INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$accountcode','Channel: Local/$VDADremDIALstr\@$ext_context','Context: $ext_context','Exten: 487487','Priority: 1','Account: $accountcode','','','','','');";
+					} else {
+						print "SET VARIABLE SPYGROUP=$accountcode\n";
+						checkresult();
+						$stmtA="INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$accountcode','Channel: Local/7$VDADconf_exten\@$ext_context','Context: $ext_context','Exten: 487489$accountcode','Priority: 1','Account: $accountcode','','','','','');";
+						$VDADremDIALstr .= '487488';
+					}
 					$affected_rows = $dbhA->do($stmtA);
 					if ($AGILOG and $DB>1) {$agi_string = "$affected_rows|$stmtA";   &agi_output;}
 				} else {
 					usleep(1*500*1000);
+					$VDADremDIALstr .= "7$VDADconf_exten";
 				}
+
+				if ($AGILOG) {$agi_string = "exiting VDAD app, transferring call to $VDADremDIALstr";   &agi_output;}
 
 				print "SET CONTEXT $ext_context\n";
 				checkresult();
@@ -1180,10 +1188,9 @@ while ($drop_timer <= $DROP_TIME) {
 				}
 				$alertVDADremDIALstr = "$VDADremDIALstr";
 				$alertVDADremDIALstr .= "9$VDADconf_exten";
-				$VDADremDIALstr .= "7$VDADconf_exten";
 
 				### if agent alert exten is not disabled, then trigger the alert and wait
-				if ($agent_alert_exten !~ /X/i) {
+				if ($agent_alert_exten !~ /X/i and $VDADconf_exten !~ /^87......$|^687......$|^767......$/) {
 					$VHqueryCID = "VH$CIDdate$VDADconf_exten";
 
 					### insert a NEW record to the osdial_manager table to play the alert message to the agent
@@ -1194,9 +1201,6 @@ while ($drop_timer <= $DROP_TIME) {
 					usleep(1 * $agent_alert_delay * 1000);
 				}
 
-				if ($AGILOG) {$agi_string = "exiting VDAD app, transferring call to $VDADremDIALstr";   &agi_output;}
-
-				$AGI->stream_file('sip-silence'); # stop music-on-hold process
 				$AGI->stream_file('sip-silence'); # stop music-on-hold process
 
 				### update calls_today for osdial_live_inbound_agents ###
@@ -1221,12 +1225,23 @@ while ($drop_timer <= $DROP_TIME) {
 				}
 
 				if ($VDADconf_exten =~ /^87......$|^687......$|^767......$/) {
-					$stmtA="INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$accountcode','Channel: Local/$VDADremDIALstr\@$ext_context','Context: $ext_context','Exten: 487487','Priority: 1','Account: $accountcode','','','','','');";
+					if (defined($osdial->{VARoldivr})) {
+						$VDADremDIALstr .= "7$VDADconf_exten";
+						$stmtA="INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$accountcode','Channel: Local/$VDADremDIALstr\@$ext_context','Context: $ext_context','Exten: 487487','Priority: 1','Account: $accountcode','','','','','');";
+					} else {
+						print "SET VARIABLE SPYGROUP=$accountcode\n";
+						checkresult();
+						$stmtA="INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$accountcode','Channel: Local/7$VDADconf_exten\@$ext_context','Context: $ext_context','Exten: 487489$accountcode','Priority: 1','Account: $accountcode','','','','','');";
+						$VDADremDIALstr .= '487488';
+					}
 					$affected_rows = $dbhA->do($stmtA);
 					if ($AGILOG and $DB>1) {$agi_string = "$affected_rows|$stmtA";   &agi_output;}
 				} else {
 					usleep(1*500*1000);
+					$VDADremDIALstr .= "7$VDADconf_exten";
 				}
+
+				if ($AGILOG) {$agi_string = "exiting VDAD app, transferring call to $VDADremDIALstr";   &agi_output;}
 
 				print "SET CONTEXT $ext_context\n";
 				checkresult();

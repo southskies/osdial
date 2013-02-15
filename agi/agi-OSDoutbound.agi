@@ -360,12 +360,20 @@ while ($drop_timer <= $campaign->{drop_call_seconds}) {
 					$remDIALstr .= '*';
 				}
 			}
-			$remDIALstr .= $conf_exten;
 
 			if ($conf_exten =~ /^87......$/) {
-				$stmt=sprintf("INSERT INTO osdial_manager VALUES ('','','%s','NEW','N','%s','','Originate','%s','Channel: Local/%s\@%s','Context: %s','Exten: 487487','Priority: 1','Callerid: \"\" <0000000000>','Account: %s','','','','');", $SQLdate,$osd->{VARserver_ip},$osd->AGI->{accountcode},$remDIALstr,$osd->{server}{ext_context},$osd->{server}{ext_context},$osd->AGI->{accountcode});
+				if (defined($osd->{VARoldivr})) {
+					$remDIALstr .= $conf_exten;
+					$stmt=sprintf("INSERT INTO osdial_manager VALUES ('','','%s','NEW','N','%s','','Originate','%s','Channel: Local/%s\@%s','Context: %s','Exten: 487487','Priority: 1','Callerid: \"\" <0000000000>','Account: %s','','','','');", $SQLdate,$osd->{VARserver_ip},$osd->AGI->{accountcode},$remDIALstr,$osd->{server}{ext_context},$osd->{server}{ext_context},$osd->AGI->{accountcode});
+				} else {
+					$osd->AGI->set_variable('SPYGROUP',$osd->AGI->{accountcode});
+					$stmt=sprintf("INSERT INTO osdial_manager VALUES ('','','%s','NEW','N','%s','','Originate','%s','Channel: Local/%s\@%s','Context: %s','Exten: 487489%s','Priority: 1','Callerid: \"\" <0000000000>','Account: %s','','','','');", $SQLdate,$osd->{VARserver_ip},$osd->AGI->{accountcode},$remDIALstr.$conf_exten,$osd->{server}{ext_context},$osd->{server}{ext_context},$osd->AGI->{accountcode},$osd->AGI->{accountcode});
+					$remDIALstr .= '487488';
+				}
 				$affected_rows = $osd->sql_execute($stmt);
 				$osd->agi_output("|$stmt|");
+			} else {
+				$remDIALstr .= $conf_exten;
 			}
 
 			$osd->agi_output("exiting the VDAD app, transferring call to $remDIALstr");
