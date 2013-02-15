@@ -871,19 +871,42 @@ sub process_request {
 						&agi_output;
 					}
 				} else {
-					$stmtA = "SELECT SQL_NO_CACHE user,extension FROM osdial_live_agents WHERE uniqueid='$uniqueid' AND (extension LIKE 'R/va\%' OR extension LIKE 'R/tmp\%') LIMIT 1;";
+					$stmtA = "SELECT SQL_NO_CACHE live_agent_id,user,extension,uniqueid,last_call_time,server_ip,conf_exten FROM osdial_live_agents WHERE uniqueid='$uniqueid' AND (extension LIKE 'R/va\%' OR extension LIKE 'R/tmp\%') LIMIT 1;";
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					$sthArows=$sthA->rows;
 					if ($sthArows > 0) {
 						@aryA = $sthA->fetchrow_array;
-						$OLAuser = $aryA[0];
-						$OLAext = $aryA[1];
+						$OLAid = $aryA[0];
+						$OLAuser = $aryA[1];
+						$OLAext = $aryA[2];
+						$OLAuniqueid = $aryA[3];
+						$OLAlct = $aryA[4];
+						$OLAserver = $aryA[5];
+						$OLAconf = $aryA[6];
 						$talksec = ($now_date_epoch - $VD_start_epoch);
 						if ( ($OLAext =~ /^R\/tmp/) && ($OLAuser =~ /^tmp/) ) {
 							$stmtA = "DELETE FROM osdial_users WHERE user='" . $osdial->mres($OLAuser) . "' LIMIT 1;";
 							my $affected_rows = $dbhA->do($stmtA);
 							$stmtA = "DELETE FROM osdial_live_agents WHERE uniqueid='$uniqueid' LIMIT 1;";
+							my $affected_rows = $dbhA->do($stmtA);
+						} else {
+							my $CIDdate = $now_date;
+							$CIDdate =~ s/[ \-:]//g;
+							my $KqueryCID='ULGH3956'.$CIDdate;
+							$stmtA = "INSERT INTO osdial_manager values('','','$now_date','NEW','N','$OLAserver','','Originate','$KqueryCID','Channel: Local/5555" . $OLAconf . "\@osdial','Context: osdial','Exten: 8300','Priority: 1','Callerid: $KqueryCID','Accountcode: $KqueryCID','','','','')";
+							my $affected_rows = $dbhA->do($stmtA);
+
+							my $OALcalls=0;
+							$stmtA = "SELECT COUNT(*) FROM osdial_agent_log WHERE user='$OLAuser' AND event_time>='$year-$mon-$mday 00:00:00' AND event_time<='$year-$mon-$mday 23:59:59';";
+							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+							$sthArows=$sthA->rows;
+							if ($sthArows > 0) {
+								@aryA = $sthA->fetchrow_array;
+								$OLAcalls = $aryA[0];
+							}
+							$stmtA = "UPDATE osdial_live_agents SET status='READY',lead_id='0',uniqueid='',callerid='',channel='',calls_today='$OLAcalls',last_call_finish=NOW() WHERE live_agent_id='$OLAid';";
 							my $affected_rows = $dbhA->do($stmtA);
 						}
 						$stmtA = "SELECT status,comments FROM osdial_list WHERE lead_id='$VD_lead_id';";
@@ -894,8 +917,7 @@ sub process_request {
 							@aryA = $sthA->fetchrow_array;
 							$lstat = $aryA[0];
 							$lcomm = $aryA[1];
-							@aryA = $sthA->fetchrow_array;
-							$stmtA = "INSERT INTO osdial_agent_log SET user='" . $osdial->mres($OLAuser) . "',server_ip='$VARserver_ip',event_time=NOW(),lead_id='$VD_lead_id',campaign_id='" . $osdial->mres($VD_campaign_id) . "',talk_epoch='$VD_start_epoch',talk_sec='$talksec',status='" . $osdial->mres($lstat) . "',user_group='VIRTUAL',comments='" . $osdial->mres($lcomm) . "';";
+							$stmtA = "INSERT INTO osdial_agent_log SET user='" . $osdial->mres($OLAuser) . "',server_ip='$VARserver_ip',event_time='$OLAlct',uniqueid='$OLAuniqueid',lead_id='$VD_lead_id',campaign_id='" . $osdial->mres($VD_campaign_id) . "',talk_epoch='$VD_start_epoch',talk_sec='$talksec',status='" . $osdial->mres($lstat) . "',user_group='VIRTUAL',comments='" . $osdial->mres($lcomm) . "';";
 							my $affected_rows = $dbhA->do($stmtA);
 						}
 					}
