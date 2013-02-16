@@ -270,28 +270,30 @@ sub gen_servers {
 	$isvr .= "type=friend\n";
 	$isvr .= "accountcode=ASTloop\n";
 	$isvr .= "context=osdial\n";
-	$isvr .= "auth=md5\n";
+	$isvr .= "auth=plaintext\n";
+	$isvr .= "trunk=yes\n";
 	$isvr .= "host=dynamic\n";
 	$isvr .= $pmmask;
 	$isvr .= "secret=$pass\n";
 	$isvr .= "disallow=all\n";
-	$isvr .= "allow=ulaw\n";
+	$isvr .= "allow=ulaw,alaw,gsm,slin,slin16,g729,g726,g722,g723\n";
 	$isvr .= "requirecalltoken=no\n";
-	$isvr .= "qualify=5000\n";
+	$isvr .= "qualify=no\n";
 
 	$isvr .= ";\n; IAX loopback for blind monitoring\n";
 	$isvr .= "[ASTblind]\n";
 	$isvr .= "type=friend\n";
 	$isvr .= "accountcode=ASTblind\n";
 	$isvr .= "context=osdial\n";
-	$isvr .= "auth=md5\n";
+	$isvr .= "auth=plaintext\n";
+	$isvr .= "trunk=yes\n";
 	$isvr .= "host=dynamic\n";
 	$isvr .= $pmmask;
 	$isvr .= "secret=$pass\n";
 	$isvr .= "disallow=all\n";
-	$isvr .= "allow=ulaw\n";
+	$isvr .= "allow=ulaw,alaw,gsm,slin,slin16,g729,g726,g722,g723\n";
 	$isvr .= "requirecalltoken=no\n";
-	$isvr .= "qualify=5000\n";
+	$isvr .= "qualify=no\n";
 
 	$esvr .= "; Local blind monitoring\n";
 	$esvr .= "exten => _0860XXXX,1,Dial(\${TRUNKblind}/6\${EXTEN:1},55,o)\n";
@@ -335,17 +337,15 @@ sub gen_servers {
 		$isvr .= "host=" . $sret->{server_ip} . "\n";
 		$isvr .= $pmmask;
 		$isvr .= "trunk=yes\n";
-		$isvr .= "tos=0x18\n";
-		$isvr .= "qualify=5000\n";
-		$isvr .= "auth=md5\n";
+		$isvr .= "tos=ef\n";
+		$isvr .= "cos=5\n";
+		$isvr .= "qualify=no\n";
+		$isvr .= "auth=plaintext\n";
 		$isvr .= "secret=$pass\n";
 		$isvr .= "disallow=all\n";
-		$isvr .= "allow=ulaw\n";
-		$isvr .= "allow=gsm\n";
-		$isvr .= "allow=g729\n";
+		$isvr .= "allow=ulaw,alaw,gsm,slin,slin16,g729,g726,g722,g723\n";
 		$isvr .= "context=osdial\n";
 		$isvr .= "requirecalltoken=no\n";
-		$isvr .= "nat=no\n";
 
 		$ssvr .= ";\n;" . $sret->{server_id} . ' - ' . $sret->{server_ip} . "\n";
 		$ssvr .= "[" . $sret->{server_id} . "]\n";
@@ -353,22 +353,19 @@ sub gen_servers {
 		$ssvr .= "username=" . $sret->{server_id} . "\n";
 		$ssvr .= "host=" . $sret->{server_ip} . "\n";
 		$ssvr .= $pmmask;
-		$ssvr .= "trunk=yes\n";
-		$ssvr .= "tos=0x18\n";
-		$ssvr .= "qualify=5000\n";
+		$ssvr .= "tos_sip=cs3\n";
+		$ssvr .= "tos_audio=ef\n";
+		$ssvr .= "cos_sip=3\n";
+		$ssvr .= "cos_audio=5\n";
+		$ssvr .= "qualify=no\n";
 		$ssvr .= "secret=$pass\n";
 		$ssvr .= "disallow=all\n";
-		$ssvr .= "allow=ulaw\n";
-		$ssvr .= "allow=gsm\n";
-		$ssvr .= "allow=g729\n";
+		$ssvr .= "allow=ulaw,alaw,gsm,slin,slin16,g729,g726,g722,g723\n";
 		$ssvr .= "dtmfmode=auto\n";
 		$ssvr .= "relaxdtmf=yes\n";
 		$ssvr .= "context=osdial\n";
-		$ssvr .= "insecure=invite,port\n";
-		$ssvr .= "sendrpid=yes\n";
-		$ssvr .= "trustrpid=yes\n";
+		$ssvr .= "insecure=port\n";
 		$ssvr .= "canreinvite=no\n";
-		$ssvr .= "nat=yes\n";
 	}
 
 	# Get other servers 
@@ -384,9 +381,9 @@ sub gen_servers {
 		my @sip = split /\./, $sret->{server_ip};
 		my $fsip = sprintf('%.3d*%.3d*%.3d*%.3d',@sip);
 		$esvr .= ";\n;" . $sret->{server_id} . ' - ' . $sret->{server_ip} . "\n";
-		$esvr .= "exten => _" . $fsip . "*.,1,Dial(SIP/" . $sret->{server_id} . "/\${EXTEN},60,o)\n";
+		$esvr .= "exten => _" . $fsip . "*.,1,Dial(SIP/" . $sret->{server_id} . "/\${EXTEN},,o)\n";
 		$esvr .= "exten => _" . $fsip . "*.,2,Hangup()\n";
-		$esvr .= "exten => _" . $fsip . "#.,1,Dial(IAX2/" . $sret->{server_id} . "/\${EXTEN},60,o)\n";
+		$esvr .= "exten => _" . $fsip . "#.,1,Dial(IAX2/" . $sret->{server_id} . "/\${EXTEN},,o)\n";
 		$esvr .= "exten => _" . $fsip . "#.,2,Hangup()\n";
 
 		$isvr .= ";\n;" . $sret->{server_id} . ' - ' . $sret->{server_ip} . "\n";
@@ -396,17 +393,15 @@ sub gen_servers {
 		$isvr .= "host=" . $sret->{server_ip} . "\n";
 		$isvr .= $pmmask;
 		$isvr .= "trunk=yes\n";
-		$isvr .= "tos=0x18\n";
-		$isvr .= "qualify=5000\n";
-		$isvr .= "auth=md5\n";
+		$isvr .= "tos=ef\n";
+		$isvr .= "cos=5\n";
+		$isvr .= "qualify=no\n";
+		$isvr .= "auth=plaintext\n";
 		$isvr .= "secret=$pass\n";
 		$isvr .= "disallow=all\n";
-		$isvr .= "allow=ulaw\n";
-		$isvr .= "allow=gsm\n";
-		$isvr .= "allow=g729\n";
+		$isvr .= "allow=ulaw,alaw,gsm,slin,slin16,g729,g726,g722,g723\n";
 		$isvr .= "context=osdial\n";
 		$isvr .= "requirecalltoken=no\n";
-		$isvr .= "nat=no\n";
 
 		$ssvr .= ";\n;" . $sret->{server_id} . ' - ' . $sret->{server_ip} . "\n";
 		$ssvr .= "[" . $sret->{server_id} . "]\n";
@@ -414,22 +409,19 @@ sub gen_servers {
 		$ssvr .= "username=" . $sret->{server_id} . "\n";
 		$ssvr .= "host=" . $sret->{server_ip} . "\n";
 		$ssvr .= $pmmask;
-		$ssvr .= "trunk=yes\n";
-		$ssvr .= "tos=0x18\n";
-		$ssvr .= "qualify=5000\n";
+		$ssvr .= "tos_sip=cs3\n";
+		$ssvr .= "tos_audio=ef\n";
+		$ssvr .= "cos_sip=3\n";
+		$ssvr .= "cos_audio=5\n";
+		$ssvr .= "qualify=no\n";
 		$ssvr .= "secret=$pass\n";
 		$ssvr .= "disallow=all\n";
-		$ssvr .= "allow=ulaw\n";
-		$ssvr .= "allow=gsm\n";
-		$ssvr .= "allow=g729\n";
+		$ssvr .= "allow=ulaw,alaw,gsm,slin,slin16,g729,g726,g722,g723\n";
 		$ssvr .= "dtmfmode=auto\n";
 		$ssvr .= "relaxdtmf=yes\n";
 		$ssvr .= "context=osdial\n";
-		$ssvr .= "insecure=invite,port\n";
-		$ssvr .= "sendrpid=yes\n";
-		$ssvr .= "trustrpid=yes\n";
+		$ssvr .= "insecure=port\n";
 		$ssvr .= "canreinvite=no\n";
-		$ssvr .= "nat=yes\n";
 	}
 
 	my $extreload = "extensions reload";
@@ -469,14 +461,14 @@ sub gen_conferences {
 		$stmt .= " server_ip=\'" . $ip . "\' OR";
 	}
 
-	if ($asterisk_version =~ /^1\.6|^1\.8/) {
-		$cnf .= ";\n; DAHDIBarge direct channel extensions\n";
-		$cnf .= "exten => _8612XXX,1,DAHDIBarge(\${EXTEN:4})\n";
-	} else {
-		$cnf .= ";\n; ZapBarge direct channel extensions\n";
-		$cnf .= "exten => _8612XXX,1,ZapBarge(\${EXTEN:4})\n";
-	}
-	$cnf .= "exten => _8612XXX,2,Hangup()\n";
+	#if ($asterisk_version =~ /^1\.6|^1\.8/) {
+	#	$cnf .= ";\n; DAHDIBarge direct channel extensions\n";
+	#	$cnf .= "exten => _8612XXX,1,DAHDIBarge(\${EXTEN:4})\n";
+	#} else {
+	#	$cnf .= ";\n; ZapBarge direct channel extensions\n";
+	#	$cnf .= "exten => _8612XXX,1,ZapBarge(\${EXTEN:4})\n";
+	#}
+	#$cnf .= "exten => _8612XXX,2,Hangup()\n";
 
 	chop $stmt; chop $stmt; chop $stmt;
 	print $stmt . "\n" if ($DB);
@@ -485,15 +477,19 @@ sub gen_conferences {
 	while (my $sret = $osdial->sql_query($stmt)) {
 		$cf = $sret->{conf_exten} unless ($cf);
 		$cl = $sret->{conf_exten};
-		if ($asterisk_version =~ /^1\.6|^1\.8/) {
-			$cnf2 .= "exten => _" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN},q)\n";
-			$cnf2 .= "exten => _" . $sret->{conf_exten} . ",2,Hangup()\n";
-		} else {
-			$cnf2 .= "exten => _" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN}|q\n";
-			$cnf2 .= "exten => _" . $sret->{conf_exten} . ",2,Hangup\n";
+		if ($cl !~ /^8600...$/) {
+			if ($asterisk_version =~ /^1\.6|^1\.8/) {
+				$cnf2 .= "exten => _" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN},q)\n";
+				$cnf2 .= "exten => _" . $sret->{conf_exten} . ",2,Hangup()\n";
+			} else {
+				$cnf2 .= "exten => _" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN}|q\n";
+				$cnf2 .= "exten => _" . $sret->{conf_exten} . ",2,Hangup\n";
+			}
 		}
 		$mtm2 .= "conf => " . $sret->{conf_exten} . "\n";
 	}
+	$cnf2 .= "exten => _8600XXX,1,AGI(agi-OSDagent_conf.agi,genconf)\n";
+	$cnf2 .= "exten => _8600XXX,n,Hangup()\n";
 
 	$cnf .= ";\n; OSDial Conferences $cf - $cl\n";
 	$cnf .= $cnf2;
@@ -511,40 +507,53 @@ sub gen_conferences {
 	while (my $sret = $osdial->sql_query($stmt)) {
                 $cf = $sret->{conf_exten} unless ($cf);
                 $cl = $sret->{conf_exten};
-		if ($asterisk_version =~ /^1\.6|^1\.8/) {
-			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",1,Meetme(\${EXTEN},F)\n";
-			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",2,Hangup()\n";
-			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},F)\n";
-			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",2,Hangup()\n";
-			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",1,Set(SPYGROUP=\${EXTEN:1})\n";
-			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",2,Meetme(\${EXTEN:1},F)\n";
-			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",3,Hangup()\n";
-			$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Flq)\n";
-			$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",2,Hangup()\n";
-			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Flq)\n";
-			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",2,Hangup()\n";
-			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
-			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",2,Hangup()\n";
-			$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",1,Chanspy(,g(\${EXTEN:1})qw)\n";
-			$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",2,Hangup()\n";
-		} else {
-			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",1,Meetme,\${EXTEN}|F\n";
-			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",2,Hangup\n";
-			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|F\n";
-			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",2,Hangup\n";
-			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|F\n";
-			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",2,Hangup\n";
-			$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
-			$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",2,Hangup\n";
-			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
-			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",2,Hangup\n";
-			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
-			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",2,Hangup\n";
-			$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
-			$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",2,Hangup\n";
+		if ($cl !~ /^8601...$/) {
+			if ($asterisk_version =~ /^1\.6|^1\.8/) {
+				$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",1,Meetme(\${EXTEN},F)\n";
+				$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",2,Hangup()\n";
+				$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},F)\n";
+				$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",2,Hangup()\n";
+				$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",1,Set(SPYGROUP=\${EXTEN:1})\n";
+				$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",2,Meetme(\${EXTEN:1},F)\n";
+				$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",3,Hangup()\n";
+				$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Flq)\n";
+				$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",2,Hangup()\n";
+				$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Flq)\n";
+				$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",2,Hangup()\n";
+				$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
+				$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",2,Hangup()\n";
+				$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",1,Chanspy(,g(\${EXTEN:1})qwES)\n";
+				$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",2,Hangup()\n";
+			} else {
+				$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",1,Meetme,\${EXTEN}|F\n";
+				$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",2,Hangup\n";
+				$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|F\n";
+				$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",2,Hangup\n";
+				$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|F\n";
+				$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",2,Hangup\n";
+				$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
+				$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",2,Hangup\n";
+				$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
+				$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",2,Hangup\n";
+				$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
+				$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",2,Hangup\n";
+				$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
+				$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",2,Hangup\n";
+			}
 		}
 		$mtm2 .= "conf => " . $sret->{conf_exten} . "\n";
         }
+	$cnf2 .= "exten => _8601XXX,1,AGI(agi-OSDagent_conf.agi,agentconf)\n";
+	$cnf2 .= "exten => _8601XXX,n,Hangup()\n";
+	$cnf2 .= "exten => _68601XXX,1,AGI(agi-OSDagent_conf.agi,agentmon)\n";
+	$cnf2 .= "exten => _68601XXX,n,Hangup()\n";
+	$cnf2 .= "exten => _78601XXX,1,AGI(agi-OSDagent_conf.agi,agentmon)\n";
+	$cnf2 .= "exten => _78601XXX,n,Hangup()\n";
+	$cnf2 .= "exten => _98601XXX,1,AGI(agi-OSDagent_conf.agi,agentmon)\n";
+	$cnf2 .= "exten => _98601XXX,n,Hangup()\n";
+	$cnf2 .= "exten => _Z8601XXX,1,AGI(agi-OSDagent_conf.agi,agentmon)\n";
+	$cnf2 .= "exten => _Z8601XXX,n,Hangup()\n";
+
 	$cnf .= ";\n; OSDIAL Agent Conferences $cf - $cl\n";
 	$cnf .= "; quiet entry and leaving conferences for OSDIAL $cf - $cl\n";
 	$cnf .= "; quiet monitor extensions for meetme rooms (for room managers)  $cf - $cl\n";
@@ -555,55 +564,67 @@ sub gen_conferences {
 	my $stmt = "SELECT conf_exten FROM osdial_remote_agents WHERE user_start LIKE 'va\%';";
         my ($cnf2,$mtm2,$cf,$cl);
 	while (my $sret = $osdial->sql_query($stmt)) {
-		if ($asterisk_version =~ /^1\.6|^1\.8/) {
-			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",1,Answer()\n";
-			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",2,Playback(sip-silence)\n";
-			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",3,Meetme(\${EXTEN},Fq)\n";
-			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",4,Hangup()\n";
-			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
-			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",2,Hangup()\n";
-			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
-			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",2,Hangup()\n";
-			$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Flq)\n";
-			$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",2,Hangup()\n";
-			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Flq)\n";
-			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",2,Hangup()\n";
-			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
-			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",2,Hangup()\n";
-			$cnf2 .= "exten => _8" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
-			$cnf2 .= "exten => _8" . $sret->{conf_exten} . ",2,Hangup()\n";
-			$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",1,Chanspy(,g(\${EXTEN:1})qw)\n";
-			$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",2,Hangup()\n";
-		} else {
-			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",1,Answer()\n";
-			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",2,Playback(sip-silence)\n";
-			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",3,Meetme,\${EXTEN}|Fq\n";
-			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",4,Hangup\n";
-			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
-			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",2,Hangup\n";
-			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
-			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",2,Hangup\n";
-			$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
-			$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",2,Hangup\n";
-			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
-			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",2,Hangup\n";
-			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
-			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",2,Hangup\n";
-			$cnf2 .= "exten => _8" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
-			$cnf2 .= "exten => _8" . $sret->{conf_exten} . ",2,Hangup\n";
-			$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
-			$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",2,Hangup\n";
+		if ($sret->{conf_exten} !~ /^87......$/) {
+			if ($asterisk_version =~ /^1\.6|^1\.8/) {
+				$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",1,Answer()\n";
+				$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",2,Playback(sip-silence)\n";
+				$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",3,Meetme(\${EXTEN},Fq)\n";
+				$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",4,Hangup()\n";
+				$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
+				$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",2,Hangup()\n";
+				$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
+				$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",2,Hangup()\n";
+				$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Flq)\n";
+				$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",2,Hangup()\n";
+				$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Flq)\n";
+				$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",2,Hangup()\n";
+				$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
+				$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",2,Hangup()\n";
+				$cnf2 .= "exten => _8" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
+				$cnf2 .= "exten => _8" . $sret->{conf_exten} . ",2,Hangup()\n";
+				$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",1,Chanspy(,g(\${EXTEN:1})qwES)\n";
+				$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",2,Hangup()\n";
+			} else {
+				$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",1,Answer()\n";
+				$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",2,Playback(sip-silence)\n";
+				$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",3,Meetme,\${EXTEN}|Fq\n";
+				$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",4,Hangup\n";
+				$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
+				$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",2,Hangup\n";
+				$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
+				$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",2,Hangup\n";
+				$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
+				$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",2,Hangup\n";
+				$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
+				$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",2,Hangup\n";
+				$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
+				$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",2,Hangup\n";
+				$cnf2 .= "exten => _8" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
+				$cnf2 .= "exten => _8" . $sret->{conf_exten} . ",2,Hangup\n";
+				$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
+				$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",2,Hangup\n";
+			}
 		}
 		$mtm2 .= "conf => " . $sret->{conf_exten} . "\n";
 	}
-	$cnf2 .= "exten => 487487,1,Playback(sip-silence)\n";
-	$cnf2 .= "exten => 487487,n,AGI(agi-OSDivr-old.agi,\${EXTEN})\n";
-	$cnf2 .= "exten => 487487,n,Hangup()\n";
-	$cnf2 .= "exten => _487488,1,Playback(sip-silence)\n";
+
+	$cnf2 .= "exten => _87XXXXXX,1,Answer()\n";
+	$cnf2 .= "exten => _87XXXXXX,2,Playback(sip-silence)\n";
+	$cnf2 .= "exten => _87XXXXXX,3,AGI(agi-OSDagent_conf.agi,vaconf)\n";
+	$cnf2 .= "exten => _87XXXXXX,4,Hangup()\n";
+	$cnf2 .= "exten => _Z87XXXXXX,1,AGI(agi-OSDagent_conf.agi,vamon)\n";
+	$cnf2 .= "exten => _Z87XXXXXX,2,Hangup()\n";
+
+	if (defined($osdial->{VARoldivr})) {
+		$cnf2 .= "exten => 487487,1,Playback(sip-silence)\n";
+		$cnf2 .= "exten => 487487,n,AGI(agi-OSDivr-old.agi,\${EXTEN})\n";
+		$cnf2 .= "exten => 487487,n,Hangup()\n";
+	}
+	$cnf2 .= "exten => _487488,1,Answer()\n";
+	$cnf2 .= "exten => _487488,n,Playback(sip-silence)\n";
 	$cnf2 .= "exten => _487488,n,AGI(agi-OSDivr.agi,\${EXTEN})\n";
 	$cnf2 .= "exten => _487488,n,Hangup()\n";
-	$cnf2 .= "exten => _487489.,1,Playback(sip-silence)\n";
-	$cnf2 .= "exten => _487489.,n,ChanSpy(,g(\${EXTEN:6})qo)\n";
+	$cnf2 .= "exten => _487489.,1,ChanSpy(,g(\${EXTEN:6})qES)\n";
 	$cnf2 .= "exten => _487489.,n,Hangup()\n";
 	$cnf .= ";\n; OSDIAL Virtual Agent Conferences\n";
 	$cnf .= $cnf2;
@@ -696,7 +717,7 @@ sub gen_phones {
 			$sphn .= "allow=gsm\n";
 			$sphn .= "allow=g729\n";
 			$sphn .= "qualify=5000\n";
-			$sphn .= "nat=yes\n";
+			$sphn .= "nat=yes\n" if ($sret->{phone_type} =~ /NAT/i);
 			$sphn .= "context=" . $sret->{ext_context} . "\n";
 			$sphn .= "mailbox=" . $sret->{voicemail_id} . "\@osdial\n" if ($sret->{voicemail_id});
 		} elsif ($sret->{protocol} eq "IAX2" and $sret->{extension} !~ /\@|\//) {
@@ -716,7 +737,7 @@ sub gen_phones {
 			$iphn .= "allow=g729\n";
 			$iphn .= "qualify=5000\n";
 			$iphn .= "requirecalltoken=no\n";
-			$iphn .= "nat=yes\n";
+			$iphn .= "nat=yes\n" if ($sret->{phone_type} =~ /NAT/i);
 			$iphn .= "context=" . $sret->{ext_context} . "\n";
 			$iphn .= "mailbox=" . $sret->{voicemail_id} . "\@osdial\n" if ($sret->{voicemail_id});
 		}

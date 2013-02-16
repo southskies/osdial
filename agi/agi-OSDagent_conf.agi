@@ -1,0 +1,97 @@
+#!/usr/bin/perl
+#
+# agi-OSDpark.agi
+#
+# Copyright (C) 2011  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+#
+#     This file is part of OSDial.
+#
+#     OSDial is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as
+#     published by the Free Software Foundation, either version 3 of
+#     the License, or (at your option) any later version.
+#
+#     OSDial is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public
+#     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+$|++;
+
+use strict;
+use OSDial;
+
+my $prog = 'agi-OSDagent_conf.agi';
+my $DB = 0;
+
+my $osdial = OSDial->new('DB'=>$DB);
+$osdial->AGI($prog);
+
+my $AGI = $osdial->AGI();
+my $extension = $AGI->{'extension'};
+my $cnftype = $ARGV[0];
+
+$osdial->agi_output("Agent Conf Handling - $extension - $cnftype");
+
+$AGI->answer();
+$AGI->stream_file("sip-silence");
+
+# General Conference.
+if ($cnftype eq 'genconf') {
+	$AGI->exec('Meetme',$extension.",q");
+
+# Agent Conference.
+} elsif ($cnftype eq 'agentconf') {
+	$AGI->exec('Meetme',$extension.",F");
+
+# Agent Monitoring.
+} elsif ($cnftype =~ /^agentmon/) {
+	my $newext = $extension;
+	$newext =~ s/^.//;
+	if ($extension =~ /^1/) {
+		$AGI->exec('Meetme',$newext.",F");
+	} elsif ($extension =~ /^2/) {
+		$AGI->set_variable('SPYGROUP',$newext);
+		$AGI->exec('Meetme',$newext.",F");
+	} elsif ($extension =~ /^3/) {
+		$AGI->exec('Meetme',$newext.",Flq");
+	} elsif ($extension =~ /^6/) {
+		$AGI->exec('Meetme',$newext.",Flq");
+	} elsif ($extension =~ /^7/) {
+		$AGI->exec('Meetme',$newext.",Fq");
+	} elsif ($extension =~ /^9/) {
+		$AGI->exec('Chanspy',",g(".$newext.")qwES");
+	}
+
+# Virtual Agent Conference.
+} elsif ($cnftype eq 'vaconf') {
+	$AGI->exec('Meetme',$extension.",Fq");
+
+# Virtual Agent Monitoring.
+} elsif ($cnftype eq 'vamon') {
+	my $newext = $extension;
+	$newext =~ s/^.//;
+	if ($extension =~ /^1/) {
+		$AGI->exec('Meetme',$newext.",Fq");
+	} elsif ($extension =~ /^2/) {
+		$AGI->exec('Meetme',$newext.",Fq");
+	} elsif ($extension =~ /^3/) {
+		$AGI->exec('Meetme',$newext.",Flq");
+	} elsif ($extension =~ /^6/) {
+		$AGI->exec('Meetme',$newext.",Flq");
+	} elsif ($extension =~ /^7/) {
+		$AGI->exec('Meetme',$newext.",Fq");
+	} elsif ($extension =~ /^8/) {
+		$AGI->exec('Meetme',$newext.",Fq");
+	} elsif ($extension =~ /^9/) {
+		$AGI->exec('Chanspy',",g(".$newext.")qwES");
+	}
+}
+
+#$AGI->hangup();
+
+exit 0;
