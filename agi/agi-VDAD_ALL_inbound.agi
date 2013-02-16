@@ -1005,7 +1005,7 @@ while ($drop_timer <= $DROP_TIME) {
 						$VDADremDIALstr .= "7$VDADconf_exten";
 						$stmtA="INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$accountcode','Channel: Local/$VDADremDIALstr\@$ext_context','Context: $ext_context','Exten: 487487','Priority: 1','Account: $accountcode','','','','','');";
 					} else {
-						print "SET VARIABLE SPYGROUP=$accountcode\n";
+						print "SET VARIABLE SPYGROUP $accountcode\n";
 						checkresult();
 						$stmtA="INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$accountcode','Channel: Local/7$VDADconf_exten\@$ext_context','Context: $ext_context','Exten: 487489$accountcode','Priority: 1','Account: $accountcode','','','','','');";
 						$VDADremDIALstr .= '487488';
@@ -1229,7 +1229,7 @@ while ($drop_timer <= $DROP_TIME) {
 						$VDADremDIALstr .= "7$VDADconf_exten";
 						$stmtA="INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$accountcode','Channel: Local/$VDADremDIALstr\@$ext_context','Context: $ext_context','Exten: 487487','Priority: 1','Account: $accountcode','','','','','');";
 					} else {
-						print "SET VARIABLE SPYGROUP=$accountcode\n";
+						print "SET VARIABLE SPYGROUP $accountcode\n";
 						checkresult();
 						$stmtA="INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$accountcode','Channel: Local/7$VDADconf_exten\@$ext_context','Context: $ext_context','Exten: 487489$accountcode','Priority: 1','Account: $accountcode','','','','','');";
 						$VDADremDIALstr .= '487488';
