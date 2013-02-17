@@ -654,7 +654,7 @@ $ADD='31';        # go to campaign modification below
 }
 
 ######################
-# ADD=53 confirmation before Emergency VDAC Jam Clear - deletes oldest LIVE osdial_auto_call record
+# ADD=53 confirmation before Emergency AUTO CALLS Jam Clear - deletes oldest LIVE osdial_auto_call record
 ######################
 
 if ($ADD==53)
@@ -664,13 +664,13 @@ if ($ADD==53)
 
      if (OSDstrlen($campaign_id) < 2)
         {
-         echo "<br><font color=red>VDAC NOT CLEARED FOR CAMPAIGN - Please go back and look at the data you entered\n";
-         echo "<br>Campaign_id be at least 2 characters in length</font><br>\n";
+        echo "<br><font color=red>AUTO CALLS NOT CLEARED FOR CAMPAIGN - Please go back and look at the data you entered";
+        echo "<br>Campaign_id be at least 2 characters in length</font><br>\n";
         }
      else
         {
-        echo "<br><B><font color=$default_text>VDAC CLEAR CONFIRMATION: $campaign_id</B>\n";
-        echo "<br><br><a href=\"$PHP_SELF?ADD=63&campaign_id=$campaign_id&CoNfIrM=YES&&stage=$stage\">Click here to delete the oldest LIVE record in VDAC for $campaign_id</a></font><br><br><br>\n";
+        echo "<br><B><font color=$default_text>AUTO CALLS CLEAR CONFIRMATION: $campaign_id</B>";
+        echo "<br><br><a href=\"$PHP_SELF?ADD=63&campaign_id=$campaign_id&CoNfIrM=YES&&stage=$stage\">Click here to delete the oldest LIVE record in AUTO CALLS for $campaign_id</a></font><br><br><br>";
         }
 
 # go to campaign modification below
@@ -798,7 +798,7 @@ if ($ADD==62)
 
 
 ######################
-# ADD=63 Emergency VDAC Jam Clear
+# ADD=63 Emergency AUTO CALLS Jam Clear
 ######################
 
 if ($ADD==63)
@@ -810,7 +810,7 @@ if ($ADD==63)
 
      if (OSDstrlen($campaign_id) < 2)
         {
-         echo "<br><font color=red>VDAC NOT CLEARED FOR CAMPAIGN - Please go back and look at the data you entered\n";
+         echo "<br><font color=red>AUTO CALLS NOT CLEARED FOR CAMPAIGN - Please go back and look at the data you entered";
          echo "<br>Campaign_id be at least 2 characters in length</font><br>\n";
         }
      else
@@ -822,10 +822,10 @@ if ($ADD==63)
         if ($WeBRooTWritablE > 0)
             {
             $fp = fopen ("./admin_changes_log.txt", "a");
-            fwrite ($fp, "$date|EMERGENCY VDAC CLEAR|$PHP_AUTH_USER|$ip|campaign_id='$campaign_id'|\n");
+            fwrite ($fp, "$date|EMERGENCY AUTO CALLS CLEAR|$PHP_AUTH_USER|$ip|campaign_id='$campaign_id'|");
             fclose($fp);
             }
-        echo "<br><B><font color=$default_text>LAST VDAC RECORD CLEARED FOR CAMPAIGN: $campaign_id</font></B>\n";
+        echo "<a href=\"$PHP_SELF?ADD=53&campaign_id=$campaign_id\">EMERGENCY AUTO CALLS CLEAR FOR THIS CAMPAIGN</a><br><br>";
         echo "<br><br>\n";
         }
         # go to campaign modification below
