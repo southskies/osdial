@@ -120,11 +120,30 @@ function report_lead_search_advanced($lsa_seg='form') {
         $sort = get_variable("sort");
         if ($sort == "")
             $sort = "lead_id";
+        $ssort = $sort;
         $direction = get_variable("direction");
         if ($direction == "")
             $direction = "ASC";
 
-        $searchWHR = " WHERE lead_id>0";
+        $searchWHR = " WHERE ";
+        if ($use_osdial_log) {
+            $searchWHR .= "osdial_log.lead_id>0 ";
+            if ($sort == "lead_id") $ssort = "osdial_log.lead_id";
+            if ($sort == "status") $ssort = "osdial_log.status";
+        } elseif ($use_osdial_closer_log) {
+            $searchWHR .= "osdial_closer_log.lead_id>0 ";
+            if ($sort == "lead_id") $ssort = "osdial_closer_log.lead_id";
+            if ($sort == "status") $ssort = "osdial_closer_log.status";
+        } elseif ($use_osdial_agent_log) {
+            $searchWHR .= "osdial_agent_log.lead_id>0 ";
+            if ($sort == "lead_id") $ssort = "osdial_agent_log.lead_id";
+            if ($sort == "status") $ssort = "osdial_agent_log.status";
+        } else {
+            $searchWHR .= "osdial_list.lead_id>0 ";
+            if ($sort == "lead_id") $ssort = "osdial_list.lead_id";
+            if ($sort == "status") $ssort = "osdial_list.status";
+        }
+        if ($sort == "list_id") $ssort = "osdial_list.list_id";
 
         $pageURL ="?ADD=$ADD&SUB=$SUB&last_name=$last_name&first_name=$first_name&phone_number=$phone_number&phone_search_alt=$phone_search_alt&lead_id=$lead_id&city=$city&postal_code=$postal_code&email=$email";
         $pageURL.="&entry_date_start=$orig_entry_date_start&entry_date_end=$orig_entry_date_end&modify_date_start=$orig_modify_date_start&modify_date_end=$orig_modify_date_end";
@@ -225,12 +244,14 @@ function report_lead_search_advanced($lsa_seg='form') {
 
 
         ### process statuses group
+        $statusCNT = 0;
         $statusIN = "";
         if (is_array($statuses)) {
             foreach ($statuses as $status) {
                 if ($status != "") {
                     $pageURL .= "&statuses[]=$status";
                     $statusIN .= "'" . mres($status) . "',";
+                    $statusCNT++;
                 }
             }
         }
@@ -405,19 +426,23 @@ function report_lead_search_advanced($lsa_seg='form') {
 
         if ($status_found) {
             if ($use_osdial_log) {
-                    $fieldJOIN = " LEFT JOIN osdial_statuses ON (osdial_log.status=osdial_statuses.status) ";
+                    if ($statusCNT>0) $fieldJOIN = " LEFT JOIN osdial_statuses ON (osdial_log.status=osdial_statuses.status) ";
                     $searchFLD .= "osdial_log.status,";
             } elseif ($use_osdial_closer_log) {
-                    $fieldJOIN = " LEFT JOIN osdial_statuses ON (osdial_closer_log.status=osdial_statuses.status) ";
+                    if ($statusCNT>0) $fieldJOIN = " LEFT JOIN osdial_statuses ON (osdial_closer_log.status=osdial_statuses.status) ";
                     $searchFLD .= "osdial_closer_log.status,";
             } elseif ($use_osdial_agent_log) {
-                    $fieldJOIN = " LEFT JOIN osdial_statuses ON (osdial_agent_log.status=osdial_statuses.status) ";
+                    if ($statusCNT>0) $fieldJOIN = " LEFT JOIN osdial_statuses ON (osdial_agent_log.status=osdial_statuses.status) ";
                     $searchFLD .= "osdial_agent_log.status,";
             } else {
-                    $fieldJOIN = " LEFT JOIN osdial_statuses ON (osdial_list.status=osdial_statuses.status) ";
+                    if ($statusCNT>0) $fieldJOIN = " LEFT JOIN osdial_statuses ON (osdial_list.status=osdial_statuses.status) ";
                     $searchFLD .= "osdial_list.status,";
             }
-            $searchFLD .= "osdial_statuses.status_name,";
+            if ($statusCNT>0) {
+                $searchFLD .= "osdial_statuses.status_name,";
+            } else {
+                $searchFLD .= "\"\" AS status_name,";
+            }
         }
 
         $searchFLD = rtrim($searchFLD,",");
@@ -930,18 +955,19 @@ function report_lead_search_advanced($lsa_seg='form') {
         } elseif ($lsa_seg=='data') {
 
             $data='';
-
+            # Added LEFT to osdial_list JOINs.
             if ($use_osdial_log) {
-                $mainTBL = "osdial_log JOIN osdial_list ON (osdial_log.lead_id=osdial_list.lead_id)";
+                $mainTBL = "osdial_log LEFT JOIN osdial_list ON (osdial_log.lead_id=osdial_list.lead_id)";
             } elseif ($use_osdial_closer_log) {
-                $mainTBL = "osdial_closer_log JOIN osdial_list ON (osdial_closer_log.lead_id=osdial_list.lead_id)";
+                $mainTBL = "osdial_closer_log LEFT JOIN osdial_list ON (osdial_closer_log.lead_id=osdial_list.lead_id)";
             } elseif ($use_osdial_agent_log) {
-                $mainTBL = "osdial_agent_log JOIN osdial_list ON (osdial_agent_log.lead_id=osdial_list.lead_id)";
+                $mainTBL = "osdial_agent_log LEFT JOIN osdial_list ON (osdial_agent_log.lead_id=osdial_list.lead_id)";
             } else {
                 $mainTBL = "osdial_list";
             }
-            $countTBL = " FROM " . $mainTBL ." JOIN osdial_lists ON (osdial_lists.list_id=osdial_list.list_id)";
-            $searchTBL = " FROM " . $mainTBL ." JOIN osdial_lists ON (osdial_lists.list_id=osdial_list.list_id) LEFT JOIN osdial_postal_code_groups ON (osdial_postal_code_groups.country_code=osdial_list.phone_code AND osdial_postal_code_groups.postal_code=osdial_list.postal_code) LEFT JOIN osdial_phone_code_groups ON (osdial_phone_code_groups.country_code=osdial_list.country_code AND osdial_phone_code_groups.areacode=left(osdial_list.phone_number,3))" . $fieldJOIN;
+            # Added LEFT to osdial_lists JOINs.
+            $countTBL = " FROM " . $mainTBL ." LEFT JOIN osdial_lists ON (osdial_lists.list_id=osdial_list.list_id)";
+            $searchTBL = " FROM " . $mainTBL ." LEFT JOIN osdial_lists ON (osdial_lists.list_id=osdial_list.list_id) LEFT JOIN osdial_postal_code_groups ON (osdial_postal_code_groups.country_code=osdial_list.phone_code AND osdial_postal_code_groups.postal_code=osdial_list.postal_code) LEFT JOIN osdial_phone_code_groups ON (osdial_phone_code_groups.country_code=osdial_list.country_code AND osdial_phone_code_groups.areacode=left(osdial_list.phone_number,3))" . $fieldJOIN;
     
             #$countSQL  = "SELECT count(*) " . $searchSQL . ";";
             $countSQL = "SELECT count(*)" . $countTBL . $searchWHR . $countWHR . ";";
@@ -965,7 +991,7 @@ function report_lead_search_advanced($lsa_seg='form') {
             $searchDone=1;
             while ($searchDone) {
                 $searchSQL = "SELECT STRAIGHT_JOIN " . $searchFLD . $searchTBL . $searchWHR . $searchTZWHR;
-                if ($field_cnt == 0) $searchSQL .= " ORDER BY " . $sort  . " " . $direction . " LIMIT " . (($page - 1) * $numresults) . ", " . $numresults;
+                if ($field_cnt == 0) $searchSQL .= " ORDER BY " . $ssort  . " " . $direction . " LIMIT " . (($page - 1) * $numresults) . ", " . $numresults;
                 $searchSQL .= ";";
     
                 #$data .= "<br>$searchSQL<br>";
@@ -1030,9 +1056,9 @@ function report_lead_search_advanced($lsa_seg='form') {
     
                 $data .= "    <td align=center title=\"Lead ID\"><font class=awhite color=white size=2><b>";
                 if ($sort == "lead_id" && $direction == "DESC") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=lead_id&direction=ASC#advsearch\">Lead#&nbsp;^";
+                    $data .= "<a href=\"" . $pageURL . "&sort=lead_id&direction=ASC#advsearch\">Lead#&nbsp;<span style=\"text-transform:lowercase;font-weight:bold;font-size:7pt;\">^</span>";
                 } elseif ($sort=="lead_id") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=lead_id&direction=DESC#advsearch\">Lead#&nbsp;v";
+                    $data .= "<a href=\"" . $pageURL . "&sort=lead_id&direction=DESC#advsearch\">Lead#&nbsp;<span style=\"text-transform:lowercase;font-weight:normal;font-size:6pt;\">v</span>";
                 } else {
                     $data .= "<a href=\"" . $pageURL . "&sort=lead_id&direction=DESC#advsearch\">Lead#";
                 }
@@ -1040,9 +1066,9 @@ function report_lead_search_advanced($lsa_seg='form') {
     
                 $data .= "    <td align=center title=\"List ID\"><font class=awhite color=white size=2><b>";
                 if ($sort == "list_id" && $direction == "DESC") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=list_id&direction=ASC#advsearch\">List#&nbsp;^";
+                    $data .= "<a href=\"" . $pageURL . "&sort=list_id&direction=ASC#advsearch\">List#&nbsp;<span style=\"text-transform:lowercase;font-weight:bold;font-size:7pt;\">^</span>";
                 } elseif ($sort == "list_id") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=list_id&direction=DESC#advsearch\">List#&nbsp;v";
+                    $data .= "<a href=\"" . $pageURL . "&sort=list_id&direction=DESC#advsearch\">List#&nbsp;<span style=\"text-transform:lowercase;font-weight:normal;font-size:6pt;\">v</span>";
                 } else {
                     $data .= "<a href=\"" . $pageURL . "&sort=list_id&direction=DESC#advsearch\">List#";
                 }
@@ -1050,9 +1076,9 @@ function report_lead_search_advanced($lsa_seg='form') {
     
                 $data .= "    <td align=center title=\"Last Status / Disposition\"><font class=awhite color=white size=2><b>";
                 if ($sort == "status" && $direction == "DESC") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=status&direction=ASC#advsearch\">Status&nbsp;^";
+                    $data .= "<a href=\"" . $pageURL . "&sort=status&direction=ASC#advsearch\">Status&nbsp;<span style=\"text-transform:lowercase;font-weight:bold;font-size:7pt;\">^</span>";
                 } elseif ($sort == "status") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=status&direction=DESC#advsearch\">Status&nbsp;v";
+                    $data .= "<a href=\"" . $pageURL . "&sort=status&direction=DESC#advsearch\">Status&nbsp;<span style=\"text-transform:lowercase;font-weight:normal;font-size:6pt;\">v</span>";
                 } else {
                     $data .= "<a href=\"" . $pageURL . "&sort=status&direction=DESC#advsearch\">Status";
                 }
@@ -1060,9 +1086,9 @@ function report_lead_search_advanced($lsa_seg='form') {
     
                 $data .= "    <td align=center title=\"Primary Phone Number\"><font class=awhite color=white size=2><b>";
                 if ($sort == "phone_number" && $direction == "DESC") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=phone_number&direction=ASC#advsearch\">Phone#&nbsp;^";
+                    $data .= "<a href=\"" . $pageURL . "&sort=phone_number&direction=ASC#advsearch\">Phone#&nbsp;<span style=\"text-transform:lowercase;font-weight:bold;font-size:7pt;\">^</span>";
                 } elseif ($sort=="phone_number") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=phone_number&direction=DESC#advsearch\">Phone#&nbsp;v";
+                    $data .= "<a href=\"" . $pageURL . "&sort=phone_number&direction=DESC#advsearch\">Phone#&nbsp;<span style=\"text-transform:lowercase;font-weight:normal;font-size:6pt;\">v</span>";
                 } else {
                     $data .= "<a href=\"" . $pageURL . "&sort=phone_number&direction=DESC#advsearch\">Phone#";
                 }
@@ -1070,9 +1096,9 @@ function report_lead_search_advanced($lsa_seg='form') {
     
                 $data .= "    <td align=center title=\"Last Name, First Name\"><font class=awhite color=white size=2><b>";
                 if ($sort == "last_name" && $direction == "DESC") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=last_name&direction=ASC#advsearch\">Name&nbsp;^";
-                } elseif ($state == "last_name") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=last_name&direction=DESC#advsearch\">Name&nbsp;v";
+                    $data .= "<a href=\"" . $pageURL . "&sort=last_name&direction=ASC#advsearch\">Name&nbsp;<span style=\"text-transform:lowercase;font-weight:bold;font-size:7pt;\">^</span>";
+                } elseif ($sort == "last_name") {
+                    $data .= "<a href=\"" . $pageURL . "&sort=last_name&direction=DESC#advsearch\">Name&nbsp;<span style=\"text-transform:lowercase;font-weight:normal;font-size:6pt;\">v</span>";
                 } else {
                     $data .= "<a href=\"" . $pageURL . "&sort=last_name&direction=DESC#advsearch\">Name";
                 }
@@ -1080,9 +1106,9 @@ function report_lead_search_advanced($lsa_seg='form') {
     
                 $data .= "    <td align=center title=\"City\"><font class=awhite color=white size=2><b>";
                 if ($sort == "city" && $direction == "DESC") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=city&direction=ASC#advsearch\">City&nbsp;^";
+                    $data .= "<a href=\"" . $pageURL . "&sort=city&direction=ASC#advsearch\">City&nbsp;<span style=\"text-transform:lowercase;font-weight:bold;font-size:7pt;\">^</span>";
                 } elseif($sort == "city") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=city&direction=DESC#advsearch\">City&nbsp;v";
+                    $data .= "<a href=\"" . $pageURL . "&sort=city&direction=DESC#advsearch\">City&nbsp;<span style=\"text-transform:lowercase;font-weight:normal;font-size:6pt;\">v</span>";
                 } else {
                     $data .= "<a href=\"" . $pageURL . "&sort=city&direction=DESC#advsearch\">City";
                 }
@@ -1090,9 +1116,9 @@ function report_lead_search_advanced($lsa_seg='form') {
     
                 $data .= "    <td align=center title=\"State\"><font class=awhite color=white size=2><b>";
                 if ($sort == "state" && $direction == "DESC") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=state&direction=ASC#advsearch\">State&nbsp;^";
+                    $data .= "<a href=\"" . $pageURL . "&sort=state&direction=ASC#advsearch\">State&nbsp;<span style=\"text-transform:lowercase;font-weight:bold;font-size:7pt;\">^</span>";
                 } elseif($sort == "state") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=state&direction=DESC#advsearch\">State&nbsp;v";
+                    $data .= "<a href=\"" . $pageURL . "&sort=state&direction=DESC#advsearch\">State&nbsp;<span style=\"text-transform:lowercase;font-weight:normal;font-size:6pt;\">v</span>";
                 } else {
                     $data .= "<a href=\"" . $pageURL . "&sort=state&direction=DESC#advsearch\">State";
                 }
@@ -1100,9 +1126,9 @@ function report_lead_search_advanced($lsa_seg='form') {
     
                 $data .= "    <td align=center title=\"ZIP / Postal Code\"><font class=awhite color=white size=2><b>";
                 if ($sort == "postal_code" && $direction == "DESC") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=postal_code&direction=ASC#advsearch\">ZIP&nbsp;^";
+                    $data .= "<a href=\"" . $pageURL . "&sort=postal_code&direction=ASC#advsearch\">ZIP&nbsp;<span style=\"text-transform:lowercase;font-weight:bold;font-size:7pt;\">^</span>";
                 } elseif($sort == "postal_code") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=postal_code&direction=DESC#advsearch\">ZIP&nbsp;v";
+                    $data .= "<a href=\"" . $pageURL . "&sort=postal_code&direction=DESC#advsearch\">ZIP&nbsp;<span style=\"text-transform:lowercase;font-weight:normal;font-size:6pt;\">v</span>";
                 } else {
                     $data .= "<a href=\"" . $pageURL . "&sort=postal_code&direction=DESC#advsearch\">ZIP";
                 }
@@ -1110,9 +1136,9 @@ function report_lead_search_advanced($lsa_seg='form') {
     
                 $data .= "    <td align=center title=\"Agent/User ID\"><font class=awhite color=white size=2><b>";
                 if ($sort == "user" && $direction == "DESC") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=user&direction=ASC#advsearch\">Agent&nbsp;^";
-                } elseif ($sort == "vendor_lead_code") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=user&direction=DESC#advsearch\">Agent&nbsp;v";
+                    $data .= "<a href=\"" . $pageURL . "&sort=user&direction=ASC#advsearch\">Agent&nbsp;<span style=\"text-transform:lowercase;font-weight:bold;font-size:7pt;\">^</span>";
+                } elseif ($sort == "user") {
+                    $data .= "<a href=\"" . $pageURL . "&sort=user&direction=DESC#advsearch\">Agent&nbsp;<span style=\"text-transform:lowercase;font-weight:normal;font-size:6pt;\">v</span>";
                 } else {
                     $data .= "<a href=\"" . $pageURL . "&sort=user&direction=DESC#advsearch\">Agent";
                 }
@@ -1120,9 +1146,9 @@ function report_lead_search_advanced($lsa_seg='form') {
     
                 $data .= "    <td align=center title=\"Vendor Lead Code\"><font class=awhite color=white size=2><b>";
                 if ($sort == "vendor_lead_code" && $direction == "DESC") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=vendor_lead_code&direction=ASC#advsearch\">VendorID&nbsp;^";
+                    $data .= "<a href=\"" . $pageURL . "&sort=vendor_lead_code&direction=ASC#advsearch\">VendorID&nbsp;<span style=\"text-transform:lowercase;font-weight:bold;font-size:7pt;\">^</span>";
                 } elseif ($sort == "vendor_lead_code") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=vendor_lead_code&direction=DESC#advsearch\">VendorID&nbsp;v";
+                    $data .= "<a href=\"" . $pageURL . "&sort=vendor_lead_code&direction=DESC#advsearch\">VendorID&nbsp;<span style=\"text-transform:lowercase;font-weight:normal;font-size:6pt;\">v</span>";
                 } else {
                     $data .= "<a href=\"" . $pageURL . "&sort=vendor_lead_code&direction=DESC#advsearch\">VendorID";
                 }
@@ -1130,9 +1156,9 @@ function report_lead_search_advanced($lsa_seg='form') {
     
                 $data .= "    <td align=center title=\"Custom Field #1\"><font class=awhite color=white size=2><b>";
                 if ($sort == "custom1" && $direction == "DESC") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=custom1&direction=ASC#advsearch\">Custom1&nbsp;^";
+                    $data .= "<a href=\"" . $pageURL . "&sort=custom1&direction=ASC#advsearch\">Custom1&nbsp;<span style=\"text-transform:lowercase;font-weight:bold;font-size:7pt;\">^</span>";
                 } elseif ($sort == "custom1") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=custom1&direction=DESC#advsearch\">Custom1&nbsp;v";
+                    $data .= "<a href=\"" . $pageURL . "&sort=custom1&direction=DESC#advsearch\">Custom1&nbsp;<span style=\"text-transform:lowercase;font-weight:normal;font-size:6pt;\">v</span>";
                 } else {
                     $data .= "<a href=\"" . $pageURL . "&sort=custom1&direction=DESC#advsearch\">Custom1";
                 }
@@ -1140,9 +1166,9 @@ function report_lead_search_advanced($lsa_seg='form') {
     
                 $data .= "    <td align=center title=\"Timezone\"><font class=awhite color=white size=2><b>";
                 if ($sort == "gmt_offset_now" && $direction == "DESC") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=gmt_offset_now&direction=ASC#advsearch\">TZ&nbsp;^";
+                    $data .= "<a href=\"" . $pageURL . "&sort=gmt_offset_now&direction=ASC#advsearch\">TZ&nbsp;<span style=\"text-transform:lowercase;font-weight:bold;font-size:7pt;\">^</span>";
                 } elseif ($sort == "gmt_offset_now") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=gmt_offset_now&direction=DESC#advsearch\">TZ&nbsp;v";
+                    $data .= "<a href=\"" . $pageURL . "&sort=gmt_offset_now&direction=DESC#advsearch\">TZ&nbsp;<span style=\"text-transform:lowercase;font-weight:normal;font-size:6pt;\">v</span>";
                 } else {
                     $data .= "<a href=\"" . $pageURL . "&sort=gmt_offset_now&direction=DESC#advsearch\">TZ";
                 }
@@ -1150,9 +1176,9 @@ function report_lead_search_advanced($lsa_seg='form') {
     
                 $data .= "    <td align=center title=\"# of Call Attempts\"><font class=awhite color=white size=2><b>";
                 if ($sort == "called_count" && $direction == "DESC") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=called_count&direction=ASC#advsearch\">Calls&nbsp;^";
+                    $data .= "<a href=\"" . $pageURL . "&sort=called_count&direction=ASC#advsearch\">Calls&nbsp;<span style=\"text-transform:lowercase;font-weight:bold;font-size:7pt;\">^</span>";
                 } elseif ($sort == "called_count") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=called_count&direction=DESC#advsearch\">Calls&nbsp;v";
+                    $data .= "<a href=\"" . $pageURL . "&sort=called_count&direction=DESC#advsearch\">Calls&nbsp;<span style=\"text-transform:lowercase;font-weight:normal;font-size:6pt;\">v</span>";
                 } else {
                     $data .= "<a href=\"" . $pageURL . "&sort=called_count&direction=DESC#advsearch\">Calls";
                 }
@@ -1160,9 +1186,9 @@ function report_lead_search_advanced($lsa_seg='form') {
     
                 $data .= "    <td align=center title=\"Entry Date\"><font class=awhite color=white size=2><b>";
                 if ($sort == "entry_date" && $direction == "DESC") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=entry_date&direction=ASC#advsearch\">Entry&nbsp;^";
+                    $data .= "<a href=\"" . $pageURL . "&sort=entry_date&direction=ASC#advsearch\">Entry&nbsp;<span style=\"text-transform:lowercase;font-weight:bold;font-size:7pt;\">^</span>";
                 } elseif ($sort == "entry_date") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=entry_date&direction=DESC#advsearch\">Entry&nbsp;v";
+                    $data .= "<a href=\"" . $pageURL . "&sort=entry_date&direction=DESC#advsearch\">Entry&nbsp;<span style=\"text-transform:lowercase;font-weight:normal;font-size:6pt;\">v</span>";
                 } else {
                     $data .= "<a href=\"" . $pageURL . "&sort=entry_date&direction=DESC#advsearch\">Entry";
                 }
@@ -1170,9 +1196,9 @@ function report_lead_search_advanced($lsa_seg='form') {
     
                 $data .= "    <td align=center title=\"Modified Date\"><font class=awhite color=white size=2><b>";
                 if ($sort == "modify_date" && $direction == "DESC") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=modify_date&direction=ASC#advsearch\">Modified&nbsp;^";
+                    $data .= "<a href=\"" . $pageURL . "&sort=modify_date&direction=ASC#advsearch\">Modified&nbsp;<span style=\"text-transform:lowercase;font-weight:bold;font-size:7pt;\">^</span>";
                 } elseif ($sort == "modify_date") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=modify_date&direction=DESC#advsearch\">Modified&nbsp;v";
+                    $data .= "<a href=\"" . $pageURL . "&sort=modify_date&direction=DESC#advsearch\">Modified&nbsp;<span style=\"text-transform:lowercase;font-weight:normal;font-size:6pt;\">v</span>";
                 } else {
                     $data .= "<a href=\"" . $pageURL . "&sort=modify_date&direction=DESC#advsearch\">Modified";
                 }
@@ -1180,9 +1206,9 @@ function report_lead_search_advanced($lsa_seg='form') {
     
                 $data .= "    <td align=center title=\"Post Date\"><font class=awhite color=white size=2><b>";
                 if ($sort == "post_date" && $direction == "DESC") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=post_date&direction=ASC#advsearch\">Post&nbsp;^";
+                    $data .= "<a href=\"" . $pageURL . "&sort=post_date&direction=ASC#advsearch\">Post&nbsp;<span style=\"text-transform:lowercase;font-weight:bold;font-size:7pt;\">^</span>";
                 } elseif ($sort == "post_date") {
-                    $data .= "<a href=\"" . $pageURL . "&sort=post_date&direction=DESC#advsearch\">Post&nbsp;v";
+                    $data .= "<a href=\"" . $pageURL . "&sort=post_date&direction=DESC#advsearch\">Post&nbsp;<span style=\"text-transform:lowercase;font-weight:normal;font-size:6pt;\">v</span>";
                 } else {
                     $data .= "<a href=\"" . $pageURL . "&sort=post_date&direction=DESC#advsearch\">Post";
                 }
@@ -1278,19 +1304,48 @@ function report_lead_search_advanced($lsa_seg='form') {
                     $row[8] = $row[8] * 1;
                     $tzlabel = $tzoffsets[$row[8]];
                     if (date('I') == 1) $tzlabel = $tzoffsetsDST[$row[8]];
-                    $data .= "  <tr " . bgcolor($o) . " class=row ondblclick=\"openNewWindow('$PHP_SELF?ADD=1121&lead_id=$row[0]');\">\n";
+                    $rtitle="";
+                    if (empty($row[0])) {
+                        $row[0] = "DELETED";
+                        $rtitle = "LEAD RECORD WAS DELETED";
+                    }
+                    $data .= "  <tr title=\"$rtitle\" " . bgcolor($o) . " class=row ";
+                    if ($row[0] != "DELETED") $data .= "ondblclick=\"openNewWindow('$PHP_SELF?ADD=1121&lead_id=$row[0]');\"";
+                    $data .= ">\n";
                     $data .= "    <td nowrap align=left><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . ($o + (($page - 1) * $numresults)) . "</font></td>\n";
-                    $data .= "    <td nowrap align=center title=\"$row[0]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1><a href=\"$PHP_SELF?ADD=1121&lead_id=$row[0]\" target=\"_blank\">$row[0]</a></font></td>\n";
+                    $data .= "    <td nowrap align=center title=\"$row[0]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>";
+                    if ($row[0] != "DELETED") $data .= "<a href=\"$PHP_SELF?ADD=1121&lead_id=$row[0]\" target=\"_blank\">";
+                    $data .= $row[0];
+                    if ($row[0] != "DELETED") $data .= "</a>";
+                    $data .= "</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$row[7]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1><a href=\"" . $pageURL . "&lists[]=$row[7]&sort=$sort&direction=$direction#advsearch\">$row[7]</a></font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$row[status]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>$row[status]</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$row[11]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>$row[11]</font></td>\n";
-                    $data .= "    <td nowrap align=left title=\"$row[15], $row[13]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . ellipse($row[15] . ", " . $row[13], 10, true) . "</font></td>\n";
+                    $fmtname = "";
+                    if (empty($row[15]) and empty($row[13])) {
+                        $fmtname = "";
+                    } elseif (empty($row[13])) {
+                        $fmtname = $row[15];
+                    } elseif (empty($row[15])) {
+                        $fmtname = $row[13];
+                    } else {
+                        $fmtname = $row[15] . ", ". $row[13];
+                    }
+                    $data .= "    <td nowrap align=left title=\"$fmtname\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . ellipse($fmtname, 10, true) . "</font></td>\n";
                     $data .= "    <td nowrap align=left title=\"$row[19]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . ellipse($row[19],10,true) . "</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"" . OSDstrtoupper($row[20]) ."\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . OSDstrtoupper($row[20]) . "</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$row[22]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>$row[22]</font></td>\n";
-                    $data .= "    <td nowrap align=center title=\"" . $row[4] . " (" . $agents_label[$row[4]] . ")\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>$row[4]</font></td>\n";
+                    $fmtagenttitle="";
+                    if (!empty($row[4])) {
+                        $fmtagenttitle= $row[4] . " (" . $agents_label[$row[4]] . ")";
+                    }
+                    $data .= "    <td nowrap align=center title=\"$fmtagenttitle\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>$row[4]</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$row[4]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>$row[5]</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$row[28]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . ellipse($row[28],10,true) . "</font></td>\n";
+                    $fmttztitle="";
+                    if (!empty($row[8])) {
+                        $fmttztitle= $tzlabel . " (" . $row[8] . ")";
+                    }
                     $data .= "    <td nowrap align=center title=\"" . $tzlabel . " (" . $row[8]. ")\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . $tzlabel . "</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$row[30]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>$row[30]</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$row[1]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>&nbsp;" . ellipse($row[1],10,false) . "&nbsp;</font></td>\n";
