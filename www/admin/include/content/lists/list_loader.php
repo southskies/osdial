@@ -877,7 +877,7 @@ if ($ADD==122) {
                 $gfr_list = get_first_record($link, 'osdial_lists', 'campaign_id', sprintf("list_id='%s'",mres($list_id_override)) );
 			    if (OSDstrlen($gfr_list['campaign_id'])>0) {
                     $camp = $gfr_list['campaign_id'];
-                    $af_forms = get_krh($link, 'osdial_campaign_forms', '*', 'name ASC', sprintf("deleted='0' AND (campaigns='ALL' OR campaigns='%s' OR campaigns LIKE '%s,%%' OR campaigns LIKE '%%,%s')",mres($camp),mres($camp),mres($camp)), '');
+                    $af_forms = get_krh($link, 'osdial_campaign_forms', '*', 'name ASC', sprintf("deleted='0' AND (campaigns='ALL' OR campaigns='%s' OR campaigns LIKE '%s,%%' OR campaigns LIKE '%%,%s' OR campaigns LIKE '%%,%s,%%')",mres($camp),mres($camp),mres($camp),mres($camp)), '');
                     foreach ($af_forms as $afform) {
                         $af_fields = get_krh($link, 'osdial_campaign_fields', '*', 'name ASC', sprintf("deleted='0' AND form_id='%s'",mres($afform['id'])), '');
                         foreach ($af_fields as $affield) {
