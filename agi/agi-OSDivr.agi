@@ -339,6 +339,9 @@ sub xfer_to_external {
 		$cidname=$lead->{phone_number};
 		$cidnum=$lead->{phone_number};
 	}
+	$AGI->set_variable('CALLERID(ani)',$cidnum);
+	$AGI->set_variable('CALLERID(num)',$cidnum);
+	$AGI->set_variable('CALLERID(name)',$cidname);
 	$AGI->set_context($osdial->{server}{ext_context});
 	$AGI->set_priority(1);
 	$AGI->set_extension($number);
@@ -440,6 +443,9 @@ sub xfer_to_ingroup {
 		$cidname=$lead->{phone_number};
 		$cidnum=$lead->{phone_number};
 	}
+	$AGI->set_variable('CALLERID(ani)',$cidnum);
+	$AGI->set_variable('CALLERID(num)',$cidnum);
+	$AGI->set_variable('CALLERID(name)',$cidname);
 	$AGI->set_context($osdial->{server}{ext_context});
 	$AGI->set_priority(1);
 	$AGI->set_extension($number);
