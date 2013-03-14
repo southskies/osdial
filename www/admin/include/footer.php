@@ -35,10 +35,10 @@ if (OSDpreg_match("/^Sli/",$config['settings']['admin_template'])) {
     echo "    <td width=\"33%\">&nbsp;</td>\n";
     echo "    <td width=\"33%\">&nbsp;</td>\n";
 } else {
-    echo "    <td height=\"15\" align=\"left\" width=\"33%\"><font color=\"#1A4349\">&nbsp;&nbsp;Copyright &#169; 2009-2011 Call Center Service Group, LC</font></td>\n";
+    echo "    <td height=\"15\" align=\"left\" width=\"33%\"><font color=\"#1A4349\">&nbsp;&nbsp;Copyright &#169; 2009-2013 Call Center Service Group, LC</font></td>\n";
 #
 # NOTICE:
-# Removal or modification of the following line constitutes a breach of License and doing so may result in legal action.
+# Removal or modification of the following line, and any copyright notice, constitutes a breach of License and doing so may result in legal action.
     echo "    <td height=\"15\" align=\"center\" width=\"33%\"><a style=\"color:$footer_color;\" href=\"http://www.osdial.com\" target=\"_blank\"><img src=\"templates/" . $config['settings']['admin_template'] . "/images/dlfoot.png\" height=\"9\" width=\"120\"></a></td>\n";
 #
 #

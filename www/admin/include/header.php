@@ -327,8 +327,10 @@ if (OSDstrlen($campaigns_hh) > 1) {
 
         if ($campaign_id != '') {
             # Detailed sub-menu
+            
             if ($ADD == 34 and $SUB<1)        {$camp_basic_color=$subcamp_color2;}
                 else        {$camp_basic_color=$admin_color2;}
+            
             if ($ADD == 31 and $SUB<1)        {$camp_detail_color=$subcamp_color2;}
                 else        {$camp_detail_color=$admin_color2;}
             if ($SUB==22)    {$camp_statuses_color=$subcamp_color2;}
@@ -356,8 +358,7 @@ if (OSDstrlen($campaigns_hh) > 1) {
 #            echo "        <tr class='no-ul' bgcolor=$campaigns_color>\n";
 echo "        <tr class='no-ul' bgcolor=$admin_color2>\n";
 		echo "	  <td class='narrow-space' bgcolor=$admin_color2>&nbsp;</td>";
-            echo "          <td align=center bgcolor=$camp_basic_color><a href=\"$PHP_SELF?ADD=34&campaign_id=$campaign_id\"><span class=\"font2 fgnavy\">Basic</span></a></td>\n";
-            echo "          <td align=center bgcolor=$camp_detail_color><a href=\"$PHP_SELF?ADD=31&campaign_id=$campaign_id\"><span class=\"font2 fgnavy\">Detail</span></a></td>\n";
+            echo "          <td align=center bgcolor=$camp_detail_color><a href=\"$PHP_SELF?ADD=31&campaign_id=$campaign_id\"><span class=\"font2 fgnavy\">Modify</span></a></td>\n";
             echo "          <td align=center bgcolor=$camp_statuses_color><a href=\"$PHP_SELF?ADD=31&SUB=22&campaign_id=$campaign_id\"><span class=\"font2 fgnavy\">Statuses</span></a></td>\n";
             echo "          <td align=center bgcolor=$camp_hotkeys_color><a href=\"$PHP_SELF?ADD=31&SUB=23&campaign_id=$campaign_id\"><span class=\"font2 fgnavy\">HotKeys</span></a></td>\n";
             echo "          <td align=center bgcolor=$camp_recycle_color><a href=\"$PHP_SELF?ADD=31&SUB=25&campaign_id=$campaign_id\"><span class=\"font2 fgnavy\">Lead Recycling</span></a></td>\n";

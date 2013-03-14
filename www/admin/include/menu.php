@@ -128,14 +128,14 @@ if ($ADD==69)			{$hh='campaigns';	$sh='listmix';	$title = "Campaign List Mix Rem
 if ($ADD==39)			{$hh='campaigns';	$sh='listmix';	$title = "Campaign List Mixes";}
 
 # Campaigns - basic
-if ($ADD==11)			{$hh='campaigns';	$sh='basic';	$title = "Add New Campaign";}
-if ($ADD==12)			{$hh='campaigns';	$sh='basic';	$title = "Copy Campaign";}
-if ($ADD==20)			{$hh='campaigns';	$sh='basic';	$title = "New Copied Campaign Addition";}
-if ($ADD==21)			{$hh='campaigns';	$sh='basic';	$title = "New Campaign Addition";}
 if ($ADD==44)			{$hh='campaigns';	$sh='basic';	$title = "Modify Campaign - Basic View";}
 if ($ADD==34)			{$hh='campaigns';	$sh='basic';	$title = "Modify Campaign - Basic View";}
 
 # Campaigns - detail
+if ($ADD==11)			{$hh='campaigns';	$sh='detail';	$title = "Add New Campaign";}
+if ($ADD==12)			{$hh='campaigns';	$sh='detail';	$title = "Copy Campaign";}
+if ($ADD==20)			{$hh='campaigns';	$sh='detail';	$title = "New Copied Campaign Addition";}
+if ($ADD==21)			{$hh='campaigns';	$sh='detail';	$title = "New Campaign Addition";}
 if ($ADD==41)			{$hh='campaigns';	$sh='detail';	$title = "Modify Campaign";}
 if ($ADD==51)			{$hh='campaigns';	$sh='detail';	$title = "Delete Campaign";}
 if ($ADD==52)			{$hh='campaigns';	$sh='detail';	$title = "Logout Agents";}
@@ -372,7 +372,8 @@ if ($ADD==999999)		{$hh='reports';                     $title = "REPORTS";
 
 
 $content = 'include/content/' . $hh . '/';
-if ($sh == '' || ($hh == 'campaigns' && ($sh == 'basic' || $sh == 'detail' || $sh == 'list'))) {
+//if ($sh == '' || ($hh == 'campaigns' && ($sh == 'basic' || $sh == 'detail' || $sh == 'list'))) {
+if ($sh == '' || ($hh == 'campaigns' && ($sh == 'detail' || $sh == 'list'))) {
     $content .= $hh;
 } else {
     $content .= $sh;
