@@ -304,6 +304,10 @@
   This field is the default In-Group that will be automatically selected when the agent goes to the transfer-conference frame in their agent interface.
     </item>
 
+    <item pathId="hide_xfer_local_closer" title="Local Closer">
+  This is where you can set whether the users of this campaign will have the option to send the call to a closer.
+    </item>
+
     <item pathId="xfer_groups" title="Allowed Transfer Groups">
   With these checkbox listings you can select the groups that agents in this campaign can transfer calls to. Allow Closers must be enabled for this option to show up.
     </item>
@@ -409,7 +413,7 @@
   If this is set to a number greater than 0, then when in manual-preview dial mode, the call will be placed after the number of seconds set in this field as elapsed with the user needing to click DIAL LEAD.
     </item>
 
-    <item pathId="manualpreview_default" title="Manual Preview Default">
+    <item pathId="manual_preview_default" title="Manual Preview Default">
   When set to "Y", and dial method is "MANUAL", preview dialing will be selected by default.
     </item>
 
@@ -431,6 +435,10 @@
 
     <item pathId="xfer_cid_mode" title="XFER/3rd-Party CID Mode">
   This option controls what CID information is passed to transfers and 3rd-party calls.  The options are as follows: CAMPAIGN: (default) Use the campaigns CID settings.  PHONE: Use the CID settings defined under the agents phone.  LEAD: Use the the phone number from the called lead.  LEAD_CUSTOM2: Use the data in the custom2 field of the lead.
+    </item>
+
+    <item pathId="use_cid_areacode_map" title="Use CallerID Areacode Map">
+  This allows you to specify a local caller ID for each areacode. Follow link in field name to build up a table.
     </item>
 
     <item pathId="campaign_vdad_exten" title="Campaign OSDial extension">
@@ -676,6 +684,10 @@
   This menu allows you to choose the script that will appear on the agents screen for this campaign. Select NONE to show no script for this campaign.
     </item>
 
+    <item pathId="dispo_submit_method" title="Dispo Submit Method">
+  This specifies where the disposition will be made from. Normal means disposition from within OSDial, and Web Form 1 and 2 from either of these two.
+    </item>
+
     <item pathId="get_call_launch" title="Get Call Launch">
   This menu allows you to choose whether you want to auto-launch the web-form page in a separate window, auto-switch to the SCRIPT tab or do nothing when a call is sent to the agent for this campaign. 
     </item>
@@ -876,7 +888,12 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
     </item>
 
     <item pathId="script_text" title="Script Text">
-  This is where you place the content of a OSDial Script. Minimum of 2 characters. You can have customer information be auto-populated in this script using "--A--field--B--" where field is one of the following fieldnames: vendor_lead_code, source_id, list_id, gmt_offset_now, called_since_last_reset, phone_code, phone_number, title, first_name, middle_initial, last_name, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, custom1, custom2, comments, fullname, user, pass, fronter, lead_id, campaign, phone_login, group, channel_group, SQLdate, epoch, uniqueid, customer_zap_channel, server_ip, SIPexten, session_id. For example, this sentence would print the persons name in it----&lt;br&gt;&lt;br&gt;  Hello, can I speak with --A--first_name--B-- --A--last_name--B-- please? Well hello --A--title--B-- --A--last_name--B-- how are you today?&lt;br&gt;&lt;br&gt; This would read----&lt;br&gt;&lt;br&gt;Hello, can I speak with John Doe please? Well hello Mr. Doe how are you today?&lt;br&gt;&lt;br&gt; You can also use an iframe to load a separate window within the SCRIPT tab, here is an example with prepopulated variables:
+  This is where you place the content of a OSDial Script. Minimum of 2 characters. You can have customer information be auto-populated in this script using "[[field]]" where field is one of the following fieldnames: vendor_lead_code, source_id, list_id, gmt_offset_now, called_since_last_reset, phone_code, phone_number, title, first_name, middle_initial, last_name, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, custom1, custom2, comments, fullname, user, pass, fronter, lead_id, campaign, phone_login, group, channel_group, SQLdate, epoch, uniqueid, customer_zap_channel, server_ip, SIPexten, session_id. For example, this sentence would print the persons name in it----&lt;br&gt;&lt;br&gt;  Hello, can I speak with [[first_name]] [[last_name]] please? Well hello [[title]] [[last_name]] how are you today?&lt;br&gt;&lt;br&gt; This would read----&lt;br&gt;&lt;br&gt;Hello, can I speak with John Doe please? Well hello Mr. Doe how are you today?&lt;br&gt;&lt;br&gt; You can also use an iframe to load a separate window within the SCRIPT tab, here is an example with prepopulated variables:&lt;br&gt;
+  &lt;br&gt;
+  &lt;div style="height:200px;width:400px;background:white;overflow:scroll;font-size:12px;font-family:sans-serif;" id=iframe_example&gt;
+  &#60;iframe src="http://localhost/test_<?php echo $t1; ?>_output.php?lead_id=[[lead_id]]&#38;vendor_id=[[vendor_lead_code]]&#38;list_id=[[list_id]]&#38;gmt_offset_now=[[gmt_offset_now]]&#38;phone_code=[[phone_code]]&#38;phone_number=[[phone_number]]&#38;title=[[title]]&#38;first_name=[[first_name]]&#38;middle_initial=[[middle_initial]]&#38;last_name=[[last_name]]&#38;address1=[[address1]]&#38;address2=[[address2]]&#38;address3=[[address3]]&#38;city=[[city]]&#38;state=[[state]]&#38;province=[[province]]&#38;postal_code=[[postal_code]]&#38;country_code=[[country_code]]&#38;gender=[[gender]]&#38;date_of_birth=[[date_of_birth]]&#38;alt_phone=[[alt_phone]]&#38;email=[[email]]&#38;custom1=[[custom1]]&#38;custom2=[[custom2]]&#38;comments=[[comments]]&#38;user=[[user]]&#38;campaign=[[campaign]]&#38;phone_login=[[phone_login]]&#38;fronter=[[fronter]]&#38;closer=[[user]]&#38;group=[[group]]&#38;channel_group=[[group]]&#38;SQLdate=[[SQLdate]]&#38;epoch=[[epoch]]&#38;uniqueid=[[uniqueid]]&#38;customer_zap_channel=[[customer_zap_channel]]&#38;server_ip=[[server_ip]]&#38;SIPexten=[[SIPexten]]&#38;session_id=[[session_id]]&#38;phone=[[phone]]" style="width:580;height:290;background-color:transparent;" scrolling="auto" frameborder="0" allowtransparency="true" id="popupFrame" name="popupFrame" width="460" height="290" STYLE="z-index:17"&#62;
+  &#60;/iframe&#62;
+  &lt;/div&gt;
     </item>
 
     <item pathId="active" title="Active">

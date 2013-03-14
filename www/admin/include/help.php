@@ -45,14 +45,14 @@ echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $systems_s
 echo "<title>$t1 Administrator: REPORTS</title>\n";
 echo "</head>\n";
 echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>\n";
-echo "<CENTER>\n";
+echo "<CENTER><br />";
 echo "<TABLE frame=box WIDTH=98% BGCOLOR=#AFCFD7 cellpadding=2 cellspacing=0>";
-echo "<TR><TD ALIGN=center><font FACE=\"dejavu sans,verdana,sans-serif\" COLOR=1C4754 SIZE=4><B>$t1 Help</B></FONT></td>";
+echo "<TR><TD ALIGN=center><font FACE=\"dejavu sans,verdana,sans-serif\" COLOR=1C4754 SIZE=4><br /><B>$t1 Help</B></FONT></td>";
 echo "</tr>";
 echo "<tr><td><FONT FACE=\"dejavu sans,verdana,sans-serif\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 
 ?>
-<B><FONT SIZE=3><?php echo $t1; ?>_Users Table</FONT></B><BR><BR>
+<B><FONT SIZE=3><?php echo $t1; ?>_USERS TABLE</FONT></B><BR>
 <A NAME="osdial_users-user">
 <BR>
 <B>Agent ID -</B> This field is where you put the <?php echo $t1; ?> agents ID number, can be up to 8 digits in length, Must be at least 2 characters in length.
@@ -300,9 +300,9 @@ echo "<tr><td><FONT FACE=\"dejavu sans,verdana,sans-serif\" COLOR=1C4754 SIZE=2>
 
 
 
-<BR><BR><BR><BR>
+<BR><BR>
 
-<B><FONT SIZE=3><?php echo $t1; ?>_CAMPAIGNS TABLE</FONT></B><BR><BR>
+<B><FONT SIZE=3><?php echo $t1; ?>_CAMPAIGNS TABLE</FONT></B><BR>
 <A NAME="osdial_campaigns-campaign_id">
 <BR>
 <B>Campaign ID -</B> This is the short name of the campaign, it is not editable after initial submission, cannot contain spaces and must be between 2 and 8 characters in length.
@@ -366,6 +366,11 @@ echo "<tr><td><FONT FACE=\"dejavu sans,verdana,sans-serif\" COLOR=1C4754 SIZE=2>
 <A NAME="osdial_campaigns-allow_closers">
 <BR>
 <B>Allow Closers -</B> This is where you can set whether the users of this campaign will have the option to send the call to a closer.
+
+<BR>
+<A NAME="osdial_campaigns-hide_xfer_local_closer">
+<BR>
+<B>Local Closer -</B> This is where you can set whether the users of this campaign will have the option to send the call to a closer.
 
 <BR>
 <A NAME="osdial_campaigns-default_xfer_group">
@@ -500,7 +505,7 @@ echo "<tr><td><FONT FACE=\"dejavu sans,verdana,sans-serif\" COLOR=1C4754 SIZE=2>
 <B>Preview Force Dial Time -</B> If this is set to a number greater than 0, then when in manual-preview dial mode, the call will be placed after the number of seconds set in this field as elapsed with the user needing to click DIAL LEAD.
 
 <BR>
-<A NAME="osdial_campaigns-manualpreview_default">
+<A NAME="osdial_campaigns-manual_preview_default">
 <BR>
 <B>Manual Preview Default -</B> When set to "Y", and dial method is "MANUAL", preview dialing will be selected by default.
 
@@ -535,6 +540,11 @@ echo "<tr><td><FONT FACE=\"dejavu sans,verdana,sans-serif\" COLOR=1C4754 SIZE=2>
 <B>Use Custom2 CallerID -</B> By setting this option to Y, the CallerID will be set to the custom2 field of the lead.  If the custom2 field does not contain a numeric value, the defailt Campaign CallerID will be used.
 
 <BR>
+<A NAME="osdial_campaigns-use_cid_areacode_map">
+<BR>
+<B>Use CallerID Areacode Map -</B> This allows you to specify a local caller ID for each areacode. Follow link in field name to build up a table.
+
+<BR>
 <A NAME="osdial_campaigns-campaign_vdad_exten">
 <BR>
 <B>Campaign <?php echo $t1; ?> extension -</B> This field allows for a custom <?php echo $t1; ?> transfer extension. This allows you to use different VDADtransfer...agi scripts depending upon your campaign. The default transfer AGI - exten 8365 agi-VDADtransfer.agi - just immediately sends the calls on to agents as soon as they are picked up. An additional sample political survey AGI is also now included - 8366 agi-VDADtransferSURVEY.agi - that plays a message to the called person and allows them to make a choice by pressing buttons - effectively pre-screening the lead - . Please note that except for surveys, political calls and charities this form of calling is illegal in the United States.
@@ -563,6 +573,11 @@ echo "<tr><td><FONT FACE=\"dejavu sans,verdana,sans-serif\" COLOR=1C4754 SIZE=2>
 <A NAME="osdial_campaigns-campaign_script">
 <BR>
 <B>Campaign Script -</B> This menu allows you to choose the script that will appear on the agents screen for this campaign. Select NONE to show no script for this campaign.
+
+<BR>
+<A NAME="osdial_campaigns-dispo_submit_method">
+<BR>
+<B>Diso Submit Method -</B> This specifies where the disposition will be made from. Normal means disposition from within OSDial, and Web Form 1 and 2 from either of these two.
 
 <BR>
 <A NAME="osdial_campaigns-get_call_launch">
@@ -702,9 +717,9 @@ echo "<tr><td><FONT FACE=\"dejavu sans,verdana,sans-serif\" COLOR=1C4754 SIZE=2>
 
 
 
-<BR><BR><BR><BR>
+<BR><BR>
 
-<B><FONT SIZE=3><?php echo $t1; ?>_LISTS TABLE</FONT></B><BR><BR>
+<B><FONT SIZE=3><?php echo $t1; ?>_LISTS TABLE</FONT></B><BR>
 <A NAME="osdial_lists-list_id">
 <BR>
 <B>List ID -</B> This is the numerical name of the list, it is not editable after initial submission, must contain only numbers and must be between 2 and 8 characters in length. Must be a number greater than 100.
@@ -769,9 +784,9 @@ echo "<tr><td><FONT FACE=\"dejavu sans,verdana,sans-serif\" COLOR=1C4754 SIZE=2>
 <BR>
 <b>List Script -</b> This option allows you to choose the script that will appear on the agents screen for this specific list. Select NONE to show no script for this campaign.
 
-<BR><BR><BR><BR>
+<BR><BR>
 
-<B><FONT SIZE=3><?php echo $t1; ?>_INBOUND_GROUPS TABLE</FONT></B><BR><BR>
+<B><FONT SIZE=3><?php echo $t1; ?>_INBOUND_GROUPS TABLE</FONT></B><BR>
 <A NAME="osdial_inbound_groups-group_id">
 <BR>
 <B>Group ID -</B> This is the short name of the inbound group, it is not editable after initial submission, must not contain any spaces and must be between 2 and 20 characters in length.
@@ -929,9 +944,9 @@ echo "<tr><td><FONT FACE=\"dejavu sans,verdana,sans-serif\" COLOR=1C4754 SIZE=2>
 <B>Allow Multicall -</B> This allows the agents in this ingroup to handle more than one call at a time.
 
 
-<BR><BR><BR><BR>
+<BR><BR>
 
-<B><FONT SIZE=3><?php echo $t1; ?>_REMOTE_AGENTS TABLE</FONT></B><BR><BR>
+<B><FONT SIZE=3><?php echo $t1; ?>_REMOTE_AGENTS TABLE</FONT></B><BR>
 <A NAME="osdial_remote_agents-user_start">
 <BR>
 <B>Agent ID Start -</B> This is the starting Agent ID that is used when the remote agent entries are inserted into the system. If the Number of Lines is set higher than 1, this number is incremented by one until each line has an entry. Make sure you create a new <?php echo $t1; ?> agent account with a user level of 4 or great if you want them to be able to use the vdremote.php page for remote web access of this account.
@@ -966,71 +981,44 @@ echo "<tr><td><FONT FACE=\"dejavu sans,verdana,sans-serif\" COLOR=1C4754 SIZE=2>
 <BR>
 <B>Inbound Groups -</B> Here is where you select the inbound groups you want to receive calls from if you have selected the CLOSER campaign.
 
-
-<BR><BR><BR><BR>
-
-<B><FONT SIZE=3><?php echo $t1; ?>_CAMPAIGN_LISTS</FONT></B><BR><BR>
+<BR><BR>
+<B><FONT SIZE=3><?php echo $t1; ?>_CAMPAIGN_LISTS</FONT></B><BR>
 <A NAME="osdial_campaign_lists">
 <BR>
 The lists within this campaign are listed here, whether they are active is denoted by the Y or N and you can go to the list screen by clicking on the list ID in the first column.
 
-
-<BR><BR><BR><BR>
-
-<B><FONT SIZE=3><?php echo $t1; ?>_CAMPAIGN_STATUSES TABLE</FONT></B><BR><BR>
+<BR><BR>
+<B><FONT SIZE=3><?php echo $t1; ?>_CAMPAIGN_STATUSES TABLE</FONT></B><BR>
 <A NAME="osdial_campaign_statuses">
 <BR>
 Through the use of custom campaign statuses, you can have statuses that only exist for a specific campaign. The Status must be 1-8 characters in length, the description must be 2-30 characters in length and Selectable defines whether it shows up in <?php echo $t1; ?> as a disposition. The human_answered field is used when calculating the drop percentage, or abandon rate. Setting human_answered to Y will use this status when counting the human-answered calls. The Category option allows you to group several statuses into a catogy that can be used for statistical analysis.
 
-
-
-<BR><BR><BR><BR>
-
-<B><FONT SIZE=3><?php echo $t1; ?>_CAMPAIGN_HOTKEYS TABLE</FONT></B><BR><BR>
+<BR><BR>
+<B><FONT SIZE=3><?php echo $t1; ?>_CAMPAIGN_HOTKEYS TABLE</FONT></B><BR>
 <A NAME="osdial_campaign_hotkeys">
 <BR>
 Through the use of custom campaign hot keys, agents that use the <?php echo $t1; ?> web-client can hang up and disposition calls just by pressing a single key on their keyboard.</B> There are two special HotKey options that you can use in conjunction with Alternate Phone number dialing, ALTPH2 - Alternate Phone Hot Dial and ADDR3-----Address3 Hot Dial allow an agent to use a hotkey to hang up their call, stay on the same lead, and dial another contact number from that lead. 
 
-
-
-
-
-<BR><BR><BR><BR>
-
-<B><FONT SIZE=3><?php echo $t1; ?>_LEAD_RECYCLE TABLE</FONT></B><BR><BR>
+<BR><BR>
+<B><FONT SIZE=3><?php echo $t1; ?>_LEAD_RECYCLE TABLE</FONT></B><BR>
 <A NAME="osdial_lead_recycle">
 <BR>
 Through the use of lead recycling, you can call specific statuses of leads again at a specified interval without resetting the entire list. Lead recycling is campaign-specific and does not have to be a selected dialable status in your campaign. The attempt delay field is the number of seconds until the lead can be placed back in the hopper, this number must be at least 120 seconds. The attempt maximum field is the maximum number of times that a lead of this status can be attempted before the list needs to be reset, this number can be from 1 to 10. You can activate and deactivate a lead recycle entry with the provided links.
 
-
-
-
-
-<BR><BR><BR><BR>
-
-<B><FONT SIZE=3><?php echo $t1; ?> AUTO ALT DIAL STATUSES</FONT></B><BR><BR>
+<BR><BR>
+<B><FONT SIZE=3><?php echo $t1; ?> AUTO ALT DIAL STATUSES</FONT></B><BR>
 <A NAME="osdial_auto_alt_dial_statuses">
 <BR>
 If the Auto Alt-Number Dialing field is set, then the leads that are dispositioned under these auto alt dial statuses will have their alt_phone and-or address3 fields dialed after any of these no-answer statuses are set.
 
-
-
-
-
-<BR><BR><BR><BR>
-
-<B><FONT SIZE=3><?php echo $t1; ?> AGENT PAUSE CODES</FONT></B><BR><BR>
+<BR><BR>
+<B><FONT SIZE=3><?php echo $t1; ?> AGENT PAUSE CODES</FONT></B><BR>
 <A NAME="osdial_pause_codes">
 <BR>
 If the Agent Pause Codes Active field is set to active then the agents will be able to select from these pause codes when they click on the PAUSE button on their screens. This data is then stored in the <?php echo $t1; ?> agent log. The Pause code must contain only letters and numbers and be less than 7 characters long. The pause code name can be no longer than 30 characters.
 
-
-
-
-
-<BR><BR><BR><BR>
-
-<B><FONT SIZE=3><?php echo $t1; ?>_USER_GROUPS TABLE</FONT></B><BR><BR>
+<BR><BR>
+<B><FONT SIZE=3><?php echo $t1; ?>_USER_GROUPS TABLE</FONT></B><BR>
 <A NAME="osdial_user_groups-user_group">
 <BR>
 <B>User Group -</B> This is the short name of a <?php echo $t1; ?> User group, try not to use any spaces or punctuation for this field. max 20 characters, minimum of 2 characters.
@@ -1050,28 +1038,24 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
 <BR>
 <B>Allowed InGroups -</B> This is a selectable list of Inbound Groups to which members of this user group can, if permitted under the agent and campaign settings, receive calls from. The ALL-INGROUP option allows the users in this group to be configured to use any and all InGroups, as selected under their Agent and Campaign settings.
 
-
-
-
-<BR><BR><BR><BR>
-
-<B><FONT SIZE=3><?php echo $t1; ?>_SCRIPTS TABLE</FONT></B><BR><BR>
+<BR><BR>
+<B><FONT SIZE=3><?php echo $t1; ?>_SCRIPTS TABLE</FONT></B><BR>
 <A NAME="osdial_scripts-script_id">
 <BR>
 <B>Script ID -</B> This is the short name of a <?php echo $t1; ?> Script. This needs to be a unique identifier. Try not to use any spaces or punctuation for this field. max 10 characters, minimum of 2 characters.
 
-<BR>
+<BR><BR>
 <A NAME="osdial_scripts-script_name">
 <B>Script Name -</B> This is the title of a <?php echo $t1; ?> Script. This is a short summary of the script. max 50 characters, minimum of 2 characters. There should be no spaces or punctuation of any kind in theis field.
 
-<BR>
+<BR><BR>
 <A NAME="osdial_scripts-script_comments">
 <B>Script Comments -</B> This is where you can place comments for a <?php echo $t1; ?> Script such as -changed to free upgrade on Sept 23-.  max 255 characters, minimum of 2 characters.
 
-<BR>
+<BR><BR>
 <A NAME="osdial_scripts-script_text">
-<B>Script Text -</B> This is where you place the content of a <?php echo $t1; ?> Script. Minimum of 2 characters. You can have customer information be auto-populated in this script using "[[field]]" where field is one of the following fieldnames: vendor_lead_code, source_id, list_id, gmt_offset_now, called_since_last_reset, phone_code, phone_number, title, first_name, middle_initial, last_name, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, custom1, custom2, comments, fullname, user, pass, fronter, lead_id, campaign, phone_login, group, channel_group, SQLdate, epoch, uniqueid, customer_zap_channel, server_ip, SIPexten, session_id. For example, this sentence would print the persons name in it----<BR><BR>  Hello, can I speak with [[first_name]] [[last_name]] please? Well hello [[title]] [[last_name]] how are you today?<BR><BR> This would read----<BR><BR>Hello, can I speak with John Doe please? Well hello Mr. Doe how are you today?<BR><BR> You can also use an iframe to load a separate window within the SCRIPT tab, here is an example with prepopulated variables:
-
+<B>Script Text -</B> This is where you place the content of a <?php echo $t1; ?> Script. Minimum of 2 characters. You can have customer information be auto-populated in this script using "[[field]]" where field is one of the following fieldnames: vendor_lead_code, source_id, list_id, gmt_offset_now, called_since_last_reset, phone_code, phone_number, title, first_name, middle_initial, last_name, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, custom1, custom2, comments, fullname, user, pass, fronter, lead_id, campaign, phone_login, group, channel_group, SQLdate, epoch, uniqueid, customer_zap_channel, server_ip, SIPexten, session_id. For example, this sentence would print the persons name in it----<BR><BR>  Hello, can I speak with [[first_name]] [[last_name]] please? Well hello [[title]] [[last_name]] how are you today?<BR><BR> This would read----<BR><BR>Hello, can I speak with John Doe please? Well hello Mr. Doe how are you today?<BR><BR> You can also use an iframe to load a separate window within the SCRIPT tab, here is an example with prepopulated variables:<BR>
+<BR>
 <DIV style="height:200px;width:400px;background:white;overflow:scroll;font-size:12px;font-family:sans-serif;" id=iframe_example>
 &#60;iframe src="http://localhost/test_<?php echo $t1; ?>_output.php?lead_id=[[lead_id]]&#38;vendor_id=[[vendor_lead_code]]&#38;list_id=[[list_id]]&#38;gmt_offset_now=[[gmt_offset_now]]&#38;phone_code=[[phone_code]]&#38;phone_number=[[phone_number]]&#38;title=[[title]]&#38;first_name=[[first_name]]&#38;middle_initial=[[middle_initial]]&#38;last_name=[[last_name]]&#38;address1=[[address1]]&#38;address2=[[address2]]&#38;address3=[[address3]]&#38;city=[[city]]&#38;state=[[state]]&#38;province=[[province]]&#38;postal_code=[[postal_code]]&#38;country_code=[[country_code]]&#38;gender=[[gender]]&#38;date_of_birth=[[date_of_birth]]&#38;alt_phone=[[alt_phone]]&#38;email=[[email]]&#38;custom1=[[custom1]]&#38;custom2=[[custom2]]&#38;comments=[[comments]]&#38;user=[[user]]&#38;campaign=[[campaign]]&#38;phone_login=[[phone_login]]&#38;fronter=[[fronter]]&#38;closer=[[user]]&#38;group=[[group]]&#38;channel_group=[[group]]&#38;SQLdate=[[SQLdate]]&#38;epoch=[[epoch]]&#38;uniqueid=[[uniqueid]]&#38;customer_zap_channel=[[customer_zap_channel]]&#38;server_ip=[[server_ip]]&#38;SIPexten=[[SIPexten]]&#38;session_id=[[session_id]]&#38;phone=[[phone]]" style="width:580;height:290;background-color:transparent;" scrolling="auto" frameborder="0" allowtransparency="true" id="popupFrame" name="popupFrame" width="460" height="290" STYLE="z-index:17"&#62;
 &#60;/iframe&#62;
@@ -1082,13 +1066,8 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
 <BR>
 <B>Active -</B> This determines whether this script can be selected to be used by a campaign.
 
-
-
-
-
-<BR><BR><BR><BR>
-
-<B><FONT SIZE=3><?php echo $t1; ?>_LEAD_FILTERS TABLE</FONT></B><BR><BR>
+<BR><BR>
+<B><FONT SIZE=3><?php echo $t1; ?>_LEAD_FILTERS TABLE</FONT></B><BR>
 <A NAME="osdial_lead_filters-lead_filter_id">
 <BR>
 <B>Filter ID -</B> This is the short name of a <?php echo $t1; ?> Lead Filter. This needs to be a unique identifier. Do not use any spaces or punctuation for this field. max 10 characters, minimum of 2 characters.
@@ -1105,13 +1084,8 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
 <A NAME="osdial_lead_filters-lead_filter_sql">
 <B>Filter SQL -</B> This is where you place the SQL query fragment that you want to filter by. do not begin or end with an AND, that will be added by the hopper cron script automatically. an example SQL query that would work here is- called_count > 4 and called_count < 8 -.
 
-
-
-
-
-<BR><BR><BR><BR>
-
-<B><FONT SIZE=3><?php echo $t1; ?>_CALL TIMES TABLE</FONT></B><BR><BR>
+<BR><BR>
+<B><FONT SIZE=3><?php echo $t1; ?>_CALL TIMES TABLE</FONT></B><BR>
 <A NAME="osdial_call_times-call_time_id">
 <BR>
 <B>Call Time ID -</B> This is the short name of a <?php echo $t1; ?> Call Time Definition. This needs to be a unique identifier. Do not use any spaces or punctuation for this field. max 10 characters, minimum of 2 characters.
@@ -1144,12 +1118,8 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
 <A NAME="osdial_call_times-use_recylce_gap">
 <B>Add No-Call Period to Recylce Delay -</B> This option when enabled will add a "gap" to the recylce delay.  This "gap" is the length of time between when the call-time started today and when it last ended.
 
-
-
-
-<BR><BR><BR><BR>
-
-<B><FONT SIZE=3><?php echo $t1; ?> LIST LOADER FUNCTIONALITY</FONT></B><BR><BR>
+<BR><BR>
+<B><FONT SIZE=3><?php echo $t1; ?> LIST LOADER FUNCTIONALITY</FONT></B><BR>
 <A NAME="osdial_list_loader">
 <BR>
 The <?php echo $t1; ?> basic web-based lead loader is designed simply to take a lead file - up to 8MB in size - that is either tab or pipe delimited and load it into the osdial_list table. The lead loader allows for field choosing and TXT- Plain Text, CSV- Comma Separated Values and XLS- Excel file formats. The lead loader does not do data validation, but it does allow you to check for duplicates in itself, within the campaign or within the entire system. Also, make sure that you have created the list that these leads are to be under so that you can use them. Here is a list of the fields in their proper order for the lead files:
@@ -1181,17 +1151,8 @@ The <?php echo $t1; ?> basic web-based lead loader is designed simply to take a 
 
 <BR>NOTES: The Excel Lead loader functionality is enabled by a series of perl scripts and needs to have a properly configured /etc/osdial.conf file in place on the web server. Also, a couple perl modules must be loaded for it to work as well - OLE-Storage_Lite and Spreadsheet-ParseExcel. You can check for runtime errors in these by looking at your apache error_log file. Also, for duplication checks against gampaign lists, the list that has new leads going into it does need to be created in the system before you start to load the leads.
 
-
-
-
-<BR><BR><BR><BR>
-
-
-
-
-
-
-<B><FONT SIZE=3>PHONES TABLE</FONT></B><BR><BR>
+<BR><BR>
+<B><FONT SIZE=3>PHONES TABLE</FONT></B><BR>
 <A NAME="phones-extension">
 <BR>
 <B>Phone extension -</B> This field is where you put the phones name as it appears to Asterisk not including the protocol or slash at the beginning. For Example: for the SIP phone SIP/test101 the Phone extension would be test101. Also, for IAX2 phones make sure you use the full phones name: IAX2/IAXphone1@IAXphone1 would be IAXphone1@IAXphone1. For Zap phones make sure you put the full channel: Zap/25-1 would be 25-1.  Another note, make sure you set the Protocol below correctly for your type of phone.
@@ -1532,9 +1493,8 @@ The <?php echo $t1; ?> basic web-based lead loader is designed simply to take a 
 <B>DBY Port -</B> The MySQL TCP port that this user should be using when connecting. Default is 3306. Secondary server, not used currently.
 
 
-<BR><BR><BR><BR>
-
-<B><FONT SIZE=3>SERVERS TABLE</FONT></B><BR><BR>
+<BR><BR>
+<B><FONT SIZE=3>SERVERS TABLE</FONT></B><BR>
 <A NAME="servers-server_id">
 <BR>
 <B>Server ID -</B> This field is where you put the Asterisk servers name, doesnt have to be an official domain sub, just a nickname to identify the server to Admin users.
@@ -1645,9 +1605,8 @@ The <?php echo $t1; ?> basic web-based lead loader is designed simply to take a 
 <B><?php echo $t1; ?> Balance Offlimits -</B> This setting defines the number of trunks to not allow <?php echo $t1; ?> balance dialing to use. For example if you have 40 max <?php echo $t1; ?> trunks and balance offlimits is set to 10 you will only be able to use 30 trunk lines for <?php echo $t1; ?> balance dialing. Default is 0.
 
 
-<BR><BR><BR><BR>
-
-<B><FONT SIZE=3>CONFERENCES TABLE</FONT></B><BR><BR>
+<BR><BR>
+<B><FONT SIZE=3>CONFERENCES TABLE</FONT></B><BR>
 <A NAME="conferences-conf_exten">
 <BR>
 <B>Conference Number -</B> This field is where you put the meetme conference dialpna number. It is also recommended that the meetme number in meetme.conf matches this number for each entry. This is for the conferences in <?php echo $t1; ?> and is used for leave-3way-call functionality in <?php echo $t1; ?>.
@@ -1660,9 +1619,8 @@ The <?php echo $t1; ?> basic web-based lead loader is designed simply to take a 
 
 
 
-<BR><BR><BR><BR>
-
-<B><FONT SIZE=3><?php echo $t1; ?>_SERVER_TRUNKS TABLE</FONT></B><BR><BR>
+<BR><BR>
+<B><FONT SIZE=3><?php echo $t1; ?>_SERVER_TRUNKS TABLE</FONT></B><BR>
 <A NAME="osdial_server_trunks">
 <BR>
 <?php echo $t1; ?> Server Trunks allows you to restrict the outgoing lines that are used on this server for campaign dialing on a per-campaign basis. You have the option to reserve a specific number of lines to be used by only one campaign as well as allowing that campaign to run over its reserved lines into whatever lines remain open, as long at the total lines used by <?php echo $t1; ?> on this server is less than the Max <?php echo $t1; ?> Trunks setting. Not having any of these records will allow the campaign that dials the line first to have as many lines as it can get under the Max <?php echo $t1; ?> Trunks setting.
@@ -1671,9 +1629,8 @@ The <?php echo $t1; ?> basic web-based lead loader is designed simply to take a 
 
 
 
-<BR><BR><BR><BR>
-
-<B><FONT SIZE=3>SYSTEM_SETTINGS TABLE</FONT></B><BR><BR>
+<BR><BR>
+<B><FONT SIZE=3>SYSTEM_SETTINGS TABLE</FONT></B><BR>
 <A NAME="settings-use_non_latin">
 <BR>
 <B>Current Character-Set -</B> This flag indicates which character-set your system is using. You have two options, Latin1 (the default), is well suited for English and other Latin-based character-sets. Your other option is UTF8, which allows for the display and storage of non-Latin characters and data. In order to utilize UTF8 for use with OSDial, you must convert your existing database. To convert your database to the UTF8 character-set, log into the console and run the following command: <b>/opt/osdial/bin/sql/upgrade_sql.pl --convert --use-utf8</b>.  To convert your database to the Latin1 character-set, log into the console and run the following command: <b>/opt/osdial/bin/sql/upgrade_sql.pl --convert --use-latin1</b>. 
@@ -1793,25 +1750,24 @@ The <?php echo $t1; ?> basic web-based lead loader is designed simply to take a 
 <BR>
 <B>Last Recording Extension -</B> The last extension assigned to a recording after being created using extension 8168 or 8169. This field is incremented whenever a new recording is created. You should not need to modify this field unless you have encountered overlapped extensions or you wish to change the extension schema for recordings.
 
-<BR><BR><BR><BR>
+<BR><BR>
 
-<B><FONT SIZE=3><?php echo $t1; ?>_Statuses Table</FONT></B><BR><BR>
+<B><FONT SIZE=3><?php echo $t1; ?>_STATUSES TABLE</FONT></B><BR>
 <A NAME="osdial_statuses">
 <BR>
 Through the use of system statuses, you can have statuses that exist for campaign and in-group. The Status must be 1-6 characters in length, the description must be 2-30 characters in length and Selectable defines whether it shows up in <?php echo $t1; ?> as an agent disposition. The human_answered field is used when calculating the drop percentage, or abandon rate. Setting human_answered to Y will use this status when counting the human-answered calls. The Category option allows you to group several statuses into a catogy that can be used for statistical analysis.</B>
 
 
-<BR><BR><BR><BR>
-
-<B><FONT SIZE=3><?php echo $t1; ?>_Status_Categories Table</FONT></B><BR><BR>
+<BR><BR>
+<B><FONT SIZE=3><?php echo $t1; ?>_STATUS_CATEGORIES TABLE</FONT></B><BR>
 <A NAME="osdial_status_categories">
 <BR>
 Through the use of system status categories, you can group together statuses to allow for statistical analysis on a group of statuses. The Category ID must be 2-20 characters in length with no spaces, the name must be 2-50 characters in length, the description is optional and Time On <?php echo $t1; ?> Display defines whether that status will be one of the upto 4 statuses that can be calculated and displayed on the Time On <?php echo $t1; ?> Real-Time report.</B>
 
 
-<br/><br/><br/><br/>
-
+<br/><br/>
 <b><font size=3>CARRIERS</font></b><br/>
+<br />
 The carrier configuration pages allow you to add Telephone Service Providers using standards based telephony protocols. The two primary VoIP protocols available are SIP and IAX2. The configuration uses Asterisk-based formatting for the Protocol Configuration, Registration Information, and Dialplan/Extensions. There are several selectable templates to assist you in entering in your configuration. The defaults provided by the templates should work without additional modification.<br/>
 For more information on protocol-specific Asterisk configuration, try one of the following resources:<br/>
 <a href="http://www.voip-info.org/wiki/view/Asterisk+config+sip.conf">http://www.voip-info.org/wiki/view/Asterisk+config+sip.conf</a><br/>
@@ -1929,9 +1885,9 @@ user[:secret[:authuser]]@carrier_name[/extension]<br/>
 <br/>
 <b>Failover Condition -</b> The condition used to trigger a call being attempted on the <b>Failover Carrier</b>. <b>CHANUNAVAIL</b>- Failure to contact carrier, <b>CONGESTION</b>- Carrier contacted but could not complete call, <b>BOTH</b>- Either CHANUNAVAIL or CONGESTION.
 
-<br/><br/><br/><br/>
-
+<br/><br/>
 <b><font size=3>CARRIERS - SERVER SPECIFIC SETTINGS</font></b><br/>
+<br />
 This section provides a method of overriding the Protocol Configuration, Registions, or Dialplan based on the server that this configuration is running on.
 
 <br/>
@@ -1948,16 +1904,17 @@ user[:secret[:authuser]]@host[:port][/extension]<br/>
 <b>johndoe:abc1234@99.88.77.66:5060</b><br/><br/>
 Format using a Host which you have defined in your Protocol Config:<br/>
 user[:secret[:authuser]]@carrier_name[/extension]<br/>
-<b>johndoe:abc1234@genericSIP</b><br/>
+<b>johndoe:abc1234@genericSIP</b>
 
 <br/>
 <a name="carrier_servers-dialplan">
 <br/>
 <b>Dialplan -</b> Any Asterisk compatible extension configuration mapping. The default settings for this field should not be changed unless you know what you are doing.
 
-<br/><br/><br/><br/>
-
+<br/><br/>
 <b><font size=3>CARRIERS - DIDs</font></b><br/>
+
+<br />
 <b>DID</b> stands for Direct Inward Dialing.  It is the name normally given to an Inbound Phone number assigned to you by your carrier.
 
 <br/>
@@ -2006,15 +1963,16 @@ user[:secret[:authuser]]@carrier_name[/extension]<br/>
 <tr valign=top><td></td><td><b><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>5DIGITID</font></b></td><td><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>Enter 5 digit code to go to agent.</font></td></tr>
 <tr valign=top><td></td><td><b><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>10DIGITID</font></b></td><td><font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2>Enter 10 digit code to go to agent.</font></td></tr>
 </table>
+
 <br/>
 <a name="carrier_dids-default_list_id">
 <br/>
 <b>Default List ID -</b> Default list to use when creating new leads from inbound calls which could not be matched to an existing lead using the selected <b>Lookup Method</b>. This field also specifies the List ID to search when using the list based <b>Lookup Methods</b>, <b>CIDLOOKUPRL</b> or <b>ANILOOKUPRL</b>.
-<br/>
+
 <a name="carrier_dids-default_phone_code">
 <br/>
 <b>Default Phone Code -</b> The default phone (country) code to assign to a newly created lead from an inbound call that could not be matched to an existing lead using the selected <b>Lookup Method</b>.  Default is <b>1</b> (North America).
-<br/>
+
 <a name="carrier_dids-search_campagin">
 <br/>
 <b>Search Campaign -</b> This field specifies the Campaign ID to search when using the campaign based <b>Lookup Methods</b>, <b>CIDLOOKUPRC</b> or <b>ANILOOKUPRC</b>.
@@ -2034,7 +1992,7 @@ When adding custom extension to OSDial, use the file <b>/etc/asterisk/osdial_ext
 <a name="carrier_dids-extension_context">
 <br/>
 <b>Extension Context -</b> The Asterisk extension context/section to use when routing inbound calls for this DID.
-<br/>
+
 <a name="carrier_dids-extension">
 <br/>
 <b>Extension -</b> The Asterisk extension within <b>Extension Context</b> to use when routing inbound calls for this DID.
@@ -2049,9 +2007,8 @@ When adding custom extension to OSDial, use the file <b>/etc/asterisk/osdial_ext
   </td></tr>
 </table>
 
-<br><br><br><br>
-
-<b><font size=3>Multi-Company Configuration</font></b><br><br>
+<br><br>
+<b><font size=3>MULTI-TENANT CONFIGURATION</font></b><br>
 
 <a name="companies-company_name">
 <br><b>Company Name -</b> This name will be displayed as the title banner on reports and configuration screens.
@@ -2128,13 +2085,15 @@ When adding custom extension to OSDial, use the file <b>/etc/asterisk/osdial_ext
 <a name="companies-default_ext_context">
 <br><b>Default Ext Context -</b> The default Extension Context that is used when creating phones for this company.  Some defaults are:  osdial- Access to OSDial extensions and outbound dialing.  osdialEXT- Access to OSDial extensions, no outbound dialing.  osdialBLOCK- No access to OSDial extensions or outbound dialing.
 <br>
+<br /><br />
 
-
-
-<BR><BR><BR><BR><BR><BR><BR><BR>
-<BR><BR><BR><BR><BR><BR><BR><BR>
+</TD></TR>
+<tr><td style="text-align:center;color:#1C4754;size=4;">
+- End -
+<br /><br />
 
 </TD></TR></TABLE></BODY></HTML>
+<br />
 <?php
 exit;
 

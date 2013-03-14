@@ -150,10 +150,10 @@ if ($ADD==321111111111111)
 	if ($LOG['modify_servers']==1)
 	{
 	echo "<br><center>\n";
-	echo "<font color=$default_text size=4>SYSTEM-WIDE STATUSES &nbsp; $NWB#osdial_statuses$NWE</font><br><br>\n";
+	echo "<font class=top_header color=$default_text size=4>SYSTEM-WIDE STATUSES &nbsp; $NWB#osdial_statuses$NWE</font><br><br>\n";
 	echo "<table width=800 cellspacing=1 bgcolor=grey>\n";
 	echo "  <tr class=tabheader>\n";
-    echo "    <td align=center>STATUS</td>\n";
+    echo "    <td align=center>STATUS ID</td>\n";
 	echo "    <td align=center>DESCRIPTION</td>\n";
 	echo "    <td>SELECTABLE</td>\n";
 	echo "    <td>HUMAN&nbsp;ANSWER</td>\n";
@@ -365,7 +365,7 @@ if ($ADD==331111111111111)
     echo "<center>\n";
 	echo "<table width=800 cellspacing=1 bgcolor=grey>\n";
 	echo "  <tr class=tabheader>\n";
-    echo "    <td align=center>CATEGORY</td>\n";
+    echo "    <td align=center>CATEGORY ID</td>\n";
     echo "    <td align=center>NAME</td>\n";
     echo "    <td align=center>DESCRIPTION</td>\n";
     echo "    <td align=center>ON&nbsp;REALTIME</td>\n";

@@ -27,7 +27,7 @@
 if ($ADD==999999) {
     if ($LOG['view_reports']==1) {
         if ($SUB=='') {
-            echo "<font size=4 color=$default_text><br><center>CUSTOM REPORTS</center></font><br>";
+            echo "<font size=4 class=top_header color=$default_text><br><center>CUSTOM REPORTS</center></font><br>";
             echo "<ul class=>";
             echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=1001\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Report 1</a></font>";
             echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=1002\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Report 2</a></font>";

@@ -51,7 +51,7 @@ function report_phone_stats() {
     if ($end_date == "") {$end_date = $TODAY;}
     
     $head .= "<br>\n";
-    $head .= "<center><font color=$default_text size=4>PHONE STATS</font></center><br>\n";
+    $head .= "<center><font class=top_header color=$default_text size=4>PHONE STATS</font></center><br>\n";
     if ($phone_extension) {
         $stmt=sprintf("SELECT fullname,protocol FROM phones WHERE extension='%s' AND server_ip='%s' ORDER BY extension LIMIT 1;",mres($company_prefix.$phone_extension),mres($phone_server_ip));
         $rslt=mysql_query($stmt, $link);
@@ -138,7 +138,7 @@ function report_phone_stats() {
         $statuses_to_print = mysql_num_rows($rslt);
         
         $table .= "  <br>\n";
-        $table .= "  <center><font color=$default_text size=3><b>CALL TIME AND CHANNELS</b></font></center>\n";
+        $table .= "  <center><font class=top_header2 color=$default_text size=3><b>CALL TIME AND CHANNELS</b></font></center>\n";
         $table .= "  <table align=center width=400 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
         $table .= "    <tr class=tabheader>\n";
         $table .= "      <td>CHANNEL GROUP</td>\n";
@@ -178,7 +178,7 @@ function report_phone_stats() {
         $statuses_to_print = mysql_num_rows($rslt);
         
         $table .= "  <br>\n";
-        $table .= "  <center><font color=$default_text size=3><b>LAST 1000 CALLS FOR DATE RANGE</b></font></center>\n";
+        $table .= "  <center><font class=top_header2 color=$default_text size=3><b>LAST 1000 CALLS FOR DATE RANGE</b></font></center>\n";
         $table .= "  <table align=center width=400 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
         $table .= "    <tr class=tabheader>\n";
         $table .= "      <td>NUMBER</td>\n";

@@ -100,11 +100,15 @@ if ($ADD=="3eb" and $SUB==2)   {$hh='campaigns';   $sh='email_blacklist'; $title
 if ($ADD=="1form")	    {$hh='campaigns';	$sh='fields';	$title = "Add New Form";}
 if ($ADD=="2form")	    {$hh='campaigns';	$sh='fields';	$title = "New Additional Form";}
 if ($ADD=="2fields")	{$hh='campaigns';	$sh='fields';	$title = "New Additional Field";}
+if ($ADD=="3fields")	{$hh='campaigns';	$sh='fields';	$title = "Campaign Additional Field Entries";}  
 if ($ADD=="4form")	    {$hh='campaigns';	$sh='fields';	$title = "Modify Form";}
 if ($ADD=="4fields")	{$hh='campaigns';	$sh='fields';	$title = "Modify Field";}
 if ($ADD=="6form")	    {$hh='campaigns';	$sh='fields';	$title = "Delete Form";}
 if ($ADD=="6fields")	{$hh='campaigns';	$sh='fields';	$title = "Delete Field";}
-if ($ADD=="3fields")	{$hh='campaigns';	$sh='fields';	$title = "Campaign Addtional Field Entries";}
+# Campaigns - NEW additional fields
+if ($ADD==71)			{$hh='campaigns';	$sh='fields';	$title = "Campaign Additional Field Entries";} 
+if ($ADD==72)		    {$hh='campaigns';	$sh='fields';	$title = "Modify Form";}
+if ($ADD==73)		    {$hh='campaigns';	$sh='fields';	$title = "Add New Form";}
 
 # Campaigns - fields
 if ($ADD=="1menu")		{$hh='campaigns';	$sh='ivr';	$title = "Add New In/Out IVR Menu";}
@@ -143,14 +147,16 @@ if ($ADD==53)			{$hh='campaigns';	$sh='detail';	$title = "Emergency VDAC Jam Cle
 if ($ADD==61)			{$hh='campaigns';	$sh='detail';	$title = "Delete Campaign";}
 if ($ADD==62)			{$hh='campaigns';	$sh='detail';	$title = "Logout Agents";}
 if ($ADD==63)			{$hh='campaigns';	$sh='detail';	$title = "Emergency VDAC Jam Clear";}
-if ($ADD==31)			{$hh='campaigns';	$sh='detail';	$title = "Modify Campaign - Detail - $campaign_id";
+//if ($ADD=='3fields')	{$hh='campaigns';	$sh='detail';	$title = "Campaign Additional Field Entries";}  // $sh changed from 'fields' to 'detail'
+if ($ADD==31) {
+	$hh='campaigns';	$sh='detail';	$title = "Modify Campaign - Detail - $campaign_id";
 	if ($SUB==22)	{$title .= " - Statuses";}
 	if ($SUB==23)	{$title .= " - HotKeys";}
 	if ($SUB==25)	{$title .= " - Lead Recycle Entries";}
 	if ($SUB==26)	{$title .= " - Auto Alt Dial Statuses";}
 	if ($SUB==27)	{$title .= " - Agent Pause Codes";}
 	if ($SUB==29)	{$title .= " - List Mixes";}
-	}
+}
 
 
 # Lists
@@ -171,6 +177,7 @@ if ($ADD==311)			{$hh='lists';	$title = "Modify List";}
 
 # Ingroups
 if ($ADD==1000)			{$hh='ingroups';	$title = "In-Groups";}
+if ($ADD==1001)			{$hh='ingroups';	$title = "In-Groups A2A";}
 if ($ADD==1111)			{$hh='ingroups';	$title = "Add New In-Group";}
 if ($ADD==1211)			{$hh='ingroups';	$title = "Copy In-Group";}
 if ($ADD==2111)			{$hh='ingroups';	$title = "New In-Group Addition";}

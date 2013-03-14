@@ -28,7 +28,7 @@
 if ($ADD==111111) {
     if (($LOG['modify_usergroups'] == 1 and $LOG['allowed_campaignsALL'] > 0) OR (OSDpreg_match('/^(admin|6666)$/',$LOG['user']) and $LOG['user_level']>=9)) {
         echo "<center>\n";
-        echo "  <br><font color=$default_text size=+1>ADD NEW AGENTS GROUP</font><br><br>\n";
+        echo "  <br><font class=top_header color=$default_text size=+1>ADD NEW AGENTS GROUP</font><br><br>\n";
         echo "  <form action=$PHP_SELF method=POST>\n";
         echo "  <input type=hidden name=ADD value=211111>\n";
         echo "  <table width=$section_width cellspacing=3>\n";
@@ -285,7 +285,7 @@ if ($ADD==311111) {
         $allowed_ingroups = $row[37];
 
         echo "<center>\n";
-        echo "  <br><font color=$default_text size=+1>MODIFY A USER GROUP</font><br><br>\n";
+        echo "  <br><font class=top_header color=$default_text size=+1>MODIFY A USER GROUP</font><br><br>\n";
         echo "  <form action=$PHP_SELF method=POST>\n";
         echo "  <input type=hidden name=ADD value=411111>\n";
         echo "  <input type=hidden name=OLDuser_group value=\"$user_group\">\n";
@@ -330,7 +330,7 @@ if ($ADD==311111) {
         echo "      <td align=center colspan=2>Allowed Campaigns</td>\n";
         echo "    </tr>\n";
         echo "    <tr class=tabheader>\n";
-        echo "      <td></td>\n";
+        echo "      <td width=10%></td>\n";
         echo "      <td align=left>Campaign</td>\n";
         echo "    </tr>\n";
         $sel = '';
@@ -358,10 +358,10 @@ if ($ADD==311111) {
         echo "  <br>\n";
         echo "  <table bgcolor=grey width=50% cellspacing=1>\n";
         echo "    <tr class=tabheader>\n";
-        echo "      <td align=center colspan=2>Allowed InGroups</td>\n";
+        echo "      <td align=center colspan=2>Allowed In-Groups</td>\n";
         echo "    </tr>\n";
         echo "    <tr class=tabheader>\n";
-        echo "      <td></td>\n";
+        echo "      <td width=10%></td>\n";
         echo "      <td align=left>Inbound Group</td>\n";
         echo "    </tr>\n";
         $sel = '';
@@ -396,7 +396,7 @@ if ($ADD==311111) {
         echo "      <td align=center colspan=2>Allowed Scripts</td>\n";
         echo "    </tr>\n";
         echo "    <tr class=tabheader>\n";
-        echo "      <td></td>\n";
+        echo "      <td width=10%></td>\n";
         echo "      <td align=left>Script</td>\n";
         echo "    </tr>\n";
         $sel = '';
@@ -427,7 +427,7 @@ if ($ADD==311111) {
             echo "      <td align=center colspan=2>Allowed Email Templates</td>\n";
             echo "    </tr>\n";
             echo "    <tr class=tabheader>\n";
-            echo "      <td></td>\n";
+            echo "      <td width=10%></td>\n";
             echo "      <td align=left>Template</td>\n";
             echo "    </tr>\n";
             $sel = '';
@@ -586,7 +586,7 @@ if ($ADD==311111) {
         echo "  <br>\n";
         echo "  <table bgcolor=grey width=50% cellspacing=1>\n";
         echo "    <tr class=tabheader>\n";
-        echo "      <td align=center colspan=4>InGroup / Closer Reports</td>\n";
+        echo "      <td align=center colspan=4>In-Group / Closer Reports</td>\n";
         echo "    </tr>\n";
         echo "    <tr class=tabheader>\n";
         echo "      <td width=60% align=center>REPORT NAME</td>\n";
@@ -836,7 +836,7 @@ if ($ADD==100000) {
     $people_to_print = mysql_num_rows($rslt);
 
     echo "<center>\n";
-    echo "  <br><font color=$default_text size=+1>USER GROUPS</font><br><br>\n";
+    echo "  <br><font class=top_header color=$default_text size=+1>USER GROUPS</font><br><br>\n";
     echo "  <table width=$section_width cellspacing=0 cellpadding=1>\n";
     echo "    <tr class=tabheader>\n";
     echo "      <td>NAME</td>\n";

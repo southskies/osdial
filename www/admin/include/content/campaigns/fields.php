@@ -42,7 +42,7 @@ if ($ADD == "1form") {
                 }
             }
             $form_id++;
-            echo "<br><B><font color=$default_text>FORM CREATED: $form_id - $form_name - $form_priority</font></B>\n";
+            echo "<br><B><font color=$default_text>FORM CREATED, ID: $form_id - Name: $form_name - Priority: $form_priority</font> <a href=$PHP_SELF?ADD=71>Return</a></B>\n";
             $fcamps = join(',',$campaigns);
             if ($LOG['allowed_campaignsALL'] > 0) {
                 if (OSDpreg_match('/-ALL-/',$fcamps));
@@ -71,9 +71,10 @@ if ($ADD == "1form") {
 ######################
 # ADD=2form add a new form
 ######################
-if ($ADD == "2form") {
+// if ($ADD == "2form") {
+if ($ADD == 73) {
     if ($LOG['modify_campaigns'] == 1) {
-        echo "<center><br><font color=$default_text size=+1>ADDITIONAL FORM</font><br><br>\n";
+        echo "<center><br><font class=top_header color=$default_text size=+1>ADD AN ADDITIONAL FORM</font><br><br>\n";
 
         $pri = 0;
         $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'",'');
@@ -150,7 +151,7 @@ if ($ADD == "2fields") {
             echo "<br>priority must be greater than 1</font><br>\n";
         } else {
             $field_name = OSDstrtoupper($field_name);
-            echo "<br><B><font color=$default_text>FIELD ADDED: $field_name</font></B>\n";
+            echo "<br><B><font color=$default_text>FIELD ADDED: $field_name</font></B> <a href=$PHP_SELF?ADD=72&id=$form_id>Return</a>\n";
             $stmt=sprintf("INSERT INTO osdial_campaign_fields (form_id,name,description,options,length,priority) VALUES('%s','%s','%s','%s','%s','%s');",mres($form_id),mres($field_name),mres($field_description),mres($field_options),mres($field_length),mres($field_priority));
             $rslt = mysql_query($stmt, $link);
             ### LOG CHANGES TO LOG FILE ###
@@ -312,8 +313,9 @@ if ($ADD == "6fields") {
 ######################
 # ADD=35 display all campaign forms
 ######################
-if ($ADD == "3fields" and $SUB != '2fields') {
-    echo "<center><br><font color=$default_text size=+1>ADDITIONAL FORMS & FIELDS</font><br><br>\n";
+// if ($ADD == "3fields" and $SUB != '2fields') {
+if ($ADD == 71) {
+    echo "<center><br><font class=top_header color=$default_text size=+1>ADDITIONAL FORMS & FIELDS</font><br><br>\n";
 
     echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
     echo "  <tr class=tabheader>\n";
@@ -334,9 +336,14 @@ if ($ADD == "3fields" and $SUB != '2fields') {
         }
         if ($matched) {
             echo "  <tr " . bgcolor($cnt) . " class=\"row font1\">\n";
+            /*
             echo "    <td><a href=\"$PHP_SELF?ADD=3fields&SUB=2fields&id=" . $form['id'] . "\">" . $form['name'] . "</a></td>\n";
             echo "    <td>" . $form['description'] . "</td>\n";
             echo "    <td align=center><a href=\"$PHP_SELF?ADD=3fields&SUB=2fields&id=" . $form['id'] . "\">MODIFY FORM</a></td></tr>\n";
+            */
+            echo "    <td><a href=\"$PHP_SELF?ADD=72&id=" . $form['id'] . "\">" . $form['name'] . "</a></td>\n";
+            echo "    <td>" . $form['description'] . "</td>\n";
+            echo "    <td align=center><a href=\"$PHP_SELF?ADD=72&id=" . $form['id'] . "\">MODIFY FORM</a></td></tr>\n";
             $cnt++;
         }
     }
@@ -346,14 +353,16 @@ if ($ADD == "3fields" and $SUB != '2fields') {
     echo "</table>\n";
     echo "</center>\n";
 
-    echo "<br /><br /><center><a href=$PHP_SELF?ADD=2form>ADD NEW FORM</a></center>";
+//    echo "<br /><br /><center><a href=$PHP_SELF?ADD=2form>ADD NEW FORM</a></center>";
+    echo "<br /><br /><center class=no-ul><a href=$PHP_SELF?ADD=73>ADD NEW FORM</a></center>";
 }
 
 ######################
 # ADD=35 display all campaign form & fields
 ######################
-if ($ADD == "3fields" and $SUB == '2fields') {
-    echo "<center><br><font color=$default_text size=+1>ADDITIONAL FORM</font><br><br>\n";
+// if ($ADD == "3fields" and $SUB == '2fields') {
+if ($ADD == 72) {
+    echo "<center><br><font class=top_header color=$default_text size=+1>ADDITIONAL FORM</font><br><br>\n";
 
     $form = get_first_record($link, 'osdial_campaign_forms', '*', 'id=' . $id);
 
@@ -417,7 +426,7 @@ if ($ADD == "3fields" and $SUB == '2fields') {
     echo "</form>";
 
     echo "<br /><br /><hr width=50%>\n";
-    echo "<center><font color=$default_text size=+1>ADDITIONAL FORM FIELDS</font><br><br>\n";
+    echo "<center><font class=top_header color=$default_text size=+1>ADDITIONAL FORM FIELDS</font><br><br>\n";
     echo "<table width=$section_width cellspacing=1 cellpadding=0 bgcolor=grey>\n";
     echo "  <tr class=tabheader>\n";
     echo "      <td align=center>NAME</td>\n";

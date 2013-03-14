@@ -25,7 +25,7 @@ if ($ADD==122) {
     #@apache_setenv('no-gzip', 1);
     #@ini_set('zlib.output_compression', 0);
 	
-	echo "<center><br><font color=$default_text size=+1>LOAD NEW LEADS</font><br><hr><br>\n";
+	echo "<center><br><font class=top_header color=$default_text size=+1>LOAD NEW LEADS</font><br><hr><br>\n";
 	
 	$leadfile=$_FILES["leadfile"];
 	$LF_orig = $_FILES['leadfile']['name'];
@@ -1004,7 +1004,7 @@ if ($ADD==122) {
                 if (count($afmaps) > 0 and $file_layout == "custom") {
 			        echo "  <input type=hidden name=aff_fields value=\"$afjoin\">\n";
 			        echo "  <tr class=tabheader>\n";
-			        echo "    <td align=center colspan=2>ADDITIONAL FORM FIELDS</td>\n";
+			        echo "    <td align=center class=top_header colspan=2>ADDITIONAL FORM FIELDS</td>\n";
 			        echo "  </tr>\n";
                     $o=0;
                     foreach ($afmaps as $k => $v) {

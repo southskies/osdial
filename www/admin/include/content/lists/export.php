@@ -113,7 +113,7 @@ if ($ADD==131 && $SUB==2 && $LOG['user_level'] > 8 && $LOG['export_leads'] > 0) 
 
 } elseif ($ADD==131 && $LOG['user_level'] > 8 && $LOG['export_leads'] > 0) {
 
-	echo "<center><br><font color=$default_text size=+1>LEAD EXPORT</font><br><br>\n";
+	echo "<center><br><font class=top_header color=$default_text size=+1>LEAD EXPORT</font><br><br>\n";
 
 	if ($LOG['modify_lists']==1) {
         if ($statuses[0] != '') $target=' target="_blank"';

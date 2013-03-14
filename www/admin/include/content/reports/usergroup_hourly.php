@@ -62,7 +62,7 @@ function report_usergroup_hourly() {
     $html = '';
 
     $html .= "  <br><br>\n";
-    $html .= "  <center><font color=$default_text size=4>USER-GROUP HOURLY STATUS REPORT</font></center>\n";
+    $html .= "  <center><font class=top_header color=$default_text size=4>USER-GROUP HOURLY STATUS REPORT</font></center><br />\n";
     $html .= "  <form action=$PHP_SELF method=POST>\n";
     $html .= "  <input type=hidden name=ADD value=$ADD>\n";
     $html .= "  <input type=hidden name=SUB value=$SUB>\n";
@@ -150,7 +150,7 @@ function report_usergroup_hourly() {
             $o++;
         }
 
-        $html .= "  <center><a href=\"./admin.php?ADD=311111&user_group=$group\">" . OSDstrtoupper(mclabel($group)) . "</a></center>\n";
+        $html .= "  <center><a href=\"./admin.php?ADD=311111&user_group=$group\">" . OSDstrtoupper(mclabel($group)) . "</a></center><br />\n";
         $html .= "  <table bgcolor=grey align=center width=600 cellspacing=1 cellpadding=0>\n";
         $html .= "    <tr class=tabheader>\n";
         $html .= "      <td colspan=2></td>\n";
@@ -158,7 +158,7 @@ function report_usergroup_hourly() {
         $html .= "      <td colspan=2></td>\n";
         $html .= "    </tr>\n";
         $html .= "    <tr class=tabheader>\n";
-        $html .= "      <td>TSR</td>\n";
+        $html .= "      <td>AGENT</td>\n";
         $html .= "      <td>ID</td>\n";
         $html .= "      <td>HOUR</td>\n";
         $html .= "      <td>TODAY</td>\n";

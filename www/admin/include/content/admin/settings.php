@@ -60,7 +60,7 @@ if ($ADD==311111111111111) {
         $system_settings = get_first_record($link, 'system_settings', '*', '');
         # The Main System Settings Form.
         echo "      <center><br>\n";
-        echo "      <font color=$default_text size=+1>MODIFY SYSTEM SETTINGS</font>\n";
+        echo "      <font class=top_header color=$default_text size=+1>MODIFY SYSTEM SETTINGS</font>\n";
         echo "      <form action=$PHP_SELF method=POST><br>\n";
         echo "      <input type=hidden name=ADD value=411111111111111>\n";
         if (!file_exists($WeBServeRRooT . '/admin/include/content/admin/company.php')) {
@@ -313,6 +313,7 @@ if ($ADD==311111111111111) {
         echo "            $NWB#settings-enable_queuemetrics_logging$NWE\n";
         echo "          </td>\n";
         echo "        </tr>\n";
+        echo "<tr><td align=center colspan=2><font color=red>Need to add an invisible tag to remove the blank space when not in use.</font></td></tr>";
         echo "        <tr bgcolor=$oddrows style=\"$qstyle\">\n";
         echo "          <td align=right>QueueMetrics Server IP:</td>\n";
         echo "          <td align=left><input type=text name=queuemetrics_server_ip size=18 maxlength=15 value=\"$system_settings[queuemetrics_server_ip]\">$NWB#settings-queuemetrics_server_ip$NWE</td>\n";

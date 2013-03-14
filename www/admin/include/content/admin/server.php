@@ -352,7 +352,7 @@ if ($ADD==311111111111) {
         $server_id = $row[0];
         $server_ip = $row[2];
 
-        echo "<center><br><font color=$default_text size=+1>MODIFY A SERVER</font><form action=$PHP_SELF method=POST><br><br>\n";
+        echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY A SERVER</font><form action=$PHP_SELF method=POST><br><br>\n";
         echo "<input type=hidden name=ADD value=411111111111>\n";
         echo "<input type=hidden name=old_server_id value=\"$server_id\">\n";
         echo "<input type=hidden name=old_server_ip value=\"$row[2]\">\n";
@@ -404,7 +404,7 @@ if ($ADD==311111111111) {
 
         if ($row[22] == 'AIO' or $row[22] == 'DIALER') {
             ### osdial server trunk records for this server
-            echo "<br><br><center><font color=$default_text size=+1>TRUNKS FOR THIS SERVER &nbsp;</font> $NWB#osdial_server_trunks$NWE<br>\n";
+            echo "<br><br><center><font class=top_header2 color=$default_text size=+1>TRUNKS FOR THIS SERVER &nbsp;</font> $NWB#osdial_server_trunks$NWE<br>\n";
             echo "<table width=600 cellspacing=1 bgcolor=grey>\n";
             echo "  <tr class=tabheader>\n";
             echo "    <td align=center>TRUNKS</td>\n";
@@ -560,7 +560,7 @@ if ($ADD==311111111111) {
             echo "<center><b>\n";
 
             $camp_lists = OSDpreg_replace("/.$/","",$camp_lists);
-            echo "<font size=2 color=$default_text>This server has $active_phones active phones and $inactive_phones inactive phones<br><br>\n";
+            echo "<font size=2 color=#000>This server has $active_phones active phones and $inactive_phones inactive phones<br><br>\n";
             echo "This server has $active_confs active conferences<br><br>\n";
             echo "This server has $active_vdconfs active $t1 conferences</font><br><br>\n";
             echo "</b></center>\n";
@@ -585,7 +585,7 @@ if ($ADD==100000000000) {
     $rslt=mysql_query($stmt, $link);
     $phones_to_print = mysql_num_rows($rslt);
 
-    echo "<center><br><font color=$default_text size=+1>SERVERS</font><br><br>\n";
+    echo "<center><br><font class=top_header color=$default_text size=+1>SERVERS</font><br><br>\n";
     echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
     echo "  <tr class=tabheader>\n";
     echo "    <td>ID</td>\n";

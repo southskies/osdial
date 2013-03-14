@@ -191,7 +191,7 @@ if ($ADD==3111111111111)
 
     $servers_list = get_servers($link, $row[1], 'AIO|DIALER');
 
-	echo "<center><br><font color=$default_text size=+1>MODIFY A CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY A CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=4111111111111>\n";
 	echo "<input type=hidden name=old_conf_exten value=\"$row[0]\">\n";
 	echo "<input type=hidden name=old_server_ip value=\"$row[1]\">\n";
@@ -228,7 +228,7 @@ if ($ADD==1000000000000)
 	$rslt=mysql_query($stmt, $link);
 	$phones_to_print = mysql_num_rows($rslt);
 
-echo "<center><br><font color=$default_text size=+1>CONFERENCES</font><br><br>\n";
+echo "<center><br><font class=top_header color=$default_text size=+1>CONFERENCES</font><br><br>\n";
 echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "  <tr class=tabheader>\n";
 echo "    <td>ID</td>\n";

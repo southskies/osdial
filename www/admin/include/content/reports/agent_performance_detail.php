@@ -86,7 +86,7 @@ function report_agent_performance_detail() {
     $html .= "  <table width=750 align=center cellpadding=0 cellspacing=0>\n";
     $html .= "    <tr>\n";
     $html .= "      <td align=center colspan=5>\n";
-    $html .= "        <font color=$default_text size=4>AGENT PERFORMANCE REPORT</font>\n";
+    $html .= "        <font class=top_header color=$default_text size=4>AGENT PERFORMANCE REPORT</font>\n";
     $html .= "      </td>\n";
     $html .= "    <tr><td colspan=5>&nbsp;</td></tr>\n";
     $html .= "    <tr class=tabheader>\n";
@@ -263,7 +263,7 @@ function report_agent_performance_detail() {
 
         $table .= "<br><br>\n";
         $table .= "<table align=center cellspacing=0 cellpadding=0 width=$section_width\">\n";
-        $table .= "  <tr><td align=center><font color=$default_text size=3>AGENT PERFORMANCE DETAIL</font></td></tr>\n";
+        $table .= "  <tr><td align=center><font class=top_header2 color=$default_text size=3>AGENT PERFORMANCE DETAIL</font></td></tr>\n";
         $table .= "  <tr>\n";
         $table .= "    <td align=center>\n";
         $table .= "      <div style=\"overflow: auto; width:" . $section_width . "px;\">\n";

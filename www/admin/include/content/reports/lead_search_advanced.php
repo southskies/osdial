@@ -31,7 +31,7 @@ function report_lead_search_advanced($lsa_seg='form') {
         $form = '';
         $form .= "<table align=center><tr><td>\n";
         $form .= "<font face=\"dejavu sans,verdana,sans-serif\" color=$default_text size=2>";
-        $form .= "<center><br><font color=$default_text size=+1>ADVANCED LEAD SEARCH</font><br>\n";
+        $form .= "<center><br><font class=top_header color=$default_text size=+1>ADVANCED LEAD SEARCH</font><br>\n";
         $form .= "<center><font color=$default_text size=2>\n";
         if ($LOG['view_lead_search']) $form .= "<a target=\"_parent\" href=\"./admin.php?ADD=999999&SUB=27\">[ Basic Search ]</a>&nbsp;&nbsp;|&nbsp;&nbsp;\n";
         $form .= "[ Advanced Search ]<br></font></center>\n";
@@ -1008,7 +1008,7 @@ function report_lead_search_advanced($lsa_seg='form') {
                         $searchCount = ((($page - 1) * $numresults) + $results_to_print);
                         if ($searchCount < 1) $searchCount=0;
                     }
-                    $data .= "<br><br><br><div id=\"advsearch\"><font color=$default_text size=3><b>Records Found:&nbsp;" . $searchCount . "</b></font></div>";
+                    $data .= "<br><br><br><div id=\"advsearch\"><font class=top_header2 color=$default_text size=3><b>Records Found:&nbsp;" . $searchCount . "</b></font></div>";
                 }
             }
     

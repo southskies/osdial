@@ -32,7 +32,7 @@ if ($ADD==11111)
 	if ($LOG['modify_remoteagents']==1)
 	{
     $servers_list = get_servers($link, $server_ip, 'AIO|DIALER');
-	echo "<center><br><font color=$default_text size=+1>ADD NEW EXTERNAL AGENTS</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font class=top_header color=$default_text size=+1>ADD NEW EXTERNAL AGENTS</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=21111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Agent ID Start: </td><td align=left><input type=text name=user_start size=6 maxlength=20> (numbers only, incremented)$NWB#osdial_remote_agents-user_start$NWE</td></tr>\n";
@@ -218,7 +218,7 @@ if ($ADD==31111)
 
     $servers_list = get_servers($link, $row[3], 'AIO|DIALER');
 
-	echo "<center><br><font color=$default_text size=+1>MODIFY A REMOTE AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY AN EXTERNAL AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=41111>\n";
 	echo "<input type=hidden name=remote_agent_id value=\"$row[0]\">\n";
 	
@@ -276,7 +276,7 @@ if ($ADD==10000)
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 
-echo "<center><br><font color=$default_text size=+1>EXTERNAL AGENTS</font><br><br>\n";
+echo "<center><br><font class=top_header color=$default_text size=+1>EXTERNAL AGENTS</font><br><br>\n";
 echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "  <tr class=tabheader>\n";
 echo "    <td>ID</td>\n";

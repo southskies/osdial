@@ -60,7 +60,7 @@ function report_agent_stats() {
     if ($end_date == "") {$end_date = $TODAY;}
     
     $head .= "<br>\n";
-    $head .= "<center><font color=$default_text size=4>AGENT STATS</font></center><br>\n";
+    $head .= "<center><font class=top_header color=$default_text size=4>AGENT STATS</font></center><br>\n";
     if ($agent) {
         $stmt=sprintf("SELECT full_name,user_group FROM osdial_users WHERE user_group IN %s AND user='%s';",$LOG['allowed_usergroupsSQL'],mres($company_prefix.$agent));
         $rslt=mysql_query($stmt, $link);

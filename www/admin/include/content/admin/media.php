@@ -155,7 +155,7 @@ if ($ADD=="31media") {
     if ($LOG['modify_servers']>0) {
         $media = get_first_record($link, 'osdial_media', '*', sprintf("id='%s'",mres($media_id)) );
 
-        echo "<center><br><font color=$default_text size=+1>MODIFY MEDIA</font><form action=$PHP_SELF method=POST><br><br>\n";
+        echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY MEDIA</font><form action=$PHP_SELF method=POST><br><br>\n";
         echo "<input type=hidden name=ADD value=41media>\n";
         echo "<input type=hidden name=media_id value=$media[id]>\n";
         echo "<table width=$section_width cellspacing=3>\n";
@@ -182,7 +182,7 @@ if ($ADD=="31media") {
 ######################
 if ($ADD=="10media") {
     if ($LOG['modify_servers']>0) {
-        echo "<center><br><font color=$default_text size=+1>MEDIA</font><br><br>\n";
+        echo "<center><br><font class=top_header color=$default_text size=+1>MEDIA</font><br><br>\n";
         echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
         echo "  <tr class=tabheader>";
         echo "    <td>ID</td>\n";

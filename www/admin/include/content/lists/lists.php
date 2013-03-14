@@ -30,7 +30,7 @@
 
 if ($ADD==111) {
 	if ($LOG['modify_lists']==1)	{
-		echo "<center><br><font color=$default_text size=4>ADD A NEW LIST</font><form action=$PHP_SELF method=POST><br></center>\n";
+		echo "<center><br><font class=top_header color=$default_text size=4>ADD A NEW LIST</font><form action=$PHP_SELF method=POST><br></center>\n";
 		echo "<input type=hidden name=ADD value=211>\n";
 		echo "<table width=$section_width bgcolor=$oddrows align=center cellspacing=3>\n";
 		echo "  <tr bgcolor=$oddrows><td align=right width=50%>List ID: </td><td align=left width=50%><input type=text name=list_id size=12 maxlength=12 value=\"" . date("YmdHi") . "\"> (digits only)$NWB#osdial_lists-list_id$NWE</td></tr>\n";
@@ -68,7 +68,7 @@ if ($ADD==111) {
 ######################
 if ($ADD==125) {
 	if ($LOG['modify_lists']==1)	{
-		echo "<center><br><font color=$default_text size='2'>GENERATE TEST LEADS</font><br>(ONLY works with TEST list 998.)<form action=$PHP_SELF method=POST><br><br>\n";
+		echo "<center><br><font class=top_header color=$default_text size='2'>GENERATE TEST LEADS</font><br>(ONLY works with TEST list 998.)<form action=$PHP_SELF method=POST><br><br>\n";
 		echo "<input type=hidden name=ADD value=126>\n";
 		echo "<TABLE width=$section_width cellspacing=3>\n";
 		echo "<tr bgcolor=$oddrows><td align=right>Phone Number: </td><td align=left><input type=text name=testphone size=8 maxlength=8> (digits only)$NWB#$NWE</td></tr>\n";
@@ -306,7 +306,7 @@ if ($ADD==311) {
         $can_scrub_dnc = $rowd[0];
 
 
-        echo "<center><br><font color=$default_text size=+1>MODIFY A LIST</font><form action=$PHP_SELF method=POST><br><br>\n";
+        echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY A LIST</font><form action=$PHP_SELF method=POST><br><br>\n";
         echo "<input type=hidden name=ADD value=411>\n";
         echo "<input type=hidden name=list_id value=\"$row[0]\">\n";
         echo "<input type=hidden name=old_campaign_id value=\"$row[2]\">\n";
@@ -357,7 +357,7 @@ if ($ADD==311) {
         echo "</TABLE></center>\n";
 
         echo "<center>\n";
-        echo "<br><font color=$default_text size=+1>STATUSES WITHIN THIS LIST</font></b><br>\n";
+        echo "<br><font class=top_header2 color=$default_text size=+1>STATUSES WITHIN THIS LIST</font></b><br>\n";
         echo "<table bgcolor=grey width=500 cellspacing=1>\n";
         echo "  <tr class=tabheader>\n";
         echo "    <td align=center>STATUS</td>\n";
@@ -447,7 +447,7 @@ if ($ADD==311) {
 
 
         echo "<center>\n";
-        echo "<br><font color=$default_text size=+1>TIME ZONES WITHIN THIS LIST</font></b><br>\n";
+        echo "<br><font class=top_header2 color=$default_text size=+1>TIME ZONES WITHIN THIS LIST</font></b><br>\n";
         echo "<table bgcolor=grey width=500 cellspacing=1>\n";
         echo "  <tr class=tabheader>\n";
         echo "    <td align=center>GMT OFFSET NOW (local time)</td>\n";
@@ -595,7 +595,7 @@ if ($ADD==311) {
 
 
         echo "<center>\n";
-        echo "<br><font color=$default_text size=4>CALLED COUNTS WITHIN THIS LIST</font></b><br>\n";
+        echo "<br><font class=top_header2 color=$default_text size=4>CALLED COUNTS WITHIN THIS LIST</font></b><br>\n";
         echo "<table style=\"cursor:crosshair;\" bgcolor=grey width=500 cellspacing=1>\n";
         echo "  <tr style=\"cursor:crosshair;\" class=tabheader>\n";
         echo "    <td style=\"cursor:crosshair;\" align=left>STATUS</td>\n";
@@ -729,7 +729,7 @@ if ($ADD==311) {
 
 
         echo "<center>\n";
-        echo "<br><font color=$default_text size=4>PER-LEAD DISPOSITION COUNTS FROM LOG</font></b><br>\n";
+        echo "<br><font class=top_header2 color=$default_text size=4>PER-LEAD DISPOSITION COUNTS FROM LOG</font></b><br>\n";
         echo "<table style=\"cursor:crosshair;\" bgcolor=grey width=500 cellspacing=1>\n";
         echo "  <tr style=\"cursor:crosshair;\" class=tabheader>\n";
         echo "    <td style=\"cursor:crosshair;\" align=left>STATUS</td>\n";
@@ -923,7 +923,7 @@ if ($ADD==100) {
     $rslt=mysql_query($stmt, $link);
     $people_to_print = mysql_num_rows($rslt);
 
-    echo "<center><br><font color=$default_text size=+1>LISTS</font><br>";
+    echo "<center><br><font class=top_header color=$default_text size=+1>LISTS</font><br>";
     if ($people_to_print > 20) {
         echo "<font color=$default_text size=-1>";
         if ($dispact == '1') {

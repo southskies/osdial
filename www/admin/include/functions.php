@@ -469,7 +469,8 @@ function dialable_leads($DB, $link, $local_call_time, $dial_statuses, $camp_list
                 } else {
                     $active_leads = '0';
                 }
-                echo "|$DB|\n";
+                //echo "|$DB|\n";
+                echo " $DB &nbsp;\n";
                 echo "<font color=$default_text> This campaign has $active_leads leads to be dialed in those lists</font>\n";
             } else {
                 echo "<font color=$default_text> No dial statuses selected for this campaign</font>\n";
@@ -1475,7 +1476,57 @@ function mb_vsprintf($format, $argv, $encoding=null) {
     $newformat = mb_convert_encoding($newformat, $encoding, 'UTF-8');
     return vsprintf($newformat, $newargv);
 }
+function get_status_category_ucwords($catid) {
+    global $config;
+    $newcatid='';
 
+    # if IVR or CPA do not adjust.
+    if (OSDpreg_match('/^(IVR|CPA)$/i',$catid)) {
+        $newcatid=$catid;
+
+    # If NOCONTACT, add special casing.
+    } elseif ($catid == "NOCONTACT") {
+        $newcatid="NoContact";
+
+    # Everything else can be handled by the mb_convert_case or ucwords functions.
+    } else {
+        $newcatid=OSDstrtolower($catid);
+        if ($config['settings']['use_non_latin']==1) {
+            $newcatid=mb_convert_case($newcatid, MB_CASE_TITLE, 'UTF-8');
+        } else {
+            $newcatid=ucwords($newcatid);
+        }
+    }
+
+    # Add 's' to end of CONTACT, NOCONTACT, SALE to make plural.
+    if (OSDpreg_match('/^(CONTACT|NOCONTACT|SALE)$/i',$newcatid)) $newcatid.='s';
+
+    return $newcatid;
+}
+
+function jump_section ($section_level) {
+	echo "<span class=jump>Links: </span>";
+	echo "<a href=#basic class=jump>Basic</a>&nbsp;"; 
+	echo "<a href=#status class=jump>Status</a>&nbsp;";  
+	echo "<a href=#method class=jump>Method</a>&nbsp;";  
+	echo "<a href=#options class=jump>Options</a>&nbsp;";  
+	echo "<a href=#list class=jump>Lists</a>&nbsp;";  
+	echo "<a href=#carrier class=jump>Carrier</a>&nbsp;";  
+	echo "<a href=#record class=jump>Record</a>&nbsp;";  
+	echo "<a href=#am class=jump>A-M</a>&nbsp;";  
+	echo "<a href=#drop class=jump>Drop</a>&nbsp;";  
+	echo "<a href=#transfer class=jump>Transfer</a>&nbsp;";  
+	echo "<a href=#webform class=jump>WebForm</a>&nbsp;";  
+	echo "<a href=#script class=jump>Script</a>&nbsp;";  
+	echo "<a href=#eoc class=jump>End-Of-Call</a>&nbsp;";  
+	echo "<a href=#dnc class=jump>DNC</a>&nbsp;";  
+	echo "<a href=#groups class=jump>Groups</a>&nbsp;";  
+	if ($section_level == '') {
+		echo "<a href=#alists class=jumpend>ActiveLists</a>&nbsp;"; 
+	} else {
+		echo "<a href=#alists class=jumpend2>ActiveLists</a>&nbsp;"; 
+	}
+}    
 
 // Returns a word cased status category ID for display.
 function get_status_category_ucwords($catid) {

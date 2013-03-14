@@ -219,8 +219,12 @@ function report_realtime_detail() {
     $html .= "<input type=hidden name=cpuinfo value=\"$cpuinfo\">\n";
 
     $html .= "<br><p class=centered>";
-    $html .= "<font color=$default_text size=+1>CAMPAIGN DETAILS</font><br><br>";
+    $html .= "<font class=top_header color=$default_text size=+1>CAMPAIGN DETAILS</font><br /><br />";
 
+    //$html .= "<table frame=border><tr><td><font size=1>Credit Left:</font><font size=2 color=#060> 5 days</font></td></tr></table>";
+    //$html .= "<table frame=border><tr><td><font size=1>Credit Left:</font><font size=2 color=#060> $321.17</font></td></tr></table>";
+    //$html .= "<table frame=border><tr><td><font size=1>Credit Left:</font><font size=2 color=#A00> $1.17</font></td></tr></table>";
+    
     $html .= "<font color=$default_text SIZE=2>";
     $html .= "Update:&nbsp;";
 
@@ -297,9 +301,8 @@ function report_realtime_detail() {
     } else {
         $html .= "<input type=hidden name=usergroup value=\"$usergroup\">\n";
     }
-    $html .= "<input type=submit name=sbut value=submit>";
+    $html .= "<input type=submit name=sbut value=Submit>";
     $html .= "<br>";
-
 
     if ($group) {
         $stmt="SELECT avg(auto_dial_level),min(dial_status_a),min(dial_status_b),min(dial_status_c),min(dial_status_d),min(dial_status_e),min(lead_order),min(lead_filter_id),sum(hopper_level),min(dial_method),avg(adaptive_maximum_level),avg(adaptive_dropped_percentage),avg(adaptive_dl_diff_target),avg(adaptive_intensity),min(available_only_ratio_tally),min(adaptive_latest_server_time),min(local_call_time),avg(dial_timeout),min(dial_statuses),active FROM osdial_campaigns";
@@ -410,7 +413,6 @@ function report_realtime_detail() {
         $balanceSHORT = $row[0];
         $campaign_active=$row[1];
         $agent_pause_codes_active=$row[2];
-
 
         $html .= "</td></tr><tr><td align=left>";
         $html .= "<font class=indented color=#1C4754 size=2><b>$group - $group_name</b></font>";
@@ -1271,7 +1273,7 @@ function report_realtime_detail() {
         $html .= "  <font color=$default_text>";
         $html .= "  <span class=pausecode>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Pause Code</b><br><br>";
         $html .= "  <span class=agtphn1>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Agent Phone Issue</b><br>";
-        $html .= "  <span class=dead1>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Dead Call / Hungup</b>";
+        $html .= "  <span class=dead1>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Dead Call/Hungup</b>";
         $html .= "  </font>";
         $html .= "</td></tr>";
         $html .= "</table></center>";

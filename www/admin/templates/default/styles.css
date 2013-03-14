@@ -141,10 +141,13 @@
 	}
 
 	.footer {
+		border:1px  #A2C0C8;
+		border-style:none solid none solid;
 	}
 	.footer table {
 		white-space: nowrap;
 		font-size: 7pt;
+		
 	}
 	.green {color: white; background-color: green;}
 	.red {color: white; background-color: red;}
@@ -155,8 +158,10 @@
 		font-size: 9pt;
 		font-family: 'dejavu sans',verdana,sans-serif;
 		color: #000080;
+		
 	}
 	.maintable table {
+			
 	}
 
 	table.row:hover {background-color: #B4CCD6;}
@@ -208,7 +213,6 @@
 	.fgblack { color: black; }
 	.fgwhite { color: white; }
 	.bgmain { background-color: #c6cda3; }
-	.bgsub { background-color: #a1b9a4; }
 
 
 
@@ -220,6 +224,150 @@
 	.menuH2color:hover { color: navy; }
 
 	.tablefont { font-family: 'dejavu sans',verdana,sans-serif; font-size: 11pt; }
+	
+	.rounded-corners {
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		-khtml-border-radius: 5px;
+		border-radius: 10px 10px 0px 10px;
+		border:1px solid #aaa;
+		border-style: double groove outset double;
+		background:#DEDDCF;
+		font-family: 'dejavu sans',verdana,sans-serif; font-size: 11pt;
+	}
+	.rounded-corners2 {
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		-khtml-border-radius: 5px;
+		border-radius: 10px 10px 0px 10px;
+		border:1px solid #aaa;
+		border-style: double groove outset double;
+		background:#D2D1C4;
+		font-family: 'dejavu sans',verdana,sans-serif; font-size: 11pt;
+	}
+	.rounded-corners3 {
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		-khtml-border-radius: 5px;
+		border-radius: 10px 10px 0px 10px;
+		border:1px solid #aaa;
+		border-style: double groove outset double;
+		background:#C4C3B7;
+		font-family: 'dejavu sans',verdana,sans-serif; font-size: 11pt;
+	}	
+	.rounded-menu1 {
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		-khtml-border-radius: 5px;
+		border-radius: 8px 8px 0px 0px;
+	}	
+	.rounded-menu1select {
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		-khtml-border-radius: 5px;
+		border-radius: 8px 8px 0px 0px;
+		border-style:none groove none none ;
+	}	
+	.rounded-rmenu1 {
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		-khtml-border-radius: 5px;
+		border-radius: 8px 8px 0px 0px;
+	}	
+	.rounded-rmenu1select {
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		-khtml-border-radius: 5px;
+		border-radius: 8px 8px 0px 0px;
+		border-style:groove groove none none ;
+	}			
+	.rounded-menu2 {
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		-khtml-border-radius: 5px;
+		border-radius: 8px 8px 0px 0px;
+		border:thin solid #E2EBEE;
+	}	
+	.rounded-menu2select {
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		-khtml-border-radius: 5px;
+		border-radius: 8px 8px 0px 0px;
+		border:thin solid #E2EBEE;
+		border-style: inset groove none none;
+	}		
+	.rounded-menu3 {
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		-khtml-border-radius: 5px;
+		border-radius: 8px 8px 0px 0px;
+		border:thin solid #E2EBEE;
+	}	
+	.rounded-menu3select {
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		-khtml-border-radius: 5px;
+		border-radius: 8px 8px 0px 0px;
+		border:thin solid #D9D8CA;
+		border-style: inset groove none none;
+	}	
+	.rounded-inset {
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		-khtml-border-radius: 5px;
+		border-radius: 8px 8px 0px 0px;
+		border:thin solid #D9D8CA;
+		border-style:groove groove outset outset;
+	}	
+	.rounded-inset2 {
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		-khtml-border-radius: 5px;
+		border-radius: 8px 8px 0px 0px;
+		border:2px solid #aaa;
+		xborder-style:solid ;
+	}	
+	.rounded-main {
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		-khtml-border-radius: 5px;
+		border-radius: 8px 8px 0px 0px;
+		border-style:none solid solid solid;
+	}		
+	.rounded-tab {
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		-khtml-border-radius: 5px;
+		border-radius: 8px 8px 0px 0px;
+		border: thin solid white;
+	}	
+	.jump {
+		font-family: 'dejavu sans',verdana,sans-serif; font-size: 9pt;
+		text-decoration: none;
+	}	
+	.jumpend {
+		font-family: 'dejavu sans',verdana,sans-serif; font-size: 9pt;
+		text-decoration: none;
+		margin-right:40px;
+	}	
+	.jumpend2 {
+		font-family: 'dejavu sans',verdana,sans-serif; font-size: 9pt;
+		text-decoration: none;
+		margin-right:10px;
+	}		
+	.top_header {
+		text-shadow: 1px 3px 8px #aaa;
+	}		
+	.top_header2 {
+		text-shadow: 0px 0px 2px #666;
+	}	
+	.top_header_sect {
+		text-shadow: 1px 1px 4px #999;
+	}	
+	.content {
+		border:1px  #A2C0C8;
+		border-style:none solid none solid;
+	}
 	
 	
 	

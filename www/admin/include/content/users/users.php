@@ -28,7 +28,7 @@
 
 if ($ADD=="1") {
     if ($LOG['modify_users']==1) {
-        echo "<center><br><font color=$default_text size=+1>ADD A NEW AGENT<form action=$PHP_SELF method=POST></font><br><br>\n";
+        echo "<center><br><font class=top_header color=$default_text size=+1>ADD A NEW AGENT<form action=$PHP_SELF method=POST></font><br><br>\n";
         echo "<input type=hidden name=ADD value=2>\n";
         echo "<TABLE width=$section_width cellspacing=3>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left>\n";
@@ -113,7 +113,7 @@ if ($ADD=="1A")
 {
 	if ($LOG['modify_users']==1)
 	{
-	echo "<center><br><font color=$default_text size=+1>COPY AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font class=top_header color=$default_text size=+1>COPY AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2A>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left>";
@@ -539,7 +539,7 @@ if ($ADD==3)
 		}
 	else
 		{
-		echo "<center><br><font color=$default_text size=+1>MODIFY AN AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
+		echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY AN AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
 		if ($LOG['user_level'] > 8)
 			{echo "<input type=hidden name=ADD value=4A>\n";}
 		else
@@ -609,7 +609,7 @@ if ($ADD==3)
 		if ( ($LOG['user_level'] > 8) or ($LOG['alter_agent_interface_options'] == "1") )
 			{
 			echo "<tr><td>&nbsp;</td></tr>";
-			echo "<tr class=\"tabheader font3\"><td colspan=2 align=center>AGENT INTERFACE OPTIONS</td></tr>\n";
+			echo "<tr class=\"tabheader font3\"><td class=top_header2 colspan=2 align=center>AGENT INTERFACE OPTIONS</td></tr>\n";
 			echo "<tr bgcolor=$oddrows><td align=right>Agent Choose Ingroups: </td><td align=left><select size=1 name=agent_choose_ingroups><option value=0>N</option><option value=1>Y</option>" . optnum2let($agent_choose_ingroups) . "</select>$NWB#osdial_users-agent_choose_ingroups$NWE</td></tr>\n";
 			echo "<tr bgcolor=$oddrows><td align=right>Closer Default Blended: </td><td align=left><select size=1 name=closer_default_blended><option value=0>N</option><option value=1>Y</option>" . optnum2let($closer_default_blended) . "</select>$NWB#osdial_users-closer_default_blended$NWE</td></tr>\n";
 
@@ -710,7 +710,7 @@ if ($ADD==3)
 		if ($LOG['user_level'] > 8 && $user_level > 7)
 			{
 			echo "<tr><td>&nbsp;</td></tr>";
-			echo "<tr class=\"tabheader font3\"><td colspan=2 align=center>ADMIN INTERFACE OPTIONS</td></tr>\n";
+			echo "<tr class=\"tabheader font3\"><td colspan=2 class=top_header2 align=center>ADMIN INTERFACE OPTIONS</td></tr>\n";
 
 			echo "<tr bgcolor=$oddrows><td align=right>Modify Agents: </td><td align=left><select size=1 name=modify_users><option value=0>N</option><option value=1>Y</option>" . optnum2let($modify_users) . "</select>$NWB#osdial_users-modify_sections$NWE</td></tr>\n";
 			echo "<tr bgcolor=$oddrows><td align=right>Delete Agents: </td><td align=left><select size=1 name=delete_users><option value=0>N</option><option value=1>Y</option>" . optnum2let($delete_users) . "</select>$NWB#osdial_users-delete_users$NWE</td></tr>\n";
@@ -868,7 +868,7 @@ if ($ADD==3)
 ######################
 
 if ($ADD==550) {
-    echo "<center><br><font color=$default_text size=+1>SEARCH FOR AN AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
+    echo "<center><br><font class=top_header color=$default_text size=+1>SEARCH FOR AN AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
     echo "<input type=hidden name=ADD value=660>\n";
     echo "<TABLE width=$section_width cellspacing=3>\n";
     #echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left><input type=text name=user size=20 maxlength=20></td></tr>\n";
@@ -1102,7 +1102,7 @@ if (OSDpreg_match("/GROUPDOWN/",$stage)) {$SQLorder='order by user_group desc'; 
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 
-    echo "<center><br><font size=+1 color=$default_text>AGENTS</font><br>\n";
+    echo "<center><br><font size=+1 class=top_header color=$default_text>AGENTS</font><br>\n";
     echo "<font color=$default_text size=-1>";
     if ($viewdisabled == '1') {
         echo "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&viewdisabled=0&let=$let&num=$num\">(Hide Disabled Users)</a>";

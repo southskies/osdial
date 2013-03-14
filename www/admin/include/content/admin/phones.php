@@ -248,7 +248,7 @@ if ($ADD==31111111111) {
         $row=mysql_fetch_row($rslt);
         $servers_list = get_servers($link, $row[5], 'AIO|DIALER');
 
-        echo "<center><br><font color=$default_text size=+1>MODIFY A PHONE</font><form action=$PHP_SELF method=POST><br><br>\n";
+        echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY A PHONE</font><form action=$PHP_SELF method=POST><br><br>\n";
         echo "<input type=hidden name=ADD value=41111111111>\n";
         echo "<input type=hidden name=old_extension value=\"$row[0]\">\n";
         echo "<input type=hidden name=old_server_ip value=\"$row[5]\">\n";
@@ -440,7 +440,7 @@ if ($ADD==10000000000) {
     $rslt=mysql_query($stmt, $link);
     $phones_to_print = mysql_num_rows($rslt);
 
-    echo "<center><br><font color=$default_text size=+1>PHONES<br><br><font size=-2>(<a href=#VMList>VoiceMail List</a>)</font><br><br>\n";
+    echo "<center><br><font class=top_header color=$default_text size=+1>PHONES<br><br><font size=-2>(<a href=#VMList>VoiceMail List</a>)</font><br><br>\n";
     echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
     echo "  <tr class=tabheader>";
     echo "    <td><a href=\"$PHP_SELF?ADD=10000000000&$EXTENlink\">EXTEN</a></td>\n";
@@ -487,7 +487,7 @@ if ($ADD==10000000000) {
         echo "<a name=VMList></a>";
         echo '<br><br><br><br>';
         echo '<center>';
-        echo "<b><font color=$default_text size=-1>VOICE MAIL</b><br>";
+        echo "<b><font class=top_header2 color=$default_text size=-1>VOICE MAIL</b><br>";
         if (file_exists ('VMnow.txt') ) {
             echo "<font color=$default_text><p> As of " . date("l dS o F h:i:s A",filectime('VMnow.txt') )  . "</p></font>";
             echo "<table bgcolor=grey cellspacing=1 align=center width=560>\n";

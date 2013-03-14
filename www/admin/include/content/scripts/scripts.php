@@ -489,7 +489,7 @@ tinyMCE.init({
 
 <?php
 
-	echo "<center><br><font color=$default_text size=+1>ADD NEW SCRIPT</font><form name=scriptForm action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font class=top_header color=$default_text size=+1>ADD NEW SCRIPT</font><form name=scriptForm action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2111111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Script ID: </td><td align=left>";
@@ -958,7 +958,7 @@ tinyMCE.init({
 
     $script_text = OSDpreg_replace("/\n/","",$script_text);
 
-	echo "<center><br><font color=$default_text size=+1>MODIFY A $stypec</font><form name=scriptForm action=$PHP_SELF method=POST><br>\n";
+	echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY A $stypec</font><form name=scriptForm action=$PHP_SELF method=POST><br>\n";
 	echo "<input type=hidden name=ADD value=4111111>\n";
 	echo "<input type=hidden name=script_id value=\"$script_id\">\n";
     if ($SUB != "") {
@@ -1048,7 +1048,7 @@ if ($ADD==1000000)
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 
-echo "<center><br><font color=$default_text size=+1>SCRIPTS</font><br><br>\n";
+echo "<center><br><font class=top_header color=$default_text size=+1>SCRIPTS</font><br><br>\n";
 echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "  <tr class=tabheader>";
 echo "    <td>NAME</td>\n";

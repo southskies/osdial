@@ -168,7 +168,7 @@ function report_lead_performance_campaign() {
 
     $html .= "<table align=center cellpadding=0 cellspacing=0>";
     $html .= "<tr><td align=center>";
-    $html .= "<br><font color=$default_text size=+1>LEAD PERFORMANCE BY CAMPAIGN</font><br><br>";
+    $html .= "<br><font class=top_header color=$default_text size=+1>LEAD PERFORMANCE BY CAMPAIGN</font><br><br>";
     $html .= "<div class=\"noprint\">\n";
     $html .= "<form action=\"$PHP_SELF\" method=get>\n";
     $html .= "<input type=hidden name=type value=$type>\n";

@@ -68,7 +68,7 @@ function report_realtime_summary() {
     $html .= "<input type=hidden name=RR value=$RR>\n";
     $html .= "<input type=hidden name=cpuinfo value=$cpuinfo>\n";
     
-    $html .= "<br><p class=centered><font color=$default_text size=+1>ALL CAMPAIGNS SUMMARY</font><br><br>";
+    $html .= "<br><p class=centered><font class=top_header color=$default_text size=+1>ALL CAMPAIGNS SUMMARY</font><br><br>";
     $html .= "<font color=$default_text size=-1>Update:&nbsp;";
     if ($RR==38400) $html .= "<font size=+1>";
     $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">Daily</a>&nbsp;&nbsp;";

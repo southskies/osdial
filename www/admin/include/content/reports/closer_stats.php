@@ -126,7 +126,7 @@ function report_closer_stats() {
     $html .= "<table align=center>\n";
     $html .= "  <tr>\n";
     $html .= "    <td>\n";
-    $html .= "      <center><font color=$default_text size=4>INBOUND / CLOSER REPORT</font></center>\n";
+    $html .= "      <center><font class=top_header color=$default_text size=4>INBOUND / CLOSER REPORT</font></center>\n";
 
     if ($time_begin == '') {
         $time_begin = '00:00';
@@ -147,9 +147,9 @@ function report_closer_stats() {
     if (OSDstrlen($group[0]) > 1) {
         $html .= "              <a href=\"./admin.php?ADD=3111&group_id=$group[0]\">MODIFY</a> | \n";
     } else {
-        $html .= "              <a href=\"./admin.php?ADD=1000\">INGROUPS</a> | \n";
+        $html .= "              <a href=\"./admin.php?ADD=1000\">In-Groups</a> | \n";
     }
-    $html .= "              <a href=\"./admin.php?ADD=999999\">REPORTS</a>\n";
+    $html .= "              <a href=\"./admin.php?ADD=999999\">Reports</a>\n";
     $html .= "            </font><br><br>\n";
     $html .= "          </td>\n";
     $html .= "        </tr>\n";

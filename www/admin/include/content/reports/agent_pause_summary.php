@@ -94,7 +94,7 @@ function report_agent_pause_summary() {
     $agentSQL='';
 
     $head .= "<br>\n";
-    $head .= "<center><font color=$default_text size=4>PAUSE USAGE</font></center><br>\n";
+    $head .= "<center><font class=top_header color=$default_text size=4>PAUSE USAGE</font></center><br>\n";
     if ($agent) {
         $agentSQL = sprintf("AND osdial_agent_log.user='%s'", $company_prefix . mres($agent));
 
@@ -321,7 +321,7 @@ function report_agent_pause_summary() {
         $CSVrows++;
 
         $table .= "  <br>\n";
-        $table .= "  <center><font color=$default_text size=4>PAUSE USAGE - CAMPAIGN AGENT SUMMARY</font></center>\n";
+        $table .= "  <center><font class=top_header2 color=$default_text size=4>PAUSE USAGE - CAMPAIGN AGENT SUMMARY</font></center>\n";
         $table .= "  <table align=center width=350 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
         $table .= "    <tr class=tabheader>\n";
         $table .= "      <td>CAMPAIGN</td>\n";
@@ -410,7 +410,7 @@ function report_agent_pause_summary() {
 
         
         $table .= "  <br>\n";
-        $table .= "  <center><font color=$default_text size=4>PAUSE USAGE - DETAIL</font></center>\n";
+        $table .= "  <center><font class=top_header2 color=$default_text size=4>PAUSE USAGE - DETAIL</font></center>\n";
         $table .= "  <table align=center width=500 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
         $table .= "    <tr class=tabheader>\n";
         $table .= "      <td>CAMPAIGN</td>\n";

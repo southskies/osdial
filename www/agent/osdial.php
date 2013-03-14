@@ -1948,7 +1948,7 @@ flush();
     </span>
 
     <!-- Voicmeail Button -->
-    <span style="position:absolute;left:708px;top:425px;z-index:16;" id="voicemailbutton">
+    <span style="position:absolute;left:764px;top:455px;z-index:16;" id="voicemailbutton">
         <a href="#" title="You have no messages!" onclick="voicemail_ariopen();"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/agc_check_voicemail_OFF.gif" width=170 height=30 border=0 alt="VOICEMAIL"></a>
     </span>
 
@@ -1977,7 +1977,7 @@ flush();
             <span id="AgentMuteSpan" style="position:absolute;top:0px;left:54px;"></span>
         </font>
     </span>
-    <span style="position:relative;left:721px;top:460px;z-index:22;" id="MutedWarning"></span>
+    <span style="position:relative;left:771px;top:490px;z-index:22;" id="MutedWarning"></span>
 
 
     <!-- Preview Force-Dial Timout -->
@@ -2116,7 +2116,7 @@ flush();
     <!-- Volume Control Links -->
     <span style="position:absolute;left:935px;top:<?php echo ($CBheight+26); ?>px;z-index:19;visibility:hidden;" id="VolumeControlSpan">
         <span id="VolumeUpSpan" style="left:0px;top:0px;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_volume_up_off.gif" width=28 height=15 border=0></span>
-        <span id="VolumeDownSpan" style="left:0px;top:16px;float:left;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_volume_down_off.gif" width=28 height=15 border=0></span>
+        <span id="VolumeDownSpan" style="left:0px;top:17px;float:left;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_volume_down_off.gif" width=28 height=15 border=0></span>
     </span>
 
     

@@ -32,7 +32,7 @@ if ($ADD==1111)
 {
 	if ($LOG['modify_ingroups']==1)
 	{
-	echo "<center><br><font color=$default_text size=+1>ADD A NEW INBOUND GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font class=top_header color=$default_text size=+1>ADD A NEW INBOUND GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Group ID: </td><td align=left>";
@@ -84,7 +84,7 @@ if ($ADD==1211)
 {
 	if ($LOG['modify_ingroups']==1)
 	{
-	echo "<center><br><font color=$default_text size=+1>COPY INBOUND GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font class=top_header color=$default_text size=+1>COPY INBOUND GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2011>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Group ID: </td><td align=left>";
@@ -402,7 +402,7 @@ if ($ADD==3111)
 		{$Xgroups_menu .= "<option value=\"---NONE---\">---NONE---</option>\n";}
 
 
-	echo "<center><br><font color=$default_text size=+1>MODIFY AN IN-GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY AN IN-GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=4111>\n";
 	echo "<input type=hidden name=group_id value=\"$row[0]\">\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
@@ -536,7 +536,7 @@ if ($ADD==3111)
 
 	### list of agent rank or skill-level for this inbound group
 	echo "<center>\n";
-	echo "<br><font color=$default_text size=+1>AGENT RANKS FOR THIS INBOUND GROUP</font<br><br>\n";
+	echo "<br><font class=top_header2 color=$default_text size=+1>AGENT RANKS FOR THIS INBOUND GROUP</font<br><br>\n";
 	echo "<table bgcolor=grey width=400 cellspacing=1>\n";
 	echo "  <tr class=tabheader>\n";
     echo "    <td align=center>USER</td>\n";
@@ -575,7 +575,7 @@ if ($ADD==3111)
     echo "  </tr>";
 	echo "</table><br><br>\n";
 
-	echo "<br><font color=$default_text size=+1>CAMPAIGNS ASSIGNED TO THIS INBOUND GROUP</font<br><br>\n";
+	echo "<br><font class=top_header2 color=$default_text size=+1>CAMPAIGNS ASSIGNED TO THIS INBOUND GROUP</font<br><br>\n";
 	echo "<table bgcolor=grey width=400 cellspacing=1>\n";
 	echo "  <tr class=tabheader>\n";
     echo "    <td align=center>CAMPAIGN_ID</td>\n";
@@ -610,7 +610,7 @@ if ($ADD==3111)
 
 	if ($LOG['delete_ingroups'] > 0)
 		{
-		echo "<br><br><a href=\"$PHP_SELF?ADD=53&campaign_id=$group_id&stage=IN\">EMERGENCY VDAC CLEAR FOR THIS IN-GROUP</a><BR><BR>\n";
+		echo "<br><br><a href=\"$PHP_SELF?ADD=53&campaign_id=$group_id&stage=IN\">EMERGENCY CLEAR AUTO CALLS FOR THIS IN-GROUP</a><BR><BR>\n";
 		echo "<br><br><a href=\"$PHP_SELF?ADD=5111&group_id=$group_id\">DELETE THIS IN-GROUP</a>\n";
 		}
 	}
@@ -633,10 +633,10 @@ if ($ADD==1000)
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 
-echo "<center><br><font color=$default_text size=+1>INBOUND GROUPS</font><br><br>\n";
+echo "<center><br><font class=top_header color=$default_text size=+1>INBOUND GROUPS</font><br><br>\n";
 echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "  <tr class=tabheader>\n";
-echo "    <td>ID</td>\n";
+echo "    <td>GROUP ID</td>\n";
 echo "    <td>NAME</td>\n";
 echo "    <td align=center>ACTIVE</td>\n";
 echo "    <td align=center>VOICEMAIL</td>\n";
@@ -665,6 +665,45 @@ echo "</TABLE></center>\n";
 }
 
 
+######################
+# ADD=1001 display all A2A inbound groups
+######################
+if ($ADD==1001)
+{
+    $a2aSQL = "group_id LIKE 'A2A_%'";
+	$stmt=sprintf("SELECT * FROM osdial_inbound_groups WHERE group_id IN %s AND %s ORDER BY group_id",$LOG['allowed_ingroupsSQL'],$a2aSQL);
+	$rslt=mysql_query($stmt, $link);
+	$people_to_print = mysql_num_rows($rslt);
 
+echo "<center><br><font class=top_header color=$default_text size=+1>INBOUND AGENT TO AGENT GROUPS</font><br><br>\n";
+echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
+echo "  <tr class=tabheader>\n";
+echo "    <td>GROUP ID</td>\n";
+echo "    <td>NAME</td>\n";
+echo "    <td align=center>ACTIVE</td>\n";
+echo "    <td align=center>VOICEMAIL</td>\n";
+echo "    <td align=center>COLOR</td>\n";
+echo "    <td align=center colspan=1>LINKS</td>\n";
+echo "  </tr>\n";
+
+	$o=0;
+	while ($people_to_print > $o) {
+		$row=mysql_fetch_row($rslt);
+		echo "  <tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=3111&group_id=$row[0]';\">\n";
+        echo "    <td><a href=\"$PHP_SELF?ADD=3111&group_id=$row[0]\">" . mclabel($row[0]) . "</a></td>\n";
+		echo "    <td>$row[1]</td>\n";
+		echo "    <td align=center>$row[3]</td>\n";
+		echo "    <td align=center>$row[5]</td>\n";
+		echo "    <td width=6 bgcolor=\"$row[2]\">&nbsp;</td>\n";
+		echo "    <td align=center>&nbsp;<a href=\"$PHP_SELF?ADD=3111&group_id=$row[0]\">MODIFY</a></td>\n";
+        echo "  </tr>\n";
+		$o++;
+	}
+
+echo "  <tr class=tabfooter>";
+echo "    <td colspan=6></td>";
+echo "  </tr>";
+echo "</TABLE></center>\n";
+}
 
 ?>

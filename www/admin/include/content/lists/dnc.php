@@ -27,7 +27,7 @@
 if ($ADD==121) {
 	if ($LOG['modify_lists']==1) {
 
-        echo "<center><br><font color=$default_text size=4>DO-NOT-CALL MAINTENANCE</font></center><br><br>\n";
+        echo "<center><br><font class=top_header class=top_header color=$default_text size=4>DO-NOT-CALL MAINTENANCE</font></center><br><br>\n";
 
 
         # Declare some globals.
@@ -550,7 +550,7 @@ if ($ADD==121) {
             #### DNC Search ####
             echo "<hr width=80%><br>";
             echo "<form action=$PHP_SELF method=POST>\n";
-            echo "<center><font color=$default_text size=3>Search DNC List</font></center>\n";
+            echo "<center><font class=top_header2 color=$default_text size=3>Search DNC List</font></center>\n";
             echo "<input type=hidden name=ADD value=121>\n";
             echo "<input type=hidden name=SUB value=1>\n";
 		    echo "<table width=500 bgcolor=grey align=center cellspacing=1>\n";
@@ -568,7 +568,7 @@ if ($ADD==121) {
 
             #### DNC Add ####
             echo "<br><hr width=80%><br>";
-            echo "<center><font color=$default_text size=3>Add Number to DNC List</font></center>\n";
+            echo "<center><font class=top_header2 color=$default_text size=3>Add Number to DNC List</font></center>\n";
             echo "<form action=$PHP_SELF method=POST>\n";
             echo "<input type=hidden name=ADD value=121>\n";
             echo "<input type=hidden name=SUB value=2>\n";
@@ -588,7 +588,7 @@ if ($ADD==121) {
             #### DNC Delete - Must be user_level 9 and have permission to remove DNC records. ####
 	        if ($LOG['user_level']==9 and $LOG['delete_dnc']==1){
                 echo "<br><hr width=80%><br>";
-                echo "<center><font color=$default_text size=3>Delete Number from DNC List</font></center>\n";
+                echo "<center><font class=top_header2 color=$default_text size=3>Delete Number from DNC List</font></center>\n";
                 echo "<form action=$PHP_SELF method=POST>\n";
                 echo "<input type=hidden name=ADD value=121>\n";
                 echo "<input type=hidden name=SUB value=3>\n";
@@ -609,7 +609,7 @@ if ($ADD==121) {
             #### DNC Upload - Must be user_level 9 and have permission to load DNC records. ####
 	        if ($LOG['user_level']==9 and $LOG['load_dnc']==1) {
                 echo "<br><hr width=80%><br>";
-                echo "<center><font color=$default_text size=3>Upload DNC List</font></center>\n";
+                echo "<center><font class=top_header2 color=$default_text size=3>Upload DNC List</font></center>\n";
                 echo "<form action=$PHP_SELF method=POST enctype=\"multipart/form-data\">\n";
                 echo "<input type=hidden name=ADD value=121>\n";
                 echo "<input type=hidden name=SUB value=7>\n";
@@ -630,7 +630,7 @@ if ($ADD==121) {
             #### DNC Export - Must be user_level 9 and have permission to export DNC records. ####
 	        if ($LOG['user_level']==9 and $LOG['export_dnc']==1) {
                 echo "<br><hr width=80%><br>";
-                echo "<center><font color=$default_text size=3>Export DNC List</font></center>\n";
+                echo "<center><font class=top_header2 color=$default_text size=3>Export DNC List</font></center>\n";
                 echo "<form action=$PHP_SELF method=POST>\n";
                 echo "<input type=hidden name=ADD value=121>\n";
                 echo "<input type=hidden name=SUB value=8>\n";

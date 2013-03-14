@@ -31,7 +31,7 @@ if ($ADD=="1carrier") {
             $gfr = get_first_record($link, 'osdial_carriers', '*', sprintf("id='%s'",mres($carrier_id)));
             $carrier_name=$gfr['name'];
             echo "<center>\n";
-            echo "<br><font color=$default_text size=+1>ADD A NEW DID</font><br>\n";
+            echo "<br><span class=no-ul><font color=$default_text size=+1>ADD A NEW DID</font></span><br>\n";
             echo "<a href=\"$PHP_SELF?ADD=3carrier&SUB=2&carrier_id=$carrier_id\">[ BACK TO CARRIER ]</a><br><br>\n";
             echo "<form name=osdial_form action=$PHP_SELF method=POST>\n";
             echo "<input type=hidden name=ADD value=2carrier>\n";
@@ -177,7 +177,7 @@ if ($ADD=="1carrier") {
         ### SUB=2  New Carrier
         } elseif ($SUB==2) {
             echo "<center>\n";
-            echo "<br><font color=$default_text size=+1>ADD A NEW CARRIER</font><br><br>\n";
+            echo "<br><font class=no-ul color=$default_text size=+1>ADD A NEW CARRIER</font><br><br>\n";
             echo "<form name=osdial_form action=$PHP_SELF method=POST>\n";
             echo "<input type=hidden name=ADD value=2carrier>\n";
             echo "<input type=hidden name=SUB value=$SUB>\n";
@@ -631,7 +631,7 @@ if ($ADD == "3carrier") {
                 $vstyle = 'visibility:visible;';
             }
             echo "<center>\n";
-            echo "<br><font color=$default_text size=+1>MODIFY DID</font><br>\n";
+            echo "<br><font class=top_header color=$default_text size=+1>MODIFY DID</font><br>\n";
             echo "<a href=\"$PHP_SELF?ADD=3carrier&SUB=2&carrier_id=$carrier_id\">[ BACK TO CARRIER ]</a><br><br>\n";
             echo "<form name=osdial_form action=$PHP_SELF method=POST>\n";
             echo "<input type=hidden name=ADD value=4carrier>\n";
@@ -800,7 +800,7 @@ if ($ADD == "3carrier") {
             if ($carrier_dialplan == '') $carrier_dialplan=$gfr['dialplan'];
 
             echo "<center>\n";
-            echo "<br><font color=$default_text size=+1>MODIFY SERVER SPECIFIC CARRIER OPTIONS</font><br>\n";
+            echo "<br><font class=top_header color=$default_text size=+1>MODIFY SERVER SPECIFIC CARRIER OPTIONS</font><br>\n";
             echo "<a href=\"$PHP_SELF?ADD=3carrier&SUB=2&carrier_id=$carrier_id\">[ BACK TO CARRIER ]</a><br><br>\n";
             echo "<form name=osdial_form action=$PHP_SELF method=POST>\n";
             echo "<input type=hidden name=ADD value=4carrier>\n";
@@ -851,7 +851,7 @@ if ($ADD == "3carrier") {
         } elseif ($SUB==2) {
             $gfr = get_first_record($link, 'osdial_carriers', '*', sprintf("id='%s'",mres($carrier_id)));
             echo "<center>\n";
-            echo "<br><font color=$default_text size=+1>MODIFY CARRIER</font><br><br>\n";
+            echo "<br><font class=top_header color=$default_text size=+1>MODIFY CARRIER</font><br><br>\n";
             echo "<form name=osdial_form action=$PHP_SELF method=POST>\n";
             echo "<input type=hidden name=ADD value=4carrier>\n";
             echo "<input type=hidden name=SUB value=$SUB>\n";
@@ -1003,7 +1003,7 @@ if ($ADD == "3carrier") {
             #### List Server Carrier Options
             echo "<br><br>\n";
             echo "<center>\n";
-            echo "  <br><font color=$default_text size=+1>SERVER SPECIFIC SETTINGS</font><br><br>\n";
+            echo "  <br><font class=top_header2 color=$default_text size=+1>SERVER SPECIFIC SETTINGS</font><br><br>\n";
             echo "  <table width=500 cellspacing=0 cellpadding=1>\n";
             echo "    <tr class=tabheader>\n";
             echo "      <td>ServerIP</td>\n";
@@ -1046,7 +1046,7 @@ if ($ADD == "3carrier") {
             #### List DIDs
             echo "<br><br>\n";
             echo "<center>\n";
-            echo "  <br><font color=$default_text size=+1>DIDs</font><br><br>\n";
+            echo "  <br><font class=top_header2 color=$default_text size=+1>DIDs</font><br><br>\n";
             echo "  <table width=500 cellspacing=0 cellpadding=1>\n";
             echo "    <tr class=tabheader>\n";
             echo "      <td>DID</td>\n";
@@ -1084,7 +1084,7 @@ if ($ADD == "3carrier") {
         ### SUB=1  Carrier List
         } elseif ($SUB<=1) {
             echo "<center>\n";
-            echo "  <br><font color=$default_text size=+1>CARRIERS</font><br><br>\n";
+            echo "  <br><font class=top_header color=$default_text size=+1>CARRIERS</font><br><br>\n";
             echo "  <table width=$section_width cellspacing=0 cellpadding=1>\n";
             echo "    <tr class=tabheader>\n";
             echo "      <td width=15%>Name</td>\n";
@@ -1113,7 +1113,7 @@ if ($ADD == "3carrier") {
             echo "      <td colspan=6></td>\n";
             echo "    </tr>\n";
             echo "  </table>\n";
-            echo "  <br><a href=\"$PHP_SELF?ADD=1carrier&SUB=2&carrier_id=$carrier_id\">ADD NEW CARRIER</a>\n";
+//             echo "  <br><a href=\"$PHP_SELF?ADD=1carrier&SUB=2&carrier_id=$carrier_id\">ADD NEW CARRIER</a>\n";
             echo "</center>\n";
 
 

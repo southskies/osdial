@@ -29,7 +29,7 @@ if ($ADD==1121) {
 
         if (OSDstrlen($phone_number)<6) $phone_number=$old_phone;
 
-        echo "<center><br><font color=$default_text size=+1>LEAD MODIFICATION</font><br>\n";
+        echo "<center><br><font class=top_header color=$default_text size=+1>LEAD MODIFICATION</font><br>\n";
         if ($LOG['view_lead_search']) echo "      <a target=\"_parent\" href=\"./admin.php?ADD=999999&SUB=27\">[ Basic Search ]</a>\n";
         echo "      &nbsp;&nbsp;|&nbsp;&nbsp;\n";
         if ($LOG['view_lead_search_advanced']) echo "      <a target=\"_parent\" href=\"./admin.php?ADD=999999&SUB=26\">[ Advanced Search ]</a>\n";
@@ -485,7 +485,7 @@ if ($ADD==1121) {
                 if (count($affrms) > 0) {
 	                echo "    <table width=600 cellspacing=0 cellpadding=1>\n";
 	                echo "      <tr class=tabheader>\n";
-	                echo "        <td colspan=4><font size='+1'>ADDITIONAL FORM FIELDS</font></td>\n";
+	                echo "        <td class=top_header colspan=4><font size='+1'>ADDITIONAL FORM FIELDS</font></td>\n";
 	                echo "      </tr>\n";
 	                echo "      <tr class=tabheader>\n";
                     echo "        <td>Form</td>\n";
@@ -567,7 +567,7 @@ if ($ADD==1121) {
                         $cbcnt=0;
 	                    echo "    <table width=750 cellspacing=0 cellpadding=1>\n";
 	                    echo "      <tr class=tabheader>\n";
-	                    echo "        <td colspan=7><font size=\"+1\">CALLBACKS</font></td>\n";
+	                    echo "        <td class=top_header2 colspan=7><font size=\"+1\">CALLBACKS</font></td>\n";
 	                    echo "      </tr>\n";
 	                    echo "      <tr class=tabheader>\n";
                         echo "        <td>Status</td>\n";
@@ -618,7 +618,7 @@ if ($ADD==1121) {
 
 	            echo "    <table width=750 cellspacing=0 cellpadding=1>\n";
 	            echo "      <tr class=tabheader>\n";
-	            echo "        <td colspan=9><font size='+1'>CALLS TO THIS LEAD</font></td>\n";
+	            echo "        <td class=top_header2 colspan=9><font size='+1'>CALLS TO THIS LEAD</font></td>\n";
 	            echo "      </tr>\n";
 	            echo "      <tr class=tabheader>\n";
                 echo "        <td># </td>\n";
@@ -641,7 +641,7 @@ if ($ADD==1121) {
 			
 	            echo "    <table width=750 cellspacing=0 cellpadding=1>\n";
 	            echo "      <tr class=tabheader>\n";
-	            echo "        <td colspan=9><font size='+1'>CLOSER RECORDS FOR THIS LEAD</font></td>\n";
+	            echo "        <td class=top_header2 colspan=9><font size='+1'>CLOSER RECORDS FOR THIS LEAD</font></td>\n";
 	            echo "      </tr>\n";
 	            echo "      <tr class=tabheader>\n";
                 echo "        <td># </td>\n";
@@ -665,7 +665,7 @@ if ($ADD==1121) {
 			
 	            echo "    <table width=750 cellspacing=0 cellpadding=1>\n";
 	            echo "      <tr class=tabheader>\n";
-	            echo "        <td colspan=11><font size='+1'>AGENT LOG RECORDS FOR THIS LEAD</font></td>\n";
+	            echo "        <td class=top_header2 colspan=11><font size='+1'>AGENT LOG RECORDS FOR THIS LEAD</font></td>\n";
 	            echo "      </tr>\n";
 	            echo "      <tr class=tabheader>\n";
                 echo "        <td># </td>\n";
@@ -690,7 +690,7 @@ if ($ADD==1121) {
 			
 	            echo "    <table width=750 cellspacing=0 cellpadding=1>\n";
 	            echo "      <tr class=tabheader>\n";
-	            echo "        <td colspan=8><font size='+1'>RECORDINGS FOR THIS LEAD</font></td>\n";
+	            echo "        <td class=top_header2 colspan=8><font size='+1'>RECORDINGS FOR THIS LEAD</font></td>\n";
 	            echo "      </tr>\n";
 	            echo "      <tr class=tabheader>\n";
                 echo "        <td># </td>\n";

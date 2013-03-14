@@ -65,7 +65,7 @@ function report_agent_status() {
     }
 
     $head .= "<br>\n";
-    $head .= "<center><font size=4 color=$default_text>AGENT STATUS</font></center><br>\n";
+    $head .= "<center><font size=4 class=top_header color=$default_text>AGENT STATUS</font></center><br>\n";
     if ($agent) {
         $stmt=sprintf("SELECT full_name,user_group FROM osdial_users WHERE user_group IN %s AND user='%s';",$LOG['allowed_usergroupsSQL'],mres($company_prefix.$agent));
         $rslt=mysql_query($stmt, $link);

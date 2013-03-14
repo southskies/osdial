@@ -59,7 +59,7 @@ function report_agent_timesheet() {
     if ($query_date == "") {$query_date = $NOW_DATE;}
 
     $head .= "<br>\n";
-    $head .= "<center><font size=4 color=$default_text>AGENT TIMESHEET</font></center><br>\n";
+    $head .= "<center><font size=4 class=top_header color=$default_text>AGENT TIMESHEET</font></center><br>\n";
     if ($agent) {
         $stmt=sprintf("SELECT full_name FROM osdial_users WHERE user_group IN %s AND user='%s';",$LOG['allowed_usergroupsSQL'],mres($company_prefix.$agent));
         $rslt=mysql_query($stmt, $link);

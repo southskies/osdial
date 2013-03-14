@@ -767,7 +767,7 @@ if ($ADD == "6keys") {
 # ADD=35 display campaign ivr menu & keys
 ######################
 if ($ADD == "3menu") {
-    echo "<center><br><font color=$default_text size=+1>INBOUND/OUTBOUND IVR</font><br><br>\n";
+    echo "<center><br><font class=top_header color=$default_text size=+1>INBOUND/OUTBOUND IVR</font><br><br>\n";
 
     $oivr = get_first_record($link, 'osdial_ivr', '*', sprintf("campaign_id='%s'",mres($campaign_id)));
 

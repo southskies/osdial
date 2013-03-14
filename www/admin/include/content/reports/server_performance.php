@@ -71,7 +71,7 @@ while ($i < $servers_to_print)
 //$html .= "<TITLE>OSDIAL: Server Performance</TITLE></HEAD><BODY BGCOLOR=WHITE>\n";
 $html .= "<table align=center cellpadding=0 cellspacing=0>";
 $html .= "<tr><td align=center>";
-$html .= "<br><font color=$default_text size=+1>SERVER PERFORMANCE</font><br><br>";
+$html .= "<br><font class=top_header color=$default_text size=+1>SERVER PERFORMANCE</font><br><br>";
 $html .= "<FORM ACTION=\"$PHP_SELF\" METHOD=GET>\n";
 $html .= "<input type=hidden name=ADD value=\"$ADD\">\n";
 $html .= "<input type=hidden name=SUB value=\"$SUB\">\n";

@@ -27,7 +27,7 @@ function report_lead_search_basic() {
 
     if ($LOG['modify_leads']==1 and $LOG['user_level'] > 7) {
 
-        $html .= "<center><br><font color=$default_text size=4>BASIC LEAD SEARCH</font></center>\n";
+        $html .= "<center><br><font class=top_header color=$default_text size=4>BASIC LEAD SEARCH</font></center>\n";
         $html .= "<center><font color=$default_text size=2>[ Basic Search ]\n";
         if ($LOG['view_lead_search_advanced']) $html .= "&nbsp;&nbsp;|&nbsp;&nbsp;<a target=\"_parent\" href=\"./admin.php?ADD=999999&SUB=26\">[ Advanced Search ]</a>\n";
         $html .= "<br><br></font></center>\n";
@@ -113,7 +113,7 @@ function report_lead_search_basic() {
                     $html .= "<br><br><br>\n";
                     $html .= "<center>\n";
                     $html .= "  <font size=3 color=$default_text>The item(s) you searched for were not found.<br><br>\n";
-                    $html .= "  <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB\">Search Again</a></font>\n";
+                    $html .= "  <span class=top_header2><a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB\">Search Again</a></span></font>\n";
                     $html .= "</center>\n";
                 } else {
                     $html .= "<center>\n";

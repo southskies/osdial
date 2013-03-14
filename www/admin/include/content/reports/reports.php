@@ -53,7 +53,7 @@ if ($LOG['view_reports']==1) {
 
         echo "<table width=60% align=center><tr><td>\n";
         echo "<font face=\"dejavu sans,verdana,sans-serif\" size=2>\n";
-        echo "<font size=4 color=$default_text><br><center>SERVER STATS AND REPORTS</center></font><br><br>";
+        echo "<font size=4 class=top_header color=$default_text><br><center>SERVER STATS AND REPORTS</center></font><br><br>";
 
         echo "<ul>";
         if ($LOG['view_agent_realtime']) echo "<li><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12\">Agent Realtime (per campaign)</a></font>\n";
@@ -75,7 +75,7 @@ if ($LOG['view_reports']==1) {
         if ($LOG['view_usergroup_hourly_stats']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=24\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>UserGroup Hourly Stats</a></font>";
         echo "</ul>";
         echo "<ul>";
-        if ($LOG['view_ingroup_call_report']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=23\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>InGroup Call Report</a></font>";
+        if ($LOG['view_ingroup_call_report']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=23\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>In-Group Call Report</a></font>";
         echo "</ul>";
         echo "<ul>";
         if ($LOG['view_campaign_call_report']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=15\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Campaign Call Report</a></font>";

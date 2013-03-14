@@ -273,7 +273,7 @@ if ($LOG['modify_call_times']==1)
 	$ct_state_call_times =	$row[19];
 	$use_recycle_gap =	    $row[20];
 
-echo "<center><br><font color=$default_text size=+1>MODIFY A CALL TIME</font><form action=$PHP_SELF method=POST><br><br>\n";
+echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY A CALL TIME</font><form action=$PHP_SELF method=POST><br><br>\n";
 echo "<input type=hidden name=ADD value=411111111>\n";
 echo "<input type=hidden name=call_time_id value=\"$call_time_id\">\n";
 echo "<table cellspacing=1>";
@@ -356,7 +356,7 @@ echo "  </tr>\n";
 echo "  </form>\n";
 
 echo "</table><br><br><br>\n";
-echo "<font color=$default_text size=+1>CAMPAIGNS USING THIS CALL TIME</font><br>\n";
+echo "<font class=top_header2 color=$default_text size=+1>CAMPAIGNS USING THIS CALL TIME</font><br>\n";
 echo "<table width=500 cellspacing=1 bgcolor=grey>\n";
 echo "  <tr class=tabheader>\n";
 echo "    <td align=center>Campaign ID</td>\n";
@@ -382,7 +382,7 @@ echo "</table>\n";
 
 
 
-echo "<br><br><font color=$default_text size=+1>INBOUND GROUPS USING THIS CALL TIME</font><br>\n";
+echo "<br><br><font class=top_header color=$default_text size=+1>INBOUND GROUPS USING THIS CALL TIME</font><br>\n";
 echo "<table width=500 cellspacing=1 bgcolor=grey>\n";
 echo "  <tr class=tabheader>\n";
 echo "    <td align=center>InGroup ID</td>\n";
@@ -429,7 +429,7 @@ if ($ADD==100000000)
 	$rslt=mysql_query($stmt, $link);
 	$filters_to_print = mysql_num_rows($rslt);
 
-echo "<center><br><font color=$default_text size=+1>CALL TIMES</font><br><br>\n";
+echo "<center><br><font class=top_header color=$default_text size=+1>CALL TIMES</font><br><br>\n";
 echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "  <tr class=tabheader>\n";
 echo "    <td>ID</td>\n";
