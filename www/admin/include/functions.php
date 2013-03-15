@@ -1554,5 +1554,30 @@ function get_status_category_ucwords($catid) {
     return $newcatid;
 }
 
+/**************************************************************/
+// This function parses the help documentation from an XML ref. 
+function genhelpdata($indata) {
+    $hdata = array();
+    foreach ($indata as $docitem) {
+        $inattr = array();
+        # Get attributes for this section
+        foreach ($docitem->attributes() as $key => $val) {
+            $inattr[(string)$key] = (string)$val;
+        }
+        $hdata[$inattr['pathId']] = $inattr;
+        $hdata[$inattr['pathId']]['type'] = (string)$docitem->getName();
+        # Test if this node had children, if not, try to extract the embedded text.
+        if ($docitem->count()<1) {
+            if (isset($docitem[0]) && !empty($docitem[0])) $hdata[$inattr['pathId']]['text'] = (string)$docitem[0];
+        } else {
+            # Dig deep, iterating through all submenus and adding them as children.
+            $hdata[$inattr['pathId']]['children'] = genhelpdata($docitem);
+        }
+    }
+    # Return a fully nested document.
+    return $hdata;
+}
+
+
 
 ?>

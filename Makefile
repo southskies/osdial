@@ -204,6 +204,7 @@ install-docs: .osdial.config
 	@install -p -m 644 ./www/admin/templates/default/images/* $(DESTDIR)$(PATHweb)/admin/templates/default/images
 	@install -p -m 644 ./www/admin/include/*.js $(DESTDIR)$(PATHweb)/admin/include
 	@install -p -m 644 ./www/admin/include/*.php $(DESTDIR)$(PATHweb)/admin/include
+	@install -p -m 644 ./www/admin/include/*.xml $(DESTDIR)$(PATHweb)/admin/include
 	@install -p -m 644 ./www/admin/include/content/admin/* $(DESTDIR)$(PATHweb)/admin/include/content/admin
 	@install -p -m 644 ./www/admin/include/content/campaigns/* $(DESTDIR)$(PATHweb)/admin/include/content/campaigns
 	@install -p -m 644 ./www/admin/include/content/filters/* $(DESTDIR)$(PATHweb)/admin/include/content/filters

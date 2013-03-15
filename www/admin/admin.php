@@ -40,6 +40,8 @@ echo "      <br /><br /><br /><br /><br />\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>";
+
+echo "<script language=\"JavaScript\">\nfixChromeTableCollapse();\n</script>\n";
 if (empty($OAC)) {
     echo "</div>";
 

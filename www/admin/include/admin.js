@@ -29,6 +29,39 @@ var oac_last_delay = 0;
 
 
 // ################################################################################
+// fixChromTableCollapse() - Fixes flaw in Chrome which prevents tables from collapsing properly.
+function fixChromeTableCollapse() {
+	if (typeof(window.chrome)!="undefined") {
+		var tabs= document.getElementsByTagName('table');
+		for (var t=0; t<tabs.length; t++) {
+			var trs= tabs[t].getElementsByTagName('tr');
+			for (var i=0; i<trs.length; i++) {
+				if (trs[i].style.visibility == 'collapse') {
+					//if (tabs[t].style.borderCollapse != 'collapse') {
+					//	tabs[t].style.borderCollapse = 'collapse';
+					//}
+					var thcells = trs[i].getElementsByTagName('th');
+					var tdcells = trs[i].getElementsByTagName('td');
+					for (var i2=0; i2<thcells.length; i2++) {
+						thcells[i2].style.padding='0px';
+						thcells[i2].style.border='0px';
+						thcells[i2].style.textIndent='-1px';
+						thcells[i2].innerHTML = '<div style="display:none;">'+thcells[i2].innerHTML+'</div>';
+					}
+					for (var i2=0; i2<tdcells.length; i2++) {
+						tdcells[i2].style.padding='0px';
+						tdcells[i2].style.border='0px';
+						tdcells[i2].style.textIndent='-1px';
+						tdcells[i2].innerHTML = '<div style="display:none;">'+tdcells[i2].innerHTML+'</div>';
+					}
+				}
+			}
+		}
+	}
+}
+
+
+// ################################################################################
 // getXHR() - Returns an xmlhttprequest or MS equiv.
 var getXHR = function () {
     var xmlhttp=false;
