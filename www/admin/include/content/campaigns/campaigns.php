@@ -145,10 +145,13 @@ if ($ADD==11) {
 				echo "<input type=hidden name=company_id value=$LOG[company_id]>";
 				#echo "<font color=$default_text>" . $LOG[company_prefix] . "</font>";
 			}
-			echo "<input type=text name=campaign_id size=10 maxlength=8>$NWB#osdial_campaigns-campaign_id$NWE</td></tr>";
+			echo "<input type=text name=campaign_id size=10 maxlength=8><font size=-1>2-8 Characters, no spaces or symbols</font>&nbsp;&nbsp;$NWB#osdial_campaigns-campaign_id$NWE</td></tr>";
 			echo "<tr><td align=right>Name: </td><td align=left><input type=text name=campaign_name size=30 maxlength=30>$NWB#osdial_campaigns-campaign_name$NWE</td></tr>";
 			echo "<tr><td align=right>Description: </td><td align=left><input type=text name=campaign_description size=30 maxlength=255>$NWB#osdial_campaigns-campaign_description$NWE</td></tr>";
 			echo "<tr><td align=right>Active: </td><td align=left><select size=1 name=active><option>N</option><option>Y</option></select>$NWB#osdial_campaigns-active$NWE</td></tr>";
+			
+			// Add ten default Statuses
+			
 			/*
 			echo "<tr style=\"visibility:collapse;\" ><td align=right>Park Extension: </td><td align=left>";
 			#echo "<input type=text name=park_ext size=10 maxlength=10 value=\"8301\">";
@@ -334,7 +337,16 @@ if ($ADD==21)
                 }
                 $carrier_id = $config['settings']['default_carrier_id'];
                 $ets = implode(',',$email_templates);
-                $stmt=sprintf("INSERT INTO osdial_campaigns (campaign_id,campaign_name,campaign_description,active,dial_status_a,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,campaign_script,get_call_launch,campaign_changedate,campaign_stats_refresh,list_order_mix,web_form_address2,allow_tab_switch,campaign_call_time,carrier_id,email_templates) values('%s','%s','%s','%s','NEW','DOWN','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','Y','DISABLED','%s','%s','%s','%s','%s');",mres($campaign_id),mres($campaign_name),mres($campaign_description),mres($active),mres($park_ext),mres($park_file_name),mres($web_form_address),mres($allow_closers),mres($hopper_level),mres($auto_dial_level),mres($next_agent_call),mres($local_call_time),mres($voicemail_ext),mres($script_id),mres($get_call_launch),mres($SQLdate),mres($web_form_address2),mres($allow_tab_switch),mres($campaign_call_time),mres($carrier_id),mres($ets));
+		$allow_tab_switch='Y';
+		$allow_closers='Y';
+		$next_agent_call='oldest_call_finish';
+		$hopper_level='200';
+		$web_form_address='/osdial/agent/webform_redirect.php';
+		$web_form_address2='/osdial/agent/webform_redirect.php';
+		$local_call_time='9am-9pm';
+		$campaign_call_time='24hours';
+		$get_call_launch='NONE';
+                $stmt=sprintf("INSERT INTO osdial_campaigns (campaign_id,campaign_name,campaign_description,active,dial_status_a,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,campaign_script,get_call_launch,campaign_changedate,campaign_stats_refresh,list_order_mix,web_form_address2,allow_tab_switch,campaign_call_time,carrier_id,email_templates,dial_statuses,no_hopper_leads_logins,campaign_allow_inbound,campaign_rec_filename,amd_send_to_vmx,safe_harbor_message,safe_harbor_exten,web_form_extwindow,web_form2_extwindow,scheduled_callbacks,agent_pause_codes_active,use_internal_dnc) values('%s','%s','%s','%s','NEW','DOWN','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','Y','DISABLED','%s','%s','%s','%s','%s',' A AA B CALLBK DROP NEW N NA -','Y','Y','CAMPAIGN_AGENT_FULLDATE_CUSTPHONE','Y','Y','8307','Y','Y','Y','Y','Y');",mres($campaign_id),mres($campaign_name),mres($campaign_description),mres($active),mres($park_ext),mres($park_file_name),mres($web_form_address),mres($allow_closers),mres($hopper_level),mres($auto_dial_level),mres($next_agent_call),mres($local_call_time),mres($voicemail_ext),mres($script_id),mres($get_call_launch),mres($SQLdate),mres($web_form_address2),mres($allow_tab_switch),mres($campaign_call_time),mres($carrier_id),mres($ets));
                 $rslt=mysql_query($stmt, $link);
 
                 $stmt=sprintf("INSERT INTO osdial_campaign_stats (campaign_id) VALUES('%s');",mres($campaign_id));
@@ -514,7 +526,7 @@ if ($ADD==41)
 			    }
 			else
 			    {
-			    $auto_dial_level = get_variable("adaptive_auto_dial_level");
+			    $auto_dial_level = get_variable("ADAPT_auto_dial_level");
 			    $adlSQL = "";
 			    if ($auto_dial_level < 1)
 				{
@@ -1151,8 +1163,7 @@ if ($ADD==31) {
 
         echo "<center>";
 
-    if ($SUB < 1)
-        {
+		if ($SUB < 1) {
         echo "<br /><font class=top_header color=$default_text size=+1>MODIFY CAMPAIGN</font></p><br />";
         echo "<form action=$PHP_SELF method=POST>";
         echo "<input type=hidden name=DB value=$DB>";
@@ -1249,93 +1260,130 @@ if ($ADD==31) {
         // DIAL METHOD
         echo "<tr><td colspan=2 align=center>";
         echo "<a name=method></a>";
-        echo "<table width=$section_width cellspacing=3 frame=border  cellpadding=0 cellspacing=0 class=rounded-corners2>";
-        echo "<tr><td align=left class=top_header_sect valign=top colspan=2>Dial Method</td></tr>";
-        echo "<tr Xbgcolor=$unusualrows><td align=right width=40%>Dial Method: </td><td align=left width=60%><select size=1 name=dial_method><option >MANUAL</option><option>RATIO</option><option>ADAPT_AVERAGE</option><option>ADAPT_TAPERED</option><option>ADAPT_HARD_LIMIT</option><option SELECTED>$dial_method</option></select>$NWB#osdial_campaigns-dial_method$NWE</td></tr>";
-        if ($dial_method ==  "ADAPT_HARD_LIMIT" or $dial_method ==  "ADAPT_TAPERED") {
-			echo "<tr><td colspan=2 align=center><font color=red>We recommend against ADAPT_HARD_LIMIT and ADAPT_TAPERED</font></td></tr>";
-			echo "<tr><td colspan=2 align=center><font color=red>due to poor dialing logic in these two modes.</font></td></tr>";
+			
+	//         I'm moving the adapt options into the Adapt section, leaving Manual, Ratio and Adaptive as the primary choices. 
+	
+			if ((OSDpreg_match('/^ADAPT/',$dial_method))) {
+				$dial_method_a_class=='active-mode';
+				$dial_method_m_class=='';
+				$dial_method_r_class=='';
+				$test='A';
+			}
+			if ($dial_method=='MANUAL') {
+				$dial_method_a_class=='';
+				$dial_method_m_class=='active-mode';
+				$dial_method_r_class=='';
+				$test='M';
+			}
+			if ($dial_method=='RATIO') {
+				$dial_method_a_class=='';
+				$dial_method_m_class=='';
+				$dial_method_r_class=='active-mode';
+				$test='R';
         }
-        echo "<tr><td align=right class=no-ul colspan=2>";
 		
-		echo "<input style='color:#1C4754' type=submit name=SUBMIT value=Submit></td></tr>";
+			echo "<table width=$section_width cellspacing=3 frame=border  cellpadding=0 cellspacing=0 class=rounded-corners2>";
+			echo "<tr><td align=left class=top_header_sect valign=top colspan=2>Dial Method ($test)</td></tr>";
+			
+			echo "<tr><td colspan=2><br /><center><table frame=0 border=0 cellpadding=1 cellspacing=1 width=250><tr>";
+			echo "<td align=center bgcolor=$dial_method_a_class><button class=$dial_method_a_class name=dial_method value=ADAPT>Adaptive</button></td>";
+			echo "<td align=center bgcolor=$dial_method_m_class><button class=$dial_method_m_class name=dial_method value=MANUAL>Manual</button></td>";
+			echo "<td align=center bgcolor=$dial_method_r_class><button class=$dial_method_r_class name=dial_method value=RATIO>Ratio</button></td>";
+			
+			echo "</tr></table></center>";
+			echo "<table width=100%><tr><td align=right><input style='color:#1C4754' type=submit name=SUBMIT value='Change Mode'></td></tr></table>";
+			echo "</td></tr>";
+			
+// 			echo "<tr><td align=right width=40%>Dial Method: </td><td align=left width=60%>
+// 					<select size=1 name=dial_method>
+// 					  <option>MANUAL</option>
+// 					  <option>RATIO</option>
+// 					  <option>ADAPTIVE</option>
+// 					  <option selected>$dial_method</option>
+// 					</select>$NWB#osdial_campaigns-dial_method$NWE</td></tr>";
+$dial_method="RATIO";
+// 			echo "<tr><td align=right class=no-ul colspan=2>";
+			
+			
         // table includes three dial method section
         
         
-        // MANUAL DIAL
-        $InactiveFont="#FFF";
+			$manual_visible='visibility:collapse;';
+			$ratio_visible='visibility:collapse;';
+			$adapt_visible='visibility:collapse;';
+			if ($dial_method=="MANUAL") {
+				$manual_visible='';
+			} elseif ($dial_method=="RATIO") {
+				$ratio_visible='';
+			} elseif (OSDpreg_match('/^ADAPT/',$dial_method)) {
+				$adapt_visible='';
+			}
+
         $section_width10=($section_width*.99);
-        if ($dial_method !=  "MANUAL") {
-			$InactiveFont="#666";
-		} else {
-			$InactiveFont="#000";
 		
-			echo "<tr><td colspan=2 align=center><table width=$section_width10 cellspacing=3 frame=border cellpadding=0 cellspacing=0 class=rounded-corners3>";
-			echo "<tr><td align=left class=top_header_sect valign=top width=40%><font color=$InactiveFont>Manual Dial Options</font></td></tr>";
+
+				// MANUAL DIAL
+			echo "<tr style=\"$manual_visible\"><td colspan=2 align=center><table width=$section_width10 cellspacing=3 frame=border cellpadding=0 cellspacing=0 class=rounded-corners3>";
+			echo "<tr><td align=left class=top_header_sect valign=top width=40%>Manual Dial Options</td></tr>";
 			echo "<tr><td>&nbsp;</td></tr>";
-			echo "<tr><td align=right><font color=$InactiveFont>Preview Force Dial Time: </font></td><td align=left><font color=$InactiveFont><input type=text name=preview_force_dial_time size=3 maxlength=3 value=\"$preview_force_dial_time\"> <i>in seconds, 0 disables</i>$NWB#osdial_campaigns-preview_force_dial_time$NWE</font></td></tr>";
-			echo "<tr><td align=right><font color=$InactiveFont>Manual Preview Default: </font></td><td align=left><font color=$InactiveFont><select size=1 name=manual_preview_default><option>Y</option><option>N</option><option selected>$manual_preview_default</option></select>$NWB#osdial_campaigns-manual_preview_default$NWE</font></td></tr>";
+			echo "<tr><td align=right>Preview Force Dial Time: </td><td align=left><input type=text name=preview_force_dial_time size=3 maxlength=3 value=\"$preview_force_dial_time\"> <i>in seconds, 0 disables</i>$NWB#osdial_campaigns-preview_force_dial_time$NWE</td></tr>";
+			echo "<tr><td align=right>Manual Preview Default: </td><td align=left><select size=1 name=manual_preview_default><option>Y</option><option>N</option><option selected>$manual_preview_default</option></select>$NWB#osdial_campaigns-manual_preview_default$NWE</td></tr>";
 			echo "<tr>";
-			echo "  <td align=right><font color=$InactiveFont>Allow ManualDial HopperList:</font></td>";
-			echo "  <td align=left><font color=$InactiveFont>";
+			echo "  <td align=right>Allow ManualDial HopperList:</td>";
+			echo "  <td align=left>";
 			echo select_yesno('allow_md_hopperlist',$allow_md_hopperlist);
 			echo "    </select>";
 			echo "    $NWB#osdial_campaigns-allow_md_hopperlist$NWE";
-			echo "  </font></td>";
+			echo "  </td>";
 			echo "</tr>";
-			echo "<tr><td align=right><font color=$InactiveFont>Disable Manual Dial: </font></td><td align=left><font color=$InactiveFont><select size=1 name=disable_manual_dial><option>Y</option><option>N</option><option SELECTED>$disable_manual_dial</option></select>$NWB#osdial_campaigns-disable_manual_dial$NWE</font></td></tr>";
+			echo "<tr><td align=right>Disable Manual Dial: </td><td align=left><select size=1 name=disable_manual_dial><option>Y</option><option>N</option><option SELECTED>$disable_manual_dial</option></select>$NWB#osdial_campaigns-disable_manual_dial$NWE</td></tr>";
 			//echo "<tr><td>&nbsp;</td></tr>";
-			if ($dial_method !=  "MANUAL") {
-				$InactiveFont="#999";
-			} else {
-				$InactiveFont="#000";
 				echo "<tr><td align=right class=no-ul colspan=2><br />";
 				jump_section(1);
 				echo "<input style='color:#1C4754' type=submit name=SUBMIT value=Submit></td></tr>";
-			}
 			echo "</table></td></tr>";
-		}
-		
-        
         
         
         // RATIO DIAL
-        if ($dial_method !=  "RATIO") {
-			$InactiveFont="#666";
-		} else {
-			$InactiveFont="#000";
-		
-			echo "<tr><td colspan=2 align=center><table width=$section_width10 cellspacing=3 frame=border cellpadding=0 cellspacing=0 class=rounded-corners3>";
-			echo "<tr><td align=left class=top_header_sect valign=top width=40%><font color=$InactiveFont>Ratio Dial Options</font></td></tr>";
+			echo "<tr style=\"$ratio_visible\"><td colspan=2 align=center><table width=$section_width10 cellspacing=3 frame=border cellpadding=0 cellspacing=0 class=rounded-corners3>";
+			echo "<tr><td align=left class=top_header_sect valign=top width=40%>Ratio Dial Options</td></tr>";
 			echo "<tr><td>&nbsp;</td></tr>";
-			echo "<tr><td align=right><font color=$InactiveFont>Auto Dial Level: </font></td><td align=left nowrap><font color=$InactiveFont><input type=text name=auto_dial_level size=6 maxlength=6 value=\"$auto_dial_level\" selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;4.0;4.5;5.0\"> (0 = off)$NWB#osdial_campaigns-auto_dial_level$NWE</font></td></tr>";
+			echo "<tr><td align=right>Auto Dial Level: </td><td align=left nowrap><input type=text name=auto_dial_level size=6 maxlength=6 value=\"$auto_dial_level\" selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;4.0;4.5;5.0\"> $NWB#osdial_campaigns-auto_dial_level$NWE</td></tr>";
 
-			echo "<tr><td align=right><font color=$InactiveFont>Available Only Tally: </font></td><td align=left><font color=$InactiveFont><select size=1 name=available_only_ratio_tally><option >Y</option><option>N</option><option SELECTED>$available_only_ratio_tally</option></select>$NWB#osdial_campaigns-available_only_ratio_tally$NWE</font></td></tr>";
+			echo "<tr><td align=right>Available Only Tally: </td><td align=left><select size=1 name=available_only_ratio_tally><option >Y</option><option>N</option><option SELECTED>$available_only_ratio_tally</option></select>$NWB#osdial_campaigns-available_only_ratio_tally$NWE</td></tr>";
 
 			//echo "<tr><td>&nbsp;</td></tr>";
-			if ($dial_method !=  "RATIO") {
-				$InactiveFont="#666";
-			} else {
-				$InactiveFont="#000";
 				echo "<tr><td align=right class=no-ul colspan=2><br />";
 				jump_section(1);
 				echo "<input style='color:#1C4754' type=submit name=SUBMIT value=Submit></td></tr>";
-			}
 			echo "</table></td></tr>";
-        }
-        
         
         
         // ADAPTIVE DIAL
-        if ($dial_method !=  "ADAPT_AVERAGE" and $dial_method !=  "ADAPT_HARD_LIMIT" and $dial_method !=  "ADAPT_TAPERED"){
-			$InactiveFont="#666";
-		} else {
-			$InactiveFont="#000";
-		
-			echo "<tr><td colspan=2 align=center><table width=$section_width10 cellspacing=3 frame=border cellpadding=1 cellspacing=0 class=rounded-corners3>";
-			echo "<tr><td align=left class=top_header_sect valign=top width=40%><font color=$InactiveFont>Adaptive Dial Options</td></tr>";
+			echo "<tr style=\"$adapt_visible\"><td colspan=2 align=center><table width=$section_width10 cellspacing=3 frame=border cellpadding=1 cellspacing=0 class=rounded-corners3>";
+			echo "<tr><td align=left class=top_header_sect valign=top width=40%>Adaptive Dial Options</td></tr>";
 			echo "<tr><td>&nbsp;</td></tr>";
-			echo "<tr><td align=right><font color=$InactiveFont>Drop Percentage Limit: </font></td><td align=left><font color=$InactiveFont><select size=1 name=adaptive_dropped_percentage>";
+			$adapt_dial_method=$dial_method;
+			echo "<tr><td align=right width=40%>Adapt Method: </td><td align=left width=60%>";
+			echo "<select size=1 name=dial_method>
+					<option>ADAPT_AVERAGE</option>
+					<option>ADAPT_TAPERED</option>
+					<option>ADAPT_HARD_LIMIT</option>
+					<option SELECTED>$adapt_dial_method</option>
+				</select>$NWB#osdial_campaigns-dial_method$NWE</td></tr>";
+				if ($adapt_dial_method ==  "ADAPT_HARD_LIMIT" or $adapt_dial_method ==  "ADAPT_TAPERED") {
+					echo "<tr><td colspan=2 align=center><font color=red>We recommend against ADAPT_HARD_LIMIT and ADAPT_TAPERED</font></td></tr>";
+					echo "<tr><td colspan=2 align=center><font color=red>due to weak dialing logic in these two modes.</font></td></tr>";
+				}
+			
+			if ($adapt_dial_method=='ADAPT_AVERAGE' or $adapt_dial_method=='ADAPT_HARD_LIMIT' or $adapt_dial_method=='ADAPT_TAPERED') {
+				$dial_method=$adapt_dial_method;
+		} else {
+				$dial_method='ADAPT_AVERAGE';
+			}
+		
+			
+			echo "<tr><td align=right>Drop Percentage Limit: </td><td align=left><select size=1 name=adaptive_dropped_percentage>";
 			$n=100;
 			while ($n>=1) {
 				$sel='';
@@ -1343,12 +1391,12 @@ if ($ADD==31) {
 				echo "<option value=\"$n\" $sel>$n %</option>";
 				$n--;
 			}
-			echo "</select>$NWB#osdial_campaigns-adaptive_dropped_percentage$NWE</font></td></tr>";
+			echo "</select>$NWB#osdial_campaigns-adaptive_dropped_percentage$NWE</td></tr>";
 			
-			echo "<tr Xbgcolor=$unusualrows><td align=right><font color=$InactiveFont>Maximum Adapt Dial Level: </td><td align=left nowrap><font color=$InactiveFont><input type=text name=adaptive_maximum_level size=6 maxlength=6 value=\"$adaptive_maximum_level\" selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;4.0;4.5;5.0\"><i>number only</i> $NWB#osdial_campaigns-adaptive_maximum_level$NWE</font></td></tr>";
-			echo "<tr Xbgcolor=$unusualrows><td align=right><font color=$InactiveFont>Auto Dial Level: </td><td align=left nowrap><font color=$InactiveFont><input type=text name=ADAPT_auto_dial_level size=6 maxlength=6 value=\"$auto_dial_level\" selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;4.0;4.5;5.0\"> (0 = off)$NWB#osdial_campaigns-auto_dial_level$NWE &nbsp; &nbsp; &nbsp; <input type=checkbox name=dial_level_override value=\"1\">Activate Override</font></td></tr>";
-			echo "<tr Xbgcolor=$unusualrows><td align=right><font color=$InactiveFont>Available Only Tally: </td><td align=left><font color=$InactiveFont><select size=1 name=ADAPT_available_only_ratio_tally><option >Y</option><option>N</option><option SELECTED>$available_only_ratio_tally</option></select>$NWB#osdial_campaigns-available_only_ratio_tally$NWE</font></td></tr>";
-			echo "<tr Xbgcolor=$unusualrows><td align=right><font color=$InactiveFont>Adapt Intensity Modifier: </td><td align=left><font color=$InactiveFont><select size=1 name=adaptive_intensity>";
+			echo "<tr Xbgcolor=$unusualrows><td align=right>Maximum Adapt Dial Level: </td><td align=left nowrap><input type=text name=adaptive_maximum_level size=6 maxlength=6 value=\"$adaptive_maximum_level\" selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;4.0;4.5;5.0\"> $NWB#osdial_campaigns-adaptive_maximum_level$NWE</td></tr>";
+			echo "<tr Xbgcolor=$unusualrows><td align=right>Auto Dial Level: </td><td align=left nowrap><input type=text name=ADAPT_auto_dial_level size=6 maxlength=6 value=\"$auto_dial_level\" selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;4.0;4.5;5.0\"> $NWB#osdial_campaigns-auto_dial_level$NWE &nbsp; &nbsp; &nbsp; <input type=checkbox name=dial_level_override value=\"1\">Activate Override</td></tr>";
+			echo "<tr Xbgcolor=$unusualrows><td align=right>Available Only Tally: </td><td align=left><select size=1 name=ADAPT_available_only_ratio_tally><option >Y</option><option>N</option><option SELECTED>$available_only_ratio_tally</option></select>$NWB#osdial_campaigns-available_only_ratio_tally$NWE</td></tr>";
+			echo "<tr Xbgcolor=$unusualrows><td align=right>Adapt Intensity Modifier: </td><td align=left><select size=1 name=adaptive_intensity>";
 			$n=40;
 			while ($n>=-40) {
 				$sel='';
@@ -1361,7 +1409,7 @@ if ($ADD==31) {
 			}
 			echo "</select> $NWB#osdial_campaigns-adaptive_intensity$NWE</td></tr>";
 
-			echo "<tr Xbgcolor=$unusualrows><td align=right><font color=$InactiveFont>Dial Level Difference Target: </td><td align=left><font color=$InactiveFont><select size=1 name=adaptive_dl_diff_target>";
+			echo "<tr Xbgcolor=$unusualrows><td align=right>Dial Level Difference Target: </td><td align=left><select size=1 name=adaptive_dl_diff_target>";
 			$n=40;
 			while ($n>=-40) {
 				$sel='';
@@ -1374,9 +1422,9 @@ if ($ADD==31) {
 				$n--;
 			}
 			echo "</select> $NWB#osdial_campaigns-adaptive_dl_diff_target$NWE</td></tr>";
-			echo "<tr Xbgcolor=$unusualrows><td align=right><font color=$InactiveFont>Latest Server Time for Tapered Mode: </td><td align=left><font color=$InactiveFont><input type=text name=adaptive_latest_server_time size=6 maxlength=4 value=\"$adaptive_latest_server_time\"><i>4 digits only</i> $NWB#osdial_campaigns-adaptive_latest_server_time$NWE</td></tr>";
-			echo "<tr Xbgcolor=$unusualrows><td align=right><font color=$InactiveFont>Auto Dial Answer Handling: </td>";
-			echo "  <td align=left><font color=$InactiveFont>";
+			echo "<tr Xbgcolor=$unusualrows><td align=right>Latest Server Time for Tapered Mode: </td><td align=left><input type=text name=adaptive_latest_server_time size=6 maxlength=4 value=\"$adaptive_latest_server_time\"><i>4 digits only</i> $NWB#osdial_campaigns-adaptive_latest_server_time$NWE</td></tr>";
+			echo "<tr Xbgcolor=$unusualrows><td align=right>Auto Dial Answer Handling: </td>";
+			echo "  <td align=left>";
 			echo "    <select size=1 name=campaign_vdad_exten>";
 			echo "      <option value=\"8365\" $sel1>8365 - Home Server Only</option>";
 			echo "      <option value=\"8367\" $sel2>8367 - Load Sharing</option>";
@@ -1385,17 +1433,12 @@ if ($ADD==31) {
 			echo "    </select>";
 			echo "    $NWB#osdial_campaigns-campaign_vdad_exten$NWE";
 			echo "  </td></tr>";
-			if ($dial_method !=  "ADAPT_AVERAGE" and $dial_method !=  "ADAPT_HARD_LIMIT" and $dial_method !=  "ADAPT_TAPERED"){
-				$InactiveFont="#AAA";
-			} else {
-				$InactiveFont="#000";
 				echo "<tr><td align=right class=no-ul colspan=2><br />";
 				jump_section(1);
 				echo "<input style='color:#1C4754' type=submit name=SUBMIT value=Submit></td></tr>";
-			}
 			echo "</table></td></tr>";
 		
-        }
+
         	echo "</table></td></tr>";
         
         
@@ -1448,7 +1491,7 @@ if ($ADD==31) {
         echo "<tr><td align=right>Dial Timeout: </td><td align=left><input type=text name=dial_timeout size=3 maxlength=3 value=\"$dial_timeout\"> <i>in seconds</i>$NWB#osdial_campaigns-dial_timeout$NWE</td></tr>";
 
         echo "<tr><td align=right>Drop Call Seconds: </td><td align=left><input type=text name=drop_call_seconds size=5 maxlength=2 value=\"$drop_call_seconds\">$NWB#osdial_campaigns-drop_call_seconds$NWE</td></tr>";
-        echo "<tr><td>&nbsp;</td></tr>";
+			echo "<tr><td></td></tr>";
         echo "<tr><td align=right class=no-ul colspan=2>";
 		jump_section(1);
 		echo "<input style='color:#1C4754' type=submit name=SUBMIT value=Submit></td></tr>";
@@ -1957,6 +2000,7 @@ if ($ADD==31) {
         echo "<a href=\"$PHP_SELF?ADD=999999&SUB=28&group=$campaign_id\">Click here to see what leads are in the hopper right now</a><br><br>";
         echo "<a href=\"$PHP_SELF?ADD=81&campaign_id=$campaign_id\">Click here to see all CallBack Holds in this campaign</a><br><br>";
         if ($LOG['view_agent_realtime']) echo "<a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12&group=$campaign_id\">Click here to see a Time On Dialer report for this campaign</a></font><br><br><br />";
+			
 			echo "</b></center>";
         }
  		echo "</td></tr></table>";
