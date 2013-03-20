@@ -599,15 +599,15 @@ if ($ADD==100000000000) {
     $o=0;
     while ($phones_to_print > $o) {
         $row=mysql_fetch_row($rslt);
-        echo "  <tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=311111111111&server_id=$row[0]';\">\n";
-        echo "    <td><a href=\"$PHP_SELF?ADD=311111111111&server_id=$row[0]\">$row[0]</a></td>\n";
+        echo "  <tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=311111111111&server_id=$row[0]&server_ip=$row[2]';\">\n";
+        echo "    <td><a href=\"$PHP_SELF?ADD=311111111111&server_id=$row[0]&server_ip=$row[2]\">$row[0]</a></td>\n";
         echo "    <td>$row[1]</td>\n";
         echo "    <td>$row[2]</td>\n";
         echo "    <td>$row[4]</td>\n";
         echo "    <td align=center>$row[3]</td>\n";
         echo "    <td colspan=2 align=center>\n";
         echo "      <a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=/sysinfo/$row[2]/psi/index.php\">SYSINFO</a>&nbsp;|&nbsp;\n";
-        echo "      <a href=\"$PHP_SELF?ADD=311111111111&server_id=$row[0]\">MODIFY</a>\n";
+        echo "      <a href=\"$PHP_SELF?ADD=311111111111&server_id=$row[0]&server_ip=$row[2]\">MODIFY</a>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
         $o++;
