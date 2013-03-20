@@ -872,6 +872,9 @@ $xfer_agent2agent_wait_action = get_variable("xfer_agent2agent_wait_action");
 $xfer_agent2agent_wait_extension = get_variable("xfer_agent2agent_wait_extension");
 
 
+$helpfiledata = file_get_contents("include/help.xml");
+$helpfilexml = new SimpleXMLElement($helpfiledata);
+$helpdata=genhelpdata($helpfilexml);
 
 if (isset($script_id)) $script_id=OSDstrtoupper($script_id);
 if (isset($script_button_id)) $script_button_id=OSDstrtoupper($script_button_id);

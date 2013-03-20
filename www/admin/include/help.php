@@ -21,15 +21,29 @@
 $NWB = " &nbsp; <span onmouseover=\"this.style.cursor='help';\" onmouseout=\"this.style.cursor='auto';\" onclick=\"openNewWindow('$PHP_SELF?ADD=99999'+this.getAttribute('helpitem'));\" helpitem=\"";
 $NWE = "\"><img src=\"help.gif\" width=20 height=20 border=0 alt=\"Help\" align=top></span>";
 
+function helptag($helpphrase) {
+	global $helpdata;
+	$helpphrase = OSDpreg_replace('/^#/','',$helpphrase);
+	list($helpsection,$helpitem) = OSDpreg_split('/\-/',$helpphrase);
+	$ret = " &nbsp; <span id=\"test\" class=\"help\" ";
+	$ret .= "onclick=\"openNewWindow('$PHP_SELF?ADD=99999'+this.getAttribute('helpitem'));\" helpitem=\"#$helpphrase\">";
+	$ret .= "<img src=\"help.gif\" width=20 height=20 border=0 alt=\"Help\" align=top>";
+	$ret .= "<span class=\"helppopup\">";
+	$helptag = $helpdata['admin_overview']['children']['admin_modules']['children'][$helpsection]['children'][$helpitem];
+	$ret .= "<b>".$helptag['title'] . "</b><br/>". $helptag['text'];
+	$ret .= "</span></span>";
+	return $ret;
+}
+
 ######################
 # ADD=99999 display the HELP SCREENS
 ######################
 
 if ($ADD==99999) {
 	header ("Content-type: text/html; charset=utf-8");
-	$data = file_get_contents("include/help.xml");
-	$xml = new SimpleXMLElement($data);
-	$helpdata = genhelpdata($xml);
+	#$data = file_get_contents("include/help.xml");
+	#$xml = new SimpleXMLElement($data);
+	#$helpdata = genhelpdata($xml);
 
 	echo "<html>\n";
 	echo "  <head>\n";
