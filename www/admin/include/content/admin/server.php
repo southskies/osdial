@@ -30,11 +30,11 @@ if ($ADD==111111111111) {
         echo "<center><br><font color=$default_text size=+1>ADD A NEW SERVER</font><form action=$PHP_SELF method=POST><br><br>\n";
         echo "<input type=hidden name=ADD value=211111111111>\n";
         echo "<TABLE width=$section_width cellspacing=3>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Server ID: </td><td align=left><input type=text name=server_id size=10 maxlength=10>$NWB#servers-server_id$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Server Description: </td><td align=left><input type=text name=server_description size=30 maxlength=255>$NWB#servers-server_description$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Server IP Address: </td><td align=left><input type=text name=server_ip size=20 maxlength=15>$NWB#servers-server_ip$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Server Profile: </td><td align=left><select size=1 name=server_profile><option>AIO</option><option>CONTROL</option><option>SQL</option><option>WEB</option><option selected>DIALER</option><option>ARCHIVE</option><option>OTHER</option></select>$NWB#servers-server_profile$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option></select>$NWB#servers-active$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Server ID: </td><td align=left><input type=text name=server_id size=10 maxlength=10>".helptag("servers-server_id")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Server Description: </td><td align=left><input type=text name=server_description size=30 maxlength=255>".helptag("servers-server_description")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Server IP Address: </td><td align=left><input type=text name=server_ip size=20 maxlength=15>".helptag("servers-server_ip")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Server Profile: </td><td align=left><select size=1 name=server_profile><option>AIO</option><option>CONTROL</option><option>SQL</option><option>WEB</option><option selected>DIALER</option><option>ARCHIVE</option><option>OTHER</option></select>".helptag("servers-server_profile")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option></select>".helptag("servers-active")."</td></tr>\n";
         echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
         echo "</TABLE></center>\n";
     } else {
@@ -357,14 +357,14 @@ if ($ADD==311111111111) {
         echo "<input type=hidden name=old_server_id value=\"$server_id\">\n";
         echo "<input type=hidden name=old_server_ip value=\"$row[2]\">\n";
         echo "<TABLE width=$section_width cellspacing=3>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Server ID: </td><td align=left><input type=text name=server_id size=10 maxlength=10 value=\"$row[0]\">$NWB#servers-server_id$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Server Description: </td><td align=left><input type=text name=server_description size=30 maxlength=255 value=\"$row[1]\">$NWB#servers-server_description$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Server IP Address: </td><td align=left><input type=text name=server_ip size=20 maxlength=15 value=\"$row[2]\">$NWB#servers-server_ip$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Server Profile: </td><td align=left><select size=1 name=server_profile><option>AIO</option><option>CONTROL</option><option>SQL</option><option>WEB</option><option>DIALER</option><option>ARCHIVE</option><option>OTHER</option><option selected>$row[22]</option></select>$NWB#servers-server_profile$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option selected>$row[3]</option></select>$NWB#servers-active$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Local GMT: </td><td align=left><select size=1 name=local_gmt><option>12.75</option><option>12.00</option><option>11.00</option><option>10.00</option><option>9.50</option><option>9.00</option><option>8.00</option><option>7.00</option><option>6.50</option><option>6.00</option><option>5.75</option><option>5.50</option><option>5.00</option><option>4.50</option><option>4.00</option><option>3.50</option><option>3.00</option><option>2.00</option><option>1.00</option><option>0.00</option><option>-1.00</option><option>-2.00</option><option>-3.00</option><option>-3.50</option><option>-4.00</option><option>-5.00</option><option>-6.00</option><option>-7.00</option><option>-8.00</option><option>-9.00</option><option>-10.00</option><option>-11.00</option><option>-12.00</option><option selected>$row[13]</option></select> (Do NOT Adjust for DST)$NWB#servers-local_gmt$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>System Performance: </td><td align=left><select size=1 name=sys_perf_log><option>Y</option><option>N</option><option selected>$row[17]</option></select>$NWB#servers-sys_perf_log$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Server Logs: </td><td align=left><select size=1 name=vd_server_logs><option>Y</option><option>N</option><option selected>$row[18]</option></select>$NWB#servers-vd_server_logs$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Server ID: </td><td align=left><input type=text name=server_id size=10 maxlength=10 value=\"$row[0]\">".helptag("servers-server_id")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Server Description: </td><td align=left><input type=text name=server_description size=30 maxlength=255 value=\"$row[1]\">".helptag("servers-server_description")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Server IP Address: </td><td align=left><input type=text name=server_ip size=20 maxlength=15 value=\"$row[2]\">".helptag("servers-server_ip")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Server Profile: </td><td align=left><select size=1 name=server_profile><option>AIO</option><option>CONTROL</option><option>SQL</option><option>WEB</option><option>DIALER</option><option>ARCHIVE</option><option>OTHER</option><option selected>$row[22]</option></select>".helptag("servers-server_profile")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option selected>$row[3]</option></select>".helptag("servers-active")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Local GMT: </td><td align=left><select size=1 name=local_gmt><option>12.75</option><option>12.00</option><option>11.00</option><option>10.00</option><option>9.50</option><option>9.00</option><option>8.00</option><option>7.00</option><option>6.50</option><option>6.00</option><option>5.75</option><option>5.50</option><option>5.00</option><option>4.50</option><option>4.00</option><option>3.50</option><option>3.00</option><option>2.00</option><option>1.00</option><option>0.00</option><option>-1.00</option><option>-2.00</option><option>-3.00</option><option>-3.50</option><option>-4.00</option><option>-5.00</option><option>-6.00</option><option>-7.00</option><option>-8.00</option><option>-9.00</option><option>-10.00</option><option>-11.00</option><option>-12.00</option><option selected>$row[13]</option></select> (Do NOT Adjust for DST)".helptag("servers-local_gmt")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>System Performance: </td><td align=left><select size=1 name=sys_perf_log><option>Y</option><option>N</option><option selected>$row[17]</option></select>".helptag("servers-sys_perf_log")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Server Logs: </td><td align=left><select size=1 name=vd_server_logs><option>Y</option><option>N</option><option selected>$row[18]</option></select>".helptag("servers-vd_server_logs")."</td></tr>\n";
         if (OSDpreg_match('/CONTROL|SQL|WEB|ARCHIVE|OTHER/',$row[22])) {
             echo "<input type=hidden name=asterisk_version value=\"$row[4]\">\n";
             echo "<input type=hidden name=max_osdial_trunks value=\"$row[5]\">\n";
@@ -382,21 +382,21 @@ if ($ADD==311111111111) {
             echo "<input type=hidden name=voicemail_dump_exten value=\"$row[14]\">\n";
             echo "<input type=hidden name=answer_transfer_agent value=\"$row[15]\">\n";
         } else {
-            echo "<tr bgcolor=$oddrows><td align=right>Asterisk Version: </td><td align=left><input type=text name=asterisk_version size=20 maxlength=20 value=\"$row[4]\">$NWB#servers-asterisk_version$NWE</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>Max Trunks: </td><td align=left><input type=text name=max_osdial_trunks size=5 maxlength=4 value=\"$row[5]\">$NWB#servers-max_osdial_trunks$NWE</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>Balance Dialing: </td><td align=left><select size=1 name=osdial_balance_active><option>Y</option><option>N</option><option selected>$row[20]</option></select>$NWB#servers-osdial_balance_active$NWE</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>Balance Offlimits: </td><td align=left><input type=text name=balance_trunks_offlimits size=5 maxlength=4 value=\"$row[21]\">$NWB#servers-balance_trunks_offlimits$NWE</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>AGI Log Output: </td><td align=left><select size=1 name=agi_output><option>NONE</option><option>STDERR</option><option>FILE</option><option>BOTH</option><option selected>$row[19]</option></select>$NWB#servers-agi_output$NWE</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>Default Context: </td><td align=left><input type=text name=ext_context size=20 maxlength=20 value=\"$row[16]\">$NWB#servers-ext_context$NWE</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>Telnet Host: </td><td align=left><input type=text name=telnet_host size=20 maxlength=20 value=\"$row[6]\">$NWB#servers-telnet_host$NWE</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>Telnet Port: </td><td align=left><input type=text name=telnet_port size=6 maxlength=5 value=\"$row[7]\">$NWB#servers-telnet_port$NWE</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>Manager User: </td><td align=left><input type=text name=ASTmgrUSERNAME size=20 maxlength=20 value=\"$row[8]\">$NWB#servers-ASTmgrUSERNAME$NWE</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>Manager Secret: </td><td align=left><input type=text name=ASTmgrSECRET size=20 maxlength=20 value=\"$row[9]\">$NWB#servers-ASTmgrSECRET$NWE</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>Manager Update User: </td><td align=left><input type=text name=ASTmgrUSERNAMEupdate size=20 maxlength=20 value=\"$row[10]\">$NWB#servers-ASTmgrUSERNAMEupdate$NWE</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>Manager Listen User: </td><td align=left><input type=text name=ASTmgrUSERNAMElisten size=20 maxlength=20 value=\"$row[11]\">$NWB#servers-ASTmgrUSERNAMElisten$NWE</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>Manager Send User: </td><td align=left><input type=text name=ASTmgrUSERNAMEsend size=20 maxlength=20 value=\"$row[12]\">$NWB#servers-ASTmgrUSERNAMEsend$NWE</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>VMail Dump Exten: </td><td align=left><input type=text name=voicemail_dump_exten size=20 maxlength=20 value=\"$row[14]\">$NWB#servers-voicemail_dump_exten$NWE</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>AD extension: </td><td align=left><input type=text name=answer_transfer_agent size=20 maxlength=20 value=\"$row[15]\">$NWB#servers-answer_transfer_agent$NWE</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Asterisk Version: </td><td align=left><input type=text name=asterisk_version size=20 maxlength=20 value=\"$row[4]\">".helptag("servers-asterisk_version")."</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Max Trunks: </td><td align=left><input type=text name=max_osdial_trunks size=5 maxlength=4 value=\"$row[5]\">".helptag("servers-max_osdial_trunks")."</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Balance Dialing: </td><td align=left><select size=1 name=osdial_balance_active><option>Y</option><option>N</option><option selected>$row[20]</option></select>".helptag("servers-osdial_balance_active")."</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Balance Offlimits: </td><td align=left><input type=text name=balance_trunks_offlimits size=5 maxlength=4 value=\"$row[21]\">".helptag("servers-balance_trunks_offlimits")."</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>AGI Log Output: </td><td align=left><select size=1 name=agi_output><option>NONE</option><option>STDERR</option><option>FILE</option><option>BOTH</option><option selected>$row[19]</option></select>".helptag("servers-agi_output")."</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Default Context: </td><td align=left><input type=text name=ext_context size=20 maxlength=20 value=\"$row[16]\">".helptag("servers-ext_context")."</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Telnet Host: </td><td align=left><input type=text name=telnet_host size=20 maxlength=20 value=\"$row[6]\">".helptag("servers-telnet_host")."</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Telnet Port: </td><td align=left><input type=text name=telnet_port size=6 maxlength=5 value=\"$row[7]\">".helptag("servers-telnet_port")."</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Manager User: </td><td align=left><input type=text name=ASTmgrUSERNAME size=20 maxlength=20 value=\"$row[8]\">".helptag("servers-ASTmgrUSERNAME")."</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Manager Secret: </td><td align=left><input type=text name=ASTmgrSECRET size=20 maxlength=20 value=\"$row[9]\">".helptag("servers-ASTmgrSECRET")."</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Manager Update User: </td><td align=left><input type=text name=ASTmgrUSERNAMEupdate size=20 maxlength=20 value=\"$row[10]\">".helptag("servers-ASTmgrUSERNAMEupdate")."</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Manager Listen User: </td><td align=left><input type=text name=ASTmgrUSERNAMElisten size=20 maxlength=20 value=\"$row[11]\">".helptag("servers-ASTmgrUSERNAMElisten")."</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Manager Send User: </td><td align=left><input type=text name=ASTmgrUSERNAMEsend size=20 maxlength=20 value=\"$row[12]\">".helptag("servers-ASTmgrUSERNAMEsend")."</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>VMail Dump Exten: </td><td align=left><input type=text name=voicemail_dump_exten size=20 maxlength=20 value=\"$row[14]\">".helptag("servers-voicemail_dump_exten")."</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>AD extension: </td><td align=left><input type=text name=answer_transfer_agent size=20 maxlength=20 value=\"$row[15]\">".helptag("servers-answer_transfer_agent")."</td></tr>\n";
         }
         echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
         echo "</TABLE></center></form>\n";
@@ -404,7 +404,7 @@ if ($ADD==311111111111) {
 
         if ($row[22] == 'AIO' or $row[22] == 'DIALER') {
             ### osdial server trunk records for this server
-            echo "<br><br><center><font class=top_header2 color=$default_text size=+1>TRUNKS FOR THIS SERVER &nbsp;</font> $NWB#osdial_server_trunks$NWE<br>\n";
+            echo "<br><br><center><font class=top_header2 color=$default_text size=+1>TRUNKS FOR THIS SERVER &nbsp;</font> ".helptag("osdial_server_trunks")."<br>\n";
             echo "<table width=600 cellspacing=1 bgcolor=grey>\n";
             echo "  <tr class=tabheader>\n";
             echo "    <td align=center>TRUNKS</td>\n";
@@ -719,7 +719,7 @@ if ($ADD=="399111111111111") {
         echo "<center><br><br><font color=$default_text size=+1>MODIFY ARCHIVE SERVER SETTINGS</font><br><form action=$PHP_SELF method=POST><br><br>\n";
         echo "<input type=hidden name=ADD value=499111111111111>\n";
         echo "<center><TABLE width=$section_width cellspacing=3>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Archive Server Address: </td><td align=left><input type=text name=archive_hostname size=30 maxlength=30 value=\"$archive_hostname\">$NWB#settings-archive_hostname$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Archive Server Address: </td><td align=left><input type=text name=archive_hostname size=30 maxlength=30 value=\"$archive_hostname\">".helptag("settings-archive_hostname")."</td></tr>\n";
 
         $atmsel = "<option selected>" . $archive_transfer_method . "</option>";
         if ($archive_transfer_method == "FTP") {
@@ -727,15 +727,15 @@ if ($ADD=="399111111111111") {
         } elseif ($archive_transfer_method == "FTPA") {
             $atmsel = "<option selected value=\"FTPA\">FTP (active)</option>";
         }
-        echo "<tr bgcolor=$oddrows><td align=right>Transfer Method: </td><td align=left><select size=1 name=archive_transfer_method><option value=\"FTP\">FTP (passive)</option><option value=\"FTPA\">FTP (active)</option><option>SFTP</option><option>SCP</option>$atmsel</select>$NWB#settings-archive_transfer_method$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Transfer Method: </td><td align=left><select size=1 name=archive_transfer_method><option value=\"FTP\">FTP (passive)</option><option value=\"FTPA\">FTP (active)</option><option>SFTP</option><option>SCP</option>$atmsel</select>".helptag("settings-archive_transfer_method")."</td></tr>\n";
 
-        echo "<tr bgcolor=$oddrows><td align=right>Port: </td><td align=left><input type=text name=archive_port size=6 maxlength=5 value=\"$archive_port\">$NWB#settings-archive_port$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Username: </td><td align=left><input type=text name=archive_username size=20 maxlength=20 value=\"$archive_username\">$NWB#settings-archive_username$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=archive_password size=20 maxlength=200 value=\"$archive_password\">$NWB#settings-archive_password$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Recording Path: </td><td align=left><input type=text name=archive_path size=40 maxlength=255 value=\"$archive_path\">$NWB#settings-archive_path$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Report Path: </td><td align=left><input type=text name=archive_report_path size=40 maxlength=255 value=\"$archive_report_path\">$NWB#settings-archive_report_path$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Web Path: </td><td align=left><input type=text name=archive_web_path size=40 maxlength=255 value=\"$archive_web_path\">$NWB#settings-archive_web_path$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Mix Format: </td><td align=left><select size=1 name=archive_mix_format><option value=\"\"> -[ DEFAULT ]- </option><option>MP3</option><option>WAV</option><option>GSM</option><option>OGG</option><option selected>$archive_mix_format</option></select>$NWB#settings-archive_mix_format$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Port: </td><td align=left><input type=text name=archive_port size=6 maxlength=5 value=\"$archive_port\">".helptag("settings-archive_port")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Username: </td><td align=left><input type=text name=archive_username size=20 maxlength=20 value=\"$archive_username\">".helptag("settings-archive_username")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=archive_password size=20 maxlength=200 value=\"$archive_password\">".helptag("settings-archive_password")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Recording Path: </td><td align=left><input type=text name=archive_path size=40 maxlength=255 value=\"$archive_path\">".helptag("settings-archive_path")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Report Path: </td><td align=left><input type=text name=archive_report_path size=40 maxlength=255 value=\"$archive_report_path\">".helptag("settings-archive_report_path")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Web Path: </td><td align=left><input type=text name=archive_web_path size=40 maxlength=255 value=\"$archive_web_path\">".helptag("settings-archive_web_path")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Mix Format: </td><td align=left><select size=1 name=archive_mix_format><option value=\"\"> -[ DEFAULT ]- </option><option>MP3</option><option>WAV</option><option>GSM</option><option>OGG</option><option selected>$archive_mix_format</option></select>".helptag("settings-archive_mix_format")."</td></tr>\n";
 
         echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
         echo "</TABLE></center>\n";
@@ -819,12 +819,12 @@ if ($ADD=="399911111111111") {
         echo "<input type=hidden name=ADD value=499911111111111>\n";
         echo "<center><TABLE width=$section_width cellspacing=3>\n";
 
-        echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select name=external_dnc_active><option>Y</option><option>N</option><option selected>$external_dnc_active</option></select>$NWB#settings-external_dnc_active$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>DNC MySQL Address: </td><td align=left><input type=text name=external_dnc_address size=30 maxlength=30 value=\"$external_dnc_address\">$NWB#settings-external_dnc_address$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Database Name: </td><td align=left><input type=text name=external_dnc_database size=20 maxlength=20 value=\"$external_dnc_database\">$NWB#settings-external_dnc_database$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Username: </td><td align=left><input type=text name=external_dnc_username size=20 maxlength=20 value=\"$external_dnc_username\">$NWB#settings-external_dnc_username$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=external_dnc_password size=20 maxlength=200 value=\"$external_dnc_password\">$NWB#settings-external_dnc_password$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>SQL: </td><td align=left><input type=text name=external_dnc_sql size=40 maxlength=255 value=\"$external_dnc_sql\">$NWB#settings-external_dnc_sql$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select name=external_dnc_active><option>Y</option><option>N</option><option selected>$external_dnc_active</option></select>".helptag("settings-external_dnc_active")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>DNC MySQL Address: </td><td align=left><input type=text name=external_dnc_address size=30 maxlength=30 value=\"$external_dnc_address\">".helptag("settings-external_dnc_address")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Database Name: </td><td align=left><input type=text name=external_dnc_database size=20 maxlength=20 value=\"$external_dnc_database\">".helptag("settings-external_dnc_database")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Username: </td><td align=left><input type=text name=external_dnc_username size=20 maxlength=20 value=\"$external_dnc_username\">".helptag("settings-external_dnc_username")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=external_dnc_password size=20 maxlength=200 value=\"$external_dnc_password\">".helptag("settings-external_dnc_password")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>SQL: </td><td align=left><input type=text name=external_dnc_sql size=40 maxlength=255 value=\"$external_dnc_sql\">".helptag("settings-external_dnc_sql")."</td></tr>\n";
 
 
         echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
@@ -1036,8 +1036,8 @@ if ($ADD=="399211111111111") {
             echo "<input type=hidden name=SUB value=$SUB>\n";
             echo "<center><TABLE width=$section_width cellspacing=1>\n";
     
-            echo "<tr bgcolor=$oddrows><td align=right>Name: </td><td align=left><input type=text name=qc_server_name size=20 maxlength=20 value=\"$qc_server_name\">$NWB#qc-server_name$NWE</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>Description: </td><td align=left><input type=text name=qc_server_description size=40 maxlength=100 value=\"$qc_server_description\">$NWB#qc-server_description$NWE</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Name: </td><td align=left><input type=text name=qc_server_name size=20 maxlength=20 value=\"$qc_server_name\">".helptag("qc-server_name")."</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Description: </td><td align=left><input type=text name=qc_server_description size=40 maxlength=100 value=\"$qc_server_description\">".helptag("qc-server_description")."</td></tr>\n";
 
             $qctmsel = "<option selected>" . $qc_server_transfer_method . "</option>";
             if ($qc_server_transfer_method == "FTP") {
@@ -1045,17 +1045,17 @@ if ($ADD=="399211111111111") {
             } elseif ($qc_server_transfer_method == "FTPA") {
                 $qctmsel = "<option selected value=\"FTPA\">FTP (active)</option>";
             }
-            echo "<tr bgcolor=$oddrows><td align=right>Transfer Method: </td><td align=left><select size=1 name=qc_server_transfer_method><option value=\"FTP\">FTP (passive)</option><option value=\"FTPA\">FTP (active)</option><option>SFTP</option><option>SCP</option>$qctmsel</select>$NWB#qc-server_transfer_method$NWE</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Transfer Method: </td><td align=left><select size=1 name=qc_server_transfer_method><option value=\"FTP\">FTP (passive)</option><option value=\"FTPA\">FTP (active)</option><option>SFTP</option><option>SCP</option>$qctmsel</select>".helptag("qc-server_transfer_method")."</td></tr>\n";
 
-            echo "<tr bgcolor=$oddrows><td align=right>Hostname/IP: </td><td align=left><input type=text name=qc_server_host size=30 maxlength=50 value=\"$qc_server_host\">$NWB#qc-server_host$NWE</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>Username: </td><td align=left><input type=text name=qc_server_username size=30 maxlength=30 value=\"$qc_server_username\">$NWB#qc-server_username$NWE</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=qc_server_password size=30 maxlength=30 value=\"$qc_server_password\">$NWB#qc-server_password$NWE</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>Home Path: </td><td align=left><input type=text name=qc_server_home_path size=40 maxlength=100 value=\"$qc_server_home_path\">$NWB#qc-server_home_path$NWE</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>Location Template: </td><td align=left><input type=text name=qc_server_location_template size=40 maxlength=255 value=\"$qc_server_location_template\">$NWB#qc-server_location_template$NWE</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>Transfer Type: </td><td align=left><select size=1 name=qc_server_transfer_type><option>IMMEDIATE</option><option>BATCH</option><option>ARCHIVE</option><option selected>$qc_server_transfer_type</option></select>$NWB#qc-server_transfer_type$NWE</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>Archive/Compression: </td><td align=left><select size=1 name=qc_server_archive><option>NONE</option><option>ZIP</option><option>TAR</option><option>TGZ</option><option>TBZ2</option><option selected>$qc_server_archive</option></select>$NWB#qc-server_archive$NWE</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>Batch Time (hour): </td><td align=left><select size=1 name=qc_server_batch_time><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option><option>15</option><option>16</option><option>17</option><option>18</option><option>19</option><option>20</option><option>21</option><option>22</option><option>23</option><option selected>$qc_server_batch_time</option></select>$NWB#qc-server_batch_time$NWE</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=qc_server_active><option>Y</option><option>N</option><option selected>$qc_server_active</option></select>$NWB#qc-server_active$NWE</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Hostname/IP: </td><td align=left><input type=text name=qc_server_host size=30 maxlength=50 value=\"$qc_server_host\">".helptag("qc-server_host")."</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Username: </td><td align=left><input type=text name=qc_server_username size=30 maxlength=30 value=\"$qc_server_username\">".helptag("qc-server_username")."</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=qc_server_password size=30 maxlength=30 value=\"$qc_server_password\">".helptag("qc-server_password")."</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Home Path: </td><td align=left><input type=text name=qc_server_home_path size=40 maxlength=100 value=\"$qc_server_home_path\">".helptag("qc-server_home_path")."</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Location Template: </td><td align=left><input type=text name=qc_server_location_template size=40 maxlength=255 value=\"$qc_server_location_template\">".helptag("qc-server_location_template")."</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Transfer Type: </td><td align=left><select size=1 name=qc_server_transfer_type><option>IMMEDIATE</option><option>BATCH</option><option>ARCHIVE</option><option selected>$qc_server_transfer_type</option></select>".helptag("qc-server_transfer_type")."</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Archive/Compression: </td><td align=left><select size=1 name=qc_server_archive><option>NONE</option><option>ZIP</option><option>TAR</option><option>TGZ</option><option>TBZ2</option><option selected>$qc_server_archive</option></select>".helptag("qc-server_archive")."</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Batch Time (hour): </td><td align=left><select size=1 name=qc_server_batch_time><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option><option>15</option><option>16</option><option>17</option><option>18</option><option>19</option><option>20</option><option>21</option><option>22</option><option>23</option><option selected>$qc_server_batch_time</option></select>".helptag("qc-server_batch_time")."</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=qc_server_active><option>Y</option><option>N</option><option selected>$qc_server_active</option></select>".helptag("qc-server_active")."</td></tr>\n";
     
             echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
             echo "</TABLE></center>\n";
@@ -1106,7 +1106,7 @@ if ($ADD=="399211111111111") {
             }
             $qcfld .= "  <tr class=tabfooter>\n";
             $qcfld .= "    <td>&nbsp;</td>\n";
-            $qcfld .= "    <td align=center class=tabinput><input type=text name=qc_server_rule_query size=60 maxlength=255 value=\"$qc_server_rule_query\">$NWB#qc-server_rule_query$NWE</td>\n";
+            $qcfld .= "    <td align=center class=tabinput><input type=text name=qc_server_rule_query size=60 maxlength=255 value=\"$qc_server_rule_query\">".helptag("qc-server_rule_query")."</td>\n";
             $qcfld .= "    <td align=center colspan=2 class=tabbutton1><input type=submit name=submit VALUE=$qcract></td>\n";
             $qcfld .= "  </tr></form>\n";
             echo $qcfld;

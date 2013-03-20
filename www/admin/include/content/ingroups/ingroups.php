@@ -47,25 +47,25 @@ if ($ADD==1111)
         echo "<input type=hidden name=company_id value=$LOG[company_id]>";
         #echo "<font color=$default_text>" . $LOG[company_prefix] . "</font>";
     }
-    echo "<input type=text name=group_id size=20 maxlength=20> (no spaces)$NWB#osdial_inbound_groups-group_id$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Group Name: </td><td align=left><input type=text name=group_name size=30 maxlength=30>$NWB#osdial_inbound_groups-group_name$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Group Color: </td><td align=left id=\"group_color_td\"><input type=text name=group_color size=7 maxlength=7>$NWB#osdial_inbound_groups-group_color$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option SELECTED>Y</option><option>N</option></select>$NWB#osdial_inbound_groups-active$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Web Form 1: </td><td align=left><input type=text name=web_form_address size=50 maxlength=255 value=\"$web_form_address\">$NWB#osdial_inbound_groups-web_form_address$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Web Form 2: </td><td align=left><input type=text name=web_form_address2 size=50 maxlength=255 value=\"$web_form_address2\">$NWB#osdial_inbound_groups-web_form_address$NWE</td></tr>\n";
+    echo "<input type=text name=group_id size=20 maxlength=20> (no spaces)".helptag("osdial_inbound_groups-group_id")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Group Name: </td><td align=left><input type=text name=group_name size=30 maxlength=30>".helptag("osdial_inbound_groups-group_name")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Group Color: </td><td align=left id=\"group_color_td\"><input type=text name=group_color size=7 maxlength=7>".helptag("osdial_inbound_groups-group_color")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option SELECTED>Y</option><option>N</option></select>".helptag("osdial_inbound_groups-active")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Web Form 1: </td><td align=left><input type=text name=web_form_address size=50 maxlength=255 value=\"$web_form_address\">".helptag("osdial_inbound_groups-web_form_address")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Web Form 2: </td><td align=left><input type=text name=web_form_address2 size=50 maxlength=255 value=\"$web_form_address2\">".helptag("osdial_inbound_groups-web_form_address")."</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Voicemail: </td><td align=left>\n";
     #echo "<input type=text name=voicemail_ext size=10 maxlength=10 value=\"$voicemail_ext\">\n";
     echo phone_voicemail_text_options($link, 'voicemail_ext', $voicemail_ext, 10, 10);
-    echo "$NWB#osdial_inbound_groups-voicemail_ext$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Next Agent Call: </td><td align=left><select size=1 name=next_agent_call><option >random</option><option>oldest_call_start</option><option>oldest_call_finish</option><option>overall_user_level</option><option>inbound_group_rank</option><option>campaign_rank</option><option>fewest_calls</option><option>fewest_calls_campaign</option></select>$NWB#osdial_inbound_groups-next_agent_call$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Fronter Display: </td><td align=left><select size=1 name=fronter_display><option SELECTED>Y</option><option>N</option></select>$NWB#osdial_inbound_groups-fronter_display$NWE</td></tr>\n";
+    echo "".helptag("osdial_inbound_groups-voicemail_ext")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Next Agent Call: </td><td align=left><select size=1 name=next_agent_call><option >random</option><option>oldest_call_start</option><option>oldest_call_finish</option><option>overall_user_level</option><option>inbound_group_rank</option><option>campaign_rank</option><option>fewest_calls</option><option>fewest_calls_campaign</option></select>".helptag("osdial_inbound_groups-next_agent_call")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Fronter Display: </td><td align=left><select size=1 name=fronter_display><option SELECTED>Y</option><option>N</option></select>".helptag("osdial_inbound_groups-fronter_display")."</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Script: </td><td align=left><select size=1 name=script_id>\n";
     echo get_scripts($link, '');
 	#echo "$scripts_list";
-	echo "</select>$NWB#osdial_inbound_groups-ingroup_script$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Get Call Launch: </td><td align=left><select size=1 name=get_call_launch><option selected>NONE</option><option>SCRIPT</option><option>WEBFORM</option></select>$NWB#osdial_inbound_groups-get_call_launch$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Allow Tab Switch: </td><td align=left><select size=1 name=allow_tab_switch><option selected>Y</option><option>N</option></select>$NWB#osdial_inbound_groups-allow_tab_switch$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Allow Multicall: </td><td align=left><select size=1 name=allow_multicall><option selected>Y</option><option>N</option></select>$NWB#osdial_inbound_groups-allow_multicall$NWE</td></tr>\n";
+	echo "</select>".helptag("osdial_inbound_groups-ingroup_script")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Get Call Launch: </td><td align=left><select size=1 name=get_call_launch><option selected>NONE</option><option>SCRIPT</option><option>WEBFORM</option></select>".helptag("osdial_inbound_groups-get_call_launch")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Allow Tab Switch: </td><td align=left><select size=1 name=allow_tab_switch><option selected>Y</option><option>N</option></select>".helptag("osdial_inbound_groups-allow_tab_switch")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Allow Multicall: </td><td align=left><select size=1 name=allow_multicall><option selected>Y</option><option>N</option></select>".helptag("osdial_inbound_groups-allow_multicall")."</td></tr>\n";
 	echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	}
@@ -99,8 +99,8 @@ if ($ADD==1211)
         echo "<input type=hidden name=company_id value=$LOG[company_id]>";
         #echo "<font color=$default_text>" . $LOG[company_prefix] . "</font>";
     }
-    echo "<input type=text name=group_id size=20 maxlength=20> (no spaces)$NWB#osdial_inbound_groups-group_id$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Group Name: </td><td align=left><input type=text name=group_name size=30 maxlength=30>$NWB#osdial_inbound_groups-group_name$NWE</td></tr>\n";
+    echo "<input type=text name=group_id size=20 maxlength=20> (no spaces)".helptag("osdial_inbound_groups-group_id")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Group Name: </td><td align=left><input type=text name=group_name size=30 maxlength=30>".helptag("osdial_inbound_groups-group_name")."</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>Source Group ID: </td><td align=left><select size=1 name=source_group_id>\n";
 
@@ -116,7 +116,7 @@ if ($ADD==1211)
 			$o++;
 		}
 	echo "$groups_list";
-	echo "</select>$NWB#osdial_inbound_groups-group_id$NWE</td></tr>\n";
+	echo "</select>".helptag("osdial_inbound_groups-group_id")."</td></tr>\n";
 
 	echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
@@ -406,33 +406,33 @@ if ($ADD==3111)
 	echo "<input type=hidden name=ADD value=4111>\n";
 	echo "<input type=hidden name=group_id value=\"$row[0]\">\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Group ID: </td><td align=left><b>" . mclabel($row[0]) . "</b>$NWB#osdial_inbound_groups-group_id$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Group Name: </td><td align=left><input type=text name=group_name size=30 maxlength=30 value=\"$row[1]\">$NWB#osdial_inbound_groups-group_name$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Group Color: </td><td align=left bgcolor=\"$row[2]\" id=\"group_color_td\"><input type=text name=group_color size=7 maxlength=7 value=\"$row[2]\">$NWB#osdial_inbound_groups-group_color$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option SELECTED>$active</option></select>$NWB#osdial_inbound_groups-active$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Web Form 1: </td><td align=left><input type=text name=web_form_address size=50 maxlength=255 value=\"$web_form_address\">$NWB#osdial_inbound_groups-web_form_address$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Web Form in External Window: </td><td align=left><select size=1 name=web_form_extwindow><option>Y</option><option>N</option><option SELECTED>$web_form_extwindow</option></select>$NWB#osdial_inbound_groups-web_form_extwindow$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Web Form 2: </td><td align=left><input type=text name=web_form_address2 size=50 maxlength=255 value=\"$web_form_address2\">$NWB#osdial_inbound_groups-web_form_address$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Web Form 2 in External Window: </td><td align=left><select size=1 name=web_form2_extwindow><option>Y</option><option>N</option><option SELECTED>$web_form2_extwindow</option></select>$NWB#osdial_inbound_groups-web_form2_extwindow$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Next Agent Call: </td><td align=left><select size=1 name=next_agent_call><option >random</option><option>oldest_call_start</option><option>oldest_call_finish</option><option>overall_user_level</option><option>inbound_group_rank</option><option>campaign_rank</option><option>fewest_calls</option><option>fewest_calls_campaign</option><option SELECTED>$next_agent_call</option></select>$NWB#osdial_inbound_groups-next_agent_call$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Fronter Display: </td><td align=left><select size=1 name=fronter_display><option>Y</option><option>N</option><option SELECTED>$fronter_display</option></select>$NWB#osdial_inbound_groups-fronter_display$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Group ID: </td><td align=left><b>" . mclabel($row[0]) . "</b>".helptag("osdial_inbound_groups-group_id")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Group Name: </td><td align=left><input type=text name=group_name size=30 maxlength=30 value=\"$row[1]\">".helptag("osdial_inbound_groups-group_name")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Group Color: </td><td align=left bgcolor=\"$row[2]\" id=\"group_color_td\"><input type=text name=group_color size=7 maxlength=7 value=\"$row[2]\">".helptag("osdial_inbound_groups-group_color")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option SELECTED>$active</option></select>".helptag("osdial_inbound_groups-active")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Web Form 1: </td><td align=left><input type=text name=web_form_address size=50 maxlength=255 value=\"$web_form_address\">".helptag("osdial_inbound_groups-web_form_address")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Web Form in External Window: </td><td align=left><select size=1 name=web_form_extwindow><option>Y</option><option>N</option><option SELECTED>$web_form_extwindow</option></select>".helptag("osdial_inbound_groups-web_form_extwindow")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Web Form 2: </td><td align=left><input type=text name=web_form_address2 size=50 maxlength=255 value=\"$web_form_address2\">".helptag("osdial_inbound_groups-web_form_address")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Web Form 2 in External Window: </td><td align=left><select size=1 name=web_form2_extwindow><option>Y</option><option>N</option><option SELECTED>$web_form2_extwindow</option></select>".helptag("osdial_inbound_groups-web_form2_extwindow")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Next Agent Call: </td><td align=left><select size=1 name=next_agent_call><option >random</option><option>oldest_call_start</option><option>oldest_call_finish</option><option>overall_user_level</option><option>inbound_group_rank</option><option>campaign_rank</option><option>fewest_calls</option><option>fewest_calls_campaign</option><option SELECTED>$next_agent_call</option></select>".helptag("osdial_inbound_groups-next_agent_call")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Fronter Display: </td><td align=left><select size=1 name=fronter_display><option>Y</option><option>N</option><option SELECTED>$fronter_display</option></select>".helptag("osdial_inbound_groups-fronter_display")."</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=3111111&script_id=$script_id\">Script</a>: </td><td align=left><select size=1 name=script_id>\n";
     echo get_scripts($link, $script_id);
 	#echo "$scripts_list";
 	#echo "<option selected value=\"$script_id\">$script_id - $scriptname_list[$script_id]</option>\n";
-	echo "</select>$NWB#osdial_inbound_groups-ingroup_script$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Get Call Launch: </td><td align=left><select size=1 name=get_call_launch><option selected>NONE</option><option>SCRIPT</option><option>WEBFORM</option><option selected>$get_call_launch</option></select>$NWB#osdial_inbound_groups-get_call_launch$NWE</td></tr>\n";
+	echo "</select>".helptag("osdial_inbound_groups-ingroup_script")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Get Call Launch: </td><td align=left><select size=1 name=get_call_launch><option selected>NONE</option><option>SCRIPT</option><option>WEBFORM</option><option selected>$get_call_launch</option></select>".helptag("osdial_inbound_groups-get_call_launch")."</td></tr>\n";
 
-	echo "<tr bgcolor=$oddrows><td align=right>Allow Tab Switch: </td><td align=left><select size=1 name=allow_tab_switch><option>Y</option><option>N</option><option selected>$allow_tab_switch</option></select>$NWB#osdial_inbound_groups-allow_tab_switch$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Allow Tab Switch: </td><td align=left><select size=1 name=allow_tab_switch><option>Y</option><option>N</option><option selected>$allow_tab_switch</option></select>".helptag("osdial_inbound_groups-allow_tab_switch")."</td></tr>\n";
 
-	echo "<tr bgcolor=$oddrows><td align=right>Transfer-Conf DTMF 1: </td><td align=left><input type=text name=xferconf_a_dtmf size=20 maxlength=50 value=\"$xferconf_a_dtmf\">$NWB#osdial_inbound_groups-xferconf_a_dtmf$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Transfer-Conf DTMF 1: </td><td align=left><input type=text name=xferconf_a_dtmf size=20 maxlength=50 value=\"$xferconf_a_dtmf\">".helptag("osdial_inbound_groups-xferconf_a_dtmf")."</td></tr>\n";
 
-	echo "<tr bgcolor=$oddrows><td align=right>Transfer-Conf Number 1: </td><td align=left><input type=text name=xferconf_a_number size=20 maxlength=50 value=\"$xferconf_a_number\">$NWB#osdial_inbound_groups-xferconf_a_dtmf$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Transfer-Conf Number 1: </td><td align=left><input type=text name=xferconf_a_number size=20 maxlength=50 value=\"$xferconf_a_number\">".helptag("osdial_inbound_groups-xferconf_a_dtmf")."</td></tr>\n";
 
-	echo "<tr bgcolor=$oddrows><td align=right>Transfer-Conf DTMF 2: </td><td align=left><input type=text name=xferconf_b_dtmf size=20 maxlength=50 value=\"$xferconf_b_dtmf\">$NWB#osdial_inbound_groups-xferconf_a_dtmf$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Transfer-Conf DTMF 2: </td><td align=left><input type=text name=xferconf_b_dtmf size=20 maxlength=50 value=\"$xferconf_b_dtmf\">".helptag("osdial_inbound_groups-xferconf_a_dtmf")."</td></tr>\n";
 
-	echo "<tr bgcolor=$oddrows><td align=right>Transfer-Conf Number 2: </td><td align=left><input type=text name=xferconf_b_number size=20 maxlength=50 value=\"$xferconf_b_number\">$NWB#osdial_inbound_groups-xferconf_a_dtmf$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Transfer-Conf Number 2: </td><td align=left><input type=text name=xferconf_b_number size=20 maxlength=50 value=\"$xferconf_b_number\">".helptag("osdial_inbound_groups-xferconf_a_dtmf")."</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>Drop Trigger: </td>\n";
     echo "  <td align=left>\n";
@@ -444,11 +444,11 @@ if ($ADD==3111)
     $dtsaa=''; if ($drop_trigger=='NO_AGENTS_AVAILABLE') $dtsaa = "selected";
     echo "      <option $dtsaa>NO_AGENTS_AVAILABLE</option>\n";
     echo "    </select>\n";
-    echo "    $NWB#osdial_inbound_groups-drop_trigger$NWE\n";
+    echo "    ".helptag("osdial_inbound_groups-drop_trigger")."\n";
     echo "  </td>\n";
     echo "</tr>\n";
 
-	echo "<tr bgcolor=$oddrows><td align=right>Drop Call Seconds: </td><td align=left><input type=text name=drop_call_seconds size=5 maxlength=4 value=\"$drop_call_seconds\">$NWB#osdial_inbound_groups-drop_call_seconds$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Drop Call Seconds: </td><td align=left><input type=text name=drop_call_seconds size=5 maxlength=4 value=\"$drop_call_seconds\">".helptag("osdial_inbound_groups-drop_call_seconds")."</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>Drop Action: </td>\n";
     echo "  <td align=left>\n";
@@ -458,27 +458,27 @@ if ($ADD==3111)
     $dmsv=''; if ($drop_message=='N') $dmsv = "selected";
     echo "      <option value=N $dmsv>VOICEMAIL</option>\n";
     echo "    </select>\n";
-    echo "    $NWB#osdial_inbound_groups-drop_message$NWE\n";
+    echo "    ".helptag("osdial_inbound_groups-drop_message")."\n";
     echo "  </td>\n";
     echo "</tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>Drop Extension: </td><td align=left>\n";
     #echo "<input type=text name=drop_exten size=10 maxlength=20 value=\"$drop_exten\">\n";
     echo extension_text_options($link, 'drop_exten', $drop_exten, 15, 50);
-    echo "$NWB#osdial_inbound_groups-drop_exten$NWE</td></tr>\n";
+    echo "".helptag("osdial_inbound_groups-drop_exten")."</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>Drop Voicemail: </td><td align=left>\n";
     #echo "<input type=text name=voicemail_ext size=10 maxlength=10 value=\"$voicemail_ext\">\n";
     echo phone_voicemail_text_options($link, 'voicemail_ext', $voicemail_ext, 10, 10);
-    echo "$NWB#osdial_inbound_groups-voicemail_ext$NWE</td></tr>\n";
+    echo "".helptag("osdial_inbound_groups-voicemail_ext")."</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=311111111&call_time_id=$call_time_id\">Call Time: </a></td><td align=left><select size=1 name=call_time_id>\n";
     echo get_calltimes($link, $call_time_id);
 	#echo "$call_times_list";
 	#echo "<option selected value=\"$call_time_id\">$call_time_id - $call_timename_list[$call_time_id]</option>\n";
-	echo "</select>$NWB#osdial_inbound_groups-call_time_id$NWE</td></tr>\n";
+	echo "</select>".helptag("osdial_inbound_groups-call_time_id")."</td></tr>\n";
 
-	echo "<tr bgcolor=$oddrows><td align=right>After Hours Action: </td><td align=left><select size=1 name=after_hours_action><option>HANGUP</option><option>MESSAGE</option><option>EXTENSION</option><option>VOICEMAIL</option><option SELECTED>$after_hours_action</option></select>$NWB#osdial_inbound_groups-after_hours_action$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>After Hours Action: </td><td align=left><select size=1 name=after_hours_action><option>HANGUP</option><option>MESSAGE</option><option>EXTENSION</option><option>VOICEMAIL</option><option SELECTED>$after_hours_action</option></select>".helptag("osdial_inbound_groups-after_hours_action")."</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>After Hours Message Filename: </td>\n";
     echo "  <td align=left>\n";
@@ -486,17 +486,17 @@ if ($ADD==3111)
     #echo media_file_select_options($link, $after_hours_message_filename);
     #echo "    </select>\n";
     echo media_file_text_options($link, 'after_hours_message_filename', $after_hours_message_filename, 15, 50);
-    echo "$NWB#osdial_inbound_groups-after_hours_message_filename$NWE</td></tr>\n";
+    echo "".helptag("osdial_inbound_groups-after_hours_message_filename")."</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>After Hours Extension: </td><td align=left>\n";
     #echo "<input type=text name=after_hours_exten size=10 maxlength=20 value=\"$after_hours_exten\">\n";
     echo extension_text_options($link, 'after_hours_exten', $after_hours_exten, 15, 50);
-    echo "$NWB#osdial_inbound_groups-after_hours_exten$NWE</td></tr>\n";
+    echo "".helptag("osdial_inbound_groups-after_hours_exten")."</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>After Hours Voicemail: </td><td align=left>\n";
     #echo "<input type=text name=after_hours_voicemail size=10 maxlength=20 value=\"$after_hours_voicemail\">\n";
     echo phone_voicemail_text_options($link, 'after_hours_voicemail', $after_hours_voicemail, 10, 20);
-    echo "$NWB#osdial_inbound_groups-after_hours_voicemail$NWE</td></tr>\n";
+    echo "".helptag("osdial_inbound_groups-after_hours_voicemail")."</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>Welcome Message Filename: </td>\n";
     echo "  <td align=left>\n";
@@ -504,9 +504,9 @@ if ($ADD==3111)
     #echo media_file_select_options($link, $welcome_message_filename);
     #echo "    </select>\n";
     echo media_file_text_options($link, 'welcome_message_filename', $welcome_message_filename, 15, 50);
-    echo "$NWB#osdial_inbound_groups-welcome_message_filename$NWE</td></tr>\n";
+    echo "".helptag("osdial_inbound_groups-welcome_message_filename")."</td></tr>\n";
 
-	echo "<tr bgcolor=$oddrows><td align=right>Music On Hold Context: </td><td align=left><input type=text name=moh_context size=10 maxlength=20 value=\"$moh_context\">$NWB#osdial_inbound_groups-moh_context$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Music On Hold Context: </td><td align=left><input type=text name=moh_context size=10 maxlength=20 value=\"$moh_context\">".helptag("osdial_inbound_groups-moh_context")."</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>On Hold Prompt Filename: </td>\n";
     echo "  <td align=left>\n";
@@ -514,22 +514,22 @@ if ($ADD==3111)
     #echo media_file_select_options($link, $onhold_prompt_filename);
     #echo "    </select>\n";
     echo media_file_text_options($link, 'onhold_prompt_filename', $onhold_prompt_filename, 30, 50);
-    echo "$NWB#osdial_inbound_groups-onhold_prompt_filename$NWE</td></tr>\n";
+    echo "".helptag("osdial_inbound_groups-onhold_prompt_filename")."</td></tr>\n";
 
-	echo "<tr bgcolor=$oddrows><td align=right>On Hold Prompt Interval: </td><td align=left><input type=text name=prompt_interval size=5 maxlength=5 value=\"$prompt_interval\">$NWB#osdial_inbound_groups-prompt_interval$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>On Hold Prompt Interval: </td><td align=left><input type=text name=prompt_interval size=5 maxlength=5 value=\"$prompt_interval\">".helptag("osdial_inbound_groups-prompt_interval")."</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>Agent Alert Extension: </td><td align=left>\n";
     #echo "<input type=text name=agent_alert_exten size=10 maxlength=20 value=\"$agent_alert_exten\">\n";
     echo extension_text_options($link, 'agent_alert_exten', $agent_alert_exten, 15, 50);
-    echo "$NWB#osdial_inbound_groups-agent_alert_exten$NWE</td></tr>\n";
+    echo "".helptag("osdial_inbound_groups-agent_alert_exten")."</td></tr>\n";
 
-	echo "<tr bgcolor=$oddrows><td align=right>Agent Alert Delay: </td><td align=left><input type=text name=agent_alert_delay size=6 maxlength=6 value=\"$agent_alert_delay\">$NWB#osdial_inbound_groups-agent_alert_delay$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Agent Alert Delay: </td><td align=left><input type=text name=agent_alert_delay size=6 maxlength=6 value=\"$agent_alert_delay\">".helptag("osdial_inbound_groups-agent_alert_delay")."</td></tr>\n";
 
-	echo "<tr bgcolor=$oddrows><td align=right>Allow Multicall: </td><td align=left><select size=1 name=allow_multicall><option>Y</option><option>N</option><option selected>$allow_multicall</option></select>$NWB#osdial_inbound_groups-allow_multicall$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Allow Multicall: </td><td align=left><select size=1 name=allow_multicall><option>Y</option><option>N</option><option selected>$allow_multicall</option></select>".helptag("osdial_inbound_groups-allow_multicall")."</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>Default Transfer Group: </td><td align=left><select size=1 name=default_xfer_group>";
 	echo "$Xgroups_menu";
-	echo "</select>$NWB#osdial_inbound_groups-default_xfer_group$NWE</td></tr>\n";
+	echo "</select>".helptag("osdial_inbound_groups-default_xfer_group")."</td></tr>\n";
 
 	echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";

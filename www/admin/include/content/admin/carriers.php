@@ -44,7 +44,7 @@ if ($ADD=="1carrier") {
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows>\n";
             echo "    <td align=right>DID:</td>\n";
-            echo "    <td align=left><input type=text name=did size=13 maxlength=100 value=\"\" onkeyup=\"updateingroup(this);return false;\">$NWB#carrier_dids-did$NWE</td>\n";
+            echo "    <td align=left><input type=text name=did size=13 maxlength=100 value=\"\" onkeyup=\"updateingroup(this);return false;\">".helptag("carrier_dids-did")."</td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows>\n";
             echo "    <td align=right>DID Action:</td>\n";
@@ -55,7 +55,7 @@ if ($ADD=="1carrier") {
             echo "        <option>EXTENSION</option>\n";
             echo "        <option>VOICEMAIL</option>\n";
             echo "      </select>\n";
-            echo "      $NWB#carrier_dids-did_action$NWE\n";
+            echo "      ".helptag("carrier_dids-did_action")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
 
@@ -66,14 +66,14 @@ if ($ADD=="1carrier") {
             $krh = get_krh($link, 'phones', '*','',"active='Y'",'');
             echo format_select_options($krh, 'extension', 'fullname', '', "-- Select Phone --",'');
             echo "      </select>\n";
-            echo "      $NWB#carrier_dids-phone$NWE\n";
+            echo "      ".helptag("carrier_dids-phone")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
 
             echo "  <tr bgcolor=$oddrows name=EXTENSION style=\"visibility:collapse;\">\n";
             echo "    <td align=right>Context:</td>\n";
             echo "    <td align=left>\n";
-            echo "      <input type=text name=did_extension_context size=20 maxlength=50 value=\"osdial\">$NWB#carrier_dids-extension_context$NWE\n";
+            echo "      <input type=text name=did_extension_context size=20 maxlength=50 value=\"osdial\">".helptag("carrier_dids-extension_context")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows name=EXTENSION style=\"visibility:collapse;\">\n";
@@ -81,7 +81,7 @@ if ($ADD=="1carrier") {
             echo "    <td align=left>\n";
             #echo "      <input type=text name=did_extension size=20 maxlength=50 value=\"\">\n";
             echo extension_text_options($link, 'did_extension', '', 20, 50);
-            echo "$NWB#carrier_dids-extension$NWE\n";
+            echo "".helptag("carrier_dids-extension")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
 
@@ -90,7 +90,7 @@ if ($ADD=="1carrier") {
             echo "    <td align=left>\n";
             #echo "<input type=text name=did_voicemail size=20 maxlength=20 value=\"\">\n";
             echo phone_voicemail_text_options($link, 'did_voicemail', '', 20, 20);
-            echo "$NWB#carrier_dids-voicemail$NWE</td>\n";
+            echo "".helptag("carrier_dids-voicemail")."</td>\n";
             echo "  </tr>\n";
 
             echo "  <tr bgcolor=$oddrows name=INGROUP style=\"visibility:visible;\">\n";
@@ -100,7 +100,7 @@ if ($ADD=="1carrier") {
             $krh = get_krh($link, 'osdial_inbound_groups', '*','',sprintf('group_id IN %s',$LOG['allowed_ingroupsSQL']),'');
             echo format_select_options($krh, 'group_id', 'group_name', '', " [ CREATE NEW INGROUP ] ",'');
             echo "      </select>\n";
-            echo "      $NWB#carrier_dids-ingroup$NWE\n";
+            echo "      ".helptag("carrier_dids-ingroup")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows name=INGROUP style=\"visibility:visible;\">\n";
@@ -111,7 +111,7 @@ if ($ADD=="1carrier") {
             echo "        <option>LB</option>\n";
             echo "        <option>SO</option>\n";
             echo "      </select>\n";
-            echo "      $NWB#carrier_dids-server_allocation$NWE\n";
+            echo "      ".helptag("carrier_dids-server_allocation")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows name=INGROUP style=\"visibility:visible;\">\n";
@@ -119,7 +119,7 @@ if ($ADD=="1carrier") {
             echo "    <td align=left>\n";
             #echo "<input type=text name=did_park_file size=20 maxlength=100 value=\"park\">\n";
             echo media_file_text_options($link, 'did_park_file', 'park', 20, 100);
-            echo "$NWB#carrier_dids-park_file$NWE</td>\n";
+            echo "".helptag("carrier_dids-park_file")."</td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows name=INGROUP style=\"visibility:visible;\">\n";
             echo "    <td align=right>Lookup Method:</td>\n";
@@ -139,7 +139,7 @@ if ($ADD=="1carrier") {
             echo "        <option>5DIGITID</option>\n";
             echo "        <option>10DIGITID</option>\n";
             echo "      </select>\n";
-            echo "      $NWB#carrier_dids-lookup_method$NWE\n";
+            echo "      ".helptag("carrier_dids-lookup_method")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows name=INGROUP style=\"visibility:visible;\">\n";
@@ -147,11 +147,11 @@ if ($ADD=="1carrier") {
             echo "    <td align=left>\n";
             #echo "<input type=text name=did_default_list_id size=15 maxlength=15 value=\"998\">\n";
             echo list_id_text_options($link, 'did_default_list_id', '998', 15, 15);
-            echo "$NWB#carrier_dids-default_list_id$NWE</td>\n";
+            echo "".helptag("carrier_dids-default_list_id")."</td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows name=INGROUP style=\"visibility:visible;\">\n";
             echo "    <td align=right>Default Phone (country) Code:</td>\n";
-            echo "    <td align=left><input type=text name=did_default_phone_code size=5 maxlength=5 value=\"1\">$NWB#carrier_dids-default_phone_code$NWE</td>\n";
+            echo "    <td align=left><input type=text name=did_default_phone_code size=5 maxlength=5 value=\"1\">".helptag("carrier_dids-default_phone_code")."</td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows name=INGROUP style=\"visibility:visible;\">\n";
             echo "    <td align=right>Search Campaign:</td>\n";
@@ -160,7 +160,7 @@ if ($ADD=="1carrier") {
             $krh = get_krh($link, 'osdial_campaigns', '*','',sprintf('campaign_id IN %s',$LOG['allowed_campaignsSQL']),'');
             echo format_select_options($krh, 'campaign_id', 'campaign_name', '', "-- NONE --",'');
             echo "      </select>\n";
-            echo "      $NWB#carrier_dids-search_campaign$NWE\n";
+            echo "      ".helptag("carrier_dids-search_campaign")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
 
@@ -184,11 +184,11 @@ if ($ADD=="1carrier") {
             echo "<table width=$section_width cellspacing=3>\n";
             echo "  <tr bgcolor=$oddrows>\n";
             echo "    <td align=right width=30%>Name:</td>\n";
-            echo "    <td align=left><input type=text name=carrier_name size=20 maxlength=20 value=\"\">$NWB#carriers-name$NWE</td>\n";
+            echo "    <td align=left><input type=text name=carrier_name size=20 maxlength=20 value=\"\">".helptag("carriers-name")."</td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows>\n";
             echo "    <td align=right>Description:</td>\n";
-            echo "    <td align=left><input type=text name=carrier_description size=40 maxlength=255 value=\"\">$NWB#carriers-description$NWE</td>\n";
+            echo "    <td align=left><input type=text name=carrier_description size=40 maxlength=255 value=\"\">".helptag("carriers-description")."</td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows>\n";
             echo "    <td align=right>Protocol:</td>\n";
@@ -204,7 +204,7 @@ if ($ADD=="1carrier") {
             if ($svrp['count'] > 0) echo "        <option>DAHDI</option>\n";
             echo "        <option>EXTERNAL</option>\n";
             echo "       </select>\n";
-            echo "       $NWB#carriers-protocol$NWE\n";
+            echo "       ".helptag("carriers-protocol")."\n";
             echo "     </td>\n";
             echo "  </tr>\n";
             echo "  <tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
@@ -646,7 +646,7 @@ if ($ADD == "3carrier") {
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows>\n";
             echo "    <td align=right>DID:</td>\n";
-            echo "    <td align=left><input type=text name=did size=13 maxlength=100 value=\"$gfr[did]\">$NWB#carrier_dids-did$NWE</td>\n";
+            echo "    <td align=left><input type=text name=did size=13 maxlength=100 value=\"$gfr[did]\">".helptag("carrier_dids-did")."</td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows>\n";
             echo "    <td align=right>DID Action:</td>\n";
@@ -657,7 +657,7 @@ if ($ADD == "3carrier") {
             echo "        <option $esel>EXTENSION</option>\n";
             echo "        <option $vsel>VOICEMAIL</option>\n";
             echo "      </select>\n";
-            echo "      $NWB#carrier_dids-did_action$NWE\n";
+            echo "      ".helptag("carrier_dids-did_action")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
 
@@ -668,14 +668,14 @@ if ($ADD == "3carrier") {
             $krh = get_krh($link, 'phones', '*','',"active='Y'",'');
             echo format_select_options($krh, 'extension', 'fullname', $gfr['phone'], "-- Select Phone --",'');
             echo "      </select>\n";
-            echo "      $NWB#carrier_dids-phone$NWE\n";
+            echo "      ".helptag("carrier_dids-phone")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
 
             echo "  <tr bgcolor=$oddrows name=EXTENSION style=\"$estyle\">\n";
             echo "    <td align=right>Context:</td>\n";
             echo "    <td align=left>\n";
-            echo "      <input type=text name=did_extension_context size=20 maxlength=50 value=\"$gfr[extension_context]\">$NWB#carrier_dids-extension_context$NWE\n";
+            echo "      <input type=text name=did_extension_context size=20 maxlength=50 value=\"$gfr[extension_context]\">".helptag("carrier_dids-extension_context")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows name=EXTENSION style=\"$estyle\">\n";
@@ -683,7 +683,7 @@ if ($ADD == "3carrier") {
             echo "    <td align=left>\n";
             echo extension_text_options($link, 'did_extension', $gfr['extension'], 20, 50);
             #echo "      <input type=text name=did_extension size=20 maxlength=50 value=\"$gfr[extension]\">\n";
-            echo "$NWB#carrier_dids-extension$NWE\n";
+            echo "".helptag("carrier_dids-extension")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
 
@@ -692,7 +692,7 @@ if ($ADD == "3carrier") {
             echo "    <td align=left>\n";
             #echo "<input type=text name=did_voicemail size=20 maxlength=20 value=\"$gfr[voicemail]\">\n";
             echo phone_voicemail_text_options($link, 'did_voicemail', $gfr['voicemail'], 20, 20);
-            echo "$NWB#carrier_dids-voicemail$NWE</td>\n";
+            echo "".helptag("carrier_dids-voicemail")."</td>\n";
             echo "  </tr>\n";
 
             echo "  <tr bgcolor=$oddrows name=INGROUP style=\"$istyle\">\n";
@@ -702,7 +702,7 @@ if ($ADD == "3carrier") {
             $krh = get_krh($link, 'osdial_inbound_groups', '*','',sprintf("(group_id='%s' OR group_id IN %s)",$gfr['ingroup'],$LOG['allowed_ingroupsSQL']),'');
             echo format_select_options($krh, 'group_id', 'group_name', $gfr['ingroup'], "-- NONE --",'');
             echo "      </select>\n";
-            echo "      $NWB#carrier_dids-ingroup$NWE\n";
+            echo "      ".helptag("carrier_dids-ingroup")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows name=INGROUP style=\"$istyle\">\n";
@@ -714,7 +714,7 @@ if ($ADD == "3carrier") {
             echo "        <option>SO</option>\n";
             echo "        <option selected>$gfr[server_allocation]</option>\n";
             echo "      </select>\n";
-            echo "      $NWB#carrier_dids-server_allocation$NWE\n";
+            echo "      ".helptag("carrier_dids-server_allocation")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows name=INGROUP style=\"$istyle\">\n";
@@ -722,7 +722,7 @@ if ($ADD == "3carrier") {
             echo "    <td align=left>\n";
             #echo "<input type=text name=did_park_file size=20 maxlength=100 value=\"$gfr[park_file]\">\n";
             echo media_file_text_options($link, 'did_park_file', $gfr['park_file'], 20, 100);
-            echo "$NWB#carrier_dids-park_file$NWE</td>\n";
+            echo "".helptag("carrier_dids-park_file")."</td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows name=INGROUP style=\"$istyle\">\n";
             echo "    <td align=right>Initial Status:</td>\n";
@@ -731,7 +731,7 @@ if ($ADD == "3carrier") {
             $krh = get_krh($link, 'osdial_statuses', '*','','','');
             echo format_select_options($krh, 'status', 'status_name', $gfr['initial_status'], "-- NONE --",'');
             echo "      </select>\n";
-            echo "      $NWB#carrier_dids-ingroup$NWE\n";
+            echo "      ".helptag("carrier_dids-ingroup")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows name=INGROUP style=\"$istyle\">\n";
@@ -753,7 +753,7 @@ if ($ADD == "3carrier") {
             echo "        <option>10DIGITID</option>\n";
             echo "        <option selected>$gfr[lookup_method]</option>\n";
             echo "      </select>\n";
-            echo "      $NWB#carrier_dids-lookup_method$NWE\n";
+            echo "      ".helptag("carrier_dids-lookup_method")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows name=INGROUP style=\"$istyle\">\n";
@@ -761,11 +761,11 @@ if ($ADD == "3carrier") {
             echo "    <td align=left>\n";
             #echo "<input type=text name=did_default_list_id size=15 maxlength=15 value=\"$gfr[default_list_id]\">\n";
             echo list_id_text_options($link, 'did_default_list_id', $gfr['default_list_id'], 15, 15);
-            echo "$NWB#carrier_dids-default_list_id$NWE</td>\n";
+            echo "".helptag("carrier_dids-default_list_id")."</td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows name=INGROUP style=\"$istyle\">\n";
             echo "    <td align=right>Default Phone (country) Code:</td>\n";
-            echo "    <td align=left><input type=text name=did_default_phone_code size=5 maxlength=5 value=\"$gfr[default_phone_code]\">$NWB#carrier_dids-default_phone_code$NWE</td>\n";
+            echo "    <td align=left><input type=text name=did_default_phone_code size=5 maxlength=5 value=\"$gfr[default_phone_code]\">".helptag("carrier_dids-default_phone_code")."</td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows name=INGROUP style=\"$istyle\">\n";
             echo "    <td align=right>Search Campaign:</td>\n";
@@ -774,7 +774,7 @@ if ($ADD == "3carrier") {
             $krh = get_krh($link, 'osdial_campaigns', '*','',sprintf('campaign_id IN %s',$LOG['allowed_campaignsSQL']),'');
             echo format_select_options($krh, 'campaign_id', 'campaign_name', $gfr['search_campaign'], "-- NONE --",'');
             echo "      </select>\n";
-            echo "      $NWB#carrier_dids-search_campaign$NWE\n";
+            echo "      ".helptag("carrier_dids-search_campaign")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
 
@@ -820,7 +820,7 @@ if ($ADD == "3carrier") {
             echo "    <td align=right>Protocol Configuration:</td>\n";
             echo "    <td align=left>\n";
             echo "      <textarea name=carrier_protocol_config id=carrier_protocol_config rows=10 cols=100 wrap=off style=\"font-size:9px;\">" . $carrier_protocol_config . "</textarea>\n";
-            echo "      $NWB#carrier_servers-protocol_config$NWE\n";
+            echo "      ".helptag("carrier_servers-protocol_config")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows valign=top>\n";
@@ -828,7 +828,7 @@ if ($ADD == "3carrier") {
             echo "    <td align=left>\n";
             $regcnt = count(explode("\n",$carrier_registrations));
             echo "      <textarea name=carrier_registrations id=carrier_registrations rows=\"$regcnt\" cols=100 wrap=off style=\"font-size:9px;\">" . $carrier_registrations . "</textarea>\n";
-            echo "      $NWB#carrier_servers-registrations$NWE<br>\n";
+            echo "      ".helptag("carrier_servers-registrations")."<br>\n";
             echo "      <span style=\"color:$default_text;font-size:10pt;font-style:italic;\">user[:secret[:authuser]]@carrier_name[/extension]<br/>\n";
             echo "      user[:secret[:authuser]]@host[:port][/extension]</span>\n";
             echo "    </td>\n";
@@ -837,7 +837,7 @@ if ($ADD == "3carrier") {
             echo "    <td align=right>Dialplan:</td>\n";
             echo "    <td align=left>\n";
             echo "      <textarea name=carrier_dialplan id=carrier_dialplan rows=10 cols=100 wrap=off style=\"font-size:9px;\">" . $carrier_dialplan . "</textarea>\n";
-            echo "      $NWB#carrier_servers-dialplan$NWE\n";
+            echo "      ".helptag("carrier_servers-dialplan")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
             echo "  <tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
@@ -869,11 +869,11 @@ if ($ADD == "3carrier") {
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows>\n";
             echo "    <td align=right width=30%>Name:</td>\n";
-            echo "    <td align=left><input type=text name=carrier_name id=carrier_name size=20 maxlength=20 value=\"$gfr[name]\">$NWB#carriers-name$NWE</td>\n";
+            echo "    <td align=left><input type=text name=carrier_name id=carrier_name size=20 maxlength=20 value=\"$gfr[name]\">".helptag("carriers-name")."</td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows>\n";
             echo "    <td align=right>Description:</td>\n";
-            echo "    <td align=left><input type=text name=carrier_description id=carrier_description size=40 maxlength=255 value=\"$gfr[description]\">$NWB#carriers-description$NWE</td>\n";
+            echo "    <td align=left><input type=text name=carrier_description id=carrier_description size=40 maxlength=255 value=\"$gfr[description]\">".helptag("carriers-description")."</td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows>\n";
             echo "    <td align=right>Active:</td>\n";
@@ -883,7 +883,7 @@ if ($ADD == "3carrier") {
             echo "        <option>N</option>\n";
             echo "        <option selected>$gfr[active]</option>\n";
             echo "      </select>\n";
-            echo "      $NWB#carriers-active$NWE\n";
+            echo "      ".helptag("carriers-active")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows>\n";
@@ -894,7 +894,7 @@ if ($ADD == "3carrier") {
             echo "        <option>N</option>\n";
             echo "        <option selected>$gfr[selectable]</option>\n";
             echo "      </select>\n";
-            echo "      $NWB#carriers-selectable$NWE\n";
+            echo "      ".helptag("carriers-selectable")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows>\n";
@@ -912,14 +912,14 @@ if ($ADD == "3carrier") {
             echo "        <option>EXTERNAL</option>\n";
             echo "        <option selected>$gfr[protocol]</option>\n";
             echo "      </select>\n";
-            echo "      $NWB#carriers-protocol$NWE\n";
+            echo "      ".helptag("carriers-protocol")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows valign=top>\n";
             echo "    <td align=right>Protocol Configuration:</td>\n";
             echo "    <td align=left>\n";
             echo "      <textarea name=carrier_protocol_config id=carrier_protocol_config rows=10 cols=100 wrap=off style=\"font-size:9px;\">" . $gfr['protocol_config'] . "</textarea>\n";
-            echo "      $NWB#carriers-protocol_config$NWE\n";
+            echo "      ".helptag("carriers-protocol_config")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows valign=top>\n";
@@ -927,7 +927,7 @@ if ($ADD == "3carrier") {
             echo "    <td align=left>\n";
             $regcnt = count(explode("\n",$gfr['registrations']));
             echo "      <textarea name=carrier_registrations id=carrier_registrations rows=\"$regcnt\" cols=100 wrap=off style=\"font-size:9px;\">" . $gfr['registrations'] . "</textarea>\n";
-            echo "      $NWB#carriers-registrations$NWE<br>\n";
+            echo "      ".helptag("carriers-registrations")."<br>\n";
             echo "      <span style=\"color:$default_text;font-size:10pt;font-style:italic;\">user[:secret[:authuser]]@carrier_name[/extension]<br/>\n";
             echo "      user[:secret[:authuser]]@host[:port][/extension]</span>\n";
             echo "    </td>\n";
@@ -936,7 +936,7 @@ if ($ADD == "3carrier") {
             echo "    <td align=right>Dialplan:</td>\n";
             echo "    <td align=left>\n";
             echo "      <textarea name=carrier_dialplan id=carrier_dialplan rows=10 cols=100 wrap=off style=\"font-size:9px;\">" . $gfr['dialplan'] . "</textarea>\n";
-            echo "      $NWB#carriers-dialplan$NWE\n";
+            echo "      ".helptag("carriers-dialplan")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows>\n";
@@ -947,7 +947,7 @@ if ($ADD == "3carrier") {
             echo "        <option>N</option>\n";
             echo "        <option selected>$gfr[strip_msd]</option>\n";
             echo "      </select>\n";
-            echo "      $NWB#carriers-strip_msd$NWE\n";
+            echo "      ".helptag("carriers-strip_msd")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows>\n";
@@ -958,20 +958,20 @@ if ($ADD == "3carrier") {
             echo "        <option>N</option>\n";
             echo "        <option selected>$gfr[allow_international]</option>\n";
             echo "      </select>\n";
-            echo "      $NWB#carriers-allow_international$NWE\n";
+            echo "      ".helptag("carriers-allow_international")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows>\n";
             echo "    <td align=right>Default CallerID:</td>\n";
-            echo "    <td align=left><input type=text name=carrier_default_callerid id=carrier_default_callerid size=20 maxlength=20 value=\"$gfr[default_callerid]\">$NWB#carriers-default_callerid$NWE</td>\n";
+            echo "    <td align=left><input type=text name=carrier_default_callerid id=carrier_default_callerid size=20 maxlength=20 value=\"$gfr[default_callerid]\">".helptag("carriers-default_callerid")."</td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows>\n";
             echo "    <td align=right>Default Areacode:</td>\n";
-            echo "    <td align=left><input type=text name=carrier_default_areacode id=carrier_default_areacode size=3 maxlength=3 value=\"$gfr[default_areacode]\">$NWB#carriers-default_areacode$NWE</td>\n";
+            echo "    <td align=left><input type=text name=carrier_default_areacode id=carrier_default_areacode size=3 maxlength=3 value=\"$gfr[default_areacode]\">".helptag("carriers-default_areacode")."</td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows>\n";
             echo "    <td align=right>Default Prefix:</td>\n";
-            echo "    <td align=left><input type=text name=carrier_default_prefix id=carrier_default_prefix size=1 maxlength=1 value=\"$gfr[default_prefix]\">$NWB#carriers-default_prefix$NWE</td>\n";
+            echo "    <td align=left><input type=text name=carrier_default_prefix id=carrier_default_prefix size=1 maxlength=1 value=\"$gfr[default_prefix]\">".helptag("carriers-default_prefix")."</td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows>\n";
             echo "    <td align=right>Failover Carrier:</td>\n";
@@ -980,7 +980,7 @@ if ($ADD == "3carrier") {
             $krh = get_krh($link, 'osdial_carriers', '*','',sprintf("id!='%s'",$carrier_id),'');
             echo format_select_options($krh, 'id', 'name', $gfr['failover_id'], "-- NONE --",'');
             echo "      </select>\n";
-            echo "      $NWB#carriers-failover$NWE\n";
+            echo "      ".helptag("carriers-failover")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows>\n";
@@ -992,7 +992,7 @@ if ($ADD == "3carrier") {
             echo "        <option>BOTH</option>\n";
             echo "        <option selected>$gfr[failover_condition]</option>\n";
             echo "      </select>\n";
-            echo "      $NWB#carriers-failover_condition$NWE\n";
+            echo "      ".helptag("carriers-failover_condition")."\n";
             echo "    </td>\n";
             echo "  </tr>\n";
             echo "  <tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";

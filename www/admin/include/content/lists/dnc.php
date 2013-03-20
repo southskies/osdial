@@ -557,7 +557,7 @@ if ($ADD==121) {
             echo $searcherr;
             echo $searchres;
             echo "  <tr bgcolor=$oddrows class=font2>\n";
-            echo "    <td align=center>Phone Number:&nbsp;<input type=text name=dnc_search_phone size=16 maxlength=15 value=\"$dnc_search_phone\">$NWB#osdial_list-dnc$NWE</td>\n";
+            echo "    <td align=center>Phone Number:&nbsp;<input type=text name=dnc_search_phone size=16 maxlength=15 value=\"$dnc_search_phone\">".helptag("osdial_list-dnc")."</td>\n";
             echo "  </tr>\n";
             echo "  <tr class=tabfooter>\n";
             echo "    <td align=center class=tabbutton><input type=submit name=SUBMIT value=\"SEARCH\"></td>\n";
@@ -576,7 +576,7 @@ if ($ADD==121) {
             echo $adderr;
             echo $addres;
             echo "  <tr bgcolor=$oddrows class=font2>\n";
-            echo "    <td align=center>Phone Number:&nbsp;<input type=text name=dnc_add_phone size=16 maxlength=15 value=\"$dnc_add_phone\">$NWB#osdial_list-dnc$NWE</td>\n";
+            echo "    <td align=center>Phone Number:&nbsp;<input type=text name=dnc_add_phone size=16 maxlength=15 value=\"$dnc_add_phone\">".helptag("osdial_list-dnc")."</td>\n";
             echo "  </tr>\n";
             echo "  <tr class=tabfooter>\n";
             echo "    <td align=center class=tabbutton bgcolor=purple><input type=submit name=SUBMIT value=\"ADD\"></td>\n";
@@ -596,7 +596,7 @@ if ($ADD==121) {
                 echo $deleteerr;
                 echo $deleteres;
                 echo "  <tr bgcolor=$oddrows class=font2>\n";
-                echo "    <td align=center>Phone Number:&nbsp;<input type=text name=dnc_delete_phone size=16 maxlength=15 value=\"$dnc_delete_phone\">$NWB#osdial_list-dnc$NWE</td>\n";
+                echo "    <td align=center>Phone Number:&nbsp;<input type=text name=dnc_delete_phone size=16 maxlength=15 value=\"$dnc_delete_phone\">".helptag("osdial_list-dnc")."</td>\n";
                 echo "  </tr>\n";
                 echo "  <tr class=tabfooter>\n";
                 echo "    <td align=center class=tabbutton bgcolor=red><input type=submit name=SUBMIT value=\"DELETE\"></td>\n";
@@ -617,7 +617,7 @@ if ($ADD==121) {
                 echo $loaderr;
                 echo $loadres;
                 echo "  <tr bgcolor=$oddrows class=font2>\n";
-                echo "    <td align=center>CSV/PSV/TSV File:&nbsp;<input type=file name=\"dncfile\" value=\"\">$NWB#osdial_list-dnc$NWE</td>\n";
+                echo "    <td align=center>CSV/PSV/TSV File:&nbsp;<input type=file name=\"dncfile\" value=\"\">".helptag("osdial_list-dnc")."</td>\n";
                 echo "  </tr>\n";
                 echo "  <tr class=tabfooter>\n";
                 echo "    <td align=center class=tabbutton><input type=submit name=SUBMIT value=\"UPLOAD\"></td>\n";
@@ -636,7 +636,7 @@ if ($ADD==121) {
                 echo "<input type=hidden name=SUB value=8>\n";
 		        echo "<table width=500 bgcolor=grey align=center cellspacing=1>\n";
                 echo "  <tr bgcolor=$oddrows class=font2>\n";
-                echo "    <td align=center>Click EXPORT to begin downloading DNC. $NWB#osdial_list-dnc$NWE</td>\n";
+                echo "    <td align=center>Click EXPORT to begin downloading DNC. ".helptag("osdial_list-dnc")."</td>\n";
                 echo "  </tr>\n";
                 echo "  <tr class=tabfooter>\n";
                 echo "    <td align=center class=tabbutton><input type=submit name=SUBMIT value=\"EXPORT\"></td>\n";

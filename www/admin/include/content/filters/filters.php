@@ -45,10 +45,10 @@ if ($ADD==11111111)
         echo "<input type=hidden name=company_id value=$LOG[company_id]>";
         #echo "<font color=$default_text>" . $LOG[company_prefix] . "</font>";
     }
-    echo "<input type=text name=lead_filter_id size=12 maxlength=10> (no spaces or punctuation)$NWB#osdial_lead_filters-lead_filter_id$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Filter Name: </td><td align=left><input type=text name=lead_filter_name size=30 maxlength=30> (short description of the filter)$NWB#osdial_lead_filters-lead_filter_name$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Filter Comments: </td><td align=left><input type=text name=lead_filter_comments size=50 maxlength=255> $NWB#osdial_lead_filters-lead_filter_comments$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Filter SQL: </td><td align=left><TEXTAREA NAME=lead_filter_sql ROWS=20 COLS=50 value=\"\"></TEXTAREA> $NWB#osdial_lead_filters-lead_filter_sql$NWE</td></tr>\n";
+    echo "<input type=text name=lead_filter_id size=12 maxlength=10> (no spaces or punctuation)".helptag("osdial_lead_filters-lead_filter_id")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Filter Name: </td><td align=left><input type=text name=lead_filter_name size=30 maxlength=30> (short description of the filter)".helptag("osdial_lead_filters-lead_filter_name")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Filter Comments: </td><td align=left><input type=text name=lead_filter_comments size=50 maxlength=255> ".helptag("osdial_lead_filters-lead_filter_comments")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Filter SQL: </td><td align=left><TEXTAREA NAME=lead_filter_sql ROWS=20 COLS=50 value=\"\"></TEXTAREA> ".helptag("osdial_lead_filters-lead_filter_sql")."</td></tr>\n";
 	echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	}
@@ -207,10 +207,10 @@ if ($ADD==31111111)
 	echo "<input type=hidden name=ADD value=41111111>\n";
 	echo "<input type=hidden name=lead_filter_id value=\"$lead_filter_id\">\n";
 	echo "<TABLE>";
-	echo "<tr bgcolor=$oddrows><td align=right>Filter ID: </td><td align=left><B>" . mclabel($lead_filter_id) . "</B>$NWB#osdial_lead_filters-lead_filter_id$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Filter Name: </td><td align=left><input type=text name=lead_filter_name size=40 maxlength=50 value=\"$lead_filter_name\"> (short description of the filter)$NWB#osdial_lead_filters-lead_filter_name$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Filter Comments: </td><td align=left><input type=text name=lead_filter_comments size=50 maxlength=255 value=\"$lead_filter_comments\"> $NWB#osdial_lead_filters-lead_filter_comments$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Filter SQL:</td><td align=left><TEXTAREA NAME=lead_filter_sql ROWS=20 COLS=50>$lead_filter_sql</TEXTAREA> $NWB#osdial_lead_filters-lead_filter_sql$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Filter ID: </td><td align=left><B>" . mclabel($lead_filter_id) . "</B>".helptag("osdial_lead_filters-lead_filter_id")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Filter Name: </td><td align=left><input type=text name=lead_filter_name size=40 maxlength=50 value=\"$lead_filter_name\"> (short description of the filter)".helptag("osdial_lead_filters-lead_filter_name")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Filter Comments: </td><td align=left><input type=text name=lead_filter_comments size=50 maxlength=255 value=\"$lead_filter_comments\"> ".helptag("osdial_lead_filters-lead_filter_comments")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Filter SQL:</td><td align=left><TEXTAREA NAME=lead_filter_sql ROWS=20 COLS=50>$lead_filter_sql</TEXTAREA> ".helptag("osdial_lead_filters-lead_filter_sql")."</td></tr>\n";
 	echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</table></form>\n";
 

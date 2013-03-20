@@ -506,10 +506,10 @@ tinyMCE.init({
         echo "<input type=hidden name=company_id value=$LOG[company_id]>";
         #echo "<font color=$default_text>" . $LOG[company_prefix] . "</font>";
     }
-    echo "<input type=text name=script_id size=12 maxlength=10> (no spaces or punctuation)$NWB#osdial_scripts-script_id$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Script Name: </td><td align=left><input type=text name=script_name size=40 maxlength=50> (title of the script)$NWB#osdial_scripts-script_name$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Script Comments: </td><td align=left><input type=text name=script_comments size=50 maxlength=255> $NWB#osdial_scripts-script_comments$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option SELECTED>Y</option><option>N</option></select>$NWB#osdial_scripts-active$NWE</td></tr>\n";
+    echo "<input type=text name=script_id size=12 maxlength=10> (no spaces or punctuation)".helptag("osdial_scripts-script_id")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Script Name: </td><td align=left><input type=text name=script_name size=40 maxlength=50> (title of the script)".helptag("osdial_scripts-script_name")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Script Comments: </td><td align=left><input type=text name=script_comments size=50 maxlength=255> ".helptag("osdial_scripts-script_comments")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option SELECTED>Y</option><option>N</option></select>".helptag("osdial_scripts-active")."</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=center colspan=2>";
 
 	echo "<TEXTAREA NAME=script_text ROWS=20 COLS=110 value=\"\"></TEXTAREA></td></tr>\n";
@@ -967,10 +967,10 @@ tinyMCE.init({
     }
 	echo "<TABLE width=$section_width>";
 	echo "<tr bgcolor=$oddrows><td align=right>$id_label: </td><td align=left><B>" . mclabel($sid) . "</B>".helptag('osdial_scripts-script_name')."</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>$name_label: </td><td align=left><input type=text name=script_name size=40 maxlength=50 value=\"$script_name\">$NWB#osdial_scripts-script_name$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>$comment_label: </td><td align=left><input type=text name=script_comments size=50 maxlength=255 value=\"$script_comments\"> $NWB#osdial_scripts-script_comments$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>$name_label: </td><td align=left><input type=text name=script_name size=40 maxlength=50 value=\"$script_name\">".helptag("osdial_scripts-script_name")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>$comment_label: </td><td align=left><input type=text name=script_comments size=50 maxlength=255 value=\"$script_comments\"> ".helptag("osdial_scripts-script_comments")."</td></tr>\n";
     if ($SUB == "") {
-	    echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option SELECTED>Y</option><option>N</option><option selected>$active</option></select>$NWB#osdial_scripts-active$NWE</td></tr>\n";
+	    echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option SELECTED>Y</option><option>N</option><option selected>$active</option></select>".helptag("osdial_scripts-active")."</td></tr>\n";
     }
 	echo "<tr bgcolor=$oddrows><td align=center colspan=2>";
 

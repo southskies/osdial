@@ -145,10 +145,10 @@ if ($ADD==11) {
 				echo "<input type=hidden name=company_id value=$LOG[company_id]>";
 				#echo "<font color=$default_text>" . $LOG[company_prefix] . "</font>";
 			}
-			echo "<input type=text name=campaign_id size=10 maxlength=8><font size=-1>2-8 Characters, no spaces or symbols</font>&nbsp;&nbsp;$NWB#osdial_campaigns-campaign_id$NWE</td></tr>";
-			echo "<tr><td align=right>Name: </td><td align=left><input type=text name=campaign_name size=30 maxlength=30>$NWB#osdial_campaigns-campaign_name$NWE</td></tr>";
-			echo "<tr><td align=right>Description: </td><td align=left><input type=text name=campaign_description size=30 maxlength=255>$NWB#osdial_campaigns-campaign_description$NWE</td></tr>";
-			echo "<tr><td align=right>Active: </td><td align=left><select size=1 name=active><option>N</option><option>Y</option></select>$NWB#osdial_campaigns-active$NWE</td></tr>";
+			echo "<input type=text name=campaign_id size=10 maxlength=8><font size=-1>2-8 Characters, no spaces or symbols</font>&nbsp;&nbsp;".helptag("osdial_campaigns-campaign_id")."</td></tr>";
+			echo "<tr><td align=right>Name: </td><td align=left><input type=text name=campaign_name size=30 maxlength=30>".helptag("osdial_campaigns-campaign_name")."</td></tr>";
+			echo "<tr><td align=right>Description: </td><td align=left><input type=text name=campaign_description size=30 maxlength=255>".helptag("osdial_campaigns-campaign_description")."</td></tr>";
+			echo "<tr><td align=right>Active: </td><td align=left><select size=1 name=active><option>N</option><option>Y</option></select>".helptag("osdial_campaigns-active")."</td></tr>";
 			
 			// Add ten default Statuses
 			
@@ -156,37 +156,37 @@ if ($ADD==11) {
 			echo "<tr style=\"visibility:collapse;\" ><td align=right>Park Extension: </td><td align=left>";
 			#echo "<input type=text name=park_ext size=10 maxlength=10 value=\"8301\">";
 			echo media_extension_text_options($link, 'park_ext', '8301', 10, 10);
-			echo "$NWB#osdial_campaigns-park_ext$NWE</td></tr>";
+			echo "".helptag("osdial_campaigns-park_ext")."</td></tr>";
 			echo "<tr><td align=right>Park Filename: </td><td align=left>";
 			#echo "<input type=text name=park_file_name size=10 maxlength=10 value=\"park\">";
 			echo media_file_text_options($link, 'park_file_name', 'park', 10, 10);
-			echo "$NWB#osdial_campaigns-park_file_name$NWE</td></tr>";
-			echo "<tr><td align=right>Web Form 1: </td><td align=left><input type=text name=web_form_address size=50 maxlength=255 value=\"/osdial/agent/webform_redirect.php\">$NWB#osdial_campaigns-web_form_address$NWE</td></tr>";
-			echo "<tr><td align=right>Web Form 2: </td><td align=left><input type=text name=web_form_address2 size=50 maxlength=255 value=\"/osdial/agent/webform_redirect.php\">$NWB#osdial_campaigns-web_form_address$NWE</td></tr>";
-			echo "<tr><td align=right>Allow Transfer and Closers: </td><td align=left><select size=1 name=allow_closers><option>Y</option><option>N</option></select>$NWB#osdial_campaigns-allow_closers$NWE</td></tr>";
-			echo "<tr><td align=right>Hopper Level: </td><td align=left><select size=1 name=hopper_level><option>1</option><option>5</option><option>10</option><option>20</option><option>50</option><option>100</option><option>200</option><option>500</option><option>1000</option><option>2000</option></select>$NWB#osdial_campaigns-hopper_level$NWE</td></tr>";
-			echo "<tr><td align=right>Auto Dial Level: </td><td align=left nowrap><input type=text name=auto_dial_level size=6 maxlength=6 value=\"0\" selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;4.0;4.5;5.0\"> (0 = off)$NWB#osdial_campaigns-auto_dial_level$NWE</td></tr>";
-			echo "<tr><td align=right>Next Agent Call: </td><td align=left><select size=1 name=next_agent_call><option >random</option><option>oldest_call_start</option><option>oldest_call_finish</option><option>overall_user_level</option><option>campaign_rank</option><option>fewest_calls</option></select>$NWB#osdial_campaigns-next_agent_call$NWE</td></tr>";
+			echo "".helptag("osdial_campaigns-park_file_name")."</td></tr>";
+			echo "<tr><td align=right>Web Form 1: </td><td align=left><input type=text name=web_form_address size=50 maxlength=255 value=\"/osdial/agent/webform_redirect.php\">".helptag("osdial_campaigns-web_form_address")."</td></tr>";
+			echo "<tr><td align=right>Web Form 2: </td><td align=left><input type=text name=web_form_address2 size=50 maxlength=255 value=\"/osdial/agent/webform_redirect.php\">".helptag("osdial_campaigns-web_form_address")."</td></tr>";
+			echo "<tr><td align=right>Allow Transfer and Closers: </td><td align=left><select size=1 name=allow_closers><option>Y</option><option>N</option></select>".helptag("osdial_campaigns-allow_closers")."</td></tr>";
+			echo "<tr><td align=right>Hopper Level: </td><td align=left><select size=1 name=hopper_level><option>1</option><option>5</option><option>10</option><option>20</option><option>50</option><option>100</option><option>200</option><option>500</option><option>1000</option><option>2000</option></select>".helptag("osdial_campaigns-hopper_level")."</td></tr>";
+			echo "<tr><td align=right>Auto Dial Level: </td><td align=left nowrap><input type=text name=auto_dial_level size=6 maxlength=6 value=\"0\" selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;4.0;4.5;5.0\"> (0 = off)".helptag("osdial_campaigns-auto_dial_level")."</td></tr>";
+			echo "<tr><td align=right>Next Agent Call: </td><td align=left><select size=1 name=next_agent_call><option >random</option><option>oldest_call_start</option><option>oldest_call_finish</option><option>overall_user_level</option><option>campaign_rank</option><option>fewest_calls</option></select>".helptag("osdial_campaigns-next_agent_call")."</td></tr>";
 			echo "<tr><td align=right>Operation Time: </td><td align=left><select size=1 name=campaign_call_time>";
 			echo get_calltimes($link, '24hours');
-			echo "</select>$NWB#osdial_campaigns-campaign_call_time$NWE</td></tr>";
+			echo "</select>".helptag("osdial_campaigns-campaign_call_time")."</td></tr>";
 			echo "<tr><td align=right>Local Timzone Call Time: </td><td align=left><select size=1 name=local_call_time>";
 			echo get_calltimes($link, '9am-9pm');
-			echo "</select>$NWB#osdial_campaigns-local_call_time$NWE</td></tr>";
+			echo "</select>".helptag("osdial_campaigns-local_call_time")."</td></tr>";
 			echo "<tr><td align=right>Voicemail: </td><td align=left>";
 			#echo "<input type=text name=voicemail_ext size=10 maxlength=10 value=\"$voicemail_ext\">";
 			echo phone_voicemail_text_options($link, 'voicemail_ext', $voicemail_ext, 10, 10);
-			echo "$NWB#osdial_campaigns-voicemail_ext$NWE</td></tr>";
+			echo "".helptag("osdial_campaigns-voicemail_ext")."</td></tr>";
 			if (file_exists($WeBServeRRooT . '/admin/include/content/scripts/email_templates.php')) {
 				echo "<tr bgcolor=$oddrows><td align=right valign=top>Email Templates: </td><td align=left><select size=4 multiple name=\"email_templates[]\">";
 				echo get_email_templates($link, '');
-				echo "</select>$NWB#osdial_campaigns-email_templates$NWE</td></tr>";
+				echo "</select>".helptag("osdial_campaigns-email_templates")."</td></tr>";
 			}
 			echo "<tr><td align=right>Script: </td><td align=left><select size=1 name=script_id>";
 			echo get_scripts($link, '');
-			echo "</select>$NWB#osdial_campaigns-campaign_script$NWE</td></tr>";
-			echo "<tr><td align=right>Allow Tab Switch: </td><td align=left><select size=1 name=allow_tab_switch><option selected>Y</option><option>N</option></select>$NWB#osdial_campaigns-allow_tab_switch$NWE</td></tr>";
-			echo "<tr><td align=right>Get Call Launch: </td><td align=left><select size=1 name=get_call_launch><option selected>NONE</option><option>SCRIPT</option><option>WEBFORM</option><option>WEBFORM2</option></select>$NWB#osdial_campaigns-get_call_launch$NWE</td></tr>";
+			echo "</select>".helptag("osdial_campaigns-campaign_script")."</td></tr>";
+			echo "<tr><td align=right>Allow Tab Switch: </td><td align=left><select size=1 name=allow_tab_switch><option selected>Y</option><option>N</option></select>".helptag("osdial_campaigns-allow_tab_switch")."</td></tr>";
+			echo "<tr><td align=right>Get Call Launch: </td><td align=left><select size=1 name=get_call_launch><option selected>NONE</option><option>SCRIPT</option><option>WEBFORM</option><option>WEBFORM2</option></select>".helptag("osdial_campaigns-get_call_launch")."</td></tr>";
 			*/
 			echo "<tr><td colspan=2>&nbsp;</td></tr>";
 			echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=ADD></td></tr>";
@@ -264,8 +264,8 @@ if ($ADD==12)
 			echo "<input type=hidden name=company_id value=$LOG[company_id]>";
 			#echo "<font color=$default_text>" . $LOG[company_prefix] . "</font>";
 		}
-		echo "<input type=text name=campaign_id size=10 maxlength=8>$NWB#osdial_campaigns-campaign_id$NWE</td></tr>";
-		echo "<tr><td align=right>Name: </td><td align=left><input type=text name=campaign_name size=30 maxlength=30>$NWB#osdial_campaigns-campaign_name$NWE</td></tr>";
+		echo "<input type=text name=campaign_id size=10 maxlength=8>".helptag("osdial_campaigns-campaign_id")."</td></tr>";
+		echo "<tr><td align=right>Name: </td><td align=left><input type=text name=campaign_name size=30 maxlength=30>".helptag("osdial_campaigns-campaign_name")."</td></tr>";
 
 		echo "<tr><td align=right>Source Campaign: </td><td align=left><select size=1 name=source_campaign_id>";
 
@@ -281,7 +281,7 @@ if ($ADD==12)
 				$o++;
 			}
 		echo "$campaigns_list";
-		echo "</select>$NWB#osdial_campaigns-campaign_id$NWE</td></tr>";
+		echo "</select>".helptag("osdial_campaigns-campaign_id")."</td></tr>";
 		echo "<tr><td colspan=2>&nbsp;</td></tr>";
 		echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=COPY></td></tr>";
 		echo "</table></center>";
@@ -1183,30 +1183,30 @@ if ($ADD==31) {
         echo "<tr><td class=top_header_sect colspan=4 align=left>Basic Control</td></tr>";
 		echo "<tr>";
         echo "	<td colspan=2 align=right width=50%>ID: </td>";
-        echo "	<td colspan=2 align=left width=50% style=color:#005><b>" . mclabel($row[0]) . "</b>$NWB#osdial_campaigns-campaign_id$NWE</td>";
+			echo "	<td colspan=2 align=left width=50% style=color:#005><b>" . mclabel($row[0]) . "</b>".helptag("osdial_campaigns-campaign_id")."</td>";
         echo "</tr>";
         echo "<tr>";
         echo "	<td colspan=2 align=right width=50%>Active: </td>";
-        echo "  <td colspan=2 align=left width=50%><select size=1 name=active><option>Y</option><option>N</option><option SELECTED>$row[2]</option></select>$NWB#osdial_campaigns-active$NWE</td>";
+			echo "  <td colspan=2 align=left width=50%><select size=1 name=active><option>Y</option><option>N</option><option SELECTED>$row[2]</option></select>".helptag("osdial_campaigns-active")."</td>";
         echo "</tr>";
         echo "<tr><td colspan=4 style=font-size:1px>&nbsp;</td></tr>";
         echo "<tr>";
-        echo "	<td colspan=2 align=left width=50%>&nbsp;Name:<input type=text name=campaign_name size=40 maxlength=40 value=\"$campaign_name\">$NWB#osdial_campaigns-campaign_name$NWE</td>";
-        echo "	<td colspan=2 align=left width=50%>&nbsp;Description:<input type=text name=campaign_description size=36 maxlength=255 value=\"$campaign_description\">$NWB#osdial_campaigns-campaign_description$NWE</td>";
+			echo "	<td colspan=2 align=left width=50%>&nbsp;Name:<input type=text name=campaign_name size=40 maxlength=40 value=\"$campaign_name\">".helptag("osdial_campaigns-campaign_name")."</td>";
+			echo "	<td colspan=2 align=left width=50%>&nbsp;Description:<input type=text name=campaign_description size=36 maxlength=255 value=\"$campaign_description\">".helptag("osdial_campaigns-campaign_description")."</td>";
         echo "</tr>";
         echo "<tr>";
-        echo "	<td colspan=2 align=left valign=bottom title=\"$campaign_changedate\" style=font-size:14px;>&nbsp;&nbsp;Change Date: ". dateToLocal($link,'first',$campaign_changedate,$webClientAdjGMT,'',$webClientDST,1) . "&nbsp;$NWB#osdial_campaigns-campaign_changedate$NWE</td>";
-        echo "	<td colspan=2 align=left valign=bottom title=\"$campaign_logindate\" Xstyle=font-size:14px;>&nbsp;Login Date: ". dateToLocal($link,'first',$campaign_logindate,$webClientAdjGMT,'',$webClientDST,1)."&nbsp;$NWB#osdial_campaigns-campaign_logindate$NWE</td>";
+			echo "	<td colspan=2 align=left valign=bottom title=\"$campaign_changedate\" style=font-size:14px;>&nbsp;&nbsp;Change Date: ". dateToLocal($link,'first',$campaign_changedate,$webClientAdjGMT,'',$webClientDST,1) . "&nbsp;".helptag("osdial_campaigns-campaign_changedate")."</td>";
+			echo "	<td colspan=2 align=left valign=bottom title=\"$campaign_logindate\" Xstyle=font-size:14px;>&nbsp;Login Date: ". dateToLocal($link,'first',$campaign_logindate,$webClientAdjGMT,'',$webClientDST,1)."&nbsp;".helptag("osdial_campaigns-campaign_logindate")."</td>";
         echo "</tr>";
         echo "<tr>";
         echo "	<td align=right width=25%>Allow No-Leads Logins: </td>";
-        echo "	<td align=left width=25%><select size=1 name=no_hopper_leads_logins><option>Y</option><option>N</option><option SELECTED>$no_hopper_leads_logins</option></select>$NWB#osdial_campaigns-no_hopper_leads_logins$NWE</td>";
-        echo "	<td colspan=2 align=left>&nbsp;Allow Inbound & Blended: <select size=1 name=campaign_allow_inbound><option>Y</option><option>N</option><option SELECTED>$campaign_allow_inbound</option></select>$NWB#osdial_campaigns-campaign_allow_inbound$NWE</td>";
+			echo "	<td align=left width=25%><select size=1 name=no_hopper_leads_logins><option>Y</option><option>N</option><option SELECTED>$no_hopper_leads_logins</option></select>".helptag("osdial_campaigns-no_hopper_leads_logins")."</td>";
+			echo "	<td colspan=2 align=left>&nbsp;Allow Inbound & Blended: <select size=1 name=campaign_allow_inbound><option>Y</option><option>N</option><option SELECTED>$campaign_allow_inbound</option></select>".helptag("osdial_campaigns-campaign_allow_inbound")."</td>";
         echo "</tr>";
         echo "<tr>";
         echo "	<td align=right width=25%>Disable Alter Data: </td>";
-        echo "	<td colspan=1 align=left><select size=1 name=disable_alter_custdata><option>Y</option><option>N</option><option SELECTED>$disable_alter_custdata</option></select>$NWB#osdial_campaigns-disable_alter_custdata$NWE</td>";
-        echo "<td colspan=2 align=left>&nbsp;Answers Per Hour Limit: <input type=text name=answers_per_hour_limit size=10 maxlength=10 value=\"$answers_per_hour_limit\">$NWB#osdial_campaigns-answers_per_hour_limit$NWE</td>";
+			echo "	<td colspan=1 align=left><select size=1 name=disable_alter_custdata><option>Y</option><option>N</option><option SELECTED>$disable_alter_custdata</option></select>".helptag("osdial_campaigns-disable_alter_custdata")."</td>";
+			echo "<td colspan=2 align=left>&nbsp;Answers Per Hour Limit: <input type=text name=answers_per_hour_limit size=10 maxlength=10 value=\"$answers_per_hour_limit\">".helptag("osdial_campaigns-answers_per_hour_limit")."</td>";
         echo "</tr>";
         echo "<tr>";
         echo "<td align=right class=no-ul colspan=4><br />";
@@ -1247,7 +1247,7 @@ if ($ADD==31) {
         echo "<option value=\"\"> - NONE - </option>";
         echo "$dial_statuses_list";
         echo "</select> &nbsp; ";
-        echo "<input type=submit name=submit value=ADD> &nbsp; &nbsp; $NWB#osdial_campaigns-dial_status$NWE</td>";
+			echo "<input type=submit name=submit value=ADD> &nbsp; &nbsp; ".helptag("osdial_campaigns-dial_status")."</td>";
         echo "</tr>";
 		echo "<tr><td colspan=2>&nbsp;</td></tr>";
 		echo "<tr class=tabfooter2><td align=right class=no-ul colspan=2>";
@@ -1300,7 +1300,7 @@ if ($ADD==31) {
 // 					  <option>RATIO</option>
 // 					  <option>ADAPTIVE</option>
 // 					  <option selected>$dial_method</option>
-// 					</select>$NWB#osdial_campaigns-dial_method$NWE</td></tr>";
+// 					</select>".helptag("osdial_campaigns-dial_method")."</td></tr>";
 $dial_method="RATIO";
 // 			echo "<tr><td align=right class=no-ul colspan=2>";
 			
@@ -1326,17 +1326,17 @@ $dial_method="RATIO";
 			echo "<tr style=\"$manual_visible\"><td colspan=2 align=center><table width=$section_width10 cellspacing=3 frame=border cellpadding=0 cellspacing=0 class=rounded-corners3>";
 			echo "<tr><td align=left class=top_header_sect valign=top width=40%>Manual Dial Options</td></tr>";
 			echo "<tr><td>&nbsp;</td></tr>";
-			echo "<tr><td align=right>Preview Force Dial Time: </td><td align=left><input type=text name=preview_force_dial_time size=3 maxlength=3 value=\"$preview_force_dial_time\"> <i>in seconds, 0 disables</i>$NWB#osdial_campaigns-preview_force_dial_time$NWE</td></tr>";
-			echo "<tr><td align=right>Manual Preview Default: </td><td align=left><select size=1 name=manual_preview_default><option>Y</option><option>N</option><option selected>$manual_preview_default</option></select>$NWB#osdial_campaigns-manual_preview_default$NWE</td></tr>";
+			echo "<tr><td align=right>Preview Force Dial Time: </td><td align=left><input type=text name=preview_force_dial_time size=3 maxlength=3 value=\"$preview_force_dial_time\"> <i>in seconds, 0 disables</i>".helptag("osdial_campaigns-preview_force_dial_time")."</td></tr>";
+			echo "<tr><td align=right>Manual Preview Default: </td><td align=left><select size=1 name=manual_preview_default><option>Y</option><option>N</option><option selected>$manual_preview_default</option></select>".helptag("osdial_campaigns-manual_preview_default")."</td></tr>";
 			echo "<tr>";
 			echo "  <td align=right>Allow ManualDial HopperList:</td>";
 			echo "  <td align=left>";
 			echo select_yesno('allow_md_hopperlist',$allow_md_hopperlist);
 			echo "    </select>";
-			echo "    $NWB#osdial_campaigns-allow_md_hopperlist$NWE";
+			echo "    ".helptag("osdial_campaigns-allow_md_hopperlist")."";
 			echo "  </td>";
 			echo "</tr>";
-			echo "<tr><td align=right>Disable Manual Dial: </td><td align=left><select size=1 name=disable_manual_dial><option>Y</option><option>N</option><option SELECTED>$disable_manual_dial</option></select>$NWB#osdial_campaigns-disable_manual_dial$NWE</td></tr>";
+			echo "<tr><td align=right>Disable Manual Dial: </td><td align=left><select size=1 name=disable_manual_dial><option>Y</option><option>N</option><option SELECTED>$disable_manual_dial</option></select>".helptag("osdial_campaigns-disable_manual_dial")."</td></tr>";
 			//echo "<tr><td>&nbsp;</td></tr>";
 				echo "<tr><td align=right class=no-ul colspan=2><br />";
 				jump_section(1);
@@ -1348,9 +1348,9 @@ $dial_method="RATIO";
 			echo "<tr style=\"$ratio_visible\"><td colspan=2 align=center><table width=$section_width10 cellspacing=3 frame=border cellpadding=0 cellspacing=0 class=rounded-corners3>";
 			echo "<tr><td align=left class=top_header_sect valign=top width=40%>Ratio Dial Options</td></tr>";
 			echo "<tr><td>&nbsp;</td></tr>";
-			echo "<tr><td align=right>Auto Dial Level: </td><td align=left nowrap><input type=text name=auto_dial_level size=6 maxlength=6 value=\"$auto_dial_level\" selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;4.0;4.5;5.0\"> $NWB#osdial_campaigns-auto_dial_level$NWE</td></tr>";
+			echo "<tr><td align=right>Auto Dial Level: </td><td align=left nowrap><input type=text name=auto_dial_level size=6 maxlength=6 value=\"$auto_dial_level\" selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;4.0;4.5;5.0\"> ".helptag("osdial_campaigns-auto_dial_level")."</td></tr>";
 
-			echo "<tr><td align=right>Available Only Tally: </td><td align=left><select size=1 name=available_only_ratio_tally><option >Y</option><option>N</option><option SELECTED>$available_only_ratio_tally</option></select>$NWB#osdial_campaigns-available_only_ratio_tally$NWE</td></tr>";
+			echo "<tr><td align=right>Available Only Tally: </td><td align=left><select size=1 name=available_only_ratio_tally><option >Y</option><option>N</option><option SELECTED>$available_only_ratio_tally</option></select>".helptag("osdial_campaigns-available_only_ratio_tally")."</td></tr>";
 
 			//echo "<tr><td>&nbsp;</td></tr>";
 				echo "<tr><td align=right class=no-ul colspan=2><br />";
@@ -1370,7 +1370,7 @@ $dial_method="RATIO";
 					<option>ADAPT_TAPERED</option>
 					<option>ADAPT_HARD_LIMIT</option>
 					<option SELECTED>$adapt_dial_method</option>
-				</select>$NWB#osdial_campaigns-dial_method$NWE</td></tr>";
+				</select>".helptag("osdial_campaigns-dial_method")."</td></tr>";
 				if ($adapt_dial_method ==  "ADAPT_HARD_LIMIT" or $adapt_dial_method ==  "ADAPT_TAPERED") {
 					echo "<tr><td colspan=2 align=center><font color=red>We recommend against ADAPT_HARD_LIMIT and ADAPT_TAPERED</font></td></tr>";
 					echo "<tr><td colspan=2 align=center><font color=red>due to weak dialing logic in these two modes.</font></td></tr>";
@@ -1391,11 +1391,11 @@ $dial_method="RATIO";
 				echo "<option value=\"$n\" $sel>$n %</option>";
 				$n--;
 			}
-			echo "</select>$NWB#osdial_campaigns-adaptive_dropped_percentage$NWE</td></tr>";
+			echo "</select>".helptag("osdial_campaigns-adaptive_dropped_percentage")."</td></tr>";
 			
-			echo "<tr Xbgcolor=$unusualrows><td align=right>Maximum Adapt Dial Level: </td><td align=left nowrap><input type=text name=adaptive_maximum_level size=6 maxlength=6 value=\"$adaptive_maximum_level\" selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;4.0;4.5;5.0\"> $NWB#osdial_campaigns-adaptive_maximum_level$NWE</td></tr>";
-			echo "<tr Xbgcolor=$unusualrows><td align=right>Auto Dial Level: </td><td align=left nowrap><input type=text name=ADAPT_auto_dial_level size=6 maxlength=6 value=\"$auto_dial_level\" selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;4.0;4.5;5.0\"> $NWB#osdial_campaigns-auto_dial_level$NWE &nbsp; &nbsp; &nbsp; <input type=checkbox name=dial_level_override value=\"1\">Activate Override</td></tr>";
-			echo "<tr Xbgcolor=$unusualrows><td align=right>Available Only Tally: </td><td align=left><select size=1 name=ADAPT_available_only_ratio_tally><option >Y</option><option>N</option><option SELECTED>$available_only_ratio_tally</option></select>$NWB#osdial_campaigns-available_only_ratio_tally$NWE</td></tr>";
+			echo "<tr Xbgcolor=$unusualrows><td align=right>Maximum Adapt Dial Level: </td><td align=left nowrap><input type=text name=adaptive_maximum_level size=6 maxlength=6 value=\"$adaptive_maximum_level\" selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;4.0;4.5;5.0\"> ".helptag("osdial_campaigns-adaptive_maximum_level")."</td></tr>";
+			echo "<tr Xbgcolor=$unusualrows><td align=right>Auto Dial Level: </td><td align=left nowrap><input type=text name=ADAPT_auto_dial_level size=6 maxlength=6 value=\"$auto_dial_level\" selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;4.0;4.5;5.0\"> ".helptag("osdial_campaigns-auto_dial_level")." &nbsp; &nbsp; &nbsp; <input type=checkbox name=dial_level_override value=\"1\">Activate Override</td></tr>";
+			echo "<tr Xbgcolor=$unusualrows><td align=right>Available Only Tally: </td><td align=left><select size=1 name=ADAPT_available_only_ratio_tally><option >Y</option><option>N</option><option SELECTED>$available_only_ratio_tally</option></select>".helptag("osdial_campaigns-available_only_ratio_tally")."</td></tr>";
 			echo "<tr Xbgcolor=$unusualrows><td align=right>Adapt Intensity Modifier: </td><td align=left><select size=1 name=adaptive_intensity>";
 			$n=40;
 			while ($n>=-40) {
@@ -1407,7 +1407,7 @@ $dial_method="RATIO";
 				echo "<option value=\"$n\" $sel>$n - $dtl</option>";
 				$n--;
 			}
-			echo "</select> $NWB#osdial_campaigns-adaptive_intensity$NWE</td></tr>";
+			echo "</select> ".helptag("osdial_campaigns-adaptive_intensity")."</td></tr>";
 
 			echo "<tr Xbgcolor=$unusualrows><td align=right>Dial Level Difference Target: </td><td align=left><select size=1 name=adaptive_dl_diff_target>";
 			$n=40;
@@ -1421,8 +1421,8 @@ $dial_method="RATIO";
 				echo "<option value=\"$n\" $sel>$n --- $nabs $dtl</option>";
 				$n--;
 			}
-			echo "</select> $NWB#osdial_campaigns-adaptive_dl_diff_target$NWE</td></tr>";
-			echo "<tr Xbgcolor=$unusualrows><td align=right>Latest Server Time for Tapered Mode: </td><td align=left><input type=text name=adaptive_latest_server_time size=6 maxlength=4 value=\"$adaptive_latest_server_time\"><i>4 digits only</i> $NWB#osdial_campaigns-adaptive_latest_server_time$NWE</td></tr>";
+			echo "</select> ".helptag("osdial_campaigns-adaptive_dl_diff_target")."</td></tr>";
+			echo "<tr Xbgcolor=$unusualrows><td align=right>Latest Server Time for Tapered Mode: </td><td align=left><input type=text name=adaptive_latest_server_time size=6 maxlength=4 value=\"$adaptive_latest_server_time\"><i>4 digits only</i> ".helptag("osdial_campaigns-adaptive_latest_server_time")."</td></tr>";
 			echo "<tr Xbgcolor=$unusualrows><td align=right>Auto Dial Answer Handling: </td>";
 			echo "  <td align=left>";
 			echo "    <select size=1 name=campaign_vdad_exten>";
@@ -1431,7 +1431,7 @@ $dial_method="RATIO";
 			echo "      <option value=\"8368\" $sel3>8368 - Load Balancing</option>";
 			echo "      <option value=\"8369\" $sel4>8369 - Answering Machine Detection, Load Balancing</option>";
 			echo "    </select>";
-			echo "    $NWB#osdial_campaigns-campaign_vdad_exten$NWE";
+			echo "    ".helptag("osdial_campaigns-campaign_vdad_exten")."";
 			echo "  </td></tr>";
 				echo "<tr><td align=right class=no-ul colspan=2><br />";
 				jump_section(1);
@@ -1461,13 +1461,13 @@ $dial_method="RATIO";
         } else {
             $sel3='selected';
         }
-        echo "<tr style=\"visibility:collapse;\" Xbgcolor=$unusualrows><td align=right>Concurrent Transfers: </td><td align=left><select size=1 name=concurrent_transfers><option >AUTO</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10<option SELECTED>$concurrent_transfers</option></select>$NWB#osdial_campaigns-concurrent_transfers$NWE</td></tr>";
+			echo "<tr style=\"visibility:collapse;\" Xbgcolor=$unusualrows><td align=right>Concurrent Transfers: </td><td align=left><select size=1 name=concurrent_transfers><option >AUTO</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10<option SELECTED>$concurrent_transfers</option></select>".helptag("osdial_campaigns-concurrent_transfers")."</td></tr>";
 
-        echo "<tr><td align=right>Alt Number Dialing: </td><td align=left><select size=1 name=alt_number_dialing><option>Y</option><option>N</option><option SELECTED>$alt_number_dialing</option></select>$NWB#osdial_campaigns-alt_number_dialing$NWE</td></tr>";
+			echo "<tr><td align=right>Alt Number Dialing: </td><td align=left><select size=1 name=alt_number_dialing><option>Y</option><option>N</option><option SELECTED>$alt_number_dialing</option></select>".helptag("osdial_campaigns-alt_number_dialing")."</td></tr>";
 
-        echo "<tr><td align=right>Auto Alt-Number Dialing: </td><td align=left><select size=1 name=auto_alt_dial><option >NONE</option><option>ALT_ONLY</option><option>ADDR3_ONLY</option><option>ALT_AND_ADDR3</option><option>ALT_ADDR3_AND_AFFAP</option><option SELECTED>$auto_alt_dial</option></select>$NWB#osdial_campaigns-auto_alt_dial$NWE</td></tr>";
+			echo "<tr><td align=right>Auto Alt-Number Dialing: </td><td align=left><select size=1 name=auto_alt_dial><option >NONE</option><option>ALT_ONLY</option><option>ADDR3_ONLY</option><option>ALT_AND_ADDR3</option><option>ALT_ADDR3_AND_AFFAP</option><option SELECTED>$auto_alt_dial</option></select>".helptag("osdial_campaigns-auto_alt_dial")."</td></tr>";
 
-        echo "<tr><td align=right>Next Agent Call: </td><td align=left><select size=1 name=next_agent_call><option >random</option><option>oldest_call_start</option><option>oldest_call_finish</option><option>overall_user_level</option><option>campaign_rank</option><option>fewest_calls</option><option SELECTED>$next_agent_call</option></select>$NWB#osdial_campaigns-next_agent_call$NWE</td></tr>";
+			echo "<tr><td align=right>Next Agent Call: </td><td align=left><select size=1 name=next_agent_call><option >random</option><option>oldest_call_start</option><option>oldest_call_finish</option><option>overall_user_level</option><option>campaign_rank</option><option>fewest_calls</option><option SELECTED>$next_agent_call</option></select>".helptag("osdial_campaigns-next_agent_call")."</td></tr>";
 
         echo "<tr><td align=right>";
         if ($LOG['multicomp_user'] > 0) {
@@ -1477,7 +1477,7 @@ $dial_method="RATIO";
         }
         echo "</td><td align=left><select size=1 name=campaign_call_time>";
         echo get_calltimes($link, $campaign_call_time);
-        echo "</select>$NWB#osdial_campaigns-campaign_call_time$NWE</td></tr>";
+			echo "</select>".helptag("osdial_campaigns-campaign_call_time")."</td></tr>";
         echo "<tr><td align=right>";
         if ($LOG['multicomp_user'] > 0) {
             echo "<a href=\"$PHP_SELF?ADD=311111111&call_time_id=$local_call_time\">Local Timezone Call Time: </a>";
@@ -1486,11 +1486,11 @@ $dial_method="RATIO";
         }
         echo "</td><td align=left><select size=1 name=local_call_time>";
         echo get_calltimes($link, $local_call_time);
-        echo "</select>$NWB#osdial_campaigns-local_call_time$NWE</td></tr>";
+			echo "</select>".helptag("osdial_campaigns-local_call_time")."</td></tr>";
 
-        echo "<tr><td align=right>Dial Timeout: </td><td align=left><input type=text name=dial_timeout size=3 maxlength=3 value=\"$dial_timeout\"> <i>in seconds</i>$NWB#osdial_campaigns-dial_timeout$NWE</td></tr>";
+			echo "<tr><td align=right>Dial Timeout: </td><td align=left><input type=text name=dial_timeout size=3 maxlength=3 value=\"$dial_timeout\"> <i>in seconds</i>".helptag("osdial_campaigns-dial_timeout")."</td></tr>";
 
-        echo "<tr><td align=right>Drop Call Seconds: </td><td align=left><input type=text name=drop_call_seconds size=5 maxlength=2 value=\"$drop_call_seconds\">$NWB#osdial_campaigns-drop_call_seconds$NWE</td></tr>";
+			echo "<tr><td align=right>Drop Call Seconds: </td><td align=left><input type=text name=drop_call_seconds size=5 maxlength=2 value=\"$drop_call_seconds\">".helptag("osdial_campaigns-drop_call_seconds")."</td></tr>";
 			echo "<tr><td></td></tr>";
         echo "<tr><td align=right class=no-ul colspan=2>";
 		jump_section(1);
@@ -1568,9 +1568,9 @@ $dial_method="RATIO";
             $seln='selected';
         }
         echo "    <select size=1 name=lead_order_nthnew><option value=\"\" $seln>-------</option><option $sel2>2nd NEW</option><option $sel3>3rd NEW</option><option $sel4>4th NEW</option><option $sel5>5th NEW</option><option $sel6>6th NEW</option></select>";
-        echo "    $NWB#osdial_campaigns-lead_order$NWE</td></tr>";
-        #echo "<tr bgcolor=$oddrows><td align=right>List Order: </td><td align=left><select size=1 name=lead_order ><option>DOWN</option><option>UP</option><option>DOWN PHONE</option><option>UP PHONE</option><option>DOWN LAST NAME</option><option>UP LAST NAME</option><option>DOWN COUNT</option><option>UP COUNT</option><option>DOWN 2nd NEW</option><option>DOWN 3rd NEW</option><option>DOWN 4th NEW</option><option>DOWN 5th NEW</option><option>DOWN 6th NEW</option><option>UP 2nd NEW</option><option>UP 3rd NEW</option><option>UP 4th NEW</option><option>UP 5th NEW</option><option>UP 6th NEW</option><option>DOWN PHONE 2nd NEW</option><option>DOWN PHONE 3rd NEW</option><option>DOWN PHONE 4th NEW</option><option>DOWN PHONE 5th NEW</option><option>DOWN PHONE 6th NEW</option><option>UP PHONE 2nd NEW</option><option>UP PHONE 3rd NEW</option><option>UP PHONE 4th NEW</option><option>UP PHONE 5th NEW</option><option>UP PHONE 6th NEW</option><option>DOWN LAST NAME 2nd NEW</option><option>DOWN LAST NAME 3rd NEW</option><option>DOWN LAST NAME 4th NEW</option><option>DOWN LAST NAME 5th NEW</option><option>DOWN LAST NAME 6th NEW</option><option>UP LAST NAME 2nd NEW</option><option>UP LAST NAME 3rd NEW</option><option>UP LAST NAME 4th NEW</option><option>UP LAST NAME 5th NEW</option><option>UP LAST NAME 6th NEW</option><option>DOWN COUNT 2nd NEW</option><option>DOWN COUNT 3rd NEW</option><option>DOWN COUNT 4th NEW</option><option>DOWN COUNT 5th NEW</option><option>DOWN COUNT 6th NEW</option><option>UP COUNT 2nd NEW</option><option>UP COUNT 3rd NEW</option><option>UP COUNT 4th NEW</option><option>UP COUNT 5th NEW</option><option>UP COUNT 6th NEW</option><option>RANDOM</option><option SELECTED>$lead_order</option></select>$NWB#osdial_campaigns-lead_order$NWE</td></tr>";
-        #echo "<tr bgcolor=$oddrows><td align=right>List Order: </td><td align=left><select size=1 name=lead_order ><option>DOWN</option><option>UP</option><option>UP PHONE</option><option>DOWN PHONE</option><option>UP LAST NAME</option><option>DOWN LAST NAME</option><option>UP COUNT</option><option>DOWN COUNT</option><option>DOWN COUNT 2nd NEW</option><option>DOWN COUNT 3rd NEW</option><option>DOWN COUNT 4th NEW</option><option>DOWN COUNT 5th NEW</option><option>DOWN COUNT 6th NEW</option><option SELECTED>$lead_order</option></select>$NWB#osdial_campaigns-lead_order$NWE</td></tr>";
+			echo "    ".helptag("osdial_campaigns-lead_order")."</td></tr>";
+			#echo "<tr bgcolor=$oddrows><td align=right>List Order: </td><td align=left><select size=1 name=lead_order ><option>DOWN</option><option>UP</option><option>DOWN PHONE</option><option>UP PHONE</option><option>DOWN LAST NAME</option><option>UP LAST NAME</option><option>DOWN COUNT</option><option>UP COUNT</option><option>DOWN 2nd NEW</option><option>DOWN 3rd NEW</option><option>DOWN 4th NEW</option><option>DOWN 5th NEW</option><option>DOWN 6th NEW</option><option>UP 2nd NEW</option><option>UP 3rd NEW</option><option>UP 4th NEW</option><option>UP 5th NEW</option><option>UP 6th NEW</option><option>DOWN PHONE 2nd NEW</option><option>DOWN PHONE 3rd NEW</option><option>DOWN PHONE 4th NEW</option><option>DOWN PHONE 5th NEW</option><option>DOWN PHONE 6th NEW</option><option>UP PHONE 2nd NEW</option><option>UP PHONE 3rd NEW</option><option>UP PHONE 4th NEW</option><option>UP PHONE 5th NEW</option><option>UP PHONE 6th NEW</option><option>DOWN LAST NAME 2nd NEW</option><option>DOWN LAST NAME 3rd NEW</option><option>DOWN LAST NAME 4th NEW</option><option>DOWN LAST NAME 5th NEW</option><option>DOWN LAST NAME 6th NEW</option><option>UP LAST NAME 2nd NEW</option><option>UP LAST NAME 3rd NEW</option><option>UP LAST NAME 4th NEW</option><option>UP LAST NAME 5th NEW</option><option>UP LAST NAME 6th NEW</option><option>DOWN COUNT 2nd NEW</option><option>DOWN COUNT 3rd NEW</option><option>DOWN COUNT 4th NEW</option><option>DOWN COUNT 5th NEW</option><option>DOWN COUNT 6th NEW</option><option>UP COUNT 2nd NEW</option><option>UP COUNT 3rd NEW</option><option>UP COUNT 4th NEW</option><option>UP COUNT 5th NEW</option><option>UP COUNT 6th NEW</option><option>RANDOM</option><option SELECTED>$lead_order</option></select>".helptag("osdial_campaigns-lead_order")."</td></tr>";
+			#echo "<tr bgcolor=$oddrows><td align=right>List Order: </td><td align=left><select size=1 name=lead_order ><option>DOWN</option><option>UP</option><option>UP PHONE</option><option>DOWN PHONE</option><option>UP LAST NAME</option><option>DOWN LAST NAME</option><option>UP COUNT</option><option>DOWN COUNT</option><option>DOWN COUNT 2nd NEW</option><option>DOWN COUNT 3rd NEW</option><option>DOWN COUNT 4th NEW</option><option>DOWN COUNT 5th NEW</option><option>DOWN COUNT 6th NEW</option><option SELECTED>$lead_order</option></select>".helptag("osdial_campaigns-lead_order")."</td></tr>";
 
         echo "<tr><td align=right><a href=\"$PHP_SELF?ADD=31&SUB=29&campaign_id=$campaign_id&vcl_id=$list_order_mix\">List Mix</a>: </td><td align=left><select size=1 name=list_order_mix>";
         echo "$mixes_list";
@@ -1578,17 +1578,17 @@ $dial_method="RATIO";
             {echo "<option selected value=\"$list_order_mix\">$list_order_mix - $mixname_list[$list_order_mix]</option>";}
         else
             {echo "<option selected value=\"ACTIVE\">ACTIVE ($mixname_list[ACTIVE])</option>";}
-        echo "</select>$NWB#osdial_campaigns-list_order_mix$NWE</td></tr>";
+			echo "</select>".helptag("osdial_campaigns-list_order_mix")."</td></tr>";
 
         echo "<tr><td align=right><a href=\"$PHP_SELF?ADD=31111111&lead_filter_id=$lead_filter_id\">Lead Filter</a>: </td><td align=left><select size=1 name=lead_filter_id>";
         echo get_filters($link, $lead_filter_id);
         #echo "$filters_list";
         #echo "<option selected value=\"$lead_filter_id\">$lead_filter_id - $filtername_list[$lead_filter_id]</option>";
-        echo "</select>$NWB#osdial_campaigns-lead_filter_id$NWE</td></tr>";
+			echo "</select>".helptag("osdial_campaigns-lead_filter_id")."</td></tr>";
 
-        echo "<tr><td align=right>Hopper Level: </td><td align=left><select size=1 name=hopper_level><option>1</option><option>5</option><option>10</option><option>20</option><option>50</option><option>100</option><option>200</option><option>500</option><option>700</option><option>1000</option><option>2000</option><option SELECTED>$hopper_level</option></select>$NWB#osdial_campaigns-hopper_level$NWE</td></tr>";
+			echo "<tr><td align=right>Hopper Level: </td><td align=left><select size=1 name=hopper_level><option>1</option><option>5</option><option>10</option><option>20</option><option>50</option><option>100</option><option>200</option><option>500</option><option>700</option><option>1000</option><option>2000</option><option SELECTED>$hopper_level</option></select>".helptag("osdial_campaigns-hopper_level")."</td></tr>";
 
-        echo "<tr><td align=right>Force Reset of Hopper: </td><td align=left><select size=1 name=reset_hopper><option>Y</option><option SELECTED>N</option></select>$NWB#osdial_campaigns-force_reset_hopper$NWE</td></tr>";
+			echo "<tr><td align=right>Force Reset of Hopper: </td><td align=left><select size=1 name=reset_hopper><option>Y</option><option SELECTED>N</option></select>".helptag("osdial_campaigns-force_reset_hopper")."</td></tr>";
         echo "<tr><td align=right>Add Manual Dialed Calls to List: </td><td align=left>";
         echo list_id_text_options($link, 'manual_dial_list_id', $manual_dial_list_id, 20, 20);
         #echo "  <select name=manual_dial_list_id size=1>";
@@ -1598,7 +1598,7 @@ $dial_method="RATIO";
         #if (OSDpreg_match('/|^$|^0$/',$manual_dial_list_id)) $sel='';
         #echo "<option value='0'>- NO LIST SELECTED -</option>";
         #echo " $manual_dial_list_id\">";
-        echo "$NWB#osdial_campaigns-manual_dial_list_id$NWE</td></tr>";
+			echo "".helptag("osdial_campaigns-manual_dial_list_id")."</td></tr>";
 		echo "<tr><td>&nbsp;</td></tr>";
 		echo "<tr><td align=right class=no-ul colspan=2>";
 		jump_section(1);
@@ -1625,13 +1625,13 @@ $dial_method="RATIO";
         echo "            </select>";
         echo "          </td>";
         echo "        </tr>";
-        echo "<tr><td align=right>Dial Prefix: </td><td align=left><input type=text name=dial_prefix size=20 maxlength=20 value=\"$dial_prefix\"> <font size=1>use 9 for TRUNK1, use 8 for TRUNK2</font>$NWB#osdial_campaigns-dial_prefix$NWE</td></tr>";
-        echo "<tr><td align=right>Omit Phone Code: </td><td align=left><select size=1 name=omit_phone_code><option>Y</option><option>N</option><option SELECTED>$omit_phone_code</option></select>$NWB#osdial_campaigns-omit_phone_code$NWE</td></tr>";
-        echo "<tr><td align=right>CallerID Name: </td><td align=left><input type=text name=campaign_cid_name size=20 maxlength=40 value=\"$campaign_cid_name\">$NWB#osdial_campaigns-campaign_cid_name$NWE</td></tr>";
-        echo "<tr><td align=right>CallerID: </td><td align=left><input type=text name=campaign_cid size=20 maxlength=20 value=\"$campaign_cid\">$NWB#osdial_campaigns-campaign_cid$NWE</td></tr>";
-        echo "<tr><td align=right>Use Custom2 CallerID: </td><td align=left><select name=use_custom2_callerid><option>N</option><option>Y</option><option selected>$use_custom2_callerid</option></select>$NWB#osdial_campaigns-use_custom2_callerid$NWE</td></tr>";
-        echo "<tr><td align=right><a href=\"$PHP_SELF?ADD=3ca&SUB=2&campaign_id=$campaign_id\">Use CallerID Areacode Map:</a> </td><td align=left><select name=use_cid_areacode_map><option>N</option><option>Y</option><option selected>$use_cid_areacode_map</option></select>$NWB#osdial_campaigns-use_cid_areacode_map$NWE</td></tr>";
-        echo "<tr><td align=right>3rd-Party CID Mode: </td><td align=left><select name=xfer_cid_mode><option>CAMPAIGN</option><option>PHONE</option><option>LEAD</option><option>LEAD_CUSTOM1</option><option>LEAD_CUSTOM2</option><option selected>$xfer_cid_mode</option></select>$NWB#osdial_campaigns-xfer_cid_mode$NWE</td></tr>";
+			echo "<tr><td align=right>Dial Prefix: </td><td align=left><input type=text name=dial_prefix size=20 maxlength=20 value=\"$dial_prefix\"> <font size=1>use 9 for TRUNK1, use 8 for TRUNK2</font>".helptag("osdial_campaigns-dial_prefix")."</td></tr>";
+			echo "<tr><td align=right>Omit Phone Code: </td><td align=left><select size=1 name=omit_phone_code><option>Y</option><option>N</option><option SELECTED>$omit_phone_code</option></select>".helptag("osdial_campaigns-omit_phone_code")."</td></tr>";
+			echo "<tr><td align=right>CallerID Name: </td><td align=left><input type=text name=campaign_cid_name size=20 maxlength=40 value=\"$campaign_cid_name\">".helptag("osdial_campaigns-campaign_cid_name")."</td></tr>";
+			echo "<tr><td align=right>CallerID: </td><td align=left><input type=text name=campaign_cid size=20 maxlength=20 value=\"$campaign_cid\">".helptag("osdial_campaigns-campaign_cid")."</td></tr>";
+			echo "<tr><td align=right>Use Custom2 CallerID: </td><td align=left><select name=use_custom2_callerid><option>N</option><option>Y</option><option selected>$use_custom2_callerid</option></select>".helptag("osdial_campaigns-use_custom2_callerid")."</td></tr>";
+			echo "<tr><td align=right><a href=\"$PHP_SELF?ADD=3ca&SUB=2&campaign_id=$campaign_id\">Use CallerID Areacode Map:</a> </td><td align=left><select name=use_cid_areacode_map><option>N</option><option>Y</option><option selected>$use_cid_areacode_map</option></select>".helptag("osdial_campaigns-use_cid_areacode_map")."</td></tr>";
+			echo "<tr><td align=right>3rd-Party CID Mode: </td><td align=left><select name=xfer_cid_mode><option>CAMPAIGN</option><option>PHONE</option><option>LEAD</option><option>LEAD_CUSTOM1</option><option>LEAD_CUSTOM2</option><option selected>$xfer_cid_mode</option></select>".helptag("osdial_campaigns-xfer_cid_mode")."</td></tr>";
         echo "<tr><td>&nbsp;</td></tr>";
         echo "<tr><td align=right class=no-ul colspan=2>";
 		jump_section(1);
@@ -1645,10 +1645,10 @@ $dial_method="RATIO";
         echo "<table width=$section_width cellspacing=3 frame=border cellpadding=0 cellspacing=0 class=rounded-corners>";
         echo "<tr><td align=left class=top_header_sect valign=top width=40%>Recording Options</td></tr>";
         echo "<tr><td>&nbsp;</td></tr>";
-        echo "<tr><td align=right>Recording: </td><td align=left><select size=1 name=campaign_recording><option>NEVER</option><option>ONDEMAND</option><option>ALLCALLS</option><option>ALLFORCE</option><option SELECTED>$campaign_recording</option></select>$NWB#osdial_campaigns-campaign_recording$NWE</td></tr>";
-        echo "<tr style=\"visibility:collapse;\"><td align=right>Rec Exten: </td><td align=left><input type=text name=campaign_rec_exten size=10 maxlength=10 value=\"$campaign_rec_exten\">$NWB#osdial_campaigns-campaign_rec_exten$NWE</td></tr>";
-        echo "<tr><td align=right>Rec Filename: </td><td align=left><input type=text name=campaign_rec_filename size=50 maxlength=50 value=\"$campaign_rec_filename\">$NWB#osdial_campaigns-campaign_rec_filename$NWE</td></tr>";
-		echo "<tr><td align=right>Recording Delay: </td><td align=left><input type=text name=allcalls_delay size=3 maxlength=3 value=\"$allcalls_delay\"> <i>in seconds</i>$NWB#osdial_campaigns-allcalls_delay$NWE</td></tr>";
+			echo "<tr><td align=right>Recording: </td><td align=left><select size=1 name=campaign_recording><option>NEVER</option><option>ONDEMAND</option><option>ALLCALLS</option><option>ALLFORCE</option><option SELECTED>$campaign_recording</option></select>".helptag("osdial_campaigns-campaign_recording")."</td></tr>";
+			echo "<tr style=\"visibility:collapse;\"><td align=right>Rec Exten: </td><td align=left><input type=text name=campaign_rec_exten size=10 maxlength=10 value=\"$campaign_rec_exten\">".helptag("osdial_campaigns-campaign_rec_exten")."</td></tr>";
+			echo "<tr><td align=right>Rec Filename: </td><td align=left><input type=text name=campaign_rec_filename size=50 maxlength=50 value=\"$campaign_rec_filename\">".helptag("osdial_campaigns-campaign_rec_filename")."</td></tr>";
+			echo "<tr><td align=right>Recording Delay: </td><td align=left><input type=text name=allcalls_delay size=3 maxlength=3 value=\"$allcalls_delay\"> <i>in seconds</i>".helptag("osdial_campaigns-allcalls_delay")."</td></tr>";
         echo "<tr><td>&nbsp;</td></tr>";
         echo "<tr><td align=right class=no-ul colspan=2>";
 		jump_section(1);
@@ -1665,8 +1665,8 @@ $dial_method="RATIO";
         echo "<tr><td align=right>Answering Message Extension: </td><td align=left>";
         #echo "<input type=text name=am_message_exten size=10 maxlength=20 value=\"$am_message_exten\">";
         echo extension_text_options($link, 'am_message_exten', $am_message_exten, 10, 20);
-        echo "$NWB#osdial_campaigns-am_message_exten$NWE</td></tr>";
-        echo "<tr><td align=right>Send AMD to AM Extension: </td><td align=left><select size=1 name=amd_send_to_vmx><option>Y</option><option>N</option><option>CUSTOM1</option><option>CUSTOM2</option><option SELECTED>$amd_send_to_vmx</option></select>$NWB#osdial_campaigns-amd_send_to_vmx$NWE</td></tr>";
+			echo "".helptag("osdial_campaigns-am_message_exten")."</td></tr>";
+			echo "<tr><td align=right>Send AMD to AM Extension: </td><td align=left><select size=1 name=amd_send_to_vmx><option>Y</option><option>N</option><option>CUSTOM1</option><option>CUSTOM2</option><option SELECTED>$amd_send_to_vmx</option></select>".helptag("osdial_campaigns-amd_send_to_vmx")."</td></tr>";
         echo "<tr><td>&nbsp;</td></tr>";
         echo "<tr><td align=right class=no-ul colspan=2>";
 		jump_section(1);
@@ -1691,15 +1691,15 @@ $dial_method="RATIO";
         }
         echo "  <option value=\"Y\" $sel1>Message/Extension</option>";
         echo "  <option value=\"N\" $sel2>Voicemail</option>";
-        echo "</select>$NWB#osdial_campaigns-safe_harbor_message$NWE</td></tr>";
+			echo "</select>".helptag("osdial_campaigns-safe_harbor_message")."</td></tr>";
         echo "<tr><td align=right>Drop Message/Extension: </td><td align=left>";
         #echo "<input type=text name=safe_harbor_exten size=10 maxlength=20 value=\"$safe_harbor_exten\">";
         echo extension_text_options($link, 'safe_harbor_exten', $safe_harbor_exten, 10, 20);
-        echo "$NWB#osdial_campaigns-safe_harbor_exten$NWE</td></tr>";
+			echo "".helptag("osdial_campaigns-safe_harbor_exten")."</td></tr>";
         echo "<tr><td align=right>Drop Voicemail: </td><td align=left>";
         #echo "<input type=text name=voicemail_ext size=10 maxlength=10 value=\"$voicemail_ext\">";
         echo phone_voicemail_text_options($link, 'voicemail_ext', $voicemail_ext, 10, 10);
-        echo "$NWB#osdial_campaigns-voicemail_ext$NWE</td></tr>";
+			echo "".helptag("osdial_campaigns-voicemail_ext")."</td></tr>";
         echo "<tr><td>&nbsp;</td></tr>";
         echo "<tr><td align=right class=no-ul colspan=2>";
 		jump_section(1);
@@ -1717,13 +1717,13 @@ $dial_method="RATIO";
         echo "	<td align=right width=30%>Allow Transfer and Closers: ";
         echo "	</td>";
         echo "	<td align=left width=20%>";
-        echo "	  <select size=1 name=allow_closers><option>Y</option><option>N</option><option SELECTED>$allow_closers</option></select>$NWB#osdial_campaigns-allow_closers$NWE";
+			echo "	  <select size=1 name=allow_closers><option>Y</option><option>N</option><option SELECTED>$allow_closers</option></select>".helptag("osdial_campaigns-allow_closers")."";
         echo "</td>";
         echo "  <td align=right width=30%>Local Closer - XFER Hide:</td>";
         echo "  <td align=left width=20%>";
         echo select_yesno('hide_xfer_local_closer',$hide_xfer_local_closer);
         echo "    </select>";
-        echo "    $NWB#osdial_campaigns-hide_xfer_local_closer$NWE";
+			echo "    ".helptag("osdial_campaigns-hide_xfer_local_closer")."";
         echo "  </td>";
         echo "</tr>";
         echo "<tr>";
@@ -1731,13 +1731,13 @@ $dial_method="RATIO";
         echo "  <td align=left>";
         echo select_yesno('hide_xfer_dial_override',$hide_xfer_dial_override);
         echo "    </select>";
-        echo "    $NWB#osdial_campaigns-hide_xfer_dial_override$NWE";
+			echo "    ".helptag("osdial_campaigns-hide_xfer_dial_override")."";
         echo "  </td>";
         echo "  <td align=right>Hangup Xfer Line - XFER Hide:</td>";
         echo "  <td align=left>";
         echo select_yesno('hide_xfer_hangup_xfer',$hide_xfer_hangup_xfer);
         echo "    </select>";
-        echo "    $NWB#osdial_campaigns-hide_xfer_hangup_xfer$NWE";
+			echo "    ".helptag("osdial_campaigns-hide_xfer_hangup_xfer")."";
         echo "  </td>";
         echo "</tr>";
         echo "<tr>";
@@ -1745,13 +1745,13 @@ $dial_method="RATIO";
         echo "  <td align=left>";
         echo select_yesno('hide_xfer_leave_3way',$hide_xfer_leave_3way);
         echo "    </select>";
-        echo "    $NWB#osdial_campaigns-hide_xfer_leave_3way$NWE";
+			echo "    ".helptag("osdial_campaigns-hide_xfer_leave_3way")."";
         echo "  </td>";
         echo "  <td align=right>Dial With Customer - XFER Hide:</td>";
         echo "  <td align=left>";
         echo select_yesno('hide_xfer_dial_with',$hide_xfer_dial_with);
         echo "    </select>";
-        echo "    $NWB#osdial_campaigns-hide_xfer_dial_with$NWE";
+			echo "    ".helptag("osdial_campaigns-hide_xfer_dial_with")."";
         echo "  </td>";
         echo "</tr>";
         echo "<tr>";
@@ -1759,13 +1759,13 @@ $dial_method="RATIO";
         echo "  <td align=left>";
         echo select_yesno('hide_xfer_hangup_both',$hide_xfer_hangup_both);
         echo "    </select>";
-        echo "    $NWB#osdial_campaigns-hide_xfer_hangup_both$NWE";
+			echo "    ".helptag("osdial_campaigns-hide_xfer_hangup_both")."";
         echo "  </td>";
         echo "  <td align=right>Blind Transfer - XFER Hide:</td>";
         echo "  <td align=left>";
         echo select_yesno('hide_xfer_blind_xfer',$hide_xfer_blind_xfer);
         echo "    </select>";
-        echo "    $NWB#osdial_campaigns-hide_xfer_blind_xfer$NWE";
+			echo "    ".helptag("osdial_campaigns-hide_xfer_blind_xfer")."";
         echo "  </td>";
         echo "</tr>";
         echo "<tr>";
@@ -1773,20 +1773,20 @@ $dial_method="RATIO";
         echo "  <td align=left>";
         echo select_yesno('hide_xfer_park_dial',$hide_xfer_park_dial);
         echo "    </select>";
-        echo "    $NWB#osdial_campaigns-hide_xfer_park_dial$NWE";
+			echo "    ".helptag("osdial_campaigns-hide_xfer_park_dial")."";
         echo "  </td>";
         echo "  <td align=right>Blind VMail - XFER Hide:</td>";
         echo "  <td align=left>";
         echo select_yesno('hide_xfer_blind_vmail',$hide_xfer_blind_vmail);
         echo "    </select>";
-        echo "    $NWB#osdial_campaigns-hide_xfer_blind_vmail$NWE";
+			echo "    ".helptag("osdial_campaigns-hide_xfer_blind_vmail")."";
         echo "  </td>";
         echo "</tr>";
         echo "<tr><td colspan=4><table align=center border=0 width=99% class=tablefont>";
-        echo "<tr><td align=right>Transfer-Conf DTMF 1: </td><td align=left><input type=text name=xferconf_a_dtmf size=20 maxlength=50 value=\"$xferconf_a_dtmf\">$NWB#osdial_campaigns-xferconf_a_dtmf$NWE</td>";
-        echo "    <td align=right>Transfer-Conf Number 1: </td><td align=left><input type=text name=xferconf_a_number size=20 maxlength=50 value=\"$xferconf_a_number\">$NWB#osdial_campaigns-xferconf_a_dtmf$NWE</td></tr>";
-        echo "<tr><td align=right>Transfer-Conf DTMF 2: </td><td align=left><input type=text name=xferconf_b_dtmf size=20 maxlength=50 value=\"$xferconf_b_dtmf\">$NWB#osdial_campaigns-xferconf_a_dtmf$NWE</td>";
-        echo "    <td align=right>Transfer-Conf Number 2: </td><td align=left><input type=text name=xferconf_b_number size=20 maxlength=50 value=\"$xferconf_b_number\">$NWB#osdial_campaigns-xferconf_a_dtmf$NWE</td></tr>";
+			echo "<tr><td align=right>Transfer-Conf DTMF 1: </td><td align=left><input type=text name=xferconf_a_dtmf size=20 maxlength=50 value=\"$xferconf_a_dtmf\">".helptag("osdial_campaigns-xferconf_a_dtmf")."</td>";
+			echo "    <td align=right>Transfer-Conf Number 1: </td><td align=left><input type=text name=xferconf_a_number size=20 maxlength=50 value=\"$xferconf_a_number\">".helptag("osdial_campaigns-xferconf_a_dtmf")."</td></tr>";
+			echo "<tr><td align=right>Transfer-Conf DTMF 2: </td><td align=left><input type=text name=xferconf_b_dtmf size=20 maxlength=50 value=\"$xferconf_b_dtmf\">".helptag("osdial_campaigns-xferconf_a_dtmf")."</td>";
+			echo "    <td align=right>Transfer-Conf Number 2: </td><td align=left><input type=text name=xferconf_b_number size=20 maxlength=50 value=\"$xferconf_b_number\">".helptag("osdial_campaigns-xferconf_a_dtmf")."</td></tr>";
         echo "<tr><td colspan=4>&nbsp;</td></tr>";
         echo "<tr><td align=right class=no-ul colspan=4>";
 		jump_section(1);
@@ -1801,12 +1801,12 @@ $dial_method="RATIO";
         echo "<table width=$section_width cellspacing=3 frame=border class=rounded-corners>";
         echo "<tr><td colspan=2 align=left class=top_header_sect valign=top width=40%>Web Form</td></tr>";
         echo "<tr><td colspan=2>&nbsp;</td></tr>";
-        echo "<tr><td align=right>Web Form 1: </td><td align=left><input type=text name=web_form_address size=50 maxlength=255 value=\"$web_form_address\">$NWB#osdial_campaigns-web_form_address$NWE</td></tr>";
-        echo "<tr><td align=right>Web Form 1 External: </td><td align=left><select size=1 name=web_form_extwindow><option>Y</option><option>N</option><option SELECTED>$web_form_extwindow</option></select><font size=1><i>'Y' to open in new window, 'N' to open in an $t1 frame.</i></font>$NWB#osdial_campaigns-web_form_extwindow$NWE</td></tr>";
-        echo "<tr><td align=right>Web Form 2: </td><td align=left><input type=text name=web_form_address2 size=50 maxlength=255 value=\"$web_form_address2\">$NWB#osdial_campaigns-web_form_address$NWE</td></tr>";
-        echo "<tr><td align=right>Web Form 2 External: </td><td align=left><select size=1 name=web_form2_extwindow><option>Y</option><option>N</option><option SELECTED>$web_form2_extwindow</option></select><font size=1><i>'Y' to open in new window, 'N' to open in an $t1 frame.</i></font>$NWB#osdial_campaigns-web_form_extwindow$NWE</td></tr>";
-        echo "<tr><td align=right>Dispo Submit Method: </td><td align=left><select size=1 name=submit_method><option>NORMAL</option><option>WEBFORM1</option><option>WEBFORM2</option><option SELECTED>$submit_method</option></select>$NWB#osdial_campaigns-dispo_submit_method$NWE</td></tr>";
-        echo "<tr><td align=right>Get Call Launch: </td><td align=left><select size=1 name=get_call_launch><option selected>NONE</option><option>SCRIPT</option><option>WEBFORM</option><option>WEBFORM2</option><option selected>$get_call_launch</option></select>$NWB#osdial_campaigns-get_call_launch$NWE</td></tr>";
+			echo "<tr><td align=right>Web Form 1: </td><td align=left><input type=text name=web_form_address size=50 maxlength=255 value=\"$web_form_address\">".helptag("osdial_campaigns-web_form_address")."</td></tr>";
+			echo "<tr><td align=right>Web Form 1 External: </td><td align=left><select size=1 name=web_form_extwindow><option>Y</option><option>N</option><option SELECTED>$web_form_extwindow</option></select><font size=1><i>'Y' to open in new window, 'N' to open in an $t1 frame.</i></font>".helptag("osdial_campaigns-web_form_extwindow")."</td></tr>";
+			echo "<tr><td align=right>Web Form 2: </td><td align=left><input type=text name=web_form_address2 size=50 maxlength=255 value=\"$web_form_address2\">".helptag("osdial_campaigns-web_form_address")."</td></tr>";
+			echo "<tr><td align=right>Web Form 2 External: </td><td align=left><select size=1 name=web_form2_extwindow><option>Y</option><option>N</option><option SELECTED>$web_form2_extwindow</option></select><font size=1><i>'Y' to open in new window, 'N' to open in an $t1 frame.</i></font>".helptag("osdial_campaigns-web_form_extwindow")."</td></tr>";
+			echo "<tr><td align=right>Dispo Submit Method: </td><td align=left><select size=1 name=submit_method><option>NORMAL</option><option>WEBFORM1</option><option>WEBFORM2</option><option SELECTED>$submit_method</option></select>".helptag("osdial_campaigns-dispo_submit_method")."</td></tr>";
+			echo "<tr><td align=right>Get Call Launch: </td><td align=left><select size=1 name=get_call_launch><option selected>NONE</option><option>SCRIPT</option><option>WEBFORM</option><option>WEBFORM2</option><option selected>$get_call_launch</option></select>".helptag("osdial_campaigns-get_call_launch")."</td></tr>";
         echo "<tr><td>&nbsp;</td></tr>";
         echo "<tr><td align=right class=no-ul colspan=2>";
 		jump_section(1);
@@ -1824,8 +1824,8 @@ $dial_method="RATIO";
         echo get_scripts($link, $script_id);
         #echo "$scripts_list";
         #echo "<option selected value=\"$script_id\">$script_id - $scriptname_list[$script_id]</option>";
-        echo "</select>$NWB#osdial_campaigns-campaign_script$NWE</td></tr>";
-        echo "<tr><td align=right>Allow Tab Switch: </td><td align=left><select size=1 name=allow_tab_switch><option>Y</option><option>N</option><option selected>$allow_tab_switch</option></select>$NWB#osdial_campaigns-allow_tab_switch$NWE</td></tr>";
+			echo "</select>".helptag("osdial_campaigns-campaign_script")."</td></tr>";
+			echo "<tr><td align=right>Allow Tab Switch: </td><td align=left><select size=1 name=allow_tab_switch><option>Y</option><option>N</option><option selected>$allow_tab_switch</option></select>".helptag("osdial_campaigns-allow_tab_switch")."</td></tr>";
         echo "<tr><td>&nbsp;</td></tr>";
         echo "<tr><td align=right class=no-ul colspan=2>";
 		jump_section(1);
@@ -1839,17 +1839,17 @@ $dial_method="RATIO";
         echo "<table width=$section_width cellspacing=3 frame=border cellpadding=0 cellspacing=0 class=rounded-corners>";
         echo "<tr><td align=left class=top_header_sect valign=top width=40%>End of Call Options</td></tr>";
         echo "<tr><td>&nbsp;</td></tr>";
-        echo "<tr><td align=right>Scheduled Callbacks: </td><td align=left><select size=1 name=scheduled_callbacks><option>Y</option><option>N</option><option SELECTED>$scheduled_callbacks</option></select>$NWB#osdial_campaigns-scheduled_callbacks$NWE</td></tr>";
+			echo "<tr><td align=right>Scheduled Callbacks: </td><td align=left><select size=1 name=scheduled_callbacks><option>Y</option><option>N</option><option SELECTED>$scheduled_callbacks</option></select>".helptag("osdial_campaigns-scheduled_callbacks")."</td></tr>";
         
-        echo "<tr><td align=right>Wrap Up Seconds: </td><td align=left><input type=text name=wrapup_seconds size=5 maxlength=3 value=\"$wrapup_seconds\">$NWB#osdial_campaigns-wrapup_seconds$NWE</td></tr>";
-        echo "<tr><td align=right>Wrap Up Message: </td><td align=left><input type=text name=wrapup_message size=40 maxlength=255 value=\"$wrapup_message\">$NWB#osdial_campaigns-wrapup_message$NWE</td></tr>";
+			echo "<tr><td align=right>Wrap Up Seconds: </td><td align=left><input type=text name=wrapup_seconds size=5 maxlength=3 value=\"$wrapup_seconds\">".helptag("osdial_campaigns-wrapup_seconds")."</td></tr>";
+			echo "<tr><td align=right>Wrap Up Message: </td><td align=left><input type=text name=wrapup_message size=40 maxlength=255 value=\"$wrapup_message\">".helptag("osdial_campaigns-wrapup_message")."</td></tr>";
         if (file_exists($WeBServeRRooT . '/admin/include/content/scripts/email_templates.php')) {
             echo "<tr><td align=right valign=top>Email Templates: </td><td align=left><select size=4 multiple name=\"email_templates[]\">";
             echo get_email_templates($link, $email_templates);
-            echo "</select>$NWB#osdial_campaigns-email_templates$NWE</td></tr>";
+				echo "</select>".helptag("osdial_campaigns-email_templates")."</td></tr>";
             echo "<tr><td align=right>Email Blacklist: </td><td align=left><input type=button name=email_blacklist value=\"EDIT BLACKLIST\" onclick=\"window.location='$PHP_SELF?ADD=3eb&SUB=2&campaign_id=$campaign_id';\"></td></tr>";
         }
-        echo "<tr><td align=right>Agent Pause Codes Active: </td><td align=left><select size=1 name=agent_pause_codes_active><option>Y</option><option>N</option><option SELECTED>$agent_pause_codes_active</option></select>$NWB#osdial_campaigns-agent_pause_codes_active$NWE</td></tr>";
+			echo "<tr><td align=right>Agent Pause Codes Active: </td><td align=left><select size=1 name=agent_pause_codes_active><option>Y</option><option>N</option><option SELECTED>$agent_pause_codes_active</option></select>".helptag("osdial_campaigns-agent_pause_codes_active")."</td></tr>";
         echo "<tr><td>&nbsp;</td></tr>";
         echo "<tr><td align=right class=no-ul colspan=2>";
 		jump_section(1);
@@ -1863,7 +1863,7 @@ $dial_method="RATIO";
         echo "<table width=$section_width cellspacing=3 frame=border cellpadding=0 cellspacing=0 class=rounded-corners>";
         echo "<tr><td align=left class=top_header_sect valign=top width=40%>Do Not Call Options</td></tr>";
         echo "<tr><td>&nbsp;</td></tr>";
-        echo "<tr><td align=right>Use Internal DNC List: </td><td align=left><select size=1 name=use_internal_dnc><option>Y</option><option>N</option><option SELECTED>$use_internal_dnc</option></select>$NWB#osdial_campaigns-use_internal_dnc$NWE</td></tr>";
+			echo "<tr><td align=right>Use Internal DNC List: </td><td align=left><select size=1 name=use_internal_dnc><option>Y</option><option>N</option><option SELECTED>$use_internal_dnc</option></select>".helptag("osdial_campaigns-use_internal_dnc")."</td></tr>";
         echo "<tr><td>&nbsp;</td></tr>";
 		echo "<tr><td align=right class=no-ul colspan=2>";
 		jump_section(1);
@@ -1895,9 +1895,9 @@ $dial_method="RATIO";
         
         	echo "  <table cellspacing=0 cellpadding=0 border=0 align=center>";
         	echo "    <tr>";
-        	echo "      <td style=\"$disp_allow_closers\" align=center>Allowed Transfer Groups: $NWB#osdial_campaigns-xfer_groups$NWE</td>";
+				echo "      <td style=\"$disp_allow_closers\" align=center>Allowed Transfer Groups: ".helptag("osdial_campaigns-xfer_groups")."</td>";
         	echo "      <td width=15%>&nbsp;</td>";
-        	echo "      <td style=\"$disp_allow_inbound\" align=center>Allowed Inbound Groups: $NWB#osdial_campaigns-closer_campaigns$NWE</td>";
+				echo "      <td style=\"$disp_allow_inbound\" align=center>Allowed Inbound Groups: ".helptag("osdial_campaigns-closer_campaigns")."</td>";
         	echo "    </tr>";
         	echo "    <tr>";
         	echo "      <td style=\"$disp_allow_closers\" align=center valign=top>";
@@ -1941,7 +1941,7 @@ $dial_method="RATIO";
         $dispinactSQL = "AND active='Y'";
         if ($dispinact == 1) $dispinactSQL = "";
         
-		echo "<font color=$default_text size=+1>LISTS WITHIN THIS CAMPAIGN &nbsp; $NWB#osdial_campaign_lists$NWE</font></b><br>";
+			echo "<font color=$default_text size=+1>LISTS WITHIN THIS CAMPAIGN &nbsp; ".helptag("osdial_campaign_lists")."</font></b><br>";
 		echo "<center><font color=$default_text size=-1>";
 		if ($dispinact == '1') {
 			echo "<a href=\"$PHP_SELF?ADD=$ADD&campaign_id=$campaign_id&dispinact=\">(Hide Inactive)</a>";
@@ -2028,7 +2028,7 @@ $dial_method="RATIO";
             }
 
 
-            echo "<center><br><font class=top_header_sect color=$default_text size=+1>CUSTOM STATUSES WITHIN THIS CAMPAIGN &nbsp; $NWB#osdial_campaign_statuses$NWE</font><br><br>";
+            echo "<center><br><font class=top_header_sect color=$default_text size=+1>CUSTOM STATUSES WITHIN THIS CAMPAIGN &nbsp; ".helptag("osdial_campaign_statuses")."</font><br><br>";
             echo "  <table bgcolor=grey width=$section_width cellspacing=1 align=center>";
             echo "    <tr class=tabheader>";
             echo "      <td align=center>STATUS</td>";
@@ -2086,7 +2086,7 @@ $dial_method="RATIO";
 
         ##### CAMPAIGN HOTKEYS #####
         if ($SUB==23) {
-            echo "<center><br><font class=top_header color=$default_text size=+1>CUSTOM HOT KEYS WITHIN THIS CAMPAIGN &nbsp; $NWB#osdial_campaign_hotkeys$NWE</font><br><br>";
+            echo "<center><br><font class=top_header color=$default_text size=+1>CUSTOM HOT KEYS WITHIN THIS CAMPAIGN &nbsp; ".helptag("osdial_campaign_hotkeys")."</font><br><br>";
             echo "  <table bgcolor=grey width=500 cellspacing=1 align=center>";
             echo "    <tr class=tabheader>";
             echo "      <td align=center>HOT&nbsp;KEY</td>";
@@ -2139,7 +2139,7 @@ $dial_method="RATIO";
 
         ##### CAMPAIGN LEAD RECYCLING #####
         if ($SUB==25) {
-            echo "<center><br><font class=top_header color=$default_text size=+1>LEAD RECYCLING WITHIN THIS CAMPAIGN &nbsp; $NWB#osdial_lead_recycle$NWE</font><br><br>";
+            echo "<center><br><font class=top_header color=$default_text size=+1>LEAD RECYCLING WITHIN THIS CAMPAIGN &nbsp; ".helptag("osdial_lead_recycle")."</font><br><br>";
             echo "  <table bgcolor=grey width=600 cellspacing=1>";
             echo "    <tr class=tabheader>";
             echo "      <td>&nbsp;</td>";
@@ -2199,7 +2199,7 @@ $dial_method="RATIO";
 
         ##### CAMPAIGN AUTO-ALT-NUMBER DIALING #####
         if ($SUB==26) {
-            echo "<center><br><font class=top_header color=$default_text size=+1>AUTO ALT NUMBER DIALING FOR THIS CAMPAIGN &nbsp; $NWB#osdial_auto_alt_dial_statuses$NWE</font><br><br>";
+            echo "<center><br><font class=top_header color=$default_text size=+1>AUTO ALT NUMBER DIALING FOR THIS CAMPAIGN &nbsp; ".helptag("osdial_auto_alt_dial_statuses")."</font><br><br>";
             echo "  <table bgcolor=grey width=300 cellspacing=1>";
             echo "    <tr class=tabheader>";
             echo "      <td align=center>STATUSES</td>";
@@ -2234,7 +2234,7 @@ $dial_method="RATIO";
 
         ##### CAMPAIGN PAUSE CODES #####
         if ($SUB==27) {
-            echo "<center><br><font class=top_header color=$default_text size=+1>AGENT PAUSE CODES FOR THIS CAMPAIGN &nbsp; $NWB#osdial_pause_codes$NWE</font><br><br>";
+            echo "<center><br><font class=top_header color=$default_text size=+1>AGENT PAUSE CODES FOR THIS CAMPAIGN &nbsp; ".helptag("osdial_pause_codes")."</font><br><br>";
             echo "  <table bgcolor=grey width=600 cellspacing=1>";
             echo "    <tr class=tabheader>";
             echo "      <td align=center>PAUSE CODE</td>";
@@ -2455,19 +2455,19 @@ if ($ADD==34)
         echo "<table width=$section_width cellspacing=3>";
         echo "<tr bgcolor=$oddrows><td align=right width=40%>ID: </td><td align=left width=60%>";
         echo "<b>" . mclabel($row[0]) . "</b>";
-        echo "$NWB#osdial_campaigns-campaign_id$NWE</td></tr>";
-        echo "<tr bgcolor=$oddrows><td align=right>Name: </td><td align=left><input type=text name=campaign_name size=40 maxlength=40 value=\"$row[1]\">$NWB#osdial_campaigns-campaign_name$NWE</td></tr>";
-        echo "<tr bgcolor=$oddrows><td align=right>Description: </td><td align=left>$row[57]$NWB#osdial_campaigns-campaign_description$NWE</td></tr>";
-        echo "<tr bgcolor=$oddrows><td align=right>Change Date: </td><td align=left title=\"$campaign_changedate\">" . dateToLocal($link,'first',$campaign_changedate,$webClientAdjGMT,'',$webClientDST,1) ." &nbsp; $NWB#osdial_campaigns-campaign_changedate$NWE</td></tr>";
-        echo "<tr bgcolor=$oddrows><td align=right>Login Date: </td><td align=left title=\"$campaign_logindate\">" . dateToLocal($link,'first',$campaign_logindate,$webClientAdjGMT,'',$webClientDST,1) . " &nbsp; $NWB#osdial_campaigns-campaign_logindate$NWE</td></tr>";
+        echo "".helptag("osdial_campaigns-campaign_id")."</td></tr>";
+        echo "<tr bgcolor=$oddrows><td align=right>Name: </td><td align=left><input type=text name=campaign_name size=40 maxlength=40 value=\"$row[1]\">".helptag("osdial_campaigns-campaign_name")."</td></tr>";
+        echo "<tr bgcolor=$oddrows><td align=right>Description: </td><td align=left>$row[57]".helptag("osdial_campaigns-campaign_description")."</td></tr>";
+        echo "<tr bgcolor=$oddrows><td align=right>Change Date: </td><td align=left title=\"$campaign_changedate\">" . dateToLocal($link,'first',$campaign_changedate,$webClientAdjGMT,'',$webClientDST,1) ." &nbsp; ".helptag("osdial_campaigns-campaign_changedate")."</td></tr>";
+        echo "<tr bgcolor=$oddrows><td align=right>Login Date: </td><td align=left title=\"$campaign_logindate\">" . dateToLocal($link,'first',$campaign_logindate,$webClientAdjGMT,'',$webClientDST,1) . " &nbsp; ".helptag("osdial_campaigns-campaign_logindate")."</td></tr>";
 
-        echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option SELECTED>$row[2]</option></select>$NWB#osdial_campaigns-active$NWE</td></tr>";
-        echo "<tr style=\"visibility:collapse;\" bgcolor=$oddrows><td align=right>Park Extension: </td><td align=left>$row[9] - $row[10]$NWB#osdial_campaigns-park_ext$NWE</td></tr>";
-        echo "<tr bgcolor=$oddrows><td align=right>Web Form 1: </td><td align=left>" . ellipse($row[11],50,true) . "$NWB#osdial_campaigns-web_form_address$NWE</td></tr>";
-        echo "<tr bgcolor=$oddrows><td align=right>Web Form 2: </td><td align=left>" . ellipse($row[69],50,true) . "$NWB#osdial_campaigns-web_form_address$NWE</td></tr>";
-        echo "<tr bgcolor=$oddrows><td align=right>Allow Transfer and Closers: </td><td align=left>$row[12] $NWB#osdial_campaigns-allow_closers$NWE</td></tr>";
-        echo "<tr bgcolor=$oddrows><td align=right>Default Transfer Group: </td><td align=left>$default_xfer_group $NWB#osdial_campaigns-default_xfer_group$NWE</td></tr>";
-        echo "<tr bgcolor=$oddrows><td align=right>Allow Inbound and Blended: </td><td align=left>$campaign_allow_inbound $NWB#osdial_campaigns-campaign_allow_inbound$NWE</td></tr>";
+        echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option SELECTED>$row[2]</option></select>".helptag("osdial_campaigns-active")."</td></tr>";
+        echo "<tr style=\"visibility:collapse;\" bgcolor=$oddrows><td align=right>Park Extension: </td><td align=left>$row[9] - $row[10]".helptag("osdial_campaigns-park_ext")."</td></tr>";
+        echo "<tr bgcolor=$oddrows><td align=right>Web Form 1: </td><td align=left>" . ellipse($row[11],50,true) . "".helptag("osdial_campaigns-web_form_address")."</td></tr>";
+        echo "<tr bgcolor=$oddrows><td align=right>Web Form 2: </td><td align=left>" . ellipse($row[69],50,true) . "".helptag("osdial_campaigns-web_form_address")."</td></tr>";
+        echo "<tr bgcolor=$oddrows><td align=right>Allow Transfer and Closers: </td><td align=left>$row[12] ".helptag("osdial_campaigns-allow_closers")."</td></tr>";
+        echo "<tr bgcolor=$oddrows><td align=right>Default Transfer Group: </td><td align=left>$default_xfer_group ".helptag("osdial_campaigns-default_xfer_group")."</td></tr>";
+        echo "<tr bgcolor=$oddrows><td align=right>Allow Inbound and Blended: </td><td align=left>$campaign_allow_inbound ".helptag("osdial_campaigns-campaign_allow_inbound")."</td></tr>";
 
         $o=0;
         while ($Ds_to_print > $o) 
@@ -2493,7 +2493,7 @@ if ($ADD==34)
 
         echo "$dial_statuses_list";
         echo "</select> &nbsp; ";
-        echo "<input type=submit name=submit value=ADD> &nbsp; &nbsp; $NWB#osdial_campaigns-dial_status$NWE</td></tr>";
+        echo "<input type=submit name=submit value=ADD> &nbsp; &nbsp; ".helptag("osdial_campaigns-dial_status")."</td></tr>";
 
         echo "<tr bgcolor=$oddrows>";
         echo "  <td align=right>List Order: </td>";
@@ -2558,9 +2558,9 @@ if ($ADD==34)
             $seln='selected';
         }
         echo "    <select size=1 name=lead_order_nthnew><option value=\"\" $seln>-------</option><option $sel2>2nd NEW</option><option $sel3>3rd NEW</option><option $sel4>4th NEW</option><option $sel5>5th NEW</option><option $sel6>6th NEW</option></select>";
-        echo "    $NWB#osdial_campaigns-lead_order$NWE</td></tr>";
-        #echo "<tr bgcolor=$oddrows><td align=right>List Order: </td><td align=left><select size=1 name=lead_order ><option>DOWN</option><option>UP</option><option>DOWN PHONE</option><option>UP PHONE</option><option>DOWN LAST NAME</option><option>UP LAST NAME</option><option>DOWN COUNT</option><option>UP COUNT</option><option>DOWN 2nd NEW</option><option>DOWN 3rd NEW</option><option>DOWN 4th NEW</option><option>DOWN 5th NEW</option><option>DOWN 6th NEW</option><option>UP 2nd NEW</option><option>UP 3rd NEW</option><option>UP 4th NEW</option><option>UP 5th NEW</option><option>UP 6th NEW</option><option>DOWN PHONE 2nd NEW</option><option>DOWN PHONE 3rd NEW</option><option>DOWN PHONE 4th NEW</option><option>DOWN PHONE 5th NEW</option><option>DOWN PHONE 6th NEW</option><option>UP PHONE 2nd NEW</option><option>UP PHONE 3rd NEW</option><option>UP PHONE 4th NEW</option><option>UP PHONE 5th NEW</option><option>UP PHONE 6th NEW</option><option>DOWN LAST NAME 2nd NEW</option><option>DOWN LAST NAME 3rd NEW</option><option>DOWN LAST NAME 4th NEW</option><option>DOWN LAST NAME 5th NEW</option><option>DOWN LAST NAME 6th NEW</option><option>UP LAST NAME 2nd NEW</option><option>UP LAST NAME 3rd NEW</option><option>UP LAST NAME 4th NEW</option><option>UP LAST NAME 5th NEW</option><option>UP LAST NAME 6th NEW</option><option>DOWN COUNT 2nd NEW</option><option>DOWN COUNT 3rd NEW</option><option>DOWN COUNT 4th NEW</option><option>DOWN COUNT 5th NEW</option><option>DOWN COUNT 6th NEW</option><option>UP COUNT 2nd NEW</option><option>UP COUNT 3rd NEW</option><option>UP COUNT 4th NEW</option><option>UP COUNT 5th NEW</option><option>UP COUNT 6th NEW</option><option>RANDOM</option><option SELECTED>$lead_order</option></select>$NWB#osdial_campaigns-lead_order$NWE</td></tr>";
-        #echo "<tr bgcolor=$oddrows><td align=right>List Order: </td><td align=left><select size=1 name=lead_order><option>DOWN</option><option>UP</option><option>UP PHONE</option><option>DOWN PHONE</option><option>UP LAST NAME</option><option>DOWN LAST NAME</option><option>UP COUNT</option><option>DOWN COUNT</option><option>DOWN COUNT 2nd NEW</option><option>DOWN COUNT 3rd NEW</option><option>DOWN COUNT 4th NEW</option><option>DOWN COUNT 5th NEW</option><option>DOWN COUNT 6th NEW</option><option SELECTED>$lead_order</option></select>$NWB#osdial_campaigns-lead_order$NWE</td></tr>";
+        echo "    ".helptag("osdial_campaigns-lead_order")."</td></tr>";
+        #echo "<tr bgcolor=$oddrows><td align=right>List Order: </td><td align=left><select size=1 name=lead_order ><option>DOWN</option><option>UP</option><option>DOWN PHONE</option><option>UP PHONE</option><option>DOWN LAST NAME</option><option>UP LAST NAME</option><option>DOWN COUNT</option><option>UP COUNT</option><option>DOWN 2nd NEW</option><option>DOWN 3rd NEW</option><option>DOWN 4th NEW</option><option>DOWN 5th NEW</option><option>DOWN 6th NEW</option><option>UP 2nd NEW</option><option>UP 3rd NEW</option><option>UP 4th NEW</option><option>UP 5th NEW</option><option>UP 6th NEW</option><option>DOWN PHONE 2nd NEW</option><option>DOWN PHONE 3rd NEW</option><option>DOWN PHONE 4th NEW</option><option>DOWN PHONE 5th NEW</option><option>DOWN PHONE 6th NEW</option><option>UP PHONE 2nd NEW</option><option>UP PHONE 3rd NEW</option><option>UP PHONE 4th NEW</option><option>UP PHONE 5th NEW</option><option>UP PHONE 6th NEW</option><option>DOWN LAST NAME 2nd NEW</option><option>DOWN LAST NAME 3rd NEW</option><option>DOWN LAST NAME 4th NEW</option><option>DOWN LAST NAME 5th NEW</option><option>DOWN LAST NAME 6th NEW</option><option>UP LAST NAME 2nd NEW</option><option>UP LAST NAME 3rd NEW</option><option>UP LAST NAME 4th NEW</option><option>UP LAST NAME 5th NEW</option><option>UP LAST NAME 6th NEW</option><option>DOWN COUNT 2nd NEW</option><option>DOWN COUNT 3rd NEW</option><option>DOWN COUNT 4th NEW</option><option>DOWN COUNT 5th NEW</option><option>DOWN COUNT 6th NEW</option><option>UP COUNT 2nd NEW</option><option>UP COUNT 3rd NEW</option><option>UP COUNT 4th NEW</option><option>UP COUNT 5th NEW</option><option>UP COUNT 6th NEW</option><option>RANDOM</option><option SELECTED>$lead_order</option></select>".helptag("osdial_campaigns-lead_order")."</td></tr>";
+        #echo "<tr bgcolor=$oddrows><td align=right>List Order: </td><td align=left><select size=1 name=lead_order><option>DOWN</option><option>UP</option><option>UP PHONE</option><option>DOWN PHONE</option><option>UP LAST NAME</option><option>DOWN LAST NAME</option><option>UP COUNT</option><option>DOWN COUNT</option><option>DOWN COUNT 2nd NEW</option><option>DOWN COUNT 3rd NEW</option><option>DOWN COUNT 4th NEW</option><option>DOWN COUNT 5th NEW</option><option>DOWN COUNT 6th NEW</option><option SELECTED>$lead_order</option></select>".helptag("osdial_campaigns-lead_order")."</td></tr>";
 
         echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=31&SUB=29&campaign_id=$campaign_id&vcl_id=$list_order_mix\">List Mix</a>: </td><td align=left><select size=1 name=list_order_mix>";
         echo "$mixes_list";
@@ -2568,21 +2568,21 @@ if ($ADD==34)
             {echo "<option selected value=\"$list_order_mix\">$list_order_mix - $mixname_list[$list_order_mix]</option>";}
         else
             {echo "<option selected value=\"ACTIVE\">ACTIVE ($mixname_list[ACTIVE])</option>";}
-        echo "</select>$NWB#osdial_campaigns-list_order_mix$NWE</td></tr>";
+        echo "</select>".helptag("osdial_campaigns-list_order_mix")."</td></tr>";
 
         echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=31111111&lead_filter_id=$lead_filter_id\">Lead Filter</a>: </td><td align=left><select size=1 name=lead_filter_id>";
         echo get_filters($link, $lead_filter_id);
         #echo "$filters_list";
         #echo "<option selected value=\"$lead_filter_id\">$lead_filter_id - $filtername_list[$lead_filter_id]</option>";
-        echo "</select>$NWB#osdial_campaigns-lead_filter_id$NWE</td></tr>";
+        echo "</select>".helptag("osdial_campaigns-lead_filter_id")."</td></tr>";
 
-        echo "<tr bgcolor=$oddrows><td align=right>Hopper Level: </td><td align=left><select size=1 name=hopper_level><option>1</option><option>5</option><option>10</option><option>20</option><option>50</option><option>100</option><option>200</option><option>500</option><option>700</option><option>1000</option><option>2000</option><option SELECTED>$hopper_level</option></select>$NWB#osdial_campaigns-hopper_level$NWE</td></tr>";
+        echo "<tr bgcolor=$oddrows><td align=right>Hopper Level: </td><td align=left><select size=1 name=hopper_level><option>1</option><option>5</option><option>10</option><option>20</option><option>50</option><option>100</option><option>200</option><option>500</option><option>700</option><option>1000</option><option>2000</option><option SELECTED>$hopper_level</option></select>".helptag("osdial_campaigns-hopper_level")."</td></tr>";
 
-        echo "<tr bgcolor=$oddrows><td align=right>Force Reset of Hopper: </td><td align=left><select size=1 name=reset_hopper><option>Y</option><option SELECTED>N</option></select>$NWB#osdial_campaigns-force_reset_hopper$NWE</td></tr>";
+        echo "<tr bgcolor=$oddrows><td align=right>Force Reset of Hopper: </td><td align=left><select size=1 name=reset_hopper><option>Y</option><option SELECTED>N</option></select>".helptag("osdial_campaigns-force_reset_hopper")."</td></tr>";
 
-        echo "<tr bgcolor=$unusualrows><td align=right>Dial Method: </td><td align=left><select size=1 name=dial_method><option >MANUAL</option><option>RATIO</option><option>ADAPT_HARD_LIMIT</option><option>ADAPT_TAPERED</option><option>ADAPT_AVERAGE</option><option SELECTED>$dial_method</option></select>$NWB#osdial_campaigns-dial_method$NWE</td></tr>";
+        echo "<tr bgcolor=$unusualrows><td align=right>Dial Method: </td><td align=left><select size=1 name=dial_method><option >MANUAL</option><option>RATIO</option><option>ADAPT_HARD_LIMIT</option><option>ADAPT_TAPERED</option><option>ADAPT_AVERAGE</option><option SELECTED>$dial_method</option></select>".helptag("osdial_campaigns-dial_method")."</td></tr>";
 
-        echo "<tr bgcolor=$unusualrows><td align=right>Auto Dial Level: </td><td align=left nowrap><input type=text name=auto_dial_level size=6 maxlength=6 value=\"$auto_dial_level\" selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;4.0;4.5;5.0\"> (0 = off)$NWB#osdial_campaigns-auto_dial_level$NWE</td></tr>";
+        echo "<tr bgcolor=$unusualrows><td align=right>Auto Dial Level: </td><td align=left nowrap><input type=text name=auto_dial_level size=6 maxlength=6 value=\"$auto_dial_level\" selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;4.0;4.5;5.0\"> (0 = off)".helptag("osdial_campaigns-auto_dial_level")."</td></tr>";
 
         echo "<tr bgcolor=$unusualrows><td align=right>Adapt Intensity Modifier: </td><td align=left><select size=1 name=adaptive_intensity>";
         $n=40;
@@ -2597,7 +2597,7 @@ if ($ADD==34)
                 {echo "<option value=\"$n\">$n - $dtl</option>";}
             $n--;
             }
-        echo "</select> $NWB#osdial_campaigns-adaptive_intensity$NWE</td></tr>";
+        echo "</select> ".helptag("osdial_campaigns-adaptive_intensity")."</td></tr>";
 
         echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=3111111&script_id=$script_id\">Script</a>: </td><td align=left>";
         if ($LOG['multicomp_user'] > 0) {
@@ -2609,7 +2609,7 @@ if ($ADD==34)
 
         echo "<tr bgcolor=$oddrows><td align=right>Get Call Launch: </td><td align=left>$get_call_launch</td></tr>";
 
-        echo "<tr bgcolor=$oddrows><td align=right>Answers Per Hour Limit: </td><td align=left><input type=text name=answers_per_hour_limit size=10 maxlength=10 value=\"$answers_per_hour_limit\">$NWB#osdial_campaigns-answers_per_hour_limit$NWE</td></tr>";
+        echo "<tr bgcolor=$oddrows><td align=right>Answers Per Hour Limit: </td><td align=left><input type=text name=answers_per_hour_limit size=10 maxlength=10 value=\"$answers_per_hour_limit\">".helptag("osdial_campaigns-answers_per_hour_limit")."</td></tr>";
 
         echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input style='color:#1C4754' type=submit name=SUBMIT value=Submit></td></tr>";
         echo "</table></center></FORM>";
@@ -2623,7 +2623,7 @@ if ($ADD==34)
             if ($dispinact == 1) $dispinactSQL = "";
 
         echo "<center>";
-        echo "<br><br><b><font color=$default_text>LISTS WITHIN THIS CAMPAIGN: &nbsp; $NWB#osdial_campaign_lists$NWE</font></b><br>";
+        echo "<br><br><b><font color=$default_text>LISTS WITHIN THIS CAMPAIGN: &nbsp; ".helptag("osdial_campaign_lists")."</font></b><br>";
         echo "<center><font color=$default_text size=-1>";
         if ($dispinact == '1') {
             echo "<a href=\"$PHP_SELF?ADD=$ADD&campaign_id=$campaign_id&dispinact=\">(Hide Inactive)</a>";
@@ -2771,7 +2771,7 @@ if ( ($ADD==34) or ($ADD==31) ) {
         }
 
 
-        echo "<br><font class=top_header color=$default_text size=+1>LIST MIXES FOR THIS CAMPAIGN &nbsp; $NWB#osdial_campaigns-list_order_mix$NWE</font><br><br>\n";
+        echo "<br><font class=top_header color=$default_text size=+1>LIST MIXES FOR THIS CAMPAIGN &nbsp; ".helptag("osdial_campaigns-list_order_mix")."</font><br><br>\n";
         echo "<table width=$section_width cellspacing=1 cellpadding=0 bgcolor=grey class=row>\n";
 
         $stmt=sprintf("SELECT * FROM osdial_campaigns_list_mix WHERE campaign_id='%s' ORDER BY status,vcl_id;",mres($campaign_id));

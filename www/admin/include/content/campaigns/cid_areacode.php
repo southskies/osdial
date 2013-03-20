@@ -340,7 +340,7 @@ if ($ADD == "3ca" and $SUB == 2) {
     if ($LOG['modify_campaigns'] == 1) {
         echo "<center>\n";
         echo "  <br><font color=$default_text size=+1>CALLERID/AREACODES FOR THIS CAMPAIGN</font><br>\n";
-        #echo " &nbsp; $NWB#osdial_campaign_cid_areacodes$NWE</font><br>\n";
+        #echo " &nbsp; ".helptag("osdial_campaign_cid_areacodes")."</font><br>\n";
         echo "  <table bgcolor=grey width=500 cellspacing=1>\n";
         echo "    <tr class=tabheader>\n";
         echo "      <td align=center>AREACODE</td>\n";

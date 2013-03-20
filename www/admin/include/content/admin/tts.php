@@ -58,11 +58,11 @@ if ($ADD=="11tts") {
         echo "<table width=$section_width cellspacing=3>\n";
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right width=50%>Description: </td>\n";
-        echo "    <td align=left><input type=text name=tts_description size=50 maxlength=100 value=\"\">$NWB#tts-description$NWE</td>\n";
+        echo "    <td align=left><input type=text name=tts_description size=50 maxlength=100 value=\"\">".helptag("tts-description")."</td>\n";
         echo "  </tr>\n";
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right width=50%>Extension: </td>\n";
-        echo "    <td align=left><input type=text name=tts_extension size=10 maxlength=20 value=\"\">$NWB#tts-extension$NWE</td>\n";
+        echo "    <td align=left><input type=text name=tts_extension size=10 maxlength=20 value=\"\">".helptag("tts-extension")."</td>\n";
         echo "  </tr>\n";
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right width=50%>Voice: </td>\n";
@@ -71,7 +71,7 @@ if ($ADD=="11tts") {
         foreach ($fest_voices as $voice) {
             echo "        <option value=\"$voice\">$fest_types[$voice]</option>\n";
         }
-        echo "      </select>$NWB#tts-voice$NWE</td>\n";
+        echo "      </select>".helptag("tts-voice")."</td>\n";
         echo "  </tr>\n";
         echo "  <tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
         echo "</table></form></center>\n";
@@ -235,8 +235,8 @@ if ($ADD=="31tts") {
         echo "<input type=hidden name=tts_id value=$tts[id]>\n";
         echo "<table width=$section_width cellspacing=3>\n";
         echo "<tr bgcolor=$oddrows><td align=right>ID: </td><td align=left><font color=$default_text>" . $tts['id'] . "</font></td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Description: </td><td align=left><input type=text name=tts_description size=50 maxlength=255 value=\"$tts[description]\">$NWB#tts-description$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Extension: </td><td align=left><input type=text name=tts_extension size=10 maxlength=20 value=\"$tts[extension]\">$NWB#tts-description$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Description: </td><td align=left><input type=text name=tts_description size=50 maxlength=255 value=\"$tts[description]\">".helptag("tts-description")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Extension: </td><td align=left><input type=text name=tts_extension size=10 maxlength=20 value=\"$tts[extension]\">".helptag("tts-description")."</td></tr>\n";
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right width=50%>Voice: </td>\n";
         echo "    <td align=left>\n";
@@ -244,7 +244,7 @@ if ($ADD=="31tts") {
         foreach ($fest_voices as $voice) {
             $vsel=''; if ($tts['voice']==$voice) $vsel='selected'; echo "        <option value=\"$voice\" $vsel>$fest_types[$voice]</option>\n";
         }
-        echo "      </select>$NWB#tts-voice$NWE</td>\n";
+        echo "      </select>".helptag("tts-voice")."</td>\n";
         echo "  </tr>\n";
         $tts['phrase'] = OSDpreg_replace("/\n/",'<br/>',$tts['phrase']);
         echo "<tr bgcolor=$oddrows><td align=center colspan=2><div id=ttscon name=ttscon class=ttscon>Phrase<br/><textarea name=tts_phrase rows=20 cols=120>" . $tts['phrase'] . "</textarea></div></td></tr>\n";

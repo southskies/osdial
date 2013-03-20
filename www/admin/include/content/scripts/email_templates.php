@@ -337,7 +337,7 @@ tinyMCE.init({
             echo "      <input type=hidden name=company_id value=$LOG[company_id]>\n";
         }
         echo "      <input type=text name=et_id size=12 maxlength=10> (no spaces or punctuation)\n";
-        echo "      $NWB#osdial_email_templates-et_id$NWE\n";
+        echo "      ".helptag("osdial_email_templates-et_id")."\n";
         echo "    </td>\n";
         echo "  </tr>\n";
         echo "  <tr bgcolor=$oddrows>\n";
@@ -346,14 +346,14 @@ tinyMCE.init({
         echo "    <td align=right>Name:</td>\n";
         echo "    <td align=left>\n";
         echo "      <input type=text name=et_name size=40 maxlength=50> (title of the template)\n";
-        echo "      $NWB#osdial_email_templates-et_name$NWE\n";
+        echo "      ".helptag("osdial_email_templates-et_name")."\n";
         echo "    </td>\n";
         echo "  </tr>\n";
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right>Comments:</td>\n";
         echo "    <td align=left>\n";
         echo "      <input type=text name=et_comments size=50 maxlength=255>\n";
-        echo "      $NWB#osdial_email_templates-et_comments$NWE\n";
+        echo "      ".helptag("osdial_email_templates-et_comments")."\n";
         echo "    </td>\n";
         echo "  </tr>\n";
         echo "  <tr bgcolor=$oddrows>\n";
@@ -363,7 +363,7 @@ tinyMCE.init({
         echo "        <option selected>Y</option>\n";
         echo "        <option>N</option>\n";
         echo "      </select>\n";
-        echo "      $NWB#osdial_email_templates-active$NWE\n";
+        echo "      ".helptag("osdial_email_templates-active")."\n";
         echo "    </td>\n";
         echo "  </tr>\n";
 
@@ -371,7 +371,7 @@ tinyMCE.init({
         echo "    <td align=right>SMTP Host / Port:</td>\n";
         echo "    <td align=left>\n";
         echo "      <input type=text name=et_host size=40 maxlength=255 value=\"localhost\"> / <input type=text name=et_port size=5 maxlength=5 value=\"25\">\n";
-        echo "      $NWB#osdial_email_templates-et_host$NWE\n";
+        echo "      ".helptag("osdial_email_templates-et_host")."\n";
         echo "    </td>\n";
         echo "  </tr>\n";
 
@@ -379,7 +379,7 @@ tinyMCE.init({
         echo "    <td align=right>SMTP User / Pass:</td>\n";
         echo "    <td align=left>\n";
         echo "      <input type=text name=et_user size=20 maxlength=255> / <input type=text name=et_pass size=20 maxlength=255>\n";
-        echo "      $NWB#osdial_email_templates-et_user$NWE\n";
+        echo "      ".helptag("osdial_email_templates-et_user")."\n";
         echo "    </td>\n";
         echo "  </tr>\n";
 
@@ -387,7 +387,7 @@ tinyMCE.init({
         echo "    <td align=right>From:</td>\n";
         echo "    <td align=left>\n";
         echo "      <input type=text name=et_from size=50 maxlength=255 value='\"John Doe\" <johndoe@gmail.com>'>\n";
-        echo "      $NWB#osdial_email_templates-et_from$NWE\n";
+        echo "      ".helptag("osdial_email_templates-et_from")."\n";
         echo "    </td>\n";
         echo "  </tr>\n";
 
@@ -395,7 +395,7 @@ tinyMCE.init({
         echo "    <td align=right>Subject:</td>\n";
         echo "    <td align=left>\n";
         echo "      <input type=text name=et_subject size=50 maxlength=255>\n";
-        echo "      $NWB#osdial_email_templates-et_subject$NWE\n";
+        echo "      ".helptag("osdial_email_templates-et_subject")."\n";
         echo "    </td>\n";
         echo "  </tr>\n";
 
@@ -882,21 +882,21 @@ tinyMCE.init({
         echo "<table width=$section_width onkeypress=\"tinyMCE.triggerSave();\">\n";
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right>Template ID:</td>\n";
-        echo "    <td align=left><b>" . mclabel($et_id) . "</b>$NWB#osdial_email_templates-et_id$NWE</td>\n";
+        echo "    <td align=left><b>" . mclabel($et_id) . "</b>".helptag("osdial_email_templates-et_id")."</td>\n";
         echo "  </tr>\n";
 
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right>Name:</td>\n";
         echo "    <td align=left>\n";
         echo "      <input type=text name=et_name size=40 maxlength=50 value=\"$et[et_name]\"> (title of the template)\n";
-        echo "      $NWB#osdial_email_templates-et_name$NWE\n";
+        echo "      ".helptag("osdial_email_templates-et_name")."\n";
         echo "    </td>\n";
         echo "  </tr>\n";
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right>Comments:</td>\n";
         echo "    <td align=left>\n";
         echo "      <input type=text name=et_comments size=50 maxlength=255 value=\"$et[et_comments]\">\n";
-        echo "      $NWB#osdial_email_templates-et_comments$NWE\n";
+        echo "      ".helptag("osdial_email_templates-et_comments")."\n";
         echo "    </td>\n";
         echo "  </tr>\n";
         echo "  <tr bgcolor=$oddrows>\n";
@@ -907,7 +907,7 @@ tinyMCE.init({
         echo "        <option>N</option>\n";
         echo "        <option selected>$et[active]</option>\n";
         echo "      </select>\n";
-        echo "      $NWB#osdial_email_templates-active$NWE\n";
+        echo "      ".helptag("osdial_email_templates-active")."\n";
         echo "    </td>\n";
         echo "  </tr>\n";
         echo "  <tr bgcolor=$oddrows>\n";
@@ -919,7 +919,7 @@ tinyMCE.init({
         echo "        <option>ALLFORCE</option>\n";
         echo "        <option selected>$et[et_send_action]</option>\n";
         echo "      </select>\n";
-        echo "      $NWB#osdial_email_templates-et_send_action$NWE\n";
+        echo "      ".helptag("osdial_email_templates-et_send_action")."\n";
         echo "    </td>\n";
         echo "  </tr>\n";
 
@@ -927,7 +927,7 @@ tinyMCE.init({
         echo "    <td align=right>SMTP Host / Port:</td>\n";
         echo "    <td align=left>\n";
         echo "      <input type=text name=et_host size=40 maxlength=255 value=\"$et[et_host]\"> / <input type=text name=et_port size=5 maxlength=5 value=\"$et[et_port]\">\n";
-        echo "      $NWB#osdial_email_templates-et_host$NWE\n";
+        echo "      ".helptag("osdial_email_templates-et_host")."\n";
         echo "    </td>\n";
         echo "  </tr>\n";
 
@@ -935,7 +935,7 @@ tinyMCE.init({
         echo "    <td align=right>SMTP User / Pass:</td>\n";
         echo "    <td align=left>\n";
         echo "      <input type=text name=et_user size=20 maxlength=255 value=\"$et[et_user]\"> / <input type=text name=et_pass size=20 maxlength=255 value=\"$et[et_pass]\">\n";
-        echo "      $NWB#osdial_email_templates-et_user$NWE\n";
+        echo "      ".helptag("osdial_email_templates-et_user")."\n";
         echo "    </td>\n";
         echo "  </tr>\n";
 
@@ -944,7 +944,7 @@ tinyMCE.init({
         echo "    <td align=left>\n";
         $et['et_from'] = OSDpreg_replace("/'/",'&#39;',$et['et_from']);
         echo "      <input type=text name=et_from size=50 maxlength=255 value='$et[et_from]'>\n";
-        echo "      $NWB#osdial_email_templates-et_from$NWE\n";
+        echo "      ".helptag("osdial_email_templates-et_from")."\n";
         echo "    </td>\n";
         echo "  </tr>\n";
 
@@ -952,7 +952,7 @@ tinyMCE.init({
         echo "    <td align=right>Subject:</td>\n";
         echo "    <td align=left>\n";
         echo "      <input type=text name=et_subject size=50 maxlength=255 value=\"$et[et_subject]\">\n";
-        echo "      $NWB#osdial_email_templates-et_subject$NWE\n";
+        echo "      ".helptag("osdial_email_templates-et_subject")."\n";
         echo "    </td>\n";
         echo "  </tr>\n";
 

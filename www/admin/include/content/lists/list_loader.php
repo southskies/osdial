@@ -74,7 +74,7 @@ if ($ADD==122) {
         echo "	        <table align=center width=\"700\" border=0 cellpadding=5 cellspacing=0 bgcolor=$oddrows>\n";
         echo "              <tr>\n";
         echo "                  <td align=right width=\"35%\"><B><font face=\"dejavu sans,verdana,sans-serif\" size=2>Load leads from this file:</font></B></td>\n";
-        echo "                  <td align=left width=\"65%\"><input type=file name=\"leadfile\" value=\"$leadfile\">$NWB#osdial_list_loader$NWE</td>\n";
+        echo "                  <td align=left width=\"65%\"><input type=file name=\"leadfile\" value=\"$leadfile\">".helptag("osdial_list_loader")."</td>\n";
         echo "              </tr>\n";
         echo "              <tr>\n";
         echo "                  <td align=right width=\"25%\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>List ID: </font></td>\n";

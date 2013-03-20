@@ -33,9 +33,9 @@ if ($ADD==111) {
 		echo "<center><br><font class=top_header color=$default_text size=4>ADD A NEW LIST</font><form action=$PHP_SELF method=POST><br></center>\n";
 		echo "<input type=hidden name=ADD value=211>\n";
 		echo "<table width=$section_width bgcolor=$oddrows align=center cellspacing=3>\n";
-		echo "  <tr bgcolor=$oddrows><td align=right width=50%>List ID: </td><td align=left width=50%><input type=text name=list_id size=12 maxlength=12 value=\"" . date("YmdHi") . "\"> (digits only)$NWB#osdial_lists-list_id$NWE</td></tr>\n";
-		echo "  <tr bgcolor=$oddrows><td align=right>List Name: </td><td align=left><input type=text name=list_name size=20 maxlength=20>$NWB#osdial_lists-list_name$NWE</td></tr>\n";
-		echo "  <tr bgcolor=$oddrows><td align=right>List Description: </td><td align=left><input type=text name=list_description size=30 maxlength=255>$NWB#osdial_lists-list_description$NWE</td></tr>\n";
+		echo "  <tr bgcolor=$oddrows><td align=right width=50%>List ID: </td><td align=left width=50%><input type=text name=list_id size=12 maxlength=12 value=\"" . date("YmdHi") . "\"> (digits only)".helptag("osdial_lists-list_id")."</td></tr>\n";
+		echo "  <tr bgcolor=$oddrows><td align=right>List Name: </td><td align=left><input type=text name=list_name size=20 maxlength=20>".helptag("osdial_lists-list_name")."</td></tr>\n";
+		echo "  <tr bgcolor=$oddrows><td align=right>List Description: </td><td align=left><input type=text name=list_description size=30 maxlength=255>".helptag("osdial_lists-list_description")."</td></tr>\n";
 		echo "  <tr bgcolor=$oddrows><td align=right>Campaign: </td><td align=left><select size=1 name=campaign_id>\n";
 		
 			$stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE campaign_id IN %s ORDER BY campaign_id;",$LOG['allowed_campaignsSQL']);
@@ -51,8 +51,8 @@ if ($ADD==111) {
 			}
 		echo "      $campaigns_list";
 		echo "      <option value=\"\" SELECTED>- SELECT CAMPAIGN -</option>\n";
-		echo "    </select>$NWB#osdial_lists-campaign_id$NWE</td></tr>\n";
-		echo "  <tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option SELECTED>N</option></select>$NWB#osdial_lists-active$NWE</td></tr>\n";
+		echo "    </select>".helptag("osdial_lists-campaign_id")."</td></tr>\n";
+		echo "  <tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option SELECTED>N</option></select>".helptag("osdial_lists-active")."</td></tr>\n";
 		echo "  <tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 		echo "</table>\n";
 	} else {
@@ -71,8 +71,8 @@ if ($ADD==125) {
 		echo "<center><br><font class=top_header color=$default_text size='2'>GENERATE TEST LEADS</font><br>(ONLY works with TEST list 998.)<form action=$PHP_SELF method=POST><br><br>\n";
 		echo "<input type=hidden name=ADD value=126>\n";
 		echo "<TABLE width=$section_width cellspacing=3>\n";
-		echo "<tr bgcolor=$oddrows><td align=right>Phone Number: </td><td align=left><input type=text name=testphone size=8 maxlength=8> (digits only)$NWB#$NWE</td></tr>\n";
-		echo "<tr bgcolor=$oddrows><td align=right>Number of leads: </td><td align=left><input type=text name=testnbr size=20 maxlength=20>$NWB#osdial_lists-list_name$NWE</td></tr>\n";
+		echo "<tr bgcolor=$oddrows><td align=right>Phone Number: </td><td align=left><input type=text name=testphone size=8 maxlength=8> (digits only)".helptag("")."</td></tr>\n";
+		echo "<tr bgcolor=$oddrows><td align=right>Number of leads: </td><td align=left><input type=text name=testnbr size=20 maxlength=20>".helptag("osdial_lists-list_name")."</td></tr>\n";
 		echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 			echo "</TABLE></center>\n";
 	} else {
@@ -311,10 +311,10 @@ if ($ADD==311) {
         echo "<input type=hidden name=list_id value=\"$row[0]\">\n";
         echo "<input type=hidden name=old_campaign_id value=\"$row[2]\">\n";
         echo "<TABLE width=$section_width cellspacing=3>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>List ID: </td><td align=left><b>$row[0]</b>$NWB#osdial_lists-list_id$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>List Name: </td><td align=left><input type=text name=list_name size=20 maxlength=20 value=\"$row[1]\">$NWB#osdial_lists-list_name$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>List Description: </td><td align=left><input type=text name=list_description size=30 maxlength=255 value=\"$list_description\">$NWB#osdial_lists-list_description$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Per-Lead Cost: </td><td align=left><input type=text name=cost size=10 maxlength=10 value=\"" . sprintf('%3.4f',$cost) . "\">$NWB#osdial_lists-cost$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>List ID: </td><td align=left><b>$row[0]</b>".helptag("osdial_lists-list_id")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>List Name: </td><td align=left><input type=text name=list_name size=20 maxlength=20 value=\"$row[1]\">".helptag("osdial_lists-list_name")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>List Description: </td><td align=left><input type=text name=list_description size=30 maxlength=255 value=\"$list_description\">".helptag("osdial_lists-list_description")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Per-Lead Cost: </td><td align=left><input type=text name=cost size=10 maxlength=10 value=\"" . sprintf('%3.4f',$cost) . "\">".helptag("osdial_lists-cost")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=34&campaign_id=$campaign_id\">Campaign</a>: </td><td align=left><select size=1 name=campaign_id>\n";
 
         $stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE campaign_id IN %s ORDER BY campaign_id;", $LOG['allowed_campaignsSQL']);
@@ -330,21 +330,21 @@ if ($ADD==311) {
         }
         echo "$campaigns_list";
         echo "<option value=\"$campaign_id\" SELECTED>" . mclabel($campaign_id) . "</option>\n";
-        echo "</select>$NWB#osdial_lists-campaign_id$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option SELECTED>$active</option></select>$NWB#osdial_lists-active$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Reset Lead-Called-Status for this list: </td><td align=left><select size=1 name=reset_list><option>Y</option><option SELECTED>N</option></select>$NWB#osdial_lists-reset_list$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>List Change Date: </td><td align=left title=\"$list_changedate\">" . dateToLocal($link,'first',$list_changedate,$webClientAdjGMT,'',$webClientDST,1) . " &nbsp; $NWB#osdial_lists-list_changedate$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>List Last Call Date: </td><td align=left title=\"$list_lastcalldate\">" . dateToLocal($link,'first',$list_lastcalldate,$webClientAdjGMT,'',$webClientDST,1) . " &nbsp; $NWB#osdial_lists-list_lastcalldate$NWE</td></tr>\n";
+        echo "</select>".helptag("osdial_lists-campaign_id")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option SELECTED>$active</option></select>".helptag("osdial_lists-active")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Reset Lead-Called-Status for this list: </td><td align=left><select size=1 name=reset_list><option>Y</option><option SELECTED>N</option></select>".helptag("osdial_lists-reset_list")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>List Change Date: </td><td align=left title=\"$list_changedate\">" . dateToLocal($link,'first',$list_changedate,$webClientAdjGMT,'',$webClientDST,1) . " &nbsp; ".helptag("osdial_lists-list_changedate")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>List Last Call Date: </td><td align=left title=\"$list_lastcalldate\">" . dateToLocal($link,'first',$list_lastcalldate,$webClientAdjGMT,'',$webClientDST,1) . " &nbsp; ".helptag("osdial_lists-list_lastcalldate")."</td></tr>\n";
         if ($can_scrub_dnc == 'Y') {
-            echo "<tr bgcolor=$oddrows><td align=right>External DNC Scrub Now: </td><td align=left><select size=1 name=scrub_dnc><option>Y</option><option selected>N</option></select>$NWB#osdial_lists-srub_dnc$NWE</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>External DNC Scrub Now: </td><td align=left><select size=1 name=scrub_dnc><option>Y</option><option selected>N</option></select>".helptag("osdial_lists-srub_dnc")."</td></tr>\n";
             echo "<tr bgcolor=$oddrows><td align=right>Last External Scrub: </td><td align=left>$list_scrub_last : $list_scrub_info</td></tr>\n";
         }
-        echo "<tr bgcolor=$oddrows><td align=right>Web Form 1 (campaign override): </td><td align=left><input type=text name=web_form_address size=50 maxlength=255 value=\"$web_form_address\">$NWB#osdial_lists-web_form_address$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Web Form 2 (campaign override): </td><td align=left><input type=text name=web_form_address2 size=50 maxlength=255 value=\"$web_form_address2\">$NWB#osdial_lists-web_form_address$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Web Form 1 (campaign override): </td><td align=left><input type=text name=web_form_address size=50 maxlength=255 value=\"$web_form_address\">".helptag("osdial_lists-web_form_address")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Web Form 2 (campaign override): </td><td align=left><input type=text name=web_form_address2 size=50 maxlength=255 value=\"$web_form_address2\">".helptag("osdial_lists-web_form_address")."</td></tr>\n";
 
         echo "<tr bgcolor=$oddrows><td align=right>Script: </td><td align=left><select size=1 name=script_id>\n";
         echo get_scripts($link, $script_id);
-        echo "</select>$NWB#osdial_lists-list_script$NWE</td></tr>\n";
+        echo "</select>".helptag("osdial_lists-list_script")."</td></tr>\n";
 
         echo "<tr class=tabfooter>";
         echo "<td align=center class=tabbutton>";

@@ -35,24 +35,24 @@ if ($ADD==11111111111) {
         echo "<input type=hidden name=ADD value=21111111111>\n";
         echo "<TABLE width=$section_width cellspacing=3>\n";
 
-        echo "<tr bgcolor=$oddrows><td align=right>Phone extension: </td><td align=left><input type=text name=extension size=20 maxlength=100 value=\"\">$NWB#phones-extension$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Dial Plan Number: </td><td align=left><input type=text name=dialplan_number size=15 maxlength=20 value=\"$row[1]\"> (digits only)$NWB#phones-dialplan_number$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Voicemail Box: </td><td align=left><input type=text name=voicemail_id size=10 maxlength=10 value=\"$row[2]\"> (digits only)$NWB#phones-voicemail_id$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Outbound CallerID Name: </td><td align=left><input type=text name=outbound_cid_name size=20 maxlength=40 value=\"$row[67]\">$NWB#phones-outbound_cid_name$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Outbound CallerID: </td><td align=left><input type=text name=outbound_cid size=10 maxlength=20 value=\"$row[65]\"> (digits only)$NWB#phones-outbound_cid$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Phone IP address: </td><td align=left><input type=text name=phone_ip size=20 maxlength=15 value=\"$row[3]\"> (optional)$NWB#phones-phone_ip$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Computer IP address: </td><td align=left><input type=text name=computer_ip size=20 maxlength=15 value=\"$row[4]\"> (optional)$NWB#phones-computer_ip$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Phone extension: </td><td align=left><input type=text name=extension size=20 maxlength=100 value=\"\">".helptag("phones-extension")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Dial Plan Number: </td><td align=left><input type=text name=dialplan_number size=15 maxlength=20 value=\"$row[1]\"> (digits only)".helptag("phones-dialplan_number")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Voicemail Box: </td><td align=left><input type=text name=voicemail_id size=10 maxlength=10 value=\"$row[2]\"> (digits only)".helptag("phones-voicemail_id")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Outbound CallerID Name: </td><td align=left><input type=text name=outbound_cid_name size=20 maxlength=40 value=\"$row[67]\">".helptag("phones-outbound_cid_name")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Outbound CallerID: </td><td align=left><input type=text name=outbound_cid size=10 maxlength=20 value=\"$row[65]\"> (digits only)".helptag("phones-outbound_cid")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Phone IP address: </td><td align=left><input type=text name=phone_ip size=20 maxlength=15 value=\"$row[3]\"> (optional)".helptag("phones-phone_ip")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Computer IP address: </td><td align=left><input type=text name=computer_ip size=20 maxlength=15 value=\"$row[4]\"> (optional)".helptag("phones-computer_ip")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Server IP: </td><td align=left><select size=1 name=server_ip>\n";
 
         echo "$servers_list";
         #echo "<option selected>" . $sel . "</option>\n";
-        echo "</select>$NWB#phones-server_ip$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Login: </td><td align=left><input type=text name=login size=10 maxlength=10 value=\"$row[6]\">$NWB#phones-login$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=pass size=10 maxlength=10 value=\"$row[7]\">$NWB#phones-pass$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Status: </td><td align=left><select size=1 name=status><option selected>ACTIVE</option><option>SUSPENDED</option><option>CLOSED</option><option>PENDING</option><option>ADMIN</option>$NWB#phones-status$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Active Account: </td><td align=left><select size=1 name=active><option selected>Y</option><option>N</option></select>$NWB#phones-active$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Phone Type: </td><td align=left><input type=text name=phone_type size=20 maxlength=50 value=\"$row[10]\">$NWB#phones-phone_type$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=fullname size=20 maxlength=50 value=\"$row[11]\">$NWB#phones-fullname$NWE</td></tr>\n";
+        echo "</select>".helptag("phones-server_ip")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Login: </td><td align=left><input type=text name=login size=10 maxlength=10 value=\"$row[6]\">".helptag("phones-login")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=pass size=10 maxlength=10 value=\"$row[7]\">".helptag("phones-pass")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Status: </td><td align=left><select size=1 name=status><option selected>ACTIVE</option><option>SUSPENDED</option><option>CLOSED</option><option>PENDING</option><option>ADMIN</option>".helptag("phones-status")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Active Account: </td><td align=left><select size=1 name=active><option selected>Y</option><option>N</option></select>".helptag("phones-active")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Phone Type: </td><td align=left><input type=text name=phone_type size=20 maxlength=50 value=\"$row[10]\">".helptag("phones-phone_type")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=fullname size=20 maxlength=50 value=\"$row[11]\">".helptag("phones-fullname")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Company: </td><td align=left>";
         if ($LOG['multicomp_admin'] > 0) {
             $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
@@ -61,16 +61,16 @@ if ($ADD==11111111111) {
                 echo "<option value=" . (($comp['id'] * 1) + 100) . ">" . (($comp['id'] * 1) + 100) . ": " . $comp['name'] . "</option>\n";
             }
             echo "</select>\n";
-            echo "$NWB#phones-company$NWE";
+            echo "".helptag("phones-company")."";
         } elseif ($LOG['multicomp']>0) {
             echo "<input type=hidden name=company value=$LOG[company_prefix]>";
             echo "<font color=$default_text>" . $LOG[company_prefix] . "</font>";
         } else {
             echo "<input type=text name=company size=10 maxlength=10 value=\"$row[12]\">";
-            echo "$NWB#phones-company$NWE";
+            echo "".helptag("phones-company")."";
         }
         echo "</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Picture: </td><td align=left><input type=text name=picture size=20 maxlength=19 value=\"$row[13]\">$NWB#phones-picture$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Picture: </td><td align=left><input type=text name=picture size=20 maxlength=19 value=\"$row[13]\">".helptag("phones-picture")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows>\n";
         echo "  <td align=right>Client Protocol: </td>\n";
         echo "  <td align=left>\n";
@@ -85,12 +85,12 @@ if ($ADD==11111111111) {
         if ($svrp['count'] > 0) echo "        <option>DAHDI</option>\n";
         echo "      <option>EXTERNAL</option>\n";
         echo "    </select>\n";
-        echo "    $NWB#phones-protocol$NWE\n";
+        echo "    ".helptag("phones-protocol")."\n";
         echo "  </td>\n";
         echo "</tr>\n";
         $gmtsel='-5.00';
         if ($LOG['multicomp_user']>0) $gmtsel=$LOG['company']['default_local_gmt'];
-        echo "<tr bgcolor=$oddrows><td align=right>Local GMT: </td><td align=left><select size=1 name=local_gmt><option>12.75</option><option>12.00</option><option>11.00</option><option>10.00</option><option>9.50</option><option>9.00</option><option>8.00</option><option>7.00</option><option>6.50</option><option>6.00</option><option>5.75</option><option>5.50</option><option>5.00</option><option>4.50</option><option>4.00</option><option>3.50</option><option>3.00</option><option>2.00</option><option>1.00</option><option>0.00</option><option>-1.00</option><option>-2.00</option><option>-3.00</option><option>-3.50</option><option>-4.00</option><option>-5.00</option><option>-6.00</option><option>-7.00</option><option>-8.00</option><option>-9.00</option><option>-10.00</option><option>-11.00</option><option>-12.00</option><option selected>$gmtsel</option></select> (Do NOT Adjust for DST)$NWB#phones-local_gmt$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Local GMT: </td><td align=left><select size=1 name=local_gmt><option>12.75</option><option>12.00</option><option>11.00</option><option>10.00</option><option>9.50</option><option>9.00</option><option>8.00</option><option>7.00</option><option>6.50</option><option>6.00</option><option>5.75</option><option>5.50</option><option>5.00</option><option>4.50</option><option>4.00</option><option>3.50</option><option>3.00</option><option>2.00</option><option>1.00</option><option>0.00</option><option>-1.00</option><option>-2.00</option><option>-3.00</option><option>-3.50</option><option>-4.00</option><option>-5.00</option><option>-6.00</option><option>-7.00</option><option>-8.00</option><option>-9.00</option><option>-10.00</option><option>-11.00</option><option>-12.00</option><option selected>$gmtsel</option></select> (Do NOT Adjust for DST)".helptag("phones-local_gmt")."</td></tr>\n";
         echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
         echo "</TABLE></center>\n";
     } else {
@@ -260,8 +260,8 @@ if ($ADD==31111111111) {
             if ($row[12] == OSDsubstr($row[0],0,3)) $ext = OSDsubstr($row[0],3,OSDstrlen($row[0]));
         }
         echo "<input type=text name=extension size=20 maxlength=100 value=\"" . $ext . "\">";
-        echo "$NWB#phones-extension$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Exten Context: </td><td align=left><input type=text name=ext_context size=20 maxlength=20 value=\"$row[31]\">$NWB#phones-ext_context$NWE</td></tr>\n";
+        echo "".helptag("phones-extension")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Exten Context: </td><td align=left><input type=text name=ext_context size=20 maxlength=20 value=\"$row[31]\">".helptag("phones-ext_context")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Dial Plan Number: </td><td align=left>";
         $dpn = $row[1];
         if ($LOG['multicomp'] > 0) {
@@ -271,7 +271,7 @@ if ($ADD==31111111111) {
             }
         }
         echo "<input type=text name=dialplan_number size=15 maxlength=20 value=\"$dpn\">";
-        echo " (digits only)$NWB#phones-dialplan_number$NWE</td></tr>\n";
+        echo " (digits only)".helptag("phones-dialplan_number")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Login: </td><td align=left>";
         $plog = $row[6];
         if ($LOG['multicomp'] > 0 and OSDpreg_match($LOG['companiesRE'],$row[6])) {
@@ -279,8 +279,8 @@ if ($ADD==31111111111) {
             if ($row[12] == OSDsubstr($row[6],0,3)) $plog = OSDsubstr($row[6],3,OSDstrlen($row[6]));
         }
         echo "<input type=text name=login size=10 maxlength=10 value=\"" . $plog . "\">";
-        echo "$NWB#phones-login$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=pass size=10 maxlength=10 value=\"$row[7]\">$NWB#phones-pass$NWE</td></tr>\n";
+        echo "".helptag("phones-login")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=pass size=10 maxlength=10 value=\"$row[7]\">".helptag("phones-pass")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Voicemail Box: </td><td align=left>";
         $vmb = $row[2];
         if ($LOG['multicomp'] > 0 and OSDpreg_match($LOG['companiesRE'],$row[2])) {
@@ -288,22 +288,22 @@ if ($ADD==31111111111) {
             if ($row[12] == OSDsubstr($row[2],0,3)) $vmb = OSDsubstr($row[2],3,OSDstrlen($row[2]));
         }
         echo "<input type=text name=voicemail_id size=10 maxlength=10 value=\"$vmb\">";
-        echo " (digits only)$NWB#phones-voicemail_id$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Voicemail Password: </td><td align=left><input type=text name=voicemail_password size=10 maxlength=10 value=\"$row[68]\">$NWB#phones-voicemail_password$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Voicemail Email: </td><td align=left><input type=text name=voicemail_email size=50 maxlength=255 value=\"$row[69]\">$NWB#phones-voicemail_email$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Outbound CallerID Name: </td><td align=left><input type=text name=outbound_cid_name size=20 maxlength=40 value=\"$row[67]\">$NWB#phones-outbound_cid_name$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Outbound CallerID: </td><td align=left><input type=text name=outbound_cid size=10 maxlength=20 value=\"$row[65]\"> (digits only)$NWB#phones-outbound_cid$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Phone IP address: </td><td align=left><input type=text name=phone_ip size=20 maxlength=15 value=\"$row[3]\"> (optional)$NWB#phones-phone_ip$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Computer IP address: </td><td align=left><input type=text name=computer_ip size=20 maxlength=15 value=\"$row[4]\"> (optional)$NWB#phones-computer_ip$NWE</td></tr>\n";
+        echo " (digits only)".helptag("phones-voicemail_id")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Voicemail Password: </td><td align=left><input type=text name=voicemail_password size=10 maxlength=10 value=\"$row[68]\">".helptag("phones-voicemail_password")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Voicemail Email: </td><td align=left><input type=text name=voicemail_email size=50 maxlength=255 value=\"$row[69]\">".helptag("phones-voicemail_email")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Outbound CallerID Name: </td><td align=left><input type=text name=outbound_cid_name size=20 maxlength=40 value=\"$row[67]\">".helptag("phones-outbound_cid_name")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Outbound CallerID: </td><td align=left><input type=text name=outbound_cid size=10 maxlength=20 value=\"$row[65]\"> (digits only)".helptag("phones-outbound_cid")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Phone IP address: </td><td align=left><input type=text name=phone_ip size=20 maxlength=15 value=\"$row[3]\"> (optional)".helptag("phones-phone_ip")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Computer IP address: </td><td align=left><input type=text name=computer_ip size=20 maxlength=15 value=\"$row[4]\"> (optional)".helptag("phones-computer_ip")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=311111111111&server_ip=$row[5]\">Server IP</a>: </td><td align=left><select size=1 name=server_ip>\n";
 
         echo "$servers_list";
         #echo "<option SELECTED>$row[5]</option>\n";
-        echo "</select>$NWB#phones-server_ip$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Status: </td><td align=left><select size=1 name=status><option>ACTIVE</option><option>SUSPENDED</option><option>CLOSED</option><option>PENDING</option><option>ADMIN</option><option selected>$row[8]</option></select>$NWB#phones-status$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Active Account: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option selected>$row[9]</option></select>$NWB#phones-active$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Phone Type: </td><td align=left><input type=text name=phone_type size=20 maxlength=50 value=\"$row[10]\">$NWB#phones-phone_type$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=fullname size=20 maxlength=50 value=\"$row[11]\">$NWB#phones-fullname$NWE</td></tr>\n";
+        echo "</select>".helptag("phones-server_ip")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Status: </td><td align=left><select size=1 name=status><option>ACTIVE</option><option>SUSPENDED</option><option>CLOSED</option><option>PENDING</option><option>ADMIN</option><option selected>$row[8]</option></select>".helptag("phones-status")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Active Account: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option selected>$row[9]</option></select>".helptag("phones-active")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Phone Type: </td><td align=left><input type=text name=phone_type size=20 maxlength=50 value=\"$row[10]\">".helptag("phones-phone_type")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=fullname size=20 maxlength=50 value=\"$row[11]\">".helptag("phones-fullname")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Company: </td><td align=left>";
         if ($LOG['multicomp_admin'] > 0 and OSDpreg_match($LOG['companiesRE'],$row[12])) {
             $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
@@ -314,19 +314,19 @@ if ($ADD==31111111111) {
                 echo "<option value=" . (($comp['id'] * 1) + 100) . " $csel>" . (($comp['id'] * 1) + 100) . ": " . $comp['name'] . "</option>\n";
             }
             echo "</select>\n";
-            echo "$NWB#phones-company$NWE";
+            echo "".helptag("phones-company")."";
         } elseif ($LOG['multicomp']>0 and OSDpreg_match($LOG['companiesRE'],$row[0])) {
             echo "<input type=hidden name=company value=$row[12]>";
             echo "<font color=$default_text>" . $row[12] . "</font>";
         } else {
             echo "<input type=text name=company size=10 maxlength=10 value=\"$row[12]\">";
-            echo "$NWB#phones-company$NWE";
+            echo "".helptag("phones-company")."";
         }
 
         echo "</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Picture: </td><td align=left><input type=text name=picture size=20 maxlength=19 value=\"$row[13]\">$NWB#phones-picture$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>New Messages: </td><td align=left><b>$row[14]</b>$NWB#phones-messages$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Old Messages: </td><td align=left><b>$row[15]</b>$NWB#phones-old_messages$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Picture: </td><td align=left><input type=text name=picture size=20 maxlength=19 value=\"$row[13]\">".helptag("phones-picture")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>New Messages: </td><td align=left><b>$row[14]</b>".helptag("phones-messages")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Old Messages: </td><td align=left><b>$row[15]</b>".helptag("phones-old_messages")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows>\n";
         echo "  <td align=right>Client Protocol: </td>\n";
         echo "  <td align=left>\n";
@@ -342,19 +342,19 @@ if ($ADD==31111111111) {
         echo "      <option>EXTERNAL</option>\n";
         echo "      <option selected>$row[16]</option>\n";
         echo "    </select>\n";
-        echo "    $NWB#phones-protocol$NWE\n";
+        echo "    ".helptag("phones-protocol")."\n";
         echo "  </td>\n";
         echo "</tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Local GMT: </td><td align=left><select size=1 name=local_gmt><option>12.75</option><option>12.00</option><option>11.00</option><option>10.00</option><option>9.50</option><option>9.00</option><option>8.00</option><option>7.00</option><option>6.50</option><option>6.00</option><option>5.75</option><option>5.50</option><option>5.00</option><option>4.50</option><option>4.00</option><option>3.50</option><option>3.00</option><option>2.00</option><option>1.00</option><option>0.00</option><option>-1.00</option><option>-2.00</option><option>-3.00</option><option>-3.50</option><option>-4.00</option><option>-5.00</option><option>-6.00</option><option>-7.00</option><option>-8.00</option><option>-9.00</option><option>-10.00</option><option>-11.00</option><option>-12.00</option><option selected>$row[17]</option></select> (Do NOT Adjust for DST)$NWB#phones-local_gmt$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Default Agent: </td><td align=left><input type=text name=login_user size=20 maxlength=20 value=\"$row[20]\">$NWB#phones-login_user$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Default Pass: </td><td align=left><input type=text name=login_pass size=20 maxlength=20 value=\"$row[21]\">$NWB#phones-login_pass$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Default Campaign: </td><td align=left><input type=text name=login_campaign size=10 maxlength=10 value=\"$row[22]\">$NWB#phones-login_campaign$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Recording Exten: </td><td align=left><input type=text name=recording_exten size=10 maxlength=10 value=\"$row[28]\">$NWB#phones-recording_exten$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>DTMFSend Channel: </td><td align=left><input type=text name=dtmf_send_extension size=40 maxlength=100 value=\"$row[32]\">$NWB#phones-dtmf_send_extension$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Fast Refresh: </td><td align=left><select size=1 name=enable_fast_refresh><option>1</option><option>0</option><option selected>$row[50]</option></select>$NWB#phones-enable_fast_refresh$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Fast Refresh Rate: </td><td align=left><input type=text size=5 name=fast_refresh_rate value=\"$row[51]\">(in ms)$NWB#phones-fast_refresh_rate$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Stop Rec after each call: </td><td align=left><select size=1 name=VDstop_rec_after_each_call><option>1</option><option>0</option><option selected>$row[54]</option></select>$NWB#phones-VDstop_rec_after_each_call$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Enable SIPSAK Messages: </td><td align=left><select size=1 name=enable_sipsak_messages><option>1</option><option>0</option><option selected>$row[66]</option></select>$NWB#phones-enable_sipsak_messages$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Local GMT: </td><td align=left><select size=1 name=local_gmt><option>12.75</option><option>12.00</option><option>11.00</option><option>10.00</option><option>9.50</option><option>9.00</option><option>8.00</option><option>7.00</option><option>6.50</option><option>6.00</option><option>5.75</option><option>5.50</option><option>5.00</option><option>4.50</option><option>4.00</option><option>3.50</option><option>3.00</option><option>2.00</option><option>1.00</option><option>0.00</option><option>-1.00</option><option>-2.00</option><option>-3.00</option><option>-3.50</option><option>-4.00</option><option>-5.00</option><option>-6.00</option><option>-7.00</option><option>-8.00</option><option>-9.00</option><option>-10.00</option><option>-11.00</option><option>-12.00</option><option selected>$row[17]</option></select> (Do NOT Adjust for DST)".helptag("phones-local_gmt")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Default Agent: </td><td align=left><input type=text name=login_user size=20 maxlength=20 value=\"$row[20]\">".helptag("phones-login_user")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Default Pass: </td><td align=left><input type=text name=login_pass size=20 maxlength=20 value=\"$row[21]\">".helptag("phones-login_pass")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Default Campaign: </td><td align=left><input type=text name=login_campaign size=10 maxlength=10 value=\"$row[22]\">".helptag("phones-login_campaign")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Recording Exten: </td><td align=left><input type=text name=recording_exten size=10 maxlength=10 value=\"$row[28]\">".helptag("phones-recording_exten")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>DTMFSend Channel: </td><td align=left><input type=text name=dtmf_send_extension size=40 maxlength=100 value=\"$row[32]\">".helptag("phones-dtmf_send_extension")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Fast Refresh: </td><td align=left><select size=1 name=enable_fast_refresh><option>1</option><option>0</option><option selected>$row[50]</option></select>".helptag("phones-enable_fast_refresh")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Fast Refresh Rate: </td><td align=left><input type=text size=5 name=fast_refresh_rate value=\"$row[51]\">(in ms)".helptag("phones-fast_refresh_rate")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Stop Rec after each call: </td><td align=left><select size=1 name=VDstop_rec_after_each_call><option>1</option><option>0</option><option selected>$row[54]</option></select>".helptag("phones-VDstop_rec_after_each_call")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Enable SIPSAK Messages: </td><td align=left><select size=1 name=enable_sipsak_messages><option>1</option><option>0</option><option selected>$row[66]</option></select>".helptag("phones-enable_sipsak_messages")."</td></tr>\n";
         echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
         echo "</TABLE></center>\n";
         if ($row[6]==$row[7]) {
