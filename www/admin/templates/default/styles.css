@@ -208,13 +208,17 @@
     .fgfooter { color: #A3C1C9; }
     .fgheader { color: #1C4754; }
 
-	.fgred { color: red; }
+	.fgred { color: #800009; }
 	.fgnavy { color: navy; }
 	.fgblack { color: black; }
 	.fgwhite { color: white; }
 	.bgmain { background-color: #c6cda3; }
-
-
+	.alert { color: #6B0902; }
+	.alert a { color: #6B0902; }
+	.alert a:link { color: #6B0902; }
+	.alert a:active { color: #B70F03; }
+	.alert a:hover { color: #B70F03; }
+	.active-mode { background-color: #ff0; color:#ff0;}
 
 	.printable { display: inline; }
 	.noprint { display: inline; }
@@ -371,3 +375,30 @@
 	
 	
 	
+	
+	span.help span.helppopup{
+		background:#afcfd7;
+		border: 1px solid #808080;;
+		color: #1c4754;
+		font-size: 13px;
+		min-height: 30px;
+		min-width: 80px;
+		width: 500px;
+		max-width: 500px;
+		Xmax-height: 300px;
+		Xmax-width: 300px;
+		Xletter-spacing: 1px;
+		Xline-height: 30px;
+		position: absolute;
+		top: 0px;
+		left:20px;
+		display:none;
+		padding:0 10px;
+	}
+	span.help:hover span.helppopup{
+		display: block;
+	}
+	span.help {
+		cursor: help;
+		position: relative;
+	}

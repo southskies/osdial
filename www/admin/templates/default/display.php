@@ -31,9 +31,17 @@ $header_selected_bold='<b>';
 $header_nonselected_bold='';
 $default_text = 	'#000080';
 
+$activemenu_color='#E9E8D9';
+$activemenu2_color='#E0DFD1';
+$inactivemenu_color='#D9D8CA';
+$inactivemenu2_color='#D9D8CA';
+$deletemenu_color='#CDCCBF';
+$fgdelete_color='#B70F03';
+$bgmenu_color='#E2ECEE';
+
 $top_menu_color =   '#C5DAB0';
 $users_color =		$top_menu_color;
-$campaigns_color = '#E9E8D9';
+$campaigns_color = 	$top_menu_color;
 $campaigns_color2 =	$top_menu_color;
 $lists_color =		$top_menu_color;
 $ingroups_color =	$top_menu_color;
