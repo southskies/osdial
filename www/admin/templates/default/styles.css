@@ -386,15 +386,15 @@
 		width: 500px;
 		max-width: 500px;
 		position: absolute;
-		top: 0px;
-		left:20px;
+		margin-left:auto;
+		margin-right:auto;
 		display:none;
 		padding:0 10px;
+		z-index: 9999999;
 	}
 	span.help:hover span.helppopup{
 		display: block;
 	}
 	span.help {
 		cursor: help;
-		position: relative;
 	}
