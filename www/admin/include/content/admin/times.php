@@ -33,7 +33,7 @@ if ($ADD==111111111)
 	echo "<center><br><font color=$default_text size=+1>ADD NEW CALL TIME</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=211111111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Call Time ID: </td><td align=left><input type=text name=call_time_id size=12 maxlength=10> (no spaces or punctuation)$NWB#osdial_call_times-call_time_id$NWE</td></tr>\n";
+// 	echo "<tr bgcolor=$oddrows><td align=right width=30%>Call Time ID: </td><td align=left><input type=text name=call_time_id size=12 maxlength=10> (no spaces or punctuation)$NWB#osdial_call_times-call_time_id$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Call Time Name: </td><td align=left><input type=text name=call_time_name size=30 maxlength=30> (short description of the call time)$NWB#osdial_call_times-call_time_name$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Call Time Comments: </td><td align=left><input type=text name=call_time_comments size=50 maxlength=255> $NWB#osdial_call_times-call_time_comments$NWE</td></tr>\n";
 
@@ -474,7 +474,7 @@ if ($ADD==1111111111)
 	echo "<center><br><font color=$default_text size=+1>ADD NEW STATE CALL TIME</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2111111111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>State Call Time ID: </td><td align=left><input type=text name=call_time_id size=12 maxlength=10> (no spaces or punctuation)$NWB#osdial_call_times-call_time_id$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right width=30%>State Call Time ID: </td><td align=left><input type=text name=call_time_id size=12 maxlength=10> (no spaces or punctuation)$NWB#osdial_call_times-call_time_id$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>State Call Time State: </td><td align=left><input type=text name=state_call_time_state size=4 maxlength=2> (no spaces or punctuation)$NWB#osdial_call_times-state_call_time_state$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>State Call Time Name: </td><td align=left><input type=text name=call_time_name size=30 maxlength=30> (short description of the call time)$NWB#osdial_call_times-call_time_name$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>State Call Time Comments: </td><td align=left><input type=text name=call_time_comments size=50 maxlength=255> $NWB#osdial_call_times-call_time_comments$NWE</td></tr>\n";

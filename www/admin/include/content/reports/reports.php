@@ -53,7 +53,7 @@ if ($LOG['view_reports']==1) {
 
         echo "<table width=60% align=center><tr><td>\n";
         echo "<font face=\"dejavu sans,verdana,sans-serif\" size=2>\n";
-        echo "<font size=4 class=top_header color=$default_text><br><center>SERVER STATS AND REPORTS</center></font><br><br>";
+        echo "<font size=4 class=top_header color=$default_text><br><center>REPORTS</center></font><br><br>";
 
         echo "<ul>";
         if ($LOG['view_agent_realtime']) echo "<li><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12\">Agent Realtime (per campaign)</a></font>\n";

@@ -203,7 +203,7 @@ if ($ADD==511) {
             echo "<br>List_id be at least 2 characters in length</font>\n";
         } else {
             if ($SUB==1) {
-                echo "<br><B><font color=$default_text>LIST AND LEAD DELETION CONFIRMATION: $list_id</B>\n";
+                echo "<br><B><font color=$default_text>LIST AND LEAD DELETION CONFIRMATION: $list_id</font> <br> <font color=$fgdelete_color> WARNING: Will damage call-backs made in this list!</font> </B>\n";
                 echo "<br><br><a href=\"$PHP_SELF?ADD=611&SUB=1&list_id=$list_id&CoNfIrM=YES\">Click here to delete list and all of its leads $list_id</a></font><br><br><br>\n";
             } else {
                 echo "<br><B><font color=$default_text>LIST DELETION CONFIRMATION: $list_id</B>\n";

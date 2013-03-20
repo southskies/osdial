@@ -27,7 +27,7 @@
 
 # Footer is required 'as is'.
 #
-echo "<div class=\"footer\"><div class=footer-border style='background-color:#E9E8D9'>&nbsp;</div>";
+echo "<br /><div class=\"footer\"><div class=footer-border style='background-color:#E9E8D9'></div>";
 echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
 echo "  <tr><td align=\"left\" colspan=\"4\" height=\"1\" bgcolor=\"#999999\"></td></tr>\n";
 echo "  <tr bgcolor=\"$footer_color\">\n";
@@ -37,10 +37,11 @@ if (OSDpreg_match("/^Sli/",$config['settings']['admin_template'])) {
 } else {
     echo "    <td height=\"15\" align=\"left\" width=\"33%\"><font color=\"#1A4349\">&nbsp;&nbsp;Copyright &#169; 2009-2013 Call Center Service Group, LC</font></td>\n";
 #
-# NOTICE:
-# Removal or modification of the following line, and any copyright notice, constitutes a breach of License and doing so will result in legal action.
+# ===================================================================================================================================================
+# NOTICE: NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE
+# REMOVAL or MODIFICATION of these lines, and ANY copyright notice, constitutes a breach of License and doing so will result in legal action.
     echo "    <td height=\"15\" align=\"center\" width=\"33%\"><a style=\"color:$footer_color;\" href=\"http://www.osdial.com\" target=\"_blank\"><img src=\"templates/" . $config['settings']['admin_template'] . "/images/dlfoot.png\" height=\"9\" width=\"120\"></a></td>\n";
-#
+# ===================================================================================================================================================
 #
 }
 

@@ -313,7 +313,8 @@ if ($ADD==311111111111111) {
         echo "            $NWB#settings-enable_queuemetrics_logging$NWE\n";
         echo "          </td>\n";
         echo "        </tr>\n";
-        echo "<tr><td align=center colspan=2><font color=red>Need to add an invisible tag to remove the blank space when not in use.</font></td></tr>";
+        
+        
         echo "        <tr bgcolor=$oddrows style=\"$qstyle\">\n";
         echo "          <td align=right>QueueMetrics Server IP:</td>\n";
         echo "          <td align=left><input type=text name=queuemetrics_server_ip size=18 maxlength=15 value=\"$system_settings[queuemetrics_server_ip]\">$NWB#settings-queuemetrics_server_ip$NWE</td>\n";

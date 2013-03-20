@@ -158,7 +158,7 @@ if ($ADD=="31media") {
         echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY MEDIA</font><form action=$PHP_SELF method=POST><br><br>\n";
         echo "<input type=hidden name=ADD value=41media>\n";
         echo "<input type=hidden name=media_id value=$media[id]>\n";
-        echo "<table width=$section_width cellspacing=3>\n";
+        echo "<table cellspacing=3>\n";
         echo "<tr bgcolor=$oddrows><td align=right>ID: </td><td align=left><font color=$default_text>" . $media['id'] . "</font></td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>FileName: </td><td align=left>$media[filename]$NWB#media-filename$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>MimeType: </td><td align=left>$media[mimetype]$NWB#media-mimetype$NWE</td></tr>\n";

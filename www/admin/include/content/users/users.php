@@ -30,8 +30,9 @@ if ($ADD=="1") {
     if ($LOG['modify_users']==1) {
         echo "<center><br><font class=top_header color=$default_text size=+1>ADD A NEW AGENT<form action=$PHP_SELF method=POST></font><br><br>\n";
         echo "<input type=hidden name=ADD value=2>\n";
-        echo "<TABLE width=$section_width cellspacing=3>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left>\n";
+        echo "<TABLE border=0 cellspacing=3 width=$section_width>\n";
+        echo "<tr bgcolor=$oddrows><td align=right with=45%>Agent Number: </td><td align=left width=55%>\n";
+        
         if ($LOG['multicomp_admin'] > 0) {
             $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
             echo "<select name=company_id>\n";

@@ -135,7 +135,7 @@ if ($ADD==5111111111111)
 	 else
 		{
 		echo "<br><B><font color=$default_text>CONFERENCE DELETION CONFIRMATION: $conf_exten - $server_ip</B>\n";
-		echo "<br><br><a href=\"$PHP_SELF?ADD=6111111111111&conf_exten=$conf_exten&server_ip=$server_ip&CoNfIrM=YES\">Click here to delete phone $conf_exten - $server_ip</a></font><br><br><br>\n";
+		echo "<br><br><a href=\"$PHP_SELF?ADD=6111111111111&conf_exten=$conf_exten&server_ip=$server_ip&CoNfIrM=YES\">Click here to delete conference $conf_exten - $server_ip</a></font><br><br><br>\n";
 		}
 $ADD='3111111111111';		# go to conference modification below
 }
@@ -420,7 +420,7 @@ if ($ADD==31111111111111)
 
     $servers_list = get_servers($link, $row[1], 'AIO|DIALER');
 
-	echo "<center><br><font color=$default_text size=+1>MODIFY A $t1 CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>MODIFY AN $t1 CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=41111111111111>\n";
 	echo "<input type=hidden name=old_conf_exten value=\"$row[0]\">\n";
 	echo "<input type=hidden name=old_server_ip value=\"$row[1]\">\n";
