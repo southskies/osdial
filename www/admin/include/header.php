@@ -65,7 +65,7 @@ require('include/EditableSelect.js');
 echo "  </script>\n";
 echo "</head>\n";
 
-echo "<body bgcolor=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0 onload=\"updateClock(); setInterval('updateClock()', 1000 ); $oacjs\" onunload=\"stop()\">\n";
+echo "<body bgcolor=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0 onload=\"fixChromeTableCollapse(); updateClock(); setInterval('updateClock()', 1000 ); $oacjs\" onunload=\"stop()\">\n";
 
 echo "<script language=\"JavaScript\">\n";
 echo "document.write(getCalendarStyles());\n";
@@ -207,13 +207,13 @@ echo "          <td class='across-top' width='15'><img src='templates/".$config[
 echo "        </tr>\n";
 echo "        <tr valign='top'>\n";
 echo "          <td align=left width=33%>\n";
-echo "              <span class=\"font2 fgwhite\">&nbsp;&nbsp;</font><B><a href=\"".$config['settings']['admin_home_url']."\"><span class=\"font1 fghome\">HOME</span></a><span class=\"font2 fgdefault\">&nbsp;|&nbsp;</span><a href=\"$PHP_SELF?force_logout=1\"><span class=\"font1 fglogout\">Logout</span></a><br /><br />\n";
+echo "              <span class=\"font2 fgwhite\">&nbsp;&nbsp;</span><b><a href=\"".$config['settings']['admin_home_url']."\"><span class=\"font1 fghome\">HOME</span></a><span class=\"font2 fgdefault\">&nbsp;|&nbsp;</span><a href=\"$PHP_SELF?force_logout=1\"><span class=\"font1 fglogout\">Logout</span></a></b><br /><br />\n";
 // echo "			&nbsp;&nbsp;<font size=2>Credit Left:</font><font size=2 color=#060> 5 days</font>";
 // echo "			&nbsp;&nbsp;<font size=2>Credit Left:</font><font size=2 color=#600> 1 day</font>";
 echo "          </td>\n";
 echo "          <td class='user-company' align=center width=33%>\n";
 echo "              <span class=fgcompany>".$config['settings']['company_name']."</span><br />\n";
-echo "              <span class=\"font2 fgheader\"><b><br>$t1 Administrator</b><br><br><br></font>\n";
+echo "              <span class=\"font2 fgheader\"><b><br>$t1 Administrator</b><br><br><br></span>\n";
 echo "          </td>\n";
 echo "          <td align=right width=33%>";
 echo "              <span class=\"font2 fgclock\">" . date("l F j, Y") . "&nbsp;&nbsp;</span><br>";
@@ -233,7 +233,8 @@ $cauth=0;
 $mmenu = '';
 
 # Start piece
-$mmenu .= "<tr class=no-ul><td class='narrow-space' width=12>&nbsp;</td>";
+#$mmenu .= "<tr class=no-ul><td class='narrow-space' width=12>&nbsp;</td>";
+$mmenu .= "<td class='narrow-space' width=12>&nbsp;</td>";
 
 $mmenu .= "    <td class=$agents_menu1_class height=$height_row1 align=center $users_hh><a href=\"$PHP_SELF?ADD=0\"><span class=\"font3 fgnavy\"> Agents </span></a></td>\n";
 $mmenu .= "    <td class=$campaigns_menu1_class height=$height_row1 align=center $campaigns_hh width=100><a href=\"$PHP_SELF?ADD=10\"><span class=\"font3 fgnavy\"> Campaigns </span></a></td>\n";
@@ -576,7 +577,7 @@ if (OSDstrlen($campaigns_hh) > 1) {
 	
 		$settings_menucols3=$settings_menucols1 - 5;	// = 5
 
-		echo "<tr><table border=0 cellpadding=0 cellspacing=0 width=100%>";
+		echo "<tr><td colspan=$settings_menucols2><table border=0 cellpadding=0 cellspacing=0 width=100%>";
         echo "  <tr class='no-ul' bgcolor=$bgmenu_color Xbgcolor=$activemenu_color>\n";
 		echo "	  <td height=22 class='narrow-space' bgcolor=$bgmenu_color width=10>&nbsp;</td>";
         echo "    <td class=$camp_show_class align=center bgcolor=$camp_show_color colspan=2><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=10\">Show Campaigns</a></span></td>\n";
@@ -589,8 +590,8 @@ if (OSDstrlen($campaigns_hh) > 1) {
 		
 // 		echo "    <td align=center bgcolor=$camp_addfc_color colspan=1><span class=\"font2 $fgfont_fc\"><a href=\"$PHP_SELF?ADD=3fields&SUB=2fields\"> Additional Fields </a></span></td>\n";
 		echo "    <td class=$camp_addfc_class align=center bgcolor=$camp_addfc_color colspan=1><span class=\"font2 $fgfont_fc\"><a href=\"$PHP_SELF?ADD=71\"> Additional Fields </a></span></td>\n";
-        echo "      </span>\n";
-        echo "    </td>\n";
+        #echo "      </span>\n";
+        #echo "    </td>\n";
 		echo "	  <td class='narrow-space' bgcolor=$bgmenu_color width=10>&nbsp;</td>";
         echo "  </tr>\n";
 
@@ -677,7 +678,7 @@ if (OSDstrlen($campaigns_hh) > 1) {
 			echo "        <tr align=center class='no-ul' bgcolor=$admin_color2 height=25>\n";
             echo "          <td class=$camp_modify_class align=center bgcolor=$camp_modify_color width=150><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=31&campaign_id=$campaign_id\">Modify Campaign</a></span></td>\n";
             echo "          <td class=$camp_statuses_class align=center bgcolor=$camp_statuses_color><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=31&SUB=22&campaign_id=$campaign_id\">Statuses</a></span></td>\n";
-            echo "          <td class=$camp_hotkeys_class align=center bgcolor=$camp_hotkeys_color><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=31&SUB=23&campaign_id=$campaign_id\">HotKeys</span></a></td>\n";
+            echo "          <td class=$camp_hotkeys_class align=center bgcolor=$camp_hotkeys_color><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=31&SUB=23&campaign_id=$campaign_id\">HotKeys</a></span></td>\n";
             echo "          <td class=$camp_recycle_class align=center bgcolor=$camp_recycle_color><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=31&SUB=25&campaign_id=$campaign_id\">Lead Recycling</a></span></td>\n";
             if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_campaign_listmix'] == 1) {
 				echo "          <td class=$camp_listmix_class align=center bgcolor=$camp_listmix_color><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=31&SUB=29&campaign_id=$campaign_id\">List Mix</a></span></td>\n";
@@ -703,8 +704,8 @@ if (OSDstrlen($campaigns_hh) > 1) {
             echo "      </table>\n";
             echo "    </td>\n";
             echo "  </tr>\n";
-            echo "</table></tr>";
         }
+        echo "  </table></td></tr>\n";
     } 
 } 
 
@@ -1209,17 +1210,17 @@ if (OSDstrlen($reports_hh) > 1) {
 		$reports_show_class='rounded-menu2';
 	}
     
-    echo "<tr><table border=0 cellpadding=0 cellspacing=0 width=100%>";
-    echo "  <tr class='no-ul' bgcolor=$filters_color>\n";
+    echo "<tr>";
     echo "    <td height=20 align=left bgcolor=$bgmenu_color colspan=$settings_menucols2>\n";
-    echo "      <span class=\"font2 fgdefault\"> &nbsp; \n";
+    echo "<table border=0 cellpadding=0 cellspacing=0 width=100%>";
+    echo "  <tr class='no-ul' bgcolor=$filters_color>\n";
     echo "        <td align=center bgcolor=$reports_show_color class=$reports_show_class><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=999999\"> Show Reports </a></span></td>\n";
     echo "		  <td bgcolor=$inactivemenu_color class=rounded-menu2 colspan=2 width=400>&nbsp;</td>";
     echo "		  <td bgcolor=$bgmenu_color width=3>&nbsp;</td>";
-    echo "      </span>\n";
-    echo "    </td>\n";
     echo "  </tr>\n";
-    echo "</table></tr>";
+    echo "  </table>\n";
+    echo "  </td>\n";
+    echo "</tr>";
 }
 
 
@@ -1321,7 +1322,7 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
     $amenu = '';
     $acnt = 0;
 
-    $amenu .= "<tr><table bgcolor=$activemenu_color border=0 class=no-ul cellpadding=0 cellspacing=0 width=100%><tr>";
+    $amenu .= "<tr><td height=20 align=left bgcolor=$bgmenu_color colspan=$settings_menucols2><table bgcolor=$activemenu_color border=0 class=no-ul cellpadding=0 cellspacing=0 width=100%><tr>";
 	$amenu .= "<td bgcolor=$bgmenu_color width=5>&nbsp;</td>";
 	
     if ($LOG['multicomp_user'] == 0) {
@@ -1972,7 +1973,7 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
         echo "  </tr>\n";
     }
     
-    echo "</table></tr>";
+    echo "</table></td></tr>";
 
 
 } elseif ($admin_hh > 0 and $LOG['ast_admin_access']<1) { 

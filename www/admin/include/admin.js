@@ -28,33 +28,60 @@ var oac_last_params = '';
 var oac_last_delay = 0;
 
 
-// ################################################################################
-// fixChromTableCollapse() - Fixes flaw in Chrome which prevents tables from collapsing properly.
 function fixChromeTableCollapse() {
 	if (typeof(window.chrome)!="undefined") {
-		var tabs= document.getElementsByTagName('table');
+		var tabs=document.getElementsByTagName('table');
 		for (var t=0; t<tabs.length; t++) {
-			var trs= tabs[t].getElementsByTagName('tr');
-			for (var i=0; i<trs.length; i++) {
-				if (trs[i].style.visibility == 'collapse') {
-					//if (tabs[t].style.borderCollapse != 'collapse') {
-					//	tabs[t].style.borderCollapse = 'collapse';
-					//}
-					var thcells = trs[i].getElementsByTagName('th');
-					var tdcells = trs[i].getElementsByTagName('td');
-					for (var i2=0; i2<thcells.length; i2++) {
-						thcells[i2].style.padding='0px';
-						thcells[i2].style.border='0px';
-						thcells[i2].style.textIndent='-1px';
-						thcells[i2].innerHTML = '<div style="display:none;">'+thcells[i2].innerHTML+'</div>';
-					}
-					for (var i2=0; i2<tdcells.length; i2++) {
-						tdcells[i2].style.padding='0px';
-						tdcells[i2].style.border='0px';
-						tdcells[i2].style.textIndent='-1px';
-						tdcells[i2].innerHTML = '<div style="display:none;">'+tdcells[i2].innerHTML+'</div>';
+			var tbodys=tabs[t].childNodes;
+			for (var b=0; b<tbodys.length; b++) {
+				if (tbodys[b].nodeName=='TBODY') {
+					var trs=tbodys[b].childNodes;
+					for (var i=0; i<trs.length; i++) {
+						if (trs[i].nodeName=='TR') {
+							if (typeof(trs[i].style)!="undefined" && typeof(trs[i].style.visibility)!="undefined" && trs[i].style.visibility == 'collapse') {
+								var tdcells = trs[i].childNodes;
+								if (typeof(tabs[t].classList)!="undefined" && !tabs[t].classList.contains('rounded-corners') && tabs[t].style.borderCollapse!='collapse')
+									tabs[t].style.borderCollapse = 'collapse';
+								for (var i2=0; i2<tdcells.length; i2++) {
+									var newdiv = document.createElement('DIV');
+									newdiv.classList.add('chrome_collapsed_div');
+									var divs = tdcells[i2].childNodes;
+									var clonediv=0;
+									if (divs.length==1) {
+										if (!(divs[0].nodeName=='DIV' && typeof(divs[0].classList)!="undefined" && divs[0].classList.contains('chrome_collapsed_div')))
+											clonediv=1;
+									} else if (divs.length>1) {
+											clonediv=1;
+									}
+									if (clonediv) {
+										for (var dl=0; dl<divs.length; dl++) {
+											var dnode = tdcells[i2].removeChild(divs[dl]);
+											newdiv.appendChild(dnode);
+										}
+										tdcells[i2].appendChild(newdiv);
+									}
+									if (typeof(tdcells[i2].classList)!="undefined" && !tdcells[i2].classList.contains('chrome_collapsed_row'))
+										tdcells[i2].classList.add('chrome_collapsed_row');
+								}
+							}
+						}
 					}
 				}
+			}
+		}
+	}
+}
+
+function fixChromeTableExpand(trid) {
+	if (typeof(window.chrome)!="undefined") {
+		var tr=document.getElementById(trid);
+		if (tr.style.visibility == 'collapse') {
+			if (typeof(tr.parentNode.parentNode.classList)!="undefined" && !tr.parentNode.parentNode.classList.contains('rounded-corners') && tr.parentNode.parentNode.style.borderCollapse!='collapse')
+				tr.parentNode.parentNode.style.borderCollapse = 'separate';
+			var tdcells = tr.childNodes;
+			for (var i2=0; i2<tdcells.length; i2++) {
+				if (typeof(tdcells[i2].classList)!="undefined" && tdcells[i2].classList.contains('chrome_collapsed_row'))
+					tdcells[i2].classList.remove('chrome_collapsed_row');
 			}
 		}
 	}

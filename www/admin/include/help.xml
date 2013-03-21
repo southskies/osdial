@@ -73,7 +73,7 @@
   <chapter pathId="overview" sectionId="1" title="Overview">
   </chapter>
   <chapter pathId="admin_modules" sectionId="2" title="Modules">
-   <section pathId="osdial_users" sectionId="1" title="osdial_users">
+   <section pathId="osdial_users" sectionId="1" title="Users">
     <item pathId="user" sectionId="1" title="User/Agent ID">
         This field is where you put the OSDial agents ID number, can be up to 8 digits in length, Must be at least 2 characters in length.
     </item>
@@ -118,11 +118,11 @@
         This option allows an agent to manually enter a new lead into the system and call them. This also allows the calling of any phone number from their agent screen and puts that call into their session. Use this option with caution.
     </item>
 
-    <item pathId="osdial_recording" sectionId="12" title="OSDial Recording">
+    <item pathId="osdial_recording" sectionId="12" title="Recording">
         This option can prevent an agent from doing any recordings after they log in to OSDial. This option must be on for OSDial to follow the campaign recording session.
     </item>
 
-    <item pathId="osdial_transfers" sectionId="13" title="OSDial Transfers">
+    <item pathId="osdial_transfers" sectionId="13" title="Transfers">
         This option can prevent an agent from opening the transfer - conference session of OSDial. If this is disabled, the agent cannot third party call or blind transfer any calls.
     </item>
 
@@ -130,7 +130,7 @@
         This option simply defaults the Blended checkbox on a CLOSER login screen.
     </item>
 
-    <item pathId="osdial_recording_override" sectionId="15" title="OSDial Recording Override">
+    <item pathId="osdial_recording_override" sectionId="15" title="Recording Override">
         This option will override whatever the option is in the campaign for recording. DISABLED will not override the campaign recording setting. NEVER will disable recording on the client. ONDEMAND is the default and allows the agent to start and stop recording as needed. ALLCALLS will start recording on the client whenever a call is sent to an agent. ALLFORCE will start recording on the client whenever a call is sent to an agent giving the agent no option to stop recording. For ALLCALLS and ALLFORCE there is an option to use the Recording Delay to cut down on very short recordings and recude system load.
     </item>
 
@@ -274,28 +274,28 @@
 
 
 
-  <section pathId="osdial_campaigns" sectionId="2" title="OSDial_CAMPAIGNS TABLE">
-    <item pathId="campaign_id" sectionId="1" title="Campaign ID">
+  <section pathId="osdial_campaigns" sectionId="2" title="Campaigns TABLE">
+    <item pathId="campaign_id" sectionId="1" title="ID">
   This is the short name of the campaign, it is not editable after initial submission, cannot contain spaces and must be between 2 and 8 characters in length.
     </item>
 
-    <item pathId="campaign_name" sectionId="2" title="Campaign Name">
+    <item pathId="campaign_name" sectionId="2" title="Name">
   This is the description of the campaign, it must be between 6 and 40 characters in length.
     </item>
 
-    <item pathId="campaign_description" sectionId="3" title="Campaign Description">
+    <item pathId="campaign_description" sectionId="3" title="Description">
   This is a memo field for the campaign, it is optional and can be a maximum of 255 characters in length.
     </item>
 
-    <item pathId="campaign_changedate" sectionId="4" title="Campaign Change Date">
+    <item pathId="campaign_changedate" sectionId="4" title="Change Date">
   This is the last time that the settings for this campaign were modified in any way.
     </item>
 
-    <item pathId="campaign_logindate" sectionId="5" title="Last Campaign Login Date">
+    <item pathId="campaign_logindate" sectionId="5" title="Last Login Date">
   This is the last time that an agent was logged into this campaign.
     </item>
 
-    <item pathId="campaign_stats_refresh" sectionId="6" title="Campaign Stats Refresh">
+    <item pathId="campaign_stats_refresh" sectionId="6" title="Stats Refresh">
   This checkbox will allow you to force a OSDial stats refresh, even if the campaign is not active.
     </item>
 
@@ -374,7 +374,7 @@
   This allows you to wipe out the hopper contents upon form submission. It should be filled again when the VDhopper script runs.
     </item>
 
-    <item pathId="dial_method" sectionId="25" title="Dial Method">
+    <item pathId="dial_method" sectionId="23" title="Dial Method">
   This field is the way to define how dialing is to take place. If MANUAL then the auto_dial_level will be locked at 0 unless Dial Method is changed. If RATIO then the normal dialing a number of lines for Active agents. ADAPT_HARD_LIMIT will dial predictively up to the dropped percentage and then not allow aggressive dialing once the drop limit is reached until the percentage goes down again. ADAPT_TAPERED allows for running over the dropped percentage in the first half of the shift -as defined by call_time selected for campaign- and gets more strict as the shift goes on. ADAPT_AVERAGE tries to maintain an average or the dropped percentage not imposing hard limits as aggressively as the other two methods. You cannot change the Auto Dial Level if you are in any of the ADAPT dial methods. Only the Dialer can change the dial level when in predictive dialing mode.
     </item>
 
@@ -468,8 +468,12 @@
   This allows you to specify a local caller ID for each areacode. Follow link in field name to build up a table.
     </item>
 
-    <item pathId="campaign_vdad_exten" sectionId="45" title="Campaign OSDial extension">
-  This field allows for a custom OSDial transfer extension. This allows you to use different VDADtransfer...agi scripts depending upon your campaign. The default transfer AGI - exten 8365 agi-VDADtransfer.agi - just immediately sends the calls on to agents as soon as they are picked up. An additional sample political survey AGI is also now included - 8366 agi-VDADtransferSURVEY.agi - that plays a message to the called person and allows them to make a choice by pressing buttons - effectively pre-screening the lead - . Please note that except for surveys, political calls and charities this form of calling is illegal in the United States.
+    <item pathId="campaign_vdad_exten" sectionId="45" title="Auto Dial Answer Handling">
+  This field allows you to select the processing extension a call is sent to when it is answered.
+  &lt;br&gt; 8365 - Home Server Only - Calls will only be sent to agents logged into the same server as the call.
+  &lt;br&gt; 8367 - Load Sharing - Calls will prefer to be sent to agents on the same server.
+  &lt;br&gt; 8368 - Load Balancing - Calls will be sent to any available agent on any server.
+  &lt;br&gt; 8369 - Load Balancing, with AMD - This option uses Load Balancing and enables Answering Machine Detection.
     </item>
 
     <item pathId="campaign_rec_exten" sectionId="46" title="Campaign Rec extension">
@@ -524,15 +528,15 @@
   The number of seconds from the time the customer line is picked up until the call is considered a DROP, only applies to outbound calls.
     </item>
 
-    <item pathId="voicemail_ext" sectionId="59" title="Voicemail">
+    <item pathId="voicemail_ext" sectionId="59" title="Drop Voicemail">
   If defined, calls that would normally DROP would instead be directed to this voicemail box to hear and leave a message.
     </item>
 
-    <item pathId="safe_harbor_message" sectionId="60" title="Safe Harbor Message">
-  If set to Y will play a message to customer after the Drop Call Seconds timeout is reached without being transferred to an agent. This setting will override sending to a voicemail box if this is set to Y.
+    <item pathId="safe_harbor_message" sectionId="60" title="Drop Call Handling (Safe Harbor)">
+  If set to Message/Extension, play a message from extension listed in Drop Message/Extension to customer after the Drop Call Seconds timeout is reached without being transferred to an agent. If set to Voicemail, the call will be transfered to the voicemail box listed in the Drop Voicemail field.
     </item>
 
-    <item pathId="safe_harbor_exten" sectionId="61" title="Safe Harbor Exten">
+    <item pathId="safe_harbor_exten" sectionId="61" title="Drop Message/Exten">
   This is the dial plan extension that the desired Safe Harbor audio file is located at on your server.
     </item>
 
@@ -596,32 +600,40 @@
   This option sets an upper limit on the number of answers the dialer has in an hour.  0 to disable.
     </item>
 
-    <item pathId="osdial_campaigns" sectionId="77" title="allow_md_hopperlist">
+    <item pathId="allow_md_hopperlist" sectionId="77" title="Allow Manual Dial Hopper List">
   If the Dial Method is MANUAL and this option is enabled, the can see what leads are in the hopper and can change the priorities, modifying that leads position within the hopper.
+    </item>
+
+    <item pathId="use_custom2_callerid" sectionId="78" title="Use Custom2 CallerID">
+  Uses the data in lead field custom2 for the CallerID.
+    </item>
+
+    <item pathId="dispo_submit_method" sectionId="79" title="Dispo Submit Method">
+  This specifies where the disposition will be made from. Normal means disposition from within OSDial, and Web Form 1 and 2 from either of these two.
     </item>
   </section>
 
 
 
-  <section pathId="osdial_lists" sectionId="3" title="OSDial_LISTS TABLE">
+  <section pathId="osdial_lists" sectionId="3" title="Lists">
 
-    <item pathId="list_id" sectionId="1" title="List ID">
+    <item pathId="list_id" sectionId="1" title="ID">
   This is the numerical name of the list, it is not editable after initial submission, must contain only numbers and must be between 2 and 8 characters in length. Must be a number greater than 100.
     </item>
 
-    <item pathId="list_name" sectionId="2" title="List Name">
+    <item pathId="list_name" sectionId="2" title="Name">
   This is the description of the list, it must be between 2 and 20 characters in length.
     </item>
 
-    <item pathId="list_description" sectionId="3" title="List Description">
+    <item pathId="list_description" sectionId="3" title="Description">
   This is the memo field for the list, it is optional.
     </item>
 
-    <item pathId="list_changedate" sectionId="4" title="List Change Date">
+    <item pathId="list_changedate" sectionId="4" title="Change Date">
   This is the last time that the settings for this list were modified in any way.
     </item>
 
-    <item pathId="list_lastcalldate" sectionId="5" title="List Last Call Date">
+    <item pathId="list_lastcalldate" sectionId="5" title="Last Call Date">
   This is the last time that lead was dialed from this list.
     </item>
 
@@ -665,7 +677,7 @@
 
 
 
-  <section pathId="osdial_inbound_groups" sectionId="5" title="OSDial INBOUND GROUPS TABLE">
+  <section pathId="osdial_inbound_groups" sectionId="5" title="Inbound Groups">
 
     <item pathId="group_id" sectionId="1" title="Group ID">
   This is the short name of the inbound group, it is not editable after initial submission, must not contain any spaces and must be between 2 and 20 characters in length.
@@ -918,7 +930,7 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
   This is where you place the content of a OSDial Script. Minimum of 2 characters. You can have customer information be auto-populated in this script using "[[field]]" where field is one of the following fieldnames: vendor_lead_code, source_id, list_id, gmt_offset_now, called_since_last_reset, phone_code, phone_number, title, first_name, middle_initial, last_name, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, custom1, custom2, comments, fullname, user, pass, fronter, lead_id, campaign, phone_login, group, channel_group, SQLdate, epoch, uniqueid, customer_zap_channel, server_ip, SIPexten, session_id. For example, this sentence would print the persons name in it----&lt;br&gt;&lt;br&gt;  Hello, can I speak with [[first_name]] [[last_name]] please? Well hello [[title]] [[last_name]] how are you today?&lt;br&gt;&lt;br&gt; This would read----&lt;br&gt;&lt;br&gt;Hello, can I speak with John Doe please? Well hello Mr. Doe how are you today?&lt;br&gt;&lt;br&gt; You can also use an iframe to load a separate window within the SCRIPT tab, here is an example with prepopulated variables:&lt;br&gt;
   &lt;br&gt;
   &lt;div style="height:200px;width:400px;background:white;overflow:scroll;font-size:12px;font-family:sans-serif;" id=iframe_example&gt;
-  &#60;iframe src="http://localhost/test_<?php echo $t1; ?>_output.php?lead_id=[[lead_id]]&#38;vendor_id=[[vendor_lead_code]]&#38;list_id=[[list_id]]&#38;gmt_offset_now=[[gmt_offset_now]]&#38;phone_code=[[phone_code]]&#38;phone_number=[[phone_number]]&#38;title=[[title]]&#38;first_name=[[first_name]]&#38;middle_initial=[[middle_initial]]&#38;last_name=[[last_name]]&#38;address1=[[address1]]&#38;address2=[[address2]]&#38;address3=[[address3]]&#38;city=[[city]]&#38;state=[[state]]&#38;province=[[province]]&#38;postal_code=[[postal_code]]&#38;country_code=[[country_code]]&#38;gender=[[gender]]&#38;date_of_birth=[[date_of_birth]]&#38;alt_phone=[[alt_phone]]&#38;email=[[email]]&#38;custom1=[[custom1]]&#38;custom2=[[custom2]]&#38;comments=[[comments]]&#38;user=[[user]]&#38;campaign=[[campaign]]&#38;phone_login=[[phone_login]]&#38;fronter=[[fronter]]&#38;closer=[[user]]&#38;group=[[group]]&#38;channel_group=[[group]]&#38;SQLdate=[[SQLdate]]&#38;epoch=[[epoch]]&#38;uniqueid=[[uniqueid]]&#38;customer_zap_channel=[[customer_zap_channel]]&#38;server_ip=[[server_ip]]&#38;SIPexten=[[SIPexten]]&#38;session_id=[[session_id]]&#38;phone=[[phone]]" style="width:580;height:290;background-color:transparent;" scrolling="auto" frameborder="0" allowtransparency="true" id="popupFrame" name="popupFrame" width="460" height="290" STYLE="z-index:17"&#62;
+  &#60; iframe src="http://localhost/test_OSDial_output.php?lead_id=[[lead_id]]&#38;vendor_id=[[vendor_lead_code]]&#38;list_id=[[list_id]]&#38;gmt_offset_now=[[gmt_offset_now]]&#38;phone_code=[[phone_code]]&#38;phone_number=[[phone_number]]&#38;title=[[title]]&#38;first_name=[[first_name]]&#38;middle_initial=[[middle_initial]]&#38;last_name=[[last_name]]&#38;address1=[[address1]]&#38;address2=[[address2]]&#38;address3=[[address3]]&#38;city=[[city]]&#38;state=[[state]]&#38;province=[[province]]&#38;postal_code=[[postal_code]]&#38;country_code=[[country_code]]&#38;gender=[[gender]]&#38;date_of_birth=[[date_of_birth]]&#38;alt_phone=[[alt_phone]]&#38;email=[[email]]&#38;custom1=[[custom1]]&#38;custom2=[[custom2]]&#38;comments=[[comments]]&#38;user=[[user]]&#38;campaign=[[campaign]]&#38;phone_login=[[phone_login]]&#38;fronter=[[fronter]]&#38;closer=[[user]]&#38;group=[[group]]&#38;channel_group=[[group]]&#38;SQLdate=[[SQLdate]]&#38;epoch=[[epoch]]&#38;uniqueid=[[uniqueid]]&#38;customer_zap_channel=[[customer_zap_channel]]&#38;server_ip=[[server_ip]]&#38;SIPexten=[[SIPexten]]&#38;session_id=[[session_id]]&#38;phone=[[phone]]" style="width:580;height:290;background-color:transparent;" scrolling="auto" frameborder="0" allowtransparency="true" id="popupFrame" name="popupFrame" width="460" height="290" STYLE="z-index:17"&#62;
   &#60;/iframe&#62;
   &lt;/div&gt;
     </item>
@@ -1577,6 +1589,236 @@ OSDial Server Trunks allows you to restrict the outgoing lines that are used on 
   Through the use of system status categories, you can group together statuses to allow for statistical analysis on a group of statuses. The Category ID must be 2-20 characters in length with no spaces, the name must be 2-50 characters in length, the description is optional and Time On OSDial Display defines whether that status will be one of the upto 4 statuses that can be calculated and displayed on the Time On OSDial Real-Time report.
     </item>
    </section>
+
+
+  <section pathId="carriers" sectionId="26" title="Carriers">
+    <item pathId="carriers" sectionId="1" title="Carriers">
+  The carrier configuration pages allow you to add Telephone Service Providers using standards based telephony protocols. The two primary VoIP protocols available are SIP and IAX2. The configuration uses Asterisk-based formatting for the Protocol Configuration, Registration Information, and Dialplan/Extensions. There are several selectable templates to assist you in entering in your configuration. The defaults provided by the templates should work without additional modification.&lt;br/&gt;
+For more information on protocol-specific Asterisk configuration, try one of the following resources:&lt;br/&gt;
+  &lt;a href="http://www.voip-info.org/wiki/view/Asterisk+config+sip.conf"&gt;http://www.voip-info.org/wiki/view/Asterisk+config+sip.conf&lt;/a&gt;&lt;br/&gt;
+  &lt;a href="http://www.voip-info.org/wiki/view/Asterisk+config+iax.conf"&gt;http://www.voip-info.org/wiki/view/Asterisk+config+sip.conf&lt;/a&gt;&lt;br/&gt;
+  &lt;br/&gt;
+  As a rule of thumb, you should always modify the &lt;b&gt;/etc/asterisk/sip.conf&lt;/b&gt; and &lt;b&gt;/etc/asterisk/iax.conf&lt;/b&gt; configuration files and add a reference to your servers external IP address. Add the following line both files and replace &lt;b&gt;66.77.88.99&lt;/b&gt; with you external IP address:&lt;br/&gt;
+  &lt;center&gt;
+  &lt;table border=1&gt;
+  &lt;tr valign=top&gt;&lt;td width=300&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2&gt;&lt;b&gt;/etc/asterisk/sip/conf&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;td width=300&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2&gt;&lt;b&gt;/etc/asterisk/iaxconf&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr valign=top&gt;&lt;td&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2&gt;&lt;i&gt;[general]&lt;br/&gt;
+  port = 5060&lt;br/&gt;
+  bindaddr = 0.0.0.0&lt;br/&gt;
+  context = incoming&lt;br/&gt;
+  registertimeout=300&lt;br/&gt;
+  localnet=10.0.0.0/255.0.0.0&lt;br/&gt;
+  localnet=192.168.0.0/255.255.0.0&lt;br/&gt;
+  allowguest=no&lt;br/&gt;
+  &lt;b&gt;externip=66.77.88.99&lt;/b&gt;&lt;br/&gt;
+  &lt;br/&gt;
+  #include osdial_sip.conf&lt;/i&gt;&lt;/font&gt;&lt;/td&gt;
+  &lt;td&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2&gt;&lt;i&gt;[general]&lt;br/&gt;
+  bindport=4569&lt;br/&gt;
+  iaxcompat=yes&lt;br/&gt;
+  bandwidth=high&lt;br/&gt;
+  allow=all&lt;br/&gt;
+  allow=gsm&lt;br/&gt;
+  jitterbuffer=no&lt;br/&gt;
+  tos=0x18&lt;br/&gt;
+  allowguest=no&lt;br/&gt;
+  context=incoming&lt;br/&gt;
+  &lt;b&gt;externip=66.77.88.99&lt;/b&gt;&lt;br/&gt;
+  &lt;br/&gt;
+  #include osdial_iax.conf&lt;/i&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;
+  &lt;/table&gt;
+  &lt;/center&gt;
+    </item>
+
+    <item pathId="name" sectionId="2" title="Name">
+  A unique name for this carrier. The name should be greater than two alpha-numberic characters, a-z, A-Z, and 0-9. This name must also exactly match the context ID in the Protocol Configuration for this carrier. So, if the carrier name is "genericSIP", then the Protocol Configuration should start with the context ID "[genericSIP]".  
+    </item>
+
+    <item pathId="description" sectionId="3" title="Description">
+  A short summary of the carrier that will be displayed in the carrier list.
+    </item>
+
+    <item pathId="active" sectionId="4" title="Active">
+  If set to &lt;b&gt;N&lt;/b&gt;, these configuration settings will not be generated and parsed with Asterisk. If set to &lt;b&gt;Y&lt;/b&gt;, the carrier will be parsed and made available to Asterisk for use.
+    </item>
+
+    <item pathId="selectable" sectionId="5" title="Selectable">
+  If set to &lt;b&gt;N&lt;/b&gt;, the carrier cannot be selected under as a default under System Settings or as an option under Campaigns. If set to &lt;b&gt;Y&lt;/b&gt;, the carrier can be selected as a default under System Settings or as an option under Campaigns.
+    </item>
+
+    <item pathId="protocol" sectionId="6" title="Protocol">
+  The following protocol options are available: &lt;b&gt;SIP&lt;/b&gt;- VoIP Service, &lt;b&gt;IAX2&lt;/b&gt;- VoIP Service, &lt;b&gt;DAHDI&lt;/b&gt;- Digital/Analog Lines, &lt;b&gt;EXTERNAL&lt;/b&gt;- Custom Asterisk Protocol/Dialplan.
+    </item>
+
+    <item pathId="protocol_config" sectionId="7" title="Protocol Configuration">
+  Any Asterisk compatible configuration context for the selected protocol. Try using a template and modifying the default configuration for that template with the information given by your provider. If you have a Sangoma Netborder Call Progress Analyzer, you can enable it by adding the following settings to your carrier context:&lt;br/&gt;&lt;b&gt;outboundproxy=[ip.of.netborder.cpa]&lt;/b&gt;&lt;br/&gt;&lt;b&gt;enable-netborder-cpa=yes&lt;/b&gt;
+    </item>
+
+    <item pathId="registrations" sectionId="8" title="Registrations">
+  Registrations allow you to dynamically connect to your provider using a given set of credentials, this is required if your provider does not use IP-based authentication or you have a dynamic IP address.&lt;br/&gt;&lt;br/&gt;
+  Format using a Host that does not have a matching Protocol Config entry:&lt;br/&gt;
+  user[:secret[:authuser]]@host[:port][/extension]&lt;br/&gt;
+  &lt;b&gt;johndoe:abc1234@99.88.77.66:5060&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;
+  Format using a Host which you have defined in your Protocol Config:&lt;br/&gt;
+  user[:secret[:authuser]]@carrier_name[/extension]&lt;br/&gt;
+  &lt;b&gt;johndoe:abc1234@genericSIP&lt;/b&gt;
+    </item>
+
+    <item pathId="dialplan" sectionId="9" title="Dialplan">
+  Any Asterisk compatible extension configuration mapping. The default settings for this field should not be changed unless you know what you are doing.
+    </item>
+
+    <item pathId="strip_msd" sectionId="10" title="Strip MSD">
+  Strip the &lt;b&gt;1&lt;/b&gt; off of any dialed number. This option only works when using the default dialplan configuration.
+    </item>
+
+    <item pathId="allow_international" sectionId="11" title="Allow International">
+  When set to &lt;br&gt;Y&lt;/b&gt;, the dialplan will allow international numbers to be dialed. This option only works when using the default dialplan configuration. Default is &lt;b&gt;N&lt;/b&gt;
+    </item>
+
+    <item pathId="default_callerid" sectionId="12" title="Default CallerID">
+  The Caller ID to use if not specified in the campaign or if number is dialed directly from an extension. This option only works when using the default dialplan configuration.
+    </item>
+
+    <item pathId="default_areacode" sectionId="13" title="Default Areacode">
+  If 7-digits the contents of this field will prefix the number dialed. This option only works when using the default dialplan configuration.
+    </item>
+
+    <item pathId="default_prefix" sectionId="14" title="Default Prefix">
+  This field allows for more complex dialplans to be created and used based on the dialed prefix. This option only works when using the default dialplan configuration. Default is &lt;b&gt;9&lt;/b&gt;.
+    </item>
+
+    <item pathId="failover" sectionId="15" title="Failover Carrier">
+  The next carrier to try should the &lt;b&gt;Failover Condition&lt;/b&gt; be met. Be careful not to create loops, using CarrerA-&gt;[Failover]-&gt;CarrierB and CarrierB-&gt;[Failover]-&gt;CarrierA would be very bad.
+    </item>
+
+    <item pathId="failover_condition" sectionId="16" title="Failover Condition">
+  The condition used to trigger a call being attempted on the &lt;b&gt;Failover Carrier&lt;/b&gt;. &lt;b&gt;CHANUNAVAIL&lt;/b&gt;- Failure to contact carrier, &lt;b&gt;CONGESTION&lt;/b&gt;- Carrier contacted but could not complete call, &lt;b&gt;BOTH&lt;/b&gt;- Either CHANUNAVAIL or CONGESTION.
+    </item>
+  </section>
+
+
+
+
+
+
+
+
+  <section pathId="carrier_servers" sectionId="27" title="Carrier Servers">
+    <item pathId="carrier_servers" sectionId="1" title="Carriers - Server Specific Settings">
+  This section provides a method of overriding the Protocol Configuration, Registions, or Dialplan based on the server that this configuration is running on.
+    </item>
+
+    <item pathId="protocol_config" sectionId="2" title="Protocol Configuration">
+  Any Asterisk compatible configuration context for the selected protocol. Try using a template and modifying the default configuration for that template with the information given by your provider. If you have a Sangoma Netborder Call Progress Analyzer, you can enable it by adding the following settings to your carrier context:&lt;br/&gt;&lt;b&gt;outboundproxy=[ip.of.netborder.cpa]&lt;/b&gt;&lt;br/&gt;&lt;b&gt;enable-netborder-cpa=yes&lt;/b&gt;
+    </item>
+
+    <item pathId="registrations" sectionId="3" title="Registrations">
+  Registrations allow you to dynamically connect to your provider using a given set of credentials, this is required if your provider does not use IP-based authentication or you have a dynamic IP address.&lt;br/&gt;&lt;br/&gt;
+Format using a Host that does not have a matching Protocol Config entry:&lt;br/&gt;
+user[:secret[:authuser]]@host[:port][/extension]&lt;br/&gt;
+&lt;b&gt;johndoe:abc1234@99.88.77.66:5060&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;
+Format using a Host which you have defined in your Protocol Config:&lt;br/&gt;
+user[:secret[:authuser]]@carrier_name[/extension]&lt;br/&gt;
+&lt;b&gt;johndoe:abc1234@genericSIP&lt;/b&gt;
+    </item>
+
+    <item pathId="dialplan" sectionId="4" title="Dialplan">
+  Any Asterisk compatible extension configuration mapping. The default settings for this field should not be changed unless you know what you are doing.
+    </item>
+  </section>
+
+
+
+
+
+
+
+  <section pathId="carrier_dids" sectionId="28" title="Carrier DIDs">
+    <item pathId="carrier_dids" sectionId="1" title="Carrier DIDs">
+  DID stands for Direct Inward Dialing.  It is the name normally given to an Inbound Phone number assigned to you by your carrier.
+    </item>
+
+    <item pathId="did" sectionId="2" title="DID">
+  The inbound phone number given to you by your carrier that you are configuring. Asterisk extension wildcards may be used in this field.
+    </item>
+
+    <item pathId="did_action" sectionId="3" title="DID Action">
+  The action you would like to occur when this number is called. Available actions are &lt;b&gt;INGROUP&lt;/b&gt;- Send call to an inbound queue for handling by agents, &lt;b&gt;PHONE&lt;/b&gt;- Send call to a configured phone, &lt;b&gt;EXTENSION&lt;/b&gt;- Send to call to a custom Asterisk contact and extension, &lt;b&gt;VOICEMAIL&lt;/b&gt;- Send call to voicemail box. See table below for the options available for each action.
+    </item>
+
+    <item pathId="ingroup" sectionId="4" title="DID Action - Inbound Group">
+  The Inbound queue (InGroup) to send the call to. When creating a new DID, a new InGroup will automatically be created for you based on the DID. When modifying the DID, you must select from the available InGroups.&lt;br/&gt;You may at any time add an InGroup by selecting &lt;b&gt;In-Groups-&gt;Add A New In-Group&lt;/b&gt; from the main menu.
+    </item>
+
+    <item pathId="server_allocation" sectionId="5" title="Server Allocation">
+  The method used to distribute calls to multiple configured dialers. The options are: &lt;b&gt;LO&lt;/b&gt;- Use Home-Server and failover to other servers as needed, &lt;b&gt;LB&lt;/b&gt;- Load Balance evenly between servers, &lt;b&gt;SO&lt;/b&gt;- Home-Server only.
+    </item>
+
+    <item pathId="park_file" sectionId="6" title="Park File">
+  This is where you can customize the on-hold music for this InGroup. Place file in the /var/lib/asterisk/sounds directory on each dialer OR use the &lt;b&gt;Setup-&gt;Media&lt;/b&gt; configuration section to upload or record new files. 
+    </item>
+
+    <item pathId="initial_status" sectionId="7" title="Initial Status">
+  The status to assign the call should a new lead be created.  Default is &lt;b&gt;INBND&lt;/b&gt;.
+    </item>
+
+    <item pathId="lookup_method" sectionId="8" title="Lookup Method">
+  The method used to match the call with an existing lead.&lt;br&gt;
+  &lt;table border=1&gt;
+  &lt;tr valign=top&gt;&lt;td&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=&gt;CID&lt;/font&gt;&lt;/td&gt;&lt;td&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2&gt;CID received, add record with phone number, to list specified by &lt;b&gt;Default List ID&lt;/b&gt;.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr valign=top&gt;&lt;td&gt;&lt;b&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2&gt;CIDLOOKUP&lt;/font&gt;&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2&gt;Lookup CID to find record in whole system, if not found add to list specified by &lt;b&gt;Default List ID&lt;/b&gt;.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr valign=top&gt;&lt;td&gt;&lt;b&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2&gt;CIDLOOKUPRL&lt;/font&gt;&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2&gt;Restrict lookup to one list specified by &lt;b&gt;Default List ID&lt;/b&gt;, if not found, add to same list.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr valign=top&gt;&lt;td&gt;&lt;b&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2&gt;CIDLOOKUPRC&lt;/font&gt;&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2&gt;Restrict lookup to one campaign specified by &lt;b&gt;Search Campaign&lt;/b&gt;, if not found, add to list specified by &lt;b&gt;Default List ID&lt;/b&gt;.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr valign=top&gt;&lt;td&gt;&lt;b&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2&gt;ANI&lt;/font&gt;&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2&gt;ANI received, add record with phone number, if not found add to list specified by &lt;b&gt;Default List ID&lt;/b&gt;.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr valign=top&gt;&lt;td&gt;&lt;b&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2&gt;ANILOOKUP&lt;/font&gt;&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2&gt;Lookup ANI to find record in whole system, if not found add to list specified by &lt;b&gt;Default List ID&lt;/b&gt;.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr valign=top&gt;&lt;td&gt;&lt;b&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2&gt;ANILOOKUPRL&lt;/font&gt;&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2&gt;Restrict lookup to one list specified by &lt;b&gt;Default List ID&lt;/b&gt;, if not found, add to same list.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr valign=top&gt;&lt;td&gt;&lt;b&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2&gt;CLOSER&lt;/font&gt;&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2&gt;Closer calls from OSDIAL fronters.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr valign=top&gt;&lt;td&gt;&lt;b&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2&gt;3DIGITID&lt;/font&gt;&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2&gt;Enter 3 digit code to go to agent.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr valign=top&gt;&lt;td&gt;&lt;b&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2&gt;4DIGITID&lt;/font&gt;&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2&gt;Enter 4 digit code to go to agent.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr valign=top&gt;&lt;td&gt;&lt;b&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2&gt;5DIGITID&lt;/font&gt;&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2&gt;Enter 5 digit code to go to agent.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr valign=top&gt;&lt;td&gt;&lt;b&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2&gt;10DIGITID&lt;/font&gt;&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;font face="dejavu sans,verdana,sans-serif" COLOR=1C4754 SIZE=2&gt;Enter 10 digit code to go to agent.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;
+  &lt;/table&gt;
+    </item>
+
+    <item pathId="default_list_id" sectionId="9" title="Default List ID">
+  Default list to use when creating new leads from inbound calls which could not be matched to an existing lead using the selected &lt;b&gt;Lookup Method&lt;/b&gt;. This field also specifies the List ID to search when using the list based &lt;b&gt;Lookup Methods&lt;/b&gt;, &lt;b&gt;CIDLOOKUPRL&lt;/b&gt; or &lt;b&gt;ANILOOKUPRL&lt;/b&gt;.
+    </item>
+
+    <item pathId="default_phone_code" sectionId="10" title="Default Phone Code">
+  The default phone (country) code to assign to a newly created lead from an inbound call that could not be matched to an existing lead using the selected &lt;b&gt;Lookup Method&lt;/b&gt;.  Default is &lt;b&gt;1&lt;/b&gt; (North America).
+    </item>
+
+    <item pathId="search_campaign" sectionId="11" title="Search Campaign">
+  This field specifies the Campaign ID to search when using the campaign based &lt;b&gt;Lookup Methods&lt;/b&gt;, &lt;b&gt;CIDLOOKUPRC&lt;/b&gt; or &lt;b&gt;ANILOOKUPRC&lt;/b&gt;.
+    </item>
+
+    <item pathId="did_action_phone" sectionId="12" title="DID Action - Phone">
+  Send inbound calls to a configured phone.
+    </item>
+
+    <item pathId="phone" sectionId="13" title="Phone">
+  The configured phone to send calls destined for this DID. To configure new phones,&lt;br/&gt;select &lt;b&gt;Setup-&gt;Phones-&gt;Add A New Phone&lt;/b&gt; from the main menu.
+    </item>
+
+    <item pathId="did_action_extension" sectionId="14" title="DID Action - Extension">
+  When adding custom extension to OSDial, use the file &lt;b&gt;/etc/asterisk/osdial_extensions_custom.conf&lt;/b&gt;.  This will ensure that your changes do not get overwritten.
+    </item>
+
+    <item pathId="extension_context" sectionId="15" title="Extension Context">
+  The Asterisk extension context/section to use when routing inbound calls for this DID.
+    </item>
+
+    <item pathId="extension" sectionId="16" title="Extension">
+  The Asterisk extension within &lt;b&gt;Extension Context&lt;/b&gt; to use when routing inbound calls for this DID.
+    </item>
+
+    <item pathId="voicemail" sectionId="17" title="Voicemail">
+  Send calls destined for this DID directly to a phone's voicemail box. To configure new phones and voicemail boxes,&lt;br/&gt;select &lt;b&gt;Setup-&gt;Phones-&gt;Add A New Phone&lt;/b&gt; from the main menu.
+    </item>
+  </section>
+
+
   </chapter>
  </topic>
  <topic pathId="advanced" sectionId="5" title="Advanced Topics">

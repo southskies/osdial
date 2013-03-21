@@ -218,7 +218,23 @@
 	.alert a:link { color: #6B0902; }
 	.alert a:active { color: #B70F03; }
 	.alert a:hover { color: #B70F03; }
-	.active-mode { background-color: #ff0; color:#ff0;}
+	.active-mode { background-color: #00C50D; color:#00C50D;}
+	.active-button { font-family: 'dejavu sans',verdana,sans-serif; 
+		font-size: 7pt; 
+		background-color: #9AC48B; 
+		color:#000;
+		-moz-border-radius: 6px;
+		-webkit-border-radius: 6px;
+		-khtml-border-radius: 6px;
+		border-radius: 6px 6px 6px 6px;
+		border: thin solid #495D42;
+		border-style: double groove outset double;
+		margin-bottom:2px;
+	}
+		
+	.inactive-button { font-family: 'dejavu sans',verdana,sans-serif; font-size: 7pt;
+		margin:2px;
+	}
 
 	.printable { display: inline; }
 	.noprint { display: inline; }
@@ -345,6 +361,13 @@
 		border-radius: 8px 8px 0px 0px;
 		border: thin solid white;
 	}	
+	.rounded-lamp {
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		-khtml-border-radius: 5px;
+		border-radius: 5px 5px 5px 5px;
+		border: thin solid #495D42;
+	}
 	.jump {
 		font-family: 'dejavu sans',verdana,sans-serif; font-size: 9pt;
 		text-decoration: none;
@@ -378,23 +401,53 @@
 	
 	span.help span.helppopup{
 		background:#afcfd7;
-		border: 1px solid #808080;;
+		border: 1px solid #808080;
 		color: #1c4754;
 		font-size: 13px;
 		min-height: 30px;
 		min-width: 80px;
 		width: 500px;
 		max-width: 500px;
+		max-height: 500px;
 		position: absolute;
 		margin-left:auto;
 		margin-right:auto;
+		margin-top:10px;
+		margin-bottom:10px;
 		display:none;
-		padding:0 10px;
+		padding:5px 3px 5px 8px;
 		z-index: 9999999;
+		white-space: normal;
+		text-align: left;
+		text-decoration: none;
+		font-weight: normal;
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		-khtml-border-radius: 5px;
+		border-radius: 8px 8px 8px 8px;
+		border-style:none outset outset none;
+		
 	}
 	span.help:hover span.helppopup{
 		display: block;
 	}
 	span.help {
 		cursor: help;
+	}
+
+	th.chrome_collapsed_row {
+		padding: 0px;
+		border: 0px;
+		text-indent: -1px;
+	}
+	td.chrome_collapsed_row {
+		padding: 0px;
+		border: 0px;
+		text-indent: -1px;
+	}
+	th.chrome_collapsed_row div{
+		display: none;
+	}
+	td.chrome_collapsed_row div{
+		display: none;
 	}

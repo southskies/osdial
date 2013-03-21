@@ -27,7 +27,7 @@
 
 # Footer is required 'as is'.
 #
-echo "<br /><div class=\"footer\"><div class=footer-border style='background-color:#E9E8D9'></div>";
+echo "<div class=\"footer\"><div class=footer-border style='background-color:#E9E8D9'><br /></div>";
 echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
 echo "  <tr><td align=\"left\" colspan=\"4\" height=\"1\" bgcolor=\"#999999\"></td></tr>\n";
 echo "  <tr bgcolor=\"$footer_color\">\n";

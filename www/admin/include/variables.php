@@ -872,7 +872,7 @@ $xfer_agent2agent_wait_action = get_variable("xfer_agent2agent_wait_action");
 $xfer_agent2agent_wait_extension = get_variable("xfer_agent2agent_wait_extension");
 
 
-$helpfiledata = file_get_contents("include/help.xml");
+$helpfiledata = file_get_contents($WeBServeRRooT."/admin/include/help.xml");
 $helpfilexml = new SimpleXMLElement($helpfiledata);
 $helpdata=genhelpdata($helpfilexml);
 

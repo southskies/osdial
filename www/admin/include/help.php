@@ -25,7 +25,7 @@ function helptag($helpphrase) {
 	global $helpdata;
 	$helpphrase = OSDpreg_replace('/^#/','',$helpphrase);
 	list($helpsection,$helpitem) = OSDpreg_split('/\-/',$helpphrase);
-	$ret = " &nbsp; <span id=\"test\" class=\"help\" ";
+	$ret = "<span class=\"help\" ";
 	$ret .= "onclick=\"openNewWindow('$PHP_SELF?ADD=99999'+this.getAttribute('helpitem'));\" helpitem=\"#$helpphrase\">";
 	$ret .= "<img src=\"help.gif\" width=20 height=20 border=0 alt=\"Help\" align=top>";
 	$ret .= "<span class=\"helppopup\">";
@@ -58,7 +58,7 @@ if ($ADD==99999) {
 	echo "      <tr><td><font face=\"dejavu sans,verdana,sans-serif\" color=\"1c4754\" size=\"2\"><br/><br/>\n";
 
 	foreach ($helpdata['admin_overview']['children']['admin_modules']['children'] as $section) {
-		echo "<b><font size=3>".$section['title']."</font></b><br/><br/>\n";
+		echo "<br/><br/><b><font size=3>".$section['title']."</font></b><br/><br/>\n";
 		foreach ($section['children'] as $item) {
 			echo "<a name=\"".$section['pathId']."-".$item['pathId']."\"><b>".$item['title']." -</b></a>".$item['text']."<br/><br/>\n";
 		}
