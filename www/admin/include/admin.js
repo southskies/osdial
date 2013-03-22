@@ -27,6 +27,8 @@ var oac_last_script = '';
 var oac_last_params = '';
 var oac_last_delay = 0;
 
+var helppopon=0;
+
 
 function fixChromeTableCollapse() {
 	if (typeof(window.chrome)!="undefined") {
@@ -40,7 +42,7 @@ function fixChromeTableCollapse() {
 						if (trs[i].nodeName=='TR') {
 							if (typeof(trs[i].style)!="undefined" && typeof(trs[i].style.visibility)!="undefined" && trs[i].style.visibility == 'collapse') {
 								var tdcells = trs[i].childNodes;
-								if (typeof(tabs[t].classList)!="undefined" && !tabs[t].classList.contains('rounded-corners') && tabs[t].style.borderCollapse!='collapse')
+								if (typeof(tabs[t].classList)!="undefined" && !tabs[t].classList.contains('rounded-corners') && !tabs[t].classList.contains('rounded-corners2') && tabs[t].style.borderCollapse!='collapse')
 									tabs[t].style.borderCollapse = 'collapse';
 								for (var i2=0; i2<tdcells.length; i2++) {
 									var newdiv = document.createElement('DIV');
@@ -76,7 +78,7 @@ function fixChromeTableExpand(trid) {
 	if (typeof(window.chrome)!="undefined") {
 		var tr=document.getElementById(trid);
 		if (tr.style.visibility == 'collapse') {
-			if (typeof(tr.parentNode.parentNode.classList)!="undefined" && !tr.parentNode.parentNode.classList.contains('rounded-corners') && tr.parentNode.parentNode.style.borderCollapse!='collapse')
+			if (typeof(tr.parentNode.parentNode.classList)!="undefined" && !tr.parentNode.parentNode.classList.contains('rounded-corners') && !tr.parentNode.parentNode.classList.contains('rounded-corners2') && tr.parentNode.parentNode.style.borderCollapse!='collapse')
 				tr.parentNode.parentNode.style.borderCollapse = 'separate';
 			var tdcells = tr.childNodes;
 			for (var i2=0; i2<tdcells.length; i2++) {
