@@ -1029,13 +1029,13 @@ function media_file_select_options($link,$msel) {
 function media_file_text_options($link, $name, $val, $size, $maxsize) {
     if (!isset($maxsize) or $maxsize=='') $maxsize=$size;
     $val = OSDpreg_replace('/.*\/|\..*|---NONE---/','',$val);
-    return editableSelectBox(media_file_label_list($link), $name, $val, $size, $maxsize);
+    return editableSelectBox(media_file_label_list($link), $name, $val, $size, $maxsize, '');
 }
 
 function media_extension_text_options($link, $name, $val, $size, $maxsize) {
     if (!isset($maxsize) or $maxsize=='') $maxsize=$size;
     $val = OSDpreg_replace('/.*\/|\..*|---NONE---/','',$val);
-    return editableSelectBox(media_extension_label_list($link), $name, $val, $size, $maxsize);
+    return editableSelectBox(media_extension_label_list($link), $name, $val, $size, $maxsize, '');
 }
 
 
@@ -1105,18 +1105,18 @@ function phone_extension_list($link) {
 
 function phone_voicemail_text_options($link, $name, $val, $size, $maxsize) {
     if (!isset($maxsize) or $maxsize=='') $maxsize=$size;
-    return editableSelectBox(phone_voicemail_list($link), $name, $val, $size, $maxsize);
+    return editableSelectBox(phone_voicemail_list($link), $name, $val, $size, $maxsize, '');
 }
 
 function phone_extension_text_options($link, $name, $val, $size, $maxsize) {
     if (!isset($maxsize) or $maxsize=='') $maxsize=$size;
-    return editableSelectBox(phone_extension_list($link), $name, $val, $size, $maxsize);
+    return editableSelectBox(phone_extension_list($link), $name, $val, $size, $maxsize, '');
 }
 
 
 function tts_extension_list($link) {
     $tlist = array();
-    $tkrh = get_krh($link, 'osdial_tts', '*','',"",'');
+    $tkrh = get_krh($link, 'osdial_tts', '*','extension ASC',"extension!=''",'');
     if (is_array($tkrh)) {
         $tkeys = array();
         foreach ($tkrh as $ot) {
@@ -1156,7 +1156,7 @@ function ivr_file_text_options($link, $name, $val, $size, $maxsize) {
     foreach (tts_file_list($link) as $k => $v) {
         $ext[$k] = $v;
     }
-    return editableSelectBox($ext, $name, $val, $size, $maxsize);
+    return editableSelectBox($ext, $name, $val, $size, $maxsize, '');
 }
 
 
@@ -1181,7 +1181,7 @@ function list_id_list($link) {
 
 function list_id_text_options($link, $name, $val, $size, $maxsize) {
     if (!isset($maxsize) or $maxsize=='') $maxsize=$size;
-    return editableSelectBox(list_id_list($link), $name, $val, $size, $maxsize);
+    return editableSelectBox(list_id_list($link), $name, $val, $size, $maxsize, '');
 }
 
 
@@ -1196,13 +1196,14 @@ function extension_text_options($link, $name, $val, $size, $maxsize) {
         $ext[$k] = $v;
     }
     ksort($ext);
-    return editableSelectBox($ext, $name, $val, $size, $maxsize);
+    return editableSelectBox($ext, $name, $val, $size, $maxsize, '');
 }
 
 
 
-function editableSelectBox($options, $name, $val, $size, $maxsize) {
+function editableSelectBox($options, $name, $val, $size, $maxsize, $attribs) {
     if (!isset($maxsize) or $maxsize=='') $maxsize=$size;
+    if (!isset($attribs)) $attribs='';
     if (is_assoc($options)) {
         $esboptsO =' selectBoxOptions="';
         $esboptsL =' selectBoxLabels="';
@@ -1226,7 +1227,7 @@ function editableSelectBox($options, $name, $val, $size, $maxsize) {
         }
         $esboptsO = rtrim($esboptsO,';') . "\"";
     }
-    $esbopts = "<input type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$maxsize\" value=\"$val\"";
+    $esbopts = "<input type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$maxsize\" value=\"$val\" $attribs ";
     $esbopts .= $esboptsO . $esboptsL . $esboptsT;
     $esbopts .= ">\n";
     $esbopts .= "<script type=\"text/javascript\">\n";
