@@ -69,7 +69,7 @@
 	function getEditableSelectStyles(bgColor, fgColor, borderColor) {
 		if (!bgColor) bgColor = '#FFF';
 		if (!fgColor) fgColor = '#000';
-		if (!borderColor) borderColor = '#7f9db9';
+		if (!borderColor) borderColor = '#808080';
 		var result = "<style>\n";
 		result += ".selectBoxArrow { margin-top:1px; float:left; position:absolute; right:1px; }\n";
 		result += ".selectBoxInput { border:0px; padding-left:1px; background-color:" + bgColor + "; color:" + fgColor + ";";
@@ -89,6 +89,10 @@
 
 
 	function selectBox_switchImageUrl() {
+		var numId = this.id.replace(/[^\d]/g,'');
+		if (document.getElementById('selectBox' + numId).getElementsByTagName('INPUT')[0].readOnly)
+			return;
+
 		if (this.src.indexOf(arrowImage)>=0) {
 			this.src = this.src.replace(arrowImage,arrowImageOver);
 		} else {
@@ -103,6 +107,9 @@
 		editableSelect_activeArrow = this;
 
 		var numId = this.id.replace(/[^\d]/g,'');
+		if (document.getElementById('selectBox' + numId).getElementsByTagName('INPUT')[0].readOnly)
+			return;
+
 		var optionDiv = document.getElementById('selectBoxOptions' + numId);
 		if (optionDiv.style.display=='inline') {
 			if (navigator.userAgent.indexOf('MSIE')>=0)
@@ -122,8 +129,8 @@
 			var curvalue = document.getElementById('selectBox' + numId).getElementsByTagName('INPUT')[0].value;
 			for (var no=0;no<optionDiv.children.length;no++) {
 				var curopt = document.getElementById(numId + 'optionValue' + no);
-				if (curopt.innerHTML==curvalue) {
 					var curbox = document.getElementById(numId + 'optionBox' + no);
+				if (curopt.innerHTML==curvalue) {
 					optionDiv.scrollTop = curbox.offsetTop;
 					curbox.style.fontWeight='bold';
 					curbox.style.backgroundColor='#316AC5';
@@ -134,7 +141,7 @@
 					}
 					activeOption = curbox;
 				} else {
-					curbox.style.fontWeight='normal';
+					if (typeof(curbox.style)!="undefined") curbox.style.fontWeight='normal';
 				}
 			}
 		}
@@ -413,6 +420,31 @@
 			}
 			optionDiv.style.display='none';
 			optionDiv.style.visibility='visible';
+		}
+
+		var sfld = document.getElementById('selectBox' + selectBoxIds);
+		var ifld = sfld.getElementsByTagName('INPUT')[0];
+		sfld.disable = function() {
+			this.style.opacity='0.5';
+			this.getElementsByTagName('INPUT')[0].value = this.getElementsByTagName('INPUT')[0].defaultValue;
+			this.getElementsByTagName('INPUT')[0].readOnly=true;
+		};
+		ifld.disable = function() {
+			this.parentNode.style.opacity='0.5';
+			this.value=this.defaultValue;
+			this.readOnly=true;
+		};
+		sfld.enable = function() {
+			this.style.opacity='1';
+			this.getElementsByTagName('INPUT')[0].readOnly=false;
+		};
+		ifld.enable = function() {
+			this.parentNode.style.opacity='1';
+			this.readOnly=false;
+		};
+		if (ifld.disabled) {
+			ifld.disabled=false;
+			sfld.disable();
 		}
 
 		selectBoxIds = selectBoxIds + 1;
