@@ -397,26 +397,35 @@
 	}
 	
 	
+	.helptransvisible {
+		visibility: visible;
+		opacity: 1;
+		transition: opacity 0.25s linear;
+	}
+	.helptranshidden {
+		visibility: hidden;
+		opacity: 0;
+		Xtransition: visibility 0s 0.25s, opacity 0.25s linear;
+	}
 	
 	
-	span.help span.helppopup{
+	span.helpcontainer span.helppopup{
 		background:#afcfd7;
 		border: 1px solid #808080;
 		color: #1c4754;
 		font-size: 13px;
 		min-height: 30px;
 		min-width: 80px;
-		width: 500px;
-		max-width: 500px;
+		width: 0px;
+		max-width: 600px;
 		max-height: 500px;
 		position: absolute;
+		overflow: auto;
 		margin-left:auto;
 		margin-right:auto;
-		margin-top:10px;
+		margin-top:0px;
 		margin-bottom:10px;
-		display:none;
 		padding:5px 3px 5px 8px;
-		z-index: 9999999;
 		white-space: normal;
 		text-align: left;
 		text-decoration: none;
@@ -428,11 +437,17 @@
 		border-style:none outset outset none;
 		
 	}
-	span.help:hover span.helppopup{
-		display: block;
+	span.helpcontainer {
+		margin-left:auto;
+		margin-right:auto;
+		position: absolute;
+		left: 0px;
+		top: 25px;
+		z-index: 9999999;
 	}
 	span.help {
 		cursor: help;
+		position: relative;
 	}
 
 	th.chrome_collapsed_row {

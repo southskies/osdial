@@ -23,15 +23,20 @@ $NWE = "\"><img src=\"help.gif\" width=20 height=20 border=0 alt=\"Help\" align=
 
 function helptag($helpphrase) {
 	global $helpdata;
+	$helpwidth = '600px';
 	$helpphrase = OSDpreg_replace('/^#/','',$helpphrase);
 	list($helpsection,$helpitem) = OSDpreg_split('/\-/',$helpphrase);
-	$ret = "<span class=\"help\" ";
-	$ret .= "onclick=\"openNewWindow('$PHP_SELF?ADD=99999'+this.getAttribute('helpitem'));\" helpitem=\"#$helpphrase\">";
-	$ret .= "<img src=\"help.gif\" width=20 height=20 border=0 alt=\"Help\" align=top>";
-	$ret .= "<span class=\"helppopup\">";
+	$helpid = 'H'.$helpphrase.rand(0,99999);
+	$ret = "&nbsp;&nbsp;<span class=\"help\" ";
+	$ret .= "onclick=\"var hp = document.getElementById('$helpid');if (helppopon==0) {helppopon=1;hp.style.width='$helpwidth';hp.classList.remove('helptranshidden');hp.classList.add('helptransvisible');var mwid=(document.body.offsetWidth/2)-(hp.offsetWidth/2);hp.parentNode.style.left=hp.parentNode.parentNode.offsetLeft*-1+mwid;} else {helppopon=0;var hp2=document.getElementsByClassName('helppopup');for (var i=0;i<hp2.length;i++){if (hp2[i].classList.contains('helptransvisible')) {hp2[i].classList.remove('helptransvisible');hp2[i].classList.add('helptranshidden');}}}\" ";
+	$ret .= "onmouseover=\"if (helppopon==0) {var hp = document.getElementById('$helpid');hp.style.width='$helpwidth';hp.classList.remove('helptranshidden');hp.classList.add('helptransvisible');var mwid=(document.body.offsetWidth/2)-(hp.offsetWidth/2);hp.parentNode.style.left=hp.parentNode.parentNode.offsetLeft*-1+mwid;}\" ";
+	$ret .= "onmouseout=\"if (helppopon==0) {var hp = document.getElementById('$helpid'); hp.classList.remove('helptransvisible');hp.classList.add('helptranshidden');}\" ";
+	$ret .= "ondblclick=\"openNewWindow('$PHP_SELF?ADD=99999'+this.getAttribute('helpitem'));\" helpitem=\"#$helpphrase\">";
+	$ret .= "<img src=\"help.png\" width=20 height=20 border=0 alt=\"Help\" align=top>";
+	$ret .= "<span class=\"helpcontainer\"><span id=\"$helpid\" class=\"helppopup helptranshidden\">";
 	$helptag = $helpdata['admin_overview']['children']['admin_modules']['children'][$helpsection]['children'][$helpitem];
 	$ret .= "<b>".$helptag['title'] . "</b><br/>". $helptag['text'];
-	$ret .= "</span></span>";
+	$ret .= "</span></span></span>";
 	return $ret;
 }
 
