@@ -91,7 +91,7 @@ if ($ADD==311111111111111) {
         echo "        </tr>\n";
         echo "        <tr bgcolor=$oddrows>\n";
         echo "          <td align=right>Admin Home URL:</td>\n";
-        echo "          <td align=left><input type=text name=admin_home_url size=40 maxlength=255 value=\"$system_settings[admin_home_url]\">".helptag("settings-admin_home_url")."</td>\n";
+        echo "          <td align=left><input type=text name=admin_home_url size=40 maxlength=255 value=\"$system_settings[admin_home_url]\">".helptag("system_settings-admin_home_url")."</td>\n";
         echo "        </tr>\n";
         echo "        <tr bgcolor=$oddrows>\n";
         echo "          <td align=right>Intra-Server Protocol:</td>\n";
@@ -102,6 +102,7 @@ if ($ADD==311111111111111) {
         $isps = ''; if ($system_settings['intra_server_protocol']=='SIP' or $ispi=='') $isps = 'selected';
         echo "              <option $isps>SIP</option>\n";
         echo "            </select>\n";
+        echo "            ".helptag("system_settings-intra_server_protocol")."\n";
         echo "          </td>\n";
         echo "        </tr>\n";
         echo "        <tr bgcolor=$oddrows>\n";
@@ -111,6 +112,7 @@ if ($ADD==311111111111111) {
         $krh = get_krh($link, 'osdial_carriers', '*','',"active='Y' AND selectable='Y'",'');
         echo format_select_options($krh, 'id', 'name', $system_settings['default_carrier_id'], "** USE MANUAL CONFIGURATION **",'');
         echo "            </select>\n";
+        echo "            ".helptag("system_settings-default_carrier")."\n";
         echo "          </td>\n";
         echo "        </tr>\n";
         echo "        <tr bgcolor=$oddrows>\n";
@@ -125,7 +127,7 @@ if ($ADD==311111111111111) {
             echo "              <option value=1>UTF8</option>\n";
         }
         echo "            </select>\n";
-        echo "            ".helptag("settings-use_non_latin")."\n";
+        echo "            ".helptag("system_settings-use_non_latin")."\n";
         echo "          </td>\n";
         echo "        </tr>\n";
         echo "        <tr bgcolor=$oddrows>\n";
@@ -136,7 +138,7 @@ if ($ADD==311111111111111) {
         echo "              <option>0</option>\n";
         echo "              <option selected>$system_settings[webroot_writable]</option>\n";
         echo "            </select>\n";
-        echo "            ".helptag("settings-webroot_writable")."\n";
+        echo "            ".helptag("system_settings-webroot_writable")."\n";
         echo "          </td>\n";
         echo "        </tr>\n";
         echo "        <tr bgcolor=$oddrows>\n";
@@ -147,7 +149,7 @@ if ($ADD==311111111111111) {
         echo "              <option>0</option>\n";
         echo "              <option selected>$system_settings[allow_sipsak_messages]</option>\n";
         echo "            </select>\n";
-        echo "            ".helptag("settings-allow_sipsak_messages")."\n";
+        echo "            ".helptag("system_settings-allow_sipsak_messages")."\n";
         echo "          </td>\n";
         echo "        </tr>\n";
         echo "        <tr bgcolor=$oddrows>\n";
@@ -158,7 +160,7 @@ if ($ADD==311111111111111) {
         echo "              <option>0</option>\n";
         echo "              <option selected>$system_settings[enable_agc_xfer_log]</option>\n";
         echo "            </select>\n";
-        echo "            ".helptag("settings-enable_agc_xfer_log")."\n";
+        echo "            ".helptag("system_settings-enable_agc_xfer_log")."\n";
         echo "          </td>\n";
         echo "        </tr>\n";
         echo "        <tr bgcolor=$oddrows>\n";
@@ -171,7 +173,7 @@ if ($ADD==311111111111111) {
         echo "              <option>ALL</option>\n";
         echo "              <option selected>$system_settings[osdial_agent_disable]</option>\n";
         echo "            </select>\n";
-        echo "            ".helptag("settings-osdial_agent_disable")."\n";
+        echo "            ".helptag("system_settings-osdial_agent_disable")."\n";
         echo "          </td>\n";
         echo "        </tr>\n";
         echo "        <tr bgcolor=$oddrows>\n";
@@ -184,7 +186,7 @@ if ($ADD==311111111111111) {
         }
         echo "              <option selected>$system_settings[agent_template]</option>\n";
         echo "            </select>\n";
-        echo "            ".helptag("settings-agent_template")."\n";
+        echo "            ".helptag("system_settings-agent_template")."\n";
         echo "          </td>\n";
         echo "        </tr>\n";
         echo "        <tr bgcolor=$oddrows>\n";
@@ -197,7 +199,7 @@ if ($ADD==311111111111111) {
         }
         echo "              <option selected>$system_settings[admin_template]</option>\n";
         echo "            </select>\n";
-        echo "            ".helptag("settings-admin_template")."\n";
+        echo "            ".helptag("system_settings-admin_template")."\n";
         echo "          </td>\n";
         echo "        </tr>\n";
 
@@ -221,7 +223,7 @@ if ($ADD==311111111111111) {
         echo "              <option value=\"l jS \\of F Y h:i:s A\">" . date('l jS \of F Y h:i:s A') . "</option>\n";
         echo "              <option selected value=\"$system_settings[default_date_format]\">" . date($system_settings['default_date_format']) . "</option>\n";
         echo "            </select>\n";
-        echo "            ".helptag("settings-default_date_format")."\n";
+        echo "            ".helptag("system_settings-default_date_format")."\n";
         echo "          </td>\n";
         echo "        </tr>\n";
 
@@ -233,13 +235,13 @@ if ($ADD==311111111111111) {
         echo "              <option>N</option>\n";
         echo "              <option selected>$system_settings[use_browser_timezone_offset]</option>\n";
         echo "            </select>\n";
-        echo "            ".helptag("settings-use_broweser_timezone_offset")."\n";
+        echo "            ".helptag("system_settings-use_broweser_timezone_offset")."\n";
         echo "          </td>\n";
         echo "        </tr>\n";
 
         echo "        <tr bgcolor=$oddrows>\n";
         echo "          <td align=right>Last Recording Extension:</td>\n";
-        echo "          <td align=left><input type=text name=last_recording_extension size=20 maxlength=20 value=\"$system_settings[last_recording_extension]\"></td>\n";
+        echo "          <td align=left><input type=text name=last_recording_extension size=20 maxlength=20 value=\"$system_settings[last_recording_extension]\">".helptag("system_settings-last_recording_extension")."</td>\n";
         echo "        </tr>\n";
 
         echo "        <tr class=tabheader><td colspan=2>Admin GUI</td></tr>\n";
@@ -252,7 +254,7 @@ if ($ADD==311111111111111) {
         echo "              <option>0</option>\n";
         echo "              <option selected>$system_settings[enable_lead_allocation]</option>\n";
         echo "            </select>\n";
-        echo "            ".helptag("settings-enable_lead_allocation")."\n";
+        echo "            ".helptag("system_settings-enable_lead_allocation")."\n";
         echo "          </td>\n";
         echo "        </tr>\n";
         echo "        <tr bgcolor=$oddrows>\n";
@@ -263,7 +265,7 @@ if ($ADD==311111111111111) {
         echo "              <option>0</option>\n";
         echo "              <option selected>$system_settings[enable_filters]</option>\n";
         echo "            </select>\n";
-        echo "            ".helptag("settings-enable_filters")."\n";
+        echo "            ".helptag("system_settings-enable_filters")."\n";
         echo "          </td>\n";
         echo "        </tr>\n";
         echo "        <tr bgcolor=$oddrows>\n";
@@ -274,7 +276,7 @@ if ($ADD==311111111111111) {
         echo "              <option>0</option>\n";
         echo "              <option selected>$system_settings[enable_external_agents]</option>\n";
         echo "            </select>\n";
-        echo "            ".helptag("settings-enable_external_agents")."\n";
+        echo "            ".helptag("system_settings-enable_external_agents")."\n";
         echo "          </td>\n";
         echo "        </tr>\n";
 
@@ -289,7 +291,7 @@ if ($ADD==311111111111111) {
             echo "              <option>0</option>\n";
             echo "              <option selected>$system_settings[enable_multicompany]</option>\n";
             echo "            </select>\n";
-            echo "            ".helptag("settings-enable_multicompany")."\n";
+            echo "            ".helptag("system_settings-enable_multicompany")."\n";
             echo "          </td>\n";
             echo "        </tr>\n";
             echo "        <tr bgcolor=$oddrows>\n";
@@ -310,34 +312,34 @@ if ($ADD==311111111111111) {
         echo "              <option>0</option>\n";
         echo "              <option selected>$system_settings[enable_queuemetrics_logging]</option>\n";
         echo "            </select>\n";
-        echo "            ".helptag("settings-enable_queuemetrics_logging")."\n";
+        echo "            ".helptag("system_settings-enable_queuemetrics_logging")."\n";
         echo "          </td>\n";
         echo "        </tr>\n";
         
         
         echo "        <tr bgcolor=$oddrows style=\"$qstyle\">\n";
         echo "          <td align=right>QueueMetrics Server IP:</td>\n";
-		echo "          <td align=left><input type=text name=queuemetrics_server_ip size=18 maxlength=15 value=\"$system_settings[queuemetrics_server_ip]\">".helptag("settings-queuemetrics_server_ip")."</td>\n";
+		echo "          <td align=left><input type=text name=queuemetrics_server_ip size=18 maxlength=15 value=\"$system_settings[queuemetrics_server_ip]\">".helptag("system_settings-queuemetrics_server_ip")."</td>\n";
         echo "        </tr>\n";
         echo "        <tr bgcolor=$oddrows style=\"$qstyle\">\n";
         echo "          <td align=right>QueueMetrics DB Name:</td>\n";
-		echo "          <td align=left><input type=text name=queuemetrics_dbname size=18 maxlength=50 value=\"$system_settings[queuemetrics_dbname]\">".helptag("settings-queuemetrics_dbname")."</td>\n";
+		echo "          <td align=left><input type=text name=queuemetrics_dbname size=18 maxlength=50 value=\"$system_settings[queuemetrics_dbname]\">".helptag("system_settings-queuemetrics_dbname")."</td>\n";
         echo "        </tr>\n";
         echo "        <tr bgcolor=$oddrows style=\"$qstyle\">\n";
         echo "          <td align=right>QueueMetrics DB Login:</td>\n";
-		echo "          <td align=left><input type=text name=queuemetrics_login size=18 maxlength=50 value=\"$system_settings[queuemetrics_login]\">".helptag("settings-queuemetrics_login")."</td>\n";
+		echo "          <td align=left><input type=text name=queuemetrics_login size=18 maxlength=50 value=\"$system_settings[queuemetrics_login]\">".helptag("system_settings-queuemetrics_login")."</td>\n";
         echo "        </tr>\n";
         echo "        <tr bgcolor=$oddrows style=\"$qstyle\">\n";
         echo "          <td align=right>QueueMetrics DB Password:</td>\n";
-		echo "          <td align=left><input type=text name=queuemetrics_pass size=18 maxlength=50 value=\"$system_settings[queuemetrics_pass]\">".helptag("settings-queuemetrics_pass")."</td>\n";
+		echo "          <td align=left><input type=text name=queuemetrics_pass size=18 maxlength=50 value=\"$system_settings[queuemetrics_pass]\">".helptag("system_settings-queuemetrics_pass")."</td>\n";
         echo "        </tr>\n";
         echo "        <tr bgcolor=$oddrows style=\"$qstyle\">\n";
         echo "          <td align=right>QueueMetrics URL:</td>\n";
-		echo "          <td align=left><input type=text name=queuemetrics_url size=40 maxlength=255 value=\"$system_settings[queuemetrics_url]\">".helptag("settings-queuemetrics_url")."</td>\n";
+		echo "          <td align=left><input type=text name=queuemetrics_url size=40 maxlength=255 value=\"$system_settings[queuemetrics_url]\">".helptag("system_settings-queuemetrics_url")."</td>\n";
         echo "        </tr>\n";
         echo "        <tr bgcolor=$oddrows style=\"$qstyle\">\n";
         echo "          <td align=right>QueueMetrics Log ID:</td>\n";
-		echo "          <td align=left><input type=text name=queuemetrics_log_id size=12 maxlength=10 value=\"$system_settings[queuemetrics_log_id]\">".helptag("settings-queuemetrics_log_id")."</td>\n";
+		echo "          <td align=left><input type=text name=queuemetrics_log_id size=12 maxlength=10 value=\"$system_settings[queuemetrics_log_id]\">".helptag("system_settings-queuemetrics_log_id")."</td>\n";
         echo "        </tr>\n";
         echo "        <tr bgcolor=$oddrows style=\"$qstyle\">\n";
         echo "          <td align=right>QueueMetrics EnterQueue Prepend:</td>\n";
@@ -354,7 +356,7 @@ if ($ADD==311111111111111) {
         echo "              <option>external_key</option>\n";
         echo "              <option selected>$system_settings[queuemetrics_eq_prepend]</option>\n";
         echo "            </select>";
-		echo "            ".helptag("settings-queuemetrics_eq_prepend")."\n";
+		echo "            ".helptag("system_settings-queuemetrics_eq_prepend")."\n";
         echo "          </td>\n";
         echo "        </tr>\n";
 

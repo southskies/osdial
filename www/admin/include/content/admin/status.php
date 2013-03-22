@@ -150,7 +150,7 @@ if ($ADD==321111111111111)
 	if ($LOG['modify_servers']==1)
 	{
 	echo "<br><center>\n";
-	echo "<font class=top_header color=$default_text size=4>SYSTEM-WIDE STATUSES &nbsp; ".helptag("osdial_statuses")."</font><br><br>\n";
+	echo "<font class=top_header color=$default_text size=4>SYSTEM-WIDE STATUSES &nbsp; ".helptag("osdial_statuses-osdial_statuses")."</font><br><br>\n";
 	echo "<table width=800 cellspacing=1 bgcolor=grey>\n";
 	echo "  <tr class=tabheader>\n";
     echo "    <td align=center>STATUS ID</td>\n";
@@ -361,7 +361,7 @@ if ($ADD==331111111111111)
 	if ($LOG['modify_servers']==1)
 	{
 	echo "<br>\n";
-	echo "<center><font size=4 color=$default_text>STATUS CATEGORIES &nbsp; ".helptag("osdial_status_categories")."</font></center><br>\n";
+	echo "<center><font size=4 color=$default_text>STATUS CATEGORIES &nbsp; ".helptag("osdial_status_categories-osdial_status_categories")."</font></center><br>\n";
     echo "<center>\n";
 	echo "<table width=800 cellspacing=1 bgcolor=grey>\n";
 	echo "  <tr class=tabheader>\n";

@@ -325,6 +325,7 @@ if ($ADD==311111) {
         ### Allowed Campaigns ###
         $acampaigns = get_krh($link, 'osdial_campaigns', '*','',sprintf("campaign_id IN %s",$LOG['allowed_campaignsSQL']),'');
         echo "  <br>\n";
+        echo "  <br>\n";
         echo "  <table bgcolor=grey width=50% cellspacing=1>\n";
         echo "    <tr class=tabheader>\n";
         echo "      <td align=center colspan=2>Allowed Campaigns</td>\n";
@@ -348,13 +349,14 @@ if ($ADD==311111) {
             echo "      <td align=left $ccstyle><label for=campaigns_values" . $campaign['campaign_id'] . ">" . mclabel($campaign['campaign_id']) . ' - ' . $campaign['campaign_name'] . "</label></td>\n";
             echo "    </tr>\n";
         }
-        echo "    <tr class=tabfooter><td align=center colspan=2 class=tabbutton nowrap><input type=submit name=SUBMIT value=SUBMIT>".helptag("osdial_user_groups-allowed_campaigns")."</td></tr>\n";
+        echo "    <tr class=tabfooter><td align=center colspan=2 class=tabbutton nowrap><input type=submit name=SUBMIT value=SUBMIT>&nbsp;".helptag("osdial_user_groups-allowed_campaigns")."</td></tr>\n";
         echo "  </table>\n";
 
 
 
         ### Allowed Ingroups ###
         $aingroups = get_krh($link, 'osdial_inbound_groups', '*','',sprintf("group_id IN %s",$LOG['allowed_ingroupsSQL']),'');
+        echo "  <br>\n";
         echo "  <br>\n";
         echo "  <table bgcolor=grey width=50% cellspacing=1>\n";
         echo "    <tr class=tabheader>\n";
@@ -383,13 +385,14 @@ if ($ADD==311111) {
                 echo "    </tr>\n";
             }
         }
-        echo "    <tr class=tabfooter><td align=center colspan=2 class=tabbutton nowrap><input type=submit name=SUBMIT value=SUBMIT>".helptag("osdial_user_groups-allowed_ingroups")."</td></tr>\n";
+        echo "    <tr class=tabfooter><td align=center colspan=2 class=tabbutton nowrap><input type=submit name=SUBMIT value=SUBMIT>&nbsp;".helptag("osdial_user_groups-allowed_ingroups")."</td></tr>\n";
         echo "  </table>\n";
 
 
 
         ### Allowed scripts ###
         $scripts = get_krh($link, 'osdial_scripts', '*','',sprintf("script_id IN %s",$LOG['allowed_scriptsSQL']),'');
+        echo "  <br>\n";
         echo "  <br>\n";
         echo "  <table bgcolor=grey width=50% cellspacing=1>\n";
         echo "    <tr class=tabheader>\n";
@@ -414,13 +417,14 @@ if ($ADD==311111) {
             echo "      <td align=left $scstyle><label for=scripts_values" . $script['script_id'] . ">" . mclabel($script['script_id']) . ' - ' . $script['script_name'] . "</label></td>\n";
             echo "    </tr>\n";
         }
-        echo "    <tr class=tabfooter><td align=center colspan=2 class=tabbutton nowrap><input type=submit name=SUBMIT value=SUBMIT>".helptag("osdial_user_groups-allowed_scripts")."</td></tr>\n";
+        echo "    <tr class=tabfooter><td align=center colspan=2 class=tabbutton nowrap><input type=submit name=SUBMIT value=SUBMIT>&nbsp;".helptag("osdial_user_groups-allowed_scripts")."</td></tr>\n";
         echo "  </table>\n";
 
 
         if (file_exists($WeBServeRRooT . '/admin/include/content/scripts/email_templates.php')) {
             ### Allowed Email Templates ###
             $emails = get_krh($link, 'osdial_email_templates', '*','',sprintf("et_id IN %s",$LOG['allowed_email_templatesSQL']),'');
+            echo "  <br>\n";
             echo "  <br>\n";
             echo "  <table bgcolor=grey width=50% cellspacing=1>\n";
             echo "    <tr class=tabheader>\n";
@@ -445,7 +449,7 @@ if ($ADD==311111) {
                 echo "      <td align=left $etstyle><label for=emails_values" . $email['et_id'] . ">" . mclabel($email['et_id']) . ' - ' . $email['et_name'] . "</label></td>\n";
                 echo "    </tr>\n";
             }
-            echo "    <tr class=tabfooter><td align=center colspan=2 class=tabbutton nowrap><input type=submit name=SUBMIT value=SUBMIT>".helptag("osdial_user_groups-allowed_email_templates")."</td></tr>\n";
+            echo "    <tr class=tabfooter><td align=center colspan=2 class=tabbutton nowrap><input type=submit name=SUBMIT value=SUBMIT>&nbsp;".helptag("osdial_user_groups-allowed_email_templates")."</td></tr>\n";
             echo "  </table>\n";
         }
 
@@ -453,21 +457,20 @@ if ($ADD==311111) {
 
         ### Agent / UserGroup Reports ###
         echo "  <br>\n";
+        echo "  <br>\n";
         echo "  <table bgcolor=grey width=50% cellspacing=1>\n";
         echo "    <tr class=tabheader>\n";
-        echo "      <td align=center colspan=4>Agent / UserGroup Reports</td>\n";
+        echo "      <td align=center colspan=3>Agent / UserGroup Reports</td>\n";
         echo "    </tr>\n";
         echo "    <tr class=tabheader>\n";
         echo "      <td width=60% align=center>REPORT NAME</td>\n";
         echo "      <td width=15% align=center>VIEW</td>\n";
         echo "      <td width=15% align=center>EXPORT</td>\n";
-        echo "      <td width=10% align=center></td>\n";
         echo "    </tr>\n";
         echo "    <tr bgcolor=$oddrows class=\"row font2\" title=\"Realtime\">\n";
         echo "      <td align=left>Realtime</td>\n";
         echo "      <td align=center><select size=1 name=view_agent_realtime><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_agent_realtime) . "</select></td>\n";
         echo "      <td align=center></td>\n";
-        echo "      <td align=center>".helptag("osdial_user_groups-view_agent_realtime")."</td>\n";
         echo "    </tr>\n";
         echo "    <tr bgcolor=$oddrows class=\"row font2\" title=\"Realtime - IAX Barge\">\n";
         echo "      <td align=left>Realtime - IAX Barge</td>\n";
@@ -479,7 +482,6 @@ if ($ADD==311111) {
         }
         echo "      </td>\n";
         echo "      <td align=center></td>\n";
-        echo "      <td align=center>".helptag("osdial_user_groups-view_agent_realtime_iax_barge")."</td>\n";
         echo "    </tr>\n";
         echo "    <tr bgcolor=$oddrows class=\"row font2\" title=\"Realtime - IAX Listen\">\n";
         echo "      <td align=left>Realtime - IAX Listen</td>\n";
@@ -491,7 +493,6 @@ if ($ADD==311111) {
         }
         echo "      </td>\n";
         echo "      <td align=center></td>\n";
-        echo "      <td align=center>".helptag("osdial_user_groups-view_agent_realtime_iax_listen")."</td>\n";
         echo "    </tr>\n";
         echo "    <tr bgcolor=$oddrows class=\"row font2\" title=\"Realtime - SIP Barge\">\n";
         echo "      <td align=left>Realtime - SIP Barge</td>\n";
@@ -503,7 +504,6 @@ if ($ADD==311111) {
         }
         echo "      </td>\n";
         echo "      <td align=center></td>\n";
-        echo "      <td align=center>".helptag("osdial_user_groups-view_agent_realtime_sip_barge")."</td>\n";
         echo "    </tr>\n";
         echo "    <tr bgcolor=$oddrows class=\"row font2\" title=\"Realtime - SIP Listen\">\n";
         echo "      <td align=left>Realtime - SIP Listen</td>\n";
@@ -515,13 +515,11 @@ if ($ADD==311111) {
         }
         echo "      </td>\n";
         echo "      <td align=center></td>\n";
-        echo "      <td align=center>".helptag("osdial_user_groups-view_agent_realtime_sip_listen")."</td>\n";
         echo "    </tr>\n";
         echo "    <tr bgcolor=$oddrows class=\"row font2\" title=\"Realtime Summary\">\n";
         echo "      <td align=left>Realtime Summary</td>\n";
         echo "      <td align=center><select size=1 name=view_agent_realtime_summary><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_agent_realtime_summary) . "</select></td>\n";
         echo "      <td align=center></td>\n";
-        echo "      <td align=center>".helptag("osdial_user_groups-view_agent_realtime_summary")."</td>\n";
         echo "    </tr>\n";
         echo "    <tr bgcolor=$oddrows class=\"row font2\" title=\"Agent Pause Summary\">\n";
         echo "      <td align=left>Agent Pause Summary</td>\n";
@@ -533,7 +531,6 @@ if ($ADD==311111) {
             echo "        <input type=hidden name=export_agent_pause_summary value=0>N\n";
         }
         echo "      </td>\n";
-        echo "      <td align=center>".helptag("osdial_user_groups-view_agent_pause_summary")."</td>\n";
         echo "    </tr>\n";
         echo "    <tr bgcolor=$oddrows class=\"row font2\" title=\"Agent Performance Detail\">\n";
         echo "      <td align=left>Agent Performance Detail</td>\n";
@@ -545,19 +542,16 @@ if ($ADD==311111) {
             echo "        <input type=hidden name=export_agent_performance_detail value=0>N\n";
         }
         echo "      </td>\n";
-        echo "      <td align=center>".helptag("osdial_user_groups-view_agent_performance_detail")."</td>\n";
         echo "    </tr>\n";
         echo "    <tr bgcolor=$oddrows class=\"row font2\" title=\"Agent Stats\">\n";
         echo "      <td align=left>Agent Stats</td>\n";
         echo "      <td align=center><select size=1 name=view_agent_stats><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_agent_stats) . "</select></td>\n";
         echo "      <td align=center></td>\n";
-        echo "      <td align=center>".helptag("osdial_user_groups-view_agent_stats")."</td>\n";
         echo "    </tr>\n";
         echo "    <tr bgcolor=$oddrows class=\"row font2\" title=\"Agent Status\">\n";
         echo "      <td align=left>Agent Status</td>\n";
         echo "      <td align=center><select size=1 name=view_agent_status><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_agent_status) . "</select></td>\n";
         echo "      <td align=center></td>\n";
-        echo "      <td align=center>".helptag("osdial_user_groups-view_agent_status")."</td>\n";
         echo "    </tr>\n";
         echo "    <tr bgcolor=$oddrows class=\"row font2\" title=\"Agent Timesheet\">\n";
         echo "      <td align=left>Agent Timesheet</td>\n";
@@ -569,30 +563,28 @@ if ($ADD==311111) {
             echo "        <input type=hidden name=export_agent_timesheet value=0>N\n";
         }
         echo "      </td>\n";
-        echo "      <td align=center>".helptag("osdial_user_groups-view_agent_timesheet")."</td>\n";
         echo "    </tr>\n";
         echo "    <tr bgcolor=$oddrows class=\"row font2\" title=\"UserGroup Hourly Stats\">\n";
         echo "      <td align=left>UserGroup Hourly Stats</td>\n";
         echo "      <td align=center><select size=1 name=view_usergroup_hourly_stats><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_usergroup_hourly_stats) . "</select></td>\n";
         echo "      <td align=center></td>\n";
-        echo "      <td align=center>".helptag("osdial_user_groups-view_usergroup_hourly_stats")."</td>\n";
         echo "    </tr>\n";
-        echo "    <tr class=tabfooter><td align=center colspan=4 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+        echo "    <tr class=tabfooter><td align=center colspan=3 nowrap class=tabbutton><input type=submit name=SUBMIT value=SUBMIT>&nbsp;".helptag("osdial_user_groups-agent_reports")."</td></tr>\n";
         echo "  </table>\n";
 
 
 
         ### InGroup / Closer Reports ###
         echo "  <br>\n";
+        echo "  <br>\n";
         echo "  <table bgcolor=grey width=50% cellspacing=1>\n";
         echo "    <tr class=tabheader>\n";
-        echo "      <td align=center colspan=4>In-Group / Closer Reports</td>\n";
+        echo "      <td align=center colspan=3>In-Group / Closer Reports</td>\n";
         echo "    </tr>\n";
         echo "    <tr class=tabheader>\n";
         echo "      <td width=60% align=center>REPORT NAME</td>\n";
         echo "      <td width=15% align=center>VIEW</td>\n";
         echo "      <td width=15% align=center>EXPORT</td>\n";
-        echo "      <td width=10% align=center></td>\n";
         echo "    </tr>\n";
         echo "    <tr bgcolor=$oddrows class=\"row font2\" title=\"InGroup Call Report\">\n";
         echo "      <td align=left>InGroup Call Report</td>\n";
@@ -604,25 +596,24 @@ if ($ADD==311111) {
             echo "        <input type=hidden name=export_ingroup_call_report value=0>N\n";
         }
         echo "      </td>\n";
-        echo "      <td align=center>".helptag("osdial_user_groups-view_ingroup_call_report")."</td>\n";
         echo "      </td>\n";
         echo "    </tr>\n";
-        echo "    <tr class=tabfooter><td align=center colspan=4 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+        echo "    <tr class=tabfooter><td align=center colspan=3 nowrap class=tabbutton><input type=submit name=SUBMIT value=SUBMIT>&nbsp;".helptag("osdial_user_groups-ingroup_reports")."</td></tr>\n";
         echo "  </table>\n";
 
 
 
         ### Campaign Reports ###
         echo "  <br>\n";
+        echo "  <br>\n";
         echo "  <table bgcolor=grey width=50% cellspacing=1>\n";
         echo "    <tr class=tabheader>\n";
-        echo "      <td align=center colspan=4>Campaign Reports</td>\n";
+        echo "      <td align=center colspan=3>Campaign Reports</td>\n";
         echo "    </tr>\n";
         echo "    <tr class=tabheader>\n";
         echo "      <td width=60% align=center>REPORT NAME</td>\n";
         echo "      <td width=15% align=center>VIEW</td>\n";
         echo "      <td width=15% align=center>EXPORT</td>\n";
-        echo "      <td width=10% align=center></td>\n";
         echo "    </tr>\n";
         echo "    <tr bgcolor=$oddrows class=\"row font2\" title=\"Campaign Call Report\">\n";
         echo "      <td align=left>Campaign Call Report</td>\n";
@@ -634,7 +625,6 @@ if ($ADD==311111) {
             echo "        <input type=hidden name=export_campaign_call_report value=0>N\n";
         }
         echo "      </td>\n";
-        echo "      <td align=center>".helptag("osdial_user_groups-view_campaign_call_report")."</td>\n";
         echo "    </tr>\n";
         echo "    <tr bgcolor=$oddrows class=\"row font2\" title=\"Campaign Recent Outbound Sales\">\n";
         echo "      <td align=left>Campaign Recent Outbound Sales</td>\n";
@@ -646,24 +636,23 @@ if ($ADD==311111) {
             echo "        <input type=hidden name=export_campaign_recent_outbound_sales value=0>N\n";
         }
         echo "      </td>\n";
-        echo "      <td align=center>".helptag("osdial_user_groups-view_campaign_recent_outbound_sales")."</td>\n";
         echo "    </tr>\n";
-        echo "    <tr class=tabfooter><td align=center colspan=4 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+        echo "    <tr class=tabfooter><td align=center colspan=3 nowrap class=tabbutton><input type=submit name=SUBMIT value=SUBMIT>&nbsp;".helptag("osdial_user_groups-campaign_reports")."</td></tr>\n";
         echo "  </table>\n";
 
 
 
         ### List / Lead Reports ###
         echo "  <br>\n";
+        echo "  <br>\n";
         echo "  <table bgcolor=grey width=50% cellspacing=1>\n";
         echo "    <tr class=tabheader>\n";
-        echo "      <td align=center colspan=4>List / Lead Reports</td>\n";
+        echo "      <td align=center colspan=3>List / Lead Reports</td>\n";
         echo "    </tr>\n";
         echo "    <tr class=tabheader>\n";
         echo "      <td width=60% align=center>REPORT NAME</td>\n";
         echo "      <td width=15% align=center>VIEW</td>\n";
         echo "      <td width=15% align=center>EXPORT</td>\n";
-        echo "      <td width=10% align=center></td>\n";
         echo "    </tr>\n";
         echo "    <tr bgcolor=$oddrows class=\"row font2\" title=\"Lead Performance by Campaign\">\n";
         echo "      <td align=left>Lead Performance by Campaign</td>\n";
@@ -675,7 +664,6 @@ if ($ADD==311111) {
             echo "        <input type=hidden name=export_lead_performance_campaign value=0>N\n";
         }
         echo "      </td>\n";
-        echo "      <td align=center>".helptag("osdial_user_groups-view_lead_performance_campaign")."</td>\n";
         echo "    </tr>\n";
         echo "    <tr bgcolor=$oddrows class=\"row font2\" title=\"Lead Performance by List\">\n";
         echo "      <td align=left>Lead Performance by List</td>\n";
@@ -687,13 +675,11 @@ if ($ADD==311111) {
             echo "        <input type=hidden name=export_lead_performance_list value=0>N\n";
         }
         echo "      </td>\n";
-        echo "      <td align=center>".helptag("osdial_user_groups-view_lead_performance_list")."</td>\n";
         echo "    </tr>\n";
         echo "    <tr bgcolor=$oddrows class=\"row font2\" title=\"Lead Search - Basic\">\n";
         echo "      <td align=left>Lead Search - Basic</td>\n";
         echo "      <td align=center><select size=1 name=view_lead_search><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_lead_search) . "</select></td>\n";
         echo "      <td align=center></td>\n";
-        echo "      <td align=center>".helptag("osdial_user_groups-view_lead_search")."</td>\n";
         echo "    </tr>\n";
         echo "    <tr bgcolor=$oddrows class=\"row font2\" title=\"Lead Search - Advanced\">\n";
         echo "      <td align=left>Lead Search - Advanced</td>\n";
@@ -705,7 +691,6 @@ if ($ADD==311111) {
             echo "        <input type=hidden name=export_lead_search_advanced value=0>N\n";
         }
         echo "      </td>\n";
-        echo "      <td align=center>".helptag("osdial_user_groups-view_lead_search_advanced")."</td>\n";
         echo "    </tr>\n";
         echo "    <tr bgcolor=$oddrows class=\"row font2\" title=\"List Cost by Entry Date\">\n";
         echo "      <td align=left>List Cost by Entry Date</td>\n";
@@ -717,38 +702,35 @@ if ($ADD==311111) {
             echo "        <input type=hidden name=export_list_cost_entry value=0>N\n";
         }
         echo "      </td>\n";
-        echo "      <td align=center>".helptag("osdial_user_groups-view_list_cost_entry")."</td>\n";
         echo "    </tr>\n";
-        echo "    <tr class=tabfooter><td align=center colspan=4 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+        echo "    <tr class=tabfooter><td align=center colspan=3 nowrap class=tabbutton><input type=submit name=SUBMIT value=SUBMIT>&nbsp;".helptag("osdial_user_groups-lead_reports")."</td></tr>\n";
         echo "  </table>\n";
 
 
 
         ### Server Reports ###
         echo "  <br>\n";
+        echo "  <br>\n";
         echo "  <table bgcolor=grey width=50% cellspacing=1>\n";
         echo "    <tr class=tabheader>\n";
-        echo "      <td align=center colspan=4>Server Reports</td>\n";
+        echo "      <td align=center colspan=3>Server Reports</td>\n";
         echo "    </tr>\n";
         echo "    <tr class=tabheader>\n";
         echo "      <td width=60% align=center>REPORT NAME</td>\n";
         echo "      <td width=15% align=center>VIEW</td>\n";
         echo "      <td width=15% align=center>EXPORT</td>\n";
-        echo "      <td width=10% align=center></td>\n";
         echo "    </tr>\n";
         echo "    <tr bgcolor=$oddrows class=\"row font2\" title=\"Server Performance\">\n";
         echo "      <td align=left>Server Performance</td>\n";
         echo "      <td align=center><select size=1 name=view_server_performance><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_server_performance) . "</select></td>\n";
         echo "      <td align=center></td>\n";
-        echo "      <td align=center>".helptag("osdial_user_groups-view_server_performance")."</td>\n";
         echo "    </tr>\n";
         echo "    <tr bgcolor=$oddrows class=\"row font2\" title=\"Server Times\">\n";
         echo "      <td align=left>Server Times</td>\n";
         echo "      <td align=center><select size=1 name=view_server_times><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_server_times) . "</select></td>\n";
         echo "      <td align=center></td>\n";
-        echo "      <td align=center>".helptag("osdial_user_groups-view_server_times")."</td>\n";
         echo "    </tr>\n";
-        echo "    <tr class=tabfooter><td align=center colspan=4 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+        echo "    <tr class=tabfooter><td align=center colspan=3 nowrap class=tabbutton><input type=submit name=SUBMIT value=SUBMIT>&nbsp;".helptag("osdial_user_groups-server_reports")."</td></tr>\n";
         echo "  </table>\n";
 
 

@@ -370,16 +370,20 @@ tinyMCE.init({
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right>SMTP Host / Port:</td>\n";
         echo "    <td align=left>\n";
-        echo "      <input type=text name=et_host size=40 maxlength=255 value=\"localhost\"> / <input type=text name=et_port size=5 maxlength=5 value=\"25\">\n";
+        echo "      <input type=text name=et_host size=40 maxlength=255 value=\"localhost\">";
         echo "      ".helptag("osdial_email_templates-et_host")."\n";
+	echo " / <input type=text name=et_port size=5 maxlength=5 value=\"25\">\n";
+        echo "      ".helptag("osdial_email_templates-et_port")."\n";
         echo "    </td>\n";
         echo "  </tr>\n";
 
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right>SMTP User / Pass:</td>\n";
         echo "    <td align=left>\n";
-        echo "      <input type=text name=et_user size=20 maxlength=255> / <input type=text name=et_pass size=20 maxlength=255>\n";
+        echo "      <input type=text name=et_user size=20 maxlength=255> ";
         echo "      ".helptag("osdial_email_templates-et_user")."\n";
+	echo " / <input type=text name=et_pass size=20 maxlength=255>\n";
+        echo "      ".helptag("osdial_email_templates-et_pass")."\n";
         echo "    </td>\n";
         echo "  </tr>\n";
 
@@ -926,16 +930,20 @@ tinyMCE.init({
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right>SMTP Host / Port:</td>\n";
         echo "    <td align=left>\n";
-        echo "      <input type=text name=et_host size=40 maxlength=255 value=\"$et[et_host]\"> / <input type=text name=et_port size=5 maxlength=5 value=\"$et[et_port]\">\n";
+        echo "      <input type=text name=et_host size=40 maxlength=255 value=\"$et[et_host]\"> ";
         echo "      ".helptag("osdial_email_templates-et_host")."\n";
+	echo " / <input type=text name=et_port size=5 maxlength=5 value=\"$et[et_port]\">\n";
+        echo "      ".helptag("osdial_email_templates-et_port")."\n";
         echo "    </td>\n";
         echo "  </tr>\n";
 
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right>SMTP User / Pass:</td>\n";
         echo "    <td align=left>\n";
-        echo "      <input type=text name=et_user size=20 maxlength=255 value=\"$et[et_user]\"> / <input type=text name=et_pass size=20 maxlength=255 value=\"$et[et_pass]\">\n";
+        echo "      <input type=text name=et_user size=20 maxlength=255 value=\"$et[et_user]\"> ";
         echo "      ".helptag("osdial_email_templates-et_user")."\n";
+	echo " / <input type=text name=et_pass size=20 maxlength=255 value=\"$et[et_pass]\">\n";
+        echo "      ".helptag("osdial_email_templates-et_pass")."\n";
         echo "    </td>\n";
         echo "  </tr>\n";
 

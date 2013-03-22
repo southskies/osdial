@@ -163,7 +163,7 @@ if ($ADD=="31media") {
         echo "<tr bgcolor=$oddrows><td align=right>FileName: </td><td align=left>$media[filename]".helptag("media-filename")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>MimeType: </td><td align=left>$media[mimetype]".helptag("media-mimetype")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Description: </td><td align=left><input type=text name=media_description size=50 maxlength=255 value=\"$media[description]\">".helptag("media-description")."</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Extension: </td><td align=left><input type=text name=media_extension size=10 maxlength=20 value=\"$media[extension]\">".helptag("media-description")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Extension: </td><td align=left><input type=text name=media_extension size=10 maxlength=20 value=\"$media[extension]\">".helptag("media-extension")."</td></tr>\n";
         echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
         echo "</TABLE></center>\n";
 

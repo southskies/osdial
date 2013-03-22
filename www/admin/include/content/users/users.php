@@ -673,7 +673,7 @@ if ($ADD==3)
                 echo "</tr>\n";
 	            echo "<tr bgcolor=$oddrows>\n";
                 echo "  <td align=right>Agent2Agent Timeout Seconds: </td>\n";
-                echo "  <td align=left><input type=text name=xfer_agent2agent_wait_seconds size=5 maxlength=4 value=\"$xfer_agent2agent_wait_seconds\">".helptag("osdial_users-agent2agent_wait_seconds")."</td>\n";
+                echo "  <td align=left><input type=text name=xfer_agent2agent_wait_seconds size=5 maxlength=4 value=\"$xfer_agent2agent_wait_seconds\">".helptag("osdial_users-xfer_agent2agent_wait_seconds")."</td>\n";
                 echo "</tr>\n";
                 echo "  <td align=right>Agent2Agent Timeout Action: </td>\n";
                 echo "  <td align=left>\n";
@@ -688,7 +688,7 @@ if ($ADD==3)
                 if ($xfer_agent2agent_wait_action == "Y") {
 	                echo "<tr bgcolor=$oddrows>\n";
                     echo "  <td align=right>Agent2Agent Timeout Extension: </td>\n";
-                    echo "  <td align=left><input type=text name=xfer_agent2agent_wait_extension size=10 maxlength=15 value=\"$xfer_agent2agent_wait_extension\">".helptag("osdial_users-agent2agent_wait_extension")."</td>\n";
+                    echo "  <td align=left><input type=text name=xfer_agent2agent_wait_extension size=10 maxlength=15 value=\"$xfer_agent2agent_wait_extension\">".helptag("osdial_users-xfer_agent2agent_wait_extension")."</td>\n";
                     echo "</tr>\n";
                 } else {
 			        echo "<input type=hidden name=xfer_agent2agent_wait_extension value=\"$xfer_agent2agent_wait_extension\">\n";
