@@ -1245,7 +1245,7 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
 		$company_class='rounded-menu2';
 		$company_sh=0;
 	}
-	if ($ADD==100000000000 or $ADD==111111111111 or $ADD==399211111111111 or $ADD==399911111111111 or $ADD==311111111111 or $ADD==511111111111) {
+	if ($ADD==100000000000 or $ADD==111111111111 or $ADD==399111111111111 or $ADD==399211111111111 or $ADD==399911111111111 or $ADD==311111111111 or $ADD==511111111111) {
 		$server_color=$activemenu2_color;
 		$server_class='rounded-menu2select';
 		$server_sh=1;
@@ -1479,6 +1479,13 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
 			$server_add_color=$inactivemenu_color;
 			$server_add_class='rounded-menu3';
 		}
+		if ($ADD==399111111111111) {
+			$server_arch_color=$activemenu_color;
+			$server_arch_class='rounded-menu3select';
+		} else {
+			$server_arch_color=$inactivemenu_color;
+			$server_arch_class='rounded-menu3';
+		}
 		if ($ADD==399211111111111) {
 			$server_qcs_color=$activemenu_color;
 			$server_qcs_class='rounded-menu3select';
@@ -1513,6 +1520,7 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
 		echo "        <tr align=center class='no-ul' bgcolor=$admin_color2 height=25>\n";
 		echo "          <td class=$server_show_class align=center bgcolor=$server_show_color><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=100000000000\"> Show Servers </a></span></td>\n";
 		echo "          <td class=$server_add_class align=center bgcolor=$server_add_color><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=111111111111\"> Add A New Server </a></span></td>\n";
+		echo "          <td class=$server_arch_class align=center bgcolor=$server_arch_color><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=399111111111111\"> Archive Server </a></span></td>\n";
 		echo "          <td class=$server_qcs_class align=center bgcolor=$server_qcs_color><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=399211111111111\"> QC Servers </a></span></td>\n";
 		echo "          <td class=$server_extdnc_class align=center bgcolor=$server_extdnc_color><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=399911111111111\"> External DNC Database </a></span></td>\n";
 		echo "          <td Xcolspan=$cauth align=center class=rounded-menu3 bgcolor=$inactivemenu_color width=350><span class=\"font2 fgnavy\">&nbsp;</span></td>\n";
@@ -1924,7 +1932,7 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
         
 		echo "	        <td class=rounded-menu3 bgcolor=$inactivemenu_color width=350>&nbsp;</td>";
         echo "        </tr>\n";
-        if (($ADD=='31media' or $ADD='51media') and OSDstrlen($media_id) > 0) {
+        if (($ADD=='31media' or $ADD=='51media') and OSDstrlen($media_id) > 0) {
 			echo "      <tr>";
 			echo "        <td colspan=$settings_menucols2>";
 			echo "          <table cellpadding=0 cellspacing=0 width=100% border=0>";
