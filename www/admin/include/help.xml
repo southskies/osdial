@@ -73,6 +73,7 @@
   <chapter pathId="overview" sectionId="1" title="Overview">
   </chapter>
   <chapter pathId="admin_modules" sectionId="2" title="Modules">
+
    <section pathId="osdial_users" sectionId="1" title="Users">
     <item pathId="user" sectionId="1" title="User/Agent ID">
         This field is where you put the OSDial agents ID number, can be up to 8 digits in length, Must be at least 2 characters in length.
@@ -270,11 +271,19 @@
       If set to 'Y' and the user's level is 9, this option will enable the user to remove DNC records.  It is recommend that this option only be enabled for the system adminitrator for maintenance purposes.  Default: 'N'
     </item>
 
+    <item pathId="preview_dial_skip_lead" sectionId="50" title="Preview Dial - Skip Lead">
+      When using preview dial in manual-dial mode, allow user to skip to the next lead.
+    </item>
+
+    <item pathId="xfer_agent2agent_allow_multicall" sectionId="51" title="Agent2Agent Allow Multicall">
+      Allows an agent to handle multiple inbound calls. Agent may place the current call on hold and answer the next call currently in their Inbound Group queue. The agent can then switch back and forth between the two calls.
+    </item>
+
   </section>
 
 
 
-  <section pathId="osdial_campaigns" sectionId="2" title="Campaigns TABLE">
+  <section pathId="osdial_campaigns" sectionId="2" title="Campaigns">
     <item pathId="campaign_id" sectionId="1" title="ID">
   This is the short name of the campaign, it is not editable after initial submission, cannot contain spaces and must be between 2 and 8 characters in length.
     </item>
@@ -374,8 +383,13 @@
   This allows you to wipe out the hopper contents upon form submission. It should be filled again when the VDhopper script runs.
     </item>
 
-    <item pathId="dial_method" sectionId="23" title="Dial Method">
-  This field is the way to define how dialing is to take place. If MANUAL then the auto_dial_level will be locked at 0 unless Dial Method is changed. If RATIO then the normal dialing a number of lines for Active agents. ADAPT_HARD_LIMIT will dial predictively up to the dropped percentage and then not allow aggressive dialing once the drop limit is reached until the percentage goes down again. ADAPT_TAPERED allows for running over the dropped percentage in the first half of the shift -as defined by call_time selected for campaign- and gets more strict as the shift goes on. ADAPT_AVERAGE tries to maintain an average or the dropped percentage not imposing hard limits as aggressively as the other two methods. You cannot change the Auto Dial Level if you are in any of the ADAPT dial methods. Only the Dialer can change the dial level when in predictive dialing mode.
+    <item pathId="adapt_method" sectionId="23" title="Adapt Method">
+  This field is the way to define how dialing is to take place. AVERAGE works to maintain an average, or the dropped percentage, by not imposing hard limits as aggressively as the other two methods. This mode uses a strong formula which renders the other two out of date. While in ADAPTIVE mode you cannot change the Auto Dial Level, OSDial effectively monitors the dial level when in predictive dialing mode. Note: below a certain number of agents (usually 7) you are better of using Available Only Tally. HARD LIMIT will dial predictively up to the dropped percentage and then not allow aggressive dialing once the drop limit is reached until the percentage goes down again. TAPERED allows for running over the dropped percentage in the first half of the shift -as defined by call_time selected for campaign- and gets more strict as the shift goes on. Note: The latter two are replaced with the much improved AVERAGE and are only kept for backward compatibility.
+    </item>
+	
+	<item pathId="dial_method" sectionId="23" title="Adapt Method">
+  This field is the way to define how dialing is to take place. If MANUAL then the auto_dial_level will be locked at 0 unless Dial Method is changed. If RATIO then the normal dialing a number of lines for Active agents.
+  AVERAGE works to maintain an average or the dropped percentage not imposing hard limits as aggressively as the other two methods. You cannot change the Auto Dial Level if you are in any of the ADAPT dial methods. Only the Dialer can change the dial level when in predictive dialing mode. HARD LIMIT will dial predictively up to the dropped percentage and then not allow aggressive dialing once the drop limit is reached until the percentage goes down again. TAPERED allows for running over the dropped percentage in the first half of the shift -as defined by call_time selected for campaign- and gets more strict as the shift goes on. 
     </item>
 
     <item pathId="auto_dial_level" sectionId="24" title="Auto Dial Level">
@@ -391,7 +405,7 @@
     </item>
 
     <item pathId="adaptive_maximum_level" sectionId="27" title="Maximum Adapt Dial Level">
-  This field is where you set the limit of the limit to the numbr of lines you would like dialed per agent while using an adaptive-predictive dial method, not MANUAL or RATIO. This number can be higher than the Auto Dial Level if your hardware will support it. Value must be a positive number greater than one and can have decimal places Default 3.0.
+  This field is where you set the limit of the number of lines you would like dialed per agent while using the adaptive dial method. This number can be higher than the Auto Dial Level if your hardware will support it. Value must be a positive number greater than one and can have decimal places Default 3.0. You can also enter a value manually.
     </item>
 
     <item pathId="adaptive_latest_server_time" sectionId="28" title="Latest Server Time">
@@ -611,6 +625,55 @@
     <item pathId="dispo_submit_method" sectionId="79" title="Dispo Submit Method">
   This specifies where the disposition will be made from. Normal means disposition from within OSDial, and Web Form 1 and 2 from either of these two.
     </item>
+
+    <item pathId="hide_xfer_dial_override" sectionId="80" title="Dial Override - XFER Hide">
+  This is where you can set whether the users of this campaign will have the Dial Override option in their Transfer/Conf window.
+    </item>
+
+    <item pathId="hide_xfer_hangup_xfer" sectionId="81" title="Hangup Xfer Line - XFER Hide">
+  This is where you can set whether the users of this campaign will have the Hangup Xfer Line option in their Transfer/Conf window.
+    </item>
+
+    <item pathId="hide_xfer_leave_3way" sectionId="82" title="Leave 3Way Call - XFER Hide">
+  This is where you can set whether the users of this campaign will have the Leave 3Way Call option in their Transfer/Conf window.
+    </item>
+
+    <item pathId="hide_xfer_dial_with" sectionId="83" title="Dial With Customer - XFER Hide">
+  This is where you can set whether the users of this campaign will have the Dial With Customer option in their Transfer/Conf window.
+    </item>
+
+    <item pathId="hide_xfer_hangup_both" sectionId="84" title="Hangup Both Lines - XFER Hide">
+  This is where you can set whether the users of this campaign will have the Hangup Both Lines option in their Transfer/Conf window.
+    </item>
+
+    <item pathId="hide_xfer_blind_xfer" sectionId="85" title="Blind Transfer - XFER Hide">
+  This is where you can set whether the users of this campaign will have the Blind Transfer option in their Transfer/Conf window.
+    </item>
+
+    <item pathId="hide_xfer_park_dial" sectionId="86" title="Park Customer Dial - XFER Hide">
+  This is where you can set whether the users of this campaign will have the Park Customer Dial option in their Transfer/Conf window.
+    </item>
+
+    <item pathId="hide_xfer_blind_vmail" sectionId="87" title="Blind VMail - XFER Hide">
+  This is where you can set whether the users of this campaign will have the Blind VMail option in their Transfer/Conf window.
+    </item>
+	
+	<item pathId="osdial_logout_agents" sectionId="88" title="Logout Agents">
+  This will logout all agents in this campaign, and hang up on any active calls. However, by always Disabling the campaign to stop any new calls from being made and letting the calls stop ringing, with some agents still available, you will prevent the situation of calls from being answered (with your Caller ID) and then being hung up on, and upsetting the people you are trying to sell to.
+	</item>
+	
+	<item pathId="osdial_clear_autocalls" sectionId="89" title="Clear Auto Calls">
+  This will clear the part of the database which holds pending calls. Clearing it will remove all pending calls. If a calls erroniously are stuck in here it will impeed the dialing. (Which is not a normal occurence.)
+	</item>
+	
+	<item pathId="osdial_delete_campaign" sectionId="90" title="Delete This Campaign">
+  Deleting this campaign will stop any activity related to your life.
+	</item>
+
+	<item pathId="email_templates" sectionId="91" title="Email Templates">
+  The selected email templates will be available for the agent based on the options defined in each template.
+	</item>
+	
   </section>
 
 
@@ -664,7 +727,7 @@
   </section>
 
 
-  <section pathId="osdial_list" sectionId="4" title="OSDial_LIST TABLE">
+  <section pathId="osdial_list" sectionId="4" title="Lead">
     <item pathId="dnc" sectionId="1" title="OSDial DNC List">
   This Do Not Call list contains every lead that has been set to a status of DNC in the system. Through the LISTS - ADD NUMBER TO DNC page you are able to manually add a number to this list so that it will not be called by campaigns that use the internal DNC list.
     </item>
@@ -810,10 +873,14 @@
     <item pathId="allow_multicall" sectionId="31" title="Allow Multicall">
   This option allows agents to handle more than one call in this ingroup.
     </item>
+
+    <item pathId="web_form2_extwindow" sectionId="32" title="Web Form External 2">
+  "Y" will display the WebForm in an external window, "N" will display in an OSDial frame on the agent screen.
+    </item>
   </section>
 
 
-  <section pathId="osdial_remote_agents" sectionId="6" title="OSDial_REMOTE_AGENTS TABLE">
+  <section pathId="osdial_remote_agents" sectionId="6" title="External Agents">
 
     <item pathId="user_start" sectionId="1" title="Agent ID Start">
   This is the starting Agent ID that is used when the remote agent entries are inserted into the system. If the Number of Lines is set higher than 1, this number is incremented by one until each line has an entry. Make sure you create a new OSDial agent account with a user level of 4 or great if you want them to be able to use the vdremote.php page for remote web access of this account.
@@ -846,22 +913,45 @@
 
 
 
-  <section pathId="osdial_campaign_lists" sectionId="7" title="OSDial_CAMPAIGN_LISTS">
-    <item pathId="osdial_campaign_lists" sectionId="1" title="Lists"> The lists within this campaign are listed here, whether they are active is denoted by the Y or N and you can go to the list screen by clicking on the list ID in the first column.
+  <section pathId="osdial_campaign_lists" sectionId="7" title="Campaign Lists">
+    <item pathId="osdial_campaign_lists" sectionId="1" title="Campaign Lists">
+    The lists within this campaign are listed here, whether they are active is denoted by the Y or N and you can go to the list screen by clicking on the list ID in the first column.
     </item>
   </section>
 
 
 
-  <section pathId="osdial_campaign_statuses" sectionId="8" title="OSDial_CAMPAIGN_STATUSES TABLE">
-    <item pathId="osdial_campaign_statuses" sectionId="1" title="Statuses">
-Through the use of custom campaign statuses, you can have statuses that only exist for a specific campaign. The Status must be 1-8 characters in length, the description must be 2-30 characters in length and Selectable defines whether it shows up in OSDial as a disposition. The human_answered field is used when calculating the drop percentage, or abandon rate. Setting human_answered to Y will use this status when counting the human-answered calls. The Category option allows you to group several statuses into a catogy that can be used for statistical analysis.
+  <section pathId="osdial_campaign_statuses" sectionId="8" title="Campaign Specific Statuses">
+    <item pathId="osdial_campaign_statuses" sectionId="1" title="Campaign Specific Statuses">
+  Through the use of custom campaign statuses, you can have statuses that only exist for a specific campaign. The Status must be 1-8 characters in length, the description must be 2-30 characters in length and Selectable defines whether it shows up in OSDial as a disposition. The human_answered field is used when calculating the drop percentage, or abandon rate. Setting human_answered to Y will use this status when counting the human-answered calls. The Category option allows you to group several statuses into a catogy that can be used for statistical analysis.&lt;br/&gt;&lt;br/&gt;
+  You can override a System-Wide Status by creating a Campaign Status and using the same STATUS as its System-Wide counterpart.&lt;br/&gt;&lt;br/&gt;
+  Override a System Status as a Campaign Status: Let say you are running a campaign and require the agents to manually disposition certain calls as a DROP status. Normally they would not be able to do so because the System DROP status has its Selectable flag set to N.  So, in order to use it for this campaign, we would create the Campaign DROP status, identically to the System DROP status, except we are going to set the Selectable flag to Y.  Now any agent in this campaign will have DROP as an option on their disposition screen.&lt;br/&gt;&lt;br/&gt;
+  &lt;pre&gt;
+  STATUS    DESCRIPTION          SELECTABLE  HUMAN ANSWER   CATEGORY&lt;br/&gt;
+  DROP      Agent Not Available  &lt;b&gt;Y&lt;/b&gt;           N              SYSTEM&lt;br/&gt;
+  &lt;/pre&gt;
+  Disabling a System Status per-Campaign: Lets say that your agents have been using the B-Busy disposition a bit too liberally. You don't want to disable it for the whole system, just those misusing it.  Simple, add the Busy status below, however, set Selectable to N.&lt;br/&gt;&lt;br/&gt;
+  &lt;pre&gt;
+  STATUS    DESCRIPTION          SELECTABLE  HUMAN ANSWER   CATEGORY&lt;br/&gt;
+  B         Busy                 &lt;b&gt;Y&lt;/b&gt;           N              NOCONTACT&lt;br/&gt;
+  &lt;/pre&gt;
+  Override Drop-Call Calculation per-Campaign: The campaign drop percentage is a ratio of your abandoned outbound calls against the number of calls in which a live person was reached. We can change that behavior to instead be a ratio of abandoned outbound calls against the total number of connected calls, which should be much higher and give us a much lower drop percentage. (Warning: This may not be legal in your area.) By overriding the Answering Machine, Busy, Disconnect statuses, we can tell the Campaign to treat the calls as answered and to include those statuses in its drop percentage calculations.
+  &lt;pre&gt;
+  STATUS    DESCRIPTION              SELECTABLE  HUMAN ANSWER   CATEGORY&lt;br/&gt;
+  B         Busy                     Y           &lt;b&gt;Y&lt;/b&gt;              NOCONTACT&lt;br/&gt;
+  A         Answering Machine        Y           &lt;b&gt;Y&lt;/b&gt;              &lt;b&gt;CONTACT&lt;/b&gt;&lt;br/&gt;
+  AA        Answering Machine Auto   N           &lt;b&gt;Y&lt;/b&gt;              &lt;b&gt;CONTACT&lt;/b&gt;&lt;br/&gt;
+  AL        Answering Machine Msg    N           &lt;b&gt;Y&lt;/b&gt;              &lt;b&gt;CONTACT&lt;/b&gt;&lt;br/&gt;
+  AM        Answering Machine sent   N           &lt;b&gt;Y&lt;/b&gt;              &lt;b&gt;CONTACT&lt;/b&gt;&lt;br/&gt;
+  DC        Disconnected Number      Y           &lt;b&gt;Y&lt;/b&gt;              NOCONTACT&lt;br/&gt;
+  &lt;/pre&gt;
     </item>
+
   </section>
 
 
 
-  <section pathId="osdial_campaign_hotkeys" sectionId="9" title="OSDial_CAMPAIGN_HOTKEYS TABLE">
+  <section pathId="osdial_campaign_hotkeys" sectionId="9" title="Hotkeys">
     <item pathId="osdial_campaign_hotkeys" sectionId="1" title="Hotkeys">
 Through the use of custom campaign hot keys, agents that use the OSDial web-client can hang up and disposition calls just by pressing a single key on their keyboard. There are two special HotKey options that you can use in conjunction with Alternate Phone number dialing, ALTPH2 - Alternate Phone Hot Dial and ADDR3-----Address3 Hot Dial allow an agent to use a hotkey to hang up their call, stay on the same lead, and dial another contact number from that lead. 
     </item>
@@ -869,7 +959,7 @@ Through the use of custom campaign hot keys, agents that use the OSDial web-clie
 
 
 
-  <section pathId="osdial_lead_recylce" sectionId="10" title="OSDial_LEAD_RECYCLE TABLE">
+  <section pathId="osdial_lead_recycle" sectionId="10" title="Lead Recycling">
     <item pathId="osdial_lead_recycle" sectionId="1" title="Lead Recycling">
 Through the use of lead recycling, you can call specific statuses of leads again at a specified interval without resetting the entire list. Lead recycling is campaign-specific and does not have to be a selected dialable status in your campaign. The attempt delay field is the number of seconds until the lead can be placed back in the hopper, this number must be at least 120 seconds. The attempt maximum field is the maximum number of times that a lead of this status can be attempted before the list needs to be reset, this number can be from 1 to 10. You can activate and deactivate a lead recycle entry with the provided links.
     </item>
@@ -877,15 +967,15 @@ Through the use of lead recycling, you can call specific statuses of leads again
 
 
 
-  <section pathId="osdial_auto_alt_dial_statuses" sectionId="11" title="OSDial AUTO ALT DIAL STATUSES">
-    <item pathId="osdial_auto_alt_dial_statuses" sectionId="1" title="Alternate Dial Statuses">
+  <section pathId="osdial_auto_alt_dial_statuses" sectionId="11" title="Alternate Dial - Statuses">
+    <item pathId="osdial_auto_alt_dial_statuses" sectionId="1" title="Alternate Dial - Statuses">
 If the Auto Alt-Number Dialing field is set, then the leads that are dispositioned under these auto alt dial statuses will have their alt_phone and-or address3 fields dialed after any of these no-answer statuses are set.
     </item>
   </section>
 
 
 
-  <section pathId="osdial_agent_pause_codes" sectionId="12" title="OSDial AGENT PAUSE CODES">
+  <section pathId="osdial_pause_codes" sectionId="12" title="Pause Codes">
     <item pathId="osdial_pause_codes" sectionId="1" title="Pause Codes">
 If the Agent Pause Codes Active field is set to active then the agents will be able to select from these pause codes when they click on the PAUSE button on their screens. This data is then stored in the OSDial agent log. The Pause code must contain only letters and numbers and be less than 7 characters long. The pause code name can be no longer than 30 characters.
     </item>
@@ -893,7 +983,7 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
 
 
 
-  <section pathId="osdial_user_groups" sectionId="13" title="OSDial_USER_GROUPS TABLE">
+  <section pathId="osdial_user_groups" sectionId="13" title="User Group">
     <item pathId="user_group" sectionId="1" title="User Group">
   This is the short name of a OSDial User group, try not to use any spaces or punctuation for this field. max 20 characters, minimum of 2 characters.
     </item>
@@ -909,11 +999,35 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
     <item pathId="allowed_ingroups" sectionId="4" title="Allowed InGroups">
   This is a selectable list of Inbound Groups to which members of this user group can, if permitted under the agent and campaign settings, receive calls from. The ALL-INGROUP option allows the users in this group to be configured to use any and all InGroups, as selected under their Agent and Campaign settings.
     </item>
+
+    <item pathId="allowed_email_templates" sectionId="5" title="Allowed Email Templates">
+  This is a selectable list of Email Termplates from which the members of this user group can use. The ALL-EMAIL-TEMPLATES option allows the users in this group to use any email template on the system.
+    </item>
+
+    <item pathId="agent_reports" sectionId="6" title="Agent / Usergroup Report Permissions">
+    This section allows you to give access for specific reports to all members of the specific usergroup, with a user level of 7 or higher. VIEW and/or EXPORT access may be assigned for the listed report.
+    </item>
+
+    <item pathId="ingroup_reports" sectionId="7" title="Inbound Group Report Permissions">
+    This section allows you to give access for specific reports to all members of the specific usergroup, with a user level of 7 or higher. VIEW and/or EXPORT access may be assigned for the listed report.
+    </item>
+
+    <item pathId="campaign_reports" sectionId="8" title="Campaign Report Permissions">
+    This section allows you to give access for specific reports to all members of the specific usergroup, with a user level of 7 or higher. VIEW and/or EXPORT access may be assigned for the listed report.
+    </item>
+
+    <item pathId="lead_reports" sectionId="8" title="List / Lead Report Permissions">
+    This section allows you to give access for specific reports to all members of the specific usergroup, with a user level of 7 or higher. VIEW and/or EXPORT access may be assigned for the listed report.
+    </item>
+
+    <item pathId="server_reports" sectionId="9" title="Server Report Permissions">
+    This section allows you to give access for specific reports to all members of the specific usergroup, with a user level of 7 or higher. VIEW and/or EXPORT access may be assigned for the listed report.
+    </item>
   </section>
 
 
 
-  <section pathId="osdial_scripts" sectionId="14" title="OSDial_SCRIPTS TABLE">
+  <section pathId="osdial_scripts" sectionId="14" title="Scripts">
     <item pathId="script_id" sectionId="1" title="Script ID">
   This is the short name of a OSDial Script. This needs to be a unique identifier. Try not to use any spaces or punctuation for this field. max 10 characters, minimum of 2 characters.
     </item>
@@ -962,7 +1076,7 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
 
 
 
-  <section pathId="osdial_call_times" sectionId="16" title="OSDial_CALL TIMES TABLE">
+  <section pathId="osdial_call_times" sectionId="16" title="Call Times">
     <item pathId="call_time_id" sectionId="1" title="Call Time ID">
   This is the short name of a OSDial Call Time Definition. This needs to be a unique identifier. Do not use any spaces or punctuation for this field. max 10 characters, minimum of 2 characters.
     </item>
@@ -998,8 +1112,8 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
 
 
 
-  <section pathId="osdial_list_loader" sectionId="17" title="OSDial LIST LOADER FUNCTIONALITY">
-    <item pathId="osdial_list_loader" sectionId="1" title="OSDial LIST LOADER">
+  <section pathId="osdial_list_loader" sectionId="17" title="List Loader">
+    <item pathId="osdial_list_loader" sectionId="1" title="List Loader">
 The OSDial basic web-based lead loader is designed simply to take a lead file - up to 8MB in size - that is either tab or pipe delimited and load it into the osdial_list table. The lead loader allows for field choosing and TXT- Plain Text, CSV- Comma Separated Values and XLS- Excel file formats. The lead loader does not do data validation, but it does allow you to check for duplicates in itself, within the campaign or within the entire system. Also, make sure that you have created the list that these leads are to be under so that you can use them. Here is a list of the fields in their proper order for the lead files:
 	&lt;ol&gt;&lt;li&gt;Vendor Lead Code - shows up in the Vendor ID field of the GUI&lt;/li&gt;&lt;li&gt;Source Code - internal use only for admins and DBAs&lt;/li&gt;&lt;li&gt;List ID - the list number that these leads will show up under&lt;/li&gt;&lt;li&gt;Phone Code - the prefix for the phone number - 1 for US, 01144 for UK, 01161 for AUS, etc&lt;/li&gt;&lt;li&gt;Phone Number - must be at least 8 digits long&lt;/li&gt;&lt;li&gt;Title - title of the customer - Mr. Ms. Mrs, etc...&lt;/li&gt;&lt;li&gt;First Name&lt;/li&gt;&lt;li&gt;Middle Initial&lt;/li&gt;&lt;li&gt;Last Name&lt;/li&gt;&lt;li&gt;Address Line 1&lt;/li&gt;&lt;li&gt;Address Line 2&lt;/li&gt;&lt;li&gt;Address Line 3&lt;/li&gt;&lt;li&gt;City&lt;/li&gt;&lt;li&gt;State - limited to 2 characters&lt;/li&gt;&lt;li&gt;Province&lt;/li&gt;&lt;li&gt;Postal Code&lt;/li&gt;&lt;li&gt;Country&lt;/li&gt;&lt;li&gt;Gender&lt;/li&gt;&lt;li&gt;Date of Birth&lt;/li&gt;&lt;li&gt;Alternate Phone Number&lt;/li&gt;&lt;li&gt;Email Address&lt;/li&gt;&lt;li&gt;Custom1&lt;/li&gt;&lt;li&gt;Comments&lt;/li&gt;&lt;/ol&gt;
 
@@ -1009,7 +1123,7 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 
 
 
-  <section pathId="phones" sectionId="18" title="PHONES TABLE">
+  <section pathId="phones" sectionId="18" title="Phones">
     <item pathId="extension" sectionId="1" title="Phone extension">
   This field is where you put the phones name as it appears to Asterisk not including the protocol or slash at the beginning. For Example: for the SIP phone SIP/test101 the Phone extension would be test101. Also, for IAX2 phones make sure you use the full phones name: IAX2/IAXphone1@IAXphone1 would be IAXphone1@IAXphone1. For Zap phones make sure you put the full channel: Zap/25-1 would be 25-1.  Another note, make sure you set the Protocol below correctly for your type of phone.
     </item>
@@ -1281,6 +1395,14 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
     <item pathId="DBY_port" sectionId="68" title="DBY Port">
   The MySQL TCP port that this user should be using when connecting. Default is 3306. Secondary server, not used currently.
     </item>
+
+    <item pathId="voicemail_password" sectionId="69" title="Voicemail Password">
+  The pin or password used to access voicemail, either through the phone or through the ARI.
+    </item>
+
+    <item pathId="voicemail_email" sectionId="70" title="Voicemail Email">
+  The email address to send new voicemail messages to.
+    </item>
   </section>
 
 
@@ -1373,11 +1495,22 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
     <item pathId="balance_trunks_offlimits" sectionId="22" title="OSDial Balance Offlimits">
   This setting defines the number of trunks to not allow OSDial balance dialing to use. For example if you have 40 max OSDial trunks and balance offlimits is set to 10 you will only be able to use 30 trunk lines for OSDial balance dialing. Default is 0.
     </item>
+
+    <item pathId="server_profile" sectionId="23" title="Server Profile">
+  This option indicates which mode the server should operate in. Setting this option will not change an extisting installation, you must install any required packages and configure the normal system files manually.&lt;br/&gt;&lt;br/&gt;
+  AIO - All-In-One&lt;br/&gt;
+  CONTROL - Web and SQL Services&lt;br/&gt;
+  SQL - SQL Services ONLY&lt;br/&gt;
+  WEB - Web Services ONLY&lt;br/&gt;
+  DIALER - Dialer ONLY&lt;br/&gt;
+  ARCHIVE - Archive&lt;br/&gt;
+  OTHER - Future use
+    </item>
   </section>
 
 
 
-  <section pathId="conferences" sectionId="20" title="CONFERENCES TABLE">
+  <section pathId="conferences" sectionId="20" title="Conferences">
     <item pathId="conf_exten" sectionId="1" title="Conference Number">
   This field is where you put the meetme conference dialpna number. It is also recommended that the meetme number in meetme.conf matches this number for each entry. This is for the conferences in OSDial and is used for leave-3way-call functionality in OSDial.
     </item>
@@ -1389,17 +1522,17 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 
 
 
-  <section pathId="osdial_server_trunks" sectionId="21" title="OSDial_SERVER_TRUNKS TABLE">
-    <item pathId="osdial_server_trunks" sectionId="1" title="OSDial Server Trunks">
+  <section pathId="osdial_server_trunks" sectionId="21" title="Server - Trunks">
+    <item pathId="osdial_server_trunks" sectionId="1" title="Server - Trunks">
 OSDial Server Trunks allows you to restrict the outgoing lines that are used on this server for campaign dialing on a per-campaign basis. You have the option to reserve a specific number of lines to be used by only one campaign as well as allowing that campaign to run over its reserved lines into whatever lines remain open, as long at the total lines used by OSDial on this server is less than the Max OSDial Trunks setting. Not having any of these records will allow the campaign that dials the line first to have as many lines as it can get under the Max OSDial Trunks setting.
     </item>
   </section>
 
 
 
-  <section pathId="system_settings" sectionId="22" title="SYSTEM_SETTINGS TABLE">
+  <section pathId="system_settings" sectionId="22" title="System Settings">
     <item pathId="use_non_latin" sectionId="1" title="Current Character-Set">
-  This flag indicates which character-set your system is using. You have two options, Latin1 (the default), is well suited for English and other Latin-based character-sets. Your other option is UTF8, which allows for the display and storage of non-Latin characters and data. In order to utilize UTF8 for use with OSDial, you must convert your existing database. To convert your database to the UTF8 character-set, log into the console and run the following command: <b>/opt/osdial/bin/sql/upgrade_sql.pl --convert --use-utf8</b>.  To convert your database to the Latin1 character-set, log into the console and run the following command: <b>/opt/osdial/bin/sql/upgrade_sql.pl --convert --use-latin1</b>. 
+  This flag indicates which character-set your system is using. You have two options, Latin1 (the default), is well suited for English and other Latin-based character-sets. Your other option is UTF8, which allows for the display and storage of non-Latin characters and data. In order to utilize UTF8 for use with OSDial, you must convert your existing database. To convert your database to the UTF8 character-set, log into the console and run the following command: &lt;b&gt;/opt/osdial/bin/sql/upgrade_sql.pl --convert --use-utf8&lt;/b&gt;.  To convert your database to the Latin1 character-set, log into the console and run the following command: &lt;b&gt;/opt/osdial/bin/sql/upgrade_sql.pl --convert --use-latin1&lt;/b&gt;. 
     </item>
 
     <item pathId="webroot_writable" sectionId="2" title="Webroot Writable">
@@ -1494,6 +1627,18 @@ OSDial Server Trunks allows you to restrict the outgoing lines that are used on 
   The last extension assigned to a recording after being created using extension 8168 or 8169. This field is incremented whenever a new recording is created. You should not need to modify this field unless you have encountered overlapped extensions or you wish to change the extension schema for recordings.
     </item>
 
+    <item pathId="default_carrier" sectionId="25" title="Default Carrier">
+  If set, the selected carrier will be used as the default outbound provider. This option is generally overridden by the campaign. If set to USE MANUAL CONFIGURATION, the system will use the old behavior of parsing the &lt;b&gt;/etc/asterisk/osdial_extensions_outbound.conf&lt;/b&gt; file.
+    </item>
+
+    <item pathId="intra_server_protocol" sectionId="26" title="Intra-Server Protocol">
+  The backend protocol to use when communicating between OSDial dialer servers.  Valid options are SIP and IAX2.
+    </item>
+
+    <item pathId="use_broweser_timezone_offset" sectionId="27" title="Use Browser Timezone Offset">
+  Attempt to use the GMT phone settings, and/or the timezone offset from the client-side browser to guess the users local timezone. This mainly only changes the apperance of the timestamps on-screen and in various reports in an attempt to be more friendly to the end-user. It also allows date/time entries on reports to be reflective of the end-users current timezone.
+    </item>
+
   </section>
 
   <section pathId="companies" sectionId="23" title="Multi-Company Configuration">
@@ -1573,19 +1718,23 @@ OSDial Server Trunks allows you to restrict the outgoing lines that are used on 
     The default Extension Context that is used when creating phones for this company.  Some defaults are:  osdial- Access to OSDial extensions and outbound dialing.  osdialEXT- Access to OSDial extensions, no outbound dialing.  osdialBLOCK- No access to OSDial extensions or outbound dialing.
     </item>
 
+    <item pathId="enable_system_conferences" sectionId="20" title="Enable System Conferences">
+    This enables admin menu access to the Global System Conferences configuration. (Default: OFF)
+    </item>
+
   </section>
 
 
 
-  <section pathId="osdial_statuses" sectionId="24" title="OSDial_Statuses Table">
-    <item pathId="osdial_statuses" sectionId="1" title="Statuses"> Through the use of system statuses, you can have statuses that exist for campaign and in-group. The Status must be 1-6 characters in length, the description must be 2-30 characters in length and Selectable defines whether it shows up in OSDial as an agent disposition. The human_answered field is used when calculating the drop percentage, or abandon rate. Setting human_answered to Y will use this status when counting the human-answered calls. The Category option allows you to group several statuses into a catogy that can be used for statistical analysis.
+  <section pathId="osdial_statuses" sectionId="24" title="System Statuses">
+    <item pathId="osdial_statuses" sectionId="1" title="System Statuses"> Through the use of system statuses, you can have statuses that exist for campaign and in-group. The Status must be 1-6 characters in length, the description must be 2-30 characters in length and Selectable defines whether it shows up in OSDial as an agent disposition. The human_answered field is used when calculating the drop percentage, or abandon rate. Setting human_answered to Y will use this status when counting the human-answered calls. The Category option allows you to group several statuses into a catogy that can be used for statistical analysis.
     </item>
   </section>
 
 
 
-  <section pathId="osdial_status_categories" sectionId="25" title="OSDial_Status_Categories Table">
-    <item pathId="osdial_status_categories" sectionId="1" title="OSDial Status Categories">
+  <section pathId="osdial_status_categories" sectionId="25" title="Status Categories">
+    <item pathId="osdial_status_categories" sectionId="1" title="Status Categories">
   Through the use of system status categories, you can group together statuses to allow for statistical analysis on a group of statuses. The Category ID must be 2-20 characters in length with no spaces, the name must be 2-50 characters in length, the description is optional and Time On OSDial Display defines whether that status will be one of the upto 4 statuses that can be calculated and displayed on the Time On OSDial Real-Time report.
     </item>
    </section>
@@ -1818,6 +1967,181 @@ user[:secret[:authuser]]@carrier_name[/extension]&lt;br/&gt;
     </item>
   </section>
 
+
+  <section pathId="media" sectionId="29" title="Media">
+    <item pathId="filename" sectionId="1" title="Filename">
+  The target filesystem identifier. Used by the filesystem export process so that Asterisk and other programs can read and stay syncronized with our data.
+    </item>
+    <item pathId="mimetype" sectionId="2" title="Mime Type">
+  A string which identifies the format of the data in this file.
+    </item>
+    <item pathId="description" sectionId="3" title="Description">
+  Short summary about the media file.
+    </item>
+    <item pathId="extension" sectionId="4" title="Extension">
+  This field allows you to assign a numeric extension to the file. Once an extension is assigned, the media file can be assigned to any OSDial option which prompts for an extension. It is best practice to start your media extension numbers at 85100000.
+    </item>
+  </section>
+
+  <section pathId="tts" sectionId="30" title="Text-to-Speech Templating">
+    <item pathId="description" sectionId="1" title="Description">
+  Short summary about the template.
+    </item>
+    <item pathId="extension" sectionId="2" title="Extension">
+  This field allows you to assign a numeric extension to the file. Once an extension is assigned, the media file can be assigned to any OSDial option which prompts for an extension. It is best practice to start your media extension numbers at 85100000.
+    </item>
+    <item pathId="voice" sectionId="3" title="Voice">
+  The Speech synthesis module to use for producing the audio.
+    </item>
+    <item pathId="phrase" sectionId="4" title="Phrase">
+  This works much like the scripting.  Add in your script and selected any dynamic fields for substitution.  The process will attempt to split your phrase in groups of words that it can process and cache ahead of time, leaving only the dynamic fields for runtime interpretation.
+    </item>
+  </section>
+
+  <section pathId="qc_server" sectionId="31" title="Qulaity Control / Off-site Recording Transmission">
+    <item pathId="name" sectionId="1" title="Server Name">
+    Name or ID of remote server.
+    </item>
+    <item pathId="description" sectionId="2" title="Description">
+    Description of service.
+    </item>
+    <item pathId="transfer_method" sectionId="3" title="Transfer Method">
+    The protocol we will use to send the recording files over to the remote server with. FTP. SFTP. and SCP are valid options, however, SFTP and SCP may require you to manually install cryptographic keys.
+    </item>
+    <item pathId="host" sectionId="4" title="Hostname/IP">
+    The fully-qualified-domain-name or IP address of the remote server.
+    </item>
+    <item pathId="username" sectionId="5" title="Username">
+    The user account used to access the remote server.
+    </item>
+    <item pathId="password" sectionId="6" title="Password">
+    The password used to access the remote server.
+    </item>
+    <item pathId="home_path" sectionId="7" title="Home Path">
+    The users home directory, usually /home/USERNAME.
+    </item>
+    <item pathId="location_template" sectionId="8" title="Location Template">
+    This field specifies the location, relative to the home path, where we will be sending the files. The path allows for variable substitution so that tranmitted recordings as sorted into the directories expected on the remove server. Any allowed variable specified within brackets [] will be substituted. So, a recording made in the TEST campaign on 2013-03-21 12:31:00 sent to the location [campaign_id]/[dateYYY]/[dateDD] would place the file on the remote server in /home/USERNAME/TEST/2013/03. Allowed variables: date, dateYYYY, dateMM, dateDD, and all fields from osdial_lists and osdial_list.
+    </item>
+    <item pathId="transfer_type" sectionId="9" title="Transfer Type">
+    Set the batching type for the server.&lt;br/&gt;
+    IMMEDIATE - Send files right away.&lt;br/&gt;
+    BATCH - Send files when Batch Time (hour) occurs.&lt;br/&gt;
+    ARCHIVE - Package the files into an archive and transmit the archive.&lt;br/&gt;
+    </item>
+    <item pathId="archive" sectionId="10" title="Archive/Compression">
+    When using the ARCHIVE transfer type, use the format selected here for the archive.&lt;br/&gt;
+    ZIP, TAR, TGZ, TBZ2
+    </item>
+    <item pathId="batch_time" sectionId="11" title="Batch Time">
+    When using the BATCH transfer type, send the files all at once when the selected hour occurs.
+    </item>
+    <item pathId="active" sectionId="12" title="Active">
+    Enable or disable processing of this QC server.
+    </item>
+  </section>
+
+  <section pathId="external_dnc" sectionId="32" title="External DNC Database">
+    <item pathId="active" sectionId="1" title="Active">
+    Enable or disable processing of the External DNC Database.
+    </item>
+    <item pathId="address" sectionId="2" title="Hostname/IP">
+    The fully-qualified-domain-name or IP address of the remote server.
+    </item>
+    <item pathId="database" sectionId="3" title="Database">
+    The database resource name on the database server.
+    </item>
+    <item pathId="username" sectionId="4" title="Username">
+    The user account used to access the database server.
+    </item>
+    <item pathId="password" sectionId="5" title="Password">
+    The password used to access the database server.
+    </item>
+    <item pathId="sql" sectionId="6" title="SQL">
+    An SQL statement that will verify whether a given number is in its tables. There are 3 available field substitution variables for the SQL statement.&lt;br/&gt;
+    &lt;b&gt;%AREACODE%&lt;/b&gt;&lt;br/&gt;
+    &lt;b&gt;%NUMBER%&lt;/b&gt;&lt;br/&gt;
+    &lt;b&gt;%FULLPHONE%&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;
+    For example: &lt;b&gt;SELECT id FROM my_dnc_table WHERE area_code='%AREACODE%' AND phone_number='%NUMBER%' LIMIT 1;&lt;/b&gt;
+    </item>
+  </section>
+
+  <section pathId="archive" sectionId="33" title="Recording Archive Server">
+    <item pathId="hostname" sectionId="1" title="Hostname/IP">
+    The fully-qualified-domain-name or IP address of the archive server.
+    </item>
+    <item pathId="transfer_method" sectionId="2" title="Transfer Method">
+    The protocol we will use to send the recording files to the archive server with. FTP. SFTP. and SCP are valid options, however, SFTP and SCP may require you to manually install cryptographic keys.
+    </item>
+    <item pathId="port" sectionId="3" title="Port">
+    The port number to use with the transfer method.
+    </item>
+    <item pathId="username" sectionId="4" title="Username">
+    The user account used to access the archive server.
+    </item>
+    <item pathId="password" sectionId="5" title="Password">
+    The password used to access the archive server.
+    </item>
+    <item pathId="path" sectionId="6" title="Path">
+    Location to store recordings, relative to the transfer user's login directery.
+    </item>
+    <item pathId="report_path" sectionId="7" title="Report Path">
+    Location to store reports, relative to the transfer user's login directery.
+    </item>
+    <item pathId="web_path" sectionId="8" title="Web Path">
+    When storing a URL for the recording file, override with this prefix. Ie. http://127.0.0.1
+    </item>
+    <item pathId="mix_format" sectionId="9" title="Mix File Format">
+    When the audio files, use the format selected here.&lt;br/&gt;
+    MP3, WAV, GSM, OGG
+    </item>
+  </section>
+
+  <section pathId="osdial_email_templates" sectionId="34" title="Email Templates">
+    <item pathId="et_id" sectionId="1" title="ID">
+    A unique identifier for the template, no spaces or punctuation.
+    </item>
+    <item pathId="et_name" sectionId="2" title="Name">
+    The name of the template.
+    </item>
+    <item pathId="et_comments" sectionId="3" title="Comments">
+    General notes.
+    </item>
+    <item pathId="active" sectionId="4" title="Active">
+    Enable or disable the Email Template for use.
+    </item>
+    <item pathId="et_host" sectionId="5" title="Hostname/IP">
+    The fully-qualified-domain-name or IP address of the SMTP server.
+    </item>
+    <item pathId="et_port" sectionId="6" title="Port">
+    The port number to use with for SMTP.
+    </item>
+    <item pathId="et_user" sectionId="7" title="Username">
+    SMTP username, if needed.
+    </item>
+    <item pathId="et_pass" sectionId="8" title="Password">
+    SMTP password, if needed.
+    </item>
+    <item pathId="et_from" sectionId="9" title="From (Email Address)">
+    The full email address we will be sending as.&lt;br/&gt;
+    "FirstName LastName" &lt;user@somehost.com&gt;
+    </item>
+    <item pathId="et_subject" sectionId="10" title="Subject">
+    Enter the subject for the emails we will be sending.
+    </item>
+    <item pathId="et_body_html" sectionId="11" title="Body - HTML">
+    This field takes the template of the email that we are sending in HTML format.
+    </item>
+    <item pathId="et_body_text" sectionId="12" title="Body - Text">
+    This field takes the template of the email that we are sending in TEXT format.
+    </item>
+    <item pathId="et_send_action" sectionId="13" title="Send Action">
+    Here are the various options for how and when we send emails. All rules only apply if a valid email address is in the lead record.&lt;br/&gt;&lt;br/&gt;
+    &lt;b&gt;ONDEMAND&lt;/b&gt; - The agent may send send an email at any time while in the record, emails are not sent automatically.&lt;br/&gt;
+    &lt;b&gt;ALL&lt;/b&gt; - Emails are automatically marked to be sent, the agent has the option to deselect the email.&lt;br/&gt;
+    &lt;b&gt;ALLFORCE&lt;/b&gt; - Emails are automatically marked to be sent, the agent has no control over email delivery
+    </item>
+  </section>
 
   </chapter>
  </topic>
