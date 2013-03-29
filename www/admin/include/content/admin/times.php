@@ -209,10 +209,10 @@ if ( ($stage=="ADD") and (OSDstrlen($state_rule)>0) )
 	$row=mysql_fetch_row($rslt);
 	$ct_state_call_times = $row[0];
 
-	if (OSDpreg_match("/\|$/",$ct_state_call_times))
-		{$ct_state_call_times = "$ct_state_call_times$state_rule\|";}
+	if (OSDpreg_match('/\|$/',$ct_state_call_times))
+		{$ct_state_call_times = "$ct_state_call_times$state_rule|";}
 	else
-		{$ct_state_call_times = "$ct_state_call_times\|$state_rule\|";}
+		{$ct_state_call_times = "$ct_state_call_times|$state_rule|";}
 	$stmt=sprintf("UPDATE osdial_call_times SET ct_state_call_times='%s' WHERE call_time_id='%s';",mres($ct_state_call_times),mres($call_time_id));
 	$rslt=mysql_query($stmt, $link);
 	echo "State Rule Added: $state_rule<BR>\n";
@@ -407,13 +407,10 @@ echo "  </tr>\n";
 echo "</table>\n";
 echo "</center><br><br>\n";
 
-if ($LOG['delete_call_times'] > 0)
-	{
-	echo "<br><br><a href=\"$PHP_SELF?ADD=511111111&call_time_id=$call_time_id\">DELETE THIS CALL TIME DEFINITION</a>\n";
-	}
-}
-else
-{
+// 		if ($LOG['delete_call_times'] > 0) {
+// 			echo "<br><br><a href=\"$PHP_SELF?ADD=511111111&call_time_id=$call_time_id\">DELETE THIS CALL TIME DEFINITION</a>\n";
+// 		}
+	} else {
 echo "<font color=red>You are not authorized to view this page. Please go back.</font>";
 }
 
@@ -430,7 +427,7 @@ if ($ADD==100000000)
 	$filters_to_print = mysql_num_rows($rslt);
 
 echo "<center><br><font class=top_header color=$default_text size=+1>CALL TIMES</font><br><br>\n";
-echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
+echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "  <tr class=tabheader>\n";
 echo "    <td>ID</td>\n";
 echo "    <td>NAME</td>\n";
@@ -737,10 +734,9 @@ echo "  </tr>\n";
 echo "</table>\n";
 echo "</center><BR><BR><br>\n";
 
-if ($LOG['delete_call_times'] > 0)
-	{
-	echo "<br><br><a href=\"$PHP_SELF?ADD=5111111111&call_time_id=$call_time_id\">DELETE THIS STATE CALL TIME DEFINITION</a>\n";
-	}
+// if ($LOG['delete_call_times'] > 0) {
+// 	echo "<br><br><a href=\"$PHP_SELF?ADD=5111111111&call_time_id=$call_time_id\">DELETE THIS STATE CALL TIME DEFINITION</a>\n";
+// }
 
 }
 else
@@ -762,7 +758,7 @@ if ($ADD==1000000000)
 	$filters_to_print = mysql_num_rows($rslt);
 
 echo "<center><br><font color=$default_text size=+1>STATE CALL TIMES</font><br><br>\n";
-echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
+echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "  <tr class=tabheader>";
 echo "    <td>ID</td>\n";
 echo "    <td align=center>STATE</td>\n";
