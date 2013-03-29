@@ -26,14 +26,16 @@
 <!--
 function iFrameAutoResize(id){
     var newheight;
-    if(document.getElementById) newheight=document.getElementById(id).contentWindow.document .body.scrollHeight;
-    document.getElementById(id).height= (newheight) + "px";
+    if(document.getElementById(id)) {
+        newheight=document.getElementById(id).contentWindow.document.height-20;
+        document.getElementById(id).height=(newheight) + "px";
+    }
 }
 //-->
 </script>
 
 <center>
-<div style="overflow-x:hidden;overflow-y:scroll;height:520px;width:100%;float:right;">
-<iframe src="<?php echo $iframe ?>" frameborder="0" width="100%" height="520px" marginwidth="0" marginheight="0" seamless="seamless" scrolling="no" id="mwiframe" onload="iFrameAutoResize('mwiframe');"></iframe>
+<div style="overflow-x:hidden;overflow-y:scroll;height:520px;width:100%;float:right;" onscroll="iFrameAutoResize('mwiframe');">
+<iframe src="<?php echo $iframe ?>" frameborder="0" width="100%" height="600px" marginwidth="0" marginheight="0" seamless="seamless" scrolling="no" id="mwiframe" onload="iFrameAutoResize('mwiframe');"></iframe>
 </div>
 </center>
