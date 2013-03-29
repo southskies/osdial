@@ -402,11 +402,11 @@ if ($ADD==31111111111) {
         echo "<input type=hidden name=DBY_pass size=15 maxlength=15 value=\"$row[63]\">\n";
         echo "<input type=hidden name=DBY_port size=6 maxlength=6 value=\"$row[64]\">\n";
 
-        echo "<br><br><a href=\"$PHP_SELF?ADD=999999&SUB=31&phone_extension=$row[0]&phone_server_ip=$row[5]'\">Click here for phone stats</a><br><br>\n";
+//         echo "<br><br><a href=\"$PHP_SELF?ADD=999999&SUB=31&phone_extension=$row[0]&phone_server_ip=$row[5]'\">Click here for phone stats</a><br><br>\n";
 
-        if ($LOG['ast_delete_phones'] > 0) {
-            echo "<br><br><a href=\"$PHP_SELF?ADD=51111111111&extension=$extension&server_ip=$server_ip\">DELETE THIS PHONE</a>\n";
-        }
+//         if ($LOG['ast_delete_phones'] > 0) {
+//             echo "<br><br><a href=\"$PHP_SELF?ADD=51111111111&extension=$extension&server_ip=$server_ip\">DELETE THIS PHONE</a>\n";
+//         }
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
     }
@@ -441,7 +441,7 @@ if ($ADD==10000000000) {
     $phones_to_print = mysql_num_rows($rslt);
 
     echo "<center><br><font class=top_header color=$default_text size=+1>PHONES<br><br><font size=-2>(<a href=#VMList>VoiceMail List</a>)</font><br><br>\n";
-    echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
+    echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1>\n";
     echo "  <tr class=tabheader>";
     echo "    <td><a href=\"$PHP_SELF?ADD=10000000000&$EXTENlink\">EXTEN</a></td>\n";
     echo "    <td><a href=\"$PHP_SELF?ADD=10000000000&$PROTOlink\">PROTO</a></td>\n";
@@ -490,7 +490,7 @@ if ($ADD==10000000000) {
         echo "<b><font class=top_header2 color=$default_text size=-1>VOICE MAIL</b><br>";
         if (file_exists ('VMnow.txt') ) {
             echo "<font color=$default_text><p> As of " . date("l dS o F h:i:s A",filectime('VMnow.txt') )  . "</p></font>";
-            echo "<table bgcolor=grey cellspacing=1 align=center width=560>\n";
+            echo "<table class=shadedtable bgcolor=grey cellspacing=1 align=center width=560>\n";
             echo "  <tr class=tabheader>\n";
             echo "    <td width=10 align=center>Context</td>\n";
             echo "    <td width=30 align=center>Mbox</td>\n";
