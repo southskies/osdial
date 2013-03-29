@@ -884,7 +884,7 @@ if ($ADD == "3menu") {
 
     echo "<br /><br /><hr width=50%>\n";
     echo "<center><font color=$default_text size=+1>KEYPRESS AND ACTIONS</font><br><br>\n";
-    echo "<table bgcolor=grey width=$section_width cellspacing=1 cellpadding=0>\n";
+    echo "<table bgcolor=grey class=shadedtable width=$section_width cellspacing=1 cellpadding=0>\n";
     echo "  <tr class=tabheader>\n";
     echo "      <td align=center>KEYPRESS</td>\n";
     echo "      <td align=center>ACTION</td>\n";

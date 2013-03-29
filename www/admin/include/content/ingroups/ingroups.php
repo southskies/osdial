@@ -634,7 +634,7 @@ if ($ADD==1000)
 	$people_to_print = mysql_num_rows($rslt);
 
 echo "<center><br><font class=top_header color=$default_text size=+1>INBOUND GROUPS</font><br><br>\n";
-echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
+echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "  <tr class=tabheader>\n";
 echo "    <td>GROUP ID</td>\n";
 echo "    <td>NAME</td>\n";
@@ -676,7 +676,7 @@ if ($ADD==1001)
 	$people_to_print = mysql_num_rows($rslt);
 
 echo "<center><br><font class=top_header color=$default_text size=+1>INBOUND AGENT TO AGENT GROUPS</font><br><br>\n";
-echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
+echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "  <tr class=tabheader>\n";
 echo "    <td>GROUP ID</td>\n";
 echo "    <td>NAME</td>\n";

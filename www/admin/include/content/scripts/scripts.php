@@ -1049,7 +1049,7 @@ if ($ADD==1000000)
 	$people_to_print = mysql_num_rows($rslt);
 
 echo "<center><br><font class=top_header color=$default_text size=+1>SCRIPTS</font><br><br>\n";
-echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
+echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "  <tr class=tabheader>";
 echo "    <td>NAME</td>\n";
 echo "    <td>DESCRIPTION</td>\n";

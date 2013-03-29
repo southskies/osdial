@@ -253,7 +253,7 @@ if ($ADD=="31tts") {
 
         echo "<br/><br/>\n";
 
-        echo "<br/><br/><a href=\"$PHP_SELF?ADD=51tts&tts_id=$tts[id]\">DELETE TEXT-TO-SPEECH TEMPLATE</a>\n";
+//         echo "<br/><br/><a href=\"$PHP_SELF?ADD=51tts&tts_id=$tts[id]\">DELETE TEXT-TO-SPEECH TEMPLATE</a>\n";
 ?>
 
 <script type="text/javascript" src="/tiny_mce/tiny_mce.js"></script>
@@ -515,7 +515,7 @@ if ($ADD=="10tts") {
     if ($LOG['modify_servers']>0) {
         $srv = get_first_record($link, 'servers', '*', sprintf("server_profile IN ('AIO','DIALER') AND active='Y'") );
         echo "<center><br/><font color=$default_text size=+1>TEXT-TO-SPEECH TEMPLATES</font><br/><br/>\n";
-        echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
+        echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1>\n";
         echo "  <tr class=tabheader>";
         echo "    <td>ID</td>\n";
         echo "    <td>DESCRIPTION</td>\n";

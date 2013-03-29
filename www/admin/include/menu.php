@@ -108,7 +108,7 @@ if ($ADD=="6fields")	{$hh='campaigns';	$sh='fields';	$title = "Delete Field";}
 # Campaigns - NEW additional fields
 if ($ADD==71)			{$hh='campaigns';	$sh='fields';	$title = "Campaign Additional Field Entries";} 
 if ($ADD==72)		    {$hh='campaigns';	$sh='fields';	$title = "Modify Form";}
-if ($ADD==73)		    {$hh='campaigns';	$sh='fields';	$title = "Add New Form";}
+# 73 already exists in campaigns
 
 # Campaigns - fields
 if ($ADD=="1menu")		{$hh='campaigns';	$sh='ivr';	$title = "Add New In/Out IVR Menu";}

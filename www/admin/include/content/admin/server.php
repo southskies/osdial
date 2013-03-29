@@ -404,8 +404,8 @@ if ($ADD==311111111111) {
 
         if ($row[22] == 'AIO' or $row[22] == 'DIALER') {
             ### osdial server trunk records for this server
-            echo "<br><br><center><font class=top_header2 color=$default_text size=+1>TRUNKS FOR THIS SERVER &nbsp;</font> ".helptag("osdial_server_trunks")."<br>\n";
-            echo "<table width=600 cellspacing=1 bgcolor=grey>\n";
+            echo "<br><br><center><font class=top_header2 color=$default_text size=+1>TRUNKS FOR THIS SERVER &nbsp;</font> ".helptag("osdial_server_trunks")."<br><br />\n";
+            echo "<table class=shadedtable width=600 cellspacing=1 bgcolor=grey>\n";
             echo "  <tr class=tabheader>\n";
             echo "    <td align=center>TRUNKS</td>\n";
             echo "    <td align=center>CAMPAIGN</td>\n";
@@ -451,8 +451,8 @@ if ($ADD==311111111111) {
 
             ### list of phones on this server
             echo "<center>\n";
-            echo "<br><font color=$default_text>PHONES WITHIN THIS SERVER</font><br>\n";
-            echo "<table width=400 cellspacing=1 bgcolor=grey>\n";
+            echo "<br><font color=$default_text>PHONES WITHIN THIS SERVER</font><br><br />\n";
+            echo "<table class=shadedtable bgcolor=#F6F6FC cellspacing=1 width=400 >\n";
             echo "  <tr class=tabheader>\n";
             echo "    <td align=center>EXTENSION</td>\n";
             echo "    <td align=center>NAME</td>\n";
@@ -493,8 +493,8 @@ if ($ADD==311111111111) {
 
             ### list of conferences on this server
             echo "<center>\n";
-            echo "<br><br><font color=$default_text>CONFERENCES WITHIN THIS SERVER</font><br>\n";
-            echo "<table width=400 cellspacing=1 bgcolor=grey>\n";
+            echo "<br><br><font color=$default_text>CONFERENCES WITHIN THIS SERVER</font><br><br />\n";
+            echo "<table class=shadedtable bgcolor=#F6F6FC cellspacing=1 width=400 >\n";;
             echo "  <tr class=tabheader>\n";
             echo "    <td align=center>CONFERENCE</td>\n";
             echo "    <td align=center>EXTENSION</td>\n";
@@ -526,8 +526,8 @@ if ($ADD==311111111111) {
 
             ### list of osdial conferences on this server
             echo "<center>\n";
-            echo "<br><br><font color=$default_text>$t1 CONFERENCES WITHIN THIS SERVER<br>\n";
-            echo "<table width=400 cellspacing=1 bgcolor=grey>\n";
+            echo "<br><br><font color=$default_text>$t1 CONFERENCES WITHIN THIS SERVER<br><br />\n";
+            echo "<table class=shadedtable bgcolor=#F6F6FC cellspacing=1 width=400 >\n";
             echo "  <tr class=tabheader>\n";
             echo "    <td align=center>$t1 CONFERENCE</td>\n";
             echo "    <td align=center>EXTENSION</td>\n";
@@ -566,9 +566,9 @@ if ($ADD==311111111111) {
             echo "</b></center>\n";
         }
 
-        if ($LOG['ast_delete_phones'] > 0) {
-            echo "<br><br><a href=\"$PHP_SELF?ADD=511111111111&server_id=$server_id&server_ip=$server_ip\">DELETE THIS SERVER</a>\n";
-        }
+//         if ($LOG['ast_delete_phones'] > 0) {
+//             echo "<br><br><a href=\"$PHP_SELF?ADD=511111111111&server_id=$server_id&server_ip=$server_ip\">DELETE THIS SERVER</a>\n";
+//         }
 
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
@@ -586,7 +586,7 @@ if ($ADD==100000000000) {
     $phones_to_print = mysql_num_rows($rslt);
 
     echo "<center><br><font class=top_header color=$default_text size=+1>SERVERS</font><br><br>\n";
-    echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
+    echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1>\n";
     echo "  <tr class=tabheader>\n";
     echo "    <td>ID</td>\n";
     echo "    <td>DESCRIPTION</td>\n";
@@ -716,7 +716,7 @@ if ($ADD=="399111111111111") {
             $c++;
         }
 
-        echo "<center><br><br><font color=$default_text size=+1>MODIFY ARCHIVE SERVER SETTINGS</font><br><form action=$PHP_SELF method=POST><br><br>\n";
+        echo "<center><br><font color=$default_text size=+1>MODIFY ARCHIVE SERVER SETTINGS</font><br><form action=$PHP_SELF method=POST><br><br>\n";
         echo "<input type=hidden name=ADD value=499111111111111>\n";
         echo "<center><TABLE width=$section_width cellspacing=3>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Archive Server Address: </td><td align=left><input type=text name=archive_hostname size=30 maxlength=30 value=\"$archive_hostname\">".helptag("archive-hostname")."</td></tr>\n";
@@ -815,7 +815,7 @@ if ($ADD=="399911111111111") {
             $c++;
         }
 
-        echo "<center><br><font color=$default_text size=+1>MODIFY DNC DATABASE SETTINGS</font><br><form action=$PHP_SELF method=POST>\n";
+        echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY DNC DATABASE SETTINGS</font><br><br /><form action=$PHP_SELF method=POST>\n";
         echo "<input type=hidden name=ADD value=499911111111111>\n";
         echo "<center><TABLE width=$section_width cellspacing=3>\n";
 
@@ -965,7 +965,7 @@ if ($ADD=="399211111111111") {
         echo "<form action=$PHP_SELF method=POST>\n";
         echo "<input type=hidden name=ADD value=399211111111111>\n";
         echo "<input type=hidden name=SUB value=1>\n";
-        echo "<center><table bgcolor=grey width=$section_width cellspacing=1>\n";
+        echo "<center><table bgcolor=grey class=shadedtable width=$section_width cellspacing=1>\n";
         echo "  <tr class=tabheader>\n";
         echo "    <td align=center>#</td>\n";
         echo "    <td align=center>NAME</td>\n";

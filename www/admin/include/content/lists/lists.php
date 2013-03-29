@@ -945,7 +945,7 @@ if ($ADD==100) {
         echo (($let == "$snum") ? $snum : "<a href=\"$PHP_SELF?ADD=$ADD&dispact=$dispact&let=$snum\">$snum</a>") . "&nbsp;|&nbsp;";
     }
     echo "</font><br>\n";
-    echo "<TABLE width=$section_width cellspacing=0 cellpadding=1 style=\"white-space:nowrap;\">\n";
+    echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1 style=\"white-space:nowrap;\">\n";
     echo "<tr class=tabheader>";
     echo "<td>ID</td>";
     echo "<td>NAME</td>";

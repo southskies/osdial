@@ -102,8 +102,8 @@ if ($ADD==11) {
 		$rslt=mysql_query($stmt, $link);
 		$people_to_print = mysql_num_rows($rslt);
 		
-		echo "<div style='float:left;width:100px;height=550;margin:10 0 0 5'>";
-			echo "<table bgcolor=#eee width=87 cellspacing=0 cellpadding=1 class=rounded-inset2>";
+		echo "<div style='float:left;width:100px;height=200px;margin:10 0 0 5'>";
+			echo "<table bgcolor=#eee width=87 cellspacing=0 cellpadding=1 class=rounded-inset>";
 			echo "  <tr>";
 			echo "    <td bgcolor=#ddd class=rounded-tab style=font-size:11px;text-align:center;color:#009;>Campaigns</td>";
 			echo "  </tr>";
@@ -227,10 +227,10 @@ if ($ADD==12)
 		$rslt=mysql_query($stmt, $link);
 		$people_to_print = mysql_num_rows($rslt);
 		
-		echo "<div style='float:left;width:100px;height=260px;margin:10 0 0 5'>";
+		echo "<div style='float:left;width:100px;height=200px;margin:10 0 0 5'>";
 			echo "<table bgcolor=#eee width=87 cellspacing=0 cellpadding=1 class=rounded-inset>";
 			echo "  <tr>";
-			echo "    <td style=font-size:11px;text-align:center;color:#009;>Campaigns</td>";
+			echo "    <td bgcolor=#ddd style=font-size:11px;text-align:center;color:#009;>Campaigns</td>";
 			echo "  </tr>";
 			$o=0;
 			while ($people_to_print > $o) {
@@ -935,7 +935,7 @@ if ($ADD==63)
 
 
 ######################
-# ADD=31 modify campaign info in the system - Detail view
+# ADD=31 modify campaign info in the system
 ######################
 
 # send to Basic if not allowed
@@ -1173,12 +1173,10 @@ if ($ADD==31) {
         
         
         
-        
-        
-        
         // BASIC CONTROL
         echo "<a name=basic></a>";
-			echo "<table width=$section_width cellspacing=2 class=rounded-corners>";
+			echo "<div style=\"width:".$section_width."px;padding:5px;\" class=rounded-corners>";
+			echo "<table width=100% cellspacing=3 cellpadding=0>";
         echo "<tr><td class=top_header_sect colspan=4 align=left>Basic Control</td></tr>";
 		echo "<tr>";
 			echo "	<td colspan=4 align=center>ID: <span style=color:#005><b>" . mclabel($row[0]) . "</b>".helptag("osdial_campaigns-campaign_id")."</span></td>";
@@ -1209,19 +1207,22 @@ if ($ADD==31) {
         echo "<td align=right class=no-ul colspan=4><br />";
         jump_section(1);
         echo "<input style='color:#1C4754' type=submit name=SUBMIT value=Submit></td></tr>";
-        echo "</table>&nbsp;";
+			echo "</table></div>&nbsp;";
         
         
 			
         // DIALING
         echo "<a name=status></a>";
-        echo "<table width=96% $section_width cellspacing=3 frame=border class=rounded-corners>";
+			echo "<div style=\"width:".($section_width+30)."px;padding:5px;\" class=rounded-corners>";
+			echo "<table width=100% cellspacing=3 cellpadding=8>";
         echo "<tr><td align=left class=top_header_sect valign=top>Dialing</td></tr>";
         
         
         
 		// Status Selection
-			echo "<tr><td colspan=2 align=center><table width=98% $section_width cellspacing=3 frame=border cellpadding=0 cellspacing=0 class=rounded-corners2>";
+			echo "<tr><td colspan=2 align=center>";
+			echo "<div style=\"width:".($section_width)."px;padding:5px;\" class=rounded-corners2>";
+			echo "<table width=100% cellspacing=3 cellpadding=0>";
         echo "<tr class=tabheader2><td align=left class=top_header_sect valign=top width=40% colspan=2>Status Selection</td></tr>";
         echo "<tr><td>&nbsp;</td></tr>";
 			echo "<tr><td align=center><table border=0 cellspacing=0 cellpadding=2 width=50%>";
@@ -1254,14 +1255,16 @@ if ($ADD==31) {
 			#echo "<option value=\"\"> - Add A Status - </option>";
 			#echo "$dial_statuses_list";
 			#echo "</select>";
-			echo editableSelectBox($statname_list, 'dial_status', ' - Add A Status - ', 300, 300, 'selectBoxForce="1"');
+			echo editableSelectBox($statname_list, 'dial_status', '', 300, 300, 'selectBoxForce="1",selectBoxLabel=" - Add A Status - "');
 			echo "</td><td><input type=submit name=submit value=ADD></td><td>".helptag("osdial_campaigns-dial_status")."</td>";
 			echo "</tr></table></td></tr>";
 		echo "<tr><td colspan=2>&nbsp;</td></tr>";
 		echo "<tr class=tabfooter2><td align=right class=no-ul colspan=2>";
 		jump_section(1);
 		echo "<input style='color:#1C4754' type=submit name=SUBMIT value=Submit></td></tr>";
-        echo "</table></td></tr>";
+			echo "</table>";
+			echo "</div>";
+			echo "</td></tr>";
         
         
         
@@ -1286,7 +1289,8 @@ if ($ADD==31) {
 				$dial_method_r_class='active-mode';
 				$test='R';
         }
-			echo "<table width=$section_width frame=border cellpadding=0 cellspacing=3 class=rounded-corners2>";
+			echo "<div style=\"width:".$section_width."px;padding:5px;\" class=rounded-corners2>";
+			echo "<table width=100% cellspacing=3 cellpadding=0>";
 			echo "<tr><td align=left class=top_header_sect valign=top colspan=2>Dial Method</td></tr>";
 			
 			echo "<input type=hidden name=\"dial_method\" value=\"$dial_method\">";
@@ -1341,7 +1345,9 @@ if ($ADD==31) {
 		
 
 				// MANUAL DIAL
-			echo "<tr id=\"dm_manual\" style=\"$manual_visible\"><td colspan=2 align=center><table width=$section_width10cellpadding=0 cellspacing=3 class=rounded-corners3 frame=border >";
+			echo "<tr id=\"dm_manual\" style=\"$manual_visible\"><td colspan=2 align=center>";
+			echo "<div style=\"width:".($section_width10-15)."px;padding:5px;\" class=rounded-corners3>";
+			echo "<table width=100% cellspacing=3 cellpadding=0>";
 			echo "<tr><td align=left class=top_header_sect colspan=2 valign=top width=40%>Manual Dial Options<br /><br /></td></tr>";
 			echo "<tr><td align=center colspan=2><table width=60% cellpadding=0 cellspacing=0>";
 			echo "<tr><td align=left>Preview Force Dial Time: </td><td align=left class=font2><input type=text name=preview_force_dial_time size=3 maxlength=3 value=\"$preview_force_dial_time\"> in seconds, 0 disables".helptag("osdial_campaigns-preview_force_dial_time")."</td></tr>";
@@ -1359,11 +1365,15 @@ if ($ADD==31) {
 				echo "<tr><td align=right class=no-ul colspan=2><br />";
 				jump_section(1);
 				echo "<input style='color:#1C4754' type=submit name=SUBMIT value=Submit></td></tr>";
-			echo "</table></td></tr>";
+			echo "</table>";
+			echo "</div>";
+			echo "</td></tr>";
         
         
         // RATIO DIAL
-			echo "<tr id=\"dm_ratio\" style=\"$ratio_visible\"><td colspan=2 align=center><table width=$section_width10 cellspacing=3 cellpadding=0 class=rounded-corners3 frame=border>";
+			echo "<tr id=\"dm_ratio\" style=\"$ratio_visible\"><td colspan=2 align=center>";
+			echo "<div style=\"width:".($section_width10-15)."px;padding:5px;\" class=rounded-corners3>";
+			echo "<table width=100% cellspacing=3 cellpadding=0>";
 			echo "<tr><td align=left class=top_header_sect valign=top width=50%>Ratio Dial Options<br /><br /></td></tr>";
 			echo "<tr><td align=center><table border=0 cellpadding=0 cellspacing=0 width=50%>";
 			echo "<tr><td align=left>Auto Dial Level: </td><td align=left nowrap><input type=text name=auto_dial_level size=6 maxlength=6 value=\"$auto_dial_level\" selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;4.0;4.5;5.0\"> ".helptag("osdial_campaigns-auto_dial_level")."</td></tr>";
@@ -1374,11 +1384,15 @@ if ($ADD==31) {
 				echo "<tr><td align=right class=no-ul colspan=2><br />";
 				jump_section(1);
 				echo "<input style='color:#1C4754' type=submit name=SUBMIT value=Submit></td></tr>";
-			echo "</table></td></tr>";
+			echo "</table>";
+			echo "</div>";
+			echo "</td></tr>";
         
         
         // ADAPTIVE DIAL
-			echo "<tr id=\"dm_adapt\" style=\"$adapt_visible\"><td colspan=2 align=center><table width=$section_width10 cellspacing=3 frame=border cellpadding=1 cellspacing=0 class=rounded-corners3>";
+			echo "<tr id=\"dm_adapt\" style=\"$adapt_visible\"><td colspan=2 align=center>";
+			echo "<div style=\"width:".($section_width10-15)."px;padding:5px;\" class=rounded-corners3>";
+			echo "<table width=100% cellspacing=3 cellspacing=0>";
 			echo "<tr><td align=left class=top_header_sect valign=top width=50%>Adaptive Dial Options<br /><br /></td></tr>";
 			echo "<tr><td align=center><table border=0 cellpadding=0 cellspacing=3 width=80%>";
 			$admavgsel='';
@@ -1488,17 +1502,21 @@ if ($ADD==31) {
 				echo "<tr><td align=right class=no-ul colspan=2><br />";
 				jump_section(1);
 				echo "<input style='color:#1C4754' type=submit name=SUBMIT value=Submit></td></tr>";
-			echo "</table></td></tr>";
+			echo "</table>";
+			echo "</div>";
+			echo "</td></tr>";
 		
 
-        	echo "</table></td></tr>";
+			echo "</table>";
+			echo "</div>";
+			echo "</td></tr>";
         
         
 		// DIALING OPTIONS
-        $section_width10=($section_width*.99);
         echo "<tr><td colspan=2 align=center>";
         echo "<a name=options></a>";
-			echo "<table width=$section_width10 cellspacing=3 frame=border cellpadding=0 cellspacing=3 class=rounded-corners2>";
+			echo "<div style=\"width:".$section_width."px;padding:5px;\" class=rounded-corners2>";
+			echo "<table width=100% cellspacing=3>";
 			echo "<tr><td align=left class=top_header_sect colspan=2 valign=top width=40%>Dialing Options</td></tr>";
 			
 			echo "<tr><td align=center colspan=2><table border=0 cellpadding=0 cellspacing=0 width=70%>";
@@ -1537,14 +1555,19 @@ if ($ADD==31) {
 			echo "<tr><td align=right class=no-ul colspan=2>";
 		jump_section(1);
 		echo "<input style='color:#1C4754' type=submit name=SUBMIT value=Submit></td></tr>";
-        echo "</table></td></tr>";
-        echo "</table>&nbsp;";
+			echo "</table>";
+			echo "</div>";
+			echo "</td></tr>";
+			echo "</table>";
+			echo "</div>";
+			echo "</div>&nbsp;";
         
         
         
         // LIST HANDLING OPTIONS
         echo "<a name=list></a>";
-			echo "<table width=$section_width cellpadding=0 cellspacing=3 class=rounded-corners>";
+			echo "<div style=\"width:".($section_width)."px;padding:5px;\" class=rounded-corners>";
+			echo "<table width=100% cellpadding=0 cellspacing=3>";
 			echo "<tr><td align=left class=top_header_sect valign=top>List Handling Options</td></tr>";
 			echo "<tr><td align=center><br /><table border=0 cellpadding=0 cellspacing=3 width=75%>";
         echo "<tr>";
@@ -1645,13 +1668,15 @@ if ($ADD==31) {
 		echo "<tr><td align=right class=no-ul colspan=2>";
 		jump_section(1);
 		echo "<input style='color:#1C4754' type=submit name=SUBMIT value=Submit></td></tr>";
-        echo "</table>&nbsp;";
+			echo "</table>";
+			echo "</div>&nbsp;";
 	
 
 
 		// CARRIER OPTIONS
 		echo "<a name=carrier></a>";
-			echo "<table width=$section_width cellpadding=0 cellspacing=3 class=rounded-corners>";
+			echo "<div style=\"width:".($section_width)."px;padding:5px;\" class=rounded-corners>";
+			echo "<table width=100% cellpadding=0 cellspacing=3>";
 			echo "<tr><td align=left class=top_header_sect valign=top>Carrier Options</td></tr>";
 			echo "<tr><td align=center><br /><table border=0 cellpadding=0 cellspacing=3 width=75%>";
         echo "        <tr>";
@@ -1677,13 +1702,15 @@ if ($ADD==31) {
         echo "<tr><td align=right class=no-ul colspan=2>";
 		jump_section(1);
 		echo "<input style='color:#1C4754' type=submit name=SUBMIT value=Submit></td></tr>";
-        echo "</table>&nbsp;";
+			echo "</table>";
+			echo "</div>&nbsp;";
         
         
         
         // RECORDING OPTIONS
         echo "<a name=record></a>";
-        echo "<table width=$section_width cellspacing=3 frame=border cellpadding=0 cellspacing=0 class=rounded-corners>";
+			echo "<div style=\"width:".($section_width)."px;padding:5px;\" class=rounded-corners>";
+			echo "<table width=100% cellpadding=0 cellspacing=3>";
 			echo "<tr><td align=left colspan=2 class=top_header_sect valign=top>Recording Options</td></tr>";
 			echo "<tr><td align=center><br /><table border=0 cellpadding=0 cellspacing=3 width=68%>";
 			echo "<tr><td align=left width=25%>Recording: </td><td align=left><select size=1 name=campaign_recording><option>NEVER</option><option>ONDEMAND</option><option>ALLCALLS</option><option>ALLFORCE</option><option SELECTED>$campaign_recording</option></select>".helptag("osdial_campaigns-campaign_recording")."</td></tr>";
@@ -1694,13 +1721,15 @@ if ($ADD==31) {
         echo "<tr><td align=right class=no-ul colspan=2>";
 		jump_section(1);
 		echo "<input style='color:#1C4754' type=submit name=SUBMIT value=Submit></td></tr>";
-        echo "</table>&nbsp;";
+			echo "</table>";
+			echo "</div>&nbsp;";
         
         
         
         // ANSWERING MACHINE OPTIONS
         echo "<a name=am></a>";
-        echo "<table width=$section_width cellspacing=3 frame=border cellpadding=0 cellspacing=0 class=rounded-corners>";
+			echo "<div style=\"width:".($section_width)."px;padding:5px;\" class=rounded-corners>";
+			echo "<table width=100% cellpadding=0 cellspacing=3>";
         echo "<tr><td align=left class=top_header_sect valign=top width=40%>Answering Machine Options</td></tr>";
 			echo "<tr><td align=center><br /><table border=0 cellpadding=0 cellspacing=3 width=55%>";
 			echo "<tr><td align=left>Answering Message Extension: </td><td align=left>";
@@ -1712,13 +1741,15 @@ if ($ADD==31) {
         echo "<tr><td align=right class=no-ul colspan=2>";
 		jump_section(1);
 		echo "<input style='color:#1C4754' type=submit name=SUBMIT value=Submit></td></tr>";
-        echo "</table>&nbsp;";
+			echo "</table>";
+			echo "</div>&nbsp;";
         
         
         
         // DROPPED CALL OPTIONS
         echo "<a name=drop></a>";
-        echo "<table width=$section_width cellspacing=3 frame=border cellpadding=1 cellspacing=0 class=rounded-corners>";
+			echo "<div style=\"width:".($section_width)."px;padding:5px;\" class=rounded-corners>";
+			echo "<table width=100% cellpadding=0 cellspacing=3>";
         echo "<tr><td align=left class=top_header_sect valign=top width=40%>Dropped Calls Options</td></tr>";
 			echo "<tr><td align=center><br /><table border=0 cellpadding=0 cellspacing=3 width=55%>";
 			echo "<tr><td align=left>Drop Call Handling (Safe Harbor): </td><td align=left>";
@@ -1745,13 +1776,15 @@ if ($ADD==31) {
         echo "<tr><td align=right class=no-ul colspan=2>";
 		jump_section(1);
 		echo "<input style='color:#1C4754' type=submit name=SUBMIT value=Submit></td></tr>";
-        echo "</table>&nbsp;";
+        echo "</table>";
+        echo "</div>&nbsp;";
         
         
         
         // CALL TRANSFER OPTIONS
         echo "<a name=transfer></a>";
-			echo "<table width=$section_width cellpadding=0 cellspacing=3 class=rounded-corners>";
+			echo "<div style=\"width:".($section_width)."px;padding:5px;\" class=rounded-corners>";
+			echo "<table width=100% cellpadding=0 cellspacing=3>";
         echo "<tr><td class=top_header_sect colspan=4 align=left valign=top width=40%>Call Transfer Options</td></tr>";
 			echo "  <tr><td align=center><br />";
 			echo "      <table border=0 cellpadding=0 cellspacing=3 width=98%>";
@@ -1831,13 +1864,15 @@ if ($ADD==31) {
 		jump_section(1);
 		echo "<input style='color:#1C4754' type=submit name=SUBMIT value=Submit></td></tr>";
         echo "</table></td></tr>";
-        echo "</table>&nbsp;";
+			echo "</table>";
+			echo "</div>&nbsp;";
         
         
         
         // WEB FORM
         echo "<a name=webform></a>";
-        echo "<table width=$section_width cellspacing=3 frame=border class=rounded-corners>";
+			echo "<div style=\"width:".($section_width)."px;padding:5px;\" class=rounded-corners>";
+			echo "<table width=100% cellpadding=0 cellspacing=3>";
 			echo "<tr><td align=left colspan=2 class=top_header_sect valign=top>Web Form</td></tr>";
 			echo "<tr><td align=center><br /><table border=0 cellpadding=0 cellspacing=3 width=75%>";
 			echo "<tr><td align=left width=30%>Web Form 1: </td><td align=left><input type=text name=web_form_address size=50 maxlength=255 value=\"$web_form_address\">".helptag("osdial_campaigns-web_form_address")."</td></tr>";
@@ -1850,13 +1885,15 @@ if ($ADD==31) {
         echo "<tr><td align=right class=no-ul colspan=2>";
 		jump_section(1);
 		echo "<input style='color:#1C4754' type=submit name=SUBMIT value=Submit></td></tr>";
-        echo "</table>&nbsp;";
+			echo "</table>";
+			echo "</div>&nbsp;";
         
         
         
         // SCRIPT OPTIONS
         echo "<a name=script></a>";
-        echo "<table width=$section_width cellspacing=3 frame=border cellpadding=0 cellspacing=0 class=rounded-corners>";
+			echo "<div style=\"width:".($section_width)."px;padding:5px;\" class=rounded-corners>";
+			echo "<table width=100% cellpadding=0 cellspacing=3>";
 			echo "<tr><td align=left class=top_header_sect valign=top>Script Options</td></tr>";
 			echo "<tr><td align=center><br /><table border=0 cellpadding=0 cellspacing=3 width=50%>";
 			echo "<tr class=no-ul><td align=left width=50%><a href=\"$PHP_SELF?ADD=3111111&script_id=$script_id\">Script</a>: </td><td align=left><select size=1 name=script_id>";
@@ -1869,13 +1906,15 @@ if ($ADD==31) {
         echo "<tr><td align=right class=no-ul colspan=2>";
 		jump_section(1);
 		echo "<input style='color:#1C4754' type=submit name=SUBMIT value=Submit></td></tr>";
-        echo "</table>&nbsp;";
+			echo "</table>";
+			echo "</div>&nbsp;";
         
         
         
         // END OF CALL OPTIONS
         echo "<a name=eoc></a>";
-        echo "<table width=$section_width cellspacing=3 frame=border cellpadding=0 cellspacing=0 class=rounded-corners>";
+			echo "<div style=\"width:".($section_width)."px;padding:5px;\" class=rounded-corners>";
+			echo "<table width=100% cellpadding=0 cellspacing=3>";
 			echo "<tr><td align=left class=top_header_sect valign=top>End of Call Options</td></tr>";
 			echo "<tr><td align=center width=50%><br /><table border=0 cellpadding=0 cellspacing=3 width=70%>";
 			echo "<tr><td align=left>Scheduled Callbacks: </td><td align=left><select size=1 name=scheduled_callbacks><option>Y</option><option>N</option><option SELECTED>$scheduled_callbacks</option></select>".helptag("osdial_campaigns-scheduled_callbacks")."</td></tr>";
@@ -1893,13 +1932,15 @@ if ($ADD==31) {
         echo "<tr><td align=right class=no-ul colspan=2>";
 		jump_section(1);
 		echo "<input style='color:#1C4754' type=submit name=SUBMIT value=Submit></td></tr>";
-        echo "</table>&nbsp;";
+			echo "</table>";
+			echo "</div>&nbsp;";
         
         
         
         // DNC OPTIONS
         echo "<a name=dnc></a>";
-        echo "<table width=$section_width cellspacing=3 frame=border cellpadding=0 cellspacing=0 class=rounded-corners>";
+			echo "<div style=\"width:".($section_width)."px;padding:5px;\" class=rounded-corners>";
+			echo "<table width=100% cellpadding=0 cellspacing=3>";
 			echo "<tr><td align=left class=top_header_sect valign=top>Do Not Call Options</td></tr>";
 			echo "<tr><td align=center><br /><table border=0 cellpadding=0 cellspacing=3 width=45%>";
 			echo "<tr><td align=left>Use Internal DNC List: </td><td align=left><select size=1 name=use_internal_dnc><option>Y</option><option>N</option><option SELECTED>$use_internal_dnc</option></select>".helptag("osdial_campaigns-use_internal_dnc")."</td></tr>";
@@ -1907,7 +1948,8 @@ if ($ADD==31) {
 		echo "<tr><td align=right class=no-ul colspan=2>";
 		jump_section(1);
 		echo "<input style='color:#1C4754' type=submit name=SUBMIT value=Submit></td></tr>";
-        echo "</table>&nbsp;";
+			echo "</table>";
+			echo "</div>&nbsp;";
         
 
 		// Allowed Groups
@@ -1928,7 +1970,8 @@ if ($ADD==31) {
 			echo "</span>";
         echo "<a name=groups></a>";
         if ($campaign_allow_inbound == 'Y' or $allow_closers == 'Y') {
-        	echo "<table width=$section_width cellspacing=3 cellpadding=0 cellspacing=0 frame=border class=rounded-corners>";
+				echo "<div style=\"width:".($section_width)."px;padding:5px;\" class=rounded-corners>";
+				echo "<table width=100% cellpadding=0 cellspacing=3>";
         	echo "<tr style=\"$disp_inbound_closer\">";
         	echo " <td align=left class=top_header_sect>Allowed Groups</td></tr>";
         	echo "  <tr><td align=center><br>";
@@ -1966,6 +2009,7 @@ if ($ADD==31) {
         	jump_section(1);
         	echo "</td></tr>";
 			echo "</table>";
+				echo "</div>";
 		}
         echo "</FORM>";
 
@@ -1973,7 +2017,8 @@ if ($ADD==31) {
         
         # List Statuses
 		echo "<a name=alists></a>";
-        echo "<table width=$section_width cellspacing=3 cellpadding=0 cellspacing=0 frame=border class=rounded-corners>";
+			echo "<div style=\"width:".($section_width)."px;padding:5px;\" class=rounded-corners>";
+			echo "<table width=100% cellpadding=0 cellspacing=3>";
         echo "<tr><td align=left class=top_header_sect>List Statuses</td></tr>";
 			echo "<tr><td align=center><br /><table border=0 cellpadding=0 cellspacing=3 width=75%>";
 
@@ -2042,7 +2087,9 @@ if ($ADD==31) {
 			if ($LOG['view_agent_realtime']) echo "<span class=no-ul><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12&group=$campaign_id\">Click here to see a Time On Dialer report for this campaign</a></span></font><br><br><br />";
 			
 			echo "</b></center>";
- 		echo "</td></tr></table>";
+			echo "</td></tr>";
+			echo "</table>";
+			echo "</div>";
 		}
 		
 		
@@ -2069,7 +2116,7 @@ if ($ADD==31) {
 
 
             echo "<center><br><font class=top_header_sect color=$default_text size=+1>CUSTOM STATUSES WITHIN THIS CAMPAIGN &nbsp; </font>".helptag("osdial_campaign_statuses-osdial_campaign_statuses")."</font><br><br>";
-            echo "  <table bgcolor=grey width=$section_width cellspacing=1 align=center>";
+            echo "  <table bgcolor=grey class=shadedtable width=$section_width cellspacing=1 align=center>";
             echo "    <tr class=tabheader>";
             echo "      <td align=center>STATUS</td>";
             echo "      <td align=center>DESCRIPTION</td>";
@@ -2127,7 +2174,7 @@ if ($ADD==31) {
         ##### CAMPAIGN HOTKEYS #####
         if ($SUB==23) {
             echo "<center><br><font class=top_header color=$default_text size=+1>CUSTOM HOT KEYS WITHIN THIS CAMPAIGN &nbsp; ".helptag("osdial_campaign_hotkeys-osdial_campaign_hotkeys")."</font><br><br>";
-            echo "  <table bgcolor=grey width=500 cellspacing=1 align=center>";
+            echo "  <table bgcolor=grey class=shadedtable width=500 cellspacing=1 align=center>";
             echo "    <tr class=tabheader>";
             echo "      <td align=center>HOT&nbsp;KEY</td>";
             echo "      <td align=center>STATUS</td>";
@@ -2180,7 +2227,7 @@ if ($ADD==31) {
         ##### CAMPAIGN LEAD RECYCLING #####
         if ($SUB==25) {
             echo "<center><br><font class=top_header color=$default_text size=+1>LEAD RECYCLING WITHIN THIS CAMPAIGN &nbsp; </font>".helptag("osdial_lead_recycle-osdial_lead_recycle")."</font><br><br>";
-            echo "  <table bgcolor=grey width=600 cellspacing=1>";
+            echo "  <table class=shadedtable bgcolor=grey width=600 cellspacing=1>";
             echo "    <tr class=tabheader>";
             echo "      <td>&nbsp;</td>";
             echo "      <td colspan=2 align=center>ATTEMPT</td>";
@@ -2240,7 +2287,7 @@ if ($ADD==31) {
         ##### CAMPAIGN AUTO-ALT-NUMBER DIALING #####
         if ($SUB==26) {
             echo "<center><br><font class=top_header color=$default_text size=+1>AUTO ALT NUMBER DIALING FOR THIS CAMPAIGN &nbsp; </font>".helptag("osdial_auto_alt_dial_statuses-osdial_auto_alt_dial_statuses")."</font><br><br>";
-            echo "  <table bgcolor=grey width=300 cellspacing=1>";
+            echo "  <table class=shadedtable bgcolor=grey width=300 cellspacing=1>";
             echo "    <tr class=tabheader>";
             echo "      <td align=center>STATUSES</td>";
             echo "      <td align=center>ACTIONS</td>";
@@ -2275,7 +2322,7 @@ if ($ADD==31) {
         ##### CAMPAIGN PAUSE CODES #####
         if ($SUB==27) {
             echo "<center><br><font class=top_header color=$default_text size=+1>AGENT PAUSE CODES FOR THIS CAMPAIGN &nbsp; </font>".helptag("osdial_pause_codes-osdial_pause_codes")."</font><br><br>";
-            echo "  <table bgcolor=grey width=600 cellspacing=1>";
+            echo "  <table class=shadedtable bgcolor=grey width=600 cellspacing=1>";
             echo "    <tr class=tabheader>";
             echo "      <td align=center>PAUSE CODE</td>";
             echo "      <td align=center>DESCRIPTION</td>";
@@ -2991,7 +3038,7 @@ if ( ($ADD==34) or ($ADD==31) ) {
             echo " </tr>\n";
         }
 
-        echo " <tr bgcolor=$evenrows>\n";
+        echo " <tr bgcolor=$maintable_color>\n";
         echo "  <td align=center>\n";
         echo "<br><b><font color=$default_text>ADD NEW LIST MIX</font></b><br><br />\n";
         #echo "<form action=$PHP_SELF method=POST>\n";
@@ -3001,7 +3048,7 @@ if ( ($ADD==34) or ($ADD==31) ) {
         echo " <input type=hidden name=SUB value=29>\n";
         echo " <input type=hidden name=stage value=\"NEWMIX\">\n";
         echo " <input type=hidden name=campaign_id value=\"$campaign_id\">\n";
-        echo " <table border=0 width=$section_width cellpadding=0 cellspacing=1>\n";
+        echo " <table border=0 class=shadedtable width=$section_width cellpadding=0 cellspacing=1>\n";
         echo "  <tr class=tabheader>\n";
         echo "    <td align=center>ID</td>\n";
         echo "    <td align=center>Name</td>\n";
@@ -3116,7 +3163,7 @@ if ($ADD==10) {
 	}
 	echo "</font><br>";
 
-	echo "<table width=$section_width cellspacing=0 cellpadding=1>";
+	echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1>";
 	echo "  <tr class=tabheader>";
 	echo "    <td>ID</td>";
 	echo "    <td>DESCRIPTION</td>";

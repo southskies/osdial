@@ -264,7 +264,7 @@ if ($ADD==10000000)
 	$filters_to_print = mysql_num_rows($rslt);
 
 echo "<center><br><font color=$default_text size=+1>LEAD FILTERS</font><br><br>\n";
-echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
+echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "  <tr class=tabheader>\n";
 echo "    <td>NAME</td>\n";
 echo "    <td>DESCRIPTION</td>\n";

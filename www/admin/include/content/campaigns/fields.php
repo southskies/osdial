@@ -71,8 +71,8 @@ if ($ADD == "1form") {
 ######################
 # ADD=2form add a new form
 ######################
-// if ($ADD == "2form") {
-if ($ADD == 73) {
+# Sorry, 73 already existed in campaigns.
+if ($ADD == "2form") {
     if ($LOG['modify_campaigns'] == 1) {
         echo "<center><br><font class=top_header color=$default_text size=+1>ADD AN ADDITIONAL FORM</font><br><br>\n";
 
@@ -313,11 +313,10 @@ if ($ADD == "6fields") {
 ######################
 # ADD=35 display all campaign forms
 ######################
-// if ($ADD == "3fields" and $SUB != '2fields') {
-if ($ADD == 71) {
+if ($ADD == 71 or ($ADD == "3fields" and $SUB != '2fields')) {
     echo "<center><br><font class=top_header color=$default_text size=+1>ADDITIONAL FORMS & FIELDS</font><br><br>\n";
 
-    echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
+    echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1>\n";
     echo "  <tr class=tabheader>\n";
     echo "    <td>NAME</td>\n";
     echo "    <td>DESCRIPTION</td>\n";
@@ -354,14 +353,13 @@ if ($ADD == 71) {
     echo "</center>\n";
 
 //    echo "<br /><br /><center><a href=$PHP_SELF?ADD=2form>ADD NEW FORM</a></center>";
-    echo "<br /><br /><center class=no-ul><a href=$PHP_SELF?ADD=73>ADD NEW FORM</a></center>";
+    echo "<br /><br /><center class=no-ul><a href=$PHP_SELF?ADD=2form>ADD NEW FORM</a></center>";
 }
 
 ######################
 # ADD=35 display all campaign form & fields
 ######################
-// if ($ADD == "3fields" and $SUB == '2fields') {
-if ($ADD == 72) {
+if ($ADD == 72 or ($ADD == "3fields" and $SUB == '2fields')) {
     echo "<center><br><font class=top_header color=$default_text size=+1>ADDITIONAL FORM</font><br><br>\n";
 
     $form = get_first_record($link, 'osdial_campaign_forms', '*', 'id=' . $id);
