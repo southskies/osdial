@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema targetNamespace="http://www.osdial.com"
+	elementFormDefault="qualified"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.osdial.com">
+
+	<xs:element name="documentation" type="documentType"/>
+
+	<xs:complexType name="documentType" mixed="true">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="topic" type="topicType"/>
+		</xs:choice>
+	</xs:complexType>
+
+	<xs:complexType name="topicType" mixed="true">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="chapter" type="chapterType"/>
+		</xs:choice>
+		<xs:attributeGroup ref="documentHeader"/>
+	</xs:complexType>
+
+	<xs:complexType name="chapterType" mixed="true">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="section" type="sectionType"/>
+		</xs:choice>
+		<xs:attributeGroup ref="documentHeader"/>
+	</xs:complexType>
+
+	<xs:complexType name="sectionType" mixed="true">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="item" type="itemType"/>
+			<xs:element name="subsection" type="subsectionType"/>
+		</xs:choice>
+		<xs:attributeGroup ref="documentHeader"/>
+	</xs:complexType>
+
+	<xs:complexType name="itemType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attributeGroup ref="documentHeader"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="subsectionType" mixed="true">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="subitem" type="subitemType"/>
+		</xs:choice>
+		<xs:attributeGroup ref="documentHeader"/>
+	</xs:complexType>
+
+	<xs:complexType name="subitemType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attributeGroup ref="documentHeader"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:attributeGroup name="documentHeader">
+		<xs:attribute name="pathId" type="xs:token" use="required"/>
+		<xs:attribute name="sectionId" type="xs:nonNegativeInteger" use="required"/>
+		<xs:attribute name="title" type="xs:normalizedString" use="required"/>
+		<xs:attribute name="visible" type="xs:boolean" default="false"/>
+		<xs:attribute name="showTitle" type="xs:boolean" default="true"/>
+		<xs:attribute name="showSectionId" type="xs:boolean" default="false"/>
+	</xs:attributeGroup>
+
+</xs:schema>

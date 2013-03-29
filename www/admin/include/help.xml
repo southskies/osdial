@@ -1,6 +1,6 @@
 <?xml version="1.0" standalone="yes"?>
-<documentation>
- <topic pathId="document_organization" title="File Structure" visible="false">
+<documentation xmlns="http://www.osdial.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.osdial.com help.xsd">
+ <topic pathId="document_organization" sectionId="0" title="File Structure" visible="false">
    &lt;pre&gt;
    This document has a specific nested structure and is modeled after the typical reference manual and is as follows:
 
