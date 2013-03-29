@@ -187,8 +187,14 @@ if ($action) {
 	}
 	$tn->open($telnet_host); 
 	my $action_id = '';
-	if ($asterisk_version =~ /^1\.6|^1\.8/) {
-		$tn->waitfor('/1\n$/');			# print login
+	if ($asterisk_version =~ /^1\.6|^1\.8|^10\.|^11\./) {
+		if ($asterisk_version =~ /^11\./) {
+			$tn->waitfor('/3\n$/');
+		} elsif ($asterisk_version =~ /^10\./) {
+			$tn->waitfor('/2\n$/');
+		} else {
+			$tn->waitfor('/1\n$/');
+		}
 		$action_id = 'ActionID: ';
 		$action_id .= 'M' . $man_id if ($man_id);
 		my($s, $usec) = gettimeofday();
@@ -213,7 +219,7 @@ if ($action) {
 		#	1 users in that conference.
 		#	--END COMMAND--
 		my $meetme_command = "Action: Command\nCommand: meetme list $cmd_line_k\n\n";
-		if ($asterisk_version =~ /^1\.6|^1\.8/) {
+		if ($asterisk_version =~ /^1\.6|^1\.8|^10\.|^11\./) {
 			$meetme_command = "Action: Command\n$action_id~Command\nCommand: meetme list $cmd_line_k\n\n";
 		}
 		print nowDate() . "|$SYSLOG|\n$meetme_command";
@@ -299,7 +305,7 @@ if ($action) {
 
 	$tn->buffer_empty;
 	#@hangup = $tn->cmd(String => "Action: Logoff\n\n", Prompt => "/.*/"); 
-	if ($asterisk_version =~ /^1\.6|^1\.8/) {
+	if ($asterisk_version =~ /^1\.6|^1\.8|^10\.|^11\./) {
 		$tn->cmd(String => "Action: Logoff\n$action_id~Logoff\n\n", Prompt => "/.*/"); 
 	} else {
 		$tn->cmd(String => "Action: Logoff\n\n", Prompt => "/.*/"); 

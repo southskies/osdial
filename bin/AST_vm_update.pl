@@ -209,8 +209,14 @@ $t = new Net::Telnet (Port => 5038,
 	else {$telnet_login = $ASTmgrUSERNAME;}
 
 $t->open("$telnet_host"); 
-if ($DBasterisk_version =~ /^1\.6|^1\.8/) {
-	$t->waitfor('/1\n$/');			# print login
+if ($DBasterisk_version =~ /^1\.6|^1\.8|^10\.|^11\./) {
+	if ($DBasterisk_version =~ /^11\./) {
+		$t->waitfor('/3\n$/');
+	} elsif ($DBasterisk_version =~ /^10\./) {
+		$t->waitfor('/2\n$/');
+	} else {
+		$t->waitfor('/1\n$/');
+	}
 	my($s, $usec) = gettimeofday();
 	$t->print("Action: Login\nActionID: U$usec~Login\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
 } else {

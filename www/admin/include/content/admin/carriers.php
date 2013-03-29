@@ -202,6 +202,10 @@ if ($ADD=="1carrier") {
             if ($svrp['count'] > 0) echo "        <option>DAHDI</option>\n";
             $svrp = get_first_record($link, 'servers', 'count(*) AS count', "asterisk_version LIKE '1.8.%%'");
             if ($svrp['count'] > 0) echo "        <option>DAHDI</option>\n";
+            $svrp = get_first_record($link, 'servers', 'count(*) AS count', "asterisk_version LIKE '10.%%'");
+            if ($svrp['count'] > 0) echo "        <option>DAHDI</option>\n";
+            $svrp = get_first_record($link, 'servers', 'count(*) AS count', "asterisk_version LIKE '11.%%'");
+            if ($svrp['count'] > 0) echo "        <option>DAHDI</option>\n";
             echo "        <option>EXTERNAL</option>\n";
             echo "       </select>\n";
             echo "       ".helptag("carriers-protocol")."\n";
@@ -908,6 +912,10 @@ if ($ADD == "3carrier") {
             $svrp = get_first_record($link, 'servers', 'count(*) AS count', "asterisk_version LIKE '1.6.%%'");
             if ($svrp['count'] > 0) echo "        <option>DAHDI</option>\n";
             $svrp = get_first_record($link, 'servers', 'count(*) AS count', "asterisk_version LIKE '1.8.%%'");
+            if ($svrp['count'] > 0) echo "        <option>DAHDI</option>\n";
+            $svrp = get_first_record($link, 'servers', 'count(*) AS count', "asterisk_version LIKE '10.%%'");
+            if ($svrp['count'] > 0) echo "        <option>DAHDI</option>\n";
+            $svrp = get_first_record($link, 'servers', 'count(*) AS count', "asterisk_version LIKE '11.%%'");
             if ($svrp['count'] > 0) echo "        <option>DAHDI</option>\n";
             echo "        <option>EXTERNAL</option>\n";
             echo "        <option selected>$gfr[protocol]</option>\n";
