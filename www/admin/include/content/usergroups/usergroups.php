@@ -70,7 +70,7 @@ if ($ADD==111111) {
 
 if ($ADD==211111) {
     $preuser_group = $user_group;
-    if ($LOG['multicomp'] > 0) $preuser_group = (($company_id * 1) + 100) . $user_group;
+    if ($LOG['multicomp'] > 0 and $compant_id>0) $preuser_group = (($company_id * 1) + 100) . $user_group;
     $stmt=sprintf("SELECT count(*) FROM osdial_user_groups WHERE user_group='%s';",mres($preuser_group));
     $rslt=mysql_query($stmt, $link);
     $row=mysql_fetch_row($rslt);
@@ -81,7 +81,7 @@ if ($ADD==211111) {
              echo "<br><font color=red>USER GROUP NOT ADDED - Please go back and look at the data you entered\n";
              echo "<br>Group name and description must be at least 2 characters in length</font><br>\n";
          } else {
-            if ($LOG['multicomp'] > 0) $user_group = (($company_id * 1) + 100) . $user_group;
+            if ($LOG['multicomp'] > 0 and $company_id>0) $user_group = (($company_id * 1) + 100) . $user_group;
             $LOG['allowed_usergroupsSQL'] = rtrim($LOG['allowed_usergroupsSQL'],')');
             $LOG['allowed_usergroupsSQL'] .= ",'$user_group')";
             $LOG['allowed_usergroupsSTR'] .= "$user_group:";
@@ -109,7 +109,7 @@ if ($ADD==211111) {
 if ($ADD==411111) {
     if ($LOG['modify_usergroups'] == 1) {
         $preuser_group = $user_group;
-        if ($LOG['multicomp'] > 0) $preuser_group = (($company_id * 1) + 100) . $user_group;
+        if ($LOG['multicomp'] > 0 and $company_id>0) $preuser_group = (($company_id * 1) + 100) . $user_group;
 
         if ($LOG['allowed_campaignsALL'] < 1 and !(OSDpreg_match('/^(admin|6666)$/',$LOG['user']) and $LOG['user_level']>=9)) {
             echo "<br><font color=red>USER GROUP NOT MODIFIED - You may only view your User Group resources.</font><br>\n";
@@ -117,7 +117,7 @@ if ($ADD==411111) {
             echo "<br><font color=red>USER GROUP NOT MODIFIED - Please go back and look at the data you entered\n";
             echo "<br>Group name and description must be at least 2 characters in length</font><br>\n";
         } else {
-            if ($LOG['multicomp'] > 0) $user_group = (($company_id * 1) + 100) . $user_group;
+            if ($LOG['multicomp'] > 0 and $company_id>0) $user_group = (($company_id * 1) + 100) . $user_group;
 
             if ($view_agent_realtime == 0) {
                 $view_agent_realtime_iax_barge = 0;
@@ -295,18 +295,26 @@ if ($ADD==311111) {
         echo "    <tr bgcolor=$oddrows>\n";
         echo "      <td width=40% align=right>Group: </td>\n";
         echo "      <td align=left>\n";
+	$compfield='';
         if ($LOG['multicomp_admin'] > 0) {
             $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
-            echo "        <select name=company_id>\n";
+            $cgcount=0;
+            $compfield .= "        <select name=company_id>\n";
             foreach ($comps as $comp) {
                 $csel = "";
-                if ((OSDsubstr($user_group,0,3) * 1 - 100) == $comp['id']) $csel = "selected";
-                echo "          <option value=$comp[id] $csel>" . (($comp['id'] * 1) + 100) . ": " . $comp['name'] . "</option>\n";
+                if ((OSDsubstr($user_group,0,3) * 1 - 100) == $comp['id']) {
+                    $cgcount++;
+                    $csel = "selected";
             }
-            echo "        </select>\n";
-        } elseif ($LOG['multicomp']>0) {
-            echo "        <input type=hidden name=company_id value=$LOG[company_id]>\n";
+                $compfield .= "          <option value=$comp[id] $csel>" . (($comp['id'] * 1) + 100) . ": " . $comp['name'] . "</option>\n";
         }
+            $compfield .= "        </select>\n";
+            if ($cgcount==0) $compfield='';
+        }
+	if ($LOG['multicomp']>0 and $compfield=='') {
+            $compfield .= "        <input type=hidden name=company_id value=$LOG[company_id]>\n";
+        }
+	echo $compfield;
         $mcug = $user_group;
         if ($LOG['multicomp']>0 and OSDpreg_match($LOG['companiesRE'],$user_group)) $mcug = OSDsubstr($user_group,3,OSDstrlen($user_group));
         echo "        <input type=text name=user_group size=15 maxlength=20 value=\"$mcug\">\n";
@@ -819,7 +827,7 @@ if ($ADD==100000) {
 
     echo "<center>\n";
     echo "  <br><font class=top_header color=$default_text size=+1>USER GROUPS</font><br><br>\n";
-    echo "  <table width=$section_width cellspacing=0 cellpadding=1>\n";
+    echo "  <table class=shadedtable width=$section_width cellspacing=0 cellpadding=1>\n";
     echo "    <tr class=tabheader>\n";
     echo "      <td>NAME</td>\n";
     echo "      <td>DESCRIPTION</td>\n";
