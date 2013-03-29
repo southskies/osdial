@@ -303,7 +303,9 @@ if ($ACTION == 'refresh') {
             $loop_count++;
             $total_conf++;
             $row=mysql_fetch_row($rslt);
-            $ChannelA[$total_conf] = $row[0];
+            $tchan=$row[0];
+            if (OSDpreg_match('/^Local/',$row[0]) and OSDpreg_match('/^'.addcslashes($row[0],'/@').'\-/',$row[1])) $tchan=$row[1];
+            $ChannelA[$total_conf] = $tchan;
             if ($format=='debug') echo "\n<!-- $ChannelA[$total_conf] -->";
         }
         $stmt=sprintf("SELECT channel FROM live_channels WHERE server_ip='%s' AND extension='%s';",mres($server_ip),mres($conf_exten));

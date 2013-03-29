@@ -3126,12 +3126,13 @@ if ($ACTION == 'userLOGout') {
         $wcs_delete = mysql_affected_rows($link);
 
         ##### Hangup the client phone
-        $stmt=sprintf("SELECT SQL_NO_CACHE channel FROM live_sip_channels WHERE server_ip='%s' AND channel LIKE '%s/%s%%' ORDER BY channel DESC;",mres($server_ip),mres($protocol),mres($extension));
+        $stmt=sprintf("SELECT SQL_NO_CACHE channel,channel_group FROM live_sip_channels WHERE server_ip='%s' AND channel LIKE '%s/%s%%' ORDER BY channel DESC;",mres($server_ip),mres($protocol),mres($extension));
         if ($format=='debug') echo "\n<!-- $stmt -->";
         $rslt=mysql_query($stmt, $link);
         if ($rslt) {
             $row=mysql_fetch_row($rslt);
             $agent_channel = $row[0];
+            if (OSDpreg_match('/^Local/',$row[0]) and OSDpreg_match('/^'.addcslashes($row[0],'/@').'\-/',$row[1])) $agent_channel=$row[1];
             if ($format=='debug') echo "\n<!-- $row[0] -->";
             $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','%s','Hangup','ULGH3459%s','Channel: %s','','','','','','','','','');",mres($NOW_TIME),mres($server_ip),mres($agent_channel),mres($StarTtime),mres($agent_channel));
             if ($format=='debug') echo "\n<!-- $stmt -->";
