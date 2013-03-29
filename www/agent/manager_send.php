@@ -290,7 +290,7 @@ if ($ACTION=="OriginateVDRelogin") {
     }
     $user_channel = $channel;
     if ($protocol == 'EXTERNAL' or $protocol == 'Local') {
-        $user_channel .= '@' . $ext_context;
+        if (!OSDpreg_match('/\@'.$ext_context.'/',$user_channel)) $user_channel .= '@' . $ext_context;
     }
     $outbound_cid_name = "OSDial#$user_channel";
     $outbound_cid = "0000000000";
