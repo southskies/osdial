@@ -26,7 +26,7 @@
 
 if ($ADD=="11comp") {
     if ($LOG['multicomp_admin'] > 0) {
-        echo "<center><br><font color=$default_text size=+1>ADD A NEW COMPANY</font><form action=$PHP_SELF method=POST><br><br>\n";
+        echo "<center><br><font class=top_header color=$default_text size=+1>ADD A NEW COMPANY</font><form action=$PHP_SELF method=POST><br><br>\n";
         echo "<input type=hidden name=ADD value=21comp>\n";
 
         echo "<table width=$section_width cellspacing=3>\n";
@@ -63,7 +63,7 @@ if ($ADD=="21comp") {
         if (OSDstrlen($company_name) < 3) {
             echo "<br><font color=red>COMPANY NOT ADDED - Please go back and look at the data you entered</font>\n";
         } else {
-            echo "<br><font color=$default_text>COMAPNY ADDED</font>\n";
+            echo "<br><font color=$default_text>COMPANY ADDED</font>\n";
 
             $stmt=sprintf("INSERT INTO osdial_companies SET name='%s';",mres($company_name));
             $rslt=mysql_query($stmt, $link);
@@ -197,7 +197,7 @@ if ($ADD=="31comp") {
     if ($LOG['multicomp_admin']>0) {
         $comp = get_first_record($link, 'osdial_companies', '*', sprintf("id='%s'",mres($company_id)) );
 
-        echo "<center><br><font color=$default_text size=+1>MODIFY A COMPANY</font><form action=$PHP_SELF method=POST><br><br>\n";
+        echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY A COMPANY</font><form action=$PHP_SELF method=POST><br><br>\n";
         echo "<input type=hidden name=ADD value=41comp>\n";
         echo "<input type=hidden name=company_id value=$comp[id]>\n";
         echo "<table width=$section_width cellspacing=3>\n";
@@ -234,13 +234,13 @@ if ($ADD=="31comp") {
         echo "  </td>\n";
         echo "</tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Default Local GMT: </td><td align=left><select size=1 name=local_gmt><option>12.75</option><option>12.00</option><option>11.00</option><option>10.00</option><option>9.50</option><option>9.00</option><option>8.00</option><option>7.00</option><option>6.50</option><option>6.00</option><option>5.75</option><option>5.50</option><option>5.00</option><option>4.50</option><option>4.00</option><option>3.50</option><option>3.00</option><option>2.00</option><option>1.00</option><option>0.00</option><option>-1.00</option><option>-2.00</option><option>-3.00</option><option>-3.50</option><option>-4.00</option><option>-5.00</option><option>-6.00</option><option>-7.00</option><option>-8.00</option><option>-9.00</option><option>-10.00</option><option>-11.00</option><option>-12.00</option><option selected>$comp[default_local_gmt]</option></select> (Do NOT Adjust for DST)".helptag("companies-default_local_gmt")."</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Default Ext Context: </td><td align=left><input type=text name=ext_context size=15 maxlength=20 value=\"$comp[default_ext_context]\">".helptag("companies-default_ext_context")." (osdial/osdialEXT/osdialBLOCK)</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Default Ext Context: </td><td align=left><input type=text name=ext_context size=15 maxlength=20 value=\"$comp[default_ext_context]\">".helptag("companies-default_ext_context")." <font class=font2>(osdial/osdialEXT/osdialBLOCK)</font></td></tr>\n";
         echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
         echo "</TABLE></center>\n";
 
         echo "<br><br>\n";
 
-        echo "<br><br><a href=\"$PHP_SELF?ADD=51comp&company_id=$comp[id]\">DELETE THIS COMPANY</a>\n";
+//         echo "<br><br><a href=\"$PHP_SELF?ADD=51comp&company_id=$comp[id]\">DELETE THIS COMPANY</a>\n";
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
     }
@@ -253,8 +253,8 @@ if ($ADD=="31comp") {
 ######################
 if ($ADD=="10comp") {
     if ($LOG["multicomp_admin"] > 0) {
-        echo "<center><br><font color=$default_text size=+1>COMPANIES<br><br>\n";
-        echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
+        echo "<center><br><font class=top_header color=$default_text size=+1>COMPANIES<br><br>\n";
+        echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1>\n";
         echo "  <tr class=tabheader>";
         echo "    <td width=10%>ID</td>\n";
         echo "    <td width=20%>STATUS</td>\n";
