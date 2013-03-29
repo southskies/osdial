@@ -51,7 +51,7 @@ if ($LOG['view_reports']==1) {
         $queuemetrics_url_LU =              $row[1];
 
 
-        echo "<table width=60% align=center><tr><td>\n";
+        echo "<table width=60% align=center><tr class=no-ul><td>\n";
         echo "<font face=\"dejavu sans,verdana,sans-serif\" size=2>\n";
         echo "<font size=4 class=top_header color=$default_text><br><center>REPORTS</center></font><br><br>";
 

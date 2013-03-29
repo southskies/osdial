@@ -169,7 +169,7 @@ if ($ADD=="31media") {
 
         echo "<br><br>\n";
 
-        echo "<br><br><a href=\"$PHP_SELF?ADD=51media&media_id=$media[id]\">DELETE MEDIA</a>\n";
+//         echo "<br><br><a href=\"$PHP_SELF?ADD=51media&media_id=$media[id]\">DELETE MEDIA</a>\n";
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
     }
@@ -183,7 +183,7 @@ if ($ADD=="31media") {
 if ($ADD=="10media") {
     if ($LOG['modify_servers']>0) {
         echo "<center><br><font class=top_header color=$default_text size=+1>MEDIA</font><br><br>\n";
-        echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
+        echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1>\n";
         echo "  <tr class=tabheader>";
         echo "    <td>ID</td>\n";
         echo "    <td>FILE</td>\n";

@@ -551,7 +551,7 @@ if ($ADD==3)
 				{echo "<input type=hidden name=ADD value=4>\n";}
 			}
 		echo "<input type=hidden name=user value=\"$row[1]\">\n";
-		echo "<TABLE width=$section_width cellspacing=3>\n";
+		echo "<TABLE style='border-radius: 8px 8px 0px 0px;' width=$section_width cellspacing=3>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left>\n";
         $pcomp='';
         if ($LOG['multicomp']>0 and OSDpreg_match($LOG['companiesRE'],$row[1])) {
@@ -825,7 +825,7 @@ if ($ADD==3)
 		echo "</table></center>\n";
 
         echo "<br><br>";
-        echo "<table cellspacing=0 cellpadding=0 border=0 align=center width=$section_width>\n";
+        echo "<table align=center border=0 cellspacing=0 cellpadding=0 width=$section_width>\n";
         echo "  <tr>\n";
         echo "    <td align=center>Campaign Ranks: ".helptag("osdial_users-campaign_ranks")."</td>\n";
         echo "    <td width=5%>&nbsp;</td>\n";
@@ -833,14 +833,14 @@ if ($ADD==3)
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=center valign=top>\n";
-		echo "      <table bgcolor=grey cellspacing=1 border=0>\n";
+		echo "      <table bgcolor=grey border=0 cellspacing=1 class=shadedtable>\n";
 		echo "        $RANKcampaigns_list";
 		echo "        <tr class=tabfooter><td align=center class=tabbutton colspan=3><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 		echo "      </table>\n";
         echo "    </td>\n";
         echo "    <td>&nbsp;</td>\n";
         echo "    <td align=center valign=top>\n";
-		echo "      <table bgcolor=grey cellspacing=1 border=0>\n";
+		echo "      <table bgcolor=grey border=0 cellspacing=1 class=shadedtable>\n";
 		echo "        $RANKgroups_list";
 		echo "        <tr class=tabfooter><td align=center class=tabbutton colspan=4><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 		echo "      </table>\n";
@@ -852,14 +852,11 @@ if ($ADD==3)
 		#echo "<br><br><a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$row[1]\">Click here for user status</a>\n";
 		#echo "<br><br><a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$row[1]\">Click here for user stats</a>\n";
 		#echo "<br><br><a href=\"$PHP_SELF?ADD=8&user=$row[1]\">Click here for user CallBack Holds</a></center>\n";
-		if ($LOG['delete_users'] > 0)
-			{
+		if ($LOG['delete_users'] > 100) {
 			echo "<br><br><a href=\"$PHP_SELF?ADD=5&user=$row[1]\">DELETE THIS AGENT</a>\n";
 			}
 		}
-	}
-	else
-	{
+	} else {
 	echo "<font color=red>You do not have permission to view this page</font>\n";
 	}
 }
@@ -1125,7 +1122,7 @@ foreach (range('0','9') as $snum) {
 }
 echo "</font><br>\n";
 
-echo "<table width=$section_width cellspacing=0 cellpadding=1 align=center>\n";
+echo "<table width=$section_width class=shadedtable cellspacing=0 cellpadding=1 align=center>\n";
 echo "  <tr class=tabheader>\n";
 echo "    <td><a href=\"$PHP_SELF?ADD=$ADD&let=$let&level=$level&group=$group&viewdisabled=$viewdisabled&$USERlink\">USER ID</a></td>\n";
 echo "    <td><a href=\"$PHP_SELF?ADD=$ADD&let=$let&level=$level&group=$group&viewdisabled=$viewdisabled&$NAMElink\">FULL NAME</a></td>\n";

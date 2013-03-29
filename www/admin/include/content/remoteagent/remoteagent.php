@@ -27,10 +27,8 @@
 # ADD=11111 display the ADD NEW REMOTE AGENTS SCREEN
 ######################
 
-if ($ADD==11111)
-{
-	if ($LOG['modify_remoteagents']==1)
-	{
+if ($ADD==11111) {
+	if ($LOG['modify_remoteagents']==1)	{
     $servers_list = get_servers($link, $server_ip, 'AIO|DIALER');
 	echo "<center><br><font class=top_header color=$default_text size=+1>ADD NEW EXTERNAL AGENTS</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=21111>\n";
@@ -62,9 +60,7 @@ if ($ADD==11111)
 	echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	echo "NOTE: It can take up to 30 seconds for changes submitted on this screen to go live\n";
-	}
-	else
-	{
+	} else {
 	echo "<font color=red>You do not have permission to view this page</font>\n";
 	}
 }
@@ -203,8 +199,7 @@ $ADD='10000';		# go to remote agents list
 
 if ($ADD==31111)
 {
-	if ($LOG['modify_remoteagents']==1)
-	{
+	if ($LOG['modify_remoteagents']==1)	{
 	$stmt=sprintf("SELECT * FROM osdial_remote_agents WHERE remote_agent_id='%s';",mres($remote_agent_id));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -255,13 +250,10 @@ if ($ADD==31111)
 	echo "NOTE: It can take up to 30 seconds for changes submitted on this screen to go live\n";
 
 
-	if ($LOG['delete_remote_agents'] > 0)
-		{
+		if ($LOG['delete_remote_agents'] > 0) {
 		echo "<br><br><br><a href=\"$PHP_SELF?ADD=51111&remote_agent_id=$remote_agent_id\">DELETE THIS REMOTE AGENT</a>\n";
 		}
-	}
-	else
-	{
+	} else {
 	echo "<font color=red>You do not have permission to view this page</font>\n";
 	}
 }
@@ -270,14 +262,13 @@ if ($ADD==31111)
 ######################
 # ADD=10000 display all remote agents
 ######################
-if ($ADD==10000)
-{
+if ($ADD==10000) {
 	$stmt=sprintf("SELECT * FROM osdial_remote_agents WHERE campaign_id IN %s ORDER BY server_ip,campaign_id,user_start;",$LOG['allowed_campaignsSQL']);
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 
 echo "<center><br><font class=top_header color=$default_text size=+1>EXTERNAL AGENTS</font><br><br>\n";
-echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
+	echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "  <tr class=tabheader>\n";
 echo "    <td>ID</td>\n";
 echo "    <td align=center>LINES</td>\n";
