@@ -289,11 +289,11 @@
     </item>
 
     <item pathId="campaign_name" sectionId="2" title="Name">
-  This is the description of the campaign, it must be between 6 and 40 characters in length.
+  This is the long name of the campaign, it must be between 6 and 40 characters in length.
     </item>
 
     <item pathId="campaign_description" sectionId="3" title="Description">
-  This is a memo field for the campaign, it is optional and can be a maximum of 255 characters in length.
+  This is the description of the campaign, it is optional and can be a maximum of 255 characters in length.
     </item>
 
     <item pathId="campaign_changedate" sectionId="4" title="Change Date">
@@ -1114,7 +1114,7 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
 
   <section pathId="osdial_list_loader" sectionId="17" title="List Loader">
     <item pathId="osdial_list_loader" sectionId="1" title="List Loader">
-The OSDial basic web-based lead loader is designed simply to take a lead file - up to 8MB in size - that is either tab or pipe delimited and load it into the osdial_list table. The lead loader allows for field choosing and TXT- Plain Text, CSV- Comma Separated Values and XLS- Excel file formats. The lead loader does not do data validation, but it does allow you to check for duplicates in itself, within the campaign or within the entire system. Also, make sure that you have created the list that these leads are to be under so that you can use them. Here is a list of the fields in their proper order for the lead files:
+The OSDial basic web-based lead loader is designed simply to take a lead file - up to 8MB in size - that is either tab or pipe delimited and load it into the osdial_list table. The lead loader allows for field choosing and TXT- Plain Text, CSV- Comma Separated Values and XLS- Excel file formats. The lead loader does not do data validation, but it does allow you to check for duplicates in itself, within the campaign or within the entire system. Also, make ensure that you have created the list that these leads are to be under so that you can use them. Here is a list of the fields in their proper order for the lead files:
 	&lt;ol&gt;&lt;li&gt;Vendor Lead Code - shows up in the Vendor ID field of the GUI&lt;/li&gt;&lt;li&gt;Source Code - internal use only for admins and DBAs&lt;/li&gt;&lt;li&gt;List ID - the list number that these leads will show up under&lt;/li&gt;&lt;li&gt;Phone Code - the prefix for the phone number - 1 for US, 01144 for UK, 01161 for AUS, etc&lt;/li&gt;&lt;li&gt;Phone Number - must be at least 8 digits long&lt;/li&gt;&lt;li&gt;Title - title of the customer - Mr. Ms. Mrs, etc...&lt;/li&gt;&lt;li&gt;First Name&lt;/li&gt;&lt;li&gt;Middle Initial&lt;/li&gt;&lt;li&gt;Last Name&lt;/li&gt;&lt;li&gt;Address Line 1&lt;/li&gt;&lt;li&gt;Address Line 2&lt;/li&gt;&lt;li&gt;Address Line 3&lt;/li&gt;&lt;li&gt;City&lt;/li&gt;&lt;li&gt;State - limited to 2 characters&lt;/li&gt;&lt;li&gt;Province&lt;/li&gt;&lt;li&gt;Postal Code&lt;/li&gt;&lt;li&gt;Country&lt;/li&gt;&lt;li&gt;Gender&lt;/li&gt;&lt;li&gt;Date of Birth&lt;/li&gt;&lt;li&gt;Alternate Phone Number&lt;/li&gt;&lt;li&gt;Email Address&lt;/li&gt;&lt;li&gt;Custom1&lt;/li&gt;&lt;li&gt;Comments&lt;/li&gt;&lt;/ol&gt;
 
 &lt;br&gt;NOTES: The Excel Lead loader functionality is enabled by a series of perl scripts and needs to have a properly configured /etc/osdial.conf file in place on the web server. Also, a couple perl modules must be loaded for it to work as well - OLE-Storage_Lite and Spreadsheet-ParseExcel. You can check for runtime errors in these by looking at your apache error_log file. Also, for duplication checks against gampaign lists, the list that has new leads going into it does need to be created in the system before you start to load the leads.
@@ -1125,7 +1125,7 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 
   <section pathId="phones" sectionId="18" title="Phones">
     <item pathId="extension" sectionId="1" title="Phone extension">
-  This field is where you put the phones name as it appears to Asterisk not including the protocol or slash at the beginning. For Example: for the SIP phone SIP/test101 the Phone extension would be test101. Also, for IAX2 phones make sure you use the full phones name: IAX2/IAXphone1@IAXphone1 would be IAXphone1@IAXphone1. For Zap phones make sure you put the full channel: Zap/25-1 would be 25-1.  Another note, make sure you set the Protocol below correctly for your type of phone.
+  This field is where you put the phones name as it appears to Asterisk not including the protocol or slash at the beginning. For Example: for the SIP phone 1001 the Phone extension would be 1001. Make sure to set the Protocol below correctly for your type of phone.
     </item>
 
     <item pathId="dialplan_number" sectionId="2" title="Dial Plan Number">
@@ -1197,7 +1197,7 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
     </item>
 
     <item pathId="protocol" sectionId="19" title="Client Protocol">
-  The protocol that the phone uses to connect to the Asterisk server: SIP, IAX2, Zap . Also, there is EXTERNAL for remote dial numbers or speed dial numbers that you want to list as phones.
+  The protocol that the phone uses to connect to the Asterisk server: SIP, IAX2, Dahdi. Also, there is EXTERNAL for remote dial numbers or speed dial numbers that you want to list as phones.
     </item>
 
     <item pathId="local_gmt" sectionId="20" title="Local GMT">
@@ -1241,7 +1241,7 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
     </item>
 
     <item pathId="monitor_prefix" sectionId="30" title="Monitor Prefix">
-  This is the dial plan prefix for monitoring of Zap channels automatically within the OSDial app. Only change according to the extensions.conf ZapBarge extensions records.
+  This is the dial plan prefix for monitoring of Dahdi channels automatically within the OSDial app. Only change according to the extensions.conf Barge extensions records.
     </item>
 
     <item pathId="recording_exten" sectionId="31" title="Recording Exten">
