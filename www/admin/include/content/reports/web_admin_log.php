@@ -42,7 +42,13 @@ function report_web_admin_log() {
 
     $NOW_DATE = date("Y-m-d");
     $NOW_TIME = date("Y-m-d H:i:s");
-    if (!$query_date) {$query_date = $GREP_DATE;}
+    
+    $html .= "<br/><br/>";
+    $html .= "<div align=center>";
+    
+    if (!$query_date) {
+		$query_date = $GREP_DATE;
+	}
 
     $Gquery_date = OSDpreg_replace("/ /",'\ ',$query_date);
     $html .= "<!-- |$query_date|$Gquery_date| -->\n";
@@ -51,7 +57,7 @@ function report_web_admin_log() {
     $html .= "<input type=text name=query_date size=20 maxlength=20 value=\"$query_date\">\n";
     $html .= "<input type=submit name=submit value=SUBMIT>\n";
     $html .= "</form>\n";
-
+    
     $html .= "<pre><font size=2>\n\n";
     $html .= "OSDIAL: Admin Change Log                    " . dateToLocal($link,'first',date('Y-m-d H:i:s'),$webClientAdjGMT,'',$webClientDST,1) . "\n\n";
 
@@ -61,6 +67,7 @@ function report_web_admin_log() {
     $html .= implode("\n",$retGrep)."\n";
 
     $html .= "</div></font></pre>\n";
+    $html .= "</div>";
 
     return $html;
 }
