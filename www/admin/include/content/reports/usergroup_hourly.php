@@ -67,7 +67,7 @@ function report_usergroup_hourly() {
     $html .= "  <input type=hidden name=ADD value=$ADD>\n";
     $html .= "  <input type=hidden name=SUB value=$SUB>\n";
     $html .= "  <input type=hidden name=DB value=$DB>\n";
-    $html .= "  <table width=600 align=center cellpadding=0 cellspacing=0>\n";
+    $html .= "  <table class=shadedtable width=600 align=center cellpadding=0 cellspacing=0>\n";
     $html .= "    <tr class=tabheader>\n";
     $html .= "      <td>Group</td>\n";
     $html .= "      <td>Category</td>\n";
@@ -151,7 +151,7 @@ function report_usergroup_hourly() {
         }
 
         $html .= "  <center><a href=\"./admin.php?ADD=311111&user_group=$group\">" . OSDstrtoupper(mclabel($group)) . "</a></center><br />\n";
-        $html .= "  <table bgcolor=grey align=center width=600 cellspacing=1 cellpadding=0>\n";
+        $html .= "  <table class=shadedtable bgcolor=grey align=center width=600 cellspacing=1 cellpadding=0>\n";
         $html .= "    <tr class=tabheader>\n";
         $html .= "      <td colspan=2></td>\n";
         $html .= "      <td colspan=2>$status</td>\n";

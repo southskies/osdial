@@ -322,7 +322,7 @@ tinyMCE.init({
         echo "<font color=$default_text size=+1>ADD NEW EMAIL TEMPLATE</font><br><br>\n";
         echo "<form name=etform action=$PHP_SELF method=post enctype=\"multipart/form-data\">\n";
         echo "<input type=hidden name=ADD value=2email>\n";
-        echo "<table width=$section_width cellspacing=3>\n";
+        echo "<table class=shadedtable width=$section_width cellspacing=3>\n";
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right>Template ID:</td>\n";
         echo "    <td align=left>\n";
@@ -1011,7 +1011,7 @@ if ($ADD=="0email") {
     $people_to_print = mysql_num_rows($rslt);
 
     echo "<center><br><font color=$default_text size=+1>EMAIL TEMPLATES</font><br><br>\n";
-    echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
+    echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1>\n";
     echo "  <tr class=tabheader>";
     echo "    <td>ID</td>\n";
     echo "    <td>NAME</td>\n";

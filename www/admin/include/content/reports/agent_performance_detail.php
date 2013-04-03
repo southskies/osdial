@@ -76,19 +76,15 @@ function report_agent_performance_detail() {
         $user_groups[$i] =$row[0];
         $i++;
     }
-
+	
+    $html .= "<br /><div align=center><font class=top_header color=$default_text size=4>AGENT PERFORMANCE REPORT</font></div>\n";
     $html .= "<div class=noprint>\n";
     $html .= " <br>\n";
     $html .= " <form action=\"$PHP_SELF\" method=GET>\n";
     $html .= "  <input type=hidden name=ADD value=\"$ADD\">\n";
     $html .= "  <input type=hidden name=SUB value=\"$SUB\">\n";
     $html .= "  <input type=hidden name=DB value=\"$DB\">\n";
-    $html .= "  <table width=750 align=center cellpadding=0 cellspacing=0>\n";
-    $html .= "    <tr>\n";
-    $html .= "      <td align=center colspan=5>\n";
-    $html .= "        <font class=top_header color=$default_text size=4>AGENT PERFORMANCE REPORT</font>\n";
-    $html .= "      </td>\n";
-    $html .= "    <tr><td colspan=5>&nbsp;</td></tr>\n";
+    $html .= "  <table class=shadedtable width=750 align=center cellpadding=0 cellspacing=0>\n";
     $html .= "    <tr class=tabheader>\n";
     $html .= "      <td align=center>Date Range</td>\n";
     $html .= "      <td align=center>Campaign</td>\n";
@@ -267,7 +263,7 @@ function report_agent_performance_detail() {
         $table .= "  <tr>\n";
         $table .= "    <td align=center>\n";
         $table .= "      <div style=\"overflow: auto; width:" . $section_width . "px;\">\n";
-        $table .= "      <table width=800 align=center cellspacing=1 bgcolor=grey style=\"cursor:crosshair;\">\n";
+        $table .= "      <table class=shadedtable width=800 align=center cellspacing=1 bgcolor=grey style=\"cursor:crosshair;\">\n";
         $table .= "        <tr class=tabheader style=\"font-size: 8pt;\">\n";
         $table .= "          <td colspan=4></td>\n";
         $table .= "          <td align=center bgcolor=grey></td>\n";
@@ -301,6 +297,7 @@ function report_agent_performance_detail() {
         $table .= "          <td align=center bgcolor=grey></td>\n";
         $table .= "          <td align=center>Tot</td>\n";
         $table .= "          <td align=center>Avg</td>\n";
+        
         $head = "AGENT NAME|AGENT ID|CALLS|TIME|PAUSE TIME|PAUSE AVG|WAIT TIME|WAIT AVG|TALK TIME|TALK AVG|DISPO TIME|DISPO AVG";
         if (count($statusesARY) > 0) {
             $table .= "          <td align=center bgcolor=grey></td>\n";
@@ -312,7 +309,6 @@ function report_agent_performance_detail() {
             }
         }
         $table .= "        </tr>\n";
-
         $export .= "<input type=hidden name=\"row" . $CSVrows . "\" value=\"" . $head . "\">\n";
         $CSVrows++;
 
@@ -707,6 +703,7 @@ function report_agent_performance_detail() {
         $table .= "    </td>\n";
         $table .= "  </tr>\n";
         $table .= "</table>\n";
+        
         $export .= "<input type=hidden name=\"rows\" value=\"" . $CSVrows . "\">\n";
         if ($LOG['export_agent_performance_detail']) $export .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
         $export .= "</form>\n";

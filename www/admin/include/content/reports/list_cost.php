@@ -94,7 +94,7 @@ function report_list_cost() {
     $html .= "<input type=hidden name=ADD value=$ADD>\n";
     $html .= "<input type=hidden name=SUB value=$SUB>\n";
     $html .= "<input type=hidden name=DB value=$DB>\n";
-    $html .= "<table border=0 bgcolor=grey cellspacing=1>\n";
+    $html .= "<table class=shadedtable border=0 bgcolor=grey cellspacing=1>\n";
     $html .= "  <tr class=tabheader>\n";
     $html .= "    <td>List(s)</td>\n";
     $html .= "    <td>Date Range</td>\n";
@@ -159,7 +159,7 @@ function report_list_cost() {
         $html .= "<form target=\"_new\" action=\"/admin/tocsv.php\">\n";
         $html .= "<input type=hidden name=\"name\" value=\"lcr\">\n";
 
-        $html .= "<table width=500 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
+        $html .= "<table class=shadedtable width=500 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
         $html .= "  <tr class=tabheader>\n";
         $html .= "    <td colspan=3>&nbsp;</td>\n";
         $html .= "    <td colspan=2>COST</td>\n";
@@ -273,7 +273,7 @@ function report_list_cost() {
         $line = "TOTAL||$leads|$avg_cost|$total_cost";
         $html .= "<input type=hidden name=\"row" . $CSVrow++ . "\" value=\"" . $line . "\">\n";
         $html .= "<input type=hidden name=\"rows\" value=\"" . $CSVrow . "\">\n";
-        if ($LOG['export_list_cost_entry']) $html .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
+        if ($LOG['export_list_cost_entry']) $html .= "<br /><input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
         $html .= "</form>";
 
         $report_end = date("U");

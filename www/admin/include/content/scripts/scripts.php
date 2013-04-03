@@ -292,7 +292,7 @@ $script_text = OSDpreg_replace("/\n/","",$script_text);
 
 echo "Preview Script: $script_id<BR>\n";
 echo "<center>";
-echo "<table width=600 cellpadding=10>";
+echo "<table class=shadedtable width=600 cellpadding=10>";
 echo "  <tr bgcolor=$oddrows>";
 echo "    <td>";
 echo "      <center><b>$script_name</b></center>\n";
@@ -491,7 +491,7 @@ tinyMCE.init({
 
 	echo "<center><br><font class=top_header color=$default_text size=+1>ADD NEW SCRIPT</font><form name=scriptForm action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2111111>\n";
-	echo "<TABLE width=$section_width cellspacing=3>\n";
+	echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Script ID: </td><td align=left>";
     if ($LOG['multicomp_admin'] > 0) {
         $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
@@ -965,7 +965,7 @@ tinyMCE.init({
 	    echo "<input type=hidden name=script_button_id value=\"$script_button_id\">\n";
 		echo "<center><a href=\"$PHP_SELF?ADD=$ADD&script_id=$script_id\">BACK TO SCRIPT: " . mclabel($script_id) . "</a></center><br>\n";
     }
-	echo "<TABLE width=$section_width>";
+	echo "<TABLE class=shadedtable width=$section_width>";
 	echo "<tr bgcolor=$oddrows><td align=right>$id_label: </td><td align=left><B>" . mclabel($sid) . "</B>".helptag('osdial_scripts-script_name')."</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>$name_label: </td><td align=left><input type=text name=script_name size=40 maxlength=50 value=\"$script_name\">".helptag("osdial_scripts-script_name")."</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>$comment_label: </td><td align=left><input type=text name=script_comments size=50 maxlength=255 value=\"$script_comments\"> ".helptag("osdial_scripts-script_comments")."</td></tr>\n";
@@ -978,20 +978,20 @@ tinyMCE.init({
 	echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></form></center>\n";
 
-	if ($LOG['delete_scripts'] > 0) {
-		echo "<center><a href=\"$PHP_SELF?ADD=5111111&script_id=$script_id";
-        if ($SUB != "") {
-		    echo "&script_button_id=$script_button_id";
-        }
-		echo "\">DELETE THIS $stypec</a></center>\n";
-	}
+// 	if ($LOG['delete_scripts'] > 0) {
+// 		echo "<center><a href=\"$PHP_SELF?ADD=5111111&script_id=$script_id";
+//         if ($SUB != "") {
+// 		    echo "&script_button_id=$script_button_id";
+//         }
+// 		echo "\">DELETE THIS $stypec</a></center>\n";
+// 	}
 
 
     # Sub-scripts / Buttons.
     if ($SUB == "") {
         echo "<br /><br /><hr width=50%>\n";
         echo "<center><font color=$default_text size=+1>BUTTONS / OBJECTIONS & REBUTTALS</font><br><br>\n";
-        echo "<table bgcolor=grey width=$section_width cellspacing=1 cellpadding=1>\n";
+        echo "<table class=shadedtable bgcolor=grey width=$section_width cellspacing=1 cellpadding=1>\n";
         echo "  <tr class=tabheader>\n";
         echo "      <td align=center>ID</td>\n";
         echo "      <td align=center>BUTTON LABEL</td>\n";

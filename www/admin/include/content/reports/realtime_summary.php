@@ -124,8 +124,8 @@ function report_realtime_summary() {
         $group_name = $group_names[$k];
         $rdlink = mclabel($group) . " - $group_name";
         if ($LOG['view_agent_realtime']) $rdlink = "<a href=\"./admin.php?useOAC=$useOAC&ADD=$ADD&SUB=" . ($SUB + 1) . "&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">" . mclabel($group) . " - $group_name</a>";
-        $html .= "<hr><font class=realtimeindents size=-1><b>$rdlink</b> &nbsp; - &nbsp; ";
-        $html .= "<a href=\"./admin.php?ADD=31&campaign_id=$group\">Modify</a> </font>\n";
+        $html .= "<div style='margin:10px 0 5px 10px;'><font size=-1><b>$rdlink</b> &nbsp; - &nbsp; ";
+        $html .= "<a href=\"./admin.php?ADD=31&campaign_id=$group\">Modify</a></div> </font>\n";
         
         
         $stmt = sprintf("SELECT count(*) FROM osdial_campaigns WHERE campaign_id IN %s AND campaign_id='%s' and campaign_allow_inbound='Y';",$LOG['allowed_campaignsSQL'],mres($group));
@@ -201,7 +201,7 @@ function report_realtime_summary() {
         $row=mysql_fetch_row($rslt);
         $balanceSHORT = $row[0];
         
-        $html .= "<table align=center cellpadding=0 cellspacing=0 border=0>";
+        $html .= "<table align=center border=0 cellpadding=0 cellspacing=0 class=shadedtable style=background:#EEE;>";
 
         $html .= "<tr>";
         $html .= "<td align=right colspan=1><font size=2 color=$default_text><b>Statuses:</b></td><td align=left colspan=7><font size=2>&nbsp; <span title=\"$DIALstatuses\">" . ellipse($DIALstatuses,110,true) . "</span>&nbsp;&nbsp;</td>";

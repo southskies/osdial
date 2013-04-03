@@ -88,7 +88,7 @@ function report_agent_status() {
     $form .= "  <input type=hidden name=ADD value=\"$ADD\">\n";
     $form .= "  <input type=hidden name=SUB value=\"$SUB\">\n";
     $form .= "  <input type=hidden name=DB value=\"$DB\">\n";
-    $form .= "  <table align=center cellspacing=1 bgcolor=grey width=350>\n";
+    $form .= "  <table class=shadedtable align=center cellspacing=1 bgcolor=grey width=350>\n";
     $form .= "    <tr class=tabheader>\n";
     $form .= "      <td>Agent #</td>\n";
     $form .= "      <td>&nbsp;<td>\n";
@@ -132,7 +132,7 @@ function report_agent_status() {
 
         $table .= "<br>\n";
         $table .= "<center>\n";
-        $table .= "  <table width=620 cellpadding=2 cellspacing=0>\n";
+        $table .= "  <table class=shadedtable width=620 cellpadding=2 cellspacing=0>\n";
         $table .= "    <tr class=tabheader>\n";
         $table .= "      <td>&nbsp;</td>\n";
         $table .= "      <td></td>\n";
@@ -145,18 +145,18 @@ function report_agent_status() {
             $table .= "<center><font color=red>You do not have permission to view this page</font></center>\n";
         } else {
             $table .= "<table align=center width=100%>\n";
-            $table .= "<tr class=font2><td align=right width=50%>Run Date:</td><td align=left width=50%>" . date($config['settings']['default_date_format']) . "</td></tr>\n";
-            $table .= "<tr class=font2><td align=right>Agent ID:</td><td align=left>$agent</td></tr>\n";
-            $table .= "<tr class=font2><td align=right>Agent Full Name:</td><td align=left>$full_name</td></tr>\n";
-            $table .= "<tr class=font2><td align=right>Agent Group:</td><td align=left>" . mclabel($user_group) . "</td></tr>\n";
+            $table .= "<tr class=font2><td align=center colspan=2 width=50%>Run Date: " . date($config['settings']['default_date_format']) . "</td></tr>\n";
+            $table .= "<tr class=font2><td align=center colspan=2>Agent ID: $agent</td></tr>\n";
+            $table .= "<tr class=font2><td align=center colspan=2>Agent Full Name: $full_name</td></tr>\n";
+            $table .= "<tr class=font2><td align=center colspan=2>Agent Group: " . mclabel($user_group) . "</td></tr>\n";
             if ($agents_to_print > 0) {
-                $table .= "<tr class=font2><td align=right>Agent Server IP:</td><td align=left>$Aserver_ip</td></tr>\n";
-                $table .= "<tr class=font2><td align=right>Session ID:</td><td align=left>$Asession_id</td></tr>\n";
-                $table .= "<tr class=font2><td align=right>From Phone:</td><td align=left>$Aextension</td></tr>\n";
-                $table .= "<tr class=font2><td align=right>Agent Campaign:</td><td align=left>" . mclabel($Acampaign) . "</td></tr>\n";
-                $table .= "<tr class=font2><td align=right>Status:</td><td align=left>$Astatus</td></tr>\n";
-                $table .= "<tr class=font2><td align=right>Last Call Finished:</td><td align=left>$Alast_call</td></tr>\n";
-                $table .= "<tr class=font2><td align=right>Closer Groups:</td><td align=left>$Acl_campaigns</td></tr>\n";
+                $table .= "<tr class=font2><td align=center colspan=2>Agent Server IP: $Aserver_ip</td></tr>\n";
+                $table .= "<tr class=font2><td align=center colspan=2>Session ID: $Asession_id</td></tr>\n";
+                $table .= "<tr class=font2><td align=center colspan=2>From Phone: $Aextension</td></tr>\n";
+                $table .= "<tr class=font2><td align=center colspan=2>Agent Campaign: " . mclabel($Acampaign) . "</td></tr>\n";
+                $table .= "<tr class=font2><td align=center colspan=2>Status: $Astatus</td></tr>\n";
+                $table .= "<tr class=font2><td align=center colspan=2>Last Call Finished: $Alast_call</td></tr>\n";
+                $table .= "<tr class=font2><td align=center colspan=2>Closer Groups: $Acl_campaigns</td></tr>\n";
             }
             $table .= "<tr class=font2><td colspan=2>&nbsp;</td></tr>\n";
             if ($agents_to_print > 0) {

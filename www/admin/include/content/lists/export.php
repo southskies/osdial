@@ -119,7 +119,7 @@ if ($ADD==131 && $SUB==2 && $LOG['user_level'] > 8 && $LOG['export_leads'] > 0) 
         if ($statuses[0] != '') $target=' target="_blank"';
         echo "<form name=export action=$PHP_SELF method=post$target>\n";
         echo "<input type=hidden name='ADD' value=\"$ADD\">\n";
-        echo "<table align=center width=700 border=0 cellpadding=5 cellspacing=0 bgcolor=$oddrows>\n";
+        echo "<table align=center class=shadedtable width=700 border=0 cellpadding=5 cellspacing=0 bgcolor=$oddrows>\n";
         echo " <tr><td>\n";
         echo "  <center>\n";
         echo "  <br />";

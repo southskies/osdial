@@ -196,7 +196,7 @@ function report_realtime_detail() {
     $campaign_allow_inbound = $row[0];
 
 
-    $html .= "<table align=center><tr><td>\n";
+    $html .= "<br /><table align=center class=shadedtable style=background:#EEE;><tr><td>\n";
     $html .= "<font size=1>";
 
     $html .= "<div class=no-ul>";

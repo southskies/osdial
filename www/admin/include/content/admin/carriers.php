@@ -643,9 +643,9 @@ if ($ADD == "3carrier") {
             echo "<input type=hidden name=carrier_id value=$gfr[carrier_id]>\n";
             echo "<input type=hidden name=did_id value=$did_id>\n";
 
-            echo "<table width=$section_width cellspacing=3>\n";
+            echo "<table class=shadedtable width=$section_width cellspacing=3>\n";
             echo "  <tr bgcolor=$oddrows valign=top>\n";
-            echo "    <td align=right width=30%>Carrier Name:</td>\n";
+            echo "    <td align=right width=50%>Carrier Name:</td>\n";
             echo "    <td align=left><span style=\"color:$default_text;\">$carrier_name</span></td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows>\n";
@@ -811,7 +811,7 @@ if ($ADD == "3carrier") {
             echo "<input type=hidden name=SUB value=$SUB>\n";
             echo "<input type=hidden name=carrier_id value=$carrier_id>\n";
             echo "<input type=hidden name=carrier_server_ip value=$carrier_server_ip>\n";
-            echo "<table width=$section_width cellspacing=3>\n";
+            echo "<table class=shadedtable width=$section_width cellspacing=3>\n";
             echo "  <tr bgcolor=$oddrows valign=top>\n";
             echo "    <td align=right width=30%>Carrier Name:</td>\n";
             echo "    <td align=left><span style=\"color:$default_text;\">$gfr[name]</span></td>\n";
@@ -859,15 +859,13 @@ if ($ADD == "3carrier") {
             echo "<form name=osdial_form action=$PHP_SELF method=POST>\n";
             echo "<input type=hidden name=ADD value=4carrier>\n";
             echo "<input type=hidden name=SUB value=$SUB>\n";
+            echo "<span class=shadedtable width=350>";
             echo "<input type=hidden name=carrier_id value=$carrier_id>\n";
-            echo "<table width=$section_width cellspacing=3>\n";
-            echo "  <tr>\n";
-            echo "    <td align=center colspan=2>\n";
             echo "      <select name=cpt style=\"font-size:10px;\" onchange=\"selcarrier(this);return false;\">\n";
             echo "        <option selcted> -- Sample Carrier Configuration Templates -- </option>\n";
-            echo "      </select>\n";
-            echo "    </td>\n";
-            echo "  </tr>\n";
+            echo "      </select><br /><br />\n";
+            echo "</span>";
+            echo "<table class=shadedtable width=$section_width cellspacing=3>\n";
             echo "  <tr class=tabheader>\n";
             echo "    <td colspan=2></td>\n";
             echo "  </tr>\n";

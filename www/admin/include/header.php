@@ -81,112 +81,112 @@ echo "  <!-- webClientGMT:" . $webClientGMT. " webClientDST:" . $webClientDST . 
 
 ######################### HTML HEADER BEGIN #######################################
 if ($hh=='users') {
-    $users_hh="bgcolor =\"$users_color\""; 
-    $users_fc="$users_font"; 
+    $users_hh="bgcolor =\"$users_color\"";
+    $users_fc="$users_font";
     $users_bold="$header_selected_bold";
     $agents_menu1_class='rounded-menu1select';
 } else {
-    $users_hh=''; $users_fc='WHITE'; 
+    $users_hh=''; $users_fc='WHITE';
     $users_bold="$header_nonselected_bold";
     $agents_menu1_class='rounded-menu1';
 }
 if ($hh=='campaigns') {
-    $campaigns_hh="bgcolor=\"$campaigns_color2\""; 
-    $campaigns_fc="$campaigns_font"; 
+    $campaigns_hh="bgcolor=\"$campaigns_color2\"";
+    $campaigns_fc="$campaigns_font";
     $campaigns_bold="$header_selected_bold";
     $campaigns_menu1_class='rounded-menu1select';
 } else {
-    $campaigns_hh=''; 
-    $campaigns_fc='WHITE'; 
+    $campaigns_hh='';
+    $campaigns_fc='WHITE';
     $campaigns_bold="$header_nonselected_bold";
     $campaigns_menu1_class='rounded-menu1';
 }
 if ($hh=='lists') {
-    $lists_hh="bgcolor=\"$lists_color\""; 
-    $lists_fc="$lists_font"; 
+    $lists_hh="bgcolor=\"$lists_color\"";
+    $lists_fc="$lists_font";
     $lists_bold="$header_selected_bold";
     $lists_menu1_class='rounded-menu1select';
 } else {
-    $lists_hh=''; $lists_fc='WHITE'; 
+    $lists_hh=''; $lists_fc='WHITE';
     $lists_bold="$header_nonselected_bold";
     $lists_menu1_class='rounded-menu1';
 }
 if ($hh=='ingroups') {
-    $ingroups_hh="bgcolor=\"$ingroups_color\""; 
-    $ingroups_fc="$ingroups_font"; 
+    $ingroups_hh="bgcolor=\"$ingroups_color\"";
+    $ingroups_fc="$ingroups_font";
     $ingroups_bold="$header_selected_bold";
     $ingroups_menu1_class='rounded-menu1select';
 } else {
-    $ingroups_hh=''; $ingroups_fc='WHITE'; 
+    $ingroups_hh=''; $ingroups_fc='WHITE';
     $ingroups_bold="$header_nonselected_bold";
     $ingroups_menu1_class='rounded-menu1';
 }
 if ($hh=='remoteagent') {
-    $remoteagent_hh="bgcolor=\"$remoteagent_color\""; 
-    $remoteagent_fc="$remoteagent_font"; 
+    $remoteagent_hh="bgcolor=\"$remoteagent_color\"";
+    $remoteagent_fc="$remoteagent_font";
     $remoteagent_bold="$header_selected_bold";
     $remoteagents_menu1_class='rounded-menu1select';
 } else {
-    $remoteagent_hh=''; 
-    $remoteagent_fc='WHITE'; 
+    $remoteagent_hh='';
+    $remoteagent_fc='WHITE';
     $remoteagent_bold="$header_nonselected_bold";
     $remoteagents_menu1_class='rounded-menu1';
 }
 if ($hh=='usergroups') {
-    $usergroups_hh="bgcolor=\"$usergroups_color\""; 
-    $usergroups_fc="$usergroups_font"; 
+    $usergroups_hh="bgcolor=\"$usergroups_color\"";
+    $usergroups_fc="$usergroups_font";
     $usergroups_bold="$header_selected_bold";
     $usergroups_menu1_class='rounded-menu1select';
 } else {
-    $usergroups_hh=''; $usergroups_fc='WHITE'; 
+    $usergroups_hh=''; $usergroups_fc='WHITE';
     $usergroups_bold="$header_nonselected_bold";
     $usergroups_menu1_class='rounded-menu1';
 }
 if ($hh=='scripts') {
-    $scripts_hh="bgcolor=\"$scripts_color\""; 
-    $scripts_fc="$scripts_font"; 
+    $scripts_hh="bgcolor=\"$scripts_color\"";
+    $scripts_fc="$scripts_font";
     $scripts_bold="$header_selected_bold";
     $scripts_menu1_class='rounded-menu1select';
 } else {
-    $scripts_hh=''; 
-    $scripts_fc='WHITE'; 
+    $scripts_hh='';
+    $scripts_fc='WHITE';
     $scripts_bold="$header_nonselected_bold";
     $scripts_menu1_class='rounded-menu1';
 }
 if ($hh=='filters') {
-    $filters_hh="bgcolor=\"$filters_color\""; 
-    $filters_fc="$filters_font"; 
+    $filters_hh="bgcolor=\"$filters_color\"";
+    $filters_fc="$filters_font";
     $filters_bold="$header_selected_bold";
     $filters_menu1_class='rounded-menu1select';
 } else {
-    $filters_hh=''; 
-    $filters_fc='WHITE'; 
+    $filters_hh='';
+    $filters_fc='WHITE';
     $filters_bold="$header_nonselected_bold";
     $filters_menu1_class='rounded-menu1';
 }
 if ($hh=='admin') {
-    $admin_hh="bgcolor=\"$admin_color\""; 
-    $admin_fc="$admin_font"; 
+    $admin_hh="bgcolor=\"$admin_color\"";
+    $admin_fc="$admin_font";
     $admin_bold="$header_selected_bold";
     $setup_menu1_class='rounded-menu1select';
 } else {
-    $admin_hh=''; 
-    $admin_fc='WHITE'; 
+    $admin_hh='';
+    $admin_fc='WHITE';
     $admin_bold="$header_nonselected_bold";
     $setup_menu1_class='rounded-menu1';
 }
 if ($hh=='reports') {
-    $reports_hh="bgcolor=\"$reports_color\""; 
-    $reports_fc="$reports_font"; 
+    $reports_hh="bgcolor=\"$reports_color\"";
+    $reports_fc="$reports_font";
     $reports_bold="$header_selected_bold";
     $reports_menu1_class='rounded-menu1select';
     $reports_heading_bgcolor='bgcolor=#E9E8D9';
 } else {
-    $reports_hh=''; 
-    $reports_fc='WHITE'; 
+    $reports_hh='';
+    $reports_fc='WHITE';
     $reports_bold="$header_nonselected_bold";
     $reports_menu1_class='rounded-menu1';
-    $reports_heading_bgcolor='rounded-menu1'; 
+    $reports_heading_bgcolor='rounded-menu1';
 } 
 
 $settings_menucols2=12;
@@ -330,32 +330,32 @@ if (OSDstrlen($users_hh) > 1) {
         $agent_lead_class='rounded-menu2';
     }
     if ($ADD == 999999 and $SUB==21) {
-        $agent_stats_color=$inactivemenu2_color;
-        $agent_stats_class='rounded-menu2';
+        $agent_stats_color=$inactivemenu3_color;
+        $agent_stats_class='rounded-menu3';
     } else {
-        $agent_stats_color=$inactivemenu2_color;
-        $agent_stats_class='rounded-menu2';
+        $agent_stats_color=$inactivemenu3_color;
+        $agent_stats_class='rounded-menu3';
     }
     if ($ADD == 999999 and $SUB==22) {
-        $agent_status_color=$activemenu2_color;
-        $agent_status_class='rounded-menu2';
+        $agent_status_color=$activemenu3_color;
+        $agent_status_class='rounded-menu3';
     } else {
-        $agent_status_color=$inactivemenu2_color;
-        $agent_status_class='rounded-menu2';
+        $agent_status_color=$inactivemenu3_color;
+        $agent_status_class='rounded-menu3';
     }
     if ($ADD == 999999 and $SUB==20) {
-        $agent_time_color=$activemenu2_color;
-        $agent_time_class='rounded-menu2';
+        $agent_time_color=$activemenu3_color;
+        $agent_time_class='rounded-menu3';
     } else {
-        $agent_time_color=$inactivemenu2_color;
-        $agent_time_class='rounded-menu2';
+        $agent_time_color=$inactivemenu3_color;
+        $agent_time_class='rounded-menu3';
     }
     if ($ADD == 8) {
-        $agent_callbk_color=$activemenu2_color;
-        $agent_callbk_class='rounded-menu2select';
+        $agent_callbk_color=$activemenu3_color;
+        $agent_callbk_class='rounded-menu3select';
     } else {
-        $agent_callbk_color=$inactivemenu2_color;
-        $agent_callbk_class='rounded-menu2';
+        $agent_callbk_color=$inactivemenu3_color;
+        $agent_callbk_class='rounded-menu3';
     }
     if (OSDpreg_match('/^(2A|3|4|4A|4B)$/',$ADD) and OSDstrlen($user) > 0) {
         $agent_modify_color=$activemenu3_color;
@@ -385,30 +385,9 @@ if (OSDstrlen($users_hh) > 1) {
     } else {
         echo "        <td bgcolor=$agent_lead_color>&nbsp;</td>\n";
     }
-    if ($user != "" and OSDpreg_match('/^(550|551|660|661)$/',$ADD)) {
-        if ($LOG['view_agent_stats']) {
-            echo "        <td class=$agent_stats_class align=center bgcolor=$agent_stats_color><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$user\"> Stats </a></span></td>";
-        } else {
-            echo "<td bgcolor=$users_color>&nbsp;</td>";
-        }
-        if ($LOG['view_agent_status']) {
-            echo "        <td class=$agent_status_class align=center bgcolor=$agent_status_color><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$user\"> Status </a></span></td>";
-        } else {
-            echo "<td bgcolor=$users_color>&nbsp;</td>";
-        }
-        if ($LOG['view_agent_timesheet']) {
-            echo "        <td class=$agent_time_class align=center bgcolor=$agent_time_color><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=999999&SUB=20&agent=$user\"> Time </a></span></td>";
-        } else {
-            echo "<td bgcolor=$users_color>&nbsp;</td>";
-        }
-        echo "        <td class=$agent_callbk_class align=center bgcolor=$agent_callbk_color><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=8&user=$user\"> Callbacks </a></span></td> \n";
-        echo "        <td bgcolor=$bgmenu_color $users_color1 colspan=1>&nbsp;</td>";
+    echo "        <td bgcolor=$inactivemenu2_color class=rounded-menu2 width=200>&nbsp;</td>";
+    echo "        <td bgcolor=$bgmenu_color width=5>&nbsp;</td>";
 
-    } else {
-        echo "        <td bgcolor=$inactivemenu2_color class='rounded-menu2' colspan=2 width=100>&nbsp;</td>";
-    }
-    echo "        <td bgcolor=$bgmenu_color $users_color1 width=5>&nbsp;</td>";
-    echo "  </tr>\n";
     if ((OSDpreg_match('/^(2A|3|4|4A|4B|5)$/',$ADD)) and OSDstrlen($user) > 0) {
         echo "      <tr>";
         echo "        <td colspan=$settings_menucols2>";
@@ -418,12 +397,32 @@ if (OSDstrlen($users_hh) > 1) {
         if ($LOG['delete_users'] > 0) {
             echo "              <td align=center bgcolor=$agent_delete_color class=$agent_delete_class width=175><span class=\"font2 alert\"><a href=\"$PHP_SELF?ADD=5&user=$user\"> Delete Agent </a></span></td>";
         }
-        echo "              <td bgcolor=$inactivemenu3_color class='rounded-menu3'>&nbsp;</td>";
+        if ((!OSDpreg_match('/^(550|551|660|661)$/',$ADD)) and OSDstrlen($user) > 0) {
+            if ($LOG['view_agent_stats']) {
+                echo "             <td class=$agent_stats_class align=center bgcolor=$agent_stats_color><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$user\"> Stats </a></span></td>";
+            } else {
+                echo "             <td bgcolor=$users_color>&nbsp;</td>";
+            }
+            if ($LOG['view_agent_status']) {
+                echo "             <td class=$agent_status_class align=center bgcolor=$agent_status_color><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$user\"> Status </a></span></td>";
+            } else {
+                echo "             <td bgcolor=$users_color>&nbsp;</td>";
+            }
+            if ($LOG['view_agent_timesheet']) {
+                echo "            <td class=$agent_time_class align=center bgcolor=$agent_time_color><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=999999&SUB=20&agent=$user\"> Time </a></span></td>";
+            } else {
+                echo "            <td bgcolor=$users_color>&nbsp;</td>";
+            }
+            echo "            <td class=$agent_callbk_class align=center bgcolor=$agent_callbk_color><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=8&user=$user\"> Callbacks </a></span></td> \n";
+        } else {
+            echo "        <td bgcolor=$inactivemenu2_color class='rounded-menu2' colspan=2 width=100>&nbsp;</td>";
+        }
+        echo "              <td bgcolor=$inactivemenu3_color class=rounded-menu3 width=250>&nbsp;</td>";
         echo "            </tr>";
         echo "          </table>";
         echo "        </td>";
-        echo "      </tr>";
     }
+    echo "      </tr>";
     echo "    </table>";
     echo "  </td>";
     echo "</tr>";
@@ -450,59 +449,59 @@ if (OSDstrlen($campaigns_hh) > 1) {
     if ($sh=='fields') $sh='list';
 
     if ($sh=='list') {
-        $list_sh="bgcolor=\"$subcamp_color\""; 
+        $list_sh="bgcolor=\"$subcamp_color\"";
         $list_fc=$menu_h2_color;
     } else {
-        $list_sh=''; 
+        $list_sh='';
         $list_fc=$menu_h2_color;
     }
     if ($sh=='status') {
-        $status_sh="bgcolor=\"$subcamp_color\""; 
+        $status_sh="bgcolor=\"$subcamp_color\"";
         $status_fc="fgnavy";
     } else {
-        $status_sh=''; 
+        $status_sh='';
         $status_fc=$menu_h2_color;
     }
     if ($sh=='hotkey') {
-        $hotkey_sh="bgcolor=\"$subcamp_color\""; 
+        $hotkey_sh="bgcolor=\"$subcamp_color\"";
         $hotkey_fc="fgnavy";
     } else {
-        $hotkey_sh=''; 
+        $hotkey_sh='';
         $hotkey_fc=$menu_h2_color;
     }
     if ($sh=='recycle') {
-        $recycle_sh="bgcolor=\"$subcamp_color\""; 
+        $recycle_sh="bgcolor=\"$subcamp_color\"";
         $recycle_fc="fgnavy";
     } else {
-        $recycle_sh=''; 
+        $recycle_sh='';
         $recycle_fc=$menu_h2_color;
     }
     if ($sh=='autoalt') {
-        $autoalt_sh="bgcolor=\"$subcamp_color\""; 
+        $autoalt_sh="bgcolor=\"$subcamp_color\"";
         $autoalt_fc="fgnavy";
     } else {
-        $autoalt_sh=''; 
+        $autoalt_sh='';
         $autoalt_fc=$menu_h2_color;
     }
     if ($sh=='pause') {
-        $pause_sh="bgcolor=\"$subcamp_color\""; 
+        $pause_sh="bgcolor=\"$subcamp_color\"";
         $pause_fc="fgnavy";
     } else {
-        $pause_sh=''; 
+        $pause_sh='';
         $pause_fc=$menu_h2_color;
     }
     if ($sh=='fields') {
-        $fields_sh="bgcolor=\"$subcamp_color\""; 
+        $fields_sh="bgcolor=\"$subcamp_color\"";
         $fields_fc="fgnavy";
     } else {
-        $fields_sh=''; 
+        $fields_sh='';
         $fields_fc=$menu_h2_color;
     }
     if ($sh=='listmix') {
-        $listmix_sh="bgcolor=\"$subcamp_color\""; 
+        $listmix_sh="bgcolor=\"$subcamp_color\"";
         $listmix_fc="fgnavy";
     } else {
-        $listmix_sh=''; 
+        $listmix_sh='';
         $listmix_fc=$menu_h2_color;
     }
 
@@ -537,19 +536,32 @@ if (OSDstrlen($campaigns_hh) > 1) {
             $camp_real_class='rounded-menu2';
         }
         if (OSDpreg_match('/^(71|1form|2form|4form|6form)$/',$ADD)) {
-            $camp_addfc_color=$activemenu2_color;
-            $camp_addfc_class='rounded-menu2select';
+            $camp_addform_color=$activemenu2_color;
+            $camp_addform_class='rounded-menu2select';
+            $camp_modifyform_color=$activemenu2_color;
+            $camp_modifyform_class='rounded-menu2select';
+            $camp_deleteform_color=$inactivemenu3_color;
+            $camp_deleteform_class='rounded-menu3';
         } else {
             if (OSDpreg_match('/^(72|2fields|3fields|4fields|6fields)$/',$ADD)) {
-                $camp_modifyaddfc_color=$activemenu2_color;
-                $camp_modifyaddfc_class='rounded-menu2select';
-                $camp_addfc_color=$activemenu2_color;
-                $camp_addfc_class='rounded-menu2select';
+                $camp_modifyform_color=$activemenu2_color;
+                $camp_modifyform_class='rounded-menu2select';
+                $camp_addform_color=$activemenu2_color;
+                $camp_addform_class='rounded-menu2select';
+                $camp_deleteform_color=$inactivemenu3_color;
+                $camp_deleteform_class='rounded-menu3';
             } else {
-                $camp_modifyaddfc_color=$inactivemenu2_color;
-                $camp_modifyaddfc_class='rounded-menu2';
-                $camp_addfc_color=$inactivemenu2_color;
-                $camp_addfc_class='rounded-menu2';
+                $camp_modifyform_color=$inactivemenu2_color;
+                $camp_modifyform_class='rounded-menu2';
+                $camp_addform_color=$inactivemenu2_color;
+                $camp_addform_class='rounded-menu2';
+                if (OSDpreg_match('/^(5form)$/',$ADD)) {
+                    $camp_deleteform_color=$activemenu3_color;
+                    $camp_deleteform_class='rounded-menu3select';
+                } else {
+                    $camp_deleteform_color=$inactivemenu3_color;
+                    $camp_deleteform_class='rounded-menu3';
+                }
             }
         }
         $settings_menucols3=$settings_menucols1 - 5;    // = 5
@@ -565,7 +577,7 @@ if (OSDstrlen($campaigns_hh) > 1) {
             echo "    <td class=$camp_real_class align=center bgcolor=$camp_real_color colspan=2><span class=\"font2 $fgfont_real\"><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=13\"> Real-Time Campaigns Summary </a></span></td>\n";
         }
 
-        echo "    <td class=$camp_addfc_class align=center bgcolor=$camp_addfc_color colspan=1><span class=\"font2 $fgfont_fc\"><a href=\"$PHP_SELF?ADD=71\"> Show Additional Fields </a></span></td>\n";
+        echo "    <td class=$camp_addform_class align=center bgcolor=$camp_addform_color colspan=1><span class=\"font2 $fgfont_fc\"><a href=\"$PHP_SELF?ADD=71\"> Show Additional Forms </a></span></td>\n";
         echo "    <td class='narrow-space' bgcolor=$bgmenu_color width=10>&nbsp;</td>";
         echo "  </tr>\n";
         if (OSDpreg_match('/^(72|2fields|3fields|4fields|6fields|71|2form|4form)$/',$ADD) and (OSDstrlen($id) > 0 or OSDstrlen($form_id) > 0)) {
@@ -574,7 +586,8 @@ if (OSDstrlen($campaigns_hh) > 1) {
             echo "          <table cellpadding=0 cellspacing=0 width=100% border=0>";
             echo "            <tr class=no-ul height=25>";
             if ($LOG['modify_campaigns'] > 0) {
-                echo "              <td align=center bgcolor=$agent_delete_color class=$agent_delete_class width=175><span class=\"font2 alert\"><a href=\"$PHP_SELF?ADD=6form&form_id=".($id?$id:$form_id)."\"> Delete Form </a></span></td>";
+                echo "              <td align=center bgcolor=$camp_modifyform_color class=$camp_modifyform_class width=175><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=71&id=".($id?$id:$form_id)."\"> Modify Form </a></span></td>";
+                echo "              <td align=center bgcolor=$camp_deleteform_color class=$camp_deleteform_class width=175><span class=\"font2 alert\"><a href=\"$PHP_SELF?ADD=6form&form_id=".($id?$id:$form_id)."\"> Delete Form </a></span></td>";
             }
             echo "              <td bgcolor=$inactivemenu3_color class='rounded-menu3'>&nbsp;</td>";
             echo "            </tr>";
@@ -674,7 +687,7 @@ if (OSDstrlen($campaigns_hh) > 1) {
             }
             echo "          <td class=$camp_real_class align=center bgcolor=$camp_real_color>";
             if ($LOG['view_agent_realtime']) {
-                echo "<span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=14&group=$campaign_id&campaign_id=$campaign_id\">Real-Time</a></span>";
+                echo "              <span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=14&group=$campaign_id&campaign_id=$campaign_id\">Real-Time</a></span>";
             }
             echo "</td>\n";
             if ($cauth) {
@@ -737,36 +750,36 @@ if (OSDstrlen($lists_hh) > 1) {
     }
     if (OSDpreg_match('/^(211|311|411)$/',$ADD)) {
         $list_modify_color=$activemenu3_color;
-        $list_modify_class='rounded-menu2select';
+        $list_modify_class='rounded-menu3select';
     } else {
         $list_modify_color=$inactivemenu3_color;
-        $list_modify_class='rounded-menu2';
+        $list_modify_class='rounded-menu3';
     }
     if ($ADD == 811) {
         $list_showholds_color=$activemenu3_color;
-        $list_showholds_class='rounded-menu2select';
+        $list_showholds_class='rounded-menu3select';
     } else {
         $list_showholds_color=$inactivemenu3_color;
-        $list_showholds_class='rounded-menu2';
+        $list_showholds_class='rounded-menu3';
     }
     if ($ADD == 511 and $SUB!=1 and OSDstrlen($list_id) >0) {
         $list_delete_color=$activemenu3_color;
-        $list_delete_class='rounded-menu2select';
+        $list_delete_class='rounded-menu3select';
     } else {
         $list_delete_color=$inactivemenu3_color;
-        $list_delete_class='rounded-menu2';
+        $list_delete_class='rounded-menu3';
     }
     if ($ADD == 511 and $SUB==1 and OSDstrlen($list_id) >0) {
         $list_deleteall_color=$activemenu3_color;
-        $list_deleteall_class='rounded-menu2select';
+        $list_deleteall_class='rounded-menu3select';
     } else {
         $list_deleteall_color=$inactivemenu3_color;
-        $list_deleteall_class='rounded-menu2';
+        $list_deleteall_class='rounded-menu3';
     }
     echo "<tr>";
     echo "  <td colspan=12 $settings_menucols2>";
     echo "    <table border=0 cellpadding=0 cellspacing=0 width=100%>";
-    echo "  <tr class='no-ul' bgcolor=$lists_color>\n";
+    echo "      <tr class='no-ul' bgcolor=$lists_color>\n";
     echo "        <td height=20 align=left bgcolor=$bgmenu_color width=5>\n";
     echo "        <td class=$list_show_class align=center bgcolor=$list_show_color><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=100\"> Show Lists </a></span></td>";
     echo "        <td class=$list_add_class align=center bgcolor=$list_add_color><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=111\"> Add A New List </a></span></td>";
@@ -881,7 +894,7 @@ if (OSDstrlen($scripts_hh) > 1) {
         echo "        <td bgcolor=$inactivemenu2_color class='rounded-menu2' width=300>&nbsp;</td>";
 
     } else {
-        echo "        <td bgcolor=$inactivemenu_color class='rounded-menu2' colspan=3>&nbsp;</td>";
+        echo "        <td bgcolor=$inactivemenu2_color class='rounded-menu2' colspan=3>&nbsp;</td>";
     }
     echo "    <td bgcolor=$bgmenu_color colspan=4 width=5>&nbsp;</td>";
     echo "  </tr>\n";
@@ -1177,17 +1190,17 @@ if (OSDstrlen($remoteagent_hh) > 1) {
     }
     if (OSDpreg_match('/^(21111|31111|41111)$/',$ADD) and (OSDstrlen($remote_agent_id) > 0 or OSDstrlen($user_start) > 0)) {
         $extagents_modify_color=$activemenu3_color;
-        $extagents_modify_class='rounded-menu2select';
+        $extagents_modify_class='rounded-menu3select';
     } else {
         $extagents_modify_color=$inactivemenu3_color;
-        $extagents_modify_class='rounded-menu2';
+        $extagents_modify_class='rounded-menu3';
     }
     if ($ADD==51111 and OSDstrlen($remote_agent_id)>0) {
         $extagents_delete_color=$activemenu3_color;
-        $extagents_delete_class='rounded-menu2select';
+        $extagents_delete_class='rounded-menu3select';
     } else {
         $extagents_delete_color=$inactivemenu3_color;
-        $extagents_delete_class='rounded-menu2';
+        $extagents_delete_class='rounded-menu3';
     }
     echo "<tr>";
     echo "  <td colspan=$settings_menucols2>";
@@ -1351,7 +1364,7 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
     $amenu .= "<tr><td height=20 align=left Xbgcolor=$bgmenu_color colspan=$settings_menucols2>";
     $amenu .= "<table border=0 class=no-ul cellpadding=0 cellspacing=0 width=100%>";
     $amenu .= "  <tr>";
-    $amenu .= "    <td Xbgcolor=$bgmenu_color width=10>&nbsp;</td>";
+    $amenu .= "    <td bgcolor=$bgmenu_color width=10>&nbsp;</td>";
 
     if ($LOG['multicomp_user'] == 0) {
         $amenu .= "    <td height=20 align=center bgcolor=$ssettings_color class=$ssettings_class colspan=1><span class=\"font2 $settings_fc\"><a href=\"$PHP_SELF?ADD=311111111111111\"> System Settings </a></span></td>\n";
@@ -1527,17 +1540,17 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
         }
         if (OSDpreg_match('/^(211111111111|311111111111|411111111111|221111111111|421111111111|621111111111)$/',$ADD) and (OSDstrlen($server_ip) > 0 or OSDstrlen($server_id) > 0)) {
             $server_modify_color=$activemenu4_color;
-            $server_modify_class='rounded-menu3select';
+            $server_modify_class='rounded-menu4select';
         } else {
             $server_modify_color=$inactivemenu4_color;
-            $server_modify_class='rounded-menu3';
+            $server_modify_class='rounded-menu4';
         }
         if ($ADD==511111111111 and OSDstrlen($server_id) >0) {
             $server_delete_color=$activemenu4_color;
-            $server_delete_class='rounded-menu3select';
+            $server_delete_class='rounded-menu4select';
         } else {
             $server_delete_color=$inactivemenu4_color;
-            $server_delete_class='rounded-menu3';
+            $server_delete_class='rounded-menu4';
         }
         echo "  <tr class='no-ul'>\n";
         echo "    <td height=18 align=left colspan=$settings_menucols2>\n";
@@ -1595,45 +1608,52 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
         }
         if ($ADD=='1carrier' and $SUB==4) {
             $carriers_adddid_color=$activemenu4_color;
-            $carriers_adddid_class='rounded-menu3select';
+            $carriers_adddid_class='rounded-menu4select';
         } else {
             $carriers_adddid_color=$inactivemenu4_color;
-            $carriers_adddid_class='rounded-menu3';
+            $carriers_adddid_class='rounded-menu4';
         }
-        if (OSDpreg_match('/^(2carrier|3carrier|4carrier)$/',$ADD) and ($SUB==2 or $SUB==3)) {
+        if (OSDpreg_match('/^(2carrier|3carrier|4carrier)$/',$ADD) and ($SUB==2)) {
             $carriers_modify_color=$activemenu4_color;
-            $carriers_modify_class='rounded-menu3select';
+            $carriers_modify_class='rounded-menu4select';
         } else {
             $carriers_modify_color=$inactivemenu4_color;
-            $carriers_modify_class='rounded-menu3';
+            $carriers_modify_class='rounded-menu4';
+        }
+        if (OSDpreg_match('/^(2carrier|3carrier|4carrier)$/',$ADD) and $SUB==3) {
+            $carriers_modifyserver_color=$activemenu4_color;
+            $carriers_modifyserver_class='rounded-menu4select';
+        } else {
+            $carriers_modifyserver_color=$inactivemenu4_color;
+            $carriers_modifyserver_class='rounded-menu4';
         }
         if (OSDpreg_match('/^(2carrier|3carrier|4carrier)$/',$ADD) and $SUB==4) {
             $carriers_modifydid_color=$activemenu4_color;
-            $carriers_modifydid_class='rounded-menu3select';
+            $carriers_modifydid_class='rounded-menu4select';
         } else {
             $carriers_modifydid_color=$inactivemenu4_color;
-            $carriers_modifydid_class='rounded-menu3';
+            $carriers_modifydid_class='rounded-menu4';
         }
         if ($ADD=='5carrier' and $SUB==2) {
             $carriers_delete_color=$activemenu4_color;
-            $carriers_delete_class='rounded-menu3select';
+            $carriers_delete_class='rounded-menu4select';
         } else {
             $carriers_delete_color=$inactivemenu4_color;
-            $carriers_delete_class='rounded-menu3';
+            $carriers_delete_class='rounded-menu4';
         }
         if ($ADD=='5carrier' and $SUB==4) {
             $carriers_deletedid_color=$activemenu4_color;
-            $carriers_deletedid_class='rounded-menu3select';
+            $carriers_deletedid_class='rounded-menu4select';
         } else {
             $carriers_deletedid_color=$inactivemenu4_color;
-            $carriers_deletedid_class='rounded-menu3';
+            $carriers_deletedid_class='rounded-menu4';
         }
-        if (($ADD=='3carrier' or $ADD=='5carrier') and $SUB==4) {
+        if (($ADD=='3carrier' or $ADD=='5carrier') and ($SUB==3 or $SUB==4)) {
             $carriers_return_color=$inactivemenu4_color;
-            $carriers_return_class='rounded-menu3';
+            $carriers_return_class='rounded-menu4';
         } else {
             $carriers_return_color=$inactivemenu4_color;
-            $carriers_return_class='rounded-menu3';
+            $carriers_return_class='rounded-menu4';
         }
         echo "  <tr class='no-ul'>\n";
         echo "    <td height=18 align=left colspan=$settings_menucols2>\n";
@@ -1659,6 +1679,9 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
                 }
                 $active_colspan++;
                 echo "              <td align=center bgcolor=$carriers_adddid_color class=$carriers_adddid_class width=145><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=1carrier&SUB=4&carrier_id=$carrier_id\"> Add New DID </a></span></td>\n";
+            } elseif ($SUB==3) {
+                $active_colspan++;
+                echo "              <td align=center bgcolor=$carriers_modifyserver_color class=$carriers_modifyserver_class width=170><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=3carrier&SUB=3&carrier_server_ip=$carrier_server_ip&carrier_id=$carrier_id\"> Modify Carrier Option </a></span></td>\n";
             } elseif ($SUB==4) {
                 if ($ADD=='1carrier') {
                     $active_colspan++;
@@ -1671,6 +1694,10 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
                         echo "              <td align=center bgcolor=$carriers_deletedid_color class=$carriers_deletedid_class width=150><span class=\"font2 alert\"><a href=\"$PHP_SELF?ADD=5carrier&SUB=4&did_id=$did_id&did=$did&carrier_id=$carrier_id\" class=alert> Delete DID </a></span></td>\n";
                     }
                 }
+            }
+            if ($SUB==3 or $SUB==4) {
+                $active_colspan++;
+                echo "                  <td align=center bgcolor=$carriers_return_color class=$carriers_return_class width=150><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=3carrier&SUB=2&carrier_id=$carrier_id\">Return To Carrier</a></span></td>";
             }
             echo "              <td bgcolor=$inactivemenu4_color class='rounded-menu3' colspan=".(7-$active_colspan).">&nbsp;</td>";
             echo "            </tr>";
@@ -1703,22 +1730,22 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
         }
         if (OSDpreg_match('/^(21111111111|31111111111|41111111111)$/',$ADD) and OSDstrlen($extension) > 0) {
             $phones_modify_color=$activemenu4_color;
-            $phones_modify_class='rounded-menu3select';
+            $phones_modify_class='rounded-menu4select';
         } else {
             $phones_modify_color=$inactivemenu4_color;
-            $phones_modify_class='rounded-menu3';
+            $phones_modify_class='rounded-menu4';
         }
         if ($ADD==51111111111 and OSDstrlen($extension) > 0) {
             $phones_delete_color=$activemenu4_color;
-            $phones_delete_class='rounded-menu3select';
+            $phones_delete_class='rounded-menu4select';
         } else {
             $phones_delete_color=$inactivemenu4_color;
-            $phones_delete_class='rounded-menu3';
+            $phones_delete_class='rounded-menu4';
         }
         $phones_stats_color=$inactivemenu4_color;
-        $phones_stats_class='rounded-menu3';
+        $phones_stats_class='rounded-menu4';
         $phones_vmail_color=$inactivemenu4_color;
-        $phones_vmail_class='rounded-menu3';
+        $phones_vmail_class='rounded-menu4';
         echo "  <tr class='no-ul'>\n";
         echo "    <td height=18 align=left colspan=$settings_menucols2>\n";
         echo "      <table width=100% cellpadding=0 cellspacing=0 border=0>\n";
@@ -1784,31 +1811,31 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
         }
         if (OSDpreg_match('/^(2111111111111|3111111111111|4111111111111)$/',$ADD)) {
             $conference_modify_color=$activemenu4_color;
-            $conference_modify_class='rounded-menu3select';
+            $conference_modify_class='rounded-menu4select';
         } else {
             $conference_modify_color=$inactivemenu4_color;
-            $conference_modify_class='rounded-menu3';
+            $conference_modify_class='rounded-menu4';
         }
         if (OSDpreg_match('/^(21111111111111|31111111111111|41111111111111)$/',$ADD)) {
             $conference_modifyosd_color=$activemenu4_color;
-            $conference_modifyosd_class='rounded-menu3select';
+            $conference_modifyosd_class='rounded-menu4select';
         } else {
             $conference_modifyosd_color=$inactivemenu4_color;
-            $conference_modifyosd_class='rounded-menu3';
+            $conference_modifyosd_class='rounded-menu4';
         }
         if ($ADD==5111111111111) {
             $conference_delete_color=$activemenu4_color;
-            $conference_delete_class='rounded-menu3select';
+            $conference_delete_class='rounded-menu4select';
         } else {
             $conference_delete_color=$inactivemenu4_color;
-            $conference_delete_class='rounded-menu3';
+            $conference_delete_class='rounded-menu4';
         }
         if ($ADD==51111111111111) {
             $conference_deleteosd_color=$activemenu4_color;
-            $conference_deleteosd_class='rounded-menu3select';
+            $conference_deleteosd_class='rounded-menu4select';
         } else {
             $conference_deleteosd_color=$inactivemenu4_color;
-            $conference_deleteosd_class='rounded-menu3';
+            $conference_deleteosd_class='rounded-menu4';
         }
         echo "  <tr class='no-ul'>\n";
         echo "    <td height=18 align=left colspan=$settings_menucols2>\n";
@@ -1892,31 +1919,31 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
         }
         if (OSDpreg_match('/^(211111111|311111111|411111111|321111111)$/',$ADD) and OSDstrlen($call_time_id) > 0) {
             $times_modify_color=$activemenu4_color;
-            $times_modify_class='rounded-menu3select';
+            $times_modify_class='rounded-menu4select';
         } else {
             $times_modify_color=$inactivemenu4_color;
-            $times_modify_class='rounded-menu3';
+            $times_modify_class='rounded-menu4';
         }
         if ($ADD==511111111 and OSDstrlen($call_time_id) > 0) {
             $times_delete_color=$activemenu4_color;
-            $times_delete_class='rounded-menu3select';
+            $times_delete_class='rounded-menu4select';
         } else {
             $times_delete_color=$inactivemenu4_color;
-            $times_delete_class='rounded-menu3';
+            $times_delete_class='rounded-menu4';
         }
         if (OSDpreg_match('/^(2111111111|3111111111|4111111111)$/',$ADD) and OSDstrlen($call_time_id) > 0) {
             $times_modifystate_color=$activemenu4_color;
-            $times_modifystate_class='rounded-menu3select';
+            $times_modifystate_class='rounded-menu4select';
         } else {
             $times_modifystate_color=$inactivemenu4_color;
-            $times_modifystate_class='rounded-menu3';
+            $times_modifystate_class='rounded-menu4';
         }
         if ($ADD==5111111111 and OSDstrlen($call_time_id) > 0) {
             $times_deletestate_color=$activemenu4_color;
-            $times_deletestate_class='rounded-menu3select';
+            $times_deletestate_class='rounded-menu4select';
         } else {
             $times_deletestate_color=$inactivemenu4_color;
-            $times_deletestate_class='rounded-menu3';
+            $times_deletestate_class='rounded-menu4';
         }
         echo "  <tr class='no-ul'>\n";
         echo "    <td height=18 align=left colspan=$settings_menucols2>\n";
@@ -1999,31 +2026,31 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
         }
         if (OSDpreg_match('/^(21media|31media|41media)$/',$ADD) and OSDstrlen($media_id) > 0) {
             $media_modify_color=$activemenu4_color;
-            $media_modify_class='rounded-menu3select';
+            $media_modify_class='rounded-menu4select';
         } else {
             $media_modify_color=$inactivemenu4_color;
-            $media_modify_class='rounded-menu3';
+            $media_modify_class='rounded-menu4';
         }
         if ($ADD=='51media' and OSDstrlen($media_id) > 0) {
             $media_delete_color=$activemenu4_color;
-            $media_delete_class='rounded-menu3select';
+            $media_delete_class='rounded-menu4select';
         } else {
             $media_delete_color=$inactivemenu4_color;
-            $media_delete_class='rounded-menu3';
+            $media_delete_class='rounded-menu4';
         }
         if (OSDpreg_match('/^(21tts|31tts|41tts)$/',$ADD) and OSDstrlen($tts_id) > 0) {
             $media_modifytts_color=$activemenu4_color;
-            $media_modifytts_class='rounded-menu3select';
+            $media_modifytts_class='rounded-menu4select';
         } else {
             $media_modifytts_color=$inactivemenu4_color;
-            $media_modifytts_class='rounded-menu3';
+            $media_modifytts_class='rounded-menu4';
         }
         if ($ADD=='51tts' and OSDstrlen($tts_id) > 0) {
             $media_deletetts_color=$activemenu4_color;
-            $media_deletetts_class='rounded-menu3select';
+            $media_deletetts_class='rounded-menu4select';
         } else {
             $media_deletetts_color=$inactivemenu4_color;
-            $media_deletetts_class='rounded-menu3';
+            $media_deletetts_class='rounded-menu4';
         }
         echo "  <tr class='no-ul'>";
         echo "    <td class='narrow-space' bgcolor=$admin_color></td>";
@@ -2077,17 +2104,17 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
 ### Statuses Sub-Menu.
     if ($status_sh > 0) { 
         if (OSDpreg_match('/^(221111111111111|321111111111111|421111111111111)$/',$ADD)) {
-            $status_show_color=$activemenu2_color;
+            $status_show_color=$activemenu3_color;
             $status_show_class='rounded-menu3select';
         } else {
-            $status_show_color=$inactivemenu2_color;
+            $status_show_color=$inactivemenu3_color;
             $status_show_class='rounded-menu3';
         }
         if (OSDpreg_match('/^(231111111111111|331111111111111|431111111111111)$/',$ADD)) {
-            $status_showcat_color=$activemenu2_color;
+            $status_showcat_color=$activemenu3_color;
             $status_showcat_class='rounded-menu3select';
         } else {
-            $status_showcat_color=$inactivemenu2_color;
+            $status_showcat_color=$inactivemenu3_color;
             $status_showcat_class='rounded-menu3';
         }
         echo "  <tr class='no-ul'>";

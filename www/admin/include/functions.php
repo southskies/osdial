@@ -1507,7 +1507,7 @@ function get_status_category_ucwords($catid) {
 
 function jump_section ($section_level) {
 	echo "<span class=jump>Links: </span>";
-	echo "<a href=#basic class=jump>Basic</a>&nbsp;"; 
+	echo "<a href=#basic class=jump>Control</a>&nbsp;"; 
 	echo "<a href=#status class=jump>Status</a>&nbsp;";  
 	echo "<a href=#method class=jump>Method</a>&nbsp;";  
 	echo "<a href=#options class=jump>Options</a>&nbsp;";  

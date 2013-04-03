@@ -31,17 +31,18 @@ $header_selected_bold='<b>';
 $header_nonselected_bold='';
 $default_text = 	'#009'; // #000080
 
-$maintable_color = 		'#A0B9DA'; // #DDDDDD #E9E8D9 #A0B9DA
+// MasterColors // #DDDDDD #E9E8D9 #A0B9DA #7BA8BC #C9CC89 #CCBCAC #CCA3A9 #D6D6D6
+$maintable_color = 		'#A0B9DA'; 
 $activemenu_color=		$maintable_color;
 $activemenu2_color=		$maintable_color; //#E0DFD1
 $activemenu3_color=		$maintable_color; //#E0DFD1
 $activemenu4_color=		$maintable_color; //#E0DFD1
-$inactivemenu_color=	'#F0F0F3'; //D9D9D9
-$inactivemenu2_color=	'#C0C0C0'; //D9D8CA
-$inactivemenu3_color=	'#C9C9C9'; //D9D8CA
-$inactivemenu4_color=	'#CCCCCC'; //D9D8CA
-$deletemenu_color='#CDCCBF';
-$fgdelete_color='#B70F03';
+$inactivemenu_color=	'#F0F0F3'; //#D9D9D9
+$inactivemenu2_color=	'#C0C0C0'; //#C0C0C0
+$inactivemenu3_color=	'#C9C9C9'; //#D9D8CA
+$inactivemenu4_color=	'#CCCCCC'; //#D9D8CA
+$deletemenu_color=		'#CDCCBF'; 
+$fgdelete_color=		'#B70F03';
 $bgmenu_color=			'#E2ECEE'; //E2ECEE
 
 $top_menu_color =   $maintable_color; //'#D2E8EE'; // C5DAB0

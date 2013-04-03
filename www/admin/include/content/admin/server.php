@@ -29,7 +29,7 @@ if ($ADD==111111111111) {
     if ($LOG['modify_servers']==1) {
         echo "<center><br><font color=$default_text size=+1>ADD A NEW SERVER</font><form action=$PHP_SELF method=POST><br><br>\n";
         echo "<input type=hidden name=ADD value=211111111111>\n";
-        echo "<TABLE width=$section_width cellspacing=3>\n";
+        echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Server ID: </td><td align=left><input type=text name=server_id size=10 maxlength=10>".helptag("servers-server_id")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Server Description: </td><td align=left><input type=text name=server_description size=30 maxlength=255>".helptag("servers-server_description")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Server IP Address: </td><td align=left><input type=text name=server_ip size=20 maxlength=15>".helptag("servers-server_ip")."</td></tr>\n";
@@ -356,7 +356,7 @@ if ($ADD==311111111111) {
         echo "<input type=hidden name=ADD value=411111111111>\n";
         echo "<input type=hidden name=old_server_id value=\"$server_id\">\n";
         echo "<input type=hidden name=old_server_ip value=\"$row[2]\">\n";
-        echo "<TABLE width=$section_width cellspacing=3>\n";
+        echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Server ID: </td><td align=left><input type=text name=server_id size=10 maxlength=10 value=\"$row[0]\">".helptag("servers-server_id")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Server Description: </td><td align=left><input type=text name=server_description size=30 maxlength=255 value=\"$row[1]\">".helptag("servers-server_description")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Server IP Address: </td><td align=left><input type=text name=server_ip size=20 maxlength=15 value=\"$row[2]\">".helptag("servers-server_ip")."</td></tr>\n";
@@ -718,7 +718,7 @@ if ($ADD=="399111111111111") {
 
         echo "<center><br><font color=$default_text size=+1>MODIFY ARCHIVE SERVER SETTINGS</font><br><form action=$PHP_SELF method=POST><br><br>\n";
         echo "<input type=hidden name=ADD value=499111111111111>\n";
-        echo "<center><TABLE width=$section_width cellspacing=3>\n";
+        echo "<center><TABLE class=shadedtable width=$section_width cellspacing=3>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Archive Server Address: </td><td align=left><input type=text name=archive_hostname size=30 maxlength=30 value=\"$archive_hostname\">".helptag("archive-hostname")."</td></tr>\n";
 
         $atmsel = "<option selected>" . $archive_transfer_method . "</option>";
@@ -817,7 +817,7 @@ if ($ADD=="399911111111111") {
 
         echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY DNC DATABASE SETTINGS</font><br><br /><form action=$PHP_SELF method=POST>\n";
         echo "<input type=hidden name=ADD value=499911111111111>\n";
-        echo "<center><TABLE width=$section_width cellspacing=3>\n";
+        echo "<center><TABLE class=shadedtable width=$section_width cellspacing=3>\n";
 
         echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select name=external_dnc_active><option>Y</option><option>N</option><option selected>$external_dnc_active</option></select>".helptag("external_dnc-active")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>DNC MySQL Address: </td><td align=left><input type=text name=external_dnc_address size=30 maxlength=30 value=\"$external_dnc_address\">".helptag("external_dnc-address")."</td></tr>\n";
@@ -965,7 +965,7 @@ if ($ADD=="399211111111111") {
         echo "<form action=$PHP_SELF method=POST>\n";
         echo "<input type=hidden name=ADD value=399211111111111>\n";
         echo "<input type=hidden name=SUB value=1>\n";
-        echo "<center><table bgcolor=grey class=shadedtable width=$section_width cellspacing=1>\n";
+        echo "<center><table class=shadedtable bgcolor=grey class=shadedtable width=$section_width cellspacing=1>\n";
         echo "  <tr class=tabheader>\n";
         echo "    <td align=center>#</td>\n";
         echo "    <td align=center>NAME</td>\n";
@@ -1034,7 +1034,7 @@ if ($ADD=="399211111111111") {
             # New Server
             echo "<input type=hidden name=ADD value=499211111111111>\n";
             echo "<input type=hidden name=SUB value=$SUB>\n";
-            echo "<center><TABLE width=$section_width cellspacing=1>\n";
+            echo "<center><TABLE class=shadedtable width=$section_width cellspacing=1>\n";
     
             echo "<tr bgcolor=$oddrows><td align=right>Name: </td><td align=left><input type=text name=qc_server_name size=20 maxlength=20 value=\"$qc_server_name\">".helptag("qc_server-name")."</td></tr>\n";
             echo "<tr bgcolor=$oddrows><td align=right>Description: </td><td align=left><input type=text name=qc_server_description size=40 maxlength=100 value=\"$qc_server_description\">".helptag("qc_server-description")."</td></tr>\n";
@@ -1065,7 +1065,7 @@ if ($ADD=="399211111111111") {
         if ($SUB>1) {
             # List QC rules
             echo "<br><font color=$default_text>QC SERVER RULES</font>\n";
-            echo "<center><table cellspacing=1 width=$section_width bgcolor=grey>\n";
+            echo "<center><table class=shadedtable cellspacing=1 width=$section_width bgcolor=grey>\n";
             echo "  <tr class=tabheader>\n";
             echo "    <td align=center>#</td>\n";
             echo "    <td align=center>QUERY</td>\n";

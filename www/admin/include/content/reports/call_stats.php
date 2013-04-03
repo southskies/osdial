@@ -125,7 +125,7 @@ function report_call_stats() {
     $html .= "<table align=center>\n";
     $html .= "  <tr>\n";
     $html .= "    <td>\n";
-    $html .= "      <center><font class=top_header color=$default_text size=4>CALL REPORT</font></center>\n";
+    $html .= "      <center><font class=top_header color=$default_text size=4>CALL REPORT</font></center><br />\n";
 
     if ($time_begin == '') {
         $time_begin = '00:00';
@@ -139,16 +139,16 @@ function report_call_stats() {
     $html .= "      <input type=hidden name=ADD value=\"$ADD\">\n";
     $html .= "      <input type=hidden name=SUB value=\"$SUB\">\n";
     $html .= "      <input type=hidden name=DB value=\"$DB\">\n";
-    $html .= "      <table align=center bgcolor=$oddrows cellspacing=3>\n";
+    $html .= "      <table class=shadedtable align=center bgcolor=$oddrows cellspacing=3>\n";
     $html .= "        <tr>\n";
     $html .= "          <td colspan=3 align=center>\n";
     $html .= "            <font face=\"dejavu sans,verdana,sans-serif\" color=$default_text size=2>\n";
-    if (isset($group[0]) && OSDstrlen($group[0]) > 1) {
-        $html .= "              <a href=\"./admin.php?ADD=34&campaign_id=$group[0]\">MODIFY</a> | \n";
+    if (isset($group[0]) && OSDstrlen($group[0]) > 1 and ($group[0] !='--ALL--')) {
+        $html .= "              <a href=\"./admin.php?ADD=31&campaign_id=$group[0]\">MODIFY</a>\n";
     } else {
-        $html .= "              <a href=\"./admin.php?ADD=10\">CAMPAIGNS</a> | \n";
+        $html .= "              <a href=\"./admin.php?ADD=10\">CAMPAIGNS</a> \n";
     }
-    $html .= "              <a href=\"./admin.php?ADD=999999\">REPORTS</a>\n";
+    
     $html .= "            </font><br><br>\n";
     $html .= "          </td>\n";
     $html .= "        </tr>\n";
@@ -435,7 +435,7 @@ function report_call_stats() {
     $table .= "  <tr><td align=center><font class=top_header2 color=$default_text size=3>CALL REPORT SUMMARY INFORMATION</font></td></tr>\n";
     $table .= "  <tr>\n";
     $table .= "    <td align=center>\n";
-    $table .= "      <table width=400 align=center cellspacing=1 bgcolor=grey>\n";
+    $table .= "      <table class=shadedtable width=400 align=center cellspacing=1 bgcolor=grey>\n";
     $table .= "        <tr class=tabheader>\n";
     $table .= "          <td align=center colspan=2>Report Details</td>\n";
     $table .= "        </tr>\n";
@@ -524,7 +524,7 @@ function report_call_stats() {
     $table .= "  <tr><td align=center><font class=top_header2 color=$default_text size=3>CALL HANGUP REASON STATS</font></td></tr>\n";
     $table .= "  <tr>\n";
     $table .= "    <td align=center>\n";
-    $table .= "      <table width=300 align=center cellspacing=1 bgcolor=grey>\n";
+    $table .= "      <table class=shadedtable width=300 align=center cellspacing=1 bgcolor=grey>\n";
     $table .= "        <tr class=tabheader>\n";
     $table .= "          <td align=center>Hangup Reason</td>\n";
     $table .= "          <td align=center>Calls</td>\n";
@@ -601,7 +601,7 @@ function report_call_stats() {
     $table .= "  <tr><td align=center><font class=top_header2 color=$default_text size=3>CALL DISPOSITION STATS</font></td></tr>\n";
     $table .= "  <tr>\n";
     $table .= "    <td align=center>\n";
-    $table .= "      <table width=700 align=center cellspacing=1 bgcolor=grey>\n";
+    $table .= "      <table class=shadedtable width=700 align=center cellspacing=1 bgcolor=grey>\n";
     if ($comment_grouping) {
         $plain .= "+------------------------------------------+--------+----------------------+----------------------+------------+----------------------------------+----------+\n";
         $plain .= "|                                          |        |                      |                      |            |      CALL TIME                   |AGENT TIME|\n";
@@ -922,7 +922,7 @@ function report_call_stats() {
     $table .= "  <tr><td align=center><font class=top_header2 color=$default_text size=3>CUSTOM STATUS CATEGORY STATS</font></td></tr>\n";
     $table .= "  <tr>\n";
     $table .= "    <td align=center>\n";
-    $table .= "      <table width=500 align=center cellspacing=1 bgcolor=grey>\n";
+    $table .= "      <table class=shadedtable width=500 align=center cellspacing=1 bgcolor=grey>\n";
     $table .= "        <tr class=tabheader>\n";
     $table .= "          <td align=center>Category</td>\n";
     $table .= "          <td align=center>Description</td>\n";
@@ -1034,7 +1034,7 @@ function report_call_stats() {
         $table .= "  <tr><td align=center><font color=$default_text size=3>CONVERSION RATE BASED ON EXTENDED DATA</font></td></tr>\n";
         $table .= "  <tr>\n";
         $table .= "    <td align=center>\n";
-        $table .= "      <table width=600 align=center cellspacing=1 bgcolor=grey>\n";
+        $table .= "      <table class=shadedtable width=600 align=center cellspacing=1 bgcolor=grey>\n";
         $table .= "        <tr class=tabheader>\n";
         $table .= "          <td align=center>Extended Data</td>\n";
         $table .= "          <td align=center>Contacts</td>\n";
@@ -1147,7 +1147,7 @@ function report_call_stats() {
     $table .= "  <tr><td align=center><font class=top_header2 color=$default_text size=3>AGENT STATS</font></td></tr>\n";
     $table .= "  <tr>\n";
     $table .= "    <td align=center>\n";
-    $table .= "      <table width=600 align=center cellspacing=1 bgcolor=grey>\n";
+    $table .= "      <table class=shadedtable width=600 align=center cellspacing=1 bgcolor=grey>\n";
     $table .= "        <tr class=tabheader>\n";
     $table .= "          <td align=center>Agent</td>\n";
     $table .= "          <td align=center>Calls</td>\n";
@@ -1406,7 +1406,7 @@ function report_call_stats() {
     $table .= "  </tr>\n";
     $table .= "  <tr>\n";
     $table .= "    <td align=center>\n";
-    $table .= "      <table width=600 align=center cellspacing=0 cellpadding=0 style=\"border-spacing:0px 2px;\" bgcolor=grey>\n";
+    $table .= "      <table class=shadedtable width=600 align=center cellspacing=0 cellpadding=0 style=\"border-spacing:0px 2px;\" bgcolor=grey>\n";
     $table .= "        <tr class=tabheader style=\"font-size: 6pt; font-family: monospace;\">\n";
     $table .= "          <td>&nbsp;</td>\n";
     $table .= "          <td align=center>|</td>\n";

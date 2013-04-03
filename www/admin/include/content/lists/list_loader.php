@@ -71,7 +71,7 @@ if ($ADD==122) {
     echo "      <input type=hidden name='leadfile_name' value=\"$leadfile_name\">\n";
 	if (!$OK_to_process and ($file_layout != "custom" or $leadfile_name == "")) {
         if ($phone_code_override == "") $phone_code_override = "1";
-        echo "	        <table align=center width=\"700\" border=0 cellpadding=5 cellspacing=0 bgcolor=$oddrows>\n";
+        echo "	        <table align=center class=shadedtable width=\"700\" border=0 cellpadding=5 cellspacing=0 bgcolor=$oddrows>\n";
         echo "              <tr>\n";
         echo "                  <td align=right width=\"35%\"><B><font face=\"dejavu sans,verdana,sans-serif\" size=2>Load leads from this file:</font></B></td>\n";
         echo "                  <td align=left width=\"65%\"><input type=file name=\"leadfile\" value=\"$leadfile\">".helptag("osdial_list_loader-osdial_list_loader")."</td>\n";
@@ -862,7 +862,7 @@ if ($ADD==122) {
 			echo "<script language='javascript'>\ndocument.forms[0].leadfile.disabled=true;\ndocument.forms[0].submit_file.disabled=true;\ndocument.forms[0].reload_page.disabled=true;\n</script>\n<br>\n";
 			ob_flush();
 			flush();
-			echo "<table border=0 cellspacing=1 width=400 align=center bgcolor=grey>\n";
+			echo "<table border=0 cellspacing=1 class=shadedtable width=400 align=center bgcolor=grey>\n";
 			echo "  <tr class=tabheader>\n";
 			echo "    <td align=center colspan=2>FIELD MAPPINGS</td>\n";
 			echo "  </tr>\n";

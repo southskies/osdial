@@ -30,9 +30,9 @@ if ($ADD==11111111)
 {
 	if ($LOG['modify_filters']==1)
 	{
-	echo "<center><br><font color=$default_text size=+1>ADD NEW FILTER</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>ADD A NEW FILTER</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=21111111>\n";
-	echo "<TABLE width=$section_width cellspacing=3>\n";
+	echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Filter ID: </td><td align=left>";
     if ($LOG['multicomp_admin'] > 0) {
         $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');

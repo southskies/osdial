@@ -175,7 +175,7 @@ function report_lead_performance_list() {
     $html .= "<input type=hidden name=ADD value=$ADD>\n";
     $html .= "<input type=hidden name=SUB value=$SUB>\n";
     $html .= "<input type=hidden name=DB value=$DB>\n";
-    $html .= "<table border=0 bgcolor=grey cellspacing=1>\n";
+    $html .= "<table class=shadedtable border=0 bgcolor=grey cellspacing=1>\n";
     $html .= "  <tr class=tabheader>\n";
     $html .= "    <td>Campaign</td>\n";
     $html .= "    <td>Date Range</td>\n";
@@ -238,7 +238,7 @@ function report_lead_performance_list() {
         $html .= "<form target=\"_new\" action=\"/admin/tocsv.php\">\n";
         $html .= "<input type=hidden name=\"name\" value=\"lpr\">\n";
 
-        $html .= "<table cellspacing=1 cellpadding=1 bgcolor=grey>\n";
+        $html .= "<table class=shadedtable cellspacing=1 cellpadding=1 bgcolor=grey>\n";
         $html .= "  <tr class=tabheader>\n";
         $html .= "    <td><font size=2>&nbsp;</font></td>\n";
         $html .= "    <td align=center><font style=\"font-size:1px;\"><b>&nbsp;</b></font></td>\n";
@@ -276,14 +276,16 @@ function report_lead_performance_list() {
         $html .= "    <td align=center>Average Cost</td>\n";
         $html .= "    <td align=center>Cost Per Sale</td>\n";
         $html .= "    <td align=center><font style=\"font-size:1px;\">&nbsp;</font></td>\n";
-        $html .= "    <td align=center>Leads Entered</td>\n";
-        $html .= "    <td align=center>Contacts</td>\n";
-        $html .= "    <td align=center>Sales</td>\n";
-        $html .= "    <td align=center>Contact<br>Closing%</td>\n";
-        $html .= "    <td align=center>Closing%</td>\n";
-        $html .= "    <td align=center>Total Cost</td>\n";
-        $html .= "    <td align=center>Average Cost</td>\n";
-        $html .= "    <td align=center>Cost Per Sale</td>\n";
+        
+        $html2 .= "    <td align=center>Leads Entered</td>\n";
+        $html2 .= "    <td align=center>Contacts</td>\n";
+        $html2 .= "    <td align=center>Sales</td>\n";
+        $html2 .= "    <td align=center>Contact<br>Closing%</td>\n";
+        $html2 .= "    <td align=center>Closing%</td>\n";
+        $html2 .= "    <td align=center>Total Cost</td>\n";
+        $html2 .= "    <td align=center>Average Cost</td>\n";
+        $html2 .= "    <td align=center>Cost Per Sale</td>\n";
+        
         $html .= "  </tr>\n";
         $head2 .= "|Calls|Contacts|Sales|Contact Closing%|Closing%|Total Cost|Average Cost|Cost Per Sale||Leads Entered|Contacts|Sales|Contact Closing%|Closing%|Total Cost|Average Cost|Cost Per Sale";
         $html .= "<input type=hidden name=\"row" . $CSVrow++ . "\" value=\"" . $head2 . "\">\n";
@@ -382,14 +384,16 @@ function report_lead_performance_list() {
             $html .= "    <td align=right>$avg_cost</td>\n";
             $html .= "    <td align=right>$cost_sale</td>\n";
             $html .= "    <td align=center bgcolor=$menubarcolor><font style=\"font-size:1px;\">&nbsp;</font></td>\n";
-            $html .= "    <td align=right>$newleads</td>\n";
-            $html .= "    <td align=right>$newcontacts</td>\n";
-            $html .= "    <td align=right>$newsales</td>\n";
-            $html .= "    <td align=right>$newcnt_closing_pct</td>\n";
-            $html .= "    <td align=right>$newclosing_pct</td>\n";
-            $html .= "    <td align=right>$newcost</td>\n";
-            $html .= "    <td align=right>$newavg_cost</td>\n";
-            $html .= "    <td align=right>$newcost_sale</td>\n";
+            
+            $html2 .= "    <td align=right>$newleads</td>\n";
+            $html2 .= "    <td align=right>$newcontacts</td>\n";
+            $html2 .= "    <td align=right>$newsales</td>\n";
+            $html2 .= "    <td align=right>$newcnt_closing_pct</td>\n";
+            $html2 .= "    <td align=right>$newclosing_pct</td>\n";
+            $html2 .= "    <td align=right>$newcost</td>\n";
+            $html2 .= "    <td align=right>$newavg_cost</td>\n";
+            $html2 .= "    <td align=right>$newcost_sale</td>\n";
+            
             $html .= "  </tr>\n";
             $line = "$period||$calls|$contacts|$sales|$closing_pct|$cost|$avg_cost|$cost_sale||$newleads|$newcontacts|$newsales|$newclosing_pct|$newcost|$newavg_cost|$newcost_sale";
             $html .= "<input type=hidden name=\"row" . $CSVrow++ . "\" value=\"" . $line . "\">\n";
@@ -440,14 +444,16 @@ function report_lead_performance_list() {
         $html .= "    <td align=right>$TOTavg_cost</td>\n";
         $html .= "    <td align=right>$TOTcost_sale</td>\n";
         $html .= "    <td align=center><font style=\"font-size:1px;\">&nbsp;</font></td>\n";
-        $html .= "    <td align=right>$TOTnewleads</td>\n";
-        $html .= "    <td align=right>$TOTnewcontacts</td>\n";
-        $html .= "    <td align=right>$TOTnewsales</td>\n";
-        $html .= "    <td align=right>$TOTnewcnt_closing_pct</td>\n";
-        $html .= "    <td align=right>$TOTnewclosing_pct</td>\n";
-        $html .= "    <td align=right>$TOTnewcost</td>\n";
-        $html .= "    <td align=right>$TOTnewavg_cost</td>\n";
-        $html .= "    <td align=right>$TOTnewcost_sale</td>\n";
+        
+        $html2 .= "    <td align=right>$TOTnewleads</td>\n";
+        $html2 .= "    <td align=right>$TOTnewcontacts</td>\n";
+        $html2 .= "    <td align=right>$TOTnewsales</td>\n";
+        $html2 .= "    <td align=right>$TOTnewcnt_closing_pct</td>\n";
+        $html2 .= "    <td align=right>$TOTnewclosing_pct</td>\n";
+        $html2 .= "    <td align=right>$TOTnewcost</td>\n";
+        $html2 .= "    <td align=right>$TOTnewavg_cost</td>\n";
+        $html2 .= "    <td align=right>$TOTnewcost_sale</td>\n";
+        
         $html .= "  </tr>\n";
         $html .= "</table>\n";
         $line = "||||||||||||||||";
@@ -455,7 +461,7 @@ function report_lead_performance_list() {
         $line = "TOTAL||$TOTcalls|$TOTcontacts|$TOTsales|$TOTclosing_pct|$TOTcost|$TOTavg_cost|$TOTcost_sale||$TOTnewleads|$TOTnewcontacts|$TOTnewsales|$TOTnewclosing_pct|$TOTnewcost|$TOTnewavg_cost|$TOTnewcost_sale";
         $html .= "<input type=hidden name=\"row" . $CSVrow++ . "\" value=\"" . $line . "\">\n";
         $html .= "<input type=hidden name=\"rows\" value=\"" . $CSVrow . "\">\n";
-        if ($LOG['export_lead_performance_list']) $html .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
+        if ($LOG['export_lead_performance_list']) $html .= "<br /><input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
         $html .= "</form>";
 
         $report_end = date("U");

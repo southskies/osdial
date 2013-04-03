@@ -34,8 +34,8 @@ if ($ADD==1111)
 	{
 	echo "<center><br><font class=top_header color=$default_text size=+1>ADD A NEW INBOUND GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2111>\n";
-	echo "<TABLE width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Group ID: </td><td align=left>";
+	echo "<TABLE border=0 class=shadedtable width=$section_width cellspacing=3>\n";
+	echo "<tr bgcolor=$oddrows><td align=right width=35%>Group ID: </td><td align=left>";
     if ($LOG['multicomp_admin'] > 0) {
         $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
         echo "<select name=company_id>\n";
@@ -86,8 +86,8 @@ if ($ADD==1211)
 	{
 	echo "<center><br><font class=top_header color=$default_text size=+1>COPY INBOUND GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2011>\n";
-	echo "<TABLE width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Group ID: </td><td align=left>";
+	echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
+	echo "<tr bgcolor=$oddrows><td align=right width=35%>Group ID: </td><td align=left>";
     if ($LOG['multicomp_admin'] > 0) {
         $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
         echo "<select name=company_id>\n";
@@ -405,7 +405,7 @@ if ($ADD==3111)
 	echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY AN IN-GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=4111>\n";
 	echo "<input type=hidden name=group_id value=\"$row[0]\">\n";
-	echo "<TABLE width=$section_width cellspacing=3>\n";
+	echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Group ID: </td><td align=left><b>" . mclabel($row[0]) . "</b>".helptag("osdial_inbound_groups-group_id")."</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Group Name: </td><td align=left><input type=text name=group_name size=30 maxlength=30 value=\"$row[1]\">".helptag("osdial_inbound_groups-group_name")."</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Group Color: </td><td align=left bgcolor=\"$row[2]\" id=\"group_color_td\"><input type=text name=group_color size=7 maxlength=7 value=\"$row[2]\">".helptag("osdial_inbound_groups-group_color")."</td></tr>\n";
@@ -537,7 +537,7 @@ if ($ADD==3111)
 	### list of agent rank or skill-level for this inbound group
 	echo "<center>\n";
 	echo "<br><font class=top_header2 color=$default_text size=+1>AGENT RANKS FOR THIS INBOUND GROUP</font<br><br>\n";
-	echo "<table bgcolor=grey width=400 cellspacing=1>\n";
+	echo "<table class=shadedtable bgcolor=grey width=400 cellspacing=1>\n";
 	echo "  <tr class=tabheader>\n";
     echo "    <td align=center>USER</td>\n";
     echo "    <td align=center>FULL NAME</td>\n";
@@ -576,7 +576,7 @@ if ($ADD==3111)
 	echo "</table><br><br>\n";
 
 	echo "<br><font class=top_header2 color=$default_text size=+1>CAMPAIGNS ASSIGNED TO THIS INBOUND GROUP</font<br><br>\n";
-	echo "<table bgcolor=grey width=400 cellspacing=1>\n";
+	echo "<table class=shadedtable bgcolor=grey width=400 cellspacing=1>\n";
 	echo "  <tr class=tabheader>\n";
     echo "    <td align=center>CAMPAIGN_ID</td>\n";
     echo "    <td align=center>NAME</td>\n";
@@ -602,21 +602,18 @@ if ($ADD==3111)
     echo "  <tr class=tabfooter>\n";
     echo "    <td colspan=3></td>\n";
     echo "  </tr>\n";
-	echo "</table><br><br>\n";
+	echo "</table><br>\n";
 
 	#echo "<a href=\"./AST_CLOSERstats.php?group=$group_id\">Click here to see a report for this inbound group</a><BR><BR>\n";
 
-	echo "</center><br><br>\n";
+	echo "</center>\n";
 
-	if ($LOG['delete_ingroups'] > 0)
-		{
-		echo "<br><br><a href=\"$PHP_SELF?ADD=53&campaign_id=$group_id&stage=IN\">EMERGENCY CLEAR AUTO CALLS FOR THIS IN-GROUP</a><BR><BR>\n";
-		echo "<br><br><a href=\"$PHP_SELF?ADD=5111&group_id=$group_id\">DELETE THIS IN-GROUP</a>\n";
-		}
-	}
-	else
-	{
-	echo "<font color=red>You do not have permission to view this page</font>\n";
+// 	if ($LOG['delete_ingroups'] > 0) {
+// 		echo "<br><br><a href=\"$PHP_SELF?ADD=53&campaign_id=$group_id&stage=IN\">EMERGENCY CLEAR AUTO CALLS FOR THIS IN-GROUP</a><BR><BR>\n";
+// 		echo "<br><br><a href=\"$PHP_SELF?ADD=5111&group_id=$group_id\">DELETE THIS IN-GROUP</a>\n";
+// 	}
+	} else {
+		echo "<font color=red>You do not have permission to view this page</font>\n";
 	}
 }
 

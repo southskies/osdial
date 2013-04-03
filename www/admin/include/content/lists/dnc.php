@@ -553,7 +553,7 @@ if ($ADD==121) {
             echo "<center><font class=top_header2 color=$default_text size=3>Search DNC List</font></center>\n";
             echo "<input type=hidden name=ADD value=121>\n";
             echo "<input type=hidden name=SUB value=1>\n";
-		    echo "<table width=500 bgcolor=grey align=center cellspacing=1>\n";
+		    echo "<table class=shadedtable width=500 bgcolor=grey align=center cellspacing=1>\n";
             echo $searcherr;
             echo $searchres;
             echo "  <tr bgcolor=$oddrows class=font2>\n";
@@ -572,7 +572,7 @@ if ($ADD==121) {
             echo "<form action=$PHP_SELF method=POST>\n";
             echo "<input type=hidden name=ADD value=121>\n";
             echo "<input type=hidden name=SUB value=2>\n";
-		    echo "<table width=500 bgcolor=grey align=center cellspacing=1>\n";
+		    echo "<table class=shadedtable width=500 bgcolor=grey align=center cellspacing=1>\n";
             echo $adderr;
             echo $addres;
             echo "  <tr bgcolor=$oddrows class=font2>\n";
@@ -592,7 +592,7 @@ if ($ADD==121) {
                 echo "<form action=$PHP_SELF method=POST>\n";
                 echo "<input type=hidden name=ADD value=121>\n";
                 echo "<input type=hidden name=SUB value=3>\n";
-		        echo "<table width=500 bgcolor=grey align=center cellspacing=1>\n";
+		        echo "<table class=shadedtable width=500 bgcolor=grey align=center cellspacing=1>\n";
                 echo $deleteerr;
                 echo $deleteres;
                 echo "  <tr bgcolor=$oddrows class=font2>\n";
@@ -613,7 +613,7 @@ if ($ADD==121) {
                 echo "<form action=$PHP_SELF method=POST enctype=\"multipart/form-data\">\n";
                 echo "<input type=hidden name=ADD value=121>\n";
                 echo "<input type=hidden name=SUB value=7>\n";
-		        echo "<table width=500 bgcolor=grey align=center cellspacing=1>\n";
+		        echo "<table class=shadedtable width=500 bgcolor=grey align=center cellspacing=1>\n";
                 echo $loaderr;
                 echo $loadres;
                 echo "  <tr bgcolor=$oddrows class=font2>\n";
@@ -634,7 +634,7 @@ if ($ADD==121) {
                 echo "<form action=$PHP_SELF method=POST>\n";
                 echo "<input type=hidden name=ADD value=121>\n";
                 echo "<input type=hidden name=SUB value=8>\n";
-		        echo "<table width=500 bgcolor=grey align=center cellspacing=1>\n";
+		        echo "<table class=shadedtable width=500 bgcolor=grey align=center cellspacing=1>\n";
                 echo "  <tr bgcolor=$oddrows class=font2>\n";
                 echo "    <td align=center>Click EXPORT to begin downloading DNC. ".helptag("osdial_list-dnc")."</td>\n";
                 echo "  </tr>\n";

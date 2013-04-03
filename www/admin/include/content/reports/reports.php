@@ -50,56 +50,58 @@ if ($LOG['view_reports']==1) {
         $enable_queuemetrics_logging_LU =   $row[0];
         $queuemetrics_url_LU =              $row[1];
 
+        $margins="margin:0 0 0 120px";
 
         echo "<table width=60% align=center><tr class=no-ul><td>\n";
         echo "<font face=\"dejavu sans,verdana,sans-serif\" size=2>\n";
         echo "<font size=4 class=top_header color=$default_text><br><center>REPORTS</center></font><br><br>";
 
-        echo "<ul>";
-        if ($LOG['view_agent_realtime']) echo "<li><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12\">Agent Realtime (per campaign)</a></font>\n";
-        if ($LOG['view_agent_realtime_sip_listen']) echo "<li><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12&SIPmonitorLINK=1\">Agent Realtime w/SIP Listen</a></font>\n";
-        if ($LOG['view_agent_realtime_sip_barge']) echo "<li><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12&SIPmonitorLINK=2\">Agent Realtime w/SIP Barge</a></font>\n";
-        if ($LOG['view_agent_realtime_sip_barge']) echo "<li><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12&SIPmonitorLINK=3\">Agent Realtime w/SIP Whisper</a></font>\n";
-        if ($LOG['view_agent_realtime_iax_listen']) echo "<li><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12&IAXmonitorLINK=1\">Agent Realtime w/IAX Listen</a></font>\n";
-        if ($LOG['view_agent_realtime_iax_barge']) echo "<li><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12&IAXmonitorLINK=2\">Agent Realtime w/IAX Barge</a></font>\n";
-        if ($LOG['view_agent_realtime_iax_barge']) echo "<li><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12&IAXmonitorLINK=3\">Agent Realtime w/IAX Whisper</a></font>\n";
-        if ($LOG['view_agent_realtime_summary']) echo "<li><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=11\">Agent Realtime Summary (all campaigns)</a></font>\n";
+        echo "<div bgcolor=#DDD class=shadedtable style='margin:0 0 20px 40px'><br />";
+        echo "<ul style='margin:0 0 20px 0'>";
+        if ($LOG['view_agent_realtime']) echo "<li style=\"$margins\"><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12\">Agent Realtime (per campaign)</a></font>\n";
+        if ($LOG['view_agent_realtime_sip_listen']) echo "<li style=\"$margins\"><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12&SIPmonitorLINK=1\">Agent Realtime w/SIP Listen</a></font>\n";
+        if ($LOG['view_agent_realtime_sip_barge']) echo "<li style=\"$margins\"><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12&SIPmonitorLINK=2\">Agent Realtime w/SIP Barge</a></font>\n";
+        if ($LOG['view_agent_realtime_sip_barge']) echo "<li style=\"$margins\"><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12&SIPmonitorLINK=3\">Agent Realtime w/SIP Whisper</a></font>\n";
+        if ($LOG['view_agent_realtime_iax_listen']) echo "<li style=\"$margins\"><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12&IAXmonitorLINK=1\">Agent Realtime w/IAX Listen</a></font>\n";
+        if ($LOG['view_agent_realtime_iax_barge']) echo "<li style=\"$margins\"><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12&IAXmonitorLINK=2\">Agent Realtime w/IAX Barge</a></font>\n";
+        if ($LOG['view_agent_realtime_iax_barge']) echo "<li style=\"$margins\"><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12&IAXmonitorLINK=3\">Agent Realtime w/IAX Whisper</a></font>\n";
+        if ($LOG['view_agent_realtime_summary']) echo "<li style=\"$margins\"><font face=\"dejavu sans,verdana,sans-serif\" size=2><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=11\">Agent Realtime Summary (all campaigns)</a></font>\n";
         echo "</ul>";
         echo "<ul>";
-        if ($LOG['view_agent_pause_summary']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=25\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Agent Pause Summary</a></font>";
-        if ($LOG['view_agent_performance_detail']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=19\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Agent Performance Detail</a></font>";
-        if ($LOG['view_agent_stats']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=21\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Agent Stats</a></font>";
-        if ($LOG['view_agent_status']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=22\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Agent Status</a></font>";
-        if ($LOG['view_agent_timesheet']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=20\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Agent Timesheet</a></font>";
-        if ($LOG['view_agent_stats']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=31\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Phone Stats</a></font>";
-        if ($LOG['view_usergroup_hourly_stats']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=24\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>UserGroup Hourly Stats</a></font>";
+        if ($LOG['view_agent_pause_summary']) echo "<li style=\"$margins\"><a href=\"$PHP_SELF?ADD=999999&SUB=25\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Agent Pause Summary</a></font>";
+        if ($LOG['view_agent_performance_detail']) echo "<li style=\"$margins\"><a href=\"$PHP_SELF?ADD=999999&SUB=19\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Agent Performance Detail</a></font>";
+        if ($LOG['view_agent_stats']) echo "<li style=\"$margins\"><a href=\"$PHP_SELF?ADD=999999&SUB=21\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Agent Stats</a></font>";
+        if ($LOG['view_agent_status']) echo "<li style=\"$margins\"><a href=\"$PHP_SELF?ADD=999999&SUB=22\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Agent Status</a></font>";
+        if ($LOG['view_agent_timesheet']) echo "<li style=\"$margins\"><a href=\"$PHP_SELF?ADD=999999&SUB=20\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Agent Timesheet</a></font>";
+        if ($LOG['view_agent_stats']) echo "<li style=\"$margins\"><a href=\"$PHP_SELF?ADD=999999&SUB=31\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Phone Stats</a></font>";
+        if ($LOG['view_usergroup_hourly_stats']) echo "<li style=\"$margins\"><a href=\"$PHP_SELF?ADD=999999&SUB=24\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>UserGroup Hourly Stats</a></font>";
         echo "</ul>";
         echo "<ul>";
-        if ($LOG['view_ingroup_call_report']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=23\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>In-Group Call Report</a></font>";
+        if ($LOG['view_ingroup_call_report']) echo "<li style=\"$margins\"><a href=\"$PHP_SELF?ADD=999999&SUB=23\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>In-Group Call Report</a></font>";
         echo "</ul>";
         echo "<ul>";
-        if ($LOG['view_campaign_call_report']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=15\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Campaign Call Report</a></font>";
-        if ($LOG['view_campaign_recent_outbound_sales']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=osdial_sales_viewer.php\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Recent Outbound Sales</a></font>";
+        if ($LOG['view_campaign_call_report']) echo "<li style=\"$margins\"><a href=\"$PHP_SELF?ADD=999999&SUB=15\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Campaign Call Report</a></font>";
+        if ($LOG['view_campaign_recent_outbound_sales']) echo "<li style=\"$margins\"><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=osdial_sales_viewer.php\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Recent Outbound Sales</a></font>";
         echo "</ul>";
         echo "<ul>";
-        if ($LOG['view_lead_performance_campaign']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=17\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Lead Performance by Campaign</a></font>";
-        if ($LOG['view_lead_performance_list']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=18\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Lead Performance by List</a></font>";
-        if ($LOG['view_lead_search']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=27\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Lead Search - Basic</a></font>";
-        if ($LOG['view_lead_search_advanced']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=26\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Lead Search - Advanced</a></font>";
-        if ($LOG['view_list_cost_entry']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=16\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>List Cost by Entry Date</a></font>";
+        if ($LOG['view_lead_performance_campaign']) echo "<li style=\"$margins\"><a href=\"$PHP_SELF?ADD=999999&SUB=17\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Lead Performance by Campaign</a></font>";
+        if ($LOG['view_lead_performance_list']) echo "<li style=\"$margins\"><a href=\"$PHP_SELF?ADD=999999&SUB=18\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Lead Performance by List</a></font>";
+        if ($LOG['view_lead_search']) echo "<li style=\"$margins\"><a href=\"$PHP_SELF?ADD=999999&SUB=27\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Lead Search - Basic</a></font>";
+        if ($LOG['view_lead_search_advanced']) echo "<li style=\"$margins\"><a href=\"$PHP_SELF?ADD=999999&SUB=26\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Lead Search - Advanced</a></font>";
+        if ($LOG['view_list_cost_entry']) echo "<li style=\"$margins\"><a href=\"$PHP_SELF?ADD=999999&SUB=16\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>List Cost by Entry Date</a></font>";
         echo "</ul>";
         echo "<ul>";
-        if ($LOG['multicomp_user'] == 0 and $LOG['modify_servers']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=30\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>View Webserver Admin Log</a></font>";
-        if ($LOG['multicomp_user'] == 0 and $LOG['view_server_performance']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=29\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Server Performance</a></font>";
+        if ($LOG['multicomp_user'] == 0 and $LOG['modify_servers']) echo "<li style=\"$margins\"><a href=\"$PHP_SELF?ADD=999999&SUB=30\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>View Webserver Admin Log</a></font>";
+        if ($LOG['multicomp_user'] == 0 and $LOG['view_server_performance']) echo "<li style=\"$margins\"><a href=\"$PHP_SELF?ADD=999999&SUB=29\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Server Performance</a></font>";
 
         if ($LOG['multicomp_user'] == 0 and $enable_queuemetrics_logging_LU > 0) {
-            echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=$queuemetrics_url_LU\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>QUEUEMETRICS REPORTS</a></font>\n";
+            echo "<li style=\"$margins\"><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=$queuemetrics_url_LU\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>QUEUEMETRICS REPORTS</a></font>\n";
         }
-        echo "</ul>";
+        echo "</ul><br /></div>";
         echo "</font></td></tr></table>\n";
 
         if ($LOG['multicomp_user'] == 0 and $LOG['view_server_times']) {
-            echo "<center><pre><table width=$section_width cellspacing=1 bgcolor=grey>";
+            echo "<center><pre><table class=shadedtable width=$section_width cellspacing=1 bgcolor=grey>";
             echo "<tr class=tabheader>";
             echo "  <td align=center>Server</td>";
             echo "  <td align=center>Description</td>";
@@ -207,7 +209,7 @@ if ($LOG['view_reports']==1) {
         }
     }
     if (file_exists($WeBServeRRooT . '/admin/include/content/reports/custom.php')) {
-        echo "<table width=60% align=center><tr><td>\n";
+        echo "<table class=shadedtable width=60% align=center><tr><td>\n";
         echo "<font face=\"dejavu sans,verdana,sans-serif\" size=2>\n";
         include($WeBServeRRooT . '/admin/include/content/reports/custom.php');
         echo "</font></td></tr></table>\n";

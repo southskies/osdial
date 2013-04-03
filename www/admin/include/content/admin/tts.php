@@ -55,7 +55,7 @@ if ($ADD=="11tts") {
         echo '<form action="' . $PHP_SELF . '" method="POST" name=osdial_form enctype="multipart/form-data">';
         echo "<input type=hidden name=ADD value=21tts>\n";
 
-        echo "<table width=$section_width cellspacing=3>\n";
+        echo "<table class=shadedtable width=$section_width cellspacing=3>\n";
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right width=50%>Description: </td>\n";
         echo "    <td align=left><input type=text name=tts_description size=50 maxlength=100 value=\"\">".helptag("tts-description")."</td>\n";
@@ -233,7 +233,7 @@ if ($ADD=="31tts") {
         echo "<center><br/><font color=$default_text size=+1>MODIFY TEXT-TO-SPEECH TEMPLATE</font><form action=$PHP_SELF method=POST name=osdial_form id=osdial_form enctype=\"multipart/form-data\"><br/><br/>\n";
         echo "<input type=hidden name=ADD value=41tts>\n";
         echo "<input type=hidden name=tts_id value=$tts[id]>\n";
-        echo "<table width=$section_width cellspacing=3>\n";
+        echo "<table class=shadedtable width=$section_width cellspacing=3>\n";
         echo "<tr bgcolor=$oddrows><td align=right>ID: </td><td align=left><font color=$default_text>" . $tts['id'] . "</font></td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Description: </td><td align=left><input type=text name=tts_description size=50 maxlength=255 value=\"$tts[description]\">".helptag("tts-description")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Extension: </td><td align=left><input type=text name=tts_extension size=10 maxlength=20 value=\"$tts[extension]\">".helptag("tts-extension")."</td></tr>\n";

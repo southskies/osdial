@@ -530,7 +530,7 @@ function report_lead_search_advanced($lsa_seg='form') {
         $form .= "<input type=hidden name=ADD value=\"$ADD\">\n";
         $form .= "<input type=hidden name=SUB value=\"$SUB\">\n";
         $form .= "<input type=hidden name=DB value=\"$DB\">\n";
-        $form .= "<table width=$section_width cellspacing=0 bgcolor=$oddrows class=tabinput style=\"white-space:nowrap;\">\n";
+        $form .= "<table width=$section_width cellspacing=0 bgcolor=$oddrows class='tabinput shadedtable' style=\"white-space:nowrap;\">\n";
         $form .= "  <tr>\n";
         $form .= "    <td colspan=4 class=tabheader>Enter any combination of the following</td>\n";
         $form .= "  </tr>\n";
@@ -616,13 +616,13 @@ function report_lead_search_advanced($lsa_seg='form') {
         }
         $form .= "    <td align=center valign=top colspan=2 rowspan=5>\n";
         if ($LOG['export_lead_search_advanced'] and $LOG['user_level'] > 8 and $LOG['export_leads'] > 0 and ($LOG['multicomp_user'] == 0 or $LOG['company']['export_leads'] > 0)) {
-            $form .= "     <table cellpadding=0 cellspacing=1 width=95%>\n";
+            $form .= "     <table cellpadding=0 cellspacing=1 Xclass=shadedtable width=95%>\n";
             $form .= "       <tr><td class=tabheader colspan=3>CSV Export</td></tr>\n";
             $form .= "       <tr>\n";
 
-            $form .= "         <td align=center valign=top width=33%>\n";
-            $form .= "           <table cellpadding=0 cellspacing=0 width=95%>\n";
-            $form .= "             <tr><td class=tabheader>Fields</td></tr>\n";
+            $form .= "         <td align=left valign=top width=33%>\n";
+            $form .= "           <table cellpadding=0 cellspacing=0 class=shadedtable width=95%>\n";
+            $form .= "             <tr><td align=left class=tabheader>Fields</td></tr>\n";
             $sjs = "fld=document.getElementById('fields');afflds=document.getElementById('affields'); scb=document.getElementById('scbuttons'); if (fld.selectedIndex==-1) { afflds.disabled=true; afflds.style.background='#CCCCCC'; for (var i=0;i<afflds.options.length;i++){afflds.options[i].selected=false;}; scb.disabled=true; scb.style.background='#CCCCCC'; for (var i=0;i<scb.options.length;i++){scb.options[i].selected=false;}; } else { afflds.disabled=false; afflds.style.background='#FFFFFF'; scb.disabled=false; scb.style.background='#FFFFFF'; }";
             $form .= "             <tr><td><select name=fields[] id=fields size=6 multiple onchange=\"$sjs\" style=\"width:100%;\">\n";
             $form .= $fieldOPTS;
@@ -632,7 +632,7 @@ function report_lead_search_advanced($lsa_seg='form') {
 
             $affield_label = Array();
             $form .= "         <td align=center valign=top width=33%>\n";
-            $form .= "           <table cellpadding=0 cellspacing=0 width=95%>\n";
+            $form .= "           <table cellpadding=0 cellspacing=0 class=shadedtable width=95%>\n";
             $form .= "             <tr><td class=tabheader>Additional Fields</td></tr>\n";
             $affdisable = "style=\"width:100%;border:1px solid #AAAAAA;background:#CCCCCC;\" disabled";
             if (is_array($fields)) {
@@ -668,8 +668,8 @@ function report_lead_search_advanced($lsa_seg='form') {
             $form .= "         </td>\n";
 
             $scbutton_label = Array();
-            $form .= "         <td align=center valign=top width=33%>\n";
-            $form .= "           <table cellpadding=0 cellspacing=0 width=95%>\n";
+            $form .= "         <td align=right valign=top width=33%>\n";
+            $form .= "           <table cellpadding=0 cellspacing=0 class=shadedtable width=95%>\n";
             $form .= "             <tr><td class=tabheader>Script Clicks</td></tr>\n";
             $scbdisable = "style=\"width:100%;border:1px solid #AAAAAA;background:#CCCCCC;\" disabled";
             if (is_array($fields)) {
@@ -794,7 +794,7 @@ function report_lead_search_advanced($lsa_seg='form') {
 
         $form .= "  <tr>\n";
         $form .= "    <td align=center>\n";
-        $form .= "     <table cellpadding=0 cellspacing=0 width=95%>\n";
+        $form .= "     <table cellpadding=0 cellspacing=0 class=shadedtable width=95%>\n";
         $form .= "      <tr><td class=tabheader>Campaigns</td></tr>\n";
         $form .= "      <tr><td><select name=campaigns[] size=8 multiple style=\"width:100%;\">\n";
         $krh = get_krh($link, 'osdial_campaigns', 'campaign_id,campaign_name','',sprintf("campaign_id IN %s",$LOG['allowed_campaignsSQL']),'');
@@ -804,7 +804,7 @@ function report_lead_search_advanced($lsa_seg='form') {
         $form .= "    </td>\n";
 
         $form .= "    <td align=center>\n";
-        $form .= "     <table cellpadding=0 cellspacing=0 width=95%>\n";
+        $form .= "     <table cellpadding=0 cellspacing=0 class=shadedtable width=95%>\n";
         $form .= "      <tr><td class=tabheader>Lists</td></tr>\n";
         $form .= "      <tr><td><select name=lists[] size=8 multiple style=\"width:100%;\">\n";
         $krh = get_krh($link, 'osdial_lists', 'list_id,list_name,campaign_id','',sprintf("campaign_id IN %s",$LOG['allowed_campaignsSQL']),'');
@@ -814,7 +814,7 @@ function report_lead_search_advanced($lsa_seg='form') {
         $form .= "    </td>\n";
 
         $form .= "    <td align=center>\n";
-        $form .= "     <table cellpadding=0 cellspacing=0 width=95%>\n";
+        $form .= "     <table cellpadding=0 cellspacing=0 class=shadedtable width=95%>\n";
         $form .= "      <tr><td class=tabheader>Statuses</td></tr>\n";
         $form .= "      <tr><td><select name=statuses[] size=8 multiple style=\"width:100%;\">\n";
         $krh = get_krh($link, 'osdial_statuses', 'status,status_name','','','');
@@ -831,7 +831,7 @@ function report_lead_search_advanced($lsa_seg='form') {
         $form .= "    </td>\n";
 
         $form .= "    <td align=center>\n";
-        $form .= "     <table cellpadding=0 cellspacing=0 width=95%>\n";
+        $form .= "     <table cellpadding=0 cellspacing=0 class=shadedtable width=95%>\n";
         $form .= "      <tr><td class=tabheader>Agents</td></tr>\n";
         $form .= "      <tr><td><select name=agents[] size=8 multiple style=\"width:100%;\">\n";
         $krh = get_krh($link, 'osdial_users', 'user,full_name','',sprintf("user_group IN %s",$LOG['allowed_usergroupsSQL']),'');
@@ -852,7 +852,7 @@ function report_lead_search_advanced($lsa_seg='form') {
         $form .= "  <tr>\n";
 
         $form .= "    <td align=center>\n";
-        $form .= "     <table cellpadding=0 cellspacing=0 width=95%>\n";
+        $form .= "     <table cellpadding=0 cellspacing=0 class=shadedtable width=95%>\n";
         $form .= "      <tr><td class=tabheader>States</td></tr>\n";
         $form .= "      <tr><td><select name=states[] size=8 multiple style=\"width:100%;\">\n";
         $krh = get_krh($link, 'osdial_report_groups', 'group_value,group_label', "", "group_type='states'",'');
@@ -882,7 +882,7 @@ function report_lead_search_advanced($lsa_seg='form') {
         $sel="";
         if ($s==0) $sel=" selected";
         $form .= "    <td align=center>\n";
-        $form .= "     <table cellpadding=0 cellspacing=0 width=95%>\n";
+        $form .= "     <table cellpadding=0 cellspacing=0 class=shadedtable width=95%>\n";
         $form .= "      <tr><td class=tabheader>TimeZones</td></tr>\n";
         $form .= "      <tr><td><select name=timezones[] size=8 multiple style=\"width:100%;\">\n";
         $form .= "        <option value=\"\"$sel>-- ALL --</option>\n";
@@ -892,7 +892,7 @@ function report_lead_search_advanced($lsa_seg='form') {
         $form .= "    </td>\n";
 
         $form .= "    <td align=center>\n";
-        $form .= "     <table cellpadding=0 cellspacing=0 width=95%>\n";
+        $form .= "     <table cellpadding=0 cellspacing=0 class=shadedtable width=95%>\n";
         $form .= "      <tr><td class=tabheader>Sources</td></tr>\n";
         $form .= "      <tr><td><select name=sources[] size=8 multiple style=\"width:100%;\">\n";
         $krh = get_krh($link, 'osdial_report_groups', 'group_value,group_label', "", "group_type='lead_source_id'", "1000");
@@ -902,7 +902,7 @@ function report_lead_search_advanced($lsa_seg='form') {
         $form .= "    </td>\n";
 
         $form .= "    <td align=center>\n";
-        $form .= "     <table cellpadding=0 cellspacing=0 width=95%>\n";
+        $form .= "     <table cellpadding=0 cellspacing=0 class=shadedtable width=95%>\n";
         $form .= "      <tr><td class=tabheader>Vendor Codes</td></tr>\n";
         $form .= "      <tr><td><select name=vendor_codes[] size=8 multiple style=\"width:100%;\">\n";
         $krh = get_krh($link, 'osdial_report_groups', 'group_value,group_label', "", "group_type='lead_vendor_lead_code'", "1000");
@@ -917,7 +917,7 @@ function report_lead_search_advanced($lsa_seg='form') {
         $form .= "  </tr>\n";
 
         $form .= "  <tr>\n";
-        $form .= "    <td align=center colspan=4><font size=2>Results</font>";
+        $form .= "    <td align=center colspan=4><div style='margin:0 0 10px 0;'><font size=2>Results</font>";
         $form .= "      <select name=numresults size=1>\n";
         foreach ($numresults_label as $k => $v) {
             $sel="";
@@ -940,9 +940,9 @@ function report_lead_search_advanced($lsa_seg='form') {
             $form .= "        <option value=\"$k\"$sel>$v</option>\n";
         }
         $form .= "      </select>\n";
-        $form .= "    </td>\n";
+        $form .= "    </div></td>\n";
         $form .= "  </tr>\n";
-
+        
         $form .= "  <tr class=tabfooter>\n";
         $form .= "    <th colspan=4 class=tabbutton><input type=submit name=submit value=SUBMIT></th>\n";
         $form .= "  </tr>\n";
@@ -1047,7 +1047,7 @@ function report_lead_search_advanced($lsa_seg='form') {
     
             $data .= $paginate;
     
-            $data .= "<table bgcolor=grey cellspacing=1>\n";
+            $data .= "<table bgcolor=grey cellspacing=1 class=shadedtable>\n";
             $data .= "  <tr class=tabheader>\n";
             if ($field_cnt > 0 or $results_to_print < 1) {
                 $data .= "    <td colspan=17><font size=1>&nbsp;</font></td>\n";

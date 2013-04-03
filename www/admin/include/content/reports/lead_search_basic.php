@@ -36,7 +36,7 @@ function report_lead_search_basic() {
             $html .= "  <input type=hidden name=ADD value=\"$ADD\">\n";
             $html .= "  <input type=hidden name=SUB value=\"$SUB\">\n";
             $html .= "  <input type=hidden name=DB value=\"$DB\">\n";
-            $html .= "  <table width=500 cellspacing=3 align=center>\n";
+            $html .= "  <table class=shadedtable width=500 cellspacing=3 align=center>\n";
             $html .= "    <tr class=tabheader>\n";
             $html .= "      <td colspan=2 align=center>Enter Any One Search Term</td>\n";
             $html .= "    </tr>\n";
@@ -118,7 +118,7 @@ function report_lead_search_basic() {
                 } else {
                     $html .= "<center>\n";
                     $html .= "<font color=$default_text size=+1>Found:&nbsp;$results_to_print</font>\n";
-                    $html .= "<table width=$section_width cellpadding=1 cellspacing=0>\n";
+                    $html .= "<table class=shadedtable width=$section_width cellpadding=1 cellspacing=0>\n";
                     $html .= "  <tr class=tabheader>\n";
                     $html .= "    <td>#</td>\n";
                     $html .= "    <td>Lead&nbsp;ID</td>\n";

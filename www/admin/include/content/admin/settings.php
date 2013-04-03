@@ -67,7 +67,7 @@ if ($ADD==311111111111111) {
             echo "      <input type=hidden name=multicompany_admin value=admin>\n";
             echo "      <input type=hidden name=enable_multicompany value=0>\n";
         }
-        echo "      <table cellspacing=3>\n";
+        echo "      <table class=shadedtable cellspacing=3>\n";
         echo "        <tr class=tabheader><td colspan=2></td></tr>\n";
         echo "        <tr bgcolor=$oddrows>\n";
         echo "          <td align=right>Version:</td>\n";

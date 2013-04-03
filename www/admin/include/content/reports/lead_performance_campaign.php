@@ -175,7 +175,7 @@ function report_lead_performance_campaign() {
     $html .= "<input type=hidden name=ADD value=$ADD>\n";
     $html .= "<input type=hidden name=SUB value=$SUB>\n";
     $html .= "<input type=hidden name=DB value=$DB>\n";
-    $html .= "<table border=0 bgcolor=grey cellspacing=1>\n";
+    $html .= "<table class=shadedtable border=0 bgcolor=grey cellspacing=1>\n";
     $html .= "  <tr class=tabheader>\n";
     $html .= "    <td>Campaign(s)</td>\n";
     $html .= "    <td>Date Range</td>\n";
@@ -287,7 +287,7 @@ function report_lead_performance_campaign() {
         $html .= "  </tr>\n";
         $head2 .= "|Calls|Contacts|Sales|Contact Closing%|Closing%|Total Cost|Average Cost|Cost Per Sale||Leads Entered|Contacts|Sales|Contact Closing%|Closing%|Total Cost|Average Cost|Cost Per Sale";
         $html .= "<input type=hidden name=\"row" . $CSVrow++ . "\" value=\"" . $head2 . "\">\n";
-
+        
         $dates = Array();
 
         $stmt="SELECT $type(osdial_list.entry_date),count(*),sum(if(osdial_list.status IN ($SCcontacts,$SCsales),1,0)),sum(if(osdial_list.status IN ($SCsales),1,0)),sum(osdial_list.cost) FROM osdial_list LEFT JOIN osdial_lists ON (osdial_list.list_id=osdial_lists.list_id) WHERE osdial_list.entry_date <= '$query_date_END' AND osdial_list.entry_date >= '$query_date_BEGIN' $group_olSQLand GROUP BY $type(osdial_list.entry_date);";

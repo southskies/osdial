@@ -81,7 +81,7 @@ function report_agent_timesheet() {
     $form .= "  <input type=hidden name=ADD value=\"$ADD\">\n";
     $form .= "  <input type=hidden name=SUB value=\"$SUB\">\n";
     $form .= "  <input type=hidden name=DB value=\"$DB\">\n";
-    $form .= "  <table width=350 align=center cellspacing=0 bgcolor=grey>\n";
+    $form .= "  <table class=shadedtable width=350 align=center cellspacing=0 bgcolor=grey>\n";
     $form .= "    <tr class=tabheader>\n";
     $form .= "      <td>Date</td>\n";
     $form .= "      <td>Agent ID</td>\n";
@@ -145,10 +145,10 @@ function report_agent_timesheet() {
         if ($end == "") $end = "NONE";
         $table .= "<br>\n";
         $table .= "<table align=center cellspacing=0 cellpadding=0>\n";
-        $table .= "  <tr><td align=center><font color=$default_text size=3>AGENT TIMES</font></td></tr>\n";
+        $table .= "  <tr><td align=center><font  class=top_header color=$default_text size=3>AGENT TIMES</font></td></tr>\n";
         $table .= "  <tr>\n";
         $table .= "    <td align=center>\n";
-        $table .= "      <table width=300 align=center cellspacing=1 bgcolor=grey>\n";
+        $table .= "      <table class=shadedtable width=300 align=center cellspacing=1 bgcolor=grey>\n";
         $table .= "        <tr class=tabheader>\n";
         $table .= "          <td></td>\n";
         $table .= "          <td>TIME</td>\n";
@@ -201,10 +201,10 @@ function report_agent_timesheet() {
 
         $table .= "<br><br>\n";
         $table .= "<table align=center cellspacing=0 cellpadding=0>\n";
-        $table .= "  <tr><td align=center><font color=$default_text size=3>AGENT ACTIVITY TIMES</font></td></tr>\n";
+        $table .= "  <tr><td align=center><font class=top_heading2 color=$default_text size=3>AGENT ACTIVITY TIMES</font></td></tr>\n";
         $table .= "  <tr>\n";
         $table .= "    <td align=center>\n";
-        $table .= "      <table width=300 align=center cellspacing=1 bgcolor=grey>\n";
+        $table .= "      <table class=shadedtable width=300 align=center cellspacing=1 bgcolor=grey>\n";
         $table .= "        <tr class=tabheader>\n";
         $table .= "          <td></td>\n";
         $table .= "          <td>TIME</td>\n";
@@ -253,10 +253,10 @@ function report_agent_timesheet() {
 
         $table .= "<br>\n";
         $table .= "<table align=center cellspacing=0 cellpadding=0>\n";
-        $table .= "  <tr><td align=center><font color=$default_text size=3>AGENT TIMES</font></td></tr>\n";
+        $table .= "  <tr><td align=center><font class=top_heading2 color=$default_text size=3>AGENT TIMES</font></td></tr>\n";
         $table .= "  <tr>\n";
         $table .= "    <td align=center>\n";
-        $table .= "      <table width=850 align=center cellspacing=1 bgcolor=grey>\n";
+        $table .= "      <table class=shadedtable width=850 align=center cellspacing=1 bgcolor=grey>\n";
         $table .= "        <tr class=tabheader>\n";
         $table .= "          <td>AGENT</td>\n";
         $table .= "          <td width=17%>FIRST LOGIN</td>\n";
@@ -340,7 +340,7 @@ function report_agent_timesheet() {
         $table .= "</table>\n";
 
         $export .= "<input type=hidden name=\"rows\" value=\"" . $CSVrows . "\">";
-        if ($LOG['export_agent_timesheet']) $export .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
+        if ($LOG['export_agent_timesheet']) $export .= "<br /><input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
         $export .= "</form>";
 
         $table .= "<div class=noprint><center>$export</center></div>";

@@ -32,7 +32,7 @@ if ($ADD==111) {
 	if ($LOG['modify_lists']==1)	{
 		echo "<center><br><font class=top_header color=$default_text size=4>ADD A NEW LIST</font><form action=$PHP_SELF method=POST><br></center>\n";
 		echo "<input type=hidden name=ADD value=211>\n";
-		echo "<table width=$section_width bgcolor=$oddrows align=center cellspacing=3>\n";
+		echo "<table class=shadedtable width=$section_width bgcolor=$oddrows align=center cellspacing=3>\n";
 		echo "  <tr bgcolor=$oddrows><td align=right width=50%>List ID: </td><td align=left width=50%><input type=text name=list_id size=12 maxlength=12 value=\"" . date("YmdHi") . "\"> (digits only)".helptag("osdial_lists-list_id")."</td></tr>\n";
 		echo "  <tr bgcolor=$oddrows><td align=right>List Name: </td><td align=left><input type=text name=list_name size=20 maxlength=20>".helptag("osdial_lists-list_name")."</td></tr>\n";
 		echo "  <tr bgcolor=$oddrows><td align=right>List Description: </td><td align=left><input type=text name=list_description size=30 maxlength=255>".helptag("osdial_lists-list_description")."</td></tr>\n";
@@ -310,7 +310,7 @@ if ($ADD==311) {
         echo "<input type=hidden name=ADD value=411>\n";
         echo "<input type=hidden name=list_id value=\"$row[0]\">\n";
         echo "<input type=hidden name=old_campaign_id value=\"$row[2]\">\n";
-        echo "<TABLE width=$section_width cellspacing=3>\n";
+        echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
         echo "<tr bgcolor=$oddrows><td align=right>List ID: </td><td align=left><b>$row[0]</b>".helptag("osdial_lists-list_id")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>List Name: </td><td align=left><input type=text name=list_name size=20 maxlength=20 value=\"$row[1]\">".helptag("osdial_lists-list_name")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>List Description: </td><td align=left><input type=text name=list_description size=30 maxlength=255 value=\"$list_description\">".helptag("osdial_lists-list_description")."</td></tr>\n";
@@ -358,7 +358,7 @@ if ($ADD==311) {
 
         echo "<center>\n";
         echo "<br><font class=top_header2 color=$default_text size=+1>STATUSES WITHIN THIS LIST</font></b><br>\n";
-        echo "<table bgcolor=grey width=500 cellspacing=1>\n";
+        echo "<table class=shadedtable bgcolor=grey width=500 cellspacing=1>\n";
         echo "  <tr class=tabheader>\n";
         echo "    <td align=center>STATUS</td>\n";
         echo "    <td align=center>STATUS NAME</td>\n";
@@ -448,7 +448,7 @@ if ($ADD==311) {
 
         echo "<center>\n";
         echo "<br><font class=top_header2 color=$default_text size=+1>TIME ZONES WITHIN THIS LIST</font></b><br>\n";
-        echo "<table bgcolor=grey width=500 cellspacing=1>\n";
+        echo "<table class=shadedtable bgcolor=grey width=500 cellspacing=1>\n";
         echo "  <tr class=tabheader>\n";
         echo "    <td align=center>GMT OFFSET NOW (local time)</td>\n";
         echo "    <td align=center>CALLED</td>\n";
@@ -596,7 +596,7 @@ if ($ADD==311) {
 
         echo "<center>\n";
         echo "<br><font class=top_header2 color=$default_text size=4>CALLED COUNTS WITHIN THIS LIST</font></b><br>\n";
-        echo "<table style=\"cursor:crosshair;\" bgcolor=grey width=500 cellspacing=1>\n";
+        echo "<table class=shadedtable style=\"cursor:crosshair;\" bgcolor=grey width=500 cellspacing=1>\n";
         echo "  <tr style=\"cursor:crosshair;\" class=tabheader>\n";
         echo "    <td style=\"cursor:crosshair;\" align=left>STATUS</td>\n";
         echo "    <td style=\"cursor:crosshair;\" align=left>STATUS&nbsp;NAME</td>";
@@ -730,7 +730,7 @@ if ($ADD==311) {
 
         echo "<center>\n";
         echo "<br><font class=top_header2 color=$default_text size=4>PER-LEAD DISPOSITION COUNTS FROM LOG</font></b><br>\n";
-        echo "<table style=\"cursor:crosshair;\" bgcolor=grey width=500 cellspacing=1>\n";
+        echo "<table class=shadedtable style=\"cursor:crosshair;\" bgcolor=grey width=500 cellspacing=1>\n";
         echo "  <tr style=\"cursor:crosshair;\" class=tabheader>\n";
         echo "    <td style=\"cursor:crosshair;\" align=left>STATUS</td>\n";
         echo "    <td style=\"cursor:crosshair;\" align=left>STATUS&nbsp;NAME</td>";
@@ -805,14 +805,14 @@ if ($ADD==311) {
 
 
 
-        echo "<center>\n";
-        echo "<br><br><a href=\"$PHP_SELF?ADD=811&list_id=$list_id\">Click here to see all CallBack Holds in this list</a><BR><BR>\n";
-        echo "</center>\n";
+//         echo "<center>\n";
+//         echo "<br><br><a href=\"$PHP_SELF?ADD=811&list_id=$list_id\">Click here to see all CallBack Holds in this list</a><BR><BR>\n";
+//         echo "</center>\n";
 	
-        if ($LOG['delete_lists'] > 0) {
-            echo "<br><br><a href=\"$PHP_SELF?ADD=511&list_id=$list_id\">DELETE THIS LIST</a>\n";
-            echo "<br><br><a href=\"$PHP_SELF?ADD=511&SUB=1&list_id=$list_id\">DELETE THIS LIST AND ITS LEADS</a> (WARNING: Will damage call-backs made in this list!)\n";
-        }
+//         if ($LOG['delete_lists'] > 0) {
+//             echo "<br><br><a href=\"$PHP_SELF?ADD=511&list_id=$list_id\">DELETE THIS LIST</a>\n";
+//             echo "<br><br><a href=\"$PHP_SELF?ADD=511&SUB=1&list_id=$list_id\">DELETE THIS LIST AND ITS LEADS</a> (WARNING: Will damage call-backs made in this list!)\n";
+//         }
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
     }

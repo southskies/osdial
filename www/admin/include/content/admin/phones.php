@@ -33,7 +33,7 @@ if ($ADD==11111111111) {
         $servers_list = get_servers($link, $sel,'AIO|DIALER');
         echo "<center><br><font color=$default_text size=+1>ADD A NEW PHONE</font><form action=$PHP_SELF method=POST><br><br>\n";
         echo "<input type=hidden name=ADD value=21111111111>\n";
-        echo "<TABLE width=$section_width cellspacing=3>\n";
+        echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
 
         echo "<tr bgcolor=$oddrows><td align=right>Phone extension: </td><td align=left><input type=text name=extension size=20 maxlength=100 value=\"\">".helptag("phones-extension")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Dial Plan Number: </td><td align=left><input type=text name=dialplan_number size=15 maxlength=20 value=\"$row[1]\"> (digits only)".helptag("phones-dialplan_number")."</td></tr>\n";
@@ -256,7 +256,7 @@ if ($ADD==31111111111) {
         echo "<input type=hidden name=ADD value=41111111111>\n";
         echo "<input type=hidden name=old_extension value=\"$row[0]\">\n";
         echo "<input type=hidden name=old_server_ip value=\"$row[5]\">\n";
-        echo "<TABLE width=$section_width cellspacing=3>\n";
+        echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Phone extension: </td><td align=left>";
         $ext = $row[0];
         if ($LOG['multicomp'] > 0 and !OSDpreg_match('/\/|@/',$row[0]) and OSDpreg_match($LOG['companiesRE'],$row[0])) {
@@ -448,7 +448,7 @@ if ($ADD==10000000000) {
     $rslt=mysql_query($stmt, $link);
     $phones_to_print = mysql_num_rows($rslt);
 
-    echo "<center><br><font class=top_header color=$default_text size=+1>PHONES<br><br><font size=-2>(<a href=#VMList>VoiceMail List</a>)</font><br><br>\n";
+    echo "<center><br><font class=top_header color=$default_text size=+1>PHONES<br><br>\n";
     echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1>\n";
     echo "  <tr class=tabheader>";
     echo "    <td><a href=\"$PHP_SELF?ADD=10000000000&$EXTENlink\">EXTEN</a></td>\n";

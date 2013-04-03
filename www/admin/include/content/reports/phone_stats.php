@@ -73,7 +73,7 @@ function report_phone_stats() {
     $head .= "<input type=hidden name=DB value=\"$DB\">\n";
     $head .= "<input type=hidden name=phone_extension value=\"$phone_extension\">\n";
     $head .= "<input type=hidden name=phone_server_ip value=\"$phone_server_ip\">\n";
-    $head .= "<table align=center cellspacing=1 width=350 bgcolor=grey>\n";
+    $head .= "<table class=shadedtable align=center cellspacing=1 width=350 bgcolor=grey>\n";
     $head .= "  <tr class=tabheader>\n";
     $head .= "    <td>Date Range</td>\n";
     $head .= "    <td>Agent ID</td>\n";
@@ -139,7 +139,7 @@ function report_phone_stats() {
         
         $table .= "  <br>\n";
         $table .= "  <center><font class=top_header2 color=$default_text size=3><b>CALL TIME AND CHANNELS</b></font></center>\n";
-        $table .= "  <table align=center width=400 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
+        $table .= "  <table class=shadedtable align=center width=400 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
         $table .= "    <tr class=tabheader>\n";
         $table .= "      <td>CHANNEL GROUP</td>\n";
         $table .= "      <td>COUNT</td>\n";
@@ -179,7 +179,7 @@ function report_phone_stats() {
         
         $table .= "  <br>\n";
         $table .= "  <center><font class=top_header2 color=$default_text size=3><b>LAST 1000 CALLS FOR DATE RANGE</b></font></center>\n";
-        $table .= "  <table align=center width=400 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
+        $table .= "  <table class=shadedtable align=center width=400 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
         $table .= "    <tr class=tabheader>\n";
         $table .= "      <td>NUMBER</td>\n";
         $table .= "      <td>CHANNEL GROUP</td>\n";

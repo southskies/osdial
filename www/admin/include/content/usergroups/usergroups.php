@@ -31,7 +31,7 @@ if ($ADD==111111) {
         echo "  <br><font class=top_header color=$default_text size=+1>ADD NEW AGENTS GROUP</font><br><br>\n";
         echo "  <form action=$PHP_SELF method=POST>\n";
         echo "  <input type=hidden name=ADD value=211111>\n";
-        echo "  <table width=$section_width cellspacing=3>\n";
+        echo "  <table class=shadedtable width=$section_width cellspacing=3>\n";
         echo "    <tr bgcolor=$oddrows>\n";
         echo "      <td width=40% align=right>Group: </td>\n";
         echo "      <td align=left>\n";
@@ -291,7 +291,7 @@ if ($ADD==311111) {
         echo "  <input type=hidden name=OLDuser_group value=\"$user_group\">\n";
 
 
-        echo "  <table width=$section_width cellspacing=3>\n";
+        echo "  <table class=shadedtable width=$section_width cellspacing=3>\n";
         echo "    <tr bgcolor=$oddrows>\n";
         echo "      <td width=40% align=right>Group: </td>\n";
         echo "      <td align=left>\n";
@@ -334,7 +334,7 @@ if ($ADD==311111) {
         $acampaigns = get_krh($link, 'osdial_campaigns', '*','',sprintf("campaign_id IN %s",$LOG['allowed_campaignsSQL']),'');
         echo "  <br>\n";
         echo "  <br>\n";
-        echo "  <table bgcolor=grey width=50% cellspacing=1>\n";
+        echo "  <table class=shadedtable bgcolor=grey width=50% cellspacing=1>\n";
         echo "    <tr class=tabheader>\n";
         echo "      <td align=center colspan=2>Allowed Campaigns</td>\n";
         echo "    </tr>\n";
@@ -366,7 +366,7 @@ if ($ADD==311111) {
         $aingroups = get_krh($link, 'osdial_inbound_groups', '*','',sprintf("group_id IN %s",$LOG['allowed_ingroupsSQL']),'');
         echo "  <br>\n";
         echo "  <br>\n";
-        echo "  <table bgcolor=grey width=50% cellspacing=1>\n";
+        echo "  <table class=shadedtable bgcolor=grey width=50% cellspacing=1>\n";
         echo "    <tr class=tabheader>\n";
         echo "      <td align=center colspan=2>Allowed In-Groups</td>\n";
         echo "    </tr>\n";
@@ -402,7 +402,7 @@ if ($ADD==311111) {
         $scripts = get_krh($link, 'osdial_scripts', '*','',sprintf("script_id IN %s",$LOG['allowed_scriptsSQL']),'');
         echo "  <br>\n";
         echo "  <br>\n";
-        echo "  <table bgcolor=grey width=50% cellspacing=1>\n";
+        echo "  <table class=shadedtable bgcolor=grey width=50% cellspacing=1>\n";
         echo "    <tr class=tabheader>\n";
         echo "      <td align=center colspan=2>Allowed Scripts</td>\n";
         echo "    </tr>\n";
@@ -466,7 +466,7 @@ if ($ADD==311111) {
         ### Agent / UserGroup Reports ###
         echo "  <br>\n";
         echo "  <br>\n";
-        echo "  <table bgcolor=grey width=50% cellspacing=1>\n";
+        echo "  <table class=shadedtable bgcolor=grey width=50% cellspacing=1>\n";
         echo "    <tr class=tabheader>\n";
         echo "      <td align=center colspan=3>Agent / UserGroup Reports</td>\n";
         echo "    </tr>\n";
@@ -585,7 +585,7 @@ if ($ADD==311111) {
         ### InGroup / Closer Reports ###
         echo "  <br>\n";
         echo "  <br>\n";
-        echo "  <table bgcolor=grey width=50% cellspacing=1>\n";
+        echo "  <table class=shadedtable bgcolor=grey width=50% cellspacing=1>\n";
         echo "    <tr class=tabheader>\n";
         echo "      <td align=center colspan=3>In-Group / Closer Reports</td>\n";
         echo "    </tr>\n";
@@ -614,7 +614,7 @@ if ($ADD==311111) {
         ### Campaign Reports ###
         echo "  <br>\n";
         echo "  <br>\n";
-        echo "  <table bgcolor=grey width=50% cellspacing=1>\n";
+        echo "  <table class=shadedtable bgcolor=grey width=50% cellspacing=1>\n";
         echo "    <tr class=tabheader>\n";
         echo "      <td align=center colspan=3>Campaign Reports</td>\n";
         echo "    </tr>\n";
@@ -653,7 +653,7 @@ if ($ADD==311111) {
         ### List / Lead Reports ###
         echo "  <br>\n";
         echo "  <br>\n";
-        echo "  <table bgcolor=grey width=50% cellspacing=1>\n";
+        echo "  <table class=shadedtable bgcolor=grey width=50% cellspacing=1>\n";
         echo "    <tr class=tabheader>\n";
         echo "      <td align=center colspan=3>List / Lead Reports</td>\n";
         echo "    </tr>\n";
@@ -719,7 +719,7 @@ if ($ADD==311111) {
         ### Server Reports ###
         echo "  <br>\n";
         echo "  <br>\n";
-        echo "  <table bgcolor=grey width=50% cellspacing=1>\n";
+        echo "  <table class=shadedtable bgcolor=grey width=50% cellspacing=1>\n";
         echo "    <tr class=tabheader>\n";
         echo "      <td align=center colspan=3>Server Reports</td>\n";
         echo "    </tr>\n";
@@ -754,7 +754,7 @@ if ($ADD==311111) {
         echo "  <br>\n";
         echo "  <font color=$default_text size=4><b>AGENTS WITHIN THIS GROUP</b></font>\n";
         echo "  <br>\n";
-        echo "  <table bgcolor=grey width=400 cellspacing=1>\n";
+        echo "  <table class=shadedtable bgcolor=grey width=400 cellspacing=1>\n";
         echo "    <tr class=tabheader>\n";
         echo "      <td>USER</td>\n";
         echo "      <td>FULL NAME</td>\n";
@@ -779,13 +779,13 @@ if ($ADD==311111) {
 
         echo "</center>\n";
 
-        echo "<br><br><br>\n";
-        echo "<a href=\"$PHP_SELF?ADD=8111&user_group=$user_group\">Click here to see all CallBack Holds in this user group</a>\n";
+//         echo "<br><br><br>\n";
+//         echo "<a href=\"$PHP_SELF?ADD=8111&user_group=$user_group\">Click here to see all CallBack Holds in this user group</a>\n";
 
-        if ($LOG['delete_user_groups'] > 0 and $LOG['allowed_campaignsALL'] > 0) {
-            echo "<br><br><br><br>\n";
-            echo "<a href=\"$PHP_SELF?ADD=511111&user_group=$user_group\">DELETE THIS USER GROUP</a>\n";
-        }
+//         if ($LOG['delete_user_groups'] > 0 and $LOG['allowed_campaignsALL'] > 0) {
+//             echo "<br><br><br><br>\n";
+//             echo "<a href=\"$PHP_SELF?ADD=511111&user_group=$user_group\">DELETE THIS USER GROUP</a>\n";
+//         }
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
     }

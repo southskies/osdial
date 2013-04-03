@@ -32,7 +32,7 @@ if ($ADD==111111111)
 	{
 	echo "<center><br><font color=$default_text size=+1>ADD NEW CALL TIME</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=211111111>\n";
-	echo "<TABLE width=$section_width cellspacing=3>\n";
+	echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
 // 	echo "<tr bgcolor=$oddrows><td align=right width=30%>Call Time ID: </td><td align=left><input type=text name=call_time_id size=12 maxlength=10> (no spaces or punctuation)".helptag("osdial_call_times-call_time_id")."</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Call Time Name: </td><td align=left><input type=text name=call_time_name size=30 maxlength=30> (short description of the call time)".helptag("osdial_call_times-call_time_name")."</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Call Time Comments: </td><td align=left><input type=text name=call_time_comments size=50 maxlength=255> ".helptag("osdial_call_times-call_time_comments")."</td></tr>\n";
@@ -276,7 +276,7 @@ if ($LOG['modify_call_times']==1)
 echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY A CALL TIME</font><form action=$PHP_SELF method=POST><br><br>\n";
 echo "<input type=hidden name=ADD value=411111111>\n";
 echo "<input type=hidden name=call_time_id value=\"$call_time_id\">\n";
-echo "<table cellspacing=1>";
+echo "<table class=shadedtable cellspacing=1>";
 echo "<tr bgcolor=$oddrows><td align=right>Call Time ID: </td><td align=left colspan=3><B>$call_time_id</B>".helptag("osdial_call_times-call_time_id")."</td></tr>\n";
 echo "<tr bgcolor=$oddrows><td align=right>Call Time Name: </td><td align=left colspan=3><input type=text name=call_time_name size=40 maxlength=50 value=\"$call_time_name\"> (short description of the call time)".helptag("osdial_call_times-call_time_name")."</td></tr>\n";
 echo "<tr bgcolor=$oddrows><td align=right>Call Time Comments: </td><td align=left colspan=3><input type=text name=call_time_comments size=50 maxlength=255 value=\"$call_time_comments\"> ".helptag("osdial_call_times-call_time_comments")."</td></tr>\n";
@@ -300,7 +300,7 @@ if (OSDstrlen($ct_state_call_times)>2)
 	$state_rules = explode('|',$ct_state_call_times);
 	$ct_srs = ((count($state_rules)) - 1);
 	}
-echo "<table bgcolor=grey width=500 cellspacing=1 bgcolor=grey>\n";
+echo "<table class=shadedtable bgcolor=grey width=500 cellspacing=1 bgcolor=grey>\n";
 echo "  <tr class=tabheader>\n";
 echo "    <td align=center colspan=3>ACTIVE STATE CALL TIME DEFINITIONS</td>\n";
 echo "  </tr>\n";
@@ -357,7 +357,7 @@ echo "  </form>\n";
 
 echo "</table><br><br><br>\n";
 echo "<font class=top_header2 color=$default_text size=+1>CAMPAIGNS USING THIS CALL TIME</font><br>\n";
-echo "<table width=500 cellspacing=1 bgcolor=grey>\n";
+echo "<table class=shadedtable width=500 cellspacing=1 bgcolor=grey>\n";
 echo "  <tr class=tabheader>\n";
 echo "    <td align=center>Campaign ID</td>\n";
 echo "    <td align=center>Campaign Description</td>\n";
@@ -383,7 +383,7 @@ echo "</table>\n";
 
 
 echo "<br><br><font class=top_header color=$default_text size=+1>INBOUND GROUPS USING THIS CALL TIME</font><br>\n";
-echo "<table width=500 cellspacing=1 bgcolor=grey>\n";
+echo "<table class=shadedtable width=500 cellspacing=1 bgcolor=grey>\n";
 echo "  <tr class=tabheader>\n";
 echo "    <td align=center>InGroup ID</td>\n";
 echo "    <td align=center>InGroup Description</td>\n";
@@ -427,7 +427,7 @@ if ($ADD==100000000)
 	$filters_to_print = mysql_num_rows($rslt);
 
 echo "<center><br><font class=top_header color=$default_text size=+1>CALL TIMES</font><br><br>\n";
-echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1>\n";
+echo "<table class=shadedtable class=shadedtable width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "  <tr class=tabheader>\n";
 echo "    <td>ID</td>\n";
 echo "    <td>NAME</td>\n";
@@ -470,7 +470,7 @@ if ($ADD==1111111111)
 	{
 	echo "<center><br><font color=$default_text size=+1>ADD NEW STATE CALL TIME</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2111111111>\n";
-	echo "<TABLE width=$section_width cellspacing=3>\n";
+	echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right width=30%>State Call Time ID: </td><td align=left><input type=text name=call_time_id size=12 maxlength=10> (no spaces or punctuation)".helptag("osdial_call_times-call_time_id")."</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>State Call Time State: </td><td align=left><input type=text name=state_call_time_state size=4 maxlength=2> (no spaces or punctuation)".helptag("osdial_call_times-state_call_time_state")."</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>State Call Time Name: </td><td align=left><input type=text name=call_time_name size=30 maxlength=30> (short description of the call time)".helptag("osdial_call_times-call_time_name")."</td></tr>\n";
@@ -692,7 +692,7 @@ if ($LOG['modify_call_times']==1)
 echo "<center><br><font color=$default_text size=+1>MODIFY A STATE CALL TIME</font><form action=$PHP_SELF method=POST><br><br>\n";
 echo "<input type=hidden name=ADD value=4111111111>\n";
 echo "<input type=hidden name=call_time_id value=\"$call_time_id\">\n";
-echo "<TABLE>";
+echo "<TABLE class=shadedtable>";
 echo "<tr bgcolor=$oddrows><td align=right>Call Time ID: </td><td align=left colspan=3><B>$call_time_id</B>".helptag("osdial_call_times-call_time_id")."</td></tr>\n";
 echo "<tr bgcolor=$oddrows><td align=right>State Call Time State: </td><td align=left colspan=3><input type=text name=state_call_time_state size=4 maxlength=2 value=\"$state_call_time_state\"> ".helptag("osdial_call_times-state_call_time_state")."</td></tr>\n";
 echo "<tr bgcolor=$oddrows><td align=right>State Call Time Name: </td><td align=left colspan=3><input type=text name=call_time_name size=40 maxlength=50 value=\"$call_time_name\"> (short description of the call time)".helptag("osdial_call_times-call_time_name")."</td></tr>\n";
@@ -709,7 +709,7 @@ echo "<tr bgcolor=$oddrows><td align=right>Saturday Start:</td><td align=left><i
 echo "<tr class=tabfooter><td align=center colspan=4 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 echo "</TABLE><BR><BR>\n";
 echo "<BR><font color=$default_text size=+1>CALL TIMES USING THIS STATE CALL TIME</font><BR>\n";
-echo "<table width=500 cellspacing=1 bgcolor=grey>\n";
+echo "<table class=shadedtable width=500 cellspacing=1 bgcolor=grey>\n";
 echo "  <tr class=tabheader>\n";
 echo "    <td align=center>CALL-TIME ID</td>\n";
 echo "    <td align=center>DESCRIPTION</td>\n";

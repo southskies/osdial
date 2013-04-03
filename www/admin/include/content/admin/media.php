@@ -26,11 +26,11 @@
 
 if ($ADD=="11media") {
     if ($LOG['modify_servers']>0) {
-        echo "<center><br><font color=$default_text size=+1>ADD NEW MEDIA</font><br><br>\n";
+        echo "<center><br><font class=top_header color=$default_text size=+1>ADD MEDIA FILE</font><br><br>\n";
         echo '<form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
         echo "<input type=hidden name=ADD value=21media>\n";
 
-        echo "<table width=$section_width cellspacing=3>\n";
+        echo "<table class=shadedtable width=$section_width cellspacing=3>\n";
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right width=50%>Description: </td>\n";
         echo "    <td align=left><input type=text name=media_description size=50 maxlength=100 value=\"\">".helptag("media-description")."</td>\n";
@@ -158,7 +158,7 @@ if ($ADD=="31media") {
         echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY MEDIA</font><form action=$PHP_SELF method=POST><br><br>\n";
         echo "<input type=hidden name=ADD value=41media>\n";
         echo "<input type=hidden name=media_id value=$media[id]>\n";
-        echo "<table cellspacing=3>\n";
+        echo "<table class=shadedtable cellspacing=3>\n";
         echo "<tr bgcolor=$oddrows><td align=right>ID: </td><td align=left><font color=$default_text>" . $media['id'] . "</font></td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>FileName: </td><td align=left>$media[filename]".helptag("media-filename")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>MimeType: </td><td align=left>$media[mimetype]".helptag("media-mimetype")."</td></tr>\n";
@@ -218,7 +218,7 @@ if ($ADD=="10media") {
         echo "  </tr>\n";
         echo "</table></center>\n";
 
-        echo "<center>You may upload or dial extension 8167 (pin 4321).</center>\n";
+        echo "<br /><div style='text-align:center;color:black;'>Use Add Media File or dial extension 8167 (pin 4321)</div>\n";
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
     }

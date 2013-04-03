@@ -96,7 +96,7 @@ $html .= "<PRE><FONT SIZE=2>\n";
 
 if (!$group)
 {
-$html .= "Please Select A Server, Date And Time Range\n";
+// $html .= "Please Select A Server, Date And Time Range\n";
 }
 
 else

@@ -83,7 +83,7 @@ function report_agent_stats() {
     $head .= "<input type=hidden name=SUB value=\"$SUB\">\n";
     $head .= "<input type=hidden name=DB value=\"$DB\">\n";
     #$head .= "<input type=hidden name=agent value=\"$agent\">\n";
-    $head .= "<table align=center cellspacing=1 width=350 bgcolor=grey>\n";
+    $head .= "<table class=shadedtable align=center cellspacing=1 width=350 bgcolor=grey>\n";
     $head .= "  <tr class=tabheader>\n";
     $head .= "    <td>Date Range</td>\n";
     $head .= "    <td>Agent ID</td>\n";
@@ -119,9 +119,9 @@ function report_agent_stats() {
         $rslt=mysql_query($stmt, $link);
         $statuses_to_print = mysql_num_rows($rslt);
         
-        $table .= "  <br>\n";
+        $table .= "  <br><br>\n";
         $table .= "  <center><font color=$default_text size=3><b>CALL DISPOSITION SUMMARY</b></font></center>\n";
-        $table .= "  <table align=center width=300 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
+        $table .= "  <table class=shadedtable align=center width=300 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
         $table .= "    <tr class=tabheader>\n";
         $table .= "      <td>STATUS</td>\n";
         $table .= "      <td>COUNT</td>\n";
@@ -157,9 +157,9 @@ function report_agent_stats() {
         $rslt=mysql_query($stmt, $link);
         $statuses_to_print = mysql_num_rows($rslt);
         
-        $table .= "  <br>\n";
+        $table .= "  <br><br>\n";
         $table .= "  <center><font color=$default_text size=3><b>AGENT DISPOSITION SUMMARY</b></font></center>\n";
-        $table .= "  <table align=center width=300 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
+        $table .= "  <table class=shadedtable align=center width=300 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
         $table .= "    <tr class=tabheader>\n";
         $table .= "      <td>STATUS</td>\n";
         $table .= "      <td>COUNT</td>\n";
@@ -192,9 +192,9 @@ function report_agent_stats() {
         $table .= "</table>\n";
 
         
-        $table .= "<br>\n";
+        $table .= "<br><br>\n";
         $table .= "<center><font color=$default_text size=3><b>AGENT ACTIVITY LOG</b></font></center>\n";
-        $table .= "<table align=center width=500 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
+        $table .= "<table class=shadedtable align=center width=500 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
         $table .= "  <tr class=tabheader>\n";
         $table .= "    <td>EVENT</td>\n";
         $table .= "    <td>DATE</td>\n";
@@ -261,9 +261,9 @@ function report_agent_stats() {
         $rslt=mysql_query($stmt, $link);
         $pauses_to_print = mysql_num_rows($rslt);
         
-        $table .= "  <br>\n";
+        $table .= "  <br><br>\n";
         $table .= "  <center><font color=$default_text size=3><b>PAUSE DETAIL</b></font></center>\n";
-        $table .= "  <table align=center width=500 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
+        $table .= "  <table class=shadedtable align=center width=500 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
         $table .= "    <tr class=tabheader>\n";
         $table .= "      <td>CODE</td>\n";
         $table .= "      <td>START</td>\n";
@@ -302,12 +302,12 @@ function report_agent_stats() {
         $rslt=mysql_query($stmt, $link);
         $logs_to_print = mysql_num_rows($rslt);
         
-        $table .= "<br>\n";
+        $table .= "<br><br>\n";
         $table .= "<center><font color=$default_text size=3><b>OUTBOUND CALLS</b></font></center>\n";
         $table .= "<center>\n";
         $th=''; if ($logs_to_print>30) $th = "height:500px;";
         $table .= "<div style=\"overflow:auto;width:770px;$th\">\n";
-        $table .= "<table align=center width=750 cellspacing=1 cellpadding=1 bgcolor=grey style=\"cursor:crosshair;\">\n";
+        $table .= "<table class=shadedtable align=center width=750 cellspacing=1 cellpadding=1 bgcolor=grey style=\"cursor:crosshair;\">\n";
         $table .= "  <tr class=tabheader>\n";
         $table .= "    <td colspan=12 style=\"font-size: 7pt;\">W=wait&nbsp;&nbsp;&nbsp;T=talk&nbsp;&nbsp;&nbsp;D=disposition&nbsp;&nbsp;&nbsp;P=pause</td>\n";
         $table .= "  </tr>\n";
@@ -361,12 +361,12 @@ function report_agent_stats() {
         $rslt=mysql_query($stmt, $link);
         $logs_to_print = mysql_num_rows($rslt);
         
-        $table .= "<br>\n";
+        $table .= "<br><br>\n";
         $table .= "<center><font color=$default_text size=3><b>INBOUND/CLOSER CALLS</b></font></center>\n";
         $table .= "<center>\n";
         $th=''; if ($logs_to_print>30) $th = "height:500px;";
         $table .= "<div style=\"overflow:auto;width:770px;$th\">\n";
-        $table .= "<table align=center width=750 cellspacing=1 cellpadding=1 bgcolor=grey style=\"cursor:crosshair;\">\n";
+        $table .= "<table class=shadedtable align=center width=750 cellspacing=1 cellpadding=1 bgcolor=grey style=\"cursor:crosshair;\">\n";
         $table .= "  <tr class=tabheader>\n";
         $table .= "    <td colspan=12 style=\"font-size: 7pt;\">W=wait&nbsp;&nbsp;&nbsp;T=talk&nbsp;&nbsp;&nbsp;D=disposition&nbsp;&nbsp;&nbsp;P=pause</td>\n";
         $table .= "  </tr>\n";
@@ -465,12 +465,12 @@ function report_agent_stats() {
         $rslt=mysql_query($stmt, $link);
         $logs_to_print = mysql_num_rows($rslt);
         
-        $table .= "<br>\n";
+        $table .= "<br><br>\n";
         $table .= "<center><font color=$default_text size=3><b>RECORDINGS</b></font></center>\n";
         $table .= "<center>\n";
         $th=''; if ($logs_to_print>30) $th = "height:500px;";
         $table .= "<div style=\"overflow:auto;width:770px;$th\">\n";
-        $table .= "<table align=center width=750 cellspacing=1 cellpadding=1 bgcolor=grey style=\"cursor:crosshair;\">\n";
+        $table .= "<table class=shadedtable align=center width=750 cellspacing=1 cellpadding=1 bgcolor=grey style=\"cursor:crosshair;\">\n";
         $table .= "  <tr class=tabheader>\n";
         $table .= "    <td># </td>\n";
         $table .= "    <td>LEAD</td>\n";

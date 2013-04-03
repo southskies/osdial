@@ -776,7 +776,7 @@ if ($ADD == "3menu") {
     echo '<input type="hidden" name="oivr_id" value="' . $oivr['id'] . '">';
     echo '<input type="hidden" name="campaign_id" value="' . $campaign_id . '">';
 
-    echo "<table cellspacing=1 cellpadding=5>\n";
+    echo "<table class=shadedtable cellspacing=1 cellpadding=5>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$oddrows align=right>Name</td>\n";
     echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="30" maxlength="50" name="oivr_name" value="' . $oivr['name'] . '"></td>';
@@ -991,7 +991,7 @@ if ($ADD == "3keys") {
     echo '<input type="hidden" name="campaign_id" value="' . $campaign_id . '">';
     echo '<input type="hidden" name="oivr_opt_action" value="' . $opt['action'] . '">';
 
-    echo "<table cellspacing=1 cellpadding=5>\n";
+    echo "<table class=shadedtable cellspacing=1 cellpadding=5>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$oddrows align=right>Campaign/IVR:</td>\n";
     echo '      <td bgcolor="' . $oddrows . '">' . $campaign_id . '/' . $oivr_id .'</td>';

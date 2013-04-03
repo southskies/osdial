@@ -30,7 +30,8 @@ if ($ADD=="1") {
     if ($LOG['modify_users']==1) {
         echo "<center><br><font class=top_header color=$default_text size=+1>ADD A NEW AGENT<form action=$PHP_SELF method=POST></font><br><br>\n";
         echo "<input type=hidden name=ADD value=2>\n";
-        echo "<TABLE border=0 cellspacing=3 width=$section_width>\n";
+        echo "<div style=\"width:660px;padding:5px;\">";
+        echo "<TABLE class=shadedtable border=0 cellspacing=3 width=650>\n";
         echo "<tr bgcolor=$oddrows><td align=right with=45%>Agent Number: </td><td align=left width=55%>\n";
         
         if ($LOG['multicomp_admin'] > 0) {
@@ -99,7 +100,7 @@ if ($ADD=="1") {
         #echo "<tr bgcolor=$oddrows><td align=right>Phone Pass: </td><td align=left><input type=text name=phone_pass size=20 maxlength=20>".helptag("osdial_users-phone_pass")."</td></tr>\n";
 
         echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=ADD></td></tr>\n";
-        echo "</TABLE></center>\n";
+        echo "</TABLE></div></center>\n";
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
     }
@@ -116,8 +117,9 @@ if ($ADD=="1A")
 	{
 	echo "<center><br><font class=top_header color=$default_text size=+1>COPY AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2A>\n";
-	echo "<TABLE width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left>";
+	echo "<div style=\"width:660px;padding:5px;\">";
+	echo "<TABLE class=shadedtable cellspacing=3 width=650>\n";
+	echo "<tr bgcolor=$oddrows><td align=center colspan=2 width=100%>Agent Number: ";
     if ($LOG['multicomp_admin'] > 0) {
         $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
         echo "<select name=company_id>\n";
@@ -154,7 +156,7 @@ if ($ADD=="1A")
 	echo "$Uusers_list";
 	echo "</select>".helptag("osdial_users-user")."</td></tr>\n";
 	echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=COPY></td></tr>\n";
-	echo "</TABLE></center>\n";
+	echo "</TABLE></div></center>\n";
 	}
 	else
 	{
@@ -470,391 +472,387 @@ $ADD='0';		# go to user list
 # ADD=3 modify user info in the system
 ######################
 
-if ($ADD==3)
-{
-	if ($LOG['modify_users']==1)
-	{
-	$stmt=sprintf("SELECT * FROM osdial_users WHERE user='%s';",mres($user));
-	$rslt=mysql_query($stmt, $link);
-	$row=mysql_fetch_row($rslt);
-	$user_level =			$row[4];
-	$user_group =			$row[5];
-	$phone_login =			$row[6];
-	$phone_pass =			$row[7];
-	$delete_users =			$row[8];
-	$delete_user_groups =		$row[9];
-	$delete_lists =			$row[10];
-	$delete_campaigns =		$row[11];
-	$delete_ingroups =		$row[12];
-	$delete_remote_agents =		$row[13];
-	$load_leads =			$row[14];
-	$campaign_detail =		$row[15];
-	$ast_admin_access =		$row[16];
-	$ast_delete_phones =		$row[17];
-	$delete_scripts =		$row[18];
-	$modify_leads =			$row[19];
-	$hotkeys_active =		$row[20];
-	$change_agent_campaign =	$row[21];
-	$agent_choose_ingroups =	$row[22];
-	$scheduled_callbacks =		$row[24];
-	$agentonly_callbacks =		$row[25];
-	$agentcall_manual =		$row[26];
-	$osdial_recording =		$row[27];
-	$osdial_transfers =		$row[28];
-	$delete_filters =		$row[29];
-	$alter_agent_interface_options =$row[30];
-	$closer_default_blended =	$row[31];
-	$delete_call_times =		$row[32];
-	$modify_call_times =		$row[33];
-	$modify_users =			$row[34];
-	$modify_campaigns =		$row[35];
-	$modify_lists =			$row[36];
-	$modify_scripts =		$row[37];
-	$modify_filters =		$row[38];
-	$modify_ingroups =		$row[39];
-	$modify_usergroups =		$row[40];
-	$modify_remoteagents =		$row[41];
-	$modify_servers =		$row[42];
-	$view_reports =			$row[43];
-	$osdial_recording_override =	$row[44];
-	$alter_custdata_override = 	$row[45];
-	$manual_dial_allow_skip = 	$row[47];
-	$export_leads = 	$row[48];
-	$admin_api_access = 	$row[49];
-	$agent_api_access = 	$row[50];
-	$xfer_agent2agent = 	$row[51];
-	$script_override = 	$row[52];
-	$load_dnc = 	$row[53];
-	$export_dnc = 	$row[54];
-	$delete_dnc = 	$row[55];
+if ($ADD==3) {
+	if ($LOG['modify_users']==1) {
+		$stmt=sprintf("SELECT * FROM osdial_users WHERE user='%s';",mres($user));
+		$rslt=mysql_query($stmt, $link);
+		$row=mysql_fetch_row($rslt);
+		$user_level =			$row[4];
+		$user_group =			$row[5];
+		$phone_login =			$row[6];
+		$phone_pass =			$row[7];
+		$delete_users =			$row[8];
+		$delete_user_groups =		$row[9];
+		$delete_lists =			$row[10];
+		$delete_campaigns =		$row[11];
+		$delete_ingroups =		$row[12];
+		$delete_remote_agents =		$row[13];
+		$load_leads =			$row[14];
+		$campaign_detail =		$row[15];
+		$ast_admin_access =		$row[16];
+		$ast_delete_phones =		$row[17];
+		$delete_scripts =		$row[18];
+		$modify_leads =			$row[19];
+		$hotkeys_active =		$row[20];
+		$change_agent_campaign =	$row[21];
+		$agent_choose_ingroups =	$row[22];
+		$scheduled_callbacks =		$row[24];
+		$agentonly_callbacks =		$row[25];
+		$agentcall_manual =		$row[26];
+		$osdial_recording =		$row[27];
+		$osdial_transfers =		$row[28];
+		$delete_filters =		$row[29];
+		$alter_agent_interface_options =$row[30];
+		$closer_default_blended =	$row[31];
+		$delete_call_times =		$row[32];
+		$modify_call_times =		$row[33];
+		$modify_users =			$row[34];
+		$modify_campaigns =		$row[35];
+		$modify_lists =			$row[36];
+		$modify_scripts =		$row[37];
+		$modify_filters =		$row[38];
+		$modify_ingroups =		$row[39];
+		$modify_usergroups =		$row[40];
+		$modify_remoteagents =		$row[41];
+		$modify_servers =		$row[42];
+		$view_reports =			$row[43];
+		$osdial_recording_override =	$row[44];
+		$alter_custdata_override = 	$row[45];
+		$manual_dial_allow_skip = 	$row[47];
+		$export_leads = 	$row[48];
+		$admin_api_access = 	$row[49];
+		$agent_api_access = 	$row[50];
+		$xfer_agent2agent = 	$row[51];
+		$script_override = 	$row[52];
+		$load_dnc = 	$row[53];
+		$export_dnc = 	$row[54];
+		$delete_dnc = 	$row[55];
 
-	if ($LOG['user_level']==9) {
-        $levelMAX=$LOG['user_level'];
-    } else {
-        $levelMAX=($LOG['user_level']-1);
-    }
-
-	if ( ($user_level > $levelMAX) and ($LOG['user_level'] < 9) and (!OSDpreg_match('/:/' . $user_group . ':', $LOG['allowed_usergroupsSTR'])) )
-		{
-		echo "<br><font color=red>You do not have permissions to modify this user: $row[1]</font>\n";
-		}
-	else
-		{
-		echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY AN AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
-		if ($LOG['user_level'] > 8)
-			{echo "<input type=hidden name=ADD value=4A>\n";}
-		else
-			{
-			if ($LOG['alter_agent_interface_options'] == "1")
-				{echo "<input type=hidden name=ADD value=4B>\n";}
-			else
-				{echo "<input type=hidden name=ADD value=4>\n";}
-			}
-		echo "<input type=hidden name=user value=\"$row[1]\">\n";
-		echo "<TABLE style='border-radius: 8px 8px 0px 0px;' width=$section_width cellspacing=3>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left>\n";
-        $pcomp='';
-        if ($LOG['multicomp']>0 and OSDpreg_match($LOG['companiesRE'],$row[1])) {
-            echo "<font color=$default_text>" . OSDsubstr($row[1],0,3) . "</font>&nbsp;";
-            echo "<b>" . OSDsubstr($row[1],3,OSDstrlen($row[1])) . "</b>";
-            $pcomp = OSDsubstr($row[1],0,3);
-        } else {
-            echo "<b>$row[1]</b>";
-        }
-        echo "".helptag("osdial_users-user")."</td></tr>\n";
-		echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=pass size=20 maxlength=10 value=\"$row[2]\">".helptag("osdial_users-pass")."</td></tr>\n";
-		echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=full_name size=30 maxlength=30 value=\"$row[3]\">".helptag("osdial_users-full_name")."</td></tr>\n";
-		echo "<tr bgcolor=$oddrows><td align=right>User Level: </td><td align=left><select style=\"font-family:monospace;\" size=1 name=user_level>";
-		$h=0;
-		while ($h<=$levelMAX) {
-            $sel='';
-            if ($h==$row[4]) $sel='selected';
-            echo "<option value=$h $sel>";
-		    if ($h==0) {
-                echo "$h - Disabled";
-            } elseif ($h>=1 and $h <=3) {
-                echo "$h - Outbound $h";
-            } elseif ($h>=4 and $h <=7) {
-                echo "$h - Outbound / Inbound / Closer $h";
-            } elseif ($h==8) {
-                echo "$h - Manager";
-            } elseif ($h==9) {
-                echo "$h - Administrator";
-            } else {
-			    echo "$h";
-            }
-			echo "</option>";
-			$h++;
-		}
-		echo "</select>".helptag("osdial_users-user_level")."</td></tr>\n";
-
-		echo "<tr bgcolor=$oddrows><td align=right><A HREF=\"$PHP_SELF?ADD=311111&user_group=$user_group\">User Group</A>: </td><td align=left><select style=\"font-family:monospace;\" size=1 name=user_group>\n";
-        $krh = get_krh($link, 'osdial_user_groups', 'user_group,group_name', 'user_group', sprintf("user_group IN %s",$LOG['allowed_usergroupsSQL']), '');
-        echo format_select_options($krh, 'user_group', 'group_name', $user_group, '', true); 
-        echo "</select>".helptag("osdial_users-user_group")."</td></tr>\n";
-
-        if ($phone_login != '') {
-		    $phn = get_first_record($link,'phones','extension,server_ip',sprintf("login='%s'",$phone_login));
-		    echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=31111111111&extension=$phn[extension]&server_ip=$phn[server_ip]\">Default Phone / Voicemail</a>: </td><td align=left><select style=\"font-family:monospace;\" size=1 name=phone_login>\n";
-        } else {
-		    echo "<tr bgcolor=$oddrows><td align=right>Default Phone / Voicemail: </td><td align=left><select size=1 name=phone_login>\n";
-        }
-        $krh = get_krh($link, 'phones', sprintf("login,fullname,IF((SELECT count(*) FROM osdial_users WHERE user!='%s' AND user LIKE '%s%%' AND phone_login=login)=1,'N','Y') AS active",mres($row[1]),mres($pcomp)), 'login', sprintf("login LIKE '%s%%'",mres($pcomp)), '');
-        echo format_select_options($krh, 'login', 'fullname', $phone_login, ' -- ANY -- ', true); 
-        echo "</select>".helptag("osdial_users-phone_login")."</td></tr>\n";
-        #echo "<tr bgcolor=$oddrows><td align=right>Phone Login: </td><td align=left><input type=text name=phone_login size=20 maxlength=20 value=\"$phone_login\">".helptag("osdial_users-phone_login")."</td></tr>\n";
-        #echo "<tr bgcolor=$oddrows><td align=right>Phone Pass: </td><td align=left><input type=text name=phone_pass size=20 maxlength=20 value=\"$phone_pass\">".helptag("osdial_users-phone_pass")."</td></tr>\n";
-
-        echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
-
-		if ( ($LOG['user_level'] > 8) or ($LOG['alter_agent_interface_options'] == "1") )
-			{
-			echo "<tr><td>&nbsp;</td></tr>";
-			echo "<tr class=\"tabheader font3\"><td class=top_header2 colspan=2 align=center>AGENT INTERFACE OPTIONS</td></tr>\n";
-			echo "<tr bgcolor=$oddrows><td align=right>Agent Choose Ingroups: </td><td align=left><select size=1 name=agent_choose_ingroups><option value=0>N</option><option value=1>Y</option>" . optnum2let($agent_choose_ingroups) . "</select>".helptag("osdial_users-agent_choose_ingroups")."</td></tr>\n";
-			echo "<tr bgcolor=$oddrows><td align=right>Closer Default Blended: </td><td align=left><select size=1 name=closer_default_blended><option value=0>N</option><option value=1>Y</option>" . optnum2let($closer_default_blended) . "</select>".helptag("osdial_users-closer_default_blended")."</td></tr>\n";
-
-			echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
-
-			echo "<tr bgcolor=$oddrows><td align=right>Hot Keys Active: </td><td align=left><select size=1 name=hotkeys_active><option value=0>N</option><option value=1>Y</option>" . optnum2let($hotkeys_active) . "</select>".helptag("osdial_users-hotkeys_active")."</td></tr>\n";
-			echo "<tr bgcolor=$oddrows><td align=right>Manual-Dial: </td><td align=left><select size=1 name=agentcall_manual><option value=0>N</option><option value=1>Y</option>" . optnum2let($agentcall_manual) . "</select>".helptag("osdial_users-agentcall_manual")."</td></tr>\n";
-			echo "<tr bgcolor=$oddrows><td align=right>Preview-Dial Skip-Lead: </td><td align=left><select size=1 name=manual_dial_allow_skip><option value=0>N</option><option value=1>Y</option>" . optnum2let($manual_dial_allow_skip) . "</select>".helptag("osdial_users-manual_dial_allow_skip")."</td></tr>\n";
-
-			echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
-
-			echo "<tr bgcolor=$oddrows><td align=right>Scheduled Callbacks: </td><td align=left><select size=1 name=scheduled_callbacks><option value=0>N</option><option value=1>Y</option>" . optnum2let($scheduled_callbacks) . "</select>".helptag("osdial_users-scheduled_callbacks")."</td></tr>\n";
-			echo "<tr bgcolor=$oddrows><td align=right>Agent-Only Callbacks: </td><td align=left><select size=1 name=agentonly_callbacks><option value=0>N</option><option value=1>Y</option>" . optnum2let($agentonly_callbacks) . "</select>".helptag("osdial_users-agentonly_callbacks")."</td></tr>\n";
-
-			echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
-
-			echo "<tr bgcolor=$oddrows><td align=right>Recording: </td><td align=left><select size=1 name=osdial_recording><option value=0>N</option><option value=1>Y</option>" . optnum2let($osdial_recording) . "</select>".helptag("osdial_users-osdial_recording")."</td></tr>\n";
-			echo "<tr bgcolor=$oddrows><td align=right>Recording Mode (Override): </td><td align=left><select size=1 name=osdial_recording_override><option>DISABLED</option><option>NEVER</option><option>ONDEMAND</option><option>ALLCALLS</option><option>ALLFORCE</option><option SELECTED>$osdial_recording_override</option></select>".helptag("osdial_users-osdial_recording_override")."</td></tr>\n";
-
-			echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
-			echo "<tr bgcolor=$oddrows><td align=right>Alter Lead Data (Override): </td><td align=left><select size=1 name=alter_custdata_override><option>NOT_ACTIVE</option><option>ALLOW_ALTER</option><option SELECTED>$alter_custdata_override</option></select>".helptag("osdial_users-alter_custdata_override")."</td></tr>\n";
-			echo "<tr bgcolor=$oddrows>\n";
-            echo "  <td align=right>Script (Override): </td>\n";
-            echo "  <td align=left>\n";
-            echo "    <select style=\"font-family:monospace;\" size=1 name=script_override>\n";
-            echo get_scripts($link, $script_override);
-            echo "    </select>\n";
-            echo "  ".helptag("osdial_users-script_override")."</td>\n";
-            echo "</tr>\n";
-
-			echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
-
-			echo "<tr bgcolor=$oddrows><td align=right>Transfers: </td><td align=left><select size=1 name=osdial_transfers><option value=0>N</option><option value=1>Y</option>" . optnum2let($osdial_transfers) . "</select>".helptag("osdial_users-osdial_transfers")."</td></tr>\n";
-			echo "<tr bgcolor=$oddrows>\n";
-            echo "  <td align=right>Agent2Agent Transfers: </td>\n";
-            echo "  <td align=left><select size=1 name=xfer_agent2agent><option value=0>N</option><option value=1>Y</option>" . optnum2let($xfer_agent2agent) . "</select>\n";
-            echo "  ".helptag("osdial_users-xfer_agent2agent")."</td>\n";
-            echo "</tr>\n";
-            if ($xfer_agent2agent > 0) {
-		        $stmt = sprintf("SELECT drop_trigger,drop_call_seconds,drop_message,drop_exten,allow_multicall FROM osdial_inbound_groups WHERE group_id='A2A_%s';",mres($user));
-		        $rslt=mysql_query($stmt, $link);
-			    $rowx=mysql_fetch_row($rslt);
-                $xfer_agent2agent_wait = $rowx[0];
-                $xfer_agent2agent_wait_seconds = $rowx[1];
-                $xfer_agent2agent_wait_action = $rowx[2];
-                $xfer_agent2agent_wait_extension = $rowx[3];
-                $xfer_agent2agent_allow_multicall = $rowx[4];
-			    echo "<tr bgcolor=$oddrows>\n";
-                echo "  <td align=right>Agent2Agent Timeout: </td>\n";
-                echo "  <td align=left>\n";
-                echo "    <select size=1 name=xfer_agent2agent_wait>\n";
-                $wsel=''; if ($xfer_agent2agent_wait=='CALL_SECONDS_TIMEOUT') $wsel='selected';
-                echo "      <option $wsel value=CALL_SECONDS_TIMEOUT>ALWAYS WAIT</option>\n";
-                $wsel=''; if ($xfer_agent2agent_wait=='NO_AGENTS_CONNECTED') $wsel='selected';
-                echo "      <option $wsel value=NO_AGENTS_CONNECTED>WHEN LOGGED IN</option>\n";
-                $wsel=''; if ($xfer_agent2agent_wait=='NO_AGENTS_AVAILABLE') $wsel='selected';
-                echo "      <option $wsel value=NO_AGENTS_AVAILABLE>NEVER WAIT</option>\n";
-                echo "    </select>\n";
-                echo "  ".helptag("osdial_users-xfer_agent2agent_wait")."</td>\n";
-                echo "</tr>\n";
-	            echo "<tr bgcolor=$oddrows>\n";
-                echo "  <td align=right>Agent2Agent Timeout Seconds: </td>\n";
-                echo "  <td align=left><input type=text name=xfer_agent2agent_wait_seconds size=5 maxlength=4 value=\"$xfer_agent2agent_wait_seconds\">".helptag("osdial_users-xfer_agent2agent_wait_seconds")."</td>\n";
-                echo "</tr>\n";
-                echo "  <td align=right>Agent2Agent Timeout Action: </td>\n";
-                echo "  <td align=left>\n";
-                echo "    <select size=1 name=xfer_agent2agent_wait_action>\n";
-                $wsel=''; if ($xfer_agent2agent_wait_action=='N') $wsel='selected';
-                echo "      <option $wsel value=N>VOICEMAIL</option>\n";
-                $wsel=''; if ($xfer_agent2agent_wait_action=='Y') $wsel='selected';
-                echo "      <option $wsel value=Y>EXTENSION</option>\n";
-                echo "    </select>\n";
-                echo "  ".helptag("osdial_users-xfer_agent2agent_wait_action")."</td>\n";
-                echo "</tr>\n";
-                if ($xfer_agent2agent_wait_action == "Y") {
-	                echo "<tr bgcolor=$oddrows>\n";
-                    echo "  <td align=right>Agent2Agent Timeout Extension: </td>\n";
-                    echo "  <td align=left><input type=text name=xfer_agent2agent_wait_extension size=10 maxlength=15 value=\"$xfer_agent2agent_wait_extension\">".helptag("osdial_users-xfer_agent2agent_wait_extension")."</td>\n";
-                    echo "</tr>\n";
-                } else {
-			        echo "<input type=hidden name=xfer_agent2agent_wait_extension value=\"$xfer_agent2agent_wait_extension\">\n";
-                }
-	            echo "<tr bgcolor=$oddrows>\n";
-                echo "  <td align=right>Agent2Agent Allow Multicall: </td>\n";
-                echo "  <td align=left>\n";
-                echo "    <select size=1 name=xfer_agent2agent_allow_multicall>\n";
-                $wsel=''; if ($xfer_agent2agent_allow_multicall=='N') $wsel='selected';
-                echo "      <option $wsel value=N>N</option>\n";
-                $wsel=''; if ($xfer_agent2agent_allow_multicall=='Y') $wsel='selected';
-                echo "      <option $wsel value=Y>Y</option>\n";
-                echo "    </select>\n";
-                echo "  ".helptag("osdial_users-xfer_agent2agent_allow_multicall")."</td>\n";
-                echo "</tr>\n";
-            }
-
-			echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
-			}
-		if ($LOG['user_level'] > 8 && $user_level > 7)
-			{
-			echo "<tr><td>&nbsp;</td></tr>";
-			echo "<tr class=\"tabheader font3\"><td colspan=2 class=top_header2 align=center>ADMIN INTERFACE OPTIONS</td></tr>\n";
-
-			echo "<tr bgcolor=$oddrows><td align=right>Modify Agents: </td><td align=left><select size=1 name=modify_users><option value=0>N</option><option value=1>Y</option>" . optnum2let($modify_users) . "</select>".helptag("osdial_users-modify_sections")."</td></tr>\n";
-			echo "<tr bgcolor=$oddrows><td align=right>Delete Agents: </td><td align=left><select size=1 name=delete_users><option value=0>N</option><option value=1>Y</option>" . optnum2let($delete_users) . "</select>".helptag("osdial_users-delete_users")."</td></tr>\n";
-			echo "<tr bgcolor=$oddrows><td align=right>Alter Agent Interface Options: </td><td align=left><select size=1 name=alter_agent_interface_options><option value=0>N</option><option value=1>Y</option>" . optnum2let($alter_agent_interface_options) . "</select>".helptag("osdial_users-alter_agent_interface_options")."</td></tr>\n";
-			echo "<tr bgcolor=$oddrows><td align=right>Change Agent Campaign: </td><td align=left><select size=1 name=change_agent_campaign><option value=0>N</option><option value=1>Y</option>" . optnum2let($change_agent_campaign) . "</select>".helptag("osdial_users-change_agent_campaign")."</td></tr>\n";
-
-			echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
-
-			echo "<tr bgcolor=$oddrows><td align=right>Modify Campaigns: </td><td align=left><select size=1 name=modify_campaigns><option value=0>N</option><option value=1>Y</option>" . optnum2let($modify_campaigns) . "</select>".helptag("osdial_users-modify_sections")."</td></tr>\n";
-			echo "<tr bgcolor=$oddrows><td align=right>Delete Campaigns: </td><td align=left><select size=1 name=delete_campaigns><option value=0>N</option><option value=1>Y</option>" . optnum2let($delete_campaigns) . "</select>".helptag("osdial_users-delete_campaigns")."</td></tr>\n";
-			echo "<tr bgcolor=$oddrows><td align=right>Campaign Detail: </td><td align=left><select size=1 name=campaign_detail><option value=0>N</option><option value=1>Y</option>" . optnum2let($campaign_detail) . "</select>".helptag("osdial_users-campaign_detail")."</td></tr>\n";
-
-			echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
-
-			echo "<tr bgcolor=$oddrows><td align=right>Modify Lists: </td><td align=left><select size=1 name=modify_lists><option value=0>N</option><option value=1>Y</option>" . optnum2let($modify_lists) . "</select>".helptag("osdial_users-modify_sections")."</td></tr>\n";
-			echo "<tr bgcolor=$oddrows><td align=right>Delete Lists: </td><td align=left><select size=1 name=delete_lists><option value=0>N</option><option value=1>Y</option>" . optnum2let($delete_lists) . "</select>".helptag("osdial_users-delete_lists")."</td></tr>\n";
-
-			echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
-
-			echo "<tr bgcolor=$oddrows><td align=right>Load Leads: </td><td align=left><select size=1 name=load_leads><option value=0>N</option><option value=1>Y</option>" . optnum2let($load_leads) . "</select>".helptag("osdial_users-load_leads")."</td></tr>\n";
-			echo "<tr bgcolor=$oddrows><td align=right>Modify Leads: </td><td align=left><select size=1 name=modify_leads><option value=0>N</option><option value=1>Y</option>" . optnum2let($modify_leads) . "</select>".helptag("osdial_users-modify_leads")."</td></tr>\n";
-			echo "<tr bgcolor=$oddrows><td align=right>Export Leads: </td><td align=left><select size=1 name=export_leads><option value=0>N</option><option value=1>Y</option>" . optnum2let($export_leads) . "</select>".helptag("osdial_users-export_leads")."</td></tr>\n";
-
-			echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
-
-			echo "<tr bgcolor=$oddrows><td align=right>Load DNC Records: </td><td align=left><select size=1 name=load_dnc><option value=0>N</option><option value=1>Y</option>" . optnum2let($load_dnc) . "</select>".helptag("osdial_users-load_dnc")."</td></tr>\n";
-			echo "<tr bgcolor=$oddrows><td align=right>Delete DNC Records: </td><td align=left><select size=1 name=delete_dnc><option value=0>N</option><option value=1>Y</option>" . optnum2let($delete_dnc) . "</select>".helptag("osdial_users-delete_dnc")."</td></tr>\n";
-			echo "<tr bgcolor=$oddrows><td align=right>Export DNC Records: </td><td align=left><select size=1 name=export_dnc><option value=0>N</option><option value=1>Y</option>" . optnum2let($export_dnc) . "</select>".helptag("osdial_users-export_dnc")."</td></tr>\n";
-
-			echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
-
-			echo "<tr bgcolor=$oddrows><td align=right>Modify Scripts: </td><td align=left><select size=1 name=modify_scripts><option value=0>N</option><option value=1>Y</option>" . optnum2let($modify_scripts) . "</select>".helptag("osdial_users-modify_sections")."</td></tr>\n";
-			echo "<tr bgcolor=$oddrows><td align=right>Delete Scripts: </td><td align=left><select size=1 name=delete_scripts><option value=0>N</option><option value=1>Y</option>" . optnum2let($delete_scripts) . "</select>".helptag("osdial_users-delete_scripts")."</td></tr>\n";
-
-			echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
-
-			echo "<tr bgcolor=$oddrows><td align=right>Modify Filters: </td><td align=left><select size=1 name=modify_filters><option value=0>N</option><option value=1>Y</option>" . optnum2let($modify_filters) . "</select>".helptag("osdial_users-modify_sections")."</td></tr>\n";
-			echo "<tr bgcolor=$oddrows><td align=right>Delete Filters: </td><td align=left><select size=1 name=delete_filters><option value=0>N</option><option value=1>Y</option>" . optnum2let($delete_filters) . "</select>".helptag("osdial_users-delete_filters")."</td></tr>\n";
-
-			echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
-
-			echo "<tr bgcolor=$oddrows><td align=right>Modify In-Groups: </td><td align=left><select size=1 name=modify_ingroups><option value=0>N</option><option value=1>Y</option>" . optnum2let($modify_ingroups) . "</select>".helptag("osdial_users-modify_sections")."</td></tr>\n";
-			echo "<tr bgcolor=$oddrows><td align=right>Delete In-Groups: </td><td align=left><select size=1 name=delete_ingroups><option value=0>N</option><option value=1>Y</option>" . optnum2let($delete_ingroups) . "</select>".helptag("osdial_users-delete_ingroups")."</td></tr>\n";
-
-			echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
-
-			echo "<tr bgcolor=$oddrows><td align=right>Modify User Groups: </td><td align=left><select size=1 name=modify_usergroups><option value=0>N</option><option value=1>Y</option>" . optnum2let($modify_usergroups) . "</select>".helptag("osdial_users-modify_sections")."</td></tr>\n";
-			echo "<tr bgcolor=$oddrows><td align=right>Delete User Groups: </td><td align=left><select size=1 name=delete_user_groups><option value=0>N</option><option value=1>Y</option>" . optnum2let($delete_user_groups) . "</select>".helptag("osdial_users-delete_user_groups")."</td></tr>\n";
-
-			echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
-
-			echo "<tr bgcolor=$oddrows><td align=right>Modify External Agents: </td><td align=left><select size=1 name=modify_remoteagents><option value=0>N</option><option value=1>Y</option>" . optnum2let($modify_remoteagents) . "</select>".helptag("osdial_users-modify_sections")."</td></tr>\n";
-			echo "<tr bgcolor=$oddrows><td align=right>Delete External Agents: </td><td align=left><select size=1 name=delete_remote_agents><option value=0>N</option><option value=1>Y</option>" . optnum2let($delete_remote_agents) . "</select>".helptag("osdial_users-delete_remote_agents")."</td></tr>\n";
-
-			echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
-
-			echo "<tr bgcolor=$oddrows><td align=right>View Reports: </td><td align=left><select size=1 name=view_reports><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_reports) . "</select>".helptag("osdial_users-view_reports")."</td></tr>\n";
-
-			echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
-
-			echo "<tr bgcolor=$unusualrows><td align=right>Setup Menu: </td><td align=left><select size=1 name=ast_admin_access><option value=0>N</option><option value=1>Y</option>" . optnum2let($ast_admin_access) . "</select>".helptag("osdial_users-ast_admin_access")."</td></tr>\n";
-			echo "<tr bgcolor=$unusualrows><td align=right>Modify Servers: </td><td align=left><select size=1 name=modify_servers><option value=0>N</option><option value=1>Y</option>" . optnum2let($modify_servers) . "</select>".helptag("osdial_users-modify_sections")."</td></tr>\n";
-			echo "<tr bgcolor=$unusualrows><td align=right>Delete Phones: </td><td align=left><select size=1 name=ast_delete_phones><option value=0>N</option><option value=1>Y</option>" . optnum2let($ast_delete_phones) . "</select>".helptag("osdial_users-ast_delete_phones")."</td></tr>\n";
-			echo "<tr bgcolor=$unusualrows><td align=right>Modify Call Times: </td><td align=left><select size=1 name=modify_call_times><option value=0>N</option><option value=1>Y</option>" . optnum2let($modify_call_times) . "</select>".helptag("osdial_users-modify_call_times")."</td></tr>\n";
-			echo "<tr bgcolor=$unusualrows><td align=right>Delete Call Times: </td><td align=left><select size=1 name=delete_call_times><option value=0>N</option><option value=1>Y</option>" . optnum2let($delete_call_times) . "</select>".helptag("osdial_users-delete_call_times")."</td></tr>\n";
-			echo "<tr bgcolor=$unusualrows><td align=right>Agent API Access: </td><td align=left><select size=1 name=agent_api_access><option value=0>N</option><option value=1>Y</option>" . optnum2let($agent_api_access) . "</select>".helptag("osdial_users-agent_api_access")."</td></tr>\n";
-			echo "<tr bgcolor=$unusualrows><td align=right>Admin API Access: </td><td align=left><select size=1 name=admin_api_access><option value=0>N</option><option value=1>Y</option>" . optnum2let($admin_api_access) . "</select>".helptag("osdial_users-admin_api_access")."</td></tr>\n";
-
-			echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+		if ($LOG['user_level']==9) {
+			$levelMAX=$LOG['user_level'];
 		} else {
-			echo "<input type=hidden name=view_reports value=$view_reports>\n";
-			echo "<input type=hidden name=export_leads value=$export_leads>\n";
-			echo "<input type=hidden name=alter_agent_interface_options value=$alter_agent_interface_options>\n";
-			echo "<input type=hidden name=modify_users value=$modify_users>\n";
-			echo "<input type=hidden name=change_agent_campaign value=$change_agent_campaign>\n";
-			echo "<input type=hidden name=delete_users value=$delete_users>\n";
-			echo "<input type=hidden name=modify_usergroups value=$modify_usergroups>\n";
-			echo "<input type=hidden name=delete_user_groups value=$delete_user_groups>\n";
-			echo "<input type=hidden name=modify_lists value=$modify_lists>\n";
-			echo "<input type=hidden name=delete_lists value=$delete_lists>\n";
-			echo "<input type=hidden name=load_leads value=$load_leads>\n";
-			echo "<input type=hidden name=modify_leads value=$modify_leads>\n";
-			echo "<input type=hidden name=modify_campaigns value=$modify_campaigns>\n";
-			echo "<input type=hidden name=campaign_detail value=$campaign_detail>\n";
-			echo "<input type=hidden name=delete_campaigns value=$delete_campaigns>\n";
-
-			echo "<input type=hidden name=modify_ingroups value=$modify_ingroups>\n";
-			echo "<input type=hidden name=delete_ingroups value=$delete_ingroups>\n";
-
-			echo "<input type=hidden name=modify_remoteagents value=$modify_remoteagents>\n";
-			echo "<input type=hidden name=delete_remote_agents value=$delete_remote_agents>\n";
-
-			echo "<input type=hidden name=modify_scripts value=$modify_scripts>\n";
-			echo "<input type=hidden name=delete_scripts value=$delete_scripts>\n";
-
-			echo "<input type=hidden name=modify_filters value=$modify_filters>\n";
-			echo "<input type=hidden name=delete_filters value=$delete_filters>\n";
-
-			echo "<input type=hidden name=ast_admin_access value=$ast_admin_access>\n";
-			echo "<input type=hidden name=ast_delete_phones value=$ast_delete_phones>\n";
-			echo "<input type=hidden name=modify_call_times value=$modify_call_times>\n";
-			echo "<input type=hidden name=delete_call_times value=$delete_call_times>\n";
-			echo "<input type=hidden name=modify_servers value=$modify_servers>\n";
-			echo "<input type=hidden name=agent_api_access value=$agent_api_access>\n";
-			echo "<input type=hidden name=admin_api_access value=$admin_api_access>\n";
-			echo "<input type=hidden name=load_dnc value=$load_dnc>\n";
-			echo "<input type=hidden name=export_dnc value=$export_dnc>\n";
-			echo "<input type=hidden name=delete_dnc value=$delete_dnc>\n";
+			$levelMAX=($LOG['user_level']-1);
 		}
-		echo "<input type=hidden name=phone_pass value=$phone_pass>\n";
-		echo "</table></center>\n";
 
-        echo "<br><br>";
-        echo "<table align=center border=0 cellspacing=0 cellpadding=0 width=$section_width>\n";
-        echo "  <tr>\n";
-        echo "    <td align=center>Campaign Ranks: ".helptag("osdial_users-campaign_ranks")."</td>\n";
-        echo "    <td width=5%>&nbsp;</td>\n";
-        echo "    <td align=center>Inbound Groups: ".helptag("osdial_users-closer_campaigns")."</td>\n";
-        echo "  </tr>\n";
-        echo "  <tr>\n";
-        echo "    <td align=center valign=top>\n";
-		echo "      <table bgcolor=grey border=0 cellspacing=1 class=shadedtable>\n";
-		echo "        $RANKcampaigns_list";
-		echo "        <tr class=tabfooter><td align=center class=tabbutton colspan=3><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
-		echo "      </table>\n";
-        echo "    </td>\n";
-        echo "    <td>&nbsp;</td>\n";
-        echo "    <td align=center valign=top>\n";
-		echo "      <table bgcolor=grey border=0 cellspacing=1 class=shadedtable>\n";
-		echo "        $RANKgroups_list";
-		echo "        <tr class=tabfooter><td align=center class=tabbutton colspan=4><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
-		echo "      </table>\n";
-        echo "    </td>\n";
-        echo "  </tr>\n";
-		echo "</table>\n";
-
-		#echo "<center><br><br><br><br><br><a href=\"$PHP_SELF?ADD=999999&SUB=20&agent=$row[1]\">Click here for user time sheet</a>\n";
-		#echo "<br><br><a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$row[1]\">Click here for user status</a>\n";
-		#echo "<br><br><a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$row[1]\">Click here for user stats</a>\n";
-		#echo "<br><br><a href=\"$PHP_SELF?ADD=8&user=$row[1]\">Click here for user CallBack Holds</a></center>\n";
-		if ($LOG['delete_users'] > 100) {
-			echo "<br><br><a href=\"$PHP_SELF?ADD=5&user=$row[1]\">DELETE THIS AGENT</a>\n";
+		if (($user_level > $levelMAX) and ($LOG['user_level'] < 9) and (!OSDpreg_match('/:/' . $user_group . ':', $LOG['allowed_usergroupsSTR']))) {
+			echo "<br><font color=red>You do not have permissions to modify this user: $row[1]</font>\n";
+		} else {
+			echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY AN AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
+			if ($LOG['user_level'] > 8)	{
+				echo "<input type=hidden name=ADD value=4A>\n";
+			} else {
+				if ($LOG['alter_agent_interface_options'] == "1") {
+					echo "<input type=hidden name=ADD value=4B>\n";
+				} else {
+					echo "<input type=hidden name=ADD value=4>\n";
+				}
 			}
+			echo "<input type=hidden name=user value=\"$row[1]\">\n";
+			echo "<div style=\"width:".$section_width."px;padding:5px;\">";
+			echo "<TABLE class=shadedtable cellspacing=3 width=550>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left>\n";
+			$pcomp='';
+			if ($LOG['multicomp']>0 and OSDpreg_match($LOG['companiesRE'],$row[1])) {
+				echo "<font color=$default_text>" . OSDsubstr($row[1],0,3) . "</font>&nbsp;";
+				echo "<b>" . OSDsubstr($row[1],3,OSDstrlen($row[1])) . "</b>";
+				$pcomp = OSDsubstr($row[1],0,3);
+			} else {
+				echo "<b>$row[1]</b>";
+			}
+			echo "".helptag("osdial_users-user")."</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=pass size=20 maxlength=10 value=\"$row[2]\">".helptag("osdial_users-pass")."</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=full_name size=30 maxlength=30 value=\"$row[3]\">".helptag("osdial_users-full_name")."</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>User Level: </td><td align=left><select style=\"font-family:monospace;\" size=1 name=user_level>";
+			$h=0;
+			while ($h<=$levelMAX) {
+				$sel='';
+				if ($h==$row[4]) $sel='selected';
+				echo "<option value=$h $sel>";
+				if ($h==0) {
+					echo "$h - Disabled";
+				} elseif ($h>=1 and $h <=3) {
+					echo "$h - Outbound $h";
+				} elseif ($h>=4 and $h <=7) {
+					echo "$h - Outbound / Inbound / Closer $h";
+				} elseif ($h==8) {
+					echo "$h - Manager";
+				} elseif ($h==9) {
+					echo "$h - Administrator";
+				} else {
+					echo "$h";
+				}
+				echo "</option>";
+				$h++;
+			}
+			echo "</select>".helptag("osdial_users-user_level")."</td></tr>\n";
+
+			echo "<tr bgcolor=$oddrows><td align=right><A HREF=\"$PHP_SELF?ADD=311111&user_group=$user_group\">User Group</A>: </td><td align=left><select style=\"font-family:monospace;\" size=1 name=user_group>\n";
+			$krh = get_krh($link, 'osdial_user_groups', 'user_group,group_name', 'user_group', sprintf("user_group IN %s",$LOG['allowed_usergroupsSQL']), '');
+			echo format_select_options($krh, 'user_group', 'group_name', $user_group, '', true); 
+			echo "</select>".helptag("osdial_users-user_group")."</td></tr>\n";
+
+			if ($phone_login != '') {
+				$phn = get_first_record($link,'phones','extension,server_ip',sprintf("login='%s'",$phone_login));
+				echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=31111111111&extension=$phn[extension]&server_ip=$phn[server_ip]\">Default Phone / Voicemail</a>: </td><td align=left><select style=\"font-family:monospace;\" size=1 name=phone_login>\n";
+			} else {
+				echo "<tr bgcolor=$oddrows><td align=right>Default Phone / Voicemail: </td><td align=left><select size=1 name=phone_login>\n";
+			}
+			$krh = get_krh($link, 'phones', sprintf("login,fullname,IF((SELECT count(*) FROM osdial_users WHERE user!='%s' AND user LIKE '%s%%' AND phone_login=login)=1,'N','Y') AS active",mres($row[1]),mres($pcomp)), 'login', sprintf("login LIKE '%s%%'",mres($pcomp)), '');
+			echo format_select_options($krh, 'login', 'fullname', $phone_login, ' -- ANY -- ', true); 
+			echo "</select>".helptag("osdial_users-phone_login")."</td></tr>\n";
+			#echo "<tr bgcolor=$oddrows><td align=right>Phone Login: </td><td align=left><input type=text name=phone_login size=20 maxlength=20 value=\"$phone_login\">".helptag("osdial_users-phone_login")."</td></tr>\n";
+			#echo "<tr bgcolor=$oddrows><td align=right>Phone Pass: </td><td align=left><input type=text name=phone_pass size=20 maxlength=20 value=\"$phone_pass\">".helptag("osdial_users-phone_pass")."</td></tr>\n";
+
+			echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr></table>\n";
+
+			if (($LOG['user_level'] > 8) or ($LOG['alter_agent_interface_options'] == "1")) {
+				echo "<br/><TABLE class=shadedtable cellspacing=3 width=550>\n";
+
+				echo "<tr class=\"tabheader font3\"><td class=top_header2 colspan=2 align=center>AGENT INTERFACE OPTIONS</td></tr>\n";
+				echo "<tr bgcolor=$oddrows><td align=right>Agent Choose Ingroups: </td><td align=left><select size=1 name=agent_choose_ingroups><option value=0>N</option><option value=1>Y</option>" . optnum2let($agent_choose_ingroups) . "</select>".helptag("osdial_users-agent_choose_ingroups")."</td></tr>\n";
+				echo "<tr bgcolor=$oddrows><td align=right>Closer Default Blended: </td><td align=left><select size=1 name=closer_default_blended><option value=0>N</option><option value=1>Y</option>" . optnum2let($closer_default_blended) . "</select>".helptag("osdial_users-closer_default_blended")."</td></tr>\n";
+
+				echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
+
+				echo "<tr bgcolor=$oddrows><td align=right>Hot Keys Active: </td><td align=left><select size=1 name=hotkeys_active><option value=0>N</option><option value=1>Y</option>" . optnum2let($hotkeys_active) . "</select>".helptag("osdial_users-hotkeys_active")."</td></tr>\n";
+				echo "<tr bgcolor=$oddrows><td align=right>Manual-Dial: </td><td align=left><select size=1 name=agentcall_manual><option value=0>N</option><option value=1>Y</option>" . optnum2let($agentcall_manual) . "</select>".helptag("osdial_users-agentcall_manual")."</td></tr>\n";
+				echo "<tr bgcolor=$oddrows><td align=right>Preview-Dial Skip-Lead: </td><td align=left><select size=1 name=manual_dial_allow_skip><option value=0>N</option><option value=1>Y</option>" . optnum2let($manual_dial_allow_skip) . "</select>".helptag("osdial_users-manual_dial_allow_skip")."</td></tr>\n";
+
+				echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
+
+				echo "<tr bgcolor=$oddrows><td align=right>Scheduled Callbacks: </td><td align=left><select size=1 name=scheduled_callbacks><option value=0>N</option><option value=1>Y</option>" . optnum2let($scheduled_callbacks) . "</select>".helptag("osdial_users-scheduled_callbacks")."</td></tr>\n";
+				echo "<tr bgcolor=$oddrows><td align=right>Agent-Only Callbacks: </td><td align=left><select size=1 name=agentonly_callbacks><option value=0>N</option><option value=1>Y</option>" . optnum2let($agentonly_callbacks) . "</select>".helptag("osdial_users-agentonly_callbacks")."</td></tr>\n";
+
+				echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
+
+				echo "<tr bgcolor=$oddrows><td align=right>Recording: </td><td align=left><select size=1 name=osdial_recording><option value=0>N</option><option value=1>Y</option>" . optnum2let($osdial_recording) . "</select>".helptag("osdial_users-osdial_recording")."</td></tr>\n";
+				echo "<tr bgcolor=$oddrows><td align=right>Recording Mode (Override): </td><td align=left><select size=1 name=osdial_recording_override><option>DISABLED</option><option>NEVER</option><option>ONDEMAND</option><option>ALLCALLS</option><option>ALLFORCE</option><option SELECTED>$osdial_recording_override</option></select>".helptag("osdial_users-osdial_recording_override")."</td></tr>\n";
+
+				echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
+				echo "<tr bgcolor=$oddrows><td align=right>Alter Lead Data (Override): </td><td align=left><select size=1 name=alter_custdata_override><option>NOT_ACTIVE</option><option>ALLOW_ALTER</option><option SELECTED>$alter_custdata_override</option></select>".helptag("osdial_users-alter_custdata_override")."</td></tr>\n";
+				echo "<tr bgcolor=$oddrows>\n";
+				echo "  <td align=right>Script (Override): </td>\n";
+				echo "  <td align=left>\n";
+				echo "    <select style=\"font-family:monospace;\" size=1 name=script_override>\n";
+				echo get_scripts($link, $script_override);
+				echo "    </select>\n";
+				echo "  ".helptag("osdial_users-script_override")."</td>\n";
+				echo "</tr>\n";
+
+				echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
+
+				echo "<tr bgcolor=$oddrows><td align=right>Transfers: </td><td align=left><select size=1 name=osdial_transfers><option value=0>N</option><option value=1>Y</option>" . optnum2let($osdial_transfers) . "</select>".helptag("osdial_users-osdial_transfers")."</td></tr>\n";
+				echo "<tr bgcolor=$oddrows>\n";
+				echo "  <td align=right>Agent2Agent Transfers: </td>\n";
+				echo "  <td align=left><select size=1 name=xfer_agent2agent><option value=0>N</option><option value=1>Y</option>" . optnum2let($xfer_agent2agent) . "</select>\n";
+				echo "  ".helptag("osdial_users-xfer_agent2agent")."</td>\n";
+				echo "</tr>\n";
+				if ($xfer_agent2agent > 0) {
+					$stmt = sprintf("SELECT drop_trigger,drop_call_seconds,drop_message,drop_exten,allow_multicall FROM osdial_inbound_groups WHERE group_id='A2A_%s';",mres($user));
+					$rslt=mysql_query($stmt, $link);
+					$rowx=mysql_fetch_row($rslt);
+					$xfer_agent2agent_wait = $rowx[0];
+					$xfer_agent2agent_wait_seconds = $rowx[1];
+					$xfer_agent2agent_wait_action = $rowx[2];
+					$xfer_agent2agent_wait_extension = $rowx[3];
+					$xfer_agent2agent_allow_multicall = $rowx[4];
+					echo "<tr bgcolor=$oddrows>\n";
+					echo "  <td align=right>Agent2Agent Timeout: </td>\n";
+					echo "  <td align=left>\n";
+					echo "    <select size=1 name=xfer_agent2agent_wait>\n";
+					$wsel=''; if ($xfer_agent2agent_wait=='CALL_SECONDS_TIMEOUT') $wsel='selected';
+					echo "      <option $wsel value=CALL_SECONDS_TIMEOUT>ALWAYS WAIT</option>\n";
+					$wsel=''; if ($xfer_agent2agent_wait=='NO_AGENTS_CONNECTED') $wsel='selected';
+					echo "      <option $wsel value=NO_AGENTS_CONNECTED>WHEN LOGGED IN</option>\n";
+					$wsel=''; if ($xfer_agent2agent_wait=='NO_AGENTS_AVAILABLE') $wsel='selected';
+					echo "      <option $wsel value=NO_AGENTS_AVAILABLE>NEVER WAIT</option>\n";
+					echo "    </select>\n";
+					echo "  ".helptag("osdial_users-xfer_agent2agent_wait")."</td>\n";
+					echo "</tr>\n";
+					echo "<tr bgcolor=$oddrows>\n";
+					echo "  <td align=right>Agent2Agent Timeout Seconds: </td>\n";
+					echo "  <td align=left><input type=text name=xfer_agent2agent_wait_seconds size=5 maxlength=4 value=\"$xfer_agent2agent_wait_seconds\">".helptag("osdial_users-xfer_agent2agent_wait_seconds")."</td>\n";
+					echo "</tr>\n";
+					echo "  <td align=right>Agent2Agent Timeout Action: </td>\n";
+					echo "  <td align=left>\n";
+					echo "    <select size=1 name=xfer_agent2agent_wait_action>\n";
+					$wsel=''; if ($xfer_agent2agent_wait_action=='N') $wsel='selected';
+					echo "      <option $wsel value=N>VOICEMAIL</option>\n";
+					$wsel=''; if ($xfer_agent2agent_wait_action=='Y') $wsel='selected';
+					echo "      <option $wsel value=Y>EXTENSION</option>\n";
+					echo "    </select>\n";
+					echo "  ".helptag("osdial_users-xfer_agent2agent_wait_action")."</td>\n";
+					echo "</tr>\n";
+					if ($xfer_agent2agent_wait_action == "Y") {
+						echo "<tr bgcolor=$oddrows>\n";
+						echo "  <td align=right>Agent2Agent Timeout Extension: </td>\n";
+						echo "  <td align=left><input type=text name=xfer_agent2agent_wait_extension size=10 maxlength=15 value=\"$xfer_agent2agent_wait_extension\">".helptag("osdial_users-xfer_agent2agent_wait_extension")."</td>\n";
+						echo "</tr>\n";
+					} else {
+						echo "<input type=hidden name=xfer_agent2agent_wait_extension value=\"$xfer_agent2agent_wait_extension\">\n";
+					}
+					echo "<tr bgcolor=$oddrows>\n";
+					echo "  <td align=right>Agent2Agent Allow Multicall: </td>\n";
+					echo "  <td align=left>\n";
+					echo "    <select size=1 name=xfer_agent2agent_allow_multicall>\n";
+					$wsel=''; if ($xfer_agent2agent_allow_multicall=='N') $wsel='selected';
+					echo "      <option $wsel value=N>N</option>\n";
+					$wsel=''; if ($xfer_agent2agent_allow_multicall=='Y') $wsel='selected';
+					echo "      <option $wsel value=Y>Y</option>\n";
+					echo "    </select>\n";
+					echo "  ".helptag("osdial_users-xfer_agent2agent_allow_multicall")."</td>\n";
+					echo "</tr>\n";
+				}
+
+				echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr></table>\n";
+			}
+			if ($LOG['user_level'] > 8 && $user_level > 7) {			
+				echo "<br/><TABLE class=shadedtable cellspacing=3 width=550>\n";
+				echo "<tr class=\"tabheader font3\"><td colspan=2 class=top_header2 align=center>ADMIN INTERFACE OPTIONS</td></tr>\n";
+
+				echo "<tr bgcolor=$oddrows><td align=right>Modify Agents: </td><td align=left><select size=1 name=modify_users><option value=0>N</option><option value=1>Y</option>" . optnum2let($modify_users) . "</select>".helptag("osdial_users-modify_sections")."</td></tr>\n";
+				echo "<tr bgcolor=$oddrows><td align=right>Delete Agents: </td><td align=left><select size=1 name=delete_users><option value=0>N</option><option value=1>Y</option>" . optnum2let($delete_users) . "</select>".helptag("osdial_users-delete_users")."</td></tr>\n";
+				echo "<tr bgcolor=$oddrows><td align=right>Alter Agent Interface Options: </td><td align=left><select size=1 name=alter_agent_interface_options><option value=0>N</option><option value=1>Y</option>" . optnum2let($alter_agent_interface_options) . "</select>".helptag("osdial_users-alter_agent_interface_options")."</td></tr>\n";
+				echo "<tr bgcolor=$oddrows><td align=right>Change Agent Campaign: </td><td align=left><select size=1 name=change_agent_campaign><option value=0>N</option><option value=1>Y</option>" . optnum2let($change_agent_campaign) . "</select>".helptag("osdial_users-change_agent_campaign")."</td></tr>\n";
+
+				echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
+
+				echo "<tr bgcolor=$oddrows><td align=right>Modify Campaigns: </td><td align=left><select size=1 name=modify_campaigns><option value=0>N</option><option value=1>Y</option>" . optnum2let($modify_campaigns) . "</select>".helptag("osdial_users-modify_sections")."</td></tr>\n";
+				echo "<tr bgcolor=$oddrows><td align=right>Delete Campaigns: </td><td align=left><select size=1 name=delete_campaigns><option value=0>N</option><option value=1>Y</option>" . optnum2let($delete_campaigns) . "</select>".helptag("osdial_users-delete_campaigns")."</td></tr>\n";
+				echo "<tr bgcolor=$oddrows><td align=right>Campaign Detail: </td><td align=left><select size=1 name=campaign_detail><option value=0>N</option><option value=1>Y</option>" . optnum2let($campaign_detail) . "</select>".helptag("osdial_users-campaign_detail")."</td></tr>\n";
+
+				echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
+
+				echo "<tr bgcolor=$oddrows><td align=right>Modify Lists: </td><td align=left><select size=1 name=modify_lists><option value=0>N</option><option value=1>Y</option>" . optnum2let($modify_lists) . "</select>".helptag("osdial_users-modify_sections")."</td></tr>\n";
+				echo "<tr bgcolor=$oddrows><td align=right>Delete Lists: </td><td align=left><select size=1 name=delete_lists><option value=0>N</option><option value=1>Y</option>" . optnum2let($delete_lists) . "</select>".helptag("osdial_users-delete_lists")."</td></tr>\n";
+
+				echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
+
+				echo "<tr bgcolor=$oddrows><td align=right>Load Leads: </td><td align=left><select size=1 name=load_leads><option value=0>N</option><option value=1>Y</option>" . optnum2let($load_leads) . "</select>".helptag("osdial_users-load_leads")."</td></tr>\n";
+				echo "<tr bgcolor=$oddrows><td align=right>Modify Leads: </td><td align=left><select size=1 name=modify_leads><option value=0>N</option><option value=1>Y</option>" . optnum2let($modify_leads) . "</select>".helptag("osdial_users-modify_leads")."</td></tr>\n";
+				echo "<tr bgcolor=$oddrows><td align=right>Export Leads: </td><td align=left><select size=1 name=export_leads><option value=0>N</option><option value=1>Y</option>" . optnum2let($export_leads) . "</select>".helptag("osdial_users-export_leads")."</td></tr>\n";
+
+				echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
+
+				echo "<tr bgcolor=$oddrows><td align=right>Load DNC Records: </td><td align=left><select size=1 name=load_dnc><option value=0>N</option><option value=1>Y</option>" . optnum2let($load_dnc) . "</select>".helptag("osdial_users-load_dnc")."</td></tr>\n";
+				echo "<tr bgcolor=$oddrows><td align=right>Delete DNC Records: </td><td align=left><select size=1 name=delete_dnc><option value=0>N</option><option value=1>Y</option>" . optnum2let($delete_dnc) . "</select>".helptag("osdial_users-delete_dnc")."</td></tr>\n";
+				echo "<tr bgcolor=$oddrows><td align=right>Export DNC Records: </td><td align=left><select size=1 name=export_dnc><option value=0>N</option><option value=1>Y</option>" . optnum2let($export_dnc) . "</select>".helptag("osdial_users-export_dnc")."</td></tr>\n";
+
+				echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
+
+				echo "<tr bgcolor=$oddrows><td align=right>Modify Scripts: </td><td align=left><select size=1 name=modify_scripts><option value=0>N</option><option value=1>Y</option>" . optnum2let($modify_scripts) . "</select>".helptag("osdial_users-modify_sections")."</td></tr>\n";
+				echo "<tr bgcolor=$oddrows><td align=right>Delete Scripts: </td><td align=left><select size=1 name=delete_scripts><option value=0>N</option><option value=1>Y</option>" . optnum2let($delete_scripts) . "</select>".helptag("osdial_users-delete_scripts")."</td></tr>\n";
+
+				echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
+
+				echo "<tr bgcolor=$oddrows><td align=right>Modify Filters: </td><td align=left><select size=1 name=modify_filters><option value=0>N</option><option value=1>Y</option>" . optnum2let($modify_filters) . "</select>".helptag("osdial_users-modify_sections")."</td></tr>\n";
+				echo "<tr bgcolor=$oddrows><td align=right>Delete Filters: </td><td align=left><select size=1 name=delete_filters><option value=0>N</option><option value=1>Y</option>" . optnum2let($delete_filters) . "</select>".helptag("osdial_users-delete_filters")."</td></tr>\n";
+
+				echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
+
+				echo "<tr bgcolor=$oddrows><td align=right>Modify In-Groups: </td><td align=left><select size=1 name=modify_ingroups><option value=0>N</option><option value=1>Y</option>" . optnum2let($modify_ingroups) . "</select>".helptag("osdial_users-modify_sections")."</td></tr>\n";
+				echo "<tr bgcolor=$oddrows><td align=right>Delete In-Groups: </td><td align=left><select size=1 name=delete_ingroups><option value=0>N</option><option value=1>Y</option>" . optnum2let($delete_ingroups) . "</select>".helptag("osdial_users-delete_ingroups")."</td></tr>\n";
+
+				echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
+
+				echo "<tr bgcolor=$oddrows><td align=right>Modify User Groups: </td><td align=left><select size=1 name=modify_usergroups><option value=0>N</option><option value=1>Y</option>" . optnum2let($modify_usergroups) . "</select>".helptag("osdial_users-modify_sections")."</td></tr>\n";
+				echo "<tr bgcolor=$oddrows><td align=right>Delete User Groups: </td><td align=left><select size=1 name=delete_user_groups><option value=0>N</option><option value=1>Y</option>" . optnum2let($delete_user_groups) . "</select>".helptag("osdial_users-delete_user_groups")."</td></tr>\n";
+
+				echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
+
+				echo "<tr bgcolor=$oddrows><td align=right>Modify External Agents: </td><td align=left><select size=1 name=modify_remoteagents><option value=0>N</option><option value=1>Y</option>" . optnum2let($modify_remoteagents) . "</select>".helptag("osdial_users-modify_sections")."</td></tr>\n";
+				echo "<tr bgcolor=$oddrows><td align=right>Delete External Agents: </td><td align=left><select size=1 name=delete_remote_agents><option value=0>N</option><option value=1>Y</option>" . optnum2let($delete_remote_agents) . "</select>".helptag("osdial_users-delete_remote_agents")."</td></tr>\n";
+
+				echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
+
+				echo "<tr bgcolor=$oddrows><td align=right>View Reports: </td><td align=left><select size=1 name=view_reports><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_reports) . "</select>".helptag("osdial_users-view_reports")."</td></tr>\n";
+
+				echo "<tr bgcolor=grey><td colspan=2></td></tr>\n";
+
+				echo "<tr bgcolor=$unusualrows><td align=right>Setup Menu: </td><td align=left><select size=1 name=ast_admin_access><option value=0>N</option><option value=1>Y</option>" . optnum2let($ast_admin_access) . "</select>".helptag("osdial_users-ast_admin_access")."</td></tr>\n";
+				echo "<tr bgcolor=$unusualrows><td align=right>Modify Servers: </td><td align=left><select size=1 name=modify_servers><option value=0>N</option><option value=1>Y</option>" . optnum2let($modify_servers) . "</select>".helptag("osdial_users-modify_sections")."</td></tr>\n";
+				echo "<tr bgcolor=$unusualrows><td align=right>Delete Phones: </td><td align=left><select size=1 name=ast_delete_phones><option value=0>N</option><option value=1>Y</option>" . optnum2let($ast_delete_phones) . "</select>".helptag("osdial_users-ast_delete_phones")."</td></tr>\n";
+				echo "<tr bgcolor=$unusualrows><td align=right>Modify Call Times: </td><td align=left><select size=1 name=modify_call_times><option value=0>N</option><option value=1>Y</option>" . optnum2let($modify_call_times) . "</select>".helptag("osdial_users-modify_call_times")."</td></tr>\n";
+				echo "<tr bgcolor=$unusualrows><td align=right>Delete Call Times: </td><td align=left><select size=1 name=delete_call_times><option value=0>N</option><option value=1>Y</option>" . optnum2let($delete_call_times) . "</select>".helptag("osdial_users-delete_call_times")."</td></tr>\n";
+				echo "<tr bgcolor=$unusualrows><td align=right>Agent API Access: </td><td align=left><select size=1 name=agent_api_access><option value=0>N</option><option value=1>Y</option>" . optnum2let($agent_api_access) . "</select>".helptag("osdial_users-agent_api_access")."</td></tr>\n";
+				echo "<tr bgcolor=$unusualrows><td align=right>Admin API Access: </td><td align=left><select size=1 name=admin_api_access><option value=0>N</option><option value=1>Y</option>" . optnum2let($admin_api_access) . "</select>".helptag("osdial_users-admin_api_access")."</td></tr>\n";
+
+				echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr></table>\n";
+			} else {
+				echo "<br/><TABLE class=shadedtable cellspacing=3 width=550>\n";
+				echo "<input type=hidden name=view_reports value=$view_reports>\n";
+				echo "<input type=hidden name=export_leads value=$export_leads>\n";
+				echo "<input type=hidden name=alter_agent_interface_options value=$alter_agent_interface_options>\n";
+				echo "<input type=hidden name=modify_users value=$modify_users>\n";
+				echo "<input type=hidden name=change_agent_campaign value=$change_agent_campaign>\n";
+				echo "<input type=hidden name=delete_users value=$delete_users>\n";
+				echo "<input type=hidden name=modify_usergroups value=$modify_usergroups>\n";
+				echo "<input type=hidden name=delete_user_groups value=$delete_user_groups>\n";
+				echo "<input type=hidden name=modify_lists value=$modify_lists>\n";
+				echo "<input type=hidden name=delete_lists value=$delete_lists>\n";
+				echo "<input type=hidden name=load_leads value=$load_leads>\n";
+				echo "<input type=hidden name=modify_leads value=$modify_leads>\n";
+				echo "<input type=hidden name=modify_campaigns value=$modify_campaigns>\n";
+				echo "<input type=hidden name=campaign_detail value=$campaign_detail>\n";
+				echo "<input type=hidden name=delete_campaigns value=$delete_campaigns>\n";
+
+				echo "<input type=hidden name=modify_ingroups value=$modify_ingroups>\n";
+				echo "<input type=hidden name=delete_ingroups value=$delete_ingroups>\n";
+
+				echo "<input type=hidden name=modify_remoteagents value=$modify_remoteagents>\n";
+				echo "<input type=hidden name=delete_remote_agents value=$delete_remote_agents>\n";
+
+				echo "<input type=hidden name=modify_scripts value=$modify_scripts>\n";
+				echo "<input type=hidden name=delete_scripts value=$delete_scripts>\n";
+
+				echo "<input type=hidden name=modify_filters value=$modify_filters>\n";
+				echo "<input type=hidden name=delete_filters value=$delete_filters>\n";
+
+				echo "<input type=hidden name=ast_admin_access value=$ast_admin_access>\n";
+				echo "<input type=hidden name=ast_delete_phones value=$ast_delete_phones>\n";
+				echo "<input type=hidden name=modify_call_times value=$modify_call_times>\n";
+				echo "<input type=hidden name=delete_call_times value=$delete_call_times>\n";
+				echo "<input type=hidden name=modify_servers value=$modify_servers>\n";
+				echo "<input type=hidden name=agent_api_access value=$agent_api_access>\n";
+				echo "<input type=hidden name=admin_api_access value=$admin_api_access>\n";
+				echo "<input type=hidden name=load_dnc value=$load_dnc>\n";
+				echo "<input type=hidden name=export_dnc value=$export_dnc>\n";
+				echo "<input type=hidden name=delete_dnc value=$delete_dnc>\n";
+			}
+			echo "<input type=hidden name=phone_pass value=$phone_pass>\n";
+			echo "</center>\n";
+
+			echo "<br><br>";
+			echo "<table align=center border=0 cellspacing=0 cellpadding=0 width=$section_width>\n";
+			echo "  <tr>\n";
+			echo "    <td align=center>Campaign Ranks: ".helptag("osdial_users-campaign_ranks")."</td>\n";
+			echo "    <td width=5%>&nbsp;</td>\n";
+			echo "    <td align=center>Inbound Groups: ".helptag("osdial_users-closer_campaigns")."</td>\n";
+			echo "  </tr>\n";
+			echo "  <tr>\n";
+			echo "    <td align=center valign=top>\n";
+			echo "      <table bgcolor=grey border=0 cellspacing=1 class=shadedtable>\n";
+			echo "        $RANKcampaigns_list";
+			echo "        <tr class=tabfooter><td align=center class=tabbutton colspan=3><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+			echo "      </table>\n";
+			echo "    </td>\n";
+			echo "    <td>&nbsp;</td>\n";
+			echo "    <td align=center valign=top>\n";
+			echo "      <table bgcolor=grey border=0 cellspacing=1 class=shadedtable>\n";
+			echo "        $RANKgroups_list";
+			echo "        <tr class=tabfooter><td align=center class=tabbutton colspan=4><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+			echo "      </table>\n";
+			echo "    </td>\n";
+			echo "  </tr>\n";
+			echo "</table></div>\n";
+
+			#echo "<center><br><br><br><br><br><a href=\"$PHP_SELF?ADD=999999&SUB=20&agent=$row[1]\">Click here for user time sheet</a>\n";
+			#echo "<br><br><a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$row[1]\">Click here for user status</a>\n";
+			#echo "<br><br><a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$row[1]\">Click here for user stats</a>\n";
+			#echo "<br><br><a href=\"$PHP_SELF?ADD=8&user=$row[1]\">Click here for user CallBack Holds</a></center>\n";
+	// 		if ($LOG['delete_users'] > 100) {
+	// 			echo "<br><br><a href=\"$PHP_SELF?ADD=5&user=$row[1]\">DELETE THIS AGENT</a>\n";
+	// 		}
 		}
 	} else {
 	echo "<font color=red>You do not have permission to view this page</font>\n";
@@ -868,9 +866,10 @@ if ($ADD==3)
 if ($ADD==550) {
     echo "<center><br><font class=top_header color=$default_text size=+1>SEARCH FOR AN AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
     echo "<input type=hidden name=ADD value=660>\n";
-    echo "<TABLE width=$section_width cellspacing=3>\n";
+    echo "<div style=\"width:660px;padding:5px;\">";
+    echo "<TABLE class=shadedtable cellspacing=3 width=650>\n";
     #echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left><input type=text name=user size=20 maxlength=20></td></tr>\n";
-    echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left>\n";
+    echo "<tr bgcolor=$oddrows><td align=center>Agent Number: \n";
     if ($LOG['multicomp_admin'] > 0) {
         $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
         echo "<select name=company_id>\n";
@@ -883,8 +882,8 @@ if ($ADD==550) {
         echo "<input type=hidden name=company_id value=$LOG[company_id]><font color=$default_text>" . $LOG[company_prefix] . "</font>&nbsp;";
     }
     echo "<input type=text name=user size=20 maxlength=10></td></tr>\n";
-    echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=full_name size=30 maxlength=30></td></tr>\n";
-    echo "<tr bgcolor=$oddrows><td align=right>User Level: </td><td align=left><select size=1 name=user_level>";
+    echo "<tr bgcolor=$oddrows><td align=center>Full Name: <input type=text name=full_name size=30 maxlength=30></td></tr>\n";
+    echo "<tr bgcolor=$oddrows><td align=center>User Level: <select size=1 name=user_level>";
     $h=0;
 	if ($LOG['user_level']==9) {
         $levelMAX=$LOG['user_level'];
@@ -912,7 +911,7 @@ if ($ADD==550) {
     }
     echo "</select></td></tr>\n";
     #echo "<tr bgcolor=$oddrows><td align=right>User Level: </td><td align=left><select size=1 name=user_level><option selected>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option></select></td></tr>\n";
-    echo "<tr bgcolor=$oddrows><td align=right>User Group: </td><td align=left><select size=1 name=user_group>\n";
+    echo "<tr bgcolor=$oddrows><td align=center>User Group: <select size=1 name=user_group>\n";
 	echo "<option value=\"\">- ALL USERGROUPS -</option>\n";
 
 	$stmt = sprintf("SELECT * from osdial_user_groups where user_group IN %s order by user_group",$LOG['allowed_usergroupsSQL']);
@@ -928,7 +927,7 @@ if ($ADD==550) {
     echo "$groups_list</select></td></tr>\n";
 
     echo "<tr class=tabfooter><td align=center  class=tabbutton colspan=2><input type=submit name=search value=SEARCH></td></tr>\n";
-    echo "</TABLE></center>\n";
+    echo "</TABLE></div></center>\n";
 }
 
 ######################
@@ -977,7 +976,7 @@ if ($ADD==660) {
     }
 
     echo "<center><br><font size=+1 color=$default_text>SEARCH RESULTS</font><br><br>\n";
-    echo "<table align=center width=$section_width cellspacing=0 cellpadding=1>\n";
+    echo "<table align=center class=shadedtable width=$section_width cellspacing=0 cellpadding=1>\n";
     echo "  <tr class=\"tabheader\">\n";
     echo "    <td><a href=\"$PHP_SELF?ADD=$ADD&srt=user&srtdir=$srtdir&user=$user&full_name=$full_name&user_level=$user_level&user_group=$user_group&company_id=$company_id\">USER ID</a></td>\n";
     echo "    <td><a href=\"$PHP_SELF?ADD=$ADD&srt=full_name&srtdir=$srtdir&user=$user&full_name=$full_name&user_level=$user_level&user_group=$user_group&company_id=$company_id\">FULL NAME</a></td>\n";

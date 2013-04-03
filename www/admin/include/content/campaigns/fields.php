@@ -89,7 +89,7 @@ if ($ADD == "2form") {
         echo '<input type="hidden" name="ADD" value="1form">';
         echo '<input type="hidden" name="form_id" value="NEW">';
 
-        echo "<table cellspacing=1 cellpadding=1>\n";
+        echo "<table cellspacing=1 cellpadding=3 class=shadedtable width=700>\n";
         echo "  <tr>\n";
         echo "      <td bgcolor=$evenrows align=right>Name</td>\n";
         echo "      <td bgcolor=$evenrows><input type=\"text\" size=\"15\" maxlength=\"15\" name=\"form_name\" value=\"\"></td>";
@@ -123,7 +123,7 @@ if ($ADD == "2form") {
                 echo "  </tr>\n";
             }
         }
-        echo "  <tr><td colspan=2 bgcolor=$evenrows> &nbsp;</td></tr>\n";
+        echo "  <tr><td colspan=2 bgcolor=$oddrows> &nbsp;</td></tr>\n";
         echo "  <tr class=tabfooter>\n";
         echo "      <td colspan=2 class=tabbutton align=center><input type=submit value=\"Create Form\"></td>\n";
         echo "  </tr>\n";

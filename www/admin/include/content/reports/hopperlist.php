@@ -83,7 +83,7 @@ $html .= "<PRE><FONT SIZE=2>\n\n";
 if (!$group)
 {
 $html .= "\n\n";
-$html .= "PLEASE SELECT A CAMPAIGN ABOVE AND CLICK SUBMIT\n";
+// $html .= "PLEASE SELECT A CAMPAIGN ABOVE AND CLICK SUBMIT\n";
 }
 
 else

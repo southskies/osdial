@@ -29,7 +29,7 @@ if ($ADD=="11comp") {
         echo "<center><br><font class=top_header color=$default_text size=+1>ADD A NEW COMPANY</font><form action=$PHP_SELF method=POST><br><br>\n";
         echo "<input type=hidden name=ADD value=21comp>\n";
 
-        echo "<table width=$section_width cellspacing=3>\n";
+        echo "<table class=shadedtable width=$section_width cellspacing=3>\n";
         echo "<tr bgcolor=$oddrows><td align=right width=50%>Company Name: </td><td align=left><input type=text name=company_name size=30 maxlength=100 value=\"\">".helptag("companies-company_name")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows>\n";
         echo "  <td align=right>Default Server IP: </td>\n";
@@ -200,7 +200,7 @@ if ($ADD=="31comp") {
         echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY A COMPANY</font><form action=$PHP_SELF method=POST><br><br>\n";
         echo "<input type=hidden name=ADD value=41comp>\n";
         echo "<input type=hidden name=company_id value=$comp[id]>\n";
-        echo "<table width=$section_width cellspacing=3>\n";
+        echo "<table class=shadedtable width=$section_width cellspacing=3>\n";
         echo "<tr bgcolor=$oddrows><td align=right width=50%>Company Prefix: </td><td align=left><font color=$default_text>" . (($comp['id'] * 1) + 100) . "</font></td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Company Name: </td><td align=left><input type=text name=company_name size=30 maxlength=100 value=\"$comp[name]\">".helptag("companies-company_name")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Status: </td><td align=left><select name=company_status><option>INACTIVE</option><option>ACTIVE</option><option>SUSPENDED</option><option>TERMINATED</option><option selected>$comp[status]</option></select>".helptag("companies-status")."</td></tr>\n";

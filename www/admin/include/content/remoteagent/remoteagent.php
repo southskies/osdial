@@ -29,39 +29,39 @@
 
 if ($ADD==11111) {
 	if ($LOG['modify_remoteagents']==1)	{
-    $servers_list = get_servers($link, $server_ip, 'AIO|DIALER');
-	echo "<center><br><font class=top_header color=$default_text size=+1>ADD NEW EXTERNAL AGENTS</font><form action=$PHP_SELF method=POST><br><br>\n";
-	echo "<input type=hidden name=ADD value=21111>\n";
-	echo "<TABLE width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=$oddrows><td align=right width=35%>Agent ID Start: </td><td align=left><input type=text name=user_start size=6 maxlength=20> (numbers only, incremented)".helptag("osdial_remote_agents-user_start")."</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Number of Lines: </td><td align=left><input type=text name=number_of_lines size=3 maxlength=3> (numbers only)".helptag("osdial_remote_agents-number_of_lines")."</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Server IP: </td><td align=left><select size=1 name=server_ip>\n";
-	echo "$servers_list";
-	echo "</select>".helptag("osdial_remote_agents-server_ip")."</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>External Extension: </td><td align=left><input type=text name=conf_exten size=20 maxlength=20> (dial plan number dialed to reach agents)".helptag("osdial_remote_agents-conf_exten")."</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Status: </td><td align=left><select size=1 name=status><option>ACTIVE</option><option SELECTED>INACTIVE</option></select>".helptag("osdial_remote_agents-status")."</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Campaign: </td><td align=left><select size=1 name=campaign_id>\n";
-        $stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE campaign_id IN %s ORDER BY campaign_id;",$LOG['allowed_campaignsSQL']);
-        $rslt=mysql_query($stmt, $link);
-        $campaigns_to_print = mysql_num_rows($rslt);
-        $campaigns_list='';
+		$servers_list = get_servers($link, $server_ip, 'AIO|DIALER');
+		echo "<center><br><font class=top_header color=$default_text size=+1>ADD A NEW EXTERNAL AGENTS</font><form action=$PHP_SELF method=POST><br><br>\n";
+		echo "<div style='color:black;margin:0 0 5px 0;'>NOTE: It can take up to 30 seconds for changes submitted on this screen to go live</div>\n";
+		echo "<input type=hidden name=ADD value=21111>\n";
+		echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
+		echo "<tr bgcolor=$oddrows><td align=right width=35%>Agent ID Start: </td><td align=left><input type=text name=user_start size=6 maxlength=20> (numbers only, incremented)".helptag("osdial_remote_agents-user_start")."</td></tr>\n";
+		echo "<tr bgcolor=$oddrows><td align=right>Number of Lines: </td><td align=left><input type=text name=number_of_lines size=3 maxlength=3> (numbers only)".helptag("osdial_remote_agents-number_of_lines")."</td></tr>\n";
+		echo "<tr bgcolor=$oddrows><td align=right>Server IP: </td><td align=left><select size=1 name=server_ip>\n";
+		echo "$servers_list";
+		echo "</select>".helptag("osdial_remote_agents-server_ip")."</td></tr>\n";
+		echo "<tr bgcolor=$oddrows><td align=right>External Extension: </td><td align=left><input type=text name=conf_exten size=20 maxlength=20> (dial plan number dialed to reach agents)".helptag("osdial_remote_agents-conf_exten")."</td></tr>\n";
+		echo "<tr bgcolor=$oddrows><td align=right>Status: </td><td align=left><select size=1 name=status><option>ACTIVE</option><option SELECTED>INACTIVE</option></select>".helptag("osdial_remote_agents-status")."</td></tr>\n";
+		echo "<tr bgcolor=$oddrows><td align=right>Campaign: </td><td align=left><select size=1 name=campaign_id>\n";
+		$stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE campaign_id IN %s ORDER BY campaign_id;",$LOG['allowed_campaignsSQL']);
+		$rslt=mysql_query($stmt, $link);
+		$campaigns_to_print = mysql_num_rows($rslt);
+		$campaigns_list='';
 
-        $o=0;
-        while ($campaigns_to_print > $o) {
-            $rowx=mysql_fetch_row($rslt);
-            $campaigns_list .= "<option value=\"$rowx[0]\">" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
-            $o++;
-        }
-	echo "$campaigns_list";
-	echo "</select>".helptag("osdial_remote_agents-campaign_id")."</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Inbound Groups: </td><td align=left>\n";
-	echo "$groups_list";
-	echo "".helptag("osdial_remote_agents-closer_campaigns")."</td></tr>\n";
-	echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
-	echo "</TABLE></center>\n";
-	echo "NOTE: It can take up to 30 seconds for changes submitted on this screen to go live\n";
+		$o=0;
+		while ($campaigns_to_print > $o) {
+			$rowx=mysql_fetch_row($rslt);
+			$campaigns_list .= "<option value=\"$rowx[0]\">" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
+			$o++;
+		}
+		echo "$campaigns_list";
+		echo "</select>".helptag("osdial_remote_agents-campaign_id")."</td></tr>\n";
+		echo "<tr bgcolor=$oddrows><td align=right>Inbound Groups: </td><td align=left>\n";
+		echo "$groups_list";
+		echo "".helptag("osdial_remote_agents-closer_campaigns")."</td></tr>\n";
+		echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+		echo "</TABLE></center>\n";
 	} else {
-	echo "<font color=red>You do not have permission to view this page</font>\n";
+		echo "<font color=red>You do not have permission to view this page</font>\n";
 	}
 }
 
@@ -214,10 +214,11 @@ if ($ADD==31111)
     $servers_list = get_servers($link, $row[3], 'AIO|DIALER');
 
 	echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY AN EXTERNAL AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<div style='color:black;margin:0 0 5px 0;'>NOTE: It can take up to 30 seconds for changes submitted on this screen to go live</div>\n";
 	echo "<input type=hidden name=ADD value=41111>\n";
 	echo "<input type=hidden name=remote_agent_id value=\"$row[0]\">\n";
 	
-	echo "<TABLE width=$section_width cellspacing=3>\n";
+	echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right width=35%>Agent ID Start: </td><td align=left><input type=text name=user_start size=7 maxlength=6 value=\"$user_start\"> (numbers only, incremented)".helptag("osdial_remote_agents-user_start")."</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Number of Lines: </td><td align=left><input type=text name=number_of_lines size=3 maxlength=3 value=\"$number_of_lines\"> (numbers only)".helptag("osdial_remote_agents-number_of_lines")."</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Server IP: </td><td align=left><select size=1 name=server_ip>\n";
@@ -247,12 +248,12 @@ if ($ADD==31111)
 	echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	
-	echo "NOTE: It can take up to 30 seconds for changes submitted on this screen to go live\n";
+	
 
 
-		if ($LOG['delete_remote_agents'] > 0) {
-		echo "<br><br><br><a href=\"$PHP_SELF?ADD=51111&remote_agent_id=$remote_agent_id\">DELETE THIS REMOTE AGENT</a>\n";
-		}
+// 		if ($LOG['delete_remote_agents'] > 0) {
+// 		echo "<br><br><br><a href=\"$PHP_SELF?ADD=51111&remote_agent_id=$remote_agent_id\">DELETE THIS REMOTE AGENT</a>\n";
+// 		}
 	} else {
 	echo "<font color=red>You do not have permission to view this page</font>\n";
 	}

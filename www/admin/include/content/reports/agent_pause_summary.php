@@ -119,7 +119,7 @@ function report_agent_pause_summary() {
     $head .= "<input type=hidden name=ADD value=\"$ADD\">\n";
     $head .= "<input type=hidden name=SUB value=\"$SUB\">\n";
     $head .= "<input type=hidden name=DB value=\"$DB\">\n";
-    $head .= "<table align=center cellspacing=1 width=600 bgcolor=grey>\n";
+    $head .= "<table class=shadedtable align=center cellspacing=1 width=600 bgcolor=grey>\n";
     $head .= "  <tr class=tabheader>\n";
     $head .= "    <td>Date Range</td>\n";
     $head .= "    <td>Agent ID</td>\n";
@@ -183,7 +183,7 @@ function report_agent_pause_summary() {
 
         $table .= "  <br>\n";
         $table .= "  <center><font color=$default_text size=4>PAUSE USAGE - SUMMARY</font></center>\n";
-        $table .= "  <table align=center width=350 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
+        $table .= "  <table class=shadedtable align=center width=350 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
         $table .= "    <tr class=tabheader>\n";
         $table .= "      <td>CODE</td>\n";
         $table .= "      <td>COUNT</td>\n";
@@ -249,7 +249,7 @@ function report_agent_pause_summary() {
     
         $table .= "  <br>\n";
         $table .= "  <center><font color=$default_text size=4>PAUSE USAGE - CAMPAIGN SUMMARY</font></center>\n";
-        $table .= "  <table align=center width=350 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
+        $table .= "  <table class=shadedtable align=center width=350 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
         $table .= "    <tr class=tabheader>\n";
         $table .= "      <td>CAMPAIGN</td>\n";
         $table .= "      <td>CODE</td>\n";
@@ -322,7 +322,7 @@ function report_agent_pause_summary() {
 
         $table .= "  <br>\n";
         $table .= "  <center><font class=top_header2 color=$default_text size=4>PAUSE USAGE - CAMPAIGN AGENT SUMMARY</font></center>\n";
-        $table .= "  <table align=center width=350 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
+        $table .= "  <table class=shadedtable align=center width=350 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
         $table .= "    <tr class=tabheader>\n";
         $table .= "      <td>CAMPAIGN</td>\n";
         $table .= "      <td>AGENT</td>\n";
@@ -411,7 +411,7 @@ function report_agent_pause_summary() {
         
         $table .= "  <br>\n";
         $table .= "  <center><font class=top_header2 color=$default_text size=4>PAUSE USAGE - DETAIL</font></center>\n";
-        $table .= "  <table align=center width=500 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
+        $table .= "  <table class=shadedtable align=center width=500 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
         $table .= "    <tr class=tabheader>\n";
         $table .= "      <td>CAMPAIGN</td>\n";
         $table .= "      <td>AGENT</td>\n";
@@ -478,7 +478,7 @@ function report_agent_pause_summary() {
         $table .= "<div class=noprint><center>$export</center></div>";
 
     } else {
-        $table .= "<center><font color=$default_text>Please enter your criteria and click SUBMIT.</font></center>\n";
+//         $table .= "<center><font color=$default_text>Please enter your criteria and click SUBMIT.</font></center>\n";
     }
         
     $ENDtime = date("U");

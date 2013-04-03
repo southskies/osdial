@@ -100,15 +100,67 @@ if ($reset_counter > 7)
  </STYLE>
 
 <?php
+
+$LNtopleft    ="&#x2554;";
+$LNleft       ="&#x2551;";
+$LNright      ="&#x2551;";
+$LNcenterleft ="&#x255F;";
+$LNcenterbar  ="&#x2502;";
+$LNtopdown    ="&#x2564;";
+$LNtopright   ="&#x2557;";
+$LNbottomleft ="&#x255A;";
+$LNbottomright="&#x255D;";
+$LNcentcross  ="&#x253C;";
+$LNcentright  ="&#x2562;";
+$LNbottomup   ="&#x2567;";
+$LNhoriz      ="&#x2550;";
+$BKbottomhalf ="&#x2584;";
+
+// echo " LNtopleft=$LNtopleft	";
+// echo " LNleft=$LNleft        ";
+// echo " LNright=$LNright       ";
+// echo " LNcenterleft=$LNcenterleft  ";
+// echo " LNcenterbar=$LNcenterbar   ";
+// echo " LNtopdown=$LNtopdown     ";
+// echo " LNtopright=$LNtopright    ";
+// echo " LNbottomleft=$LNbottomleft  ";
+// echo " LNbottomright=$LNbottomright ";
+// echo " LNcentcross=$LNcentcross   ";
+// echo " LNcentright=$LNcentright   ";
+// echo " LNbottomup=$LNbottomup    ";
+// echo " LNhoriz=$LNHoriz";
+// echo " BKbottomhalf=$BKbottomhalf";
+
 echo "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8\">\n";
-echo"<META HTTP-EQUIV=Refresh CONTENT=\"7; URL=$PHP_SELF?server_ip=$server_ip&DB=$DB&reset_counter=$reset_counter\">\n";
+echo "<META HTTP-EQUIV=Refresh CONTENT=\"7; URL=$PHP_SELF?server_ip=$server_ip&DB=$DB&reset_counter=$reset_counter\">\n";
 echo "<TITLE>OSDIAL: Time On Park</TITLE></HEAD><BODY>\n";
 echo "<PRE><FONT SIZE=3>\n\n";
-
-echo "OSDIAL: Time On Park         $NOW_TIME    \n\n";
-echo "+------------+-----------------+---------------------+---------+\n";
-echo "| CHANNEL    | GROUP           | START TIME          | MINUTES |\n";
-echo "+------------+-----------------+---------------------+---------+\n";
+echo "<div align=center>";
+echo "<pre>";
+echo "       OSDIAL: Time On Park         $NOW_TIME    <br/>";
+echo "$LNtopleft";
+echo str_repeat($LNhoriz,12);
+echo "$LNtopdown";
+echo str_repeat($LNhoriz,17);
+echo "$LNtopdown";
+echo str_repeat($LNhoriz,21);
+echo "$LNtopdown";
+echo str_repeat($LNhoriz,9);
+echo "$LNtopright<br/>";
+echo "$LNright  CHANNEL   $LNcenterbar      GROUP      $LNcenterbar      START TIME     $LNcenterbar MINUTES $LNleft<br/>";
+echo "$LNbottomleft";
+echo str_repeat($LNhoriz,12);
+echo "$LNbottomup";
+echo str_repeat($LNhoriz,17);
+echo "$LNbottomup";
+echo str_repeat($LNhoriz,21);
+echo "$LNbottomup";
+echo str_repeat($LNhoriz,9);
+echo "$LNbottomright<br />";
+echo "</pre>";
+// echo "+------------+-----------------+---------------------+---------+\n";
+// echo "| CHANNEL    | GROUP           | START TIME          | MINUTES |\n";
+// echo "+------------+-----------------+---------------------+---------+\n";
 
 #$link=mysql_connect("localhost", "cron", "1234");
 # $linkX=mysql_connect("localhost", "cron", "1234");
@@ -116,13 +168,13 @@ echo "+------------+-----------------+---------------------+---------+\n";
 
 $stmt="select extension,user,channel,channel_group,parked_time,UNIX_TIMESTAMP(parked_time) from park_log where status ='PARKED' and server_ip='" . mysql_real_escape_string($server_ip) . "' order by uniqueid;";
 $rslt=mysql_query($stmt, $link);
-if ($DB) {echo "$stmt\n";}
+if ($DB) {
+	echo "$stmt\n";
+}
 $parked_to_print = mysql_num_rows($rslt);
-	if ($parked_to_print > 0)
-	{
+if ($parked_to_print > 0) {
 	$i=0;
-	while ($i < $parked_to_print)
-		{
+	while ($i < $parked_to_print) {
 		$row=mysql_fetch_row($rslt);
 
 		$channel =			sprintf("%-10s", $row[2]);
@@ -140,41 +192,80 @@ $parked_to_print = mysql_num_rows($rslt);
 		$call_time_MS = "$call_time_M_int:$call_time_SEC";
 		$call_time_MS =		sprintf("%7s", $call_time_MS);
 		$G = '';		$EG = '';
-		if ($call_time_M_int >= 1) {$G='<SPAN class="green"><B>'; $EG='</B></SPAN>';}
-		if ($call_time_M_int >= 6) {$G='<SPAN class="red"><B>'; $EG='</B></SPAN>';}
+		if ($call_time_M_int >= 1) {
+			$G='<SPAN class="green"><B>'; $EG='</B></SPAN>';
+		}
+		if ($call_time_M_int >= 6) {
+			$G='<SPAN class="red"><B>'; $EG='</B></SPAN>';
+		}
 
-		echo "| $G$channel$EG | $G$number_dialed$EG | $G$start_time$EG | $G$call_time_MS$EG |\n";
+		echo "$LNright $G$channel$EG $LNcenterbar $G$number_dialed$EG $LNcenterbar $G$start_time$EG $LNcenterbar $G$call_time_MS$EG $LNleft\n";
 
 		$i++;
-		}
-
-		echo "+------------+-----------------+---------------------+---------+\n";
-		echo "  $i callers waiting on server $server_ip\n\n";
-
-		echo "  <SPAN class=\"green\"><B>          </SPAN> - 1 minute or more on hold</B>\n";
-		echo "  <SPAN class=\"red\"><B>          </SPAN> - Over 5 minutes on hold</B>\n";
-
-		}
-	else
-	{
-	echo "****************************************************************\n";
-	echo "****************************************************************\n";
-	echo "******************** NO LIVE CALLS WAITING *********************\n";
-	echo "****************************************************************\n";
-	echo "****************************************************************\n";
 	}
+		
+		
+	echo "$LNbottomleft";
+	echo str_repeat($LNhoriz,12);
+	echo "$LNbottomup";
+	echo str_repeat($LNhoriz,17);
+	echo "$LNbottomup";
+	echo str_repeat($LNhoriz,21);
+	echo "$LNbottomup";
+	echo str_repeat($LNhoriz,9);
+	echo "$LNbottomright<br />";
+// 	echo "+------------+-----------------+---------------------+---------+\n";
+	echo "          $i callers waiting on server $server_ip\n\n";
+
+	echo "  <SPAN class=\"green\"><B>          </SPAN> - 1 minute or more on hold</B>\n";
+	echo "  <SPAN class=\"red\"><B>          </SPAN> - Over 5 minutes on hold</B>\n";
+
+} else {
+	echo "****************************************************************\n";
+	echo "*******************                         ********************\n";
+	echo "*******************  NO LIVE CALLS WAITING  ********************\n";
+	echo "*******************                         ********************\n";
+	echo "****************************************************************\n";
+}
 
 ###################################################################################
 ###### TIME ON INBOUND CALLS
 ###################################################################################
 echo "\n\n";
-echo "----------------------------------------------------------------------------------------";
+// echo "----------------------------------------------------------------------------------------";
 echo "\n\n";
-echo "OSDIAL: Agents Time On Inbound Calls                             $NOW_TIME\n\n";
-echo "+------------|-------------+------------+-----------------+---------------------+---------+\n";
-echo "| STATION    | USER        | CHANNEL    | GROUP           | START TIME          | MINUTES |\n";
-echo "+------------|-------------+------------+-----------------+---------------------+---------+\n";
 
+echo "OSDIAL: Agents Time On Inbound Calls                             $NOW_TIME\n\n";
+// echo "+------------|-------------+------------+-----------------+---------------------+---------+\n";
+// echo "| STATION    | USER        | CHANNEL    | GROUP           | START TIME          | MINUTES |\n";
+// echo "+------------|-------------+------------+-----------------+---------------------+---------+\n";
+echo "$LNtopleft";
+echo str_repeat($LNhoriz,12);
+echo "$LNtopdown";
+echo str_repeat($LNhoriz,13);
+echo "$LNtopdown";
+echo str_repeat($LNhoriz,12);
+echo "$LNtopdown";
+echo str_repeat($LNhoriz,17);
+echo "$LNtopdown";
+echo str_repeat($LNhoriz,21);
+echo "$LNtopdown";
+echo str_repeat($LNhoriz,9);
+echo "$LNtopright<br/>";
+echo "$LNright   STATION  $LNcenterbar    USER     $LNcenterbar  CHANNEL   $LNcenterbar      GROUP      $LNcenterbar     START TIME      $LNcenterbar MINUTES $LNleft<br/>";
+echo "$LNbottomleft";
+echo str_repeat($LNhoriz,12);
+echo "$LNbottomup";
+echo str_repeat($LNhoriz,13);
+echo "$LNbottomup";
+echo str_repeat($LNhoriz,12);
+echo "$LNbottomup";
+echo str_repeat($LNhoriz,17);
+echo "$LNbottomup";
+echo str_repeat($LNhoriz,21);
+echo "$LNbottomup";
+echo str_repeat($LNhoriz,9);
+echo "$LNbottomright<br />";
 
 $stmt="select extension,user,channel,channel_group,grab_time,UNIX_TIMESTAMP(grab_time) from park_log where status ='TALKING' and server_ip='" . mysql_real_escape_string($server_ip) . "' order by uniqueid;";
 $rslt=mysql_query($stmt, $link);
@@ -212,8 +303,21 @@ $talking_to_print = mysql_num_rows($rslt);
 		$i++;
 		}
 
-		echo "+------------|-------------+------------+-----------------+---------------------+---------+\n";
-		echo "  $i agents on calls on server $server_ip\n\n";
+// 		echo "+------------|-------------+------------+-----------------+---------------------+---------+\n";
+		echo "$LNbottomleft";
+		echo str_repeat($LNhoriz,12);
+		echo "$LNbottomup";
+		echo str_repeat($LNhoriz,13);
+		echo "$LNbottomup";
+		echo str_repeat($LNhoriz,12);
+		echo "$LNbottomup";
+		echo str_repeat($LNhoriz,17);
+		echo "$LNbottomup";
+		echo str_repeat($LNhoriz,21);
+		echo "$LNbottomup";
+		echo str_repeat($LNhoriz,9);
+		echo "$LNbottomright<br />";
+		echo "                 $i agents on calls on server $server_ip\n\n";
 
 		echo "  <SPAN class=\"blue\"><B>          </SPAN> - 12 minutes or more on call</B>\n";
 		echo "  <SPAN class=\"purple\"><B>          </SPAN> - Over 30 minutes on call</B>\n";
@@ -222,12 +326,12 @@ $talking_to_print = mysql_num_rows($rslt);
 	else
 	{
 	echo "*******************************************************************************************\n";
-	echo "*******************************************************************************************\n";
-	echo "*********************************** NO AGENTS ON CALLS ************************************\n";
-	echo "*******************************************************************************************\n";
+	echo "**********************************                      ***********************************\n";
+	echo "**********************************  NO AGENTS ON CALLS  ***********************************\n";
+	echo "**********************************                      ***********************************\n";
 	echo "*******************************************************************************************\n";
 	}
-
+echo "</div>";
 
 ?>
 </PRE>

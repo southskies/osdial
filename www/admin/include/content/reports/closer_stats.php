@@ -126,7 +126,7 @@ function report_closer_stats() {
     $html .= "<table align=center>\n";
     $html .= "  <tr>\n";
     $html .= "    <td>\n";
-    $html .= "      <center><font class=top_header color=$default_text size=4>INBOUND / CLOSER REPORT</font></center>\n";
+    $html .= "      <center><font class=top_header color=$default_text size=4>INBOUND / CLOSER REPORT</font></center><br />\n";
 
     if ($time_begin == '') {
         $time_begin = '00:00';
@@ -140,7 +140,7 @@ function report_closer_stats() {
     $html .= "      <input type=hidden name=ADD value=\"$ADD\">\n";
     $html .= "      <input type=hidden name=SUB value=\"$SUB\">\n";
     $html .= "      <input type=hidden name=DB value=\"$DB\">\n";
-    $html .= "      <table align=center bgcolor=$oddrows cellspacing=3>\n";
+    $html .= "      <table class=shadedtable align=center bgcolor=$oddrows cellspacing=3>\n";
     $html .= "        <tr>\n";
     $html .= "          <td colspan=4 align=center>\n";
     $html .= "            <font face=\"dejavu sans,verdana,sans-serif\" color=$default_text size=2>\n";
@@ -397,10 +397,10 @@ function report_closer_stats() {
 
     $table .= "<br><br>\n";
     $table .= "<table align=center cellspacing=0 cellpadding=0>\n";
-    $table .= "  <tr><td align=center><font color=$default_text size=3>CALL REPORT SUMMARY INFORMATION</font></td></tr>\n";
+    $table .= "  <tr><td align=center><font class=top_header2 color=$default_text size=3>CALL REPORT SUMMARY INFORMATION</font></td></tr>\n";
     $table .= "  <tr>\n";
     $table .= "    <td align=center>\n";
-    $table .= "      <table width=400 align=center cellspacing=1 bgcolor=grey>\n";
+    $table .= "      <table class=shadedtable width=400 align=center cellspacing=1 bgcolor=grey>\n";
     $table .= "        <tr class=tabheader>\n";
     $table .= "          <td align=center colspan=2>Report Details</td>\n";
     $table .= "        </tr>\n";
@@ -480,10 +480,10 @@ function report_closer_stats() {
 
     $table .= "<br><br>\n";
     $table .= "<table align=center cellspacing=0 cellpadding=0>\n";
-    $table .= "  <tr><td align=center><font color=$default_text size=3>CALL HOLD TIME BREAKDOWN IN SECONDS</font></td></tr>\n";
+    $table .= "  <tr><td align=center><font class=top_header2 color=$default_text size=3>CALL HOLD TIME BREAKDOWN IN SECONDS</font></td></tr>\n";
     $table .= "  <tr>\n";
     $table .= "    <td align=center>\n";
-    $table .= "      <table width=300 align=center cellspacing=1 bgcolor=grey>\n";
+    $table .= "      <table class=shadedtable width=300 align=center cellspacing=1 bgcolor=grey>\n";
     $table .= "        <tr class=tabheader>\n";
     $table .= "          <td align=left style=\"font-family:monospace;\">";
     $table .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0";
@@ -596,10 +596,10 @@ function report_closer_stats() {
 
     $table .= "<br><br>\n";
     $table .= "<table align=center cellspacing=0 cellpadding=0>\n";
-    $table .= "  <tr><td align=center><font color=$default_text size=3>CALL HANGUP REASON STATS</font></td></tr>\n";
+    $table .= "  <tr><td align=center><font class=top_header2 color=$default_text size=3>CALL HANGUP REASON STATS</font></td></tr>\n";
     $table .= "  <tr>\n";
     $table .= "    <td align=center>\n";
-    $table .= "      <table width=300 align=center cellspacing=1 bgcolor=grey>\n";
+    $table .= "      <table class=shadedtable width=300 align=center cellspacing=1 bgcolor=grey>\n";
     $table .= "        <tr class=tabheader>\n";
     $table .= "          <td align=center>Hangup Reason</td>\n";
     $table .= "          <td align=center>Calls</td>\n";
@@ -669,10 +669,10 @@ function report_closer_stats() {
     $head = '';
     $table .= "<br><br>\n";
     $table .= "<table align=center cellspacing=0 cellpadding=0>\n";
-    $table .= "  <tr><td align=center><font color=$default_text size=3>CALL DISPOSITION STATS</font></td></tr>\n";
+    $table .= "  <tr><td align=center><font class=top_header2 color=$default_text size=3>CALL DISPOSITION STATS</font></td></tr>\n";
     $table .= "  <tr>\n";
     $table .= "    <td align=center>\n";
-    $table .= "      <table width=700 align=center cellspacing=1 bgcolor=grey>\n";
+    $table .= "      <table class=shadedtable width=700 align=center cellspacing=1 bgcolor=grey>\n";
     $plain .= "+--------+----------------------+----------------------+------------+----------------------------------+\n";
     $plain .= "|        |                      |                      |            |      CALL TIME                   |\n";
     $plain .= "| STATUS | DESCRIPTION          | CATEGORY             | CALLS      | TOTAL TIME | AVG TIME |CALLS/HOUR|\n";
@@ -900,10 +900,10 @@ function report_closer_stats() {
     
     $table .= "<br><br>\n";
     $table .= "<table align=center cellspacing=0 cellpadding=0>\n";
-    $table .= "  <tr><td align=center><font color=$default_text size=3>CUSTOM STATUS CATEGORY STATS</font></td></tr>\n";
+    $table .= "  <tr><td align=center><font class=top_header2 color=$default_text size=3>CUSTOM STATUS CATEGORY STATS</font></td></tr>\n";
     $table .= "  <tr>\n";
     $table .= "    <td align=center>\n";
-    $table .= "      <table width=500 align=center cellspacing=1 bgcolor=grey>\n";
+    $table .= "      <table class=shadedtable width=500 align=center cellspacing=1 bgcolor=grey>\n";
     $table .= "        <tr class=tabheader>\n";
     $table .= "          <td align=center>Category</td>\n";
     $table .= "          <td align=center>Description</td>\n";
@@ -1010,10 +1010,10 @@ function report_closer_stats() {
     $plain .= "+---------------------------------------------+------------+----------+--------+\n";
     $table .= "<br><br>\n";
     $table .= "<table align=center cellspacing=0 cellpadding=0>\n";
-    $table .= "  <tr><td align=center><font color=$default_text size=3>AGENT STATS</font></td></tr>\n";
+    $table .= "  <tr><td align=center><font class=top_header2 color=$default_text size=3>AGENT STATS</font></td></tr>\n";
     $table .= "  <tr>\n";
     $table .= "    <td align=center>\n";
-    $table .= "      <table width=600 align=center cellspacing=1 bgcolor=grey>\n";
+    $table .= "      <table class=shadedtable width=600 align=center cellspacing=1 bgcolor=grey>\n";
     $table .= "        <tr class=tabheader>\n";
     $table .= "          <td align=center>Agent</td>\n";
     $table .= "          <td align=center>Calls</td>\n";
@@ -1205,14 +1205,14 @@ function report_closer_stats() {
     $table .= "<br><br>\n";
     $table .= "<table align=center cellspacing=0 cellpadding=0>\n";
     $table .= "  <tr>\n";
-    $table .= "    <td align=center><font color=$default_text size=3>TIME STATS</font></td>\n";
+    $table .= "    <td align=center><font class=top_header2 color=$default_text size=3>TIME STATS</font></td>\n";
     $table .= "  <tr>\n";
     $table .= "  </tr>\n";
     $table .= "    <td align=center><font color=$default_text size=1>GRAPH IN 15 MINUTE INCREMENTS OF TOTAL CALLS PLACED FROM SELECTED CAMPAIGNS</font></td>\n";
     $table .= "  </tr>\n";
     $table .= "  <tr>\n";
     $table .= "    <td align=center>\n";
-    $table .= "      <table width=600 align=center cellspacing=0 cellpadding=0 style=\"border-spacing:0px 2px;\" bgcolor=grey>\n";
+    $table .= "      <table class=shadedtable width=600 align=center cellspacing=0 cellpadding=0 style=\"border-spacing:0px 2px;\" bgcolor=grey>\n";
     $table .= "        <tr class=tabheader style=\"font-size: 6pt; font-family: monospace;\">\n";
     $table .= "          <td>&nbsp;</td>\n";
     $table .= "          <td align=center>|</td>\n";
