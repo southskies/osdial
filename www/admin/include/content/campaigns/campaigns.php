@@ -1403,9 +1403,10 @@ if ($ADD==31) {
 				// ADAPTIVE DIAL
 			echo "<tr id=\"dm_adapt\" style=\"$adapt_visible\"><td colspan=2 align=center>";
 			echo "<div style=\"width:".$section_width_narrow."px;padding:5px;\" class=rounded-corners3>";
-			echo "<table width=100% cellpadding=1 cellspacing=3>";
-			echo "<tr><td align=left class=top_header_sect valign=top width=50%>Adaptive Dial Options $NotActiveAdapt<br /><br /></td></tr>";
-			echo "<tr><td align=center><table border=0 cellpadding=0 cellspacing=3 width=80%>";
+			echo "<table width=100% cellpadding=0 cellspacing=0>";
+			echo "<tr><td align=left class=top_header_sect valign=top width=50%>";
+			echo "Adaptive Dial Options $NotActiveAdapt<br /><br /></td></tr>";
+			echo "<tr><td align=center><table border=0 cellpadding=2 cellspacing=3 width=80%>";
 			$admavgsel='';
 			if ($dial_method=='ADAPT_AVERAGE') $admavgsel='selected';
 			$admtapsel='';
@@ -1440,22 +1441,22 @@ if ($ADD==31) {
 			}
 			echo "</select>".helptag("osdial_campaigns-adaptive_dropped_percentage")."</td></tr>";
 					
-			echo "<tr Xbgcolor=$unusualrows>
+			echo "<tr>
 				<td align=left>Maximum Adapt Dial Level: </td>
 				<td align=left nowrap><input type=text name=adaptive_maximum_level size=6 maxlength=6 value=\"$adaptive_maximum_level\" selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;3.5;4.0;4.5;5.0;5.5;6.0;6.5;7.0;7.5;8.0;8.5;9.0;10.0\"> &nbsp;".helptag("osdial_campaigns-adaptive_maximum_level")."</td>
 				</tr>";
-			echo "<tr Xbgcolor=$unusualrows><td align=left>Manual Dial Level: </td>
+			echo "<tr><td align=left>Manual Dial Level: </td>
 				<td align=left nowrap><input type=text name=ADAPT_auto_dial_level size=6 maxlength=6 value=\"$auto_dial_level\" disabled selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;3.5;4.0;4.5;5.0;5.5;6.0;6.5;7.0;7.5;8.0;8.5;9.0;10.0\"> 
 				<input type=checkbox onchange=\"if (this.checked) { document.forms[0].ADAPT_auto_dial_level.enable(); } else { document.forms[0].ADAPT_auto_dial_level.disable();}\" name=dial_level_override id=dial_level_override value=\"1\"><label for=dial_level_override class=font2>Activate</label> &nbsp; ".helptag("osdial_campaigns-auto_dial_level")."</td>
 				</tr>";
-			echo "<tr Xbgcolor=$unusualrows><td align=left>Available Only Tally: </td>
+			echo "<tr><td align=left>Available Only Tally: </td>
 					<td align=left><select size=1 name=ADAPT_available_only_ratio_tally>
 						<option >Y</option>
 						<option>N</option>
 						<option SELECTED>$available_only_ratio_tally</option>
 						</select>".helptag("osdial_campaigns-available_only_ratio_tally")."</td>
 				</tr>";
-			echo "<tr Xbgcolor=$unusualrows><td align=left>Adapt Intensity Modifier: </td><td align=left><select size=1 name=adaptive_intensity>";
+			echo "<tr><td align=left>Adapt Intensity Modifier: </td><td align=left><select size=1 name=adaptive_intensity>";
 			$n=40;
 			while ($n>=-40) {
 				$sel='';
@@ -1468,7 +1469,7 @@ if ($ADD==31) {
 			}
 			echo "</select> ".helptag("osdial_campaigns-adaptive_intensity")."</td></tr>";
 
-			echo "<tr Xbgcolor=$unusualrows><td align=left>Dial Level Difference Target: </td><td align=left><select size=1 name=adaptive_dl_diff_target>";
+			echo "<tr><td align=left>Dial Level Difference Target: </td><td align=left><select size=1 name=adaptive_dl_diff_target>";
 			$n=40;
 			while ($n>=-40) {
 				$sel='';
@@ -1499,7 +1500,7 @@ if ($ADD==31) {
 			} else {
 				$sel3='selected';
 			}
-			echo "<tr Xbgcolor=$unusualrows><td align=left>Auto Dial Answer Handling: </td>";
+			echo "<tr><td align=left>Auto Dial Answer Handling: </td>";
 			echo "  <td align=left>";
 			echo "    <select size=1 name=campaign_vdad_exten>";
 			echo "      <option value=\"8365\" $sel1>8365 - Home Server Only</option>";
@@ -1528,10 +1529,10 @@ if ($ADD==31) {
 			echo "<tr><td colspan=2 align=center>";
 			echo "<a name=options></a>";
 			echo "<div style=\"width:".$section_width."px;padding:5px;\" class=rounded-corners2>";
-			echo "<table width=$section_width cellspacing=3 cellpadding=0 cellspacing=3>";
+			echo "<table width=$section_width cellpadding=0 cellspacing=3>";
 			echo "<tr><td align=left class=top_header_sect colspan=2 valign=top width=40%>Dialing Options</td></tr>";
 			
-			echo "<tr><td align=center colspan=2><table border=0 cellpadding=0 cellspacing=0 width=70%>";
+			echo "<tr><td align=center colspan=2><table border=0 cellpadding=0 cellspacing=3 width=70%>";
 			echo "<tr style=\"visibility:collapse;\"><td align=left>Concurrent Transfers: </td><td align=left><select size=1 name=concurrent_transfers><option >AUTO</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10<option SELECTED>$concurrent_transfers</option></select>".helptag("osdial_campaigns-concurrent_transfers")."</td></tr>";
 
 			echo "<tr><td align=left>Alt Number Dialing: </td><td align=left><select size=1 name=alt_number_dialing><option>Y</option><option>N</option><option SELECTED>$alt_number_dialing</option></select>".helptag("osdial_campaigns-alt_number_dialing")."</td></tr>";
@@ -1755,7 +1756,7 @@ if ($ADD==31) {
 			echo "<div style=\"width:".$section_width."px;padding:5px;\" class=rounded-corners>";
 			echo "<table width=100% cellpadding=0 cellspacing=3>";
 			echo "<tr><td align=left class=top_header_sect valign=top width=40%>Dropped Calls Options</td></tr>";
-			echo "<tr><td align=center><br /><table border=0 cellpadding=0 cellspacing=3 width=55%>";
+			echo "<tr><td align=center><br /><table border=0 cellpadding=1 cellspacing=3 width=65%>";
 			echo "<tr><td align=left>Drop Call Handling (Safe Harbor): </td><td align=left>";
 			echo "<select size=1 name=safe_harbor_message>";
 			$sel1='';
@@ -1896,7 +1897,7 @@ if ($ADD==31) {
 			echo "<div style=\"width:".$section_width."px;padding:5px;\" class=rounded-corners>";
 			echo "<table width=100% cellpadding=0 cellspacing=3>";
 			echo "<tr><td align=left class=top_header_sect valign=top>Script Options</td></tr>";
-			echo "<tr><td align=center><br /><table border=0 cellpadding=0 cellspacing=3 width=50%>";
+			echo "<tr><td align=center><br /><table border=0 cellpadding=0 cellspacing=3 width=55%>";
 			echo "<tr class=no-ul><td align=left width=50%><a href=\"$PHP_SELF?ADD=3111111&script_id=$script_id\">Script</a>: </td><td align=left><select size=1 name=script_id>";
 			echo get_scripts($link, $script_id);
 			#echo "$scripts_list";

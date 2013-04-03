@@ -546,7 +546,7 @@
 	
 	span.helpcontainer span.helppopup{
 		background:#EEE; /*  */
-		border: 2px solid #808080;
+		border: 1px solid #808080;
 		border-radius: 4px 4px 4px 4px;
 		border-style:solid ridge ridge solid;
 		box-shadow: rgba(0,0,1,1) 0px 0px 200px;
