@@ -1437,7 +1437,7 @@ if ($ADD==31) {
 				</tr>";
 			echo "<tr Xbgcolor=$unusualrows><td align=left>Manual Dial Level: </td>
 				<td align=left nowrap><input type=text name=ADAPT_auto_dial_level size=6 maxlength=6 value=\"$auto_dial_level\" disabled selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;3.5;4.0;4.5;5.0;5.5;6.0;6.5;7.0;7.5;8.0;8.5;9.0;10.0\"> 
-				<input type=checkbox onchange=\"if (this.checked) { document.forms[0].ADAPT_auto_dial_level.enable(); } else { document.forms[0].ADAPT_auto_dial_level.disable();}\" name=dial_level_override id=dial_level_override value=\"1\"><label for=dial_level_override class=font2>Override</label> &nbsp; ".helptag("osdial_campaigns-auto_dial_level")."</td>
+				<input type=checkbox onchange=\"if (this.checked) { document.forms[0].ADAPT_auto_dial_level.enable(); } else { document.forms[0].ADAPT_auto_dial_level.disable();}\" name=dial_level_override id=dial_level_override value=\"1\"><label for=dial_level_override class=font2>Activate</label> &nbsp; ".helptag("osdial_campaigns-auto_dial_level")."</td>
 				</tr>";
 			echo "<tr Xbgcolor=$unusualrows><td align=left>Available Only Tally: </td>
 					<td align=left><select size=1 name=ADAPT_available_only_ratio_tally>
