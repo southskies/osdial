@@ -1278,18 +1278,27 @@ if ($ADD==31) {
 				$dial_method_m_class='';
 				$dial_method_r_class='';
 				$test='A';
+				$NotActiveAdapt='';
+			} else {
+				$NotActiveAdapt='<span class=alert style="margin-left:245px;">(Not Active)</span>';
 			}
 			if ($dial_method=='MANUAL') {
 				$dial_method_a_class='';
 				$dial_method_m_class='active-mode';
 				$dial_method_r_class='';
 				$test='M';
+				$NotActiveManual='';
+			} else {
+				$NotActiveManual='<span class=alert style="margin-left:260px;">(Not Active)</span>';
 			}
 			if ($dial_method=='RATIO') {
 				$dial_method_a_class='';
 				$dial_method_m_class='';
 				$dial_method_r_class='active-mode';
 				$test='R';
+				$NotActiveRatio='';
+			} else {
+				$NotActiveRatio='<span class=alert style="margin-left:275px;">(Not Active)</span>';
 			}
 			echo "<div style=\"width:".$section_width."px;padding:5px;margin-bottom:5px;\" class=rounded-corners2>";
 			echo "<table cellpadding=0 cellspacing=3 width=100%>";
@@ -1350,7 +1359,7 @@ if ($ADD==31) {
 			echo "<tr id=\"dm_manual\" style=\"$manual_visible\"><td colspan=2 align=center>";
 			echo "<div style=\"width:".$section_width_narrow."px;padding:5px;\" class=rounded-corners3>";
 			echo "<table width=100% cellpadding=0 cellspacing=3>";
-			echo "<tr><td align=left class=top_header_sect colspan=2 valign=top width=40%>Manual Dial Options<br /><br /></td></tr>";
+			echo "<tr><td align=left class=top_header_sect colspan=2 valign=top width=40%>Manual Dial Options $NotActiveManual <br /><br /></td></tr>";
 			echo "<tr><td align=center colspan=2><table width=60% cellpadding=0 cellspacing=0>";
 			echo "<tr><td align=left>Preview Force Dial Time: </td><td align=left class=font2><input type=text name=preview_force_dial_time size=3 maxlength=3 value=\"$preview_force_dial_time\"> in seconds, 0 disables".helptag("osdial_campaigns-preview_force_dial_time")."</td></tr>";
 			echo "<tr><td align=left>Manual Preview Default: </td><td align=left><select size=1 name=manual_preview_default><option>Y</option><option>N</option><option selected>$manual_preview_default</option></select>".helptag("osdial_campaigns-manual_preview_default")."</td></tr>";
@@ -1376,7 +1385,7 @@ if ($ADD==31) {
 			echo "<tr id=\"dm_ratio\" style=\"$ratio_visible\"><td colspan=2 align=center>";
 			echo "<div style=\"width:".$section_width_narrow."px;padding:5px;\" class=rounded-corners3>";
 			echo "<table width=100% cellpadding=0 cellspacing=3>";
-			echo "<tr><td align=left class=top_header_sect valign=top width=50%>Ratio Dial Options<br /><br /></td></tr>";
+			echo "<tr><td align=left class=top_header_sect valign=top width=50%>Ratio Dial Options $NotActiveRatio<br /><br /></td></tr>";
 			echo "<tr><td align=center><table border=0 cellpadding=0 cellspacing=0 width=50%>";
 			echo "<tr><td align=left>Auto Dial Level: </td><td align=left nowrap><input type=text name=auto_dial_level size=6 maxlength=6 value=\"$auto_dial_level\" selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;4.0;4.5;5.0\"> ".helptag("osdial_campaigns-auto_dial_level")."</td></tr>";
 
@@ -1395,7 +1404,7 @@ if ($ADD==31) {
 			echo "<tr id=\"dm_adapt\" style=\"$adapt_visible\"><td colspan=2 align=center>";
 			echo "<div style=\"width:".$section_width_narrow."px;padding:5px;\" class=rounded-corners3>";
 			echo "<table width=100% cellpadding=1 cellspacing=3>";
-			echo "<tr><td align=left class=top_header_sect valign=top width=50%>Adaptive Dial Options<br /><br /></td></tr>";
+			echo "<tr><td align=left class=top_header_sect valign=top width=50%>Adaptive Dial Options $NotActiveAdapt<br /><br /></td></tr>";
 			echo "<tr><td align=center><table border=0 cellpadding=0 cellspacing=3 width=80%>";
 			$admavgsel='';
 			if ($dial_method=='ADAPT_AVERAGE') $admavgsel='selected';
