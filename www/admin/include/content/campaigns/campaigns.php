@@ -2006,7 +2006,7 @@ if ($ADD==31) {
 				echo "<tr><td align=center class=no-ul colspan=3><br />";
 				jump_section(1);
 				echo "</td></tr>";
-				echo "</table></div>&nbsp;";
+				echo "</table></div>"; // No &nbsp; here as it doubles the space to the next section below
 			}
 			echo "</FORM>";
 

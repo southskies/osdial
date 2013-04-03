@@ -1,9 +1,9 @@
 :root {
-    -webkit-var-beautifulColor: rgba(255,40,10, 0.8);
-    -moz-var-beautifulColor: rgba(255,40,10, 0.8);
-    -ms-var-beautifulColor: rgba(255,40,10, 0.8);
-    -o-var-beautifulColor: rgba(255,40,10, 0.8);
-    var-beautifulColor: rgba(255,40,10, 0.8);
+    -webkit-var-myColor: rgba(255,40,10, 0.8);
+    -moz-var-myColor: rgba(255,40,10, 0.8);
+    -ms-var-myColor: rgba(255,40,10, 0.8);
+    -o-var-myColor: rgba(255,40,10, 0.8);
+    var-myColor: rgba(255,40,10, 0.8);
 	
 	-moz-var-links: #1C4754;
 	links: #1C4754;
@@ -117,11 +117,11 @@
 		color: #1C4754;
 		/*
 		color: var(links);
-		color: -webkit-var(beautifulColor);
-		color: -moz-var(beautifulColor);
-		color: -ms-var(beautifulColor);
-		color: -o-var(beautifulColor); 
-		color: var(beautifulColor); */
+		color: -webkit-var(myColor);
+		color: -moz-var(myColor);
+		color: -ms-var(myColor);
+		color: -o-var(myColor); 
+		color: var(myColor); */
 		text-decoration: none;
 	}
 	a:link {
@@ -237,7 +237,6 @@
 	}
 	.maintable_top {
 		background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0.01, #77A0D9), color-stop(0.6, #E7EDF5)); /* #0A6A92 #9CC3D4 */
-		/* background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0.01, #0A6A92), color-stop(0.6, #9CC3D4)); */
 		width: 980px;
 		border-radius: 18px 18px 0px 0px;
 		border-style: inset groove none inset;	
@@ -247,9 +246,6 @@
 		background-image:-webkit-gradient(linear, left bottom, left top, color-stop(0.01, #77A0D9), color-stop(0.6, #E7EDF5));
 /* 		background-image:-webkit-gradient(linear, left top, right bottom, color-stop(0.01, #77A0D9), color-stop(0.01, #77A0D9), color-stop(0.01, #77A0D9), color-stop(0.6, #E7EDF5) ); */
 		width: 980px;
-/* 		border-radius: 18px 18px 0px 0px; */
-/* 		border:thin solid navy; */
-/* 		border-style: inset groove none inset;	 */
 	}
 	
 	table.row:hover {background-color: #B4CCD6;} /* #B4CCD6 */
@@ -549,8 +545,11 @@
 	
 	
 	span.helpcontainer span.helppopup{
-		background:#afcfd7;
-		border: 1px solid #808080;
+		background:#EEE; /*  */
+		border: 2px solid #808080;
+		border-radius: 4px 4px 4px 4px;
+		border-style:solid ridge ridge solid;
+		box-shadow: rgba(0,0,1,1) 0px 0px 200px;
 		color: #1c4754;
 		font-size: 13px;
 		min-height: 30px;
@@ -564,7 +563,7 @@
 		margin-right:auto;
 		margin-top:0px;
 		margin-bottom:10px;
-		padding:5px 3px 5px 8px;
+		padding:5px 10px 10px 10px;
 		white-space: normal;
 		text-align: left;
 		text-decoration: none;
@@ -572,9 +571,6 @@
 		-moz-border-radius: 5px;
 		-webkit-border-radius: 5px;
 		-khtml-border-radius: 5px;
-		border-radius: 8px 8px 8px 8px;
-		border-style:none outset outset none;
-		
 	}
 	span.helpcontainer {
 		margin-left:auto;
