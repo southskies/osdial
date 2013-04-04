@@ -196,7 +196,7 @@ function report_realtime_detail() {
     $campaign_allow_inbound = $row[0];
 
 
-    $html .= "<br /><table align=center class=shadedtable style=background:#EEE;><tr><td>\n";
+    $html .= "<br /><table align=center class=shadedtable style='background:#EEE;' width=930><tr><td>\n";
     $html .= "<font size=1>";
 
     $html .= "<div class=no-ul>";
@@ -415,7 +415,7 @@ function report_realtime_detail() {
         $agent_pause_codes_active=$row[2];
 
         $html .= "</td></tr><tr><td align=left>";
-        $html .= "<font class=indented color=#1C4754 size=2><b>$group - $group_name</b></font>";
+        $html .= "<font class=indented color=#1C4754 size=2>&nbsp;<b>$group - $group_name</b></font>";
         if (OSDpreg_match("/^XXXX/",$group)) {
             $html .= '';
         } elseif ($active=="Y") {
@@ -424,7 +424,7 @@ function report_realtime_detail() {
             $html .="<font color='red'>&nbsp;&nbsp;(In-Active)</font>";
         }
         $html .= "</td></tr><tr><td align=center>";
-        $html .= "<table class=indents cellpadding=0 cellspacing=0>";
+        $html .= "<table class=indents cellpadding=0 cellspacing=3>";
 
         $html .= "<tr>";
         $html .= "<td align=right colspan=1><font size=2 color=$default_text><b>Statuses:</b></td><TD ALIGN=LEFT colspan=7><font size=2>&nbsp; <span title=\"$DIALstatuses\">" . ellipse($DIALstatuses,110,true) . "</span>&nbsp;&nbsp;</td>";
