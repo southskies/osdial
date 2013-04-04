@@ -89,6 +89,24 @@ function fixChromeTableExpand(trid) {
 	}
 }
 
+function fixChromeTableExpand2(trname) {
+	if (typeof(window.chrome)!="undefined") {
+		var trs=document.getElementsByName(trname);
+		for (var ti=0; ti<trs.length; ti++) {
+			var tr=trs[ti];
+			if (tr.style.visibility == 'collapse') {
+				if (typeof(tr.parentNode.parentNode.classList)!="undefined" && !tr.parentNode.parentNode.classList.contains('rounded-corners') && !tr.parentNode.parentNode.classList.contains('rounded-corners2') && tr.parentNode.parentNode.style.borderCollapse!='collapse')
+					tr.parentNode.parentNode.style.borderCollapse = 'separate';
+				var tdcells = tr.childNodes;
+				for (var i2=0; i2<tdcells.length; i2++) {
+					if (typeof(tdcells[i2].classList)!="undefined" && tdcells[i2].classList.contains('chrome_collapsed_row'))
+						tdcells[i2].classList.remove('chrome_collapsed_row');
+				}
+			}
+		}
+	}
+}
+
 
 // ################################################################################
 // getXHR() - Returns an xmlhttprequest or MS equiv.
