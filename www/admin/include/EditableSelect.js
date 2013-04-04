@@ -74,10 +74,10 @@
 		result += ".selectBoxArrow { margin-top:1px; float:left; position:absolute; right:1px; }\n";
 		result += ".selectBoxInput { border:0px; padding-left:1px; background-color:" + bgColor + "; color:" + fgColor + ";";
 		result +=     " height:16px; position:absolute; top:0px; left:0px; }\n";
-		result += ".selectBoxSpacer { position: relative; float: left; height:20px; }\n";
+		result += ".selectBoxSpacer { position: relative; float: left; height:20px; white-space:nowrap;}\n";
 		result += ".selectBox { position: absolute; z-index:1000; float: left; border:1px solid " + borderColor + "; background-color:" + bgColor + "; height:20px; }\n";
 		result += ".selectBoxOptionContainer { z-index:1001; position:absolute; border:1px solid " + borderColor + ";";
-		result +=     " height:100px; background-color:" + bgColor + "; left:-1px; top:20px; visibility:hidden; overflow:auto; }\n";
+		result +=     " height:100px; background-color:" + bgColor + "; left:-1px; top:20px; visibility:hidden; overflow:auto; white-space:nowrap;}\n";
 		result += ".selectBoxAnOption { z-index:1002; cursor:default; margin:1px; overflow:hidden; white-space:nowrap; }\n";
 		result += ".selectBoxAnOptionLeft {float: left; font-family:\"dejavu sans\"; font-size:12px; cursor:default; overflow:hidden; white-space:nowrap; }\n";
 		result += ".selectBoxAnOptionRight {float: right; font-family:\"dejavu sans\"; font-size:12px; cursor:default; overflow:hidden; white-space:nowrap; }\n";
@@ -214,12 +214,12 @@
 			var tmp='';
 			if (options.length==labels.length) {
 				if (labels[no] == undefined) labels[no]='';
-				if (labels[no] != '') tmp+='  -  ';
+				if (labels[no] != '') tmp+='&nbsp;&nbsp;-&nbsp;&nbsp;';
 				tmp+=labels[no];
 			}
 			if (options.length==types.length) {
 				if (types[no] == undefined) types[no]='';
-				if (types[no] != '') tmp+='  -  ';
+				if (types[no] != '') tmp+='&nbsp;&nbsp;-&nbsp;&nbsp;';
 			}
 			tmp+=options[no];
 			if (tmp.length>newsize) newsize=tmp.length;
