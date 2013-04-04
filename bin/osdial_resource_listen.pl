@@ -94,12 +94,13 @@ while (1) {
 sub output_html {
 	my %hosts = @_;
 	my $html;
-	$html = "<br><table bgcolor=grey cellspacing=1 cellpadding=3>\n";
-	$html .= "  <tr bgcolor=\$menubarcolor>\n";
+	$html = "<br>";
+	$html .= "<table cellspacing=0 cellpadding=0 frame=border width=100%>\n";
+	$html .= "  <tr>\n";
 	$html .= "   ";
-	$html .= "<td align=center><font color=white size=1><b>System</b></font></td>";
-	$html .= "<td align=center><font color=white size=1><b>CPU%</b></font></td>";
-	$html .= "<td align=center><font color=white size=1><b>MEM%</b></font></td>";
+	$html .= "<td align=center bgcolor=$menubarcolor><font color=white size=1><b>System</b></font></td>";
+	$html .= "<td align=center bgcolor=$menubarcolor><font color=white size=1><b>CPU%</b></font></td>";
+	$html .= "<td align=center bgcolor=$menubarcolor><font color=white size=1><b>MEM%</b></font></td>";
 	$html .= "\n";
 	$html .= "  </tr>\n";
 	my $col = '$oddrows';
@@ -128,34 +129,35 @@ sub output_html {
 sub output_html_extended {
 	my %hosts = @_;
 	my $html;
-	$html = "<br><table bgcolor=grey cellspacing=1 cellpadding=3>\n";
-	$html .= "  <tr bgcolor=\$menubarcolor>\n";
+	$html = "<br><div bgcolor=$info_odd style='margin:5px;border:2px solid $info_odd;' width=820>";
+	$html .= "<table cellspacing=0 cellpadding=0>\n";
+	$html .= "<tr>\n";
 	$html .= "    ";
-	$html .= "<td colspan=5 align=center><font color=white size=1><b>System</b></font></td>";
-	$html .= "<td colspan=4 align=center><font color=white size=1><b>LoadAvg</b></font></td>";
-	$html .= "<td colspan=2 align=center><font color=white size=1><b>CPU</b></font></td>";
-	$html .= "<td colspan=4 align=center><font color=white size=1><b>MEM</b></font></td>";
+	$html .= "  <td bgcolor=$info_system colspan=5 align=center><font color=white size=1><b>System</b></font></td>";
+	$html .= "  <td bgcolor=$info_load colspan=4 align=center><font color=white size=1><b>Load Average</b></font></td>";
+	$html .= "  <td bgcolor=$info_cpu colspan=2 align=center><font color=white size=1><b>CPU</b></font></td>";
+	$html .= "  <td bgcolor=$info_mem colspan=4 align=center><font color=white size=1><b>MEMORY</b></font></td>";
 	$html .= "\n";
-	$html .= "  </tr>\n";
-	$html .= "  <tr bgcolor=\$menubarcolor>\n";
+	$html .= "</tr>\n";
+	$html .= "<tr cellpadding=2>\n";
 	$html .= "    ";
-	$html .= "<td align=center><font color=white size=1><b>Label</b></font></td>";
-	$html .= "<td align=center><font color=white size=1><b>IP</b></font></td>";
-	$html .= "<td align=center><font color=white size=1><b>Host</b></font></td>";
-	$html .= "<td align=center><font color=white size=1><b>Domain</b></font></td>";
-	$html .= "<td align=center><font color=white size=1><b>Timestamp</b></font></td>";
-	$html .= "<td align=center><font color=white size=1><b>1min</b></font></td>";
-	$html .= "<td align=center><font color=white size=1><b>5min</b></font></td>";
-	$html .= "<td align=center><font color=white size=1><b>10min</b></font></td>";
-	$html .= "<td align=center><font color=white size=1><b>Procs</b></font></td>";
-	$html .= "<td align=center><font color=white size=1><b>Count</b></font></td>";
-	$html .= "<td align=center><font color=white size=1><b>Pct</b></font></td>";
-	$html .= "<td align=center><font color=white size=1><b>Total</b></font></td>";
-	$html .= "<td align=center><font color=white size=1><b>Free</b></font></td>";
-	$html .= "<td align=center><font color=white size=1><b>Pct</b></font></td>";
-	$html .= "<td align=center><font color=white size=1><b>Swap</b></font></td>";
+	$html .= "  <td bgcolor=$info_back align=center><font color=white size=1><b>Label</b></font></td>";
+	$html .= "  <td bgcolor=$info_back align=center><font color=white size=1><b>IP</b></font></td>";
+	$html .= "  <td bgcolor=$info_back align=center><font color=white size=1><b>Host</b></font></td>";
+	$html .= "  <td bgcolor=$info_back align=center><font color=white size=1><b>Domain</b></font></td>";
+	$html .= "  <td bgcolor=$info_back align=center><font color=white size=1><b>Timestamp</b></font></td>";
+	$html .= "  <td bgcolor=$info_back align=center><font color=white size=1><b>1min</b></font></td>";
+	$html .= "  <td bgcolor=$info_back align=center><font color=white size=1><b>5min</b></font></td>";
+	$html .= "  <td bgcolor=$info_back align=center><font color=white size=1><b>10min</b></font></td>";
+	$html .= "  <td bgcolor=$info_back align=center><font color=white size=1><b>Procs</b></font></td>";
+	$html .= "  <td bgcolor=$info_back align=center><font color=white size=1><b>Count</b></font></td>";
+	$html .= "  <td bgcolor=$info_back align=center><font color=white size=1><b>Pct</b></font></td>";
+	$html .= "  <td bgcolor=$info_back align=center><font color=white size=1><b>Total</b></font></td>";
+	$html .= "  <td bgcolor=$info_back align=center><font color=white size=1><b>Free</b></font></td>";
+	$html .= "  <td bgcolor=$info_back align=center><font color=white size=1><b>Pct</b></font></td>";
+	$html .= "  <td bgcolor=$info_back align=center><font color=white size=1><b>Swap</b></font></td>";
 	$html .= "\n";
-	$html .= "  </tr>\n";
+	$html .= "</tr>\n";
 	my $col = '$oddrows';
 	my %uhost;
 	foreach my $host (sort keys %hosts) {
@@ -187,8 +189,11 @@ sub output_html_extended {
 		}
 		$uhost{$hosts{$host}->{host}}++;
 	}
-	$html .= "  <tr bgcolor=\$menubarcolor><td colspan=15><font size=1></font></td></tr>\n";
+	$html .= "<tr>\n";
+	$html .= "  <td bgcolor=$info_back colspan=15 align=center><font color=white size=1><b></b></font></td>\n";
+    $html .= "</tr>";
 	$html .= "</table>\n";
+	$html .= "</div>";
 	return $html;
 }
 

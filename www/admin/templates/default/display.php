@@ -109,4 +109,10 @@ $logout_color = 	'yellow';
 $menu_h1_color = 	$status_color;
 $menu_h2_color = 	'menuH2color';
 
+$info_back		=	'#768';
+$info_system	=	'#9E5D53';
+$info_load		=	'#9E9E4F';
+$info_cpu		=	'#4F9E52';
+$info_mem		=	'#4E4E9E';
+
 ?>

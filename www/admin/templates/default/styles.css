@@ -601,3 +601,8 @@
 	td.chrome_collapsed_row div{
 		display: none;
 	}
+
+	.info_sys_grad {
+/* 		background-image:-webkit-gradient(linear, left bottom, right bottom, color-stop(0.01, #6E2D23), color-stop(0.9, #9E5D53)); */
+		background:#678;
+	}
