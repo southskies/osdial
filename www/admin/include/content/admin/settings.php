@@ -344,6 +344,7 @@ if ($ADD==311111111111111) {
         echo "        <tr bgcolor=$oddrows style=\"$qstyle\">\n";
         echo "          <td align=right>QueueMetrics EnterQueue Prepend:</td>\n";
         echo "          <td align=left>\n";
+	echo "            <div>\n";
         echo "            <select size=1 name=queuemetrics_eq_prepend>\n";
         echo "              <option>NONE</option>\n";
         echo "              <option>lead_id</option>\n";
@@ -357,6 +358,7 @@ if ($ADD==311111111111111) {
         echo "              <option selected>$system_settings[queuemetrics_eq_prepend]</option>\n";
         echo "            </select>";
 		echo "            ".helptag("system_settings-queuemetrics_eq_prepend")."\n";
+	echo "            </div>\n";
         echo "          </td>\n";
         echo "        </tr>\n";
 
