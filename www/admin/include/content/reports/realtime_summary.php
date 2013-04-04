@@ -36,7 +36,10 @@ function report_realtime_summary() {
     $NOW_TIME = date("Y-m-d H:i:s");
     $STARTtime = date("U");
 
-    $stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE active='Y' AND campaign_id IN %s;",$LOG['allowed_campaignsSQL']);
+    $activeSQL = '1=1';
+    if ($active_only=='Y') $activeSQL = "active='Y'";
+
+    $stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE %s AND campaign_id IN %s;",$activeSQL,$LOG['allowed_campaignsSQL']);
     $rslt=mysql_query($stmt, $link);
     if (!isset($DB)) $DB=0;
     if ($DB) $html .= "$stmt\n";
@@ -67,65 +70,72 @@ function report_realtime_summary() {
     $html .= "<input type=hidden name=campaign_id value=$campaign_id>\n";
     $html .= "<input type=hidden name=RR value=$RR>\n";
     $html .= "<input type=hidden name=cpuinfo value=$cpuinfo>\n";
+    $html .= "<input type=hidden name=active_only value=$active_only>\n";
     
     $html .= "<br><p class=centered><font class=top_header color=$default_text size=+1>ALL CAMPAIGNS SUMMARY</font><br><br>";
     $html .= "<font color=$default_text size=-1>Update:&nbsp;";
     if ($RR==38400) $html .= "<font size=+1>";
-    $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">Daily</a>&nbsp;&nbsp;";
+    $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo&active_only=$active_only\">Daily</a>&nbsp;&nbsp;";
     if ($RR==3600) {
         $html .= "<font size=+1>";
     } else {
         $html .= "<font size=-1>";
     }
-    $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=3600&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">Hourly</a>&nbsp;&nbsp;";
+    $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=3600&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo&active_only=$active_only\">Hourly</a>&nbsp;&nbsp;";
     if ($RR==600) {
         $html .= "<font size=+1>";
     } else {
         $html .= "<font size=-1>";
     }
-    $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=600&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">10min</a>&nbsp;&nbsp;";
+    $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=600&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo&active_only=$active_only\">10min</a>&nbsp;&nbsp;";
     if ($RR==30) {
         $html .= "<font size=+1>";
     } else {
         $html .= "<font size=-1>";
     }
-    $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=30&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">30sec</a>&nbsp;&nbsp;";
+    $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=30&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo&active_only=$active_only\">30sec</a>&nbsp;&nbsp;";
     if ($RR==4) {
         $html .= "<font size=+1>";
     } else {
         $html .= "<font size=-1>";
     }
-    $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=4&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">4sec</a>&nbsp;&nbsp;";
+    $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=4&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo&active_only=$active_only\">4sec</a>&nbsp;&nbsp;";
     if (!empty($useOAC)) {
         if ($RR==2) {
             $html .= "<font size=+1>";
         } else {
             $html .= "<font size=-1>";
         }
-        $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=2&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">2sec</a>&nbsp;&nbsp;";
+        $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=2&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo&active_only=$active_only\">2sec</a>&nbsp;&nbsp;";
     }
     $html .= "</font>";
     $html .= "&nbsp;-&nbsp;&nbsp;";
     if ($adastats<2) {
-        $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=2&cpuinfo=$cpuinfo\"><font size=1>VIEW MORE SETTINGS</font></a>";
+        $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=2&cpuinfo=$cpuinfo&active_only=$active_only\"><font size=1>VIEW MORE SETTINGS</font></a>";
     } else {
-        $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=1&cpuinfo=$cpuinfo\"><font size=1>VIEW LESS SETTINGS</font></a>";
+        $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=1&cpuinfo=$cpuinfo&active_only=$active_only\"><font size=1>VIEW LESS SETTINGS</font></a>";
+    }
+    // Hide inactive campaigns by default 
+    if ($active_only=='N') {
+        $html .= "<font size=2>&nbsp;-&nbsp;<a href='$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=1&cpuinfo=$cpuinfo&active_only=Y'>Hide Inactive Campaigns</a></font>";
+    } else {
+        $html .= "<font size=2>&nbsp;-&nbsp;<a href='$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=1&cpuinfo=$cpuinfo&active_only=N'>Show Inactive Campaigns</a></font>";
     }
     $html .= "</p>\n\n";
     
     $k=0;
     while($k<$groups_to_print) {
-        $NFB = '<b><font size=3 face="courier">';
-        $NFE = '</font></b>';
+//         $NFB = '<b><font size=3 face="courier">';
+//         $NFE = '</font></b>';
         $F=''; $FG=''; $B=''; $BG='';
         
-        
+        $html .= "<table align=center border=0 cellpadding=0 cellspacing=0 class=shadedtable style='background:#EEE;margin-top:2px;' width=800><tr><td colspan=8>";
         $group = $groups[$k];
         $group_name = $group_names[$k];
         $rdlink = mclabel($group) . " - $group_name";
-        if ($LOG['view_agent_realtime']) $rdlink = "<a href=\"./admin.php?useOAC=$useOAC&ADD=$ADD&SUB=" . ($SUB + 1) . "&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">" . mclabel($group) . " - $group_name</a>";
-        $html .= "<div style='margin:10px 0 5px 10px;'><font size=-1><b>$rdlink</b> &nbsp; - &nbsp; ";
-        $html .= "<a href=\"./admin.php?ADD=31&campaign_id=$group\">Modify</a></div> </font>\n";
+        if ($LOG['view_agent_realtime']) $rdlink = "<a href=\"./admin.php?useOAC=$useOAC&ADD=$ADD&SUB=" . ($SUB + 1) . "&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo&active_only=$active_only\">" . mclabel($group) . " - $group_name</a>";
+        $html .= "<div style='margin:5px 0 10px 5px;'><font size=-1><b>$rdlink</b> &nbsp; - &nbsp; ";
+        $html .= "<a href=\"./admin.php?ADD=31&campaign_id=$group\">Modify Campaign</a></div> </font>\n";
         
         
         $stmt = sprintf("SELECT count(*) FROM osdial_campaigns WHERE campaign_id IN %s AND campaign_id='%s' and campaign_allow_inbound='Y';",$LOG['allowed_campaignsSQL'],mres($group));
@@ -201,53 +211,56 @@ function report_realtime_summary() {
         $row=mysql_fetch_row($rslt);
         $balanceSHORT = $row[0];
         
-        $html .= "<table align=center border=0 cellpadding=0 cellspacing=0 class=shadedtable style=background:#EEE;>";
-
+        
+		$html .= "</td></tr>";
         $html .= "<tr>";
-        $html .= "<td align=right colspan=1><font size=2 color=$default_text><b>Statuses:</b></td><td align=left colspan=7><font size=2>&nbsp; <span title=\"$DIALstatuses\">" . ellipse($DIALstatuses,110,true) . "</span>&nbsp;&nbsp;</td>";
+        $html .= "<td align=right colspan=1><font size=2 color=$default_text><b>Statuses:</b></font></td><td align=left colspan=7><font size=2>&nbsp; <span title=\"$DIALstatuses\">" . ellipse($DIALstatuses,110,true) . "</span>&nbsp;&nbsp;</font></td>";
         $html .= "</tr>";
 
-        $html .= "<td align=right><font size=2 color=$default_text><b>Dial Level:</b></td><td align=left><font size=2>&nbsp; $DIALlev&nbsp; &nbsp; </td>";
-        $html .= "<td align=right><font size=2 color=$default_text><b>Trunk Short/Fill:</b></td><td align=left><font size=2>&nbsp; $balanceSHORT / $balanceFILL &nbsp; &nbsp; </td>";
-        $html .= "<td align=right><font size=2 color=$default_text><b>Filter:</b></td><td align=left><font size=2>&nbsp; $DIALfilter &nbsp; </td>";
-        $html .= "<td align=right><font size=2 color=$default_text><b>Time:</b></td><td align=left><font size=2 color=$default_text>&nbsp; " . dateToLocal($link,'first',$NOW_TIME,$webClientAdjGMT,'',$webClientDST,1) . " </td>";
+        if ($balanceSHORT=='') {
+			$balanceSHORT=0;
+		}
+        $html .= "<td align=right><font size=2 color=$default_text><b>Dial Level:</b></font></td><td align=left><font size=2>&nbsp; $DIALlev&nbsp; &nbsp; </font></td>";
+        $html .= "<td align=right><font size=2 color=$default_text><b>Trunk Short/Fill:</b></font></td><td align=left><font size=2>&nbsp; $balanceSHORT / $balanceFILL &nbsp; &nbsp; </font></td>";
+        $html .= "<td align=right><font size=2 color=$default_text><b>Filter:</b></font></td><td align=left><font size=2>&nbsp; $DIALfilter &nbsp; </font></td>";
+        $html .= "<td align=right><font size=2 color=$default_text><b>Time:</b></font></td><td align=left><font size=2 color=$default_text>&nbsp; " . dateToLocal($link,'first',$NOW_TIME,$webClientAdjGMT,'',$webClientDST,1) . " </font></td>";
         $html .= "";
         $html .= "</tr>";
 
         if ($adastats>1) {
             $html .= "<tr bgcolor=\"#CCCCCC\">";
-            $html .= "<td align=right><font size=2>&nbsp; <b>Max Level:</b></td><td align=left><font size=2>&nbsp; $maxDIALlev &nbsp; </td>";
-            $html .= "<td align=right><font size=2><b>Dropped Max:</b></td><td align=left><font size=2>&nbsp; $DROPmax% &nbsp; &nbsp;</td>";
-            $html .= "<td align=right><font size=2><b>Target Diff:</b></td><td align=left><font size=2>&nbsp; $targetDIFF &nbsp; &nbsp; </td>";
-            $html .= "<td align=right><font size=2><b>Intensity:</b></td><td align=left><font size=2>&nbsp; $ADAintense &nbsp; &nbsp; </td>";
+            $html .= "<td align=right><font size=2>&nbsp; <b>Max Level:</b></font></td><td align=left><font size=2>&nbsp; $maxDIALlev &nbsp; </font></td>";
+            $html .= "<td align=right><font size=2><b>Dropped Max:</b></td></font><td align=left><font size=2>&nbsp; $DROPmax% &nbsp; &nbsp;</font></td>";
+            $html .= "<td align=right><font size=2><b>Target Diff:</b></td></font><td align=left><font size=2>&nbsp; $targetDIFF &nbsp; &nbsp; </font></td>";
+            $html .= "<td align=right><font size=2><b>Intensity:</b></font></td><td align=left><font size=2>&nbsp; $ADAintense &nbsp; &nbsp; </font></td>";
             $html .= "</tr>";
 
             $html .= "<tr bgcolor=\"#CCCCCC\">";
-            $html .= "<td align=right><font size=2><b>Dial Timeout:</b></td><td align=left><font size=2>&nbsp; $DIALtimeout &nbsp;</td>";
-            $html .= "<td align=right><font size=2><b>Taper Time:</b></td><td align=left><font size=2>&nbsp; $TAPERtime &nbsp;</td>";
-            $html .= "<td align=right><font size=2><b>Local Ttime</b></td><td align=left><font size=2>&nbsp; $CALLtime &nbsp;</td>";
-            $html .= "<td align=right><font size=2><b>Avail Only:</b></td><td align=left><font size=2>&nbsp; $ADAavailonly &nbsp;</td>";
+            $html .= "<td align=right><font size=2><b>Dial Timeout:</b></font></td><td align=left><font size=2>&nbsp; $DIALtimeout &nbsp;</font></td>";
+            $html .= "<td align=right><font size=2><b>Taper Time:</b></font></td><td align=left><font size=2>&nbsp; $TAPERtime &nbsp;</font></td>";
+            $html .= "<td align=right><font size=2><b>Local Ttime</b></font></td><td align=left><font size=2>&nbsp; $CALLtime &nbsp;</font></td>";
+            $html .= "<td align=right><font size=2><b>Avail Only:</b></font></td><td align=left><font size=2>&nbsp; $ADAavailonly &nbsp;</font></td>";
             $html .= "</tr>";
 
             $html .= "<tr bgcolor=\"#CCCCCC\">";
-            $html .= "<td align=right><font size=2><b>DL Diff:</b></td><td align=left><font size=2>&nbsp; $diffONEMIN &nbsp; &nbsp; </td>";
-            $html .= "<td align=right><font size=2><b>Diff:</b></td><td align=left><font size=2>&nbsp; $diffpctONEMIN% &nbsp; &nbsp; </td>";
-            $html .= "<td align=right><font size=2><b>Avg Agents:</b></td><td align=left><font size=2>&nbsp; $agentsONEMIN &nbsp; &nbsp; </td>";
+            $html .= "<td align=right><font size=2><b>DL Diff:</b></font></td><td align=left><font size=2>&nbsp; $diffONEMIN &nbsp; &nbsp; </font></td>";
+            $html .= "<td align=right><font size=2><b>Diff:</b></td></font><td align=left><font size=2>&nbsp; $diffpctONEMIN% &nbsp; &nbsp; </font></td>";
+            $html .= "<td align=right><font size=2><b>Avg Agents:</b></font></td><td align=left><font size=2>&nbsp; $agentsONEMIN &nbsp; &nbsp; </font></td>";
             $html .= "</tr>";
         }
-
+		
         $html .= "<tr>";
-        $html .= "<td align=right><font size=2 color=$default_text><b>Dialable Leads:</b></td><td align=left><font size=2>&nbsp; $DAleads &nbsp; &nbsp; </td>";
-        $html .= "<td align=right><font size=2 color=$default_text><b>Recycles/Sched:</b></td><td align=left><font size=2>&nbsp; $recycle_total / $recycle_sched &nbsp; &nbsp; </td>";
-        $html .= "<td align=right><font size=2 color=$default_text><b>Calls Today:</b></td><td align=left><font size=2>&nbsp; $callsTODAY &nbsp; &nbsp; </td>";
-        $html .= "<td align=right><font size=2 color=$default_text><b>Dial Method:</b></td><td align=left><font size=2>&nbsp; $DIALmethod &nbsp; &nbsp; </td>";
+        $html .= "<td align=right><font size=2 color=$default_text><b>Dialable Leads:</b></font></td><td align=left><font size=2>&nbsp; $DAleads &nbsp; &nbsp; </font></td>";
+        $html .= "<td align=right><font size=2 color=$default_text><b>Recycles/Sched:</b></font></td><td align=left><font size=2>&nbsp; $recycle_total / $recycle_sched &nbsp; &nbsp; </font></td>";
+        $html .= "<td align=right><font size=2 color=$default_text><b>Calls Today:</b></font></td><td align=left><font size=2>&nbsp; $callsTODAY &nbsp; &nbsp; </font></td>";
+        $html .= "<td align=right><font size=2 color=$default_text><b>Dial Method:</b></font></td><td align=left><font size=2>&nbsp; $DIALmethod </font> &nbsp; &nbsp; </td>";
         $html .= "</tr>";
 
         $html .= "<tr>";
-        $html .= "<td align=right><font size=2 color=$default_text><b>Hopper Level:</b></td><td align=left><font size=2>&nbsp; $HOPlev&nbsp;&nbsp;</td>";
-        $html .= "<td align=right><font size=2 color=$default_text><b>Leads In Hopper:</b></td><td align=left><font size=2>&nbsp; $VDhop&nbsp;&nbsp;</td>";
-        $html .= "<td align=right><font size=2 color=$default_text><b>Drop/Answer:</b></td><td align=left><font size=2>&nbsp; $dropsTODAY / $answersTODAY&nbsp;&nbsp;</td>";
-        $html .= "<td align=right><font size=2 color=$default_text><b>Drop %:</b></td><td align=left><font size=2>&nbsp; ";
+        $html .= "<td align=right><font size=2 color=$default_text><b>Hopper Level:</b></font></td><td align=left><font size=2>&nbsp; $HOPlev&nbsp;&nbsp;</font></td>";
+        $html .= "<td align=right><font size=2 color=$default_text><b>Leads In Hopper:</b></font></td><td align=left><font size=2>&nbsp; $VDhop&nbsp;&nbsp;</font></td>";
+        $html .= "<td align=right><font size=2 color=$default_text><b>Drop/Answer:</b></font></td><td align=left><font size=2>&nbsp; $dropsTODAY / $answersTODAY&nbsp;&nbsp;</font></td>";
+        $html .= "<td align=right><font size=2 color=$default_text><b>Drop %:</b></font></td><td align=left><font size=2>&nbsp; ";
         if ($drpctTODAY >= $DROPmax) {
             $html .= "<font color=red><b>$drpctTODAY%</b></font>";
         } else {
@@ -496,14 +509,14 @@ function report_realtime_summary() {
         $html .= "<br><br><br>";
         $html .= "<center>";
         if ($cpuinfo == 0 ) {
-            $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&cpuinfo=0\"><font size=1><b>STANDARD INFO</b></font></a>";
+            $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&cpuinfo=0&active_only=$active_only\"><font size=1><b>STANDARD INFO</b></font></a>";
             $html .= " - ";
-            $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&cpuinfo=1\"><font size=1>EXTENDED INFO</font></a>";
+            $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&cpuinfo=1&active_only=$active_only\"><font size=1>EXTENDED INFO</font></a>";
             eval("\$html .= \"" . file_get_contents($pref . 'resources.txt') . "\";");
         } else {
-            $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&cpuinfo=0\"><font size=1>STANDARD INFO</font></a>";
+            $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&cpuinfo=0&active_only=$active_only\"><font size=1>STANDARD INFO</font></a>";
             $html .= " - ";
-            $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&cpuinfo=1\"><font size=1><b>EXTENDED INFO</b></font></a>";
+            $html .= "<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&cpuinfo=1&active_only=$active_only\"><font size=1><b>EXTENDED INFO</b></font></a>";
             eval("\$html .= \"" . file_get_contents($pref . 'resources-xtd.txt') . "\";");
         }
         $html .= "</center>";

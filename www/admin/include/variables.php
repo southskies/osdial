@@ -181,6 +181,7 @@ ksort($tzoffsetsDST);
 ######################################################################################################
 ######################################################################################################
 
+$active_only = get_variable('active_only');
 $active = get_variable("active");
 $adastats = get_variable("adastats");
 $adaptive_dl_diff_target = get_variable("adaptive_dl_diff_target");

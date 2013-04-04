@@ -47,9 +47,9 @@ if ($ADD==999999 && ($SUB==11 || $SUB==12 || $SUB==13 || $SUB==14 )) {
     }
     if (empty($OAC)) {
         if (!empty($useOAC)) {
-            $oacjs="setTimeout(function() { refreshOAC('$PHP_SELF','".urlencode("useOAC=$useOAC&OAC=$useOAC&ADD=$ADD&SUB=$SUB&RR=$RR&DB=$DB&adastats=$adastats$metadetail")."',".($RR*1000)."); }, ".($RR*1000).");";
+            $oacjs="setTimeout(function() { refreshOAC('$PHP_SELF','".urlencode("useOAC=$useOAC&OAC=$useOAC&ADD=$ADD&SUB=$SUB&RR=$RR&DB=$DB&adastats=$adastats&active_only=$active_only$metadetail")."',".($RR*1000)."); }, ".($RR*1000).");";
         } else {
-            echo "  <meta http-equiv=Refresh content=\"$RR; URL=$PHP_SELF?ADD=$ADD&SUB=$SUB&RR=$RR&DB=$DB&adastats=$adastats$metadetail\">\n";
+            echo "  <meta http-equiv=Refresh content=\"$RR; URL=$PHP_SELF?ADD=$ADD&SUB=$SUB&RR=$RR&DB=$DB&adastats=$adastats&active_only=$active_only$metadetail\">\n";
         }
     }
 }
