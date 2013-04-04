@@ -357,7 +357,7 @@ if ($ADD==21)
                 if ($WeBRooTWritablE > 0)
                     {
                     $fp = fopen ("./admin_changes_log.txt", "a");
-                    fwrite ($fp, "$date|ADD A NEW CAMPAIGN  |$PHP_AUTH_USER|$ip|$stmt|");
+                    fwrite ($fp, "$date|ADD A NEW CAMPAIGN  |$PHP_AUTH_USER|$ip|$stmt|\n");
                     fclose($fp);
                     }
 
@@ -469,7 +469,7 @@ if ($ADD==20)
             if ($WeBRooTWritablE > 0)
                 {
                 $fp = fopen ("./admin_changes_log.txt", "a");
-                fwrite ($fp, "$date|COPY TO NEW CAMPAIGN|$PHP_AUTH_USER|$ip|$campaign_id|$source_campaign_id|$stmt|$stmtA|");
+                fwrite ($fp, "$date|COPY TO NEW CAMPAIGN|$PHP_AUTH_USER|$ip|$campaign_id|$source_campaign_id|$stmt|$stmtA|\n");
                 fclose($fp);
                 }
 
@@ -595,7 +595,7 @@ if ($ADD==41)
             if ($WeBRooTWritablE > 0)
                 {
                 $fp = fopen ("./admin_changes_log.txt", "a");
-                fwrite ($fp, "$date|CAMPAIGN HOPPERRESET|$PHP_AUTH_USER|$ip|$stmt|");
+                fwrite ($fp, "$date|CAMPAIGN HOPPERRESET|$PHP_AUTH_USER|$ip|$stmt|\n");
                 fclose($fp);
                 }
             }
@@ -604,7 +604,7 @@ if ($ADD==41)
         if ($WeBRooTWritablE > 0)
             {
             $fp = fopen ("./admin_changes_log.txt", "a");
-            fwrite ($fp, "$date|MODIFY CAMPAIGN INFO|$PHP_AUTH_USER|$ip|$stmtA|$reset_hopper|");
+            fwrite ($fp, "$date|MODIFY CAMPAIGN INFO|$PHP_AUTH_USER|$ip|$stmtA|$reset_hopper|\n");
             fclose($fp);
             }
         }
@@ -685,7 +685,7 @@ if ($ADD==44)
             if ($WeBRooTWritablE > 0)
                 {
                 $fp = fopen ("./admin_changes_log.txt", "a");
-                fwrite ($fp, "$date|CAMPAIGN HOPPERRESET|$PHP_AUTH_USER|$ip|$stmt|");
+                fwrite ($fp, "$date|CAMPAIGN HOPPERRESET|$PHP_AUTH_USER|$ip|$stmt|\n");
                 fclose($fp);
                 }
             }
@@ -694,7 +694,7 @@ if ($ADD==44)
         if ($WeBRooTWritablE > 0)
             {
             $fp = fopen ("./admin_changes_log.txt", "a");
-            fwrite ($fp, "$date|MODIFY CAMPAIGN INFO|$PHP_AUTH_USER|$ip|$stmtA|$reset_hopper|");
+            fwrite ($fp, "$date|MODIFY CAMPAIGN INFO|$PHP_AUTH_USER|$ip|$stmtA|$reset_hopper|\n");
             fclose($fp);
             }
         }
@@ -845,7 +845,7 @@ if ($ADD==61)
         if ($WeBRooTWritablE > 0)
             {
             $fp = fopen ("./admin_changes_log.txt", "a");
-            fwrite ($fp, "$date|!!DELETING CAMPAIGN!|$PHP_AUTH_USER|$ip|campaign_id='$campaign_id'|");
+            fwrite ($fp, "$date|!!DELETING CAMPAIGN!|$PHP_AUTH_USER|$ip|campaign_id='$campaign_id'|\n");
             fclose($fp);
             }
         echo "<br><B><font color=$default_text>CAMPAIGN DELETION COMPLETED: $campaign_id</font></B>";
@@ -877,7 +877,7 @@ if ($ADD==62)
         if ($WeBRooTWritablE > 0)
             {
             $fp = fopen ("./admin_changes_log.txt", "a");
-            fwrite ($fp, "$date|!!AGENT LOGOUT!!!!!!|$PHP_AUTH_USER|$ip|campaign_id='$campaign_id'|");
+            fwrite ($fp, "$date|!!AGENT LOGOUT!!!!!!|$PHP_AUTH_USER|$ip|campaign_id='$campaign_id'|\n");
             fclose($fp);
             }
         echo "<br><B><font color=$default_text>AGENT LOGOUT COMPLETED: $campaign_id</font></B>";
@@ -917,7 +917,7 @@ if ($ADD==63)
         if ($WeBRooTWritablE > 0)
             {
             $fp = fopen ("./admin_changes_log.txt", "a");
-            fwrite ($fp, "$date|EMERGENCY AUTO CALLS CLEAR|$PHP_AUTH_USER|$ip|campaign_id='$campaign_id'|");
+            fwrite ($fp, "$date|EMERGENCY AUTO CALLS CLEAR|$PHP_AUTH_USER|$ip|campaign_id='$campaign_id'|\n");
             fclose($fp);
             }
         echo "<br><B><font color=$default_text>LAST AUTO CALLS RECORD CLEARED FOR CAMPAIGN: $campaign_id</font></B>";
@@ -1257,7 +1257,16 @@ if ($ADD==31) {
 			#echo "<option value=\"\"> - Add A Status - </option>";
 			#echo "$dial_statuses_list";
 			#echo "</select>";
-			echo editableSelectBox($statname_list, 'dial_status', '', 300, 300, 'selectBoxForce="1",selectBoxLabel=" - Add A Status - "');
+			$tstatname_list = array();
+			foreach ($statname_list as $k => $v) {
+				if (OSDpreg_match('/^(CPS|CPR).*/',$k)) {
+					$tv = OSDpreg_replace('/^CPA-/','',$v);
+					$tstatname_list[$k] = $tv;
+				} elseif (!OSDpreg_match('/^(CBHOLD|CRC|CRF|CRO|CRR|DNC.*|VDNC|INBND|INCALL|QUEUE|.*XFER)$/',$k)) {
+					$tstatname_list[$k] = $v;
+				}
+			}
+			echo editableSelectBox($tstatname_list, 'dial_status', '', 300, 300, 'selectBoxForce="1",selectBoxLabel=" - Add A Status - "');
 			echo "</td><td><input type=submit name=submit value=ADD></td><td>".helptag("osdial_campaigns-dial_status")."</td>";
 			echo "</tr></table></td></tr>";
 			echo "<tr><td colspan=2>&nbsp;</td></tr>";
@@ -2462,7 +2471,7 @@ if ($ADD==31) {
             echo "    <td colspan=2 nowrap align=left class=font2>\n";
             echo "      Mix ID: <B>$vcl_id:</B>\n";
             echo "    </td>\n";
-            echo "    <td colspan=2 nowrap align=center class=font2>\n";
+            echo "    <td colspan=3 nowrap align=center class=font2>\n";
             echo "      Mix Name: <input type=text size=40 maxlength=50 name=vcl_name$US$vcl_id id=vcl_name$US$vcl_id value=\"$rowx[1]\">\n";
             echo "    </td>\n";
             echo "    <td colspan=2 align=right class=font2>\n";
@@ -2480,7 +2489,7 @@ if ($ADD==31) {
             echo "    <td align=center>PRIORITY</td>\n";
             echo "    <td align=center>%&nbsp;MIX</td>\n";
             echo "    <td align=center>STATUSES</td>\n";
-            echo "    <td align=center>STATUS&nbsp;ACTIONS</td>\n";
+            echo "    <td align=center colspan=2>STATUS&nbsp;ACTIONS</td>\n";
             echo "  </tr>\n";
 
 # list_id|order|percent|statuses|:list_id|order|percent|statuses|:...
@@ -2509,14 +2518,14 @@ if ($ADD==31) {
                 $Dsql = OSDpreg_replace("/,$/","",$Dsql);
 
                 #echo "  <tr " . bgcolor($o) . " class=font2>\n";
-                echo "  <tr class=font2>\n";
+                echo "  <tr class=font1>\n";
                 echo "    <td NOWRAP>\n";
                 echo "      <input type=hidden name=list_id$US$q$US$vcl_id id=list_id$US$q$US$vcl_id value=$MIXdetailsLIST>\n";
                 echo "      <a href=\"$PHP_SELF?ADD=311&list_id=$MIXdetailsLIST\">List: $MIXdetailsLIST</a> &nbsp; ";
                 echo "      <a href=\"$PHP_SELF?ADD=49&SUB=29&stage=REMOVE&campaign_id=$campaign_id&vcl_id=$vcl_id&mix_container_item=$q&list_id=$MIXdetailsLIST#$vcl_id\">REMOVE</a>\n";
                 echo "    </td>\n";
 
-                echo "    <td align=center>\n";
+                echo "    <td align=center class=tabinput>\n";
                 echo "      <select size=1 name=priority$US$q$US$vcl_id id=priority$US$q$US$vcl_id>\n";
                 $n=10;
                 while ($n>=1) {
@@ -2527,7 +2536,7 @@ if ($ADD==31) {
                 echo "      </select>\n";
                 echo "    </td>\n";
 
-                echo "    <td align=center>\n";
+                echo "    <td align=center class=tabinput>\n";
                 echo "      <select size=1 name=\"percentage$US$q$US$vcl_id\" id=\"percentage$US$q$US$vcl_id\" onChange=\"mod_mix_percent('$vcl_id','$Ms_to_print')\">\n";
                 $n=100;
                 while ($n>=0) {
@@ -2539,15 +2548,25 @@ if ($ADD==31) {
                 echo "    </td>\n";
 
                 
-                echo "    <td align=center>\n";
+                echo "    <td align=center class=tabinput>\n";
                 echo "      <input type=hidden name=status$US$q$US$vcl_id id=status$US$q$US$vcl_id value=\"$MIXdetails[3]\">\n";
                 echo "      <input type=text size=30 maxlength=255 name=ROstatus$US$q$US$vcl_id id=ROstatus$US$q$US$vcl_id value=\"$MIXdetails[3]\" READONLY>\n";
                 echo "    </td>\n";
 
-                echo "    <td nowrap>\n";
-                echo "      <select size=1 name=dial_status$US$q$US$vcl_id id=dial_status$US$q$US$vcl_id>\n";
-                echo "        <option value=\"\"> - Select A Status - </option>\n";
-                echo "        $dial_statuses_list";
+                echo "    <td nowrap class=tabinput colspan=2>\n";
+		$tstatname_list = array();
+		foreach ($statname_list as $k => $v) {
+			if (OSDpreg_match('/^(CPS|CPR).*/',$k)) {
+				$tv = OSDpreg_replace('/^CPA-/','',$v);
+				$tstatname_list[$k] = $tv;
+			} elseif (!OSDpreg_match('/^(CBHOLD|CRC|CRF|CRO|CRR|DNC.*|VDNC|INBND|INCALL|QUEUE|.*XFER)$/',$k)) {
+				$tstatname_list[$k] = $v;
+			}
+		}
+		echo editableSelectBox($tstatname_list, "dial_status$US$q$US$vcl_id", '', '', '', 'selectBoxForce="1",selectBoxLabel=" - Select A Status - "');
+                #echo "      <select size=1 name=dial_status$US$q$US$vcl_id id=dial_status$US$q$US$vcl_id>\n";
+                #echo "        <option value=\"\"> - Select A Status - </option>\n";
+                #echo "        $dial_statuses_list";
                 echo "      </select>\n";
                 echo "      <b>\n";
                 echo "        <a href=\"#\" onclick=\"mod_mix_status('ADD','$vcl_id','$q');return false;\">ADD</a> &nbsp; ";
