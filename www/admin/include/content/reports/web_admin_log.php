@@ -57,7 +57,7 @@ function report_web_admin_log() {
     $html .= "<pre><font size=2>\n\n";
     $html .= "OSDIAL: Admin Change Log                    " . dateToLocal($link,'first',date('Y-m-d H:i:s'),$webClientAdjGMT,'',$webClientDST,1) . "\n\n";
 
-    $html .= "<div style=\"align:center;width:950px;height:300px;overflow:scroll;\">";
+    $html .= "<div style=\"align:center;text-align:left;width:950px;height:300px;overflow:scroll;\">";
     $retGrep = array();
     exec("grep '$Gquery_date' $WeBServeRRooT/admin/admin_changes_log.txt", $retGrep);
     $html .= implode("\n",$retGrep)."\n";
