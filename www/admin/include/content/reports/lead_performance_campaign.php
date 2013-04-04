@@ -238,6 +238,7 @@ function report_lead_performance_campaign() {
         $html .= "<form target=\"_new\" action=\"/admin/tocsv.php\">\n";
         $html .= "<input type=hidden name=\"name\" value=\"lpr\">\n";
 
+        $html .= "<div style=\"overflow-x:scroll;width:".$section_width."px;\">";
         $html .= "<table cellspacing=1 cellpadding=1 bgcolor=grey>\n";
         $html .= "  <tr class=tabheader>\n";
         $html .= "    <td><font size=2>&nbsp;</font></td>\n";
@@ -446,6 +447,7 @@ function report_lead_performance_campaign() {
         $html .= "    <td align=right>$TOTnewcost_sale</td>\n";
         $html .= "  </tr>\n";
         $html .= "</table>\n";
+        $html .= "</div>\n";
         $line = "||||||||||||||||";
         $html .= "<input type=hidden name=\"row" . $CSVrow++ . "\" value=\"" . $line . "\">\n";
         $line = "TOTAL||$TOTcalls|$TOTcontacts|$TOTsales|$TOTclosing_pct|$TOTcost|$TOTavg_cost|$TOTcost_sale||$TOTnewleads|$TOTnewcontacts|$TOTnewsales|$TOTnewclosing_pct|$TOTnewcost|$TOTnewavg_cost|$TOTnewcost_sale";
