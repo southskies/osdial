@@ -30,15 +30,9 @@ function report_web_admin_log() {
     $query_date = get_variable('query_date');
     $submit = get_variable('submit');
     $SUBMIT = get_variable('SUBMIT');
-    $query_date = OSDpreg_replace("/[^ \.\,-\_0-9a-zA-Z]/","",$query_date);
 
     $STARTtime = date("U");
     $DAY_DATE = date("j");
-    if ($DAY_DATE < 10) {
-	    $GREP_DATE = date("D, 0j M Y");
-    } else {
-	    $GREP_DATE = date("D, j M Y");
-    }
 
     $NOW_DATE = date("Y-m-d");
     $NOW_TIME = date("Y-m-d H:i:s");
@@ -46,14 +40,16 @@ function report_web_admin_log() {
     $html .= "<br/><br/>";
     $html .= "<div align=center>";
     
-    if (!$query_date) {
-		$query_date = $GREP_DATE;
-	}
+    if (!$query_date) $query_date = $NOW_DATE;
 
-    $Gquery_date = OSDpreg_replace("/ /",'\ ',$query_date);
+    list($qyear, $qmonth, $qday) = OSDpreg_split('/[\- ]/',$query_date);
+    $qepoch = mktime(2,0,0,$qmonth,$qday,$qyear);
+    $Gquery_date = date("D, d M Y", $qepoch);
     $html .= "<!-- |$query_date|$Gquery_date| -->\n";
 
     $html .= "<form action=\"$PHP_SELF\" method=get>\n";
+    $html .= "<input type=hidden name=ADD value=\"$ADD\">\n";
+    $html .= "<input type=hidden name=SUB value=\"$SUB\">\n";
     $html .= "<input type=text name=query_date size=20 maxlength=20 value=\"$query_date\">\n";
     $html .= "<input type=submit name=submit value=SUBMIT>\n";
     $html .= "</form>\n";
@@ -63,7 +59,7 @@ function report_web_admin_log() {
 
     $html .= "<div style=\"align:center;width:950px;height:300px;overflow:scroll;\">";
     $retGrep = array();
-    exec("grep $Gquery_date $WeBServeRRooT/admin/admin_changes_log.txt", $retGrep);
+    exec("grep '$Gquery_date' $WeBServeRRooT/admin/admin_changes_log.txt", $retGrep);
     $html .= implode("\n",$retGrep)."\n";
 
     $html .= "</div></font></pre>\n";
