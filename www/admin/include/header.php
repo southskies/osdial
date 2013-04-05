@@ -65,7 +65,7 @@ require('include/EditableSelect.js');
 echo "  </script>\n";
 echo "</head>\n";
 
-echo "<body bgcolor=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0 onload=\"fixChromeTableCollapse(); updateClock(); setInterval('updateClock()', 1000 ); $oacjs\" onunload=\"stop()\">\n";
+echo "<body bgcolor=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0 onload=\"osdialOnLoad(); $oacjs\" onunload=\"osdialOnUnload()\">\n";
 
 echo "<script language=\"JavaScript\">\n";
 echo "document.write(getCalendarStyles());\n";

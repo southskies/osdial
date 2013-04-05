@@ -29,6 +29,28 @@ var oac_last_delay = 0;
 
 var helppopon=0;
 
+function osdialOnLoad() {
+	fixChromeTableCollapse();
+	updateClock();
+	setInterval('updateClock()', 1000);
+	editableSelectOnload();
+}
+
+function osdialOnUnload() {
+	stop();
+}
+
+function editableSelectOnload() {
+	var divs = document.querySelectorAll('div.selectBox');
+	for (var d=0; d<divs.length; d++){
+		var inputs = divs[d].querySelectorAll('.selectBoxInput');
+		for (var i=0; i<inputs.length; i++){
+			if (inputs[i].onload) {
+				inputs[i].onload();
+			}
+		}
+	}
+}
 
 function fixChromeTableCollapse() {
 	if (typeof(window.chrome)!="undefined") {
