@@ -211,7 +211,7 @@ install-docs: .osdial.config
 	@install -p -m 644 ./www/admin/include/content/filters/* $(DESTDIR)$(PATHweb)/admin/include/content/filters
 	@install -p -m 644 ./www/admin/include/content/ingroups/* $(DESTDIR)$(PATHweb)/admin/include/content/ingroups
 	@install -p -m 644 ./www/admin/include/content/lists/* $(DESTDIR)$(PATHweb)/admin/include/content/lists
-	@install -p -m 644 ./www/admin/include/content/remoteagent/* $(DESTDIR)$(PATHweb)/admin/include/content/remoteagent
+	#@install -p -m 644 ./www/admin/include/content/remoteagent/* $(DESTDIR)$(PATHweb)/admin/include/content/remoteagent
 	@install -p -m 644 ./www/admin/include/content/reports/* $(DESTDIR)$(PATHweb)/admin/include/content/reports
 	@install -p -m 644 ./www/admin/include/content/scripts/* $(DESTDIR)$(PATHweb)/admin/include/content/scripts
 	@install -p -m 644 ./www/admin/include/content/usergroups/* $(DESTDIR)$(PATHweb)/admin/include/content/usergroups
