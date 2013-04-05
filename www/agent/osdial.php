@@ -271,6 +271,8 @@ require("templates/default/display.php");
 include("templates/" . $config['settings']['agent_template'] . "/display.php");
 
 
+if (empty($config['settings']['default_phone_code'])) $config['settings']['default_phone_code']='1';
+$default_phone_code = $config['settings']['default_phone_code'];
 $conf_silent_prefix     = '7';  # osdial_conferences prefix to enter silently
 $HKuser_level           = '5';  # minimum osdial user_level for HotKeys
 $campaign_login_list    = '1';  # show drop-down list of campaigns at login	
@@ -2047,7 +2049,7 @@ flush();
                     <table>
                         <tr>
                             <td align=right><font class="body_text"><font color=<?php echo $mandial_fc; ?>> Country Code: </font></font></td>
-                            <td align=left><font class="body_text"><input type=text size=7 maxlength=10 name=MDDiaLCodE class="cust_form" value="1">&nbsp; <font color=<?php echo $mandial_fc; ?>>(This is usually a 1 in the USA-Canada)</font></font></td>
+                            <td align=left><font class="body_text"><input type=text size=7 maxlength=10 name=MDDiaLCodE class="cust_form" value="<?php echo $default_phone_code; ?>">&nbsp; <font color=<?php echo $mandial_fc; ?>>(This is usually a 1 in the USA-Canada)</font></font></td>
                         </tr>
                         <tr>
                             <td align=right><font class="body_text"><font color=<?php echo $mandial_fc; ?>> Phone Number: </font></font></td>

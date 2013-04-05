@@ -194,7 +194,7 @@
                                 document.osdial_form.xfernumber.value = CalL_XC_a_NuMber;
                         }
 			var manual_dialcode = ''+document.osdial_form.phone_code.value;
-			if (manual_dialcode.length==0) manual_dialcode='1';
+			if (manual_dialcode.length==0) manual_dialcode=default_phone_code;
 			var manual_number = document.osdial_form.xfernumber.value;
 			var manual_string = manual_number.toString();
 			var dial_conf_exten = session_id;
@@ -808,7 +808,7 @@
 							blindxferdialstring = Ctasknum + '*' + document.osdial_form.phone_number.value + '*' + document.osdial_form.lead_id.value + '*' + campaign + '*' + closerxfercamptail + '*' + user + '*';
 						}
 					} else if (document.osdial_form.xferoverride.checked==false) {
-						if (blindxferdialstring.length == 10) blindxferdialstring = "1" + blindxferdialstring;
+						if (blindxferdialstring.length == 10) blindxferdialstring = default_phone_code + blindxferdialstring;
 						if (blindxferdialstring.length == 7 || blindxferdialstring.length >= 11) {
 							blindxferdialstring = dial_prefix + "" + blindxferdialstring;
 							blindxfercontext = dial_context;
@@ -1237,7 +1237,7 @@
 		debug("<b>NeWManuaLDiaLCalLSubmiTfast:</b>",2);
 		dial_timedout=0;
 		if ( document.osdial_form.phone_code.value.length < 1  ) {
-			document.osdial_form.phone_code.value = '1';
+			document.osdial_form.phone_code.value = default_phone_code;
 		}
 		var manual_dialcode = ''+document.osdial_form.phone_code.value;
 		if (manual_dialcode!='1' && manual_dialcode.substring(0,1)!='0') manual_dialcode = '011' + manual_dialcode;

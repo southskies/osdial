@@ -143,6 +143,7 @@ var no_delete_sessions='<?php echo $no_delete_sessions; ?>';
 var NOW_TIME='<?php echo $NOW_TIME; ?>';
 var oddrows='<?php echo $oddrows; ?>';
 var omit_phone_code='<?php echo $omit_phone_code; ?>';
+var default_phone_code='<?php echo $default_phone_code; ?>';
 var osdial_agent_disable='<?php echo $config['settings']['osdial_agent_disable']; ?>';
 var OSDiaL_allow_closers='<?php echo $OSDiaL_allow_closers; ?>';
 var OSDiaL_web_form_address2_enc='<?php echo $OSDiaL_web_form_address2_enc; ?>';
