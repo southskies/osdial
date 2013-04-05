@@ -79,7 +79,7 @@ if ($ADD=="21media") {
             unlink('/tmp/'.$recfilename);
             echo "<br>";
 
-            if ($last_general_extenson==$media_extension) {
+            if ($last_general_extension==$media_extension) {
                 $stmt=sprintf("UPDATE system_settings SET last_general_extension='%s';",mres($last_general_extension));
                 $rslt=mysql_query($stmt, $link);
             }
@@ -106,7 +106,7 @@ if ($ADD=="41media") {
             $stmt=sprintf("UPDATE osdial_media SET description='%s',extension='%s' WHERE id='%s';",mres($media_description),mres($media_extension),mres($media_id));
             $rslt=mysql_query($stmt, $link);
 
-            if ($last_general_extenson==$media_extension) {
+            if ($last_general_extension==$media_extension) {
                 $stmt=sprintf("UPDATE system_settings SET last_general_extension='%s';",mres($last_general_extension));
                 $rslt=mysql_query($stmt, $link);
             }

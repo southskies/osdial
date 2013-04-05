@@ -126,7 +126,7 @@ if ($ADD=="21tts") {
             }
             echo "<br/>";
 
-            if ($last_general_extenson==$tts_extension) {
+            if ($last_general_extension==$tts_extension) {
                 $stmt=sprintf("UPDATE system_settings SET last_general_extension='%s';",mres($last_general_extension));
                 $rslt=mysql_query($stmt, $link);
             }
@@ -181,7 +181,7 @@ if ($ADD=="41tts") {
                 $rslt=mysql_query($stmt, $link);
             }
 
-            if ($last_general_extenson==$tts_extension) {
+            if ($last_general_extension==$tts_extension) {
                 $stmt=sprintf("UPDATE system_settings SET last_general_extension='%s';",mres($last_general_extension));
                 $rslt=mysql_query($stmt, $link);
             }
