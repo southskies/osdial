@@ -63,7 +63,7 @@ if ($ADD=="11tts") {
         echo "  </tr>\n";
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right width=50%>Extension: </td>\n";
-        echo "    <td align=left><input type=text name=tts_extension size=10 maxlength=20 value=\"\" onclick=\"if (this.value=='') { this.value='".$config['settings']['last_general_extension']+1)."';}\">".helptag("tts-extension")."</td>\n";
+        echo "    <td align=left><input type=text name=tts_extension size=10 maxlength=20 value=\"\" onclick=\"if (this.value=='') { this.value='".($config['settings']['last_general_extension']+1)."';}\">".helptag("tts-extension")."</td>\n";
         echo "  </tr>\n";
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right width=50%>Voice: </td>\n";
@@ -248,7 +248,7 @@ if ($ADD=="31tts") {
         echo "<table class=shadedtable width=$section_width cellspacing=3>\n";
         echo "<tr bgcolor=$oddrows><td align=right>ID: </td><td align=left><font color=$default_text>" . $tts['id'] . "</font></td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Description: </td><td align=left><input type=text name=tts_description size=50 maxlength=255 value=\"$tts[description]\">".helptag("tts-description")."</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Extension: </td><td align=left><input type=text name=tts_extension size=10 maxlength=20 value=\"$tts[extension]\" onclick=\"if (this.value=='') { this.value='".$config['settings']['last_general_extension']+1)."';}\">".helptag("tts-extension")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Extension: </td><td align=left><input type=text name=tts_extension size=10 maxlength=20 value=\"$tts[extension]\" onclick=\"if (this.value=='') { this.value='".($config['settings']['last_general_extension']+1)."';}\">".helptag("tts-extension")."</td></tr>\n";
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right width=50%>Voice: </td>\n";
         echo "    <td align=left>\n";
