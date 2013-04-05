@@ -252,7 +252,7 @@ if ($ADD==311111111111111) {
 
         echo "        <tr bgcolor=$oddrows>\n";
         echo "          <td align=right>Default Country Phone Code:</td>\n";
-        echo "          <td align=left><input type=text name=default_phone_code size=20 maxlength=20 value=\"$system_settings[default_phone_code]\">".helptag("system_settings-default_phone_code")."</td>\n";
+        echo "          <td align=left><input type=text name=default_phone_code size=10 maxlength=10 value=\"$system_settings[default_phone_code]\">".helptag("system_settings-default_phone_code")."</td>\n";
         echo "        </tr>\n";
 
         echo "        <tr class=tabheader><td colspan=2>Admin GUI</td></tr>\n";
