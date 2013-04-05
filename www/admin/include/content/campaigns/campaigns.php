@@ -1266,7 +1266,7 @@ if ($ADD==31) {
 					$tstatname_list[$k] = $v;
 				}
 			}
-			echo editableSelectBox($tstatname_list, 'dial_status', '', 300, 300, 'selectBoxForce="1",selectBoxLabel=" - Add A Status - "');
+			echo editableSelectBox($tstatname_list, 'dial_status', '', 300, 300, 'selectBoxForce="1" selectBoxLabel=" - Add A Status - "');
 			echo "</td><td><input type=submit name=submit value=ADD></td><td>".helptag("osdial_campaigns-dial_status")."</td>";
 			echo "</tr></table></td></tr>";
 			echo "<tr><td colspan=2>&nbsp;</td></tr>";
@@ -1673,7 +1673,7 @@ if ($ADD==31) {
 
 			echo "<tr><td align=left>Force Reset of Hopper: </td><td align=left><select size=1 name=reset_hopper><option>Y</option><option SELECTED>N</option></select>".helptag("osdial_campaigns-force_reset_hopper")."</td></tr>";
 			echo "<tr><td align=left>Add Manual Dialed Calls to List: </td><td align=left>";
-			echo list_id_text_options($link, 'manual_dial_list_id', $manual_dial_list_id, 20, 20);
+			echo list_id_text_options($link, 'manual_dial_list_id', $manual_dial_list_id, '', '');
 			#echo "  <select name=manual_dial_list_id size=1>";
 			#$sel = '';
 			#$krh = get_krh($link, 'osdial_lists', 'list_id,list_name','',sprintf("campaign_id LIKE '%s__%%'",$LOG['company_prefix']),'');
@@ -2563,11 +2563,11 @@ if ($ADD==31) {
 				$tstatname_list[$k] = $v;
 			}
 		}
-		echo editableSelectBox($tstatname_list, "dial_status$US$q$US$vcl_id", '', '', '', 'selectBoxForce="1",selectBoxLabel=" - Select A Status - "');
+		echo editableSelectBox($tstatname_list, "dial_status$US$q$US$vcl_id", '', 50, 50, 'selectBoxForce="1" selectBoxLabel=" - Select A Status - "');
                 #echo "      <select size=1 name=dial_status$US$q$US$vcl_id id=dial_status$US$q$US$vcl_id>\n";
                 #echo "        <option value=\"\"> - Select A Status - </option>\n";
                 #echo "        $dial_statuses_list";
-                echo "      </select>\n";
+                #echo "      </select>\n";
                 echo "      <b>\n";
                 echo "        <a href=\"#\" onclick=\"mod_mix_status('ADD','$vcl_id','$q');return false;\">ADD</a> &nbsp; ";
                 echo "        <a href=\"#\" onclick=\"mod_mix_status('REMOVE','$vcl_id','$q');return false;\">REMOVE</a>\n";
