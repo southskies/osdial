@@ -70,7 +70,7 @@ if ($ADD==122) {
     echo "      <input type=hidden name='ADD' value='$ADD'>\n";
     echo "      <input type=hidden name='leadfile_name' value=\"$leadfile_name\">\n";
 	if (!$OK_to_process and ($file_layout != "custom" or $leadfile_name == "")) {
-        if ($phone_code_override == "") $phone_code_override = "1";
+        if ($phone_code_override == "") $phone_code_override = $config['settings']['default_phone_code'];
         echo "	        <table align=center class=shadedtable width=\"700\" border=0 cellpadding=5 cellspacing=0 bgcolor=$oddrows>\n";
         echo "              <tr>\n";
         echo "                  <td align=right width=\"35%\"><B><font face=\"dejavu sans,verdana,sans-serif\" size=2>Load leads from this file:</font></B></td>\n";
@@ -295,7 +295,7 @@ if ($ADD==122) {
 		
 				if (OSDstrlen($list_id_override)>0) $list_id = $list_id_override;
 				if (OSDstrlen($phone_code_override)>0) $phone_code = $phone_code_override;
-				if (OSDstrlen($phone_code)<1) $phone_code = '1';
+				if (OSDstrlen($phone_code)<1) $phone_code = $config['settings']['default_phone_code'];
 
                 $list_camp = get_first_record($link, 'osdial_lists', '*', sprintf("list_id='%s'", mres($list_id)));
 
@@ -714,7 +714,7 @@ if ($ADD==122) {
 	
 		    		if (OSDstrlen($list_id_override)>0) $list_id = $list_id_override;
 		    		if (OSDstrlen($phone_code_override)>0) $phone_code = $phone_code_override;
-		    		if (OSDstrlen($phone_code)<1) $phone_code = '1';
+		    		if (OSDstrlen($phone_code)<1) $phone_code = $config['settings']['default_phone_code'];
 
                     $list_camp = get_first_record($link, 'osdial_lists', '*', sprintf("list_id='%s'", mres($list_id)));
 

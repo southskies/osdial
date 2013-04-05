@@ -34,6 +34,8 @@
 
 #if ($config['settings']['use_non_latin'] < 1)	{
 	### DIGITS ONLY ###
+	$default_phone_code = OSDpreg_replace("/[^0-9]/","",$default_phone_code);
+	$last_general_extension = OSDpreg_replace("/[^0-9]/","",$last_general_extension);
 	$areacode = OSDpreg_replace("/[^0-9]/","",$areacode);
 	$alt_phone = OSDpreg_replace("/[^0-9]/","",$alt_phone);
 	$adaptive_dropped_percentage = OSDpreg_replace("/[^0-9]/","",$adaptive_dropped_percentage);
@@ -382,6 +384,7 @@
 	#$default_xfer_group = OSDpreg_replace("/[^-\_0-9a-zA-Z]/","",$default_xfer_group);
 	$default_xfer_group = OSDpreg_replace("/[\s\'\"]/","",$default_xfer_group);
 	$xfer_cid_mode = OSDpreg_replace("/[^-\_0-9a-zA-Z]/","",$xfer_cid_mode);
+	$carrier_name = OSDpreg_replace("/[^-\_0-9a-zA-Z]/","",$carrier_name);
 	
 	### ALPHA-NUMERIC and spaces
 	$lead_order = OSDpreg_replace("/[^ 0-9a-zA-Z]/","",$lead_order);

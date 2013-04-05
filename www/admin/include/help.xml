@@ -1627,6 +1627,7 @@ OSDial Server Trunks allows you to restrict the outgoing lines that are used on 
   The last extension assigned to a recording after being created using extension 8168 or 8169. This field is incremented whenever a new recording is created. You should not need to modify this field unless you have encountered overlapped extensions or you wish to change the extension schema for recordings.
     </item>
 
+
     <item pathId="default_carrier" sectionId="25" title="Default Carrier">
   If set, the selected carrier will be used as the default outbound provider. This option is generally overridden by the campaign. If set to USE MANUAL CONFIGURATION, the system will use the old behavior of parsing the &lt;b&gt;/etc/asterisk/osdial_extensions_outbound.conf&lt;/b&gt; file.
     </item>
@@ -1637,6 +1638,14 @@ OSDial Server Trunks allows you to restrict the outgoing lines that are used on 
 
     <item pathId="use_broweser_timezone_offset" sectionId="27" title="Use Browser Timezone Offset">
   Attempt to use the GMT phone settings, and/or the timezone offset from the client-side browser to guess the users local timezone. This mainly only changes the apperance of the timestamps on-screen and in various reports in an attempt to be more friendly to the end-user. It also allows date/time entries on reports to be reflective of the end-users current timezone.
+    </item>
+
+    <item pathId="last_general_extension" sectionId="28" title="Last General Extension">
+  A range of extensions that can be assigned to media, TTS, and phones without overlapping the recording extensions. Range is 85110000+.
+    </item>
+
+    <item pathId="default_phone_code" sectionId="29" title="Default Phone Code">
+  The default country phone code for your area. This code will be the default for lead creation and upload.
     </item>
 
   </section>
