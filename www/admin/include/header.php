@@ -142,27 +142,37 @@ if ($hh=='usergroups') {
     $usergroups_bold="$header_nonselected_bold";
     $usergroups_menu1_class='rounded-menu1';
 }
-if ($hh=='scripts') {
-    $scripts_hh="bgcolor=\"$scripts_color\"";
-    $scripts_fc="$scripts_font";
-    $scripts_bold="$header_selected_bold";
-    $scripts_menu1_class='rounded-menu1select';
+#if ($hh=='scripts') {
+#    $scripts_hh="bgcolor=\"$scripts_color\"";
+#    $scripts_fc="$scripts_font";
+#    $scripts_bold="$header_selected_bold";
+#    $scripts_menu1_class='rounded-menu1select';
+#} else {
+#    $scripts_hh='';
+#    $scripts_fc='WHITE';
+#    $scripts_bold="$header_nonselected_bold";
+#    $scripts_menu1_class='rounded-menu1';
+#}
+#if ($hh=='filters') {
+#    $filters_hh="bgcolor=\"$filters_color\"";
+#    $filters_fc="$filters_font";
+#    $filters_bold="$header_selected_bold";
+#    $filters_menu1_class='rounded-menu1select';
+#} else {
+#    $filters_hh='';
+#    $filters_fc='WHITE';
+#    $filters_bold="$header_nonselected_bold";
+#    $filters_menu1_class='rounded-menu1';
+#}
+if ($hh=='templates') {
+    $templates_hh="bgcolor=\"$templates_color\"";
+    $templates_fc="$templates_font";
+    $templates_bold="$header_selected_bold";
+    $templates_menu1_class='rounded-menu1select';
 } else {
-    $scripts_hh='';
-    $scripts_fc='WHITE';
-    $scripts_bold="$header_nonselected_bold";
-    $scripts_menu1_class='rounded-menu1';
-}
-if ($hh=='filters') {
-    $filters_hh="bgcolor=\"$filters_color\"";
-    $filters_fc="$filters_font";
-    $filters_bold="$header_selected_bold";
-    $filters_menu1_class='rounded-menu1select';
-} else {
-    $filters_hh='';
-    $filters_fc='WHITE';
-    $filters_bold="$header_nonselected_bold";
-    $filters_menu1_class='rounded-menu1';
+    $templates_hh=''; $templates_fc='WHITE';
+    $templates_bold="$header_nonselected_bold";
+    $templates_menu1_class='rounded-menu1';
 }
 if ($hh=='admin') {
     $admin_hh="bgcolor=\"$admin_color\"";
@@ -244,17 +254,17 @@ $mmenu .= "    <td class=$agents_menu1_class height=$height_row1 align=center $u
 $mmenu .= "    <td class=$campaigns_menu1_class height=$height_row1 align=center $campaigns_hh width=100><span class=\"font3 fgnavy\"><a href=\"$PHP_SELF?ADD=10\"> Campaigns </a></span></td>\n";
 $mmenu .= "    <td class=$lists_menu1_class height=$height_row1 align=center $lists_hh width=65><span class=\"font3 fgnavy\"><a href=\"$PHP_SELF?ADD=100\"> Lists </a></span></td>\n";
 
-if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_scripts'] == 1) {
-    $mmenu .= "    <td class=$scripts_menu1_class height=$height_row1 align=center $scripts_hh><span class=\"font3 fgnavy\"><a href=\"$PHP_SELF?ADD=1000000\"> Scripts </a></span></td>\n";
-} else {
-    $cauth++;
-}
-
-if (($config['settings']['enable_filters'] > 0) and ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_filters'] == 1)) {
-    $mmenu .= "    <td class=$filters_menu1_class height=$height_row1 align=center $filters_hh><span class=\"font3 fgnavy\"><a href=\"$PHP_SELF?ADD=10000000\"> Filters </a></span></td>\n";
-} else {
-    $cauth++;
-}
+#if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_scripts'] == 1) {
+#    $mmenu .= "    <td class=$scripts_menu1_class height=$height_row1 align=center $scripts_hh><span class=\"font3 fgnavy\"><a href=\"$PHP_SELF?ADD=1000000\"> Scripts </a></span></td>\n";
+#} else {
+#    $cauth++;
+#}
+#
+#if (($config['settings']['enable_filters'] > 0) and ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_filters'] == 1)) {
+#    $mmenu .= "    <td class=$filters_menu1_class height=$height_row1 align=center $filters_hh><span class=\"font3 fgnavy\"><a href=\"$PHP_SELF?ADD=10000000\"> Filters </a></span></td>\n";
+#} else {
+#    $cauth++;
+#}
 
 if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_ingroups'] == 1) {
     $mmenu .= "    <td class=$ingroups_menu1_class height=$height_row1 align=center $ingroups_hh><span class=\"font3 fgnavy\"><a href=\"$PHP_SELF?ADD=1000\"> In-Groups </a></span></td>\n";
@@ -264,8 +274,8 @@ if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_ingroups'] == 1) {
 
 $mmenu .= "    <td class=$usergroups_menu1_class height=$height_row1 align=center $usergroups_hh width=110><span class=\"font3 fgnavy\"><a href=\"$PHP_SELF?ADD=100000\">User Groups</a></span></td>\n";
 
-if (($config['settings']['enable_external_agents'] > 0) and ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_external_agents'] == 1)) {
-    $mmenu .= "    <td class=$remoteagents_menu1_class height=$height_row1 align=center $remoteagent_hh width=130><span class=\"font3 fgnavy\"><a href=\"$PHP_SELF?ADD=10000\">External Agents</a></span></td>\n";
+if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_scripts'] == 1) {
+    $mmenu .= "    <td class=$templates_menu1_class height=$height_row1 align=center $templates_hh width=110><span class=\"font3 fgnavy\"><a href=\"$PHP_SELF?ADD=1000000\">Templates</a></span></td>\n";
 } else {
     $cauth++;
 }
@@ -580,14 +590,14 @@ if (OSDstrlen($campaigns_hh) > 1) {
         echo "    <td class=$camp_addform_class align=center bgcolor=$camp_addform_color colspan=1><span class=\"font2 $fgfont_fc\"><a href=\"$PHP_SELF?ADD=71\"> Show Additional Forms </a></span></td>\n";
         echo "    <td class='narrow-space' bgcolor=$bgmenu_color width=10>&nbsp;</td>";
         echo "  </tr>\n";
-        if (OSDpreg_match('/^(72|2fields|3fields|4fields|6fields|71|2form|4form)$/',$ADD) and (OSDstrlen($id) > 0 or OSDstrlen($form_id) > 0)) {
+        if (OSDpreg_match('/^(72|2fields|3fields|4fields|6fields|71|1form|2form|4form|5form)$/',$ADD) and (OSDstrlen($id) > 0 or OSDstrlen($form_id) > 0)) {
             echo "      <tr>";
             echo "        <td colspan=$settings_menucols2>";
             echo "          <table cellpadding=0 cellspacing=0 width=100% border=0>";
             echo "            <tr class=no-ul height=25>";
             if ($LOG['modify_campaigns'] > 0) {
                 echo "              <td align=center bgcolor=$camp_modifyform_color class=$camp_modifyform_class width=175><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=71&id=".($id?$id:$form_id)."\"> Modify Form </a></span></td>";
-                echo "              <td align=center bgcolor=$camp_deleteform_color class=$camp_deleteform_class width=175><span class=\"font2 alert\"><a href=\"$PHP_SELF?ADD=6form&form_id=".($id?$id:$form_id)."\"> Delete Form </a></span></td>";
+                echo "              <td align=center bgcolor=$camp_deleteform_color class=$camp_deleteform_class width=175><span class=\"font2 alert\"><a href=\"$PHP_SELF?ADD=5form&form_id=".($id?$id:$form_id)."\"> Delete Form </a></span></td>";
             }
             echo "              <td bgcolor=$inactivemenu3_color class='rounded-menu3'>&nbsp;</td>";
             echo "            </tr>";
@@ -822,185 +832,6 @@ if (OSDstrlen($lists_hh) > 1) {
 
 
 
-### Scripts Menu
-if (OSDstrlen($scripts_hh) > 1) { 
-    if ($ADD == 1000000) {
-        $script_show_color=$activemenu2_color;
-        $script_show_class='rounded-menu2select';
-    } else {
-        $script_show_color=$inactivemenu2_color;
-        $script_show_class='rounded-menu2';
-    }
-    if ($ADD == 1111111) {
-        $script_add_color=$activemenu2_color;
-        $script_add_class='rounded-menu2select';
-    } else {
-        $script_add_color=$inactivemenu2_color;
-        $script_add_class='rounded-menu2';
-    }
-    if (OSDpreg_match('/^(3111111|4111111|6111111)$/',$ADD) and OSDstrlen($script_id) > 0) {
-        $script_modify_color=$activemenu3_color;
-        $script_modify_class='rounded-menu3select';
-    } else {
-        $script_modify_color=$inactivemenu3_color;
-        $script_modify_class='rounded-menu3';
-    }
-    if ($ADD==5111111 and OSDstrlen($script_id) > 0) {
-        $script_delete_color=$activemenu3_color;
-        $script_delete_class='rounded-menu3select';
-    } else {
-        $script_delete_color=$inactivemenu3_color;
-        $script_delete_class='rounded-menu3';
-    }
-    if (OSDpreg_match('/^(0email|2email|6email)$/',$ADD)) {
-        $script_showemail_color=$activemenu2_color;
-        $script_showemail_class='rounded-menu2select';
-    } else {
-        $script_showemail_color=$inactivemenu2_color;
-        $script_showemail_class='rounded-menu2';
-    }
-    if ($ADD == '1email') {
-        $script_addemail_color=$activemenu2_color;
-        $script_addemail_class='rounded-menu2select';
-    } else {
-        $script_addemail_color=$inactivemenu2_color;
-        $script_addemail_class='rounded-menu2';
-    }
-    if (OSDpreg_match('/^(3email|4email)$/',$ADD) and OSDstrlen($et_id) > 0) {
-        $script_emailmodify_color=$activemenu3_color;
-        $script_emailmodify_class='rounded-menu3select';
-    } else {
-        $script_emailmodify_color=$inactivemenu3_color;
-        $script_emailmodify_class='rounded-menu3';
-    }
-    if ($ADD=='5email' and OSDstrlen($et_id) > 0) {
-        $script_emaildelete_color=$activemenu3_color;
-        $script_emaildelete_class='rounded-menu3select';
-    } else {
-        $script_emaildelete_color=$inactivemenu3_color;
-        $script_emaildelete_class='rounded-menu3';
-    }
-    echo "<tr>";
-    echo "  <td colspan=$settings_menucols2>";
-    echo "    <table border=0 cellpadding=0 cellspacing=0 width=100%>";
-    echo "      <tr class='no-ul' height=20>\n";
-    echo "        <td bgcolor=$bgmenu_color align=left width=5>\n";
-    echo "        <td align=center class=$script_show_class bgcolor=$script_show_color><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=1000000\"> Show Scripts </a></span></td>\n";
-    echo "        <td align=center class=$script_add_class bgcolor=$script_add_color><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=1111111\"> Add A New Script</a></span></td>\n";
-
-    if (file_exists($WeBServeRRooT . '/admin/include/content/scripts/email_templates.php')) {
-        echo "        <td align=center class=$script_showemail_class bgcolor=$script_showemail_color><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=0email\"> Show Email Templates </a></span></td>\n";
-        echo "        <td align=center class=$script_addemail_class bgcolor=$script_addemail_color><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=1email\"> Add A New Email Template </a></span></td>\n";
-        echo "        <td bgcolor=$inactivemenu2_color class='rounded-menu2' width=300>&nbsp;</td>";
-
-    } else {
-        echo "        <td bgcolor=$inactivemenu2_color class='rounded-menu2' colspan=3>&nbsp;</td>";
-    }
-    echo "    <td bgcolor=$bgmenu_color colspan=4 width=5>&nbsp;</td>";
-    echo "  </tr>\n";
-    if ((OSDpreg_match('/^(3111111|4111111|5111111)$/',$ADD) or ($ADD==6111111 AND ($SUB!='' or $script_button_id!=''))) and OSDstrlen($script_id) > 0) {
-        $smodlabel = 'Script';
-        if (($SUB!='' or $script_button_id!='') and $ADD!=6111111) $smodlabel = 'Button/Objection';
-        echo "      <tr>";
-        echo "        <td colspan=$settings_menucols2>";
-        echo "          <table cellpadding=0 cellspacing=0 width=100% border=0>";
-        echo "            <tr class=no-ul height=25>";
-        echo "              <td align=center bgcolor=$script_modify_color class=$script_modify_class width=175><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=3111111&script_id=$script_id\"> Modify $smodlabel </a></span></td>";
-        if ($LOG['delete_scripts'] > 0) {
-            echo "              <td align=center bgcolor=$script_delete_color class=$script_delete_class width=175><span class=\"font2 alert\"><a href=\"$PHP_SELF?ADD=5111111&script_id=$script_id".($SUB!=''?'&script_button_id='.$SUB:'')."\" class=alert> Delete $smodlabel </a></span></td>";
-        }
-        echo "              <td bgcolor=$inactivemenu3_color class='rounded-menu3' colspan=$settings_menucols2>&nbsp;</td>";
-        echo "            </tr>";
-        echo "          </table>";
-        echo "        </td>";
-        echo "      </tr>";
-    }
-    if ((OSDpreg_match('/^(3email|4email|5email)$/',$ADD) and OSDstrlen($et_id) > 0)) {
-        echo "      <tr>";
-        echo "        <td colspan=$settings_menucols2>";
-        echo "          <table cellpadding=0 cellspacing=0 width=100% border=0>";
-        echo "            <tr class=no-ul height=25>";
-        echo "              <td align=center bgcolor=$script_emailmodify_color class=$script_emailmodify_class width=175><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=3email&et_id=$et_id\"> Modify Email Template </a></span></td>";
-        if ($LOG['delete_scripts'] > 0) {
-            echo "              <td align=center bgcolor=$script_emaildelete_color class=$script_emaildelete_class width=175><span class=\"font2 alert\"><a href=\"$PHP_SELF?ADD=5email&et_id=$et_id\" class=alert> Delete Email Template </a></span></td>";
-        }
-        echo "              <td bgcolor=$inactivemenu3_color class='rounded-menu3' colspan=$settings_menucols2>&nbsp;</td>";
-        echo "            </tr>";
-        echo "          </table>";
-        echo "        </td>";
-        echo "      </tr>";
-    }
-    echo "    </table>";
-    echo "  </td>\n";
-    echo "</tr>";
-} 
-
-
-
-### Filters Menu
-if (OSDstrlen($filters_hh) > 1) { 
-    if (OSDpreg_match('/^(10000000|21111111|61111111)$/',$ADD)) {
-        $filter_show_color=$activemenu2_color;
-        $filter_show_class='rounded-menu2select';
-    } else {
-        $filter_show_color=$inactivemenu2_color;
-        $filter_show_class='rounded-menu2';
-    }
-    if ($ADD == 11111111) {
-        $filter_add_color=$activemenu2_color;
-        $filter_add_class='rounded-menu2select';
-    } else {
-        $filter_add_color=$inactivemenu2_color;
-        $filter_add_class='rounded-menu2';
-    }
-    if (OSDpreg_match('/^(31111111|41111111)$/',$ADD) and OSDstrlen($lead_filter_id) > 0) {
-        $filter_modify_color=$activemenu3_color;
-        $filter_modify_class='rounded-menu3select';
-    } else {
-        $filter_modify_color=$inactivemenu3_color;
-        $filter_modify_class='rounded-menu3';
-    }
-    if ($ADD==51111111 and OSDstrlen($lead_filter_id) > 0) {
-        $filter_delete_color=$activemenu3_color;
-        $filter_delete_class='rounded-menu3select';
-    } else {
-        $filter_delete_color=$inactivemenu3_color;
-        $filter_delete_class='rounded-menu3';
-    }
-    echo "<tr>";
-    echo "  <td colspan=$settings_menucols2>";
-    echo "    <table border=0 cellpadding=0 cellspacing=0 width=100%>";
-    echo "      <tr class='no-ul' height=22>\n";
-    echo "        <td bgcolor=$bgmenu_color class='narrow-space'>&nbsp;</td>";
-    echo "        <td align=center bgcolor=$filter_show_color class=$filter_show_class><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=10000000\"> Show Filters </a></span></td>\n";
-    echo "        <td align=center bgcolor=$filter_add_color class=$filter_add_class><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=11111111\"> Add A New Filter </a></span></td>\n";
-    echo "        <td bgcolor=$inactivemenu2_color class=rounded-menu2 colspan=2 width=400>&nbsp;</td>";
-    echo "        <td bgcolor=$bgmenu_color width=3>&nbsp;</td>";
-
-    echo "    </td>\n";
-    echo "  </tr>\n";
-    if (OSDpreg_match('/^(31111111|41111111|51111111)$/',$ADD) and OSDstrlen($lead_filter_id) > 0) {
-        echo "      <tr>";
-        echo "        <td colspan=$settings_menucols2>";
-        echo "          <table cellpadding=0 cellspacing=0 width=100% border=0>";
-        echo "            <tr class=no-ul height=25>";
-        echo "              <td align=center bgcolor=$filter_modify_color class=$filter_modify_class width=175><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=31111111&lead_filter_id=$lead_filter_id\"> Modify Filter </a></span></td>";
-        if ($LOG['delete_filters'] > 0) {
-            echo "              <td align=center bgcolor=$filter_delete_color class=$filter_delete_class width=175><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=51111111&lead_filter_id=$lead_filter_id\" class=alert> Delete Filter </a></span></td>";
-        }
-        echo "              <td bgcolor=$inactivemenu3_color class='rounded-menu3' colspan=$settings_menucols2>&nbsp;</td>";
-        echo "            </tr>";
-        echo "          </table>";
-        echo "        </td>";
-        echo "      </tr>";
-    }
-    echo "    </table>";
-    echo "  </td>\n";
-    echo "</tr>";
-} 
-
-
-
 ### InGroups Menu
 if (OSDstrlen($ingroups_hh) > 1) { 
     if (OSDpreg_match('/^(1000|6111)$/',$ADD)) {
@@ -1171,71 +1002,273 @@ if (OSDstrlen($usergroups_hh) > 1) {
 }
 
 
+### Templates Menu
+if (OSDstrlen($templates_hh) > 1) { 
 
-### External/Remote Agents Menu
-if (OSDstrlen($remoteagent_hh) > 1) { 
-    if (OSDpreg_match('/^(10000|61111)$/',$ADD)) {
-        $extagents_show_color=$activemenu2_color;
-        $extagents_show_class='rounded-menu2select';
+    # Scripts / Emails
+    if ($ADD == 1000000) {
+        $script_show_color=$activemenu2_color;
+        $script_show_class='rounded-menu2select';
     } else {
-        $extagents_show_color=$inactivemenu2_color;
-        $extagents_show_class='rounded-menu2';
+        $script_show_color=$inactivemenu2_color;
+        $script_show_class='rounded-menu2';
     }
-    if ($ADD == 11111) {
-        $extagents_add_color=$activemenu2_color;
-        $extagents_add_class='rounded-menu2select';
+    if ($ADD == 1111111) {
+        $script_add_color=$activemenu2_color;
+        $script_add_class='rounded-menu2select';
     } else {
-        $extagents_add_color=$inactivemenu2_color;
-        $extagents_add_class='rounded-menu2';
+        $script_add_color=$inactivemenu2_color;
+        $script_add_class='rounded-menu2';
     }
-    if (OSDpreg_match('/^(21111|31111|41111)$/',$ADD) and (OSDstrlen($remote_agent_id) > 0 or OSDstrlen($user_start) > 0)) {
-        $extagents_modify_color=$activemenu3_color;
-        $extagents_modify_class='rounded-menu3select';
+    if (OSDpreg_match('/^(3111111|4111111|6111111)$/',$ADD) and OSDstrlen($script_id) > 0) {
+        $script_modify_color=$activemenu3_color;
+        $script_modify_class='rounded-menu3select';
     } else {
-        $extagents_modify_color=$inactivemenu3_color;
-        $extagents_modify_class='rounded-menu3';
+        $script_modify_color=$inactivemenu3_color;
+        $script_modify_class='rounded-menu3';
     }
-    if ($ADD==51111 and OSDstrlen($remote_agent_id)>0) {
-        $extagents_delete_color=$activemenu3_color;
-        $extagents_delete_class='rounded-menu3select';
+    if ($ADD==5111111 and OSDstrlen($script_id) > 0) {
+        $script_delete_color=$activemenu3_color;
+        $script_delete_class='rounded-menu3select';
     } else {
-        $extagents_delete_color=$inactivemenu3_color;
-        $extagents_delete_class='rounded-menu3';
+        $script_delete_color=$inactivemenu3_color;
+        $script_delete_class='rounded-menu3';
     }
+    if (OSDpreg_match('/^(0email|2email|6email)$/',$ADD)) {
+        $script_showemail_color=$activemenu2_color;
+        $script_showemail_class='rounded-menu2select';
+    } else {
+        $script_showemail_color=$inactivemenu2_color;
+        $script_showemail_class='rounded-menu2';
+    }
+    if ($ADD == '1email') {
+        $script_addemail_color=$activemenu2_color;
+        $script_addemail_class='rounded-menu2select';
+    } else {
+        $script_addemail_color=$inactivemenu2_color;
+        $script_addemail_class='rounded-menu2';
+    }
+    if (OSDpreg_match('/^(3email|4email)$/',$ADD) and OSDstrlen($et_id) > 0) {
+        $script_emailmodify_color=$activemenu3_color;
+        $script_emailmodify_class='rounded-menu3select';
+    } else {
+        $script_emailmodify_color=$inactivemenu3_color;
+        $script_emailmodify_class='rounded-menu3';
+    }
+    if ($ADD=='5email' and OSDstrlen($et_id) > 0) {
+        $script_emaildelete_color=$activemenu3_color;
+        $script_emaildelete_class='rounded-menu3select';
+    } else {
+        $script_emaildelete_color=$inactivemenu3_color;
+        $script_emaildelete_class='rounded-menu3';
+    }
+
+    # Filters
+    if (OSDpreg_match('/^(10000000|21111111|61111111)$/',$ADD)) {
+        $filter_show_color=$activemenu2_color;
+        $filter_show_class='rounded-menu2select';
+    } else {
+        $filter_show_color=$inactivemenu2_color;
+        $filter_show_class='rounded-menu2';
+    }
+    if ($ADD == 11111111) {
+        $filter_add_color=$activemenu2_color;
+        $filter_add_class='rounded-menu2select';
+    } else {
+        $filter_add_color=$inactivemenu2_color;
+        $filter_add_class='rounded-menu2';
+    }
+    if (OSDpreg_match('/^(31111111|41111111)$/',$ADD) and OSDstrlen($lead_filter_id) > 0) {
+        $filter_modify_color=$activemenu3_color;
+        $filter_modify_class='rounded-menu3select';
+    } else {
+        $filter_modify_color=$inactivemenu3_color;
+        $filter_modify_class='rounded-menu3';
+    }
+    if ($ADD==51111111 and OSDstrlen($lead_filter_id) > 0) {
+        $filter_delete_color=$activemenu3_color;
+        $filter_delete_class='rounded-menu3select';
+    } else {
+        $filter_delete_color=$inactivemenu3_color;
+        $filter_delete_class='rounded-menu3';
+    }
+
+    if (OSDpreg_match('/^(10media|61media)$/',$ADD)) {
+        $media_show_color=$activemenu3_color;
+        $media_show_class='rounded-menu3select';
+    } else {
+        $media_show_color=$inactivemenu3_color;
+        $media_show_class='rounded-menu3';
+    }
+    if ($ADD=='11media') {
+        $media_add_color=$activemenu3_color;
+        $media_add_class='rounded-menu3select';
+    } else {
+        $media_add_color=$inactivemenu3_color;
+        $media_add_class='rounded-menu3';
+    }
+    if (OSDpreg_match('/^(10tts|61tts)$/',$ADD)) {
+        $media_showtts_color=$activemenu3_color;
+        $media_showtts_class='rounded-menu3select';
+    } else {
+        $media_showtts_color=$inactivemenu3_color;
+        $media_showtts_class='rounded-menu3';
+    }
+    if ($ADD=='11tts') {
+        $media_addtts_color=$activemenu3_color;
+        $media_addtts_class='rounded-menu3select';
+    } else {
+        $media_addtts_color=$inactivemenu3_color;
+        $media_addtts_class='rounded-menu3';
+    }
+    if (OSDpreg_match('/^(21media|31media|41media)$/',$ADD) and OSDstrlen($media_id) > 0) {
+        $media_modify_color=$activemenu4_color;
+        $media_modify_class='rounded-menu4select';
+    } else {
+        $media_modify_color=$inactivemenu4_color;
+        $media_modify_class='rounded-menu4';
+    }
+    if ($ADD=='51media' and OSDstrlen($media_id) > 0) {
+        $media_delete_color=$activemenu4_color;
+        $media_delete_class='rounded-menu4select';
+    } else {
+        $media_delete_color=$inactivemenu4_color;
+        $media_delete_class='rounded-menu4';
+    }
+    if (OSDpreg_match('/^(21tts|31tts|41tts)$/',$ADD) and OSDstrlen($tts_id) > 0) {
+        $media_modifytts_color=$activemenu4_color;
+        $media_modifytts_class='rounded-menu4select';
+    } else {
+        $media_modifytts_color=$inactivemenu4_color;
+        $media_modifytts_class='rounded-menu4';
+    }
+    if ($ADD=='51tts' and OSDstrlen($tts_id) > 0) {
+        $media_deletetts_color=$activemenu4_color;
+        $media_deletetts_class='rounded-menu4select';
+    } else {
+        $media_deletetts_color=$inactivemenu4_color;
+        $media_deletetts_class='rounded-menu4';
+    }
+    echo "  <tr class='no-ul'>";
     echo "<tr>";
     echo "  <td colspan=$settings_menucols2>";
     echo "    <table border=0 cellpadding=0 cellspacing=0 width=100%>";
     echo "      <tr class='no-ul' height=22>\n";
     echo "        <td bgcolor=$bgmenu_color width=5>&nbsp;</td>\n";
-    echo "        <td height=20 bgcolor=$inactivemenu_color align=left>\n";
-    echo "        <td align=center bgcolor=$extagents_show_color class=$extagents_show_class><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=10000\"> Show External Agents </a></span></td>\n";
-    echo "        <td align=center bgcolor=$extagents_add_color class=$extagents_add_class><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=11111\"> Add New External Agents </a></span></td>\n";
-    echo "        <td bgcolor=$inactivemenu2_color class='rounded-menu2' colspan=2 width=425>&nbsp;</td>";
-    echo "        <td bgcolor=$bgmenu_color width=5>&nbsp;</td>";
+    $pcols=0;
+    if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_scripts'] == 1) {
+        echo "        <td align=center class=$script_show_class bgcolor=$script_show_color><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=1000000\"> Show Scripts </a></span></td>\n";
+        echo "        <td align=center class=$script_add_class bgcolor=$script_add_color><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=1111111\"> Add Script</a></span></td>\n";
+    } else {
+        $pcols+=2;
+    }
+
+    if (file_exists($WeBServeRRooT . '/admin/include/content/scripts/email_templates.php')) {
+        echo "        <td align=center class=$script_showemail_class bgcolor=$script_showemail_color><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=0email\"> Show Emails </a></span></td>\n";
+        echo "        <td align=center class=$script_addemail_class bgcolor=$script_addemail_color><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=1email\"> Add Emails </a></span></td>\n";
+    } else {
+        $pcols+=2;
+    }
+
+    if (($config['settings']['enable_filters'] > 0) and ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_filters'] == 1)) {
+        echo "        <td align=center bgcolor=$filter_show_color class=$filter_show_class><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=10000000\"> Show Filters </a></span></td>\n";
+        echo "        <td align=center bgcolor=$filter_add_color class=$filter_add_class><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=11111111\"> Add Filter </a></span></td>\n";
+    } else {
+        $pcols+=2;
+    }
+
+    echo "          <td align=center bgcolor=$media_showtts_color class=$media_showtts_class><span class=\"font2 fgdefault\"><a href=\"$PHP_SELF?ADD=10tts\"> Show TTS </a></span></td>";
+    echo "          <td align=center bgcolor=$media_addtts_color class=$media_addtts_class><span class=\"font2 fgdefault\"><a href=\"$PHP_SELF?ADD=11tts\"> Add TTS </a></span></td>";
+
+    echo "          <td align=center bgcolor=$media_show_color class=$media_show_class><span class=\"font2 fgdefault\"><a href=\"$PHP_SELF?ADD=10media\"> Show Media </a></span></td>";
+    echo "          <td align=center bgcolor=$media_add_color class=$media_add_class><span class=\"font2 fgdefault\"><a href=\"$PHP_SELF?ADD=11media\"> Add Media </a></span></td>";
+
+    #echo "        <td bgcolor=$inactivemenu2_color class='rounded-menu2' colspan=2 width=400>&nbsp;</td>";
+    echo "        <td bgcolor=$bgmenu_color colspan=$pcols width=3>&nbsp;</td>";
     echo "    </td>\n";
     echo "  </tr>\n";
-    if (OSDpreg_match('/^(21111|31111|41111|51111)$/',$ADD) and (OSDstrlen($remote_agent_id) > 0 or OSDstrlen($user_start) > 0)) {
-        echo "  <tr>";
-        echo "    <td colspan=7>";
-        echo "      <table cellpadding=0 cellspacing=0 width=100% border=0>";
-        echo "        <tr class=no-ul height=25>";
-        if ($LOG['modify_remoteagents']==1) {
-            echo "          <td align=center bgcolor=$extagents_modify_color class=$extagents_modify_class width=200><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=31111&remote_agent_id=$remote_agent_id\"> Modify External Agent </a></span></td>\n";
-            if ($LOG['delete_remote_agents'] > 0) {
-                echo "          <td align=center bgcolor=$extagents_delete_color class=$extagents_delete_class width=200><span class=\"font2 alert\"><a href=\"$PHP_SELF?ADD=51111&remote_agent_id=$remote_agent_id\"> Delete External Agent </a></span></td>\n";
-            }
-        } else {
-            echo "          <td align=center bgcolor=$extagents_delete_color class=$extagents_delete_class width=200><span class=\"font2 alert\">Not Allowed</span></td>\n";
+    if ((OSDpreg_match('/^(3111111|4111111|5111111)$/',$ADD) or ($ADD==6111111 AND ($SUB!='' or $script_button_id!=''))) and OSDstrlen($script_id) > 0) {
+        $smodlabel = 'Script';
+        if (($SUB!='' or $script_button_id!='') and $ADD!=6111111) $smodlabel = 'Button/Objection';
+        echo "      <tr>";
+        echo "        <td colspan=$settings_menucols2>";
+        echo "          <table cellpadding=0 cellspacing=0 width=100% border=0>";
+        echo "            <tr class=no-ul height=25>";
+        echo "              <td align=center bgcolor=$script_modify_color class=$script_modify_class width=175><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=3111111&script_id=$script_id\"> Modify $smodlabel </a></span></td>";
+        if ($LOG['delete_scripts'] > 0) {
+            echo "              <td align=center bgcolor=$script_delete_color class=$script_delete_class width=175><span class=\"font2 alert\"><a href=\"$PHP_SELF?ADD=5111111&script_id=$script_id".($SUB!=''?'&script_button_id='.$SUB:'')."\" class=alert> Delete $smodlabel </a></span></td>";
         }
-        echo "          <td bgcolor=$inactivemenu3_color class='rounded-menu3' colspan=1 width=775>&nbsp;</td>";
-        echo "        </tr>";
-        echo "      </table>";
-        echo "    </td>";
-        echo "  </tr>";
-    }echo "    </table>";
+        echo "              <td bgcolor=$inactivemenu3_color class='rounded-menu3' colspan=$settings_menucols2>&nbsp;</td>";
+        echo "            </tr>";
+        echo "          </table>";
+        echo "        </td>";
+        echo "      </tr>";
+    }
+    if ((OSDpreg_match('/^(3email|4email|5email)$/',$ADD) and OSDstrlen($et_id) > 0)) {
+        echo "      <tr>";
+        echo "        <td colspan=$settings_menucols2>";
+        echo "          <table cellpadding=0 cellspacing=0 width=100% border=0>";
+        echo "            <tr class=no-ul height=25>";
+        echo "              <td align=center bgcolor=$script_emailmodify_color class=$script_emailmodify_class width=175><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=3email&et_id=$et_id\"> Modify Email Template </a></span></td>";
+        if ($LOG['delete_scripts'] > 0) {
+            echo "              <td align=center bgcolor=$script_emaildelete_color class=$script_emaildelete_class width=175><span class=\"font2 alert\"><a href=\"$PHP_SELF?ADD=5email&et_id=$et_id\" class=alert> Delete Email Template </a></span></td>";
+        }
+        echo "              <td bgcolor=$inactivemenu3_color class='rounded-menu3' colspan=$settings_menucols2>&nbsp;</td>";
+        echo "            </tr>";
+        echo "          </table>";
+        echo "        </td>";
+        echo "      </tr>";
+    }
+    if (OSDpreg_match('/^(31111111|41111111|51111111)$/',$ADD) and OSDstrlen($lead_filter_id) > 0) {
+        echo "      <tr>";
+        echo "        <td colspan=$settings_menucols2>";
+        echo "          <table cellpadding=0 cellspacing=0 width=100% border=0>";
+        echo "            <tr class=no-ul height=25>";
+        echo "              <td align=center bgcolor=$filter_modify_color class=$filter_modify_class width=175><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=31111111&lead_filter_id=$lead_filter_id\"> Modify Filter </a></span></td>";
+        if ($LOG['delete_filters'] > 0) {
+            echo "              <td align=center bgcolor=$filter_delete_color class=$filter_delete_class width=175><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=51111111&lead_filter_id=$lead_filter_id\" class=alert> Delete Filter </a></span></td>";
+        }
+        echo "              <td bgcolor=$inactivemenu3_color class='rounded-menu3' colspan=$settings_menucols2>&nbsp;</td>";
+        echo "            </tr>";
+        echo "          </table>";
+        echo "        </td>";
+        echo "      </tr>";
+    }
+    if (OSDpreg_match('/^(21media|31media|41media|51media)$/',$ADD) and OSDstrlen($media_id) > 0) {
+        echo "      <tr>";
+        echo "        <td colspan=$settings_menucols2>";
+        echo "          <table cellpadding=0 cellspacing=0 width=100% border=0>";
+        echo "            <tr class=no-ul height=25>";
+        echo "              <td align=center bgcolor=$media_modify_color class=$media_modify_class width=175><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=31media&media_id=$media_id\"> Modify Media </a></span></td>";
+        if ($LOG['modify_servers']>0) {
+            echo "              <td align=center bgcolor=$media_delete_color class=$media_delete_class width=175><span class=\"font2 alert\"><a href=\"$PHP_SELF?ADD=51media&media_id=$media_id\"> Delete Media </a></span></td>";
+        }
+        echo "              <td bgcolor=$inactivemenu4_color class='rounded-menu3'>&nbsp;</td>";
+        echo "            </tr>";
+        echo "          </table>";
+        echo "        </td>";
+        echo "      </tr>";
+    }
+    if (OSDpreg_match('/^(21tts|31tts|41tts|51tts)$/',$ADD) and OSDstrlen($tts_id) > 0) {
+        echo "      <tr>";
+        echo "        <td colspan=$settings_menucols2>";
+        echo "          <table cellpadding=0 cellspacing=0 width=100% border=0>";
+        echo "            <tr class=no-ul height=25>";
+        echo "              <td align=center bgcolor=$media_modifytts_color class=$media_modifytts_class width=175><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=31tts&tts_id=$tts_id\"> Modify TTS Template </a></span></td>";
+        if ($LOG['modify_servers']>0) {
+            echo "              <td align=center bgcolor=$media_deletetts_color class=$media_deletetts_class width=175><span class=\"font2 alert\"><a href=\"$PHP_SELF?ADD=51tts&tts_id=$tts_id\"> Delete TTS Template </a></span></td>";
+        }
+        echo "              <td bgcolor=$inactivemenu4_color class='rounded-menu3'>&nbsp;</td>";
+        echo "            </tr>";
+        echo "          </table>";
+        echo "        </td>";
+        echo "      </tr>";
+    }
+    echo "    </table>";
     echo "  </td>";
     echo "</tr>";
-} 
+}
+
 
 
 
@@ -1311,7 +1344,7 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
         $phones_class='rounded-menu2';
         $phones_sh=0;
     }
-    if (OSDpreg_match('/^(1000000000000|1111111111111|2111111111111|3111111111111|4111111111111|5111111111111|6111111111111|10000000000000|11111111111111|21111111111111|31111111111111|41111111111111|5111111111111|61111111111111)$/', $ADD)) {
+    if (OSDpreg_match('/^(10000|11111|21111|31111|41111|51111|61111|1000000000000|1111111111111|2111111111111|3111111111111|4111111111111|5111111111111|6111111111111|10000000000000|11111111111111|21111111111111|31111111111111|41111111111111|5111111111111|61111111111111)$/', $ADD)) {
         $conference_color=$activemenu2_color;
         $conference_class='rounded-menu2select';
         $conference_sh=1;
@@ -1328,15 +1361,6 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
         $times_color=$inactivemenu2_color;
         $times_class='rounded-menu2';
         $times_sh=0;
-    }
-    if (OSDpreg_match('/^(10media|11media|21media|31media|41media|51media|61media|10tts|11tts|21tts|31tts|41tts|51tts|61tts)$/', $ADD)) {
-        $media_color=$activemenu2_color;
-        $media_class='rounded-menu2select';
-        $media_sh=1;
-    } else {
-        $media_color=$inactivemenu2_color;
-        $media_class='rounded-menu2';
-        $media_sh=0;
     }
     if (OSDpreg_match('/^(221111111111111|321111111111111|421111111111111|231111111111111|331111111111111|431111111111111)$/', $ADD)) {
         $status_color=$activemenu2_color;
@@ -1367,7 +1391,7 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
     $amenu .= "    <td bgcolor=$bgmenu_color width=10>&nbsp;</td>";
 
     if ($LOG['multicomp_user'] == 0) {
-        $amenu .= "    <td height=20 align=center bgcolor=$ssettings_color class=$ssettings_class colspan=1><span class=\"font2 $settings_fc\"><a href=\"$PHP_SELF?ADD=311111111111111\"> System Settings </a></span></td>\n";
+        $amenu .= "    <td height=20 align=center bgcolor=$ssettings_color class=$ssettings_class colspan=1><span class=\"font2 $settings_fc\"><a href=\"$PHP_SELF?ADD=311111111111111\"> Settings </a></span></td>\n";
     } else {
         $acnt += 2;
     }
@@ -1400,13 +1424,8 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
     } else {
         $acnt += 1;
     }
-    if ($LOG['multicomp_user'] == 0) {
-        $amenu .= "    <td height=20 align=center bgcolor=$media_color class=$media_class colspan=1><span class=\"font2 $media_fc\"><a href=\"$PHP_SELF?ADD=10media\"> Media </a></span></td>\n";
-    } else {
-        $acnt += 1;
-    }
     if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_system_statuses'] == 1) {
-        $amenu .= "    <td height=20 align=center bgcolor=$status_color class=$status_class colspan=1><span class=\"font2 $status_fc\"><a href=\"$PHP_SELF?ADD=321111111111111\"> System Statuses </a></span></td>\n";
+        $amenu .= "    <td height=20 align=center bgcolor=$status_color class=$status_class colspan=1><span class=\"font2 $status_fc\"><a href=\"$PHP_SELF?ADD=321111111111111\"> Statuses </a></span></td>\n";
     } else {
         $acnt += 1;
     }
@@ -1837,16 +1856,51 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
             $conference_deleteosd_color=$inactivemenu4_color;
             $conference_deleteosd_class='rounded-menu4';
         }
+
+        if (OSDpreg_match('/^(10000|61111)$/',$ADD)) {
+            $extagents_show_color=$activemenu2_color;
+            $extagents_show_class='rounded-menu2select';
+        } else {
+            $extagents_show_color=$inactivemenu2_color;
+            $extagents_show_class='rounded-menu2';
+        }
+        if ($ADD == 11111) {
+            $extagents_add_color=$activemenu2_color;
+            $extagents_add_class='rounded-menu2select';
+        } else {
+            $extagents_add_color=$inactivemenu2_color;
+            $extagents_add_class='rounded-menu2';
+        }
+        if (OSDpreg_match('/^(21111|31111|41111)$/',$ADD) and (OSDstrlen($remote_agent_id) > 0 or OSDstrlen($user_start) > 0)) {
+            $extagents_modify_color=$activemenu3_color;
+            $extagents_modify_class='rounded-menu3select';
+        } else {
+            $extagents_modify_color=$inactivemenu3_color;
+            $extagents_modify_class='rounded-menu3';
+        }
+        if ($ADD==51111 and OSDstrlen($remote_agent_id)>0) {
+            $extagents_delete_color=$activemenu3_color;
+            $extagents_delete_class='rounded-menu3select';
+        } else {
+            $extagents_delete_color=$inactivemenu3_color;
+            $extagents_delete_class='rounded-menu3';
+        }
         echo "  <tr class='no-ul'>\n";
         echo "    <td height=18 align=left colspan=$settings_menucols2>\n";
         echo "      <table width=100% cellpadding=0 cellspacing=0 border=0>\n";
         echo "        <tr align=center class='no-ul' height=25>\n";
         echo "          <td width=6></td>\n";
         echo "          <td align=center bgcolor=$conference_show_color class=$conference_show_class ><span class=\"font2 fgdefault\"><a href=\"$PHP_SELF?ADD=1000000000000\"> Show Conferences </a></span></td>";
-        echo "          <td align=center bgcolor=$phones_add_color class=$phones_add_class><span class=\"font2 fgdefault\"><a href=\"$PHP_SELF?ADD=1111111111111\"> Add A New Conference </a></span></td>";
+        echo "          <td align=center bgcolor=$phones_add_color class=$phones_add_class><span class=\"font2 fgdefault\"><a href=\"$PHP_SELF?ADD=1111111111111\"> Add Conference </a></span></td>";
         echo "          <td align=center bgcolor=$conference_showosd_color class=$conference_showosd_class><span class=\"font2 fgdefault\"><a href=\"$PHP_SELF?ADD=10000000000000\"> Show $t1 Conferences </a></span></td>";
-        echo "          <td align=center bgcolor=$conference_addosd_color class=$conference_addosd_class><span class=\"font2 fgdefault\"><a href=\"$PHP_SELF?ADD=11111111111111\"> Add A New $t1 Conference </a></span></td>";
-        echo "          <td bgcolor=$inactivemenu3_color class='rounded-menu3' colspan=2 width=200>&nbsp;</td>";
+        echo "          <td align=center bgcolor=$conference_addosd_color class=$conference_addosd_class><span class=\"font2 fgdefault\"><a href=\"$PHP_SELF?ADD=11111111111111\"> Add $t1 Conference </a></span></td>";
+
+        if (($config['settings']['enable_external_agents'] > 0) and ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_external_agents'] == 1)) {
+            echo "          <td align=center bgcolor=$extagents_show_color class=$extagents_show_class><span class=\"font2 fgdefault\"><a href=\"$PHP_SELF?ADD=10000\"> Show External Agents </a></span></td>\n";
+            echo "          <td align=center bgcolor=$extagents_add_color class=$extagents_add_class><span class=\"font2 fgdefault\"><a href=\"$PHP_SELF?ADD=11111\"> Add External Agents </a></span></td>\n";
+        } else {
+            echo "          <td bgcolor=$inactivemenu3_color class='rounded-menu3' colspan=2 width=200>&nbsp;</td>";
+        }
         echo "          <td width=6></td>\n";
         echo "        </tr>\n";
         if (OSDpreg_match('/^(2111111111111|3111111111111|4111111111111|5111111111111)$/',$ADD) and OSDstrlen($conf_exten) > 0) {
@@ -1880,6 +1934,25 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
             echo "              </tr>";
             echo "            </table>";
             echo "          </td>";
+        }
+        if (OSDpreg_match('/^(21111|31111|41111|51111)$/',$ADD) and (OSDstrlen($remote_agent_id) > 0 or OSDstrlen($user_start) > 0)) {
+            echo "  <tr>";
+            echo "    <td colspan=7>";
+            echo "      <table cellpadding=0 cellspacing=0 width=100% border=0>";
+            echo "        <tr class=no-ul height=25>";
+            if ($LOG['modify_remoteagents']==1) {
+                echo "          <td align=center bgcolor=$extagents_modify_color class=$extagents_modify_class width=200><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=31111&remote_agent_id=$remote_agent_id\"> Modify External Agent </a></span></td>\n";
+                if ($LOG['delete_remote_agents'] > 0) {
+                    echo "          <td align=center bgcolor=$extagents_delete_color class=$extagents_delete_class width=200><span class=\"font2 alert\"><a href=\"$PHP_SELF?ADD=51111&remote_agent_id=$remote_agent_id\"> Delete External Agent </a></span></td>\n";
+                }
+            } else {
+                echo "          <td align=center bgcolor=$extagents_delete_color class=$extagents_delete_class width=200><span class=\"font2 alert\">Not Allowed</span></td>\n";
+            }
+            echo "          <td bgcolor=$inactivemenu3_color class='rounded-menu3' colspan=1 width=775>&nbsp;</td>";
+            echo "        </tr>";
+            echo "      </table>";
+            echo "    </td>";
+            echo "  </tr>";
         }
         echo "      </table>\n";
         echo "    </td>\n";
@@ -1991,113 +2064,6 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
         echo "    </td>\n";
         echo "  </tr>\n";
     } 
-
-
-
-### Media Sub-Menu.
-    if ($media_sh > 0) { 
-        if (OSDpreg_match('/^(10media|61media)$/',$ADD)) {
-            $media_show_color=$activemenu3_color;
-            $media_show_class='rounded-menu3select';
-        } else {
-            $media_show_color=$inactivemenu3_color;
-            $media_show_class='rounded-menu3';
-        }
-        if ($ADD=='11media') {
-            $media_add_color=$activemenu3_color;
-            $media_add_class='rounded-menu3select';
-        } else {
-            $media_add_color=$inactivemenu3_color;
-            $media_add_class='rounded-menu3';
-        }
-        if (OSDpreg_match('/^(10tts|61tts)$/',$ADD)) {
-            $media_showtts_color=$activemenu3_color;
-            $media_showtts_class='rounded-menu3select';
-        } else {
-            $media_showtts_color=$inactivemenu3_color;
-            $media_showtts_class='rounded-menu3';
-        }
-        if ($ADD=='11tts') {
-            $media_addtts_color=$activemenu3_color;
-            $media_addtts_class='rounded-menu3select';
-        } else {
-            $media_addtts_color=$inactivemenu3_color;
-            $media_addtts_class='rounded-menu3';
-        }
-        if (OSDpreg_match('/^(21media|31media|41media)$/',$ADD) and OSDstrlen($media_id) > 0) {
-            $media_modify_color=$activemenu4_color;
-            $media_modify_class='rounded-menu4select';
-        } else {
-            $media_modify_color=$inactivemenu4_color;
-            $media_modify_class='rounded-menu4';
-        }
-        if ($ADD=='51media' and OSDstrlen($media_id) > 0) {
-            $media_delete_color=$activemenu4_color;
-            $media_delete_class='rounded-menu4select';
-        } else {
-            $media_delete_color=$inactivemenu4_color;
-            $media_delete_class='rounded-menu4';
-        }
-        if (OSDpreg_match('/^(21tts|31tts|41tts)$/',$ADD) and OSDstrlen($tts_id) > 0) {
-            $media_modifytts_color=$activemenu4_color;
-            $media_modifytts_class='rounded-menu4select';
-        } else {
-            $media_modifytts_color=$inactivemenu4_color;
-            $media_modifytts_class='rounded-menu4';
-        }
-        if ($ADD=='51tts' and OSDstrlen($tts_id) > 0) {
-            $media_deletetts_color=$activemenu4_color;
-            $media_deletetts_class='rounded-menu4select';
-        } else {
-            $media_deletetts_color=$inactivemenu4_color;
-            $media_deletetts_class='rounded-menu4';
-        }
-        echo "  <tr class='no-ul'>";
-        echo "    <td class='narrow-space' bgcolor=$admin_color></td>";
-        echo "      <table width=100% cellpadding=0 cellspacing=0 border=0>";
-        echo "        <tr align=center class='no-ul' height=25>";
-        echo "          <td width=6></td>\n";
-        echo "          <td align=center bgcolor=$media_show_color class=$media_show_class><span class=\"font2 fgdefault\"><a href=\"$PHP_SELF?ADD=10media\"> Show Media Files </a></span></td>";
-        echo "          <td align=center bgcolor=$media_add_color class=$media_add_class><span class=\"font2 fgdefault\"><a href=\"$PHP_SELF?ADD=11media\"> Add Media File </a></span></td>";
-        echo "          <td align=center bgcolor=$media_showtts_color class=$media_showtts_class><span class=\"font2 fgdefault\"><a href=\"$PHP_SELF?ADD=10tts\"> Show TTS Templates </a></span></td>";
-        echo "          <td align=center bgcolor=$media_addtts_color class=$media_addtts_class><span class=\"font2 fgdefault\"><a href=\"$PHP_SELF?ADD=11tts\"> Add TTS Template </a></span></td>";
-        echo "          <td bgcolor=$inactivemenu3_color class=rounded-menu3 width=350>&nbsp;</td>";
-        echo "          <td width=6></td>\n";
-        echo "        </tr>\n";
-        if (OSDpreg_match('/^(21media|31media|41media|51media)$/',$ADD) and OSDstrlen($media_id) > 0) {
-            echo "      <tr>";
-            echo "        <td colspan=$settings_menucols2>";
-            echo "          <table cellpadding=0 cellspacing=0 width=100% border=0>";
-            echo "            <tr class=no-ul height=25>";
-            echo "              <td align=center bgcolor=$media_modify_color class=$media_modify_class width=175><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=31media&media_id=$media_id\"> Modify Media </a></span></td>";
-            if ($LOG['modify_servers']>0) {
-                echo "              <td align=center bgcolor=$media_delete_color class=$media_delete_class width=175><span class=\"font2 alert\"><a href=\"$PHP_SELF?ADD=51media&media_id=$media_id\"> Delete Media </a></span></td>";
-            }
-            echo "              <td bgcolor=$inactivemenu4_color class='rounded-menu3'>&nbsp;</td>";
-            echo "            </tr>";
-            echo "          </table>";
-            echo "        </td>";
-            echo "      </tr>";
-        }
-        if (OSDpreg_match('/^(21tts|31tts|41tts|51tts)$/',$ADD) and OSDstrlen($tts_id) > 0) {
-            echo "      <tr>";
-            echo "        <td colspan=$settings_menucols2>";
-            echo "          <table cellpadding=0 cellspacing=0 width=100% border=0>";
-            echo "            <tr class=no-ul height=25>";
-            echo "              <td align=center bgcolor=$media_modifytts_color class=$media_modifytts_class width=175><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=31tts&tts_id=$tts_id\"> Modify TTS Template </a></span></td>";
-            if ($LOG['modify_servers']>0) {
-                echo "              <td align=center bgcolor=$media_deletetts_color class=$media_deletetts_class width=175><span class=\"font2 alert\"><a href=\"$PHP_SELF?ADD=51tts&tts_id=$tts_id\"> Delete TTS Template </a></span></td>";
-            }
-            echo "              <td bgcolor=$inactivemenu4_color class='rounded-menu3'>&nbsp;</td>";
-            echo "            </tr>";
-            echo "          </table>";
-            echo "        </td>";
-            echo "      </tr>";
-        }
-        echo "      </table>\n";
-        echo "    </td>\n";
-        echo "  </tr>\n";
-    }
 
 
 

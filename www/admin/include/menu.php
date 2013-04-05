@@ -103,6 +103,7 @@ if ($ADD=="2fields")	{$hh='campaigns';	$sh='fields';	$title = "New Additional Fi
 if ($ADD=="3fields")	{$hh='campaigns';	$sh='fields';	$title = "Campaign Additional Field Entries";}  
 if ($ADD=="4form")	    {$hh='campaigns';	$sh='fields';	$title = "Modify Form";}
 if ($ADD=="4fields")	{$hh='campaigns';	$sh='fields';	$title = "Modify Field";}
+if ($ADD=="5form")	    {$hh='campaigns';	$sh='fields';	$title = "Delete Form Confirmation";}
 if ($ADD=="6form")	    {$hh='campaigns';	$sh='fields';	$title = "Delete Form";}
 if ($ADD=="6fields")	{$hh='campaigns';	$sh='fields';	$title = "Delete Field";}
 # Campaigns - NEW additional fields
@@ -187,15 +188,6 @@ if ($ADD==5111)			{$hh='ingroups';	$title = "Delete In-Group";}
 if ($ADD==6111)			{$hh='ingroups';	$title = "Delete In-Group";}
 if ($ADD==3111)			{$hh='ingroups';	$title = "Modify In-Group";}
 
-# Remote/External/Auto Agents
-if ($ADD==10000)		{$hh='remoteagent';	$title = "External Agents";}
-if ($ADD==11111)		{$hh='remoteagent';	$title = "Add New External Agents";}
-if ($ADD==21111)		{$hh='remoteagent';	$title = "New External Agents Addition";}
-if ($ADD==41111)		{$hh='remoteagent';	$title = "Modify External Agents";}
-if ($ADD==51111)		{$hh='remoteagent';	$title = "Delete External Agents";}
-if ($ADD==61111)		{$hh='remoteagent';	$title = "Delete External Agents";}
-if ($ADD==31111)		{$hh='remoteagent';	$title = "Modify External Agents";}
-
 # User Groups
 if ($ADD==8111)			{$hh='usergroups';	$title = "CallBacks Within User Group";}
 if ($ADD==100000)		{$hh='usergroups';	$title = "User Groups";}
@@ -207,34 +199,53 @@ if ($ADD==611111)		{$hh='usergroups';	$title = "Delete Users Group";}
 if ($ADD==311111)		{$hh='usergroups';	$title = "Modify Users Groups";}
 
 # Scripts
-if ($ADD==1000000)		{$hh='scripts';		$title = "Scripts";}
-if ($ADD==1111111)		{$hh='scripts';		$title = "Add New Script";}
-if ($ADD==2111111)		{$hh='scripts';		$title = "New Script Addition";}
-if ($ADD==4111111)		{$hh='scripts';		$title = "Modify Script";}
-if ($ADD==5111111)		{$hh='scripts';		$title = "Delete Script";}
-if ($ADD==6111111)		{$hh='scripts';		$title = "Delete Script";}
-if ($ADD==7111111)		{$hh='scripts';		$title = "Preview Script";}
-if ($ADD==3111111)		{$hh='scripts';		$title = "Modify Script";}
+if ($ADD==1000000)		{$hh='templates';	$sh='scripts';	$ssh='scripts';		$title = "Scripts";}
+if ($ADD==1111111)		{$hh='templates';	$sh='scripts';	$ssh='scripts';		$title = "Add New Script";}
+if ($ADD==2111111)		{$hh='templates';	$sh='scripts';	$ssh='scripts';		$title = "New Script Addition";}
+if ($ADD==4111111)		{$hh='templates';	$sh='scripts';	$ssh='scripts';		$title = "Modify Script";}
+if ($ADD==5111111)		{$hh='templates';	$sh='scripts';	$ssh='scripts';		$title = "Delete Script";}
+if ($ADD==6111111)		{$hh='templates';	$sh='scripts';	$ssh='scripts';		$title = "Delete Script";}
+if ($ADD==7111111)		{$hh='templates';	$sh='scripts';	$ssh='scripts';		$title = "Preview Script";}
+if ($ADD==3111111)		{$hh='templates';	$sh='scripts';	$ssh='scripts';		$title = "Modify Script";}
 
 
 # Email Templates
-if ($ADD=="0email")		{$hh='scripts';		$sh='email_templates';    $title = "Email Templates";}
-if ($ADD=="1email")		{$hh='scripts';		$sh='email_templates';    $title = "Add New Email Template";}
-if ($ADD=="2email")		{$hh='scripts';		$sh='email_templates';    $title = "New Email Template Addition";}
-if ($ADD=="4email")		{$hh='scripts';		$sh='email_templates';    $title = "Modify Email Template";}
-if ($ADD=="5email")		{$hh='scripts';		$sh='email_templates';    $title = "Delete Email Template";}
-if ($ADD=="6email")		{$hh='scripts';		$sh='email_templates';    $title = "Delete Email Template";}
-if ($ADD=="7email")		{$hh='scripts';		$sh='email_templates';    $title = "Preview Email Template";}
-if ($ADD=="3email")		{$hh='scripts';		$sh='email_templates';    $title = "Modify Email Template";}
+if ($ADD=="0email")		{$hh='templates';	$sh='scripts';	$ssh='email_templates';    $title = "Email Templates";}
+if ($ADD=="1email")		{$hh='templates';	$sh='scripts';	$ssh='email_templates';    $title = "Add New Email Template";}
+if ($ADD=="2email")		{$hh='templates';	$sh='scripts';	$ssh='email_templates';    $title = "New Email Template Addition";}
+if ($ADD=="4email")		{$hh='templates';	$sh='scripts';	$ssh='email_templates';    $title = "Modify Email Template";}
+if ($ADD=="5email")		{$hh='templates';	$sh='scripts';	$ssh='email_templates';    $title = "Delete Email Template";}
+if ($ADD=="6email")		{$hh='templates';	$sh='scripts';	$ssh='email_templates';    $title = "Delete Email Template";}
+if ($ADD=="7email")		{$hh='templates';	$sh='scripts';	$ssh='email_templates';    $title = "Preview Email Template";}
+if ($ADD=="3email")		{$hh='templates';	$sh='scripts';	$ssh='email_templates';    $title = "Modify Email Template";}
 
 # Filters
-if ($ADD==10000000)		{$hh='filters';		$title = "Filters";}
-if ($ADD==11111111)		{$hh='filters';		$title = "Add New Filter";}
-if ($ADD==21111111)		{$hh='filters';		$title = "New Filter Addition";}
-if ($ADD==41111111)		{$hh='filters';		$title = "Modify Filter";}
-if ($ADD==51111111)		{$hh='filters';		$title = "Delete Filter";}
-if ($ADD==61111111)		{$hh='filters';		$title = "Delete Filter";}
-if ($ADD==31111111)		{$hh='filters';		$title = "Modify Filter";}
+if ($ADD==10000000)		{$hh='templates';	$sh='filters';	$ssh='filters';		$title = "Filters";}
+if ($ADD==11111111)		{$hh='templates';	$sh='filters';	$ssh='filters';		$title = "Add New Filter";}
+if ($ADD==21111111)		{$hh='templates';	$sh='filters';	$ssh='filters';		$title = "New Filter Addition";}
+if ($ADD==41111111)		{$hh='templates';	$sh='filters';	$ssh='filters';		$title = "Modify Filter";}
+if ($ADD==51111111)		{$hh='templates';	$sh='filters';	$ssh='filters';		$title = "Delete Filter";}
+if ($ADD==61111111)		{$hh='templates';	$sh='filters';	$ssh='filters';		$title = "Delete Filter";}
+if ($ADD==31111111)		{$hh='templates';	$sh='filters';	$ssh='filters';		$title = "Modify Filter";}
+
+# Admin - media
+if ($ADD=="10media")		{$hh='templates';	$sh='admin';	$ssh='media';	$title = "MEDIA LIST";}
+if ($ADD=="11media")		{$hh='templates';	$sh='admin';	$ssh='media';	$title = "ADD NEW MEDIA";}
+if ($ADD=="21media")		{$hh='templates';	$sh='admin';	$ssh='media';	$title = "ADDING NEW MEDIA";}
+if ($ADD=="41media")		{$hh='templates';	$sh='admin';	$ssh='media';	$title = "MODIFY MEDIA";}
+if ($ADD=="51media")		{$hh='templates';	$sh='admin';	$ssh='media';	$title = "DELETE MEDIA";}
+if ($ADD=="61media")		{$hh='templates';	$sh='admin';	$ssh='media';	$title = "DELETE MEDIA";}
+if ($ADD=="31media")		{$hh='templates';	$sh='admin';	$ssh='media';	$title = "MODIFY MEDIA";}
+
+# Admin - media - tts scripts
+if ($ADD=="10tts")		{$hh='templates';	$sh='admin';	$ssh='media';	$title = "TTS LIST";}
+if ($ADD=="11tts")		{$hh='templates';	$sh='admin';	$ssh='media';	$title = "ADD NEW TTS";}
+if ($ADD=="21tts")		{$hh='templates';	$sh='admin';	$ssh='media';	$title = "ADDING NEW TTS";}
+if ($ADD=="41tts")		{$hh='templates';	$sh='admin';	$ssh='media';	$title = "MODIFY TTS";}
+if ($ADD=="51tts")		{$hh='templates';	$sh='admin';	$ssh='media';	$title = "DELETE TTS";}
+if ($ADD=="61tts")		{$hh='templates';	$sh='admin';	$ssh='media';	$title = "DELETE TTS";}
+if ($ADD=="31tts")		{$hh='templates';	$sh='admin';	$ssh='media';	$title = "MODIFY TTS";}
+
 
 # Admin - carrier
 if (OSDpreg_match('/carrier$/',$ADD)) {
@@ -290,24 +301,6 @@ if ($ADD=="51comp")		{$hh='admin';	$sh='company';	$title = "DELETE COMPANY";}
 if ($ADD=="61comp")		{$hh='admin';	$sh='company';	$title = "DELETE COMPANY";}
 if ($ADD=="31comp")		{$hh='admin';	$sh='company';	$title = "MODIFY COMPANY";}
 
-# Admin - media
-if ($ADD=="10media")		{$hh='admin';	$sh='media';	$title = "MEDIA LIST";}
-if ($ADD=="11media")		{$hh='admin';	$sh='media';	$title = "ADD NEW MEDIA";}
-if ($ADD=="21media")		{$hh='admin';	$sh='media';	$title = "ADDING NEW MEDIA";}
-if ($ADD=="41media")		{$hh='admin';	$sh='media';	$title = "MODIFY MEDIA";}
-if ($ADD=="51media")		{$hh='admin';	$sh='media';	$title = "DELETE MEDIA";}
-if ($ADD=="61media")		{$hh='admin';	$sh='media';	$title = "DELETE MEDIA";}
-if ($ADD=="31media")		{$hh='admin';	$sh='media';	$title = "MODIFY MEDIA";}
-
-# Admin - media - tts scripts
-if ($ADD=="10tts")		{$hh='admin';	$sh='media';	$title = "TTS LIST";}
-if ($ADD=="11tts")		{$hh='admin';	$sh='media';	$title = "ADD NEW TTS";}
-if ($ADD=="21tts")		{$hh='admin';	$sh='media';	$title = "ADDING NEW TTS";}
-if ($ADD=="41tts")		{$hh='admin';	$sh='media';	$title = "MODIFY TTS";}
-if ($ADD=="51tts")		{$hh='admin';	$sh='media';	$title = "DELETE TTS";}
-if ($ADD=="61tts")		{$hh='admin';	$sh='media';	$title = "DELETE TTS";}
-if ($ADD=="31tts")		{$hh='admin';	$sh='media';	$title = "MODIFY TTS";}
-
 # Admin - Server
 if ($ADD==100000000000)		{$hh='admin';	$sh='server';	$title = "SERVER LIST";}
 if ($ADD==111111111111)		{$hh='admin';	$sh='server';	$title = "ADD NEW SERVER";}
@@ -342,6 +335,15 @@ if ($ADD==41111111111111)	{$hh='admin';	$sh='conference';	$title = "MODIFY $t1 C
 if ($ADD==51111111111111)	{$hh='admin';	$sh='conference';	$title = "DELETE $t1 CONFERENCE";}
 if ($ADD==61111111111111)	{$hh='admin';	$sh='conference';	$title = "DELETE $t1 CONFERENCE";}
 if ($ADD==31111111111111)	{$hh='admin';	$sh='conference';	$title = "MODIFY $t1 CONFERENCE";}
+
+# Remote/External/Auto Agents
+if ($ADD==10000)		{$hh='admin';	$sh='remoteagent';	$title = "External Agents";}
+if ($ADD==11111)		{$hh='admin';	$sh='remoteagent';	$title = "Add New External Agents";}
+if ($ADD==21111)		{$hh='admin';	$sh='remoteagent';	$title = "New External Agents Addition";}
+if ($ADD==41111)		{$hh='admin';	$sh='remoteagent';	$title = "Modify External Agents";}
+if ($ADD==51111)		{$hh='admin';	$sh='remoteagent';	$title = "Delete External Agents";}
+if ($ADD==61111)		{$hh='admin';	$sh='remoteagent';	$title = "Delete External Agents";}
+if ($ADD==31111)		{$hh='admin';	$sh='remoteagent';	$title = "Modify External Agents";}
 
 # Admin - settings
 if ($ADD==411111111111111)	{$hh='admin';	$sh='settings';	$title = "MODIFY $t1 SYSTEM SETTINGS";}
@@ -378,12 +380,17 @@ if ($ADD==999999)		{$hh='reports';                     $title = "REPORTS";
 }
 
 
-$content = 'include/content/' . $hh . '/';
-//if ($sh == '' || ($hh == 'campaigns' && ($sh == 'basic' || $sh == 'detail' || $sh == 'list'))) {
-if ($sh == '' || ($hh == 'campaigns' && ($sh == 'detail' || $sh == 'list'))) {
-    $content .= $hh;
+$content = 'include/content/';
+if ($hh == 'templates') {
+    $content .= $sh . '/' . $ssh;
 } else {
-    $content .= $sh;
+    $content .= $hh . '/';
+    //if ($sh == '' || ($hh == 'campaigns' && ($sh == 'basic' || $sh == 'detail' || $sh == 'list'))) {
+    if ($sh == '' || ($hh == 'campaigns' && ($sh == 'detail' || $sh == 'list'))) {
+        $content .= $hh;
+    } else {
+        $content .= $sh;
+    }
 }
 $content .= '.php';
 

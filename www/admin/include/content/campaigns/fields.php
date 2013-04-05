@@ -244,6 +244,26 @@ if ($ADD == "4fields") {
     }
 }
 
+######################
+# ADD=5form confirmation before deletion of form
+######################
+if ($ADD == "5form") {
+    if ($LOG['modify_campaigns'] == 1) {
+        $SUB = "";
+        if ($form_id < 1) {
+            echo "<br><font color=red>FORM NOT DELETED - Missing form_id!</font><br>\n";
+        } else {
+            echo "<br><font color=$default_text><b>FORM DELETION CONFIRMATION: $form_id</b>\n";
+            echo "<br><br><a href=\"$PHP_SELF?ADD=6form&form_id=$form_id&CoNfIrM=YES\">Click here to delete form: $form_id</a></font><br><br><br>\n";
+        }
+        $id = $form_id;
+        $SUB = "2fields";
+        $ADD = "3fields"; # go to campaign modification form below
+    } else {
+        echo "<font color=red>You do not have permission to view this page</font>\n";
+    }
+}
+
 
 ######################
 # ADD=6form delete form
@@ -416,7 +436,7 @@ if ($ADD == 72 or ($ADD == "3fields" and $SUB == '2fields')) {
     }
     echo "  <tr><td colspan=2 bgcolor=$evenrows>&nbsp;</td></tr>\n";
     echo "  <tr class=tabfooter>\n";
-    echo "      <td align=center><a href=$PHP_SELF?ADD=6form&form_id=$id>DELETE</a></td>\n";
+    echo "      <td align=center><a href=$PHP_SELF?ADD=5form&form_id=$id>DELETE</a></td>\n";
     echo "      <td class=tabbutton align=center><input type=submit value=\"Save Form\"></td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
