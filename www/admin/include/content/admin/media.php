@@ -29,6 +29,7 @@ if ($ADD=="11media") {
         echo "<center><br><font class=top_header color=$default_text size=+1>ADD MEDIA FILE</font><br><br>\n";
         echo '<form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
         echo "<input type=hidden name=ADD value=21media>\n";
+        echo "<input type=hidden name=last_general_extension value=\"".($config['settings']['last_general_extension']+1)."\">\n";
 
         echo "<table class=shadedtable width=$section_width cellspacing=3>\n";
         echo "  <tr bgcolor=$oddrows>\n";
@@ -37,7 +38,7 @@ if ($ADD=="11media") {
         echo "  </tr>\n";
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right width=50%>Extension: </td>\n";
-        echo "    <td align=left><input type=text name=media_extension size=10 maxlength=20 value=\"\">".helptag("media-extension")."</td>\n";
+        echo "    <td align=left><input type=text name=media_extension size=10 maxlength=20 value=\"\" onclick=\"if (this.value=='') { this.value='".$config['settings']['last_general_extension']+1)."';}\">".helptag("media-extension")."</td>\n";
         echo "  </tr>\n";
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right width=50%>Media File: </td>\n";
@@ -77,6 +78,11 @@ if ($ADD=="21media") {
             if ($recfilename != '') media_add_file($link, '/tmp/'.$recfilename, mimemap($recfilename), $media_description, $media_extension,1);
             unlink('/tmp/'.$recfilename);
             echo "<br>";
+
+            if ($last_general_extenson==$media_extension) {
+                $stmt=sprintf("UPDATE system_settings SET last_general_extension='%s';",mres($last_general_extension));
+                $rslt=mysql_query($stmt, $link);
+            }
         }
         $ADD="10media";
     } else {
@@ -99,6 +105,11 @@ if ($ADD=="41media") {
 
             $stmt=sprintf("UPDATE osdial_media SET description='%s',extension='%s' WHERE id='%s';",mres($media_description),mres($media_extension),mres($media_id));
             $rslt=mysql_query($stmt, $link);
+
+            if ($last_general_extenson==$media_extension) {
+                $stmt=sprintf("UPDATE system_settings SET last_general_extension='%s';",mres($last_general_extension));
+                $rslt=mysql_query($stmt, $link);
+            }
         }
         $ADD="31media";	# go to media modification form below
     } else {
@@ -158,12 +169,13 @@ if ($ADD=="31media") {
         echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY MEDIA</font><form action=$PHP_SELF method=POST><br><br>\n";
         echo "<input type=hidden name=ADD value=41media>\n";
         echo "<input type=hidden name=media_id value=$media[id]>\n";
+        echo "<input type=hidden name=last_general_extension value=\"".($config['settings']['last_general_extension']+1)."\">\n";
         echo "<table class=shadedtable cellspacing=3>\n";
         echo "<tr bgcolor=$oddrows><td align=right>ID: </td><td align=left><font color=$default_text>" . $media['id'] . "</font></td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>FileName: </td><td align=left>$media[filename]".helptag("media-filename")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>MimeType: </td><td align=left>$media[mimetype]".helptag("media-mimetype")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Description: </td><td align=left><input type=text name=media_description size=50 maxlength=255 value=\"$media[description]\">".helptag("media-description")."</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Extension: </td><td align=left><input type=text name=media_extension size=10 maxlength=20 value=\"$media[extension]\">".helptag("media-extension")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Extension: </td><td align=left><input type=text name=media_extension size=10 maxlength=20 value=\"$media[extension]\" onclick=\"if (this.value=='') { this.value='".$config['settings']['last_general_extension']+1)."';}\">".helptag("media-extension")."</td></tr>\n";
         echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
         echo "</TABLE></center>\n";
 

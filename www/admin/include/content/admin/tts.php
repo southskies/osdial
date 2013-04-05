@@ -54,6 +54,7 @@ if ($ADD=="11tts") {
         echo "<center><br/><font color=$default_text size=+1>ADD NEW TEXT-TO-SPEECH TEMPLATE</font><br/><br/>\n";
         echo '<form action="' . $PHP_SELF . '" method="POST" name=osdial_form enctype="multipart/form-data">';
         echo "<input type=hidden name=ADD value=21tts>\n";
+        echo "<input type=hidden name=last_general_extension value=\"".($config['settings']['last_general_extension']+1)."\">\n";
 
         echo "<table class=shadedtable width=$section_width cellspacing=3>\n";
         echo "  <tr bgcolor=$oddrows>\n";
@@ -62,7 +63,7 @@ if ($ADD=="11tts") {
         echo "  </tr>\n";
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right width=50%>Extension: </td>\n";
-        echo "    <td align=left><input type=text name=tts_extension size=10 maxlength=20 value=\"\">".helptag("tts-extension")."</td>\n";
+        echo "    <td align=left><input type=text name=tts_extension size=10 maxlength=20 value=\"\" onclick=\"if (this.value=='') { this.value='".$config['settings']['last_general_extension']+1)."';}\">".helptag("tts-extension")."</td>\n";
         echo "  </tr>\n";
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right width=50%>Voice: </td>\n";
@@ -124,6 +125,11 @@ if ($ADD=="21tts") {
                 $tts_id = mysql_insert_id($link);
             }
             echo "<br/>";
+
+            if ($last_general_extenson==$tts_extension) {
+                $stmt=sprintf("UPDATE system_settings SET last_general_extension='%s';",mres($last_general_extension));
+                $rslt=mysql_query($stmt, $link);
+            }
         }
         $ADD="31tts";
     } else {
@@ -172,6 +178,11 @@ if ($ADD=="41tts") {
 
                 $tts_phrase = OSDpreg_replace('/&nbsp;/',' ',htmlspecialchars_decode(strip_tags(OSDpreg_replace('/(\<br\/\>|\<br\>)/',"\n",$tts_phrase))));
                 $stmt=sprintf("UPDATE osdial_tts SET description='%s',extension='%s',phrase='%s',voice='%s' WHERE id='%s';",mres($tts_description),mres($tts_extension),mres($tts_phrase),mres($tts_voice),mres($tts_id));
+                $rslt=mysql_query($stmt, $link);
+            }
+
+            if ($last_general_extenson==$tts_extension) {
+                $stmt=sprintf("UPDATE system_settings SET last_general_extension='%s';",mres($last_general_extension));
                 $rslt=mysql_query($stmt, $link);
             }
         }
@@ -233,10 +244,11 @@ if ($ADD=="31tts") {
         echo "<center><br/><font color=$default_text size=+1>MODIFY TEXT-TO-SPEECH TEMPLATE</font><form action=$PHP_SELF method=POST name=osdial_form id=osdial_form enctype=\"multipart/form-data\"><br/><br/>\n";
         echo "<input type=hidden name=ADD value=41tts>\n";
         echo "<input type=hidden name=tts_id value=$tts[id]>\n";
+        echo "<input type=hidden name=last_general_extension value=\"".($config['settings']['last_general_extension']+1)."\">\n";
         echo "<table class=shadedtable width=$section_width cellspacing=3>\n";
         echo "<tr bgcolor=$oddrows><td align=right>ID: </td><td align=left><font color=$default_text>" . $tts['id'] . "</font></td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Description: </td><td align=left><input type=text name=tts_description size=50 maxlength=255 value=\"$tts[description]\">".helptag("tts-description")."</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Extension: </td><td align=left><input type=text name=tts_extension size=10 maxlength=20 value=\"$tts[extension]\">".helptag("tts-extension")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Extension: </td><td align=left><input type=text name=tts_extension size=10 maxlength=20 value=\"$tts[extension]\" onclick=\"if (this.value=='') { this.value='".$config['settings']['last_general_extension']+1)."';}\">".helptag("tts-extension")."</td></tr>\n";
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right width=50%>Voice: </td>\n";
         echo "    <td align=left>\n";
