@@ -62,7 +62,7 @@ $AdmVer=substr($admin_version,0,3);
 	<tr height=50><td colspan=2>&nbsp;</td></tr>
 	<tr>
 		<td>
-			<img class=homepagelogo src='admin/templates/default/images/osdial-logo-remake-150.gif' height=100>
+			<img class=homepagelogo src='admin/templates/default/images/osdial-logo.gif' height=100>
 		</td>
 
 		<td width=170 align=right valign=bottom>
