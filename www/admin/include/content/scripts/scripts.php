@@ -695,7 +695,7 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
 
             case 'previewb':
                 var previewb = cm.createButton('previewb', {
-                    label: 'Preview',
+                    label: 'Preview',                    
                     onclick : function() {
                         window.open('/admin/admin.php?ADD=7111111&script_id=<?php echo $script_id; ?>','','width=1000,height=700,scrollbars=yes,menubar=yes,address=yes');
                      }
@@ -890,8 +890,11 @@ tinyMCE.init({
     plugins : '-example', // - tells TinyMCE to skip the loading of the plugin
     mode : "textareas",
     theme : "advanced",
-    theme_advanced_buttons1 : "separator,fontselect,fontsizeselect,forecolor,backcolor,separator,bold,italic,underline,strikethrough,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,separator,hr,sub,sup,separator,cut,copy,paste,separator,undo,redo,separator,code,separator",
-    theme_advanced_buttons2 : "separator,myfields,separator,separator,myeditfields,separator,separator,myaddtlfields,separator,s0,separator,mydispo,separator,separator,mybuttons,separator,s1,separator,previewb,separator,separator,helpb,separator",
+//     theme_advanced_buttons1 : "separator,fontselect,fontsizeselect,forecolor,backcolor,separator,bold,italic,underline,strikethrough,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,separator,hr,sub,sup,separator,cut,copy,paste,separator,undo,redo,separator,code,separator",
+    theme_advanced_buttons1 : "fontselect,fontsizeselect,forecolor,backcolor,separator,bold,italic,underline,strikethrough,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,separator,hr,sub,sup,separator,cut,copy,paste,separator,undo,redo,separator,code",
+//     theme_advanced_buttons2 : "separator,myfields,separator,separator,myeditfields,separator,separator,myaddtlfields,separator,s0,separator,mydispo,separator,separator,mybuttons,separator,s1,separator,previewb,separator,separator,helpb,separator",
+    theme_advanced_buttons2 : "myfields,space,myeditfields,myaddtlfields,separator,mydispo,mybuttons,previewb,separator,helpb",
+    
     theme_advanced_buttons3 : "",
     theme_advanced_toolbar_location : "top",
     theme_advanced_toolbar_align : "center",
