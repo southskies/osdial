@@ -196,7 +196,7 @@ install-docs: .osdial.config
 	@install -p -m 666 ./www/admin/*.txt $(DESTDIR)$(PATHweb)/admin
 	@install -p -m 644 ./www/admin/*.php $(DESTDIR)$(PATHweb)/admin
 	@install -p -m 755 ./www/admin/*.pl $(DESTDIR)$(PATHweb)/admin
-	@install -p -m 644 ./www/admin/*.gif $(DESTDIR)$(PATHweb)/admin
+	@install -p -m 644 ./www/admin/*.png $(DESTDIR)$(PATHweb)/admin
 	@install -p -m 644 ./www/admin/*.css $(DESTDIR)$(PATHweb)/admin
 	@install -p -m 644 ./www/admin/templates/default/*.css $(DESTDIR)$(PATHweb)/admin/templates/default
 	@install -p -m 644 ./www/admin/templates/default/*.ttf $(DESTDIR)$(PATHweb)/admin/templates/default
@@ -205,12 +205,13 @@ install-docs: .osdial.config
 	@install -p -m 644 ./www/admin/include/*.js $(DESTDIR)$(PATHweb)/admin/include
 	@install -p -m 644 ./www/admin/include/*.php $(DESTDIR)$(PATHweb)/admin/include
 	@install -p -m 644 ./www/admin/include/*.xml $(DESTDIR)$(PATHweb)/admin/include
+	@install -p -m 644 ./www/admin/include/*.xsd $(DESTDIR)$(PATHweb)/admin/include
 	@install -p -m 644 ./www/admin/include/content/admin/* $(DESTDIR)$(PATHweb)/admin/include/content/admin
 	@install -p -m 644 ./www/admin/include/content/campaigns/* $(DESTDIR)$(PATHweb)/admin/include/content/campaigns
 	@install -p -m 644 ./www/admin/include/content/filters/* $(DESTDIR)$(PATHweb)/admin/include/content/filters
 	@install -p -m 644 ./www/admin/include/content/ingroups/* $(DESTDIR)$(PATHweb)/admin/include/content/ingroups
 	@install -p -m 644 ./www/admin/include/content/lists/* $(DESTDIR)$(PATHweb)/admin/include/content/lists
-	@install -p -m 644 ./www/admin/include/content/remoteagent/* $(DESTDIR)$(PATHweb)/admin/include/content/remoteagent
+	#@install -p -m 644 ./www/admin/include/content/remoteagent/* $(DESTDIR)$(PATHweb)/admin/include/content/remoteagent
 	@install -p -m 644 ./www/admin/include/content/reports/* $(DESTDIR)$(PATHweb)/admin/include/content/reports
 	@install -p -m 644 ./www/admin/include/content/scripts/* $(DESTDIR)$(PATHweb)/admin/include/content/scripts
 	@install -p -m 644 ./www/admin/include/content/usergroups/* $(DESTDIR)$(PATHweb)/admin/include/content/usergroups
