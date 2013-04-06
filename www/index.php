@@ -5,7 +5,7 @@ require_once('admin/include/variables.php');
 $template=$config['settings']['admin_template'];
 if (empty($template)) $template='default';
 require_once('admin/templates/' . $template . '/display.php');
-
+$AdmVer=substr($admin_version,0,3);
 ?>
 <html>
 <head>
@@ -66,7 +66,7 @@ require_once('admin/templates/' . $template . '/display.php');
 		</td>
 
 		<td width=170 align=right valign=bottom>
-			<div class=homepagever><font style='font-size:18pt;'>V</font>3.0</div>
+			<div class=homepagever><font style='font-size:18pt;'>V</font><?php echo $AdmVer?></div>
 		</td>
 	</tr>
 </table>
