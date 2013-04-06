@@ -6,23 +6,17 @@ $template=$config['settings']['admin_template'];
 if (empty($template)) $template='default';
 require_once('admin/templates/' . $template . '/display.php');
 $AdmVer=substr($admin_version,0,3);
+$browser = getenv("HTTP_USER_AGENT");
+    if (!preg_match('/wget/i',$browser)) {
 ?>
 <html>
 <head>
 	<title>Choose Login:</title>
-<!-- 	<link rel="stylesheet" type="text/css" href="admin/templates/<?php echo $template; ?>/styles.css" media="screen"> -->
-	<link rel="stylesheet" type="text/css" href="admin/templates/default/styles.css" media="screen">
+	<link rel="stylesheet" type="text/css" href="admin/templates/<?php echo $template; ?>/styles.css" media="screen">
+<!-- 	<link rel="stylesheet" type="text/css" href="admin/templates/default/styles.css" media="screen"> -->
 
 </head>
 <body>
-<?php
-    $browser = getenv("HTTP_USER_AGENT");
-    if (!preg_match('/wget/i',$browser)) {
-?>
-
-
-<?php } ?>
-
 
 <!-- <table align=center frame=border align=center width=660 height=500 cellpadding=0 cellspacing=0 background="admin/templates/<?php echo $template; ?>/images/Xosdial-bg.png"> -->
 <table align=center frame=border align=center width=660 height=500 cellpadding=0 cellspacing=0 class="homepagebg"> 
@@ -36,15 +30,15 @@ $AdmVer=substr($admin_version,0,3);
 						<!--<script>
 							<?php
 							$c = $config['settings']['company_name'];
-							$klen = 2;
- 							if (strlen($c) < 20 or (strlen($c) >= 20 && preg_match('/............... /',$c))) {
- 									$klen = 1;
- 							}
-							echo "osdfont('company','$c',$klen);\n";
+							if (strlen($c) < 22) {
+								$fontclass='homepagecompany';
+							} else {
+								$fontclass='homepagecompanysmall';
+							}
 							?>
 						</script>-->
 					
-					<?php echo "<div class=homepagecompany>$c</div>"; ?>
+					<?php echo "<div class=$fontclass>$c</div>"; ?>
 				</td>
 			</tr>
 			<tr valign=top>
@@ -61,8 +55,8 @@ $AdmVer=substr($admin_version,0,3);
 	</tr>
 	<tr height=50><td colspan=2>&nbsp;</td></tr>
 	<tr>
-		<td>
-			<img class=homepagelogo src='admin/templates/default/images/osdial-logo.gif' height=100>
+		<td class=homepagelogo>
+			<a href='http://callcentersg.com/licenses.php' target=_blank title='Click for License Information'><img class=homepagelogo src='admin/templates/default/images/osdial-logo.gif' height=100></a>
 		</td>
 
 		<td width=170 align=right valign=bottom>
@@ -70,6 +64,10 @@ $AdmVer=substr($admin_version,0,3);
 		</td>
 	</tr>
 </table>
+
+<?php
+	} 
+?>
 
 </body>
 </html>

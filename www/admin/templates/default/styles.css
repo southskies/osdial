@@ -41,6 +41,11 @@
 		font-size: 24pt;
 		text-shadow: rgba(0,0,0,0.8) 1px 1px 2px;
 	}
+	.homepagecompanysmall {
+		color: #FA0; /*#E4AF24;*/
+		font-size: 20pt;
+		text-shadow: rgba(0,0,0,0.8) 1px 1px 2px;
+	}
 	.homepage {
 		text-align: center;
 		text-decoration: none;
@@ -58,10 +63,10 @@
 	}
 	.homepage a:hover {
 		color: #F90;
-		
 		text-shadow: rgba(1,1,3,0.8) 1px 1px 1px;
 	}
 	.homepagelogo {
+		
 		margin-left:50px;
 		margin-bottom:-10px;
 	}
