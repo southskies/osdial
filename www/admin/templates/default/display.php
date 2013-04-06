@@ -57,6 +57,7 @@ $scripts_color =	$top_menu_color;
 $filters_color =	$top_menu_color;
 $admin_color =		$top_menu_color;
 $reports_color =	$top_menu_color;
+$templates_color =	$top_menu_color;
 
 $sub_menu_color =   '#A1B9A4';
 $times_color =		$sub_menu_color;

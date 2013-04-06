@@ -251,8 +251,8 @@ $mmenu = '';
 $mmenu .= "<td class='narrow-space' width=15>&nbsp;</td>";
 
 $mmenu .= "    <td class=$agents_menu1_class height=$height_row1 align=center $users_hh><span class=\"font3 fgnavy \"><a href=\"$PHP_SELF?ADD=0\"> Agents </a></span></td>\n";
-$mmenu .= "    <td class=$campaigns_menu1_class height=$height_row1 align=center $campaigns_hh width=100><span class=\"font3 fgnavy\"><a href=\"$PHP_SELF?ADD=10\"> Campaigns </a></span></td>\n";
-$mmenu .= "    <td class=$lists_menu1_class height=$height_row1 align=center $lists_hh width=65><span class=\"font3 fgnavy\"><a href=\"$PHP_SELF?ADD=100\"> Lists </a></span></td>\n";
+$mmenu .= "    <td class=$campaigns_menu1_class height=$height_row1 align=center $campaigns_hh><span class=\"font3 fgnavy\"><a href=\"$PHP_SELF?ADD=10\"> Campaigns </a></span></td>\n";
+$mmenu .= "    <td class=$lists_menu1_class height=$height_row1 align=center $lists_hh width=80><span class=\"font3 fgnavy\"><a href=\"$PHP_SELF?ADD=100\"> Lists </a></span></td>\n";
 
 #if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_scripts'] == 1) {
 #    $mmenu .= "    <td class=$scripts_menu1_class height=$height_row1 align=center $scripts_hh><span class=\"font3 fgnavy\"><a href=\"$PHP_SELF?ADD=1000000\"> Scripts </a></span></td>\n";
@@ -272,10 +272,10 @@ if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_ingroups'] == 1) {
     $cauth++;
 }
 
-$mmenu .= "    <td class=$usergroups_menu1_class height=$height_row1 align=center $usergroups_hh width=110><span class=\"font3 fgnavy\"><a href=\"$PHP_SELF?ADD=100000\">User Groups</a></span></td>\n";
+$mmenu .= "    <td class=$usergroups_menu1_class height=$height_row1 align=center $usergroups_hh><span class=\"font3 fgnavy\"><a href=\"$PHP_SELF?ADD=100000\">User Groups</a></span></td>\n";
 
 if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_scripts'] == 1) {
-    $mmenu .= "    <td class=$templates_menu1_class height=$height_row1 align=center $templates_hh width=110><span class=\"font3 fgnavy\"><a href=\"$PHP_SELF?ADD=1000000\">Templates</a></span></td>\n";
+    $mmenu .= "    <td class=$templates_menu1_class height=$height_row1 align=center $templates_hh><span class=\"font3 fgnavy\"><a href=\"$PHP_SELF?ADD=1000000\">Templates</a></span></td>\n";
 } else {
     $cauth++;
 }
