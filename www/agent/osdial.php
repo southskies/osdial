@@ -1347,6 +1347,7 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
         $voicemail_password=$row[68];
         $voicemail_email=$row[69];
 
+        $phone_gmt = $local_gmt;
         if ($clientDST) $local_gmt = ($local_gmt + $isdst);
         if ($protocol == 'EXTERNAL' or (OSDpreg_match('/SIP|IAX/',$protocol) and OSDpreg_match('/^.*@.*$/',$extension))) {
             $protocol = 'Local';
