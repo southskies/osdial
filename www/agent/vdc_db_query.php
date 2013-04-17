@@ -257,6 +257,7 @@ $phone_code = get_variable("phone_code");
 $phone_ip = get_variable("phone_ip");
 $phone_number = get_variable("phone_number");
 $phone_local_gmt = get_variable("phone_local_gmt");
+$phone_gmt = get_variable("phone_gmt");
 $postal_code = get_variable("postal_code");
 $PostDatETimE = get_variable("PostDatETimE");
 $preview = get_variable("preview");
@@ -3233,10 +3234,11 @@ if ($ACTION == 'updateDISPO') {
         exit;
     } else {
         $phone_local_gmt = $phone_local_gmt * 1;
+        $phone_gmt = $phone_gmt * 1;
         $tzs = parseTimezones();
         $tzoffsets = $tzs['tzoffsets'];
         $tzrefid = $tzs['tzrefid'];
-        $phoneGMTname = $tzrefid[$tzoffsets[$phone_local_gmt]];
+        $phoneGMTname = $tzrefid[$tzoffsets[$phone_gmt]];
         $phonetz = new Date_TimeZone($phoneGMTname);
         $phoneDST = $phonetz->inDaylightTime(new Date(time()));
         $phoneDST = $phoneDST * 1;
@@ -3255,7 +3257,7 @@ if ($ACTION == 'updateDISPO') {
         $rslt=mysql_query($stmt, $link);
 
         if ($dispo_choice == 'PD') {
-            $adjPOSTdate = dateToServer($link,$server_ip,$PostDatETimE,$phone_local_gmt,'',$phoneDST,0);
+            $adjPOSTdate = dateToServer($link,$server_ip,$PostDatETimE,$phone_gmt,'',$phoneDST,0);
             $stmt=sprintf("UPDATE osdial_list SET post_date='%s' WHERE lead_id='%s';",mres($adjPOSTdate),mres($lead_id));
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
@@ -3363,7 +3365,7 @@ if ($ACTION == 'updateDISPO') {
         ### CALLBACK ENTRY
         $adjCBdate='';
         if ( ($dispo_choice == 'CBHOLD') and (OSDstrlen($CallBackDatETimE)>10) ) {
-            $adjCBdate = dateToServer($link,$server_ip,$CallBackDatETimE,$phone_local_gmt,'',$phoneDST,0);
+            $adjCBdate = dateToServer($link,$server_ip,$CallBackDatETimE,$phone_gmt,'',$phoneDST,0);
             $stmt=sprintf("INSERT INTO osdial_callbacks (lead_id,list_id,campaign_id,status,entry_time,callback_time,user,recipient,comments,user_group) VALUES('%s','%s','%s','ACTIVE','%s','%s','%s','%s','%s','%s');",mres($lead_id),mres($list_id),mres($campaign),mres($NOW_TIME),mres($adjCBdate),mres($user),mres($recipient),mres($comments),mres($user_group));
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
@@ -3403,7 +3405,7 @@ if ($ACTION == 'updateDISPO') {
             mysql_close($linkB);
         }
 
-        echo 'Lead ' . $lead_id . ' has been changed to ' . $dispo_choice . " Status - phoneGMTname:$phoneGMTname phoneDST:$phoneDST sip:$server_ip pgmt: $phone_local_gmt CBdate:$CallBackDatETimE adjCBdate:$adjCBdate\nNext agent_log_id:\n" . $agent_log_id . "\n";
+        echo 'Lead ' . $lead_id . ' has been changed to ' . $dispo_choice . " Status - phoneGMTname:$phoneGMTname phoneDST:$phoneDST sip:$server_ip pgmt: $phone_gmt CBdate:$CallBackDatETimE adjCBdate:$adjCBdate\nNext agent_log_id:\n" . $agent_log_id . "\n";
     }
 }
 

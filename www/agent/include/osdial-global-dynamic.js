@@ -130,6 +130,7 @@ var lead_cid='<?php echo $campaign_cid; ?>';
 var lead_cust2_cid='<?php echo $campaign_cid; ?>';
 var LIVE_default_xfer_group='<?php echo $default_xfer_group; ?>';
 var local_consult_xfers='<?php echo $local_consult_xfers; ?>';
+var phone_gmt ='<?php echo $phone_gmt; ?>';
 var local_gmt ='<?php echo $local_gmt; ?>';
 var LOGfullname='<?php echo $LOGfullname; ?>';
 var LogouTKicKAlL='<?php echo $LogouTKicKAlL; ?>';

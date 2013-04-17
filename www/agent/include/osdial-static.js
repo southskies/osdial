@@ -4826,7 +4826,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 				var xmlhttp=getXHR();
 				if (xmlhttp) { 
-					DSupdate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=updateDISPO&format=text&user=" + user + "&pass=" + pass + "&dispo_choice=" + DispoChoice + "&lead_id=" + document.osdial_form.lead_id.value + "&campaign=" + campaign + "&auto_dial_level=" + auto_dial_level + "&agent_log_id=" + agent_log_id + "&PostDatETimE=" + PostDatETimE + "&CallBackDatETimE=" + CallBackDatETimE + "&list_id=" + document.osdial_form.list_id.value + "&recipient=" + CallBackrecipient + "&use_internal_dnc=" + use_internal_dnc + "&MDnextCID=" + LasTCID + "&stage=" + group + "&phone_local_gmt=" + local_gmt + "&comments=" + CallBackCommenTs;
+					DSupdate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=updateDISPO&format=text&user=" + user + "&pass=" + pass + "&dispo_choice=" + DispoChoice + "&lead_id=" + document.osdial_form.lead_id.value + "&campaign=" + campaign + "&auto_dial_level=" + auto_dial_level + "&agent_log_id=" + agent_log_id + "&PostDatETimE=" + PostDatETimE + "&CallBackDatETimE=" + CallBackDatETimE + "&list_id=" + document.osdial_form.list_id.value + "&recipient=" + CallBackrecipient + "&use_internal_dnc=" + use_internal_dnc + "&MDnextCID=" + LasTCID + "&stage=" + group + "&phone_gmt=" + phone_gmt + "&phone_local_gmt=" + local_gmt + "&comments=" + CallBackCommenTs;
 					debug("<b>updateDISPO called:</b> vdc_db_query.php?" + DSupdate_query,4);
 					xmlhttp.open('POST', 'vdc_db_query.php',false); 
 					xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
