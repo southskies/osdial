@@ -10,7 +10,7 @@ body {
 }
 
 .container {
-	width: 990px;
+	width: 900px;
 	margin-right: auto;
 	margin-left: auto;
 	margin-top: 100px;
@@ -25,6 +25,20 @@ body {
 	text-align: center;
 }
 
+.containera input {
+	color: black;
+	font-family: 'dejavu sans',verdana,sans-serif;
+	font-size: 12px;
+	padding: 0px;
+}
+
+.containera select {
+	color: black;
+	font-family: 'dejavu sans',verdana,sans-serif;
+	font-size: 10px;
+	padding: 0px;
+	overflow: auto;
+}
 
 .container ab {
 	text-decoration: none;
@@ -87,19 +101,33 @@ body {
 }
 
 .acrosslogin2 {
-	background-image: URL(images/down240.png);
-	background-repeat:repeat-x;
-	width: 500px;
+	background-image:-webkit-gradient(linear, center top, left bottom, color-stop(0.0,#82A8DC ), color-stop(0.9,#FFF ));
+	background-image:-moz-linear-gradient(top right,#82A8DC, #FFF);
+	border-radius: 10px 10px 10px 10px;
+	box-shadow: rgba(0,0,0,0.5) 1px 1px 28px;
+/* 	background-image: URL(images/down240.png); */
+/* 	background-repeat:repeat-x; */
+	width: 505px;
 	margin-left: auto;
 	margin-right: auto;	
 }
 
 .acrossagent {
-	background-image: URL(images/down550.png);
-	background-repeat:repeat-x;
+/* 	background-image: URL(images/down550.png); */
+/* 	background-repeat:repeat-x; */
+/* 	height:700px; */
 	width: 980px;
 	margin-left: auto;
 	margin-right: auto;	
+}
+
+.agentmain {
+	background-image:-webkit-gradient(linear, center top, left bottom, color-stop(0.0,#82A8DC ), color-stop(0.9,#FFF ));
+	background-image:-moz-linear-gradient(top right,#82A8DC, #FFF);
+	border-radius: 10px 10px 10px 10px;
+/* 	box-shadow: rgba(0,0,0,0.5) 1px 1px 19px; */
+/* 	height:700px; */
+	width:980px;
 }
 
 .acrossagent a {
@@ -367,21 +395,6 @@ div.text_input {
 	overflow: auto;
 }
 
-.containera input {
-	color: black;
-	font-family: 'dejavu sans',verdana,sans-serif;
-	font-size: 12px;
-	padding: 0px;
-}
-
-.containera select {
-	color: black;
-	font-family: 'dejavu sans',verdana,sans-serif;
-	font-size: 10px;
-	padding: 0px;
-	overflow: auto;
-}
-
 .preview_text {
 	font-size: 13px;
 	font-family: 'dejavu sans',verdana,sans-serif;
@@ -403,3 +416,6 @@ div.scroll_script {
 	font-family: 'dejavu sans',verdana,sans-serif;
 }
 
+.submit {
+	width:80px;
+}
