@@ -419,7 +419,7 @@ function report_lead_search_advanced($lsa_seg='form') {
                 $searchFLD .= "osdial_lists.campaign_id,osdial_list.status AS status,";
             }
         } elseif ($use_osdial_log and $field_cnt > 0) {
-            $searchFLD .= "osdial_log.call_date,osdial_closer_log.length_in_sec,";
+            $searchFLD .= "osdial_log.call_date,osdial_log.length_in_sec,";
         } elseif ($use_osdial_closer_log and $field_cnt > 0) {
             $searchFLD .= "osdial_closer_log.call_date,osdial_closer_log.length_in_sec,";
         }
