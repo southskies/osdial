@@ -142,10 +142,12 @@
 		if (taskagentmute=='AgenT') {
 			if (taskdirection=='MUTING') {
 				document.getElementById("AgentMuteSpan").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('UNMUTE','" + agentchannel + "','AgenT');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_UNMUTE.gif\" width=28 height=29 BORDER=0></a>";
-				document.getElementById("MutedWarning").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('UNMUTE','" + agentchannel + "','AgenT');return false;\"><img src=\"templates/" + agent_template + "/images/muted.gif\" width=148 height=35 BORDER=0></a>";
+// 				document.getElementById("MutedWarning").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('UNMUTE','" + agentchannel + "','AgenT');return false;\"><img src=\"templates/" + agent_template + "/images/muted.gif\" width=148 height=35 BORDER=0></a>";
+				document.getElementById("MutedWarning").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('UNMUTE','" + agentchannel + "','AgenT');return false;\"><div class=muted_on width=100 height=35 BORDER=0>MUTED</div></a>";
 			} else {
 				document.getElementById("AgentMuteSpan").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('MUTING','" + agentchannel + "','AgenT');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_MUTE.gif\" width=28 height=29 BORDER=0></a>";
-				document.getElementById("MutedWarning").innerHTML = "<img src=\"templates/" + agent_template + "/images/mutedoff.gif\" width=148 height=35 border=0></a>";
+// 				document.getElementById("MutedWarning").innerHTML = "<img src=\"templates/" + agent_template + "/images/mutedoff.gif\" width=148 height=35 border=0></a>";
+				document.getElementById("MutedWarning").innerHTML = "<div class=muted_off width=148 height=35 border=0></div></a>";
 			}
 		}
 	}
@@ -2459,7 +2461,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 			//document.getElementById("LogouTBoxLink").innerHTML = "<a href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\"><img src='images/LoginAgainUp.png' width='128' height='28' align=center border='0'></a>";
 				
-		document.getElementById("LogouTBoxLink").innerHTML = "<map=Loginmap><a OnMouseOver=\"lagain.src='templates/" + agent_template + "/images/LoginAgainDn.png'\" OnMouseOut=\"lagain.src='templates/" + agent_template + "/images/LoginAgainUp.png'\" usemap=Loginmap href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\"><img src='templates/" + agent_template + "/images/LoginAgainUp.png' width='128' height='28' align=center border='0' name=lagain></a>";
+// 		document.getElementById("LogouTBoxLink").innerHTML = "<map=Loginmap><a OnMouseOver=\"lagain.src='templates/" + agent_template + "/images/LoginAgainDn.png'\" OnMouseOut=\"lagain.src='templates/" + agent_template + "/images/LoginAgainUp.png'\" usemap=Loginmap href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\"><img src='templates/" + agent_template + "/images/LoginAgainUp.png' width='128' height='28' align=center border='0' name=lagain></a>";
+		document.getElementById("LogouTBoxLink").innerHTML = "<div class=login_again_bg>&nbsp;<div class=login_again><br/><br/><a href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\">Login Again</a><br/></div></div>";
 
 		logout_stop_timeouts = 1;
 					
@@ -2687,8 +2690,10 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			//if ( (agentcall_manual != '1') && (starting_dial_level > 0) )
 			if (agentcall_manual != '1') {
 				hideDiv('ManuaLDiaLButtons');
+				hideDiv('HopperList');
 			} else {
 				showDiv('ManuaLDiaLButtons');
+				showDiv('HopperList');
             		}
 			if (agentcall_manual != '1') {
 				hideDiv('PauseCodeButtons');
@@ -3385,7 +3390,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		debug("<b>MainPanelToFront:</b> resumevar=" + resumevar,2);
 		//document.getElementById("MainTable").style.backgroundColor=panel_bg;
 		//document.getElementById("MaiNfooter").style.backgroundColor=panel_bg;
-		hideDiv('ScriptPanel');
+// 		hideDiv('ScriptPanel');
+		showDiv('ScriptPanel');
 		showDiv('MainPanel');
 		if (resumevar != 'NO') {
 			if (alt_phone_dialing == 1) {

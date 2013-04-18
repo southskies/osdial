@@ -1703,12 +1703,13 @@ flush();
     <?php load_status('Initializing GUI...<br>Tabs<br>&nbsp;'); ?>
     <!-- 2nd line -->
     <span style="position:absolute;left:0px;top:13px;z-index:1;" id="Tabs">
-        <table width=<?php echo ($MNwidth-10); ?> height=30 border=0> 
-            <tr valign=top align=left>
-                <td colspan=2>
-                    <img id="FormButtons" onclick="ChooseForm();" src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_tab_buttons1.gif" border="0" width="223" height="30">
+        <table width=900 height=30 border=0 cellpadding=0 cellspacing=0>  
+            <tr align=left>
+                <td valign=bottom colspan=2>
+<!--                     <img id="FormButtons" onclick="ChooseForm();" src="templates/<?php //echo $config['settings']['agent_template']; ?>/images/vdc_tab_buttons2.gif" border="0" width="223" height="30"> -->
+                    <div class=ScriptButton id="FormButtons" onclick="ChooseForm();" border="0">button</div>
                 </td>
-                <td width=<?php echo $HSwidth; ?> valign=middle align=center>
+                <td width=<?php echo $HSwidth; ?> Xvalign=middle align=center>
                     <font class="body_text" color=<?php echo $default_fc; ?>><b><span id=status>LIVE</span></b></font>
                 </td>
                 <td valign='middle' width=300>
@@ -1735,8 +1736,9 @@ flush();
     
 
     <!-- Logout Link -->
-    <span style="position:absolute;left:1px;top:1px;z-index:30;background-image: URL('templates/<?php echo $config['settings']['agent_template']; ?>/images/loginagain-bg.png');background-repeat:no-repeat;visibility:hidden;" id="LogouTBox">
-        <table width=1001 height=608 cellpadding=0 cellspacing=0>
+    <!--<span style="position:absolute;left:1px;top:1px;z-index:30;background-image: URL('templates/<?php //echo $config['settings']['agent_template']; ?>/images/loginagain-bg.png');background-repeat:no-repeat;visibility:hidden;" id="LogouTBox">-->
+    <span style="position:absolute;left:1px;top:1px;z-index:30;background-color:white;background-repeat:no-repeat;visibility:hidden;" id="LogouTBox">
+        <table width=1001 height=760 cellpadding=0 cellspacing=0>
             <tr>
                 <td align=center><br><span id="LogouTBoxLink">LOGOUT</span></td>
             </tr>
@@ -1745,13 +1747,27 @@ flush();
     
     
     <!-- Manual Dial Link -->
-    <span style="position:absolute;left:20px;top:400px; <?php //echo ($MBheight-20); ?>;z-index:12;visibility:hidden;" id="ManuaLDiaLButtons">
+    <span style="position:absolute;left:20px;top:400px;z-index:12;visibility:hidden;" id="ManuaLDiaLButtons">
+        <font class="body_text">
+            <span id="MDstatusSpan" style='font-size:9pt;'>
+				<a href="#" onclick="NeWManuaLDiaLCalL('NO');return false;">MANUAL DIAL</a><br/>
+			</span>
+            <span style='font-size:9pt;'>
+				<a href="#" onclick="NeWManuaLDiaLCalL('FAST');return false;">FAST DIAL</a>
+            </span>
+        </font>
+    </span>
+    
+    
+	<!-- Hopper List -->
+    <span style="position:absolute;left:20px;top:670px;z-index:12;visibility:hidden;" id="HopperList">
         <font class="body_text">
             <span id="MDstatusSpan" style='font-size:9pt;margin-bottom:10px;'>
-				<span id="MDHopperListLink" style='font-size:9pt;margin-bottom:10px;' <?php if ($allow_md_hopperlist!='N') echo "style=\"visibility:hidden;\""; ?>>
-					<a href="#" onclick="MDHopperListCheck();return false;">HOPPER LIST</a></span><br/> 
-			<a href="#" onclick="NeWManuaLDiaLCalL('NO');return false;">MANUAL DIAL</a></span><br/>
-            <span style='font-size:9pt;margin-bottom:10px;'><a href="#" onclick="NeWManuaLDiaLCalL('FAST');return false;">FAST DIAL</a></span><br/>
+				<span id="MDHopperListLink" style='font-size:9pt;margin-bottom:10px;' 
+					<?php if ($allow_md_hopperlist!='N') echo "style=\"visibility:hidden;\""; ?>>
+						<a href="#" onclick="MDHopperListCheck();return false;">HOPPER LIST</a>&nbsp;
+				</span>
+			</span>
         </font>
     </span>
         
@@ -2357,7 +2373,7 @@ flush();
     <?php load_status('Initializing GUI...<br>CloserSelectBox<br>&nbsp;'); ?>
     <!-- Closer Inbound Group Window -->
     <span style="position:absolute;left:0px;top:0px;z-index:36;visibility:hidden;" id="CloserSelectBox">
-        <table class=acrossagent border=0 width=<?php echo $CAwidth; ?> height=565>
+        <table class=acrossagent border=0 width=1000 <?php //echo $CAwidth; ?> height=750>
             <tr>
                 <td align=center valign=top>
                     <br><font size=+1 color=<?php echo $closer_fc2; ?>><b>Closer Inbound Group Selection</b></font>
@@ -2390,8 +2406,8 @@ flush();
     
     <?php load_status('Initializing GUI...<br>ScriptPanel<br>&nbsp;'); ?>
     <!-- Script window -->
-    <span style="position:absolute;left:171px;top:465px;z-index:17;width:810px; <?php //echo $SSwidth; ?>;height:220;overflow-x:hidden;overflow-y:scroll;" id="ScriptPanel">
-        <table border=0 bgcolor=#DDF x="<?php echo $script_bg; ?>" width=810px height=220px> 
+    <span style="position:absolute;left:235px;top:460px;z-index:17;width:740px; <?php //echo $SSwidth; ?>;height:220;overflow-x:hidden;overflow-y:scroll;" id="ScriptPanel">
+        <table border=0 bgcolor=#DDE x="<?php echo $script_bg; ?>" width=740px height=220px> 
             <tr>
                 <td align=left valign=top><font class="sb_text"><span class="scroll_script" id="ScriptContents"><?php echo $t1; ?> Script will show here once a call is answered.</span></font></td>
             </tr>
@@ -2427,8 +2443,8 @@ flush();
     <!-- =============================   Here is the main OSDIAL display panel  ============================= -->
     
     <?php load_status('Initializing GUI...<br>MainPanel<br>&nbsp;'); ?>
-    <span style="position:absolute;left:2px;top:46px;z-index:4;" id="MainPanel">
-        <table class=agentmain cellpadding=0 cellspacing=0>
+    <span style="position:absolute;left:2px;top:40px;z-index:4;" id="MainPanel">
+        <table class=agentmain valign=top cellpadding=0 cellspacing=0 border=1>
             <tr>
                 <td>
 
@@ -2436,7 +2452,7 @@ flush();
                     <?php load_status('Initializing GUI...<br>MainPanel<br>MainTable'); ?>
                     <!-- Column widths 205 + 505 + 270 = 980 -->
 					<!--    New widths 165 + 480 + 325 = 970 -->
-                    <table id="MainTable" class=acrossagent style="background-color:<?php echo $panel_bg; ?>;" cellpadding=0 cellspacing=0 border=0>
+                    <table id="MainTable" class=acrossagent Xstyle="background-color:<?php //echo $panel_bg; ?>;" cellpadding=0 cellspacing=0 border=0>
                         <tr>
                             <td width=22 colspan=2 class=curve2 style="vertical-align:bottom;">
 <!--                                 <img src="templates/<?php //echo $config['settings']['agent_template']; ?>/images/AgentTopLeft.png" width=22 height=22 align=left> -->
@@ -2746,8 +2762,8 @@ flush();
                             <td align=left colspan=3 height=<?php //echo $BPheight; ?>&nbsp;</td>
                         </tr>-->
                         <tr>
-                            <td align=left valign=top height=228>
-								<table width=100% frame=0 border=0 cellpadding=0 cellspacing=0>
+                            <td align=left colspan=2 valign=top height=228>
+								<table height=220 width=230 cellpadding=0 cellspacing=0>
 									<tr>
 										<td align=center valign=top><div style='font-size:9pt;font-weight: bold;margin:10px 0 7px 0;'>
 											Rebuttals</div>
