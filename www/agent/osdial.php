@@ -28,184 +28,7 @@
 #
 # This script works best with Firefox or Mozilla, but will run for a couple
 # hours on Internet Explorer before the memory leaks cause a crash.
-#
-# Other scripts that this application depends on:
-# - vdc_db_query.php: Updates information in the database
-# - manager_send.php: Sends manager actions to the DB for execution
-#
-# CHANGELOG
-# 50628-1620 - Added some basic formatting and worked on process flow
-# 50628-1715 - Startup variables mapped to javascript variables
-# 50629-1303 - Added Login Closer in-groups selection box and vla update
-# 50629-1530 - Rough layout for customer info form section and button links
-# 50630-1453 - Rough Manual Dial/Hangup with customer info displayed
-# 50701-1450 - Added osdial_log entries on dial and hangup
-# 50701-1634 - Added Logout function
-# 50705-1259 - Added call disposition functionality
-# 50705-1432 - Added lead info DB update function
-# 50705-1658 - Added web form functionality
-# 50706-1043 - Added call park and pickup functions
-# 50706-1234 - Added Start/Stop Recording functionality
-# 50706-1614 - Added conference channels display option
-# 50711-1333 - Removed call check redundancy and fixed a span bug
-# 50727-1424 - Added customer channel and participant present sensing/alerts
-# 50804-1057 - Added SendDTMF function and reconfigured the transfer span
-# 50804-1224 - Added Local and Internal Closer transfer functions
-# 50804-1628 - Added Blind transfer, activated LIVE CALL image and fixed bugs
-# 50804-1808 - Added button images for left buttons
-# 50815-1151 - Added 3Way calling functions to Transfer-conf frame
-# 50815-1602 - Added images and buttons for xfer functions
-# 50816-1813 - Added basic autodial outbound call pickup functions
-# 50817-1113 - Fixes to auto_dialing call receipt
-# 50817-1234 - Added inbound call receipt capability
-# 50817-1541 - Added customer time display
-# 50817-1541 - Added customer time display
-# 50818-1327 - Added stop-all-recordings-after-each-osdial-call option
-# 50818-1703 - Added pretty login section
-# 50825-1200 - Modified form field lengths, added double-click dispositions
-# 50831-1603 - Fixed customer time bug and fronter display bug for CLOSER
-# 50901-1314 - Fixed CLOSER IN-GROUP Web Form bug
-# 50903-0904 - Added preview-lead code for manual dialing
-# 50904-0016 - Added ability to hangup manual dials before pickup
-# 50906-1319 - Added override for filters on xfer calls, fixed login display bug
-# 50909-1243 - Added hotkeys functionality for quick dispoing in auto-dial mode
-# 50912-0958 - Modified hotkeys function, agent must have user_level >= 5 to use
-# 50913-1212 - Added campaign_cid to 3rd party calls
-# 50923-1546 - Modified to work with language translation
-# 50926-1656 - Added campaign pull-down at login of active campaigns
-# 50928-1633 - Added manual dial alternate number dial option
-# 50930-1538 - Added session_id empty login failure and fixed 2 minor bugs
-# 51004-1656 - Fixed recording filename bug and new Spanish translation
-# 51020-1103 - Added campaign-specific recording control abilities
-# 51020-1352 - Added Basic osdial_agent_log framework
-# 51021-1050 - Fixed custtime display and disable Enter/Return keypresses
-# 51021-1718 - Allows for multi-line comments (changes \n to !N in database)
-# 51110-1432 - Fixed non-standard http port issue
-# 51111-1047 - Added osdial_agent_log lead_id earlier for manual dial
-# 51118-1305 - Activate multi-line comments from $multi_line_comments var
-# 51118-1313 - Move Transfer DIV to a floating span to preserve 800x600 view
-# 51121-1506 - Small PHP optimizations in many scripts and disabled globalize
-# 51129-1010 - Added ability to accept calls from other OSDIAL servers
-# 51129-1254 - Fixed Hangups of other agents channels when customer hangs up
-# 51208-1732 - Created user-first login that looks for default phone info
-# 51219-1526 - Added variable framework for campaign and in-group scripts
-# 51221-1200 - Added SCRIPT tab, layout and functionality
-# 51221-1714 - Added auto-switch-to-SCRIPT-tab and auto-webform-popup
-# 51222-1605 - Added VMail message blind transfer button to xfer-conf frame
-# 51229-1028 - Added checks on web_form_address to allow for var in the DB value
-# 60117-1312 - Added Transfer-conf frame toggle on button press
-# 60208-1152 - Added DTMF-xfernumber preset links to xfer-conf frame
-# 60213-1129 - Added osdial_users.hotkeys_active  for any user hotkeys
-# 60213-1210 - Added ability to sort routing of calls by user_level
-# 60214-0932 - Initial Callback calendar display framework
-# 60214-1407 - Added ability to minimize the dispo screen to see info below
-# 60215-1104 - Added ANYONE scheduled callbacks functionality
-# 60410-1116 - Added persistant pause after dispo option and change dispo text
-#            - Added web form submit that opens new window with dispo on submit
-#            - Added PREVIOUS CALLBACK in customer info to flag callbacks
-#            - Added link to try to hangup the call again in the dispo screen
-#            - Added link noone-in-session screen to call agent phone again
-#            - Added link customer-hungup screen to go straight to dispo screen
-# 60410-1532 - Added agent status and campaign calls dialing display option
-# 60411-1547 - Add ability to set callback as USERONLY and some basic formatting
-# 60413-1752 - Add basic USERONLY callback frame and listings
-# 60414-1039 - Changed manual dial preview and alt dial checkboxes to spans
-#            - Added beta-level USERONLY callback functionality
-#            - Added beta-level manual dialing with lead insertion functionality
-# 60415-1534 - Fixed manual dial lead preview and fixed manuald dial override bug
-# 60417-1108 - Added capability to do alt-number-dialing in auto-dial mode
-#            - Changed several permissions to database-defined
-# 60419-1529 - Prevent manual dial or callbacks when alt-dial lead not finished
-# 60420-1647 - Fixed DiaLDiaLAltPhonE error, Call Agent Again DialControl error
-# 60421-1229 - Check GET/POST vars lines with isset to not trigger PHP NOTICES
-# 60424-1005 - Fixed Alt phone disabled bug for callbacks and manual dials
-# 60426-1058 - Added osdial_user setting for default blended check for CLOSER
-# 60501-1008 - Added option to manual dial screen to manually lookup phone number
-# 60503-1653 - Fixed agentonly_callback not-defined bug in scheduled callbacks screen
-# 60504-1032 - Fixed manual dial display bug and transfer dispo alert bug
-#            - Fixed recording filename display to not overrun 25 characters
-# 60510-1051 - Added Wrapup timer and wrapup message on wrapup screen after dispo
-# 60608-1453 - Added CLOSER campaign allowable in-groups limitations
-# 60609-1123 - Added add-number-to-DNC-list function and manual dial check DNC
-# 60619-1047 - Added variable filters to close security holes for login form
-# 60804-1710 - fixed scheduled CALLBK for other languages build
-# 60808-1145 - Added consultative transfers with customer data
-# 60808-2232 - Added campaign name to pulldown for login screen
-# 60809-1603 - Added option to locally transfer consult xfers
-# 60809-1732 - Added recheck of transferred channels before customer gone mesg
-# 60810-1011 - Fixed CXFER leave 3way call bugs
-# 60816-1602 - Added ALLCALLS recording delay option allcalls_delay
-# 60816-1716 - Fixed customer time display bug and client DST setting
-# 60821-1555 - Added option to omit phone_code on dialout of leads
-# 60821-1628 - Added ALLFORCE recording option
-# 60821-1643 - Added no_delete_sessions option to not delete sessions
-# 60822-0512 - Changed phone number fields to be maxlength of 12
-# 60829-1531 - Made compatible with WeBRooTWritablE setting in dbconnect.php
-# 60906-1152 - Added Previous CallBack info display span
-# 60906-1715 - Allow for Local phone extension conferences
-# 61004-1729 - Add ability to control volume per channel in "calls in this session"
-# 61122-1341 - Added osdial_user_groups allowed_campaigns restrictions
-# 61122-1523 - Added more SCRIPT variables
-# 61128-2229 - Added osdial_live_agents and osdial_auto_calls manual dial entries
-# 61130-1617 - Added lead_id to MonitorConf for recording_log
-# 61221-1212 - Changed width to 760 to better fit 800x600 screens, widened SCRIPT
-# 70109-1128 - Fixed wrapup timer bug
-# 70109-1635 - Added option for HotKeys automatically dialing next number in manual mode
-#            - Added option for alternate number dialing with hotkeys
-# 70111-1600 - Added ability to use BLEND/INBND/*_C/*_B/*_I as closer campaigns
-# 70118-1517 - Added osdial_agent_log and osdial_user_log logging of user_group
-# 70201-1249 - Added FAST DIAL option for manually dialing, added UTF8 compatible code
-# 70201-1703 - Fixed cursor bug for most text input fields
-# 70202-1453 - Added first portions of Agent Pause Codes
-# 70203-0108 - Finished Agent Pause Codes functionality
-# 70203-0930 - Added dialed_number to webform output
-# 70203-1010 - Added dialed_label to webform output
-# 70206-1201 - Fixed allow_closers bug
-# 70206-1332 - Added osdial_recording_override users setting function
-# 70212-1252 - Fixed small issue with CXFER
-# 70213-1018 - Changed CXFER and AXFER to update customer information before transfer
-# 70214-1233 - Added queuemetrics_log_id field for server_id in queue_log
-# 70215-1240 - Added queuemetrics_log_id field for server_id in queue_log
-# 70222-1617 - Changed queue_log PAUSE/UNPAUSE to PAUSEALL/UNPAUSEALL
-# 70226-1252 - Added Mute/UnMute to agent screen
-# 70309-1035 - Allow amphersands and questions marks in comments to pass through
-# 70313-1052 - Allow pound signs(hash) in comments to pass through
-# 70316-1406 - Moved the MUTE button to be accessible during a transfer/conf
-# 70319-1446 - Added agent-deactive-display and disable customer info update functions
-# 70319-1626 - Added option to allow agent logins to campaigns with no leads in the hopper
-# 70320-1501 - Added option to allow retry of leave-3way-call from dispo screen
-# 70322-1545 - Added sipsak display ability
-# 70510-1319 - Added onUnload force Logout
-# 70806-1530 - Added Presets Dial links above agent mute button
-# 70823-2118 - Fixed XMLHTTPRequest, HotKeys and Scheduled Callbacks issues with MSIE
-# 70828-1443 - Added source_id to output of SCRIPTtab-IFRAME and WEBFORM
-# 71022-1427 - Added formatting of the customer phone number in the main status bar
-# 71029-1848 - Changed CLOSER-type campaign to not use campaign_id restrictions
-# 71101-1204 - Fixed bug in callback calendar with DST
-# 71116-0957 - Added campaign_weight and calls_today to the vla table insertion
-# 71120-1719 - Added XMLHTPRequest lookup of allowable campaigns for agents during login
-# 71122-0256 - Added auto-pause notification
-# 71125-1751 - Changed Transfer section to allow for selection of in-groups to send calls to
-# 71127-0408 - Added height and width settings for easier modification of screen size
-# 71129-2025 - restricted callbacks count and list to campaign only
-# 71226-1117 - added option to kick all calls from conference upon logout
-# 80330-0823 - Added new AST_blind monitoring ability and minor cleanup for release
-# 80402-0121 - Fixes for Manual Dial hangups and transfers
-# 80428-0413 - UTF8 changes and testing
-# 80507-0932 - Fixed Script display bug (+ instead of space)
-# 80519-1425 - Added calls in queue display
-#
-# 90201-1001 - Branched to OSDial
-#
-# 90201-0931 - Modified screens to get uniform colors and a more professional look
-#			Replaced all buttons, added a second Web Form,
-#			Resized to work on 1024 wide screen, added additional section for new fields
-#			Changed to new version (from 2.0.4-121)
-# 090410-1156 - Added custom2 field
-# 090410-1731 - Added allow_tab_switch
-# 090515-0135 - Added preview_force_dial_time
-# 090515-0140 - Added manual_preview_default
-# 090520-1915 - Changed inbound in manual mode to work without the INBOUND_MAN dial status.
+
 
 # The version/build variables get set to the SVN revision automatically in release package.
 # Do not change.
@@ -497,61 +320,61 @@ if ($relogin == 'YES') {
     echo "<form name=osdial_form id=osdial_form action=\"$agcPAGE\" method=post>\n";
     echo "<input type=hidden name=DB value=\"$DB\">\n";
 
-    echo "<div class=containera>\n";
+        echo "<div class=containera><div class=acrosslogin2>\n";
 
-    echo "<table class=acrosslogin2 width=500 cellpadding=0 cellspacing=0 border=0>\n";
+    echo "<table width=500 cellpadding=0 cellspacing=0 border=0>\n";
     echo "  <tr>\n";
-    echo "    <td width=22><img src=\"templates/" . $config['settings']['agent_template'] . "/images/AgentTopLeft2.png\" width=22 height=22 align=left></td>\n";
-    echo "    <td class=across-top align=center colspan=2>&nbsp;</td>\n";
-    echo "    <td width=22><img src=\"templates/" . $config['settings']['agent_template'] . "/images/AgentTopRightS.png\" width=22 height=22 align=right></td>\n";
+//     echo "    <td width=22><Ximg src=\"templates/" . $config['settings']['agent_template'] . "/images/AgentTopLeft2.png\" width=22 height=22 align=left></td>\n";
+    echo "    <td class=across-top align=center colspan=4>&nbsp;</td>\n";
+//     echo "    <td width=22><Ximg src=\"templates/" . $config['settings']['agent_template'] . "/images/AgentTopRightS.png\" width=22 height=22 align=right></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=left>&nbsp;</td>\n";
     echo "    <td align=center colspan=2><font color=" . $login_fc . "><b>Agent Login</b></font></td>\n";
-    echo "    <td align=left class=rborder>&nbsp;</td>\n";
+    echo "    <td align=left>&nbsp;</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td align=right colspan=4 class=rborder>&nbsp;</td>\n";
+    echo "    <td align=right colspan=4>&nbsp;</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=left></td>\n";
     echo "    <td align=right><font color=" . $login_fc . ">Phone&nbsp;Login:&nbsp;</font></td>\n";
     echo "    <td align=left><input type=text name=phone_login size=10 maxlength=20 value=\"$phone_login\"></td>\n";
-    echo "    <td align=left class=rborder>&nbsp;</td>\n";
+    echo "    <td align=left>&nbsp;</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=left></td>\n";
     echo "    <td align=right><font color=" . $login_fc . ">Phone&nbsp;Password:&nbsp;</font></td>\n";
     echo "    <td align=left><input type=password name=phone_pass size=10 maxlength=20 value=\"$phone_pass\"></td>\n";
-    echo "    <td align=right class=rborder>&nbsp;</td>\n";
+    echo "    <td align=right>&nbsp;</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=left></td>\n";
     echo "    <td align=right><font color=" . $login_fc . ">User&nbsp;Login:&nbsp;</font></td>\n";
     echo "    <td align=left><input type=text name=VD_login size=10 maxlength=20 value=\"$VD_login\"></td>\n";
-    echo "    <td align=left class=rborder>&nbsp;</td>\n";
+    echo "    <td align=left>&nbsp;</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=left></td>\n";
     echo "    <td align=right><font color=" . $login_fc . ">User&nbsp;Password:&nbsp;</font></td>\n";
     echo "    <td align=left><input type=password name=VD_pass size=10 maxlength=20 value=\"$VD_pass\"></td>\n";
-    echo "    <td align=left class=rborder>&nbsp;</td>\n";
+    echo "    <td align=left>&nbsp;</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=left></td>\n";
     echo "    <td align=right><font color=" . $login_fc . ">Campaign:&nbsp;</font></td>\n";
     echo "    <td align=left>$camp_form_code</td>\n";
-    echo "    <td align=left class=rborder>&nbsp;</td>\n";
+    echo "    <td align=left>&nbsp;</td>\n";
     echo "  </tr>\n";
-    echo "  <tr><td colspan=4 class=rborder>&nbsp;</td></tr>\n";
+    echo "  <tr><td colspan=4>&nbsp;</td></tr>\n";
     echo "  <tr>\n";
-    echo "    <td align=center colspan=4 class=rborder><input type=button onclick=\"login_submit(); return false;\" name=SUBMIT value=SUBMIT></td>\n";
+    echo "    <td align=center colspan=4><input class=submit type=button onclick=\"login_submit(); return false;\" name=SUBMIT value=Submit></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td align=left colspan=4 class=rbborder><font size=1>&nbsp;Version: $version&nbsp;&nbsp;&nbsp;Build: $build</font></td>\n";
+    echo "    <td align=right colspan=4><font size=1>&nbsp;Version: $version</font>&nbsp;</td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
-    echo "</div>\n";
+    echo "</div></div>\n";
     echo "</form>\n";
     echo "</body>\n";
     echo "</html>\n";
@@ -572,48 +395,46 @@ if ($user_login_first == 1) {
         echo "<form name=osdial_form id=osdial_form action=\"$agcPAGE\" method=post>\n";
         echo "<input type=hidden name=DB value=\"$DB\">\n";
         
-        echo "<div class=containera>\n";
-        echo "<table class=acrosslogin2 width=500 cellpadding=0 cellspacing=0 border=0>\n";
+        echo "<div class=containera><div class=acrosslogin2>\n";
+        echo "<table width=500 cellpadding=0 cellspacing=0 border=0>\n";
         echo "  <tr>\n";
-        echo "    <td width=22><img src=\"templates/" . $config['settings']['agent_template'] . "/images/AgentTopLeft2.png\" width=22 height=22 align=left></td>\n";
-        echo "    <td class=across-top align=center colspan=2>&nbsp;</td>\n";
-        echo "    <td width=22><img src=\"templates/" . $config['settings']['agent_template'] . "/images/AgentTopRightS.png\" width=22 height=22 align=right></td>\n";
+        echo "    <td align=center colspan=4>&nbsp;</td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=left>&nbsp;</td>\n";
         echo "    <td align=center colspan=2><font color=" . $login_fc . "><b>Agent Login</b></font></td>\n";
-        echo "    <td align=left class=rborder>&nbsp;</td>\n";
+        echo "    <td align=left>&nbsp;</td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=right colspan=4 class=rborder>&nbsp;</td>\n";
+        echo "    <td align=right colspan=4>&nbsp;</td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=left></td>\n";
         echo "    <td align=right><font color=" . $login_fc . ">User&nbsp;Login:&nbsp;</font></td>\n";
         echo "    <td align=left><input type=text name=VD_login size=10 maxlength=20 value=\"$VD_login\"></td>\n";
-        echo "    <td align=left class=rborder>&nbsp;</td>\n";
+        echo "    <td align=left>&nbsp;</td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=left></td>\n";
         echo "    <td align=right><font color=" . $login_fc . ">User&nbsp;Password:&nbsp;</font></td>\n";
         echo "    <td align=left><input type=password name=VD_pass size=10 maxlength=20 value=\"$VD_pass\"></td>\n";
-        echo "    <td align=left class=rborder>&nbsp;</td>\n";
+        echo "    <td align=left>&nbsp;</td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=left></td>\n";
         echo "    <td align=right><font color=" . $login_fc . ">Campaign:&nbsp;</font></td>\n";
         echo "    <td align=left>$camp_form_code</td>\n";
-        echo "    <td align=left class=rborder>&nbsp;</td>\n";
+        echo "    <td align=left>&nbsp;</td>\n";
         echo "  </tr>\n";
-        echo "  <tr><td colspan=4 class=rborder>&nbsp;</td></tr>\n";
+        echo "  <tr><td colspan=4>&nbsp;</td></tr>\n";
         echo "  <tr>\n";
-        echo "     <td align=center colspan=4 class=rborder><input type=submit name=SUBMIT value=SUBMIT></td>\n";
+        echo "     <td align=center colspan=4 class=submit><input type=submit name=SUBMIT value=Submit></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=left colspan=4 class=rbborder><font size=1>&nbsp;Version: $version&nbsp;&nbsp;&nbsp;Build: $build</font></td>\n";
+        echo "    <td align=right colspan=4><font size=1>&nbsp;Version: $version</font>&nbsp;</td>\n";
         echo "  </tr>\n";
         echo "</table>\n";
-        echo "</div>\n";
+        echo "</div></div>\n";
         echo "</form>\n";
         echo "</body>\n";
         echo "</html>\n";
@@ -672,7 +493,7 @@ if ($user_login_first == 1) {
             echo "      <input type=button onclick=\"login_submit(); return false;\" name=SUBMIT value=SUBMIT> &nbsp; <span id=\"LogiNReseT\"></span>\n";
             echo "    </td>\n";
             echo "  </tr>\n";
-            echo "  <tr><td align=left colspan=2><font size=1><br>VERSION: $version &nbsp; &nbsp; &nbsp; BUILD: $build</font></td></tr>\n";
+            echo "  <tr><td align=left colspan=2><font size=1><br>VERSION: $version</font></td></tr>\n";
             echo "</table>\n";
             echo "</form>\n";
             echo "</body>\n";
@@ -696,44 +517,44 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
     echo "<form name=osdial_form id=osdial_form action=\"$agcPAGE\" method=post>\n";
     echo "<input type=hidden name=DB value=\"$DB\">\n";
     
-    echo "<div class=containera>\n";
-    echo "<table align=center class=acrosslogin2 width=460 cellpadding=0 cellspacing=0 border=0>\n";
+    echo "<div class=containera><div class=acrosslogin2>\n";
+    echo "<table align=center width=500 cellpadding=0 cellspacing=0 border=0>\n";
     echo "  <tr>\n";
-    echo "    <td width='22'><img src='templates/" . $config['settings']['agent_template'] . "/images/AgentTopLeft2.png' width='22' height='22' align='left'></td>\n";
-    echo "    <td class='across-top' align='center' colspan=2></td>\n";
-    echo "    <td width='22'><img src='templates/" . $config['settings']['agent_template'] . "/images/AgentTopRightS.png' width='22' height='22' align='right'></td>\n";
+//     echo "    <td width='22'><Ximg src='templates/" . $config['settings']['agent_template'] . "/images/AgentTopLeft2.png' width='22' height='22' align='left'></td>\n";
+    echo "    <td align='center' colspan=4>&nbsp;</td>\n";
+//     echo "    <td width='22'><Ximg src='templates/" . $config['settings']['agent_template'] . "/images/AgentTopRightS.png' width='22' height='22' align='right'></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
     echo "    <td align=center colspan=2><font color=" . $login_fc . "><b>Login To Your Phone</font></td>\n";
-    echo "    <td align=left class=rborder><font size=1>&nbsp;</font></td>\n";
+    echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td colspan=4 class=rborder>&nbsp;</td>\n";
+    echo "    <td colspan=4>&nbsp;</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
     echo "    <td align=right><font color=" . $login_fc . ">Phone Login:&nbsp;</font></td>\n";
     echo "    <td align=left><input type=text name=phone_login size=10 maxlength=20 value=\"\"></td>\n";
-    echo "    <td align=left class=rborder><font size=1>&nbsp;</font></td>\n";
+    echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
     echo "    <td align=right><font color=" . $login_fc . ">Phone Password:&nbsp;</font></td>\n";
     echo "    <td align=left><input type=password name=phone_pass size=10 maxlength=20 value=\"\"></td>\n";
-    echo "    <td align=left class=rborder><font size=1>&nbsp;</font></td>\n";
+    echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
     echo "  </tr>\n";
-    echo "  <tr><td colspan=4 class=rborder>&nbsp;</td></tr>\n";
+    echo "  <tr><td colspan=4>&nbsp;</td></tr>\n";
     echo "  <tr>\n";
     echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
-    echo "    <td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT> &nbsp; <span id=\"LogiNReseT\"></span></td>\n";
-    echo "    <td align=left class=rborder><font size=1>&nbsp;</font></td>\n";
+    echo "    <td align=center colspan=2><input class=submit type=submit name=SUBMIT value=Submit> &nbsp; <span id=\"LogiNReseT\"></span></td>\n";
+    echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td align=left colspan=4 class=rbborder><font size=1><br>&nbsp;Version: $version &nbsp; &nbsp; &nbsp; Build: $build</font></td>\n";
+    echo "    <td align=right colspan=4><font size=1><br>&nbsp;Version: $version</font>&nbsp;</td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
-    echo "</div>\n";
+    echo "</div></div>\n";
     echo "</form>\n";
     echo "</body>\n";
     echo "</html>\n";
@@ -1160,50 +981,50 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
         echo "<input type=hidden name=phone_login value=\"$phone_login\">\n";
         echo "<input type=hidden name=phone_pass value=\"$phone_pass\">\n";
     
-        echo "<div class=containera>\n";
-        echo "<table align=center class=acrosslogin2 width=460 cellpadding=0 cellspacing=0 border=0>\n";
+        echo "<div class=containera><div class=acrosslogin2>\n";
+        echo "<table align=center width=500 cellpadding=0 cellspacing=0 border=0>\n";
         echo "  <tr>\n";
-        echo "    <td width=22><img src=\"templates/" . $config['settings']['agent_template'] . "/images/AgentTopLeft2.png\" width=22 height=22 align=left></td>\n";
-        echo "    <td class=across-top align=center colspan=2></td>\n";
-        echo "    <td width=22><img src=\"templates/" . $config['settings']['agent_template'] . "/images/AgentTopRightS.png\" width=22 height=22 align=right></td>\n";
+//         echo "    <td width=22><img src=\"templates/" . $config['settings']['agent_template'] . "/images/AgentTopLeft2.png\" width=22 height=22 align=left></td>\n";
+        echo "    <td align=center colspan=4>&nbsp;</td>\n";
+//         echo "    <td width=22><img src=\"templates/" . $config['settings']['agent_template'] . "/images/AgentTopRightS.png\" width=22 height=22 align=right></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=left>&nbsp;&nbsp;</td>\n";
         echo "    <td align=center colspan=2><font color=" . $login_fc . "><b>Login To A Campaign</b></font></td>\n";
-        echo "    <td align=left class=rborder><font size=1>&nbsp;</font></td>\n";
+        echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=left colspan=4 class=rborder><font size=1>&nbsp;</font></td>\n";
+        echo "    <td align=left colspan=4><font size=1>&nbsp;</font></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
         echo "    <td align=right><font color=" . $login_fc . ">User Login:&nbsp;</font></td>\n";
         echo "    <td align=left><input type=text name=VD_login size=10 maxlength=20 value=\"$VD_login\"></td>\n";
-        echo "    <td align=left class=rborder><font size=1>&nbsp;</font></td>\n";
+        echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
         echo "  </tr>\n";
         echo "  <rt>\n";
         echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
         echo "    <td align=right><font color=" . $login_fc . ">User Password:&nbsp;</font></td>\n";
         echo "    <td align=left><input type=password name=VD_pass size=10 maxlength=20 value=\"$VD_pass\"></td>\n";
-        echo "    <td align=left class=rborder><font size=1>&nbsp;</font></td>\n";
+        echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
         echo "    <td align=right><font color=" . $login_fc . ">Campaign:&nbsp;</font></td>\n";
         echo "    <td align=left><span id=\"LogiNCamPaigns\">$camp_form_code</span></td>\n";
-        echo "    <td align=left class=rborder><font size=1>&nbsp;</font></td>\n";
+        echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
         echo "  </tr>\n";
-        echo "  <tr><td colspan=4 class=rborder>&nbsp;</td></tr>\n";
+        echo "  <tr><td colspan=4>&nbsp;</td></tr>\n";
         echo "  <tr>\n";
         echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
-        echo "    <td align=center colspan=2><input type=button onclick=\"login_submit(); return false;\" name=SUBMIT value=SUBMIT>&nbsp;<span id=\"LogiNReseT\"></span></td>\n";
-        echo "    <td align=left class=rborder><font size=1>&nbsp;</font></td>\n";
+        echo "    <td align=center colspan=2><input class=submit type=button onclick=\"login_submit(); return false;\" name=SUBMIT value=Submit>&nbsp;<span id=\"LogiNReseT\"></span></td>\n";
+        echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=left colspan=4 class=rbborder><font size=1><br>&nbsp;Version: $version&nbsp;&nbsp;&nbsp;Build: $build</font></td>\n";
+        echo "    <td align=right colspan=4 class=rbborder><font size=1><br>&nbsp;Version: $version</font>&nbsp;</td>\n";
         echo "  </tr>\n";
         echo "</table>\n";
-        echo "</div>\n";
+        echo "</div></div>\n";
         echo "</form>\n";
         echo "</body>\n";
         echo "</html>\n";
@@ -1229,44 +1050,42 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
         echo "<form name=osdial_form id=osdial_form action=\"$agcPAGE\" method=post>\n";
         echo "<input type=hidden name=DB value=\"$DB\">\n";
     
-        echo "<div class=containera>\n";
-        echo "<table align=center class=acrosslogin2 width=460 cellpadding=0 cellspacing=0 border=0>\n";
+        echo "<div class=containera><div class=acrosslogin2>\n";
+        echo "<table align=center width=500 cellpadding=0 cellspacing=0 border=0>\n";
         echo "  <tr>\n";
-        echo "    <td width='22'><img src='templates/" . $config['settings']['agent_template'] . "/images/AgentTopLeft2.png' width='22' height='22' align='left'></td>\n";
-        echo "    <td class='across-top' align='center' colspan=2></td>\n";
-        echo "    <td width='22'><img src='templates/" . $config['settings']['agent_template'] . "/images/AgentTopRightS.png' width='22' height='22' align='right'></td>\n";
+        echo "    <td align='center' colspan=4>&nbsp;</td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
         echo "    <td align=center colspan=2><font color='red'>Invalid Login, please try again!</font></td>\n";
-        echo "    <td align=left class=rborder><font size=1>&nbsp;</font></td>\n";
+        echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td colspan=4 class=rborder>&nbsp;</td>\n";
+        echo "    <td colspan=4>&nbsp;</td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
         echo "    <td align=right><font color=" . $login_fc . ">Phone Login:&nbsp;</font></td>\n";
         echo "    <td align=left><input type=text name=phone_login size=10 maxlength=20 value=\"\"></td>\n";
-        echo "    <td align=left class=rborder><font size=1>&nbsp;</font></td>\n";
+        echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
         echo "    <td align=right><font color=" . $login_fc . ">Phone Password:&nbsp;</font></td>\n";
         echo "    <td align=left><input type=password name=phone_pass size=10 maxlength=20 value=\"\"></td>\n";
-        echo "    <td align=left class=rborder><font size=1>&nbsp;</font></td>\n";
+        echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
         echo "  </tr>\n";
-        echo "  <tr><td colspan=4 class=rborder>&nbsp;</td></tr>\n";
+        echo "  <tr><td colspan=4>&nbsp;</td></tr>\n";
         echo "  <tr>\n";
         echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
-        echo "    <td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT> &nbsp; <span id=\"LogiNReseT\"></span></td>\n";
-        echo "    <td align=left class=rborder><font size=1>&nbsp;</font></td>\n";
+        echo "    <td align=center colspan=2><input class=submit type=submit name=SUBMIT value=Submit> &nbsp; <span id=\"LogiNReseT\"></span></td>\n";
+        echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=left colspan=4 class=rbborder><font size=1><br>&nbsp;Version: $version &nbsp; &nbsp; &nbsp; Build: $build</font></td>\n";
+        echo "    <td align=right colspan=4><font size=1><br>&nbsp;Version: $version</font>&nbsp;</td>\n";
         echo "  </tr>\n";
         echo "</table>\n";
-        echo "</div>\n";
+        echo "</div></div>\n";
         echo "</form>\n";
         echo "</body>\n";
         echo "</html>\n";
@@ -1928,7 +1747,7 @@ flush();
     
     
     <!-- Manual Dial Link -->
-    <span style="position:absolute;left:200px;top:<?php echo ($MBheight-20); ?>px;z-index:12;visibility:hidden;" id="ManuaLDiaLButtons">
+    <span style="position:absolute;left:-60px;top:<?php echo ($MBheight-20); ?>px;z-index:12;visibility:hidden;" id="ManuaLDiaLButtons">
         <font class="body_text">
             <span id="MDstatusSpan"><span id="MDHopperListLink" <?php if ($allow_md_hopperlist!='Y') echo "style=\"visibility:hidden;\""; ?>><a href="#" onclick="MDHopperListCheck();return false;">HOPPER LIST</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('NO');return false;">MANUAL DIAL</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('FAST');return false;">FAST DIAL</a><br>
         </font>
@@ -1936,7 +1755,7 @@ flush();
         
 
     <!-- Call Back Link -->
-    <span style="position:absolute;left:490px;top:<?php echo ($CBheight-3); ?>px;z-index:13;visibility:hidden;" id="CallbacksButtons">
+    <span style="position:absolute;left:40px;top:410px;z-index:13;visibility:hidden;" id="CallbacksButtons">
         <font class="body_text">
             <span id="CBstatusSpan">X ACTIVE CALLBACKS</span><br>
         </font>
@@ -1951,20 +1770,20 @@ flush();
     </span>
 
     <!-- Voicmeail Button -->
-    <span style="position:absolute;left:764px;top:455px;z-index:16;" id="voicemailbutton">
+    <span style="position:absolute;left:660px;top:493px;z-index:16;" id="voicemailbutton">
         <a href="#" title="You have no messages!" onclick="voicemail_ariopen();"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/agc_check_voicemail_OFF.gif" width=170 height=30 border=0 alt="VOICEMAIL"></a>
     </span>
 
     <!-- Hot Key Button -->
     <?php if ($HK_statuses_camp > 0 and ($user_level >= $HKuser_level or $VU_hotkeys_active > 0)) { ?>
-        <span style="position:absolute;left:480px;top:488px;z-index:16;" id="hotkeysdisplay">
+        <span style="position:absolute;left:300px;top:495px;z-index:16;" id="hotkeysdisplay">
             <a href="#" onMouseOver="HotKeys('ON')"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_XB_hotkeysactive_OFF.gif" width=137 height=32 border=0 alt="HOT KEYS INACTIVE"></a>
         </span>
     <?php } ?>
 
 
     <!-- D1, D2, Mute Links -->
-    <span style="position:absolute;left:881px;top:432px;z-index:22;" id="AgentMuteANDPreseTDiaL">
+    <span style="position:absolute;left:840px;top:500px;z-index:22;" id="AgentMuteANDPreseTDiaL">
         <font class="body_text">
             <?php if ($PreseT_DiaL_LinKs) {
                 if (OSDstrlen($xferconf_a_number)) { 
@@ -1980,8 +1799,17 @@ flush();
             <span id="AgentMuteSpan" style="position:absolute;top:0px;left:54px;"></span>
         </font>
     </span>
-    <span style="position:relative;left:771px;top:490px;z-index:22;" id="MutedWarning"></span>
+    <span style="position:relative;left:490px;top:480px;z-index:22;" id="MutedWarning"></span>
 
+    
+    <?php load_status('Initializing GUI...<br>VolumeControlSpan<br>&nbsp;'); ?>
+    <!-- Volume Control Links -->
+    <span style="position:absolute;left:935px;top:500px;z-index:19;visibility:hidden;" id="VolumeControlSpan">
+        <span id="VolumeUpSpan" style="left:0px;top:0px;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_volume_up_off.gif" width=28 height=15 border=0></span>
+        <span id="VolumeDownSpan" style="left:0px;top:17px;float:left;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_volume_down_off.gif" width=28 height=15 border=0></span>
+    </span>
+
+    
 
     <!-- Preview Force-Dial Timout -->
     <font id="PreviewFDTimeSpan" style="font-size:35pt; font-weight: bold; color: <?php echo $forcedial_fc; ?>; position:absolute;left:325px;top:380px;z-index:22;"></font>
@@ -2115,13 +1943,6 @@ flush();
     </span>
 
     
-    <?php load_status('Initializing GUI...<br>VolumeControlSpan<br>&nbsp;'); ?>
-    <!-- Volume Control Links -->
-    <span style="position:absolute;left:935px;top:<?php echo ($CBheight+26); ?>px;z-index:19;visibility:hidden;" id="VolumeControlSpan">
-        <span id="VolumeUpSpan" style="left:0px;top:0px;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_volume_up_off.gif" width=28 height=15 border=0></span>
-        <span id="VolumeDownSpan" style="left:0px;top:17px;float:left;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_volume_down_off.gif" width=28 height=15 border=0></span>
-    </span>
-
     
     <?php load_status('Initializing GUI...<br>AgentStatusSpan<br>&nbsp;'); ?>
     <!-- Agent Status In Progress -->
@@ -2571,7 +2392,7 @@ flush();
     <span style="position:absolute;left:190px;top:95px;z-index:17;width:<?php echo $SSwidth; ?>;height:<?php echo $SSheight; ?>;overflow-x:hidden;overflow-y:scroll;visibility:hidden;" id="ScriptPanel">
         <table border=0 bgcolor="<?php echo $script_bg; ?>" width=<?php echo $SSwidth; ?> height=<?php echo $SSheight; ?>>
             <tr>
-                <td align=left valign=top><font class="sb_text"><span class="scroll_script" id="ScriptContents"><?php echo $t1; ?> Script Will Show Here</span></font></td>
+                <td align=left valign=top><font class="sb_text"><span class="scroll_script" id="ScriptContents"><?php echo $t1; ?> Script will show here once a call is in progress.</span></font></td>
             </tr>
         </table>
     </span>
@@ -2583,7 +2404,7 @@ flush();
         <table id="MaiNfooter" width=<?php echo ($MNwidth+10); ?> class=bottom style="background-color:<?php echo $panel_bg; ?>;">
             <tr height=15>
                 <td height=15>
-                    <font face="Arial,Helvetica" size=1><?php echo $t1; ?> Agent version: <?php echo $version; ?>&nbsp;&nbsp;Build: <?php echo $build; ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;Server: <?php echo $server_ip; ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><br>
+                    <font color=<?php echo $panel_bg; ?> face="Arial,Helvetica" size=1><?php //echo $t1; ?> Agent version: <?php echo $version; ?>&nbsp;&nbsp;Build: <?php echo $build; ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;Server: <?php echo $server_ip; ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><br>
                     <font class="body_small"><span id="busycallsdisplay"><a href="#"  onclick="conf_channels_detail('SHOW');">Show conference call channel information</a><br><br>&nbsp;</span></font>
                 </td>
                 <td align=right height=0></td>
@@ -2612,14 +2433,14 @@ flush();
 
                     <?php load_status('Initializing GUI...<br>MainPanel<br>MainTable'); ?>
                     <!-- Column widths 205 + 505 + 270 = 980 -->
-                    <table id="MainTable" class=acrossagent style="background-color:<?php echo $panel_bg; ?>;" cellpadding=0 cellspacing=0>
+                    <table id="MainTable" class=acrossagent Xstyle="background-color:<?php //echo $panel_bg; ?>;" cellpadding=0 cellspacing=0>
                         <tr>
                             <td width=22 colspan=2 class=curve2 style="vertical-align:bottom;">
-                                <img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/AgentTopLeft.png" width=22 height=22 align=left>
+<!--                                 <img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/AgentTopLeft.png" width=22 height=22 align=left> -->
                                 <font class="body_text" color=<?php echo $status_fct; ?>>&nbsp;&nbsp;STATUS:&nbsp;&nbsp;</font>
                                 <font class="body_text" color=<?php echo $status_fc; ?>><span id="MainStatuSSpan"></span></font>
                             </td>
-                            <td width=22><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/AgentTopRight.png" width=22 height=22 align=right></td>
+<!--                             <td width=22><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/AgentTopRight.png" width=22 height=22 align=right></td> -->
                         </tr>
                         <tr>
                             <td colspan=3><span id="busycallsdebug"></span></td>
@@ -2628,7 +2449,7 @@ flush();
 
 
                             <?php load_status('Initializing GUI...<br>MainPanel<br>AgentActions'); ?>
-                            <td width=205 height=330 align=left valign=top class=curve3>
+                            <td width=205 height=350 align=left valign=top class=curve3>
                                 <font class="body_text" style="">
                                     <center>
                                         <span style="" id="DiaLControl"><a href="#" onclick="ManualDialNext('','','','','');"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_LB_dialnextnumber_OFF.gif" width=145 height=16 border=0 alt="Dial Next Number"></a></span><br>
@@ -2719,7 +2540,7 @@ flush();
                                         </tr>
                                         <tr>
                                             <td>&nbsp;</td>
-                                            <td colspan=2 align=center valign=top><font color=<?php echo $form_fc; ?>><b>Customer Information</b></font><span id="CusTInfOSpaN"></span></td>
+                                            <td colspan=2 align=center valign=top><font class=AFHead><b>Customer Information</b></font><span id="CusTInfOSpaN"></span></td>
                                         </tr>
                                         <tr>
                                             <td align=right><font class="body_text" color=<?php echo $form_fc; ?>><label for=lead_id>LeadID:&nbsp;</label></font></td>
@@ -2773,14 +2594,14 @@ flush();
                                         </tr>
                                         <tr>
                                             <td align=right><font class="body_text" color=<?php echo $form_fc; ?>><label for=phone_number>Phone:&nbsp;</label></font></td>
-                                            <td align=left colspan=2><font class="body_input"><input type=text size=11 name=phone_number id=phone_number maxlength=12 class="cust_form" value=""></font><font class="body_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font class="body_text" color=<?php echo $form_fc; ?>><label for=phone_code>PhoneCode:&nbsp;</label></font><font class="body_input"><input type=text size=4 name=phone_code id=phone_code maxlength=10 class="cust_form" value=""></font><font class="body_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font class="body_text" color=<?php echo $form_fc; ?>><label for=alt_phone>Phone2:&nbsp;</label></font><font class="body_input"><input type=text size=11 name=alt_phone id=alt_phone maxlength=12 class="cust_form" value=""></font></td>
+                                            <td align=left colspan=2><font class="body_input"><input type=text size=11 name=phone_number id=phone_number maxlength=12 class="cust_form" value=""></font><font class="body_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font class="body_text" color=<?php echo $form_fc; ?>>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label for=phone_code>Country Code:&nbsp;</label></font><font class="body_input"><input type=text size=4 name=phone_code id=phone_code maxlength=10 class="cust_form" value=""></font><font class="body_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font class="body_text" color=<?php echo $form_fc; ?>><label for=alt_phone>Phone2:&nbsp;</label></font><font class="body_input"><input type=text size=11 name=alt_phone id=alt_phone maxlength=12 class="cust_form" value=""></font></td>
                                         </tr>
                                         <tr>
                                             <td align=right valign=top><font class="body_text" color=<?php echo $form_fc; ?>><label for=comments>Comments:&nbsp;</label></font></td>
                                             <td align=left colspan=2>
                                                 <font class="body_tiny">
                                                     <?php if ($multi_line_comments) { ?>
-                                                        <textarea name=comments id=comments rows=3 cols=56 class="cust_form" style="height:45px;"></textarea>
+                                                        <textarea name=comments id=comments rows=3 cols=79 class="cust_form" style="height:45px;"></textarea>
                                                     <?php } else { ?>
                                                         <input type=text size=56 name=comments id=comments maxlength=255 class="cust_form" value="">
                                                     <?php } ?>

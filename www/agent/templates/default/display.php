@@ -2,11 +2,11 @@
 
 $default_fc='#1C4754';
 
-$default_text='#000080';
+$default_text=white; //'#000080';
 
-$panel_bg='#7297A1';
+$panel_bg='#6987B1'; //'#6987B1';
 
-$status_fct          ='#1C4754';
+$status_fct          =white; //'#1C4754';
 $status_fc           ='#1C4754';
 $status_bg           ='#AFCFD7';
 $status_alert_color  ='#FF0000';
@@ -86,7 +86,7 @@ $custgone_bg='#CCFFFF';
 
 $wrapup_bg='#7297A1';
 
-$form_fc ='#1C4754';
+$form_fc ='#0D2999'; //'#1C4754';
 
 $diallink_class='body_tiny';
 
