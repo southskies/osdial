@@ -1098,7 +1098,7 @@ if [ "$INTY" -eq 1 ]; then
 		# Stop mysql
 		/sbin/service mysqld stop > /dev/null 2>&1 || :
 		sleep 3
-		if [ -f "/etc/my.cnf.d/server.cnf`" ]; then
+		if [ -f "/etc/my.cnf.d/server.cnf" ]; then
 			%{__perl} -pi -e "s|^innodb_buffer_pool_size = 512M$|innodb_buffer_pool_size = ${MEM}M|" /etc/my.cnf.d/server.cnf > /dev/null 2>&1 || :
 			if [ ! -f "/var/lib/mysql/mysql.lock" ]; then
 				if [ -f "/var/lib/mysql/ib_logfile0" ]; then
