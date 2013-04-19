@@ -1,0 +1,72 @@
+[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+# Default to using old password format for compatibility with mysql 3.x
+# clients (those using the mysqlclient10 compatibility package).
+old_passwords=1
+skip-name-resolve
+
+# OSDial Defaults for InnoDB
+default_storage_engine = InnoDB
+log_warnings
+log_slow_queries
+long_query_time=10
+log_short_format
+table_open_cache=2048
+thread_cache_size=1024
+thread_stack=384000
+tmp_table_size=65536000
+max_heap_table_size=65536000
+sort_buffer_size=8192000
+join_buffer_size=8192000
+key_buffer_size=16384000
+read_buffer_size=2048000
+read_rnd_buffer_size=16384000
+innodb_autoinc_lock_mode=2
+transaction-isolation=READ-COMMITTED
+loose_innodb_strict_mode = 1
+loose_innodb_file_format = barracuda
+loose_innodb_data_home_dir = /var/lib/mysql/
+loose_innodb_log_group_home_dir = /var/lib/mysql/
+loose_innodb_data_file_path = ibdata1:50M:autoextend
+loose_innodb_additional_mem_pool_size = 32M
+loose_innodb_log_file_size = 256M
+loose_innodb_log_buffer_size = 4M
+loose_innodb_file_per_table = 1
+loose_innodb_flush_log_at_trx_commit = 2
+loose_innodb_commit_concurrency=0
+loose_innodb_lock_wait_timeout = 120
+loose_innodb_adaptive_hash_index = 1
+loose_innodb_checksums = 1
+loose_innodb_doublewrite = 1
+loose_innodb_flush_method = O_DIRECT
+loose_innodb_locks_unsafe_for_binlog = 0
+loose_innodb_max_dirty_pages_pct = 80
+loose_innodb_table_locks = 1
+loose_innodb_thread_concurrency = 16
+loose_innodb_use_sys_malloc = 0
+loose_innodb_fast_shutdown = 0
+loose_innodb_open_files = 2048
+# Should be set to 50% system memory
+loose_innodb_buffer_pool_size = 64M
+
+max_connections=250
+open_files_limit=32768
+
+query_alloc_block_size = 64000
+query_cache_limit = 8196000
+query_cache_size = 131072000
+query_cache_type = 1
+query_cache_wlock_invalidate = 0
+query_prealloc_size = 8192
+
+
+
+[mysql.server]
+user=mysql
+basedir=/var/lib
+
+[mysqld_safe]
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
+open_files_limit=32768
