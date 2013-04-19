@@ -270,6 +270,8 @@ if ($ADD==122) {
 				$first_name =			$row[$first_name_field];
 				$middle_initial =		$row[$middle_initial_field];
 				$last_name =			$row[$last_name_field];
+				$organization =			$row[$organization_field];
+				$organization_title =	$row[$organization_title_field];
 				$address1 =				$row[$address1_field];
 				$address2 =				$row[$address2_field];
 				$address3 =				$row[$address3_field];
@@ -516,7 +518,7 @@ if ($ADD==122) {
                     if ($postal > 0) $post++;
 		
 					if ($single_insert > 0) {
-						$stmtZ = sprintf("INSERT INTO osdial_list values ('','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',0,'%s','%s','2008-01-01 00:00:00','%s','0000-00-00 00:00:00');",mres($entry_date),mres($modify_date),mres($status),mres($user),mres($vendor_lead_code),mres($source_id),mres($list_id),mres($gmt_offset),mres($called_since_last_reset),mres($phone_code),mres($phone_number),mres($title),mres($first_name),mres($middle_initial),mres($last_name),mres($address1),mres($address2),mres($address3),mres($city),mres($state),mres($province),mres($postal_code),mres($country_code),mres($gender),mres($date_of_birth),mres($alt_phone),mres($email),mres($custom1),mres($comments),mres($custom2),mres($external_key),mres($cost));
+						$stmtZ = sprintf("INSERT INTO osdial_list values ('','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',0,'%s','%s','2008-01-01 00:00:00','%s','0000-00-00 00:00:00','%s','%s');",mres($entry_date),mres($modify_date),mres($status),mres($user),mres($vendor_lead_code),mres($source_id),mres($list_id),mres($gmt_offset),mres($called_since_last_reset),mres($phone_code),mres($phone_number),mres($title),mres($first_name),mres($middle_initial),mres($last_name),mres($address1),mres($address2),mres($address3),mres($city),mres($state),mres($province),mres($postal_code),mres($country_code),mres($gender),mres($date_of_birth),mres($alt_phone),mres($email),mres($custom1),mres($comments),mres($custom2),mres($external_key),mres($cost),mres($organization),mres($organization_title));
 						$rslt=mysql_query($stmtZ, $link);
                         $lead_id = mysql_insert_id($link);
 
@@ -532,14 +534,14 @@ if ($ADD==122) {
 
 					} elseif ($multi_insert_counter > 8) {
 						### insert good deal into pending_transactions table ###
-						$stmtZ = sprintf("INSERT INTO osdial_list values%s('','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',0,'%s','%s','2008-01-01 00:00:00','%s','0000-00-00 00:00:00');",$multistmt,mres($entry_date),mres($modify_date),mres($status),mres($user),mres($vendor_lead_code),mres($source_id),mres($list_id),mres($gmt_offset),mres($called_since_last_reset),mres($phone_code),mres($phone_number),mres($title),mres($first_name),mres($middle_initial),mres($last_name),mres($address1),mres($address2),mres($address3),mres($city),mres($state),mres($province),mres($postal_code),mres($country_code),mres($gender),mres($date_of_birth),mres($alt_phone),mres($email),mres($custom1),mres($comments),mres($custom2),mres($external_key),mres($cost));
+						$stmtZ = sprintf("INSERT INTO osdial_list values%s('','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',0,'%s','%s','2008-01-01 00:00:00','%s','0000-00-00 00:00:00','%s','%s');",$multistmt,mres($entry_date),mres($modify_date),mres($status),mres($user),mres($vendor_lead_code),mres($source_id),mres($list_id),mres($gmt_offset),mres($called_since_last_reset),mres($phone_code),mres($phone_number),mres($title),mres($first_name),mres($middle_initial),mres($last_name),mres($address1),mres($address2),mres($address3),mres($city),mres($state),mres($province),mres($postal_code),mres($country_code),mres($gender),mres($date_of_birth),mres($alt_phone),mres($email),mres($custom1),mres($comments),mres($custom2),mres($external_key),mres($cost),mres($organization),mres($organization_title));
 						$rslt=mysql_query($stmtZ, $link);
 						if ($WeBRooTWritablE > 0) fwrite($stmt_file, $stmtZ."\n");
 						$multistmt='';
 						$multi_insert_counter=0;
 		
 				    } else {
-					    $multistmt .= sprintf("('','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',0,'%s','%s','2008-01-01 00:00:00','%s','0000-00-00 00:00:00'),",mres($entry_date),mres($modify_date),mres($status),mres($user),mres($vendor_lead_code),mres($source_id),mres($list_id),mres($gmt_offset),mres($called_since_last_reset),mres($phone_code),mres($phone_number),mres($title),mres($first_name),mres($middle_initial),mres($last_name),mres($address1),mres($address2),mres($address3),mres($city),mres($state),mres($province),mres($postal_code),mres($country_code),mres($gender),mres($date_of_birth),mres($alt_phone),mres($email),mres($custom1),mres($comments),mres($custom2),mres($external_key),mres($cost));
+					    $multistmt .= sprintf("('','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',0,'%s','%s','2008-01-01 00:00:00','%s','0000-00-00 00:00:00','%s','%s'),",mres($entry_date),mres($modify_date),mres($status),mres($user),mres($vendor_lead_code),mres($source_id),mres($list_id),mres($gmt_offset),mres($called_since_last_reset),mres($phone_code),mres($phone_number),mres($title),mres($first_name),mres($middle_initial),mres($last_name),mres($address1),mres($address2),mres($address3),mres($city),mres($state),mres($province),mres($postal_code),mres($country_code),mres($gender),mres($date_of_birth),mres($alt_phone),mres($email),mres($custom1),mres($comments),mres($custom2),mres($external_key),mres($cost),mres($organization),mres($organization_title));
 					    $multi_insert_counter++;
 				    }
 				    $good++;
@@ -784,19 +786,19 @@ if ($ADD==122) {
                         if ($postal > 0) $post++;
 	
 						if ($single_insert > 0) {
-							$stmtZ = sprintf("INSERT INTO osdial_list values ('','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',0,'%s','%s','2008-01-01 00:00:00','%s','0000-00-00 00:00:00');",mres($entry_date),mres($modify_date),mres($status),mres($user),mres($vendor_lead_code),mres($source_id),mres($list_id),mres($gmt_offset),mres($called_since_last_reset),mres($phone_code),mres($phone_number),mres($title),mres($first_name),mres($middle_initial),mres($last_name),mres($address1),mres($address2),mres($address3),mres($city),mres($state),mres($province),mres($postal_code),mres($country_code),mres($gender),mres($date_of_birth),mres($alt_phone),mres($email),mres($custom1),mres($comments),mres($custom2),mres($external_key),mres($cost));
+							$stmtZ = sprintf("INSERT INTO osdial_list values ('','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',0,'%s','%s','2008-01-01 00:00:00','%s','0000-00-00 00:00:00','%s','%s');",mres($entry_date),mres($modify_date),mres($status),mres($user),mres($vendor_lead_code),mres($source_id),mres($list_id),mres($gmt_offset),mres($called_since_last_reset),mres($phone_code),mres($phone_number),mres($title),mres($first_name),mres($middle_initial),mres($last_name),mres($address1),mres($address2),mres($address3),mres($city),mres($state),mres($province),mres($postal_code),mres($country_code),mres($gender),mres($date_of_birth),mres($alt_phone),mres($email),mres($custom1),mres($comments),mres($custom2),mres($external_key),mres($cost),mres($organization),mres($organization_title));
 							$rslt=mysql_query($stmtZ, $link);
 
 						} elseif ($multi_insert_counter > 8) {
 							### insert good deal into pending_transactions table ###
-							$stmtZ = sprintf("INSERT INTO osdial_list values%s('','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',0,'%s','%s','2008-01-01 00:00:00','%s','0000-00-00 00:00:00');",$multistmt,mres($entry_date),mres($modify_date),mres($status),mres($user),mres($vendor_lead_code),mres($source_id),mres($list_id),mres($gmt_offset),mres($called_since_last_reset),mres($phone_code),mres($phone_number),mres($title),mres($first_name),mres($middle_initial),mres($last_name),mres($address1),mres($address2),mres($address3),mres($city),mres($state),mres($province),mres($postal_code),mres($country_code),mres($gender),mres($date_of_birth),mres($alt_phone),mres($email),mres($custom1),mres($comments),mres($custom2),mres($external_key),mres($cost));
+							$stmtZ = sprintf("INSERT INTO osdial_list values%s('','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',0,'%s','%s','2008-01-01 00:00:00','%s','0000-00-00 00:00:00','%s','%s');",$multistmt,mres($entry_date),mres($modify_date),mres($status),mres($user),mres($vendor_lead_code),mres($source_id),mres($list_id),mres($gmt_offset),mres($called_since_last_reset),mres($phone_code),mres($phone_number),mres($title),mres($first_name),mres($middle_initial),mres($last_name),mres($address1),mres($address2),mres($address3),mres($city),mres($state),mres($province),mres($postal_code),mres($country_code),mres($gender),mres($date_of_birth),mres($alt_phone),mres($email),mres($custom1),mres($comments),mres($custom2),mres($external_key),mres($cost),mres($organization),mres($organization_title));
 							$rslt=mysql_query($stmtZ, $link);
 							if ($WeBRooTWritablE > 0) fwrite($stmt_file, $stmtZ."\n");
 							$multistmt='';
 							$multi_insert_counter=0;
 		
 						} else {
-							$multistmt .= sprintf("('','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',0,'%s','%s','2008-01-01 00:00:00','%s','0000-00-00 00:00:00'),",mres($entry_date),mres($modify_date),mres($status),mres($user),mres($vendor_lead_code),mres($source_id),mres($list_id),mres($gmt_offset),mres($called_since_last_reset),mres($phone_code),mres($phone_number),mres($title),mres($first_name),mres($middle_initial),mres($last_name),mres($address1),mres($address2),mres($address3),mres($city),mres($state),mres($province),mres($postal_code),mres($country_code),mres($gender),mres($date_of_birth),mres($alt_phone),mres($email),mres($custom1),mres($comments),mres($custom2),mres($external_key),mres($cost));
+							$multistmt .= sprintf("('','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',0,'%s','%s','2008-01-01 00:00:00','%s','0000-00-00 00:00:00','%s','%s'),",mres($entry_date),mres($modify_date),mres($status),mres($user),mres($vendor_lead_code),mres($source_id),mres($list_id),mres($gmt_offset),mres($called_since_last_reset),mres($phone_code),mres($phone_number),mres($title),mres($first_name),mres($middle_initial),mres($last_name),mres($address1),mres($address2),mres($address3),mres($city),mres($state),mres($province),mres($postal_code),mres($country_code),mres($gender),mres($date_of_birth),mres($alt_phone),mres($email),mres($custom1),mres($comments),mres($custom2),mres($external_key),mres($cost),mres($organization),mres($organization_title));
 							$multi_insert_counter++;
 						}
 						$good++;
@@ -889,7 +891,7 @@ if ($ADD==122) {
 			}
             rtrim($afjoin,',');
 				
-			$rslt=mysql_query("select phone_code, list_id, vendor_lead_code, source_id, phone_number, title, first_name, middle_initial, last_name, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, custom1, comments, custom2, external_key, cost from osdial_list limit 1", $link);
+			$rslt=mysql_query("select phone_code, list_id, vendor_lead_code, source_id, phone_number, title, first_name, middle_initial, last_name, organization, organization_title, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, custom1, comments, custom2, external_key, cost from osdial_list limit 1", $link);
 			
 	
             # Process Excel file for field selection.
