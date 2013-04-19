@@ -53,7 +53,7 @@ if ($ADD==131 && $SUB==2 && $LOG['user_level'] > 8 && $LOG['export_leads'] > 0) 
     $sfield = chop($sfield,',');
     if ($fall) {
         $sfield = 'lead_id,entry_date,modify_date,status,user,vendor_lead_code,source_id,list_id,gmt_offset_now,called_since_last_reset,';
-        $sfield .= 'phone_code,phone_number,title,first_name,middle_initial,last_name,address1,address2,address3,city,state,province,';
+        $sfield .= 'phone_code,phone_number,title,first_name,middle_initial,last_name,organization,organization_title,address1,address2,address3,city,state,province,';
         $sfield .= 'postal_code,country_code,gender,date_of_birth,alt_phone,email,custom1,comments,called_count,custom2,external_key';
     }
     $ffield = explode(',',$sfield);
@@ -242,6 +242,8 @@ if ($ADD==131 && $SUB==2 && $LOG['user_level'] > 8 && $LOG['export_leads'] > 0) 
             $flds['first_name'] = "First Name";
             $flds['middle_initial'] = "Middle Initial";
             $flds['last_name'] = "Last Name";
+            $flds['organization'] = "Organization";
+            $flds['organization_title'] = "Organization Title";
             $flds['address1'] = "Address 1";
             $flds['address2'] = "Address 2";
             $flds['address3'] = "Address 3 / Phone3";
