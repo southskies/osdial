@@ -37,7 +37,7 @@ if ($ADD==1121) {
 			
         if ($end_call > 0) {
 	        ### update the lead record in the osdial_list table 
-	        $stmt = sprintf("UPDATE osdial_list SET status='%s',source_id='%s',title='%s',first_name='%s',middle_initial='%s',last_name='%s',address1='%s',address2='%s',address3='%s',city='%s',state='%s',province='%s',postal_code='%s',country_code='%s',alt_phone='%s',phone_code='%s',phone_number='%s',email='%s',custom1='%s',custom2='%s',external_key='%s',comments='%s',date_of_birth='%s',post_date='%s',cost='%s' WHERE lead_id='%s';", mres($status), mres($source_id), mres($title_field), mres($first_name), mres($middle_initial), mres($last_name), mres($address1), mres($address2), mres($address3), mres($city), mres($state), mres($province), mres($postal_code), mres($country_code), mres($alt_phone), mres($phone_code), mres($phone_number), mres($email), mres($custom1), mres($custom2), mres($external_key), mres($comments), mres($date_of_birth), mres($post_date), mres($cost), mres($lead_id));
+	        $stmt = sprintf("UPDATE osdial_list SET status='%s',source_id='%s',title='%s',first_name='%s',middle_initial='%s',last_name='%s',address1='%s',address2='%s',address3='%s',city='%s',state='%s',province='%s',postal_code='%s',country_code='%s',alt_phone='%s',phone_code='%s',phone_number='%s',email='%s',custom1='%s',custom2='%s',external_key='%s',comments='%s',date_of_birth='%s',post_date='%s',cost='%s',organization='%s',organization_title='%s' WHERE lead_id='%s';", mres($status), mres($source_id), mres($title_field), mres($first_name), mres($middle_initial), mres($last_name), mres($address1), mres($address2), mres($address3), mres($city), mres($state), mres($province), mres($postal_code), mres($country_code), mres($alt_phone), mres($phone_code), mres($phone_number), mres($email), mres($custom1), mres($custom2), mres($external_key), mres($comments), mres($date_of_birth), mres($post_date), mres($cost), mres($organization), mres($organization_title),  mres($lead_id));
 	        if ($DB) echo "|$stmt|\n";
 	        $rslt=mysql_query($stmt, $link);
 			
@@ -275,6 +275,17 @@ if ($ADD==1121) {
                 echo "          <td colspan=2></td>\n";
                 echo "        </tr>\n";
 		        echo "        <tr bgcolor=$oddrows>\n";
+	            echo "          <td align=right>Organization:&nbsp;</td>\n";
+		        echo "          <td align=left><input type=text name=organization size=30 maxlength=255 value=\"$ld[organization]\"></td>\n";
+                echo "        </tr>\n";
+		        echo "        <tr bgcolor=$oddrows>\n";
+	            echo "          <td align=right>Organization Title:&nbsp;</td>\n";
+		        echo "          <td align=left><input type=text name=organization_title size=30 maxlength=255 value=\"$ld[organization_title]\"></td>\n";
+                echo "        </tr>\n";
+		        echo "        <tr class=tabheader>\n";
+                echo "          <td colspan=2></td>\n";
+                echo "        </tr>\n";
+		        echo "        <tr bgcolor=$oddrows>\n";
 	            echo "          <td width=30% align=center>Gender:&nbsp;<select name=gender><option>M</option><option>F</option><option selected>$ld[gender]</gender></select></td>\n";
 	            echo "          <td align=center>Birth&nbsp;Date:&nbsp;<input type=text name=date_of_birth size=10 maxlength=10 value=\"$ld[date_of_birth]\"><font size=1>&nbsp;(YYYY-MM-DD)</font></td>\n";
                 echo "        </tr>\n";
@@ -453,6 +464,8 @@ if ($ADD==1121) {
                 $wfv['first_name'] = $ld['first_name'];
                 $wfv['middle_initial'] = $ld['middle_initial'];
                 $wfv['last_name'] = $ld['last_name'];
+                $wfv['organization'] = $ld['organization'];
+                $wfv['organization_title'] = $ld['organization_title'];
                 $wfv['address1'] = $ld['address1'];
                 $wfv['address2'] = $ld['address2'];
                 $wfv['address3'] = $ld['address3'];
