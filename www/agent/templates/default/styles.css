@@ -616,3 +616,45 @@ div.scroll_script {
     margin: 5px;
     padding: 6px;
 }
+.AgentPanel {
+    z-index: 8;
+    font-family: 'dejavu sans',verdana,sans-serif;
+    font-weight: bold;
+    font-size: 12pt;
+    text-align: center;
+    display: inline-block;
+    color: #373737;
+    border-radius: 10px 10px 0px 0px;
+    width: 90px;
+    background: -webkit-linear-gradient(top, #5C7DAB, #A3B7D3);
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-top-color: #000;
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-right-color: #000;
+    border-left-width: 1px;
+    border-left-style: solid;
+    border-left-color: #000;
+}
+.AgentPanelSelect {
+    z-index: 9;
+    font-family: 'dejavu sans',verdana,sans-serif;
+    font-weight: bold;
+    font-size: 12pt;
+    text-align: center;
+    display: inline-block;
+    color: #000;
+    border-radius: 10px 10px 0px 0px;
+    width: 90px;
+    background: -webkit-linear-gradient(top, #D4DFEE, #6C8DBB);
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-top-color: #000;
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-right-color: #000;
+    border-left-width: 1px;
+    border-left-style: solid;
+    border-left-color: #000;
+}

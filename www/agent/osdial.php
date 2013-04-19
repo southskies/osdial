@@ -1708,7 +1708,9 @@ flush();
         <table width=<?php echo ($MNwidth-10); ?> height=30 border=0> 
             <tr valign=top align=left>
                 <td colspan=2>
-                    <img id="FormButtons" onclick="ChooseForm();" src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_tab_buttons1.gif" border="0" width="223" height="30">
+                    <!-- Placeholder for Panel buttons. See PanelSelect element. -->
+                    <div style="width:223;height:30;">&nbsp;</div>
+                    <!--img id="FormButtons" onclick="ChooseForm();" src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_tab_buttons1.gif" border="0" width="223" height="30"-->
                 </td>
                 <td width=<?php echo $HSwidth; ?> valign=middle align=center>
                     <font class="body_text" color=<?php echo $default_fc; ?>><b><span id=status>LIVE</span></b></font>
@@ -1727,6 +1729,14 @@ flush();
                 </td>
             </tr>
         </table>
+    </span>
+    <span style="position:absolute;left:29px;top:18px;z-index:9;" id="PanelSelection">
+      <div id="AgentPanelMAIN" style="padding:4px;position:relative;" class="AgentPanelSelect" onclick="ChoosePanel('MAIN');">
+        FORM
+      </div>
+      <div id="AgentPanelSCRIPT" style="padding:4px;position:relative;left:-14px;" class="AgentPanel" onclick="ChoosePanel('SCRIPT');">
+        SCRIPT
+      </div>
     </span>
 
 

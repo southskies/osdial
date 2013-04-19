@@ -3417,7 +3417,15 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		}
 		panel_bgcolor=panel_bg;
 		//document.getElementById("MainStatuSSpan").style.backgroundColor = panel_bgcolor;
-		document.getElementById("FormButtons").src = "templates/" + agent_template + "/images/vdc_tab_buttons1.gif";
+		if (document.getElementById("FormButtons")) {
+			document.getElementById("FormButtons").src = "templates/" + agent_template + "/images/vdc_tab_buttons1.gif";
+		} else {
+			var curactive = document.getElementsByClassName("AgentPanelSelect");
+			for (var i=0; i<curactive.length; i++){
+				curactive[i].className='AgentPanel';
+			}
+			document.getElementById("AgentPanelMAIN").className='AgentPanelSelect';
+		}
 	}
 
 	function ScriptPanelToFront() {
@@ -3427,7 +3435,15 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		//document.getElementById("MaiNfooter").style.backgroundColor=script_bg;
 		panel_bgcolor=panel_bg;
 		//document.getElementById("MainStatuSSpan").style.backgroundColor= panel_bgcolor;
-		document.getElementById("FormButtons").src = "templates/" + agent_template + "/images/vdc_tab_buttons2.gif";
+		if (document.getElementById("FormButtons")) {
+			document.getElementById("FormButtons").src = "templates/" + agent_template + "/images/vdc_tab_buttons1.gif";
+		} else {
+			var curactive = document.getElementsByClassName("AgentPanelSelect");
+			for (var i=0; i<curactive.length; i++){
+				curactive[i].className='AgentPanel';
+			}
+			document.getElementById("AgentPanelSCRIPT").className='AgentPanelSelect';
+		}
 	}
 	
 	function ChangeImageX(img, new_src) {
@@ -3456,6 +3472,20 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			if (cur_src == scrpt_img) {
 				MainPanelToFront('NO');
 			} else {
+				ScriptPanelToFront();
+			}
+		}
+	}
+
+	function ChoosePanel(panel) {
+		debug("<b>ChoosePanel:</b>",2);
+
+		if (document.getElementById('ARIPanel').style.visibility=='visible') {
+			voicemail_ariclose();
+		} else if (allow_tab_switch == 'Y' || CalL_allow_tab == 'Y') {
+			if (panel == "MAIN") {
+				MainPanelToFront('NO');
+			} else if (panel == "SCRIPT") {
 				ScriptPanelToFront();
 			}
 		}
