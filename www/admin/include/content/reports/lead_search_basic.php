@@ -31,7 +31,7 @@ function report_lead_search_basic() {
         $html .= "<center><font color=$default_text size=2>[ Basic Search ]\n";
         if ($LOG['view_lead_search_advanced']) $html .= "&nbsp;&nbsp;|&nbsp;&nbsp;<a target=\"_parent\" href=\"./admin.php?ADD=999999&SUB=26\">[ Advanced Search ]</a>\n";
         $html .= "<br><br></font></center>\n";
-        if (!$vendor_id and !$custom1 and !$custom2 and !$phone and !$lead_id and !$last_name and !$first_name) {
+        if (!$vendor_id and !$custom1 and !$custom2 and !$phone and !$lead_id and !$last_name and !$first_name and !$organization and !$organization_title) {
             $html .= "<form method=POST name=search action=\"$PHP_SELF\">\n";
             $html .= "  <input type=hidden name=ADD value=\"$ADD\">\n";
             $html .= "  <input type=hidden name=SUB value=\"$SUB\">\n";
@@ -49,7 +49,14 @@ function report_lead_search_basic() {
             $html .= "    </tr>";
             $html .= "    <tr bgcolor=$oddrows>\n";
             $html .= "	    <td align=right>Last, First Name:&nbsp;</td>\n";
-            $html .= "	    <td align=left><input type=text name=last_name value=\"$last_name\" size=10 maxlength=30><input type=text name=first_name size=10 maxlength=30></td>\n";
+            $html .= "	    <td align=left><input type=text name=last_name value=\"$last_name\" size=10 maxlength=30><input type=text name=first_name size=10 maxlength=30 value=\"$first_name\"></td>\n";
+            $html .= "    </tr>\n";
+            $html .= "    <tr class=tabheader>\n";
+            $html .= "      <td colspan=2></td>\n";
+            $html .= "    </tr>";
+            $html .= "    <tr bgcolor=$oddrows>\n";
+            $html .= "	    <td align=right>Organization, Title:&nbsp;</td>\n";
+            $html .= "	    <td align=left style=\"white-space:nowrap;\"><input type=text name=organization value=\"$organization\" size=20 maxlength=255><input type=text name=organization_title size=10 maxlength=255 value=\"$organization_title\"></td>\n";
             $html .= "    </tr>\n";
             $html .= "    <tr class=tabheader>\n";
             $html .= "      <td colspan=2></td>\n";
@@ -91,6 +98,10 @@ function report_lead_search_basic() {
                 $stmt = sprintf("SELECT * FROM osdial_list,osdial_lists WHERE osdial_list.list_id=osdial_lists.list_id AND campaign_id IN %s AND last_name LIKE '%s' AND first_name LIKE '%s' ORDER BY modify_date DESC LIMIT 1000;", $LOG['allowed_campaignsSQL'], mres($last_name) . '%', mres($first_name) . '%');
             } elseif ($last_name) {
                 $stmt = sprintf("SELECT * FROM osdial_list,osdial_lists WHERE osdial_list.list_id=osdial_lists.list_id AND campaign_id IN %s AND last_name LIKE '%s' ORDER BY modify_date DESC LIMIT 1000;", $LOG['allowed_campaignsSQL'], mres($last_name) . '%');
+            } elseif ($organization and $organization_title) {
+                $stmt = sprintf("SELECT * FROM osdial_list,osdial_lists WHERE osdial_list.list_id=osdial_lists.list_id AND campaign_id IN %s AND organization LIKE '%s' AND organization_title LIKE '%s' ORDER BY modify_date DESC LIMIT 1000;", $LOG['allowed_campaignsSQL'], mres($organization) . '%', mres($organization_title) . '%');
+            } elseif ($organization) {
+                $stmt = sprintf("SELECT * FROM osdial_list,osdial_lists WHERE osdial_list.list_id=osdial_lists.list_id AND campaign_id IN %s AND organization LIKE '%s' ORDER BY modify_date DESC LIMIT 1000;", $LOG['allowed_campaignsSQL'], mres($organization) . '%');
             } elseif ($custom1) {
                 $stmt = sprintf("SELECT * FROM osdial_list,osdial_lists WHERE osdial_list.list_id=osdial_lists.list_id AND campaign_id IN %s AND custom1='%s' ORDER BY modify_date DESC LIMIT 1000;", $LOG['allowed_campaignsSQL'], mres($custom1));
             } elseif ($custom2) {
@@ -121,41 +132,56 @@ function report_lead_search_basic() {
                     $html .= "<table class=shadedtable width=$section_width cellpadding=1 cellspacing=0>\n";
                     $html .= "  <tr class=tabheader>\n";
                     $html .= "    <td>#</td>\n";
-                    $html .= "    <td>Lead&nbsp;ID</td>\n";
+                    $html .= "    <td>ID</td>\n";
                     $html .= "    <td>Status</td>\n";
-                    $html .= "    <td>Vendor&nbsp;ID</td>\n";
-                    $html .= "    <td>Last Agent</td>\n";
-                    $html .= "    <td>List&nbsp;ID</td>\n";
+                    $html .= "    <td>Vendor</td>\n";
+                    $html .= "    <td>Agent</td>\n";
+                    $html .= "    <td>List</td>\n";
                     $html .= "    <td>Phone</td>\n";
                     $html .= "    <td>Name</td>\n";
+                    $html .= "    <td>Org</td>\n";
                     $html .= "    <td>City</td>\n";
-                    $html .= "    <td>Custom1</td>\n";
-                    $html .= "    <td>Custom2</td>\n";
+                    $html .= "    <td>Cust1</td>\n";
+                    $html .= "    <td>Cust2</td>\n";
                     $html .= "    <td>Last&nbsp;Call</td>\n";
                     $html .= "  </tr>\n";
                     $o=0;
                     while ($results_to_print > $o) {
                         $row=mysql_fetch_row($rslt);
+                        $name = $row[15];
+                        if (empty($row[15]) and !empty($row[13])) {
+                            $name = $row[13];
+                        } elseif (!empty($row[15]) and !empty($row[13])) {
+                            $name .= ',&nbsp;' . $row[13];
+                        }
+                        $org = $row[36];
+                        if (empty($row[36]) and !empty($row[37])) {
+                            $org = $row[37];
+                        } elseif (!empty($row[36]) and !empty($row[37])) {
+                            $org .= ', ' . $row[37];
+                        }
                         $html .= "  <tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=1121&lead_id=$row[0]');\" style=\"white-space:nowrap;\">\n";
                         $html .= "    <td>" . ($o+1) . "</td>\n";
-                        $html .= "    <td><a href=\"$PHP_SELF?ADD=1121&lead_id=$row[0]\" target=\"_blank\">$row[0]</a></td>\n";
-                        $html .= "    <td>$row[3]</td>\n";
-                        $html .= "    <td>$row[5]</td>\n";
-                        $html .= "    <td>$row[4]</td>\n";
-                        $html .= "    <td>$row[7]</td>\n";
-                        $html .= "    <td>$row[11]</td>\n";
-                        $html .= "    <td>$row[13]&nbsp;$row[15]</td>\n";
-                        $html .= "    <td>$row[19]</td>\n";
-                        $html .= "    <td>$row[28]</td>\n";
-                        $html .= "    <td>$row[31]</td>\n";
-                        $html .= "    <td>". dateToLocal($link,'first',$row[33],$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";
+                        $html .= "    <td align=right><a href=\"$PHP_SELF?ADD=1121&lead_id=$row[0]\" target=\"_blank\">$row[0]</a></td>\n";
+                        $html .= "    <td align=center>$row[3]</td>\n";
+                        $html .= "    <td align=center>$row[5]</td>\n";
+                        $html .= "    <td align=center>$row[4]</td>\n";
+                        $html .= "    <td align=center>$row[7]</td>\n";
+                        $html .= "    <td align=center>$row[11]</td>\n";
+                        $html .= "    <td align=center>".ellipse($name, 25, true)."</td>\n";
+                        $html .= "    <td align=center>".ellipse($org, 20, true)."</td>\n";
+                        $html .= "    <td align=center>".ellipse($row[19], 20, true)."</td>\n";
+                        $html .= "    <td align=center>".ellipse($row[28], 20, true)."</td>\n";
+                        $html .= "    <td align=center>".ellipse($row[31], 20, true)."</td>\n";
+                        $html .= "    <td align=right>". dateToLocal($link,'first',$row[33],$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";
                         $html .= "  </tr>\n";
                         $o++;
                     }
                     $html .= "  <tr class=tabfooter>\n";
-                    $html .= "    <td colspan=12></td>\n";
+                    $html .= "    <td colspan=13></td>\n";
                     $html .= "  </tr>\n";
                     $html .= "</table>\n";
+                    $html .= "<br><br><font size=3 color=$default_text><span class=top_header2><a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB\">Search Again</a></span></font>\n";
                     $html .= "</center>\n";
                 }
             }
