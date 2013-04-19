@@ -251,6 +251,8 @@ $nodeletevdac = get_variable("nodeletevdac");
 $oldlead = get_variable("oldlead");
 $oldphone = get_variable("oldphone");
 $omit_phone_code = get_variable("omit_phone_code");
+$organization = get_variable("organization");
+$organization_title = get_variable("organization_title");
 $park_on_extension = get_variable("park_on_extension");
 $pass = get_variable("pass");
 $phone_code = get_variable("phone_code");
@@ -680,6 +682,8 @@ if ($ACTION == 'manDiaLnextCaLL') {
                 $custom2		= trim($row[31]);
                 $external_key	= trim($row[32]);
                 $post_date  	= trim($row[35]);
+                $organization  	= trim($row[36]);
+                $organization_title = trim($row[37]);
             }
 
             $called_count++;
@@ -850,6 +854,8 @@ if ($ACTION == 'manDiaLnextCaLL') {
             $LeaD_InfO .=	$custom2 . "\n";
             $LeaD_InfO .=	$external_key . "\n";
             $LeaD_InfO .=	$post_date . "\n";
+            $LeaD_InfO .=	$organization . "\n";
+            $LeaD_InfO .=	$organization_title . "\n";
 
             $web_form_address = "";
             $web_form_address2 = "";
@@ -2202,6 +2208,8 @@ if ($ACTION == 'VDADcheckINCOMING') {
                 $custom2		= trim($row[31]);
                 $external_key	= trim($row[32]);
                 $post_date  	= trim($row[35]);
+                $organization  	= trim($row[36]);
+                $organization_title = trim($row[37]);
             }
 
             ##### if lead is a callback, grab the callback comments
@@ -2500,6 +2508,8 @@ if ($ACTION == 'VDADcheckINCOMING') {
             $LeaD_InfO .=   $custom2 . "\n";
             $LeaD_InfO .=   $external_key . "\n";
             $LeaD_InfO .=   $post_date . "\n";
+            $LeaD_InfO .=   $organization . "\n";
+            $LeaD_InfO .=   $organization_title . "\n";
 
             $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
             $cnt = 0;
@@ -2720,6 +2730,8 @@ if ($ACTION == 'multicallQueueSwap') {
                 $custom2		= trim($row[31]);
                 $external_key	= trim($row[32]);
                 $post_date  	= trim($row[35]);
+                $organization  	= trim($row[36]);
+                $organization_title = trim($row[37]);
             }
 
             ##### if lead is a callback, grab the callback comments
@@ -3018,6 +3030,8 @@ if ($ACTION == 'multicallQueueSwap') {
             $LeaD_InfO .=   $custom2 . "\n";
             $LeaD_InfO .=   $external_key . "\n";
             $LeaD_InfO .=   $post_date . "\n";
+            $LeaD_InfO .=   $organization . "\n";
+            $LeaD_InfO .=   $organization_title . "\n";
 
             $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
             $cnt = 0;
@@ -3458,7 +3472,7 @@ if ($ACTION == 'updateLEAD') {
             $comments = OSDpreg_replace("/--QUES--/",'?',$comments);
             $comments = OSDpreg_replace("/--POUND--/",'#',$comments);
 
-            $stmt=sprintf("UPDATE osdial_list SET vendor_lead_code='%s',title='%s',first_name='%s',middle_initial='%s',last_name='%s',address1='%s',address2='%s',address3='%s',city='%s',state='%s',province='%s',postal_code='%s',country_code='%s',gender='%s',date_of_birth='%s',alt_phone='%s',email='%s',custom1='%s',custom2='%s',comments='%s',phone_number='%s',phone_code='%s' WHERE lead_id='%s';",mres($vendor_lead_code),mres($title),mres($first_name),mres($middle_initial),mres($last_name),mres($address1),mres($address2),mres($address3),mres($city),mres($state),mres($province),mres($postal_code),mres($country_code),mres($gender),mres($date_of_birth),mres($alt_phone),mres($email),mres($custom1),mres($custom2),mres($comments),mres($phone_number),mres($phone_code),mres($lead_id));
+            $stmt=sprintf("UPDATE osdial_list SET vendor_lead_code='%s',title='%s',first_name='%s',middle_initial='%s',last_name='%s',address1='%s',address2='%s',address3='%s',city='%s',state='%s',province='%s',postal_code='%s',country_code='%s',gender='%s',date_of_birth='%s',alt_phone='%s',email='%s',custom1='%s',custom2='%s',comments='%s',phone_number='%s',phone_code='%s',organization='%s',organization_title='%s' WHERE lead_id='%s';",mres($vendor_lead_code),mres($title),mres($first_name),mres($middle_initial),mres($last_name),mres($address1),mres($address2),mres($address3),mres($city),mres($state),mres($province),mres($postal_code),mres($country_code),mres($gender),mres($date_of_birth),mres($alt_phone),mres($email),mres($custom1),mres($custom2),mres($comments),mres($phone_number),mres($phone_code),mres($organization),mres($organization_title),mres($lead_id));
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
         }
@@ -3823,6 +3837,8 @@ if ($ACTION == 'RepullLeadData')
         $custom2        = trim($row[31]);
         $external_key   = trim($row[32]);
         $post_date      = trim($row[35]);
+        $organization   = trim($row[36]);
+        $organization_title = trim($row[37]);
     }
 
     ### update the old lead status to REPULL
@@ -3888,6 +3904,8 @@ if ($ACTION == 'RepullLeadData')
     $LeaD_InfO .=   $custom2 . "\n";
     $LeaD_InfO .=   $external_key . "\n";
     $LeaD_InfO .=   $post_date . "\n";
+    $LeaD_InfO .=   $organization . "\n";
+    $LeaD_InfO .=   $organization_title . "\n";
 
     $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
     $cnt = 0;

@@ -2562,11 +2562,13 @@ flush();
                                             </td>
                                             <td align=left colspan=2><font class="body_input"><input type=text size=4 name=title id=title maxlength=4 class="cust_form" value=""></font><font class="body_text" color=<?php echo $form_fc; ?>><label for=first_name>&nbsp;First:&nbsp;</label></font><font class="body_input"> <input type=text size=13 name=first_name id=first_name maxlength=30 class="cust_form" value=""></font><font class="body_text" color=<?php echo $form_fc; ?>><label for=middle_initial>&nbsp;MI:&nbsp;</label></font><font class="body_input"><input type=text size=1 name=middle_initial id=middle_initial maxlength=1 class="cust_form" value=""></font><font class="body_text" color=<?php echo $form_fc; ?>><label for=last_name>&nbsp;Last:&nbsp;</label></font><font class="body_input"><input type=text size=13 name=last_name id=last_name maxlength=30 class="cust_form" value=""></font></td>
                                         </tr>
-                                        <!-- Hooks for company field
                                         <tr>
-                                            <td align=right><font class="body_text" color=<?php echo $form_fc; ?>><label for=company>Company:&nbsp;</label></font></td>
-                                            <td align=left colspan=2><font class="body_input"><input type=text size=58 name=company id=company maxlength=100 class="cust_form" value=""></font></td>
-                                        -->
+                                            <td align=right><font class="body_text" color=<?php echo $form_fc; ?>><label for=organization>Company:&nbsp;</label></font></td>
+                                            <td align=left><font class="body_input"><input type=text size=30 name=organization id=organization maxlength=255 class="cust_form" value=""></font></td>
+                                            <td align=right>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=organization_title>Title:&nbsp;</label></font>
+                                                <font class="body_input"><input type=text size=20 name=organization_title id=organization_title maxlength=255 class="cust_form" value=""></font>
+                                            </td>
                                         <tr>
                                             <td align=right><font class="body_text" color=<?php echo $form_fc; ?>><label for=address1>Address1:&nbsp;</label></font></td>
                                             <td align=left colspan=2><font class="body_input"><input type=text size=58 name=address1 id=address1 maxlength=100 class="cust_form" value=""></font></td>

@@ -3791,25 +3791,27 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 						document.osdial_form.custom2.value	= MDnextResponse_array[35];
 						document.osdial_form.external_key.value										= MDnextResponse_array[36];
 						document.osdial_form.post_date.value	= MDnextResponse_array[37];
-						VDIC_web_form_address = MDnextResponse_array[38];
-						VDIC_web_form_address2 = MDnextResponse_array[39];
+						document.osdial_form.organization.value	= MDnextResponse_array[38];
+						document.osdial_form.organization_title.value	= MDnextResponse_array[39];
+						VDIC_web_form_address = MDnextResponse_array[40];
+						VDIC_web_form_address2 = MDnextResponse_array[41];
 						if (VDIC_web_form_address == '') VDIC_web_form_address = OSDiaL_web_form_address;
 						if (VDIC_web_form_address2 == '') VDIC_web_form_address2 = OSDiaL_web_form_address2;
-						if (MDnextResponse_array[40] == "Y") {
+						if (MDnextResponse_array[42] == "Y") {
 							web_form_extwindow = 1;
 						} else {
 							web_form_extwindow = 0;
 						}
-						if (MDnextResponse_array[41] == "Y") {
+						if (MDnextResponse_array[43] == "Y") {
 							web_form2_extwindow = 1;
 						} else {
 							web_form2_extwindow = 0;
 						}
-						if (MDnextResponse_array[42] != "") {
+						if (MDnextResponse_array[44] != "") {
 							campaign_script = MDnextResponse_array[42];
 						}
 
-						var pos = 43;
+						var pos = 45;
 						for (var i=0; i<AFids.length; i++) {
 							debug('AFids: ' + AFids[i],2); 
 							document.getElementById(AFids[i]).value = MDnextResponse_array[pos];
@@ -3877,6 +3879,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 							"&source_id=" + document.osdial_form.source_id.value + '' +
 							"&external_key=" + document.osdial_form.external_key.value + '' +
 							"&post_date=" + document.osdial_form.post_date.value + 
+							"&organization=" + document.osdial_form.organization.value +
+							"&organization_title=" + document.osdial_form.organization_title.value +
 							"&recording_id=" + recording_id + 
 							webform_session;
 
@@ -4202,8 +4206,10 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 							document.osdial_form.custom2.value	= check_VDIC_array[39];
 							document.osdial_form.external_key.value										= check_VDIC_array[40];
 							document.osdial_form.post_date.value	= check_VDIC_array[41];
+							document.osdial_form.organization.value	= check_VDIC_array[42];
+							document.osdial_form.organization_title.value	= check_VDIC_array[43];
 
-							var pos = 42;
+							var pos = 44;
 							for (var i=0; i<AFids.length; i++) {
 								document.getElementById(AFids[i]).value = check_VDIC_array[pos];
 								pos++;
@@ -4335,6 +4341,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 								"&source_id=" + document.osdial_form.source_id.value + '' +
 								"&external_key=" + document.osdial_form.external_key.value + '' +
 								"&post_date=" + document.osdial_form.post_date.value + 
+								"&organization=" + document.osdial_form.organization.value +
+								"&organization_title=" + document.osdial_form.organization_title.value +
 								"&recording_id=" + recording_id + 
 								webform_session;
 
@@ -4496,13 +4504,15 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 							document.osdial_form.custom2.value	= check_RPLD_array[25];
 							document.osdial_form.external_key.value	= check_RPLD_array[26];
 							document.osdial_form.post_date.value	= check_RPLD_array[27];
+							document.osdial_form.organization.value	= check_RPLD_array[28];
+							document.osdial_form.organization_title.value	= check_RPLD_array[29];
 
 							if ( (dialed_label.length < 3) || (dialed_label=='NONE') )
 								dialed_label='MAIN';
 							dialed_number = oldphone;
 							document.osdial_form.source_id.value = oldlead;
 
-							var pos = 28;
+							var pos = 30;
 							for (var i=0; i<AFids.length; i++) {
 								document.getElementById(AFids[i]).value = check_RPLD_array[pos];
 								pos++;
@@ -4575,6 +4585,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 								"&source_id=" + document.osdial_form.source_id.value + '' +
 								"&external_key=" + document.osdial_form.external_key.value + '' +
 								"&post_date=" + document.osdial_form.post_date.value + '' +
+								"&organization=" + document.osdial_form.organization.value + '' +
+								"&organization_title=" + document.osdial_form.organization_title.value + '' +
 								"&recording_id=" + recording_id + 
 								webform_session;
 
@@ -4696,6 +4708,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			"&source_id=" + document.osdial_form.source_id.value + '' +
 			"&external_key=" + document.osdial_form.external_key.value + '' +
 			"&post_date=" + document.osdial_form.post_date.value +
+			"&organization=" + document.osdial_form.organization.value +
+			"&organization_title=" + document.osdial_form.organization_title.value +
 			"&recording_id=" + recording_id + 
 			webform_session;
 
@@ -4791,6 +4805,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				"&custom1=" + encodeURIComponent2(document.osdial_form.custom1.value) + 
 				"&custom2=" + encodeURIComponent2(document.osdial_form.custom2.value) + 
 				"&post_date=" + encodeURIComponent2(document.osdial_form.post_date.value);
+				"&organization=" + encodeURIComponent2(document.osdial_form.organization.value);
+				"&organization_title=" + encodeURIComponent2(document.osdial_form.organization_title.value);
 
 			for (var i=0; i<AFids.length; i++) {
 				VLupdate_query += '&' + AFids[i] + '=' + encodeURIComponent2(document.getElementById(AFids[i]).value);
@@ -5023,6 +5039,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		var SCstatus = encodeURIComponent2(LeaDDispO);
 		var SCexternal_key = encodeURIComponent2(document.osdial_form.external_key.value);
 		var SCpost_date = encodeURIComponent2(document.osdial_form.post_date.value);
+		var SCorganization = encodeURIComponent2(document.osdial_form.organization.value);
+		var SCorganization_title = encodeURIComponent2(document.osdial_form.organization_title.value);
 		var SCrecording_id = encodeURIComponent2(recording_id);
 		//var SCwebform_session = encodeURIComponent2(webform_session);
 
@@ -5083,6 +5101,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		var RGcustom1 = new RegExp("\\[\\[custom1\\]\\]","g");
 		var RGcustom2 = new RegExp("\\[\\[custom2\\]\\]","g");
 		var RGpost_date = new RegExp("\\[\\[post_date\\]\\]","g");
+		var RGorganization = new RegExp("\\[\\[organization\\]\\]","g");
+		var RGorganization_title = new RegExp("\\[\\[organization_title\\]\\]","g");
 
 		// Editable Fields
 		var RGEFtitle = new RegExp("\\[\\[EFtitle\\]\\]","g");
@@ -5108,6 +5128,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		var RGEFcustom1 = new RegExp("\\[\\[EFcustom1\\]\\]","g");
 		var RGEFcustom2 = new RegExp("\\[\\[EFcustom2\\]\\]","g");
 		var RGEFpost_date = new RegExp("\\[\\[EFpost_date\\]\\]","g");
+		var RGEForganization = new RegExp("\\[\\[EForganization\\]\\]","g");
+		var RGEForganization_title = new RegExp("\\[\\[EForganization_title\\]\\]","g");
 
 		for (var i=0; i<AFids.length; i++) {
 			wf_encoded = wf_encoded.replace(
@@ -5171,6 +5193,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		wf_encoded = wf_encoded.replace(RGcustom1, SCcustom1);
 		wf_encoded = wf_encoded.replace(RGcustom2, SCcustom2);
 		wf_encoded = wf_encoded.replace(RGpost_date, SCpost_date);
+		wf_encoded = wf_encoded.replace(RGorganization, SCorganization);
+		wf_encoded = wf_encoded.replace(RGorganization_title, SCorganization_title);
 
 		// Editable Fields
 		wf_encoded = wf_encoded.replace(RGEFtitle, SCtitle);
@@ -5193,6 +5217,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		wf_encoded = wf_encoded.replace(RGEFdate_of_birth, SCdate_of_birth);
 		wf_encoded = wf_encoded.replace(RGEFgender, SCgender);
 		wf_encoded = wf_encoded.replace(RGEFpost_date, SCpost_date);
+		wf_encoded = wf_encoded.replace(RGEForganization, SCorganization);
+		wf_encoded = wf_encoded.replace(RGEForganization_title, SCorganization_title);
 		wf_encoded = wf_encoded.replace(RGEFvendor_lead_code, SCvendor_lead_code);
 		wf_encoded = wf_encoded.replace(RGEFcustom1, SCcustom1);
 		wf_encoded = wf_encoded.replace(RGEFcustom2, SCcustom2);
@@ -5263,6 +5289,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			var SCdate_of_birth = document.osdial_form.date_of_birth.value;
 			var SCgender = document.osdial_form.gender.value;
 			var SCpost_date = document.osdial_form.post_date.value;
+			var SCorganization = document.osdial_form.organization.value;
+			var SCorganization_title = document.osdial_form.organization_title.value;
 			var SCvendor_lead_code = document.osdial_form.vendor_lead_code.value;
 			var SCcustom1 = document.osdial_form.custom1.value;
 			var SCcustom2 = document.osdial_form.custom2.value;
@@ -5288,6 +5316,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			var SCEFVdate_of_birth =    document.osdial_form.date_of_birth.value;
 			var SCEFVgender =           document.osdial_form.gender.value;
 			var SCEFVpost_date =        document.osdial_form.post_date.value;
+			var SCEFVorganization =     document.osdial_form.organization.value;
+			var SCEFVorganization_title=document.osdial_form.organization_title.value;
 			var SCEFVvendor_lead_code = document.osdial_form.vendor_lead_code.value;
 			var SCEFVcustom1 =          document.osdial_form.custom1.value;
 			var SCEFVcustom2 =          document.osdial_form.custom2.value;
@@ -5317,6 +5347,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			var SCEFdate_of_birth =    '<input type=text size=12 maxlength=10 name=EFdate_of_birth id=EFdate_of_birth class=cust_form ' + scriptEFCreateJS('date_of_birth') + ' >';
 			var SCEFgender =           '<select name=EFgender id=EFgender class=cust_form ' + scriptEFCreateJS('gender') + ' ><option></option><option>M</option><option>F</option></select>';
 			var SCEFpost_date =        '<input type=text size=12 maxlength=10 name=EFpost_date id=EFpost_date class=cust_form ' + scriptEFCreateJS('post_date') + ' >';
+			var SCEForganization =     '<input type=text size=30 maxlength=255 name=EForganization id=EForganization class=cust_form ' + scriptEFCreateJS('organization') + ' >';
+			var SCEForganization_title='<input type=text size=20 maxlength=255 name=EForganization_title id=EForganization_title class=cust_form ' + scriptEFCreateJS('organization_title') + ' >';
 			var SCEFvendor_lead_code = '<input type=text size=15 maxlength=20 name=EFvendor_lead_code id=EFvendor_lead_code class=cust_form ' + scriptEFCreateJS('vendor_lead_code') + ' >';
 			var SCEFcustom1 =          '<input type=text size=22 maxlength=100 name=EFcustom1 id=EFcustom1 class=cust_form ' + scriptEFCreateJS('custom1') + ' >';
 			var SCEFcustom2 =          '<input type=text size=22 maxlength=100 name=EFcustom2 id=EFcustom2 class=cust_form ' + scriptEFCreateJS('custom2') + ' >';
@@ -5363,6 +5395,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				SCdate_of_birth = SCdate_of_birth.replace(RGplus,'+');
 				SCgender = SCgender.replace(RGplus,'+');
 				SCpost_date = SCpost_date.replace(RGplus,'+');
+				SCorganization = SCorganization.replace(RGplus,'+');
+				SCorganization_title = SCorganization_title.replace(RGplus,'+');
 				SCvendor_lead_code = SCvendor_lead_code.replace(RGplus,'+');
 				SCcustom1 = SCcustom1.replace(RGplus,'+');
 				SCcustom2 = SCcustom2.replace(RGplus,'+');
@@ -5388,6 +5422,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				SCEFdate_of_birth = SCEFdate_of_birth.replace(RGplus,'+');
 				SCEFgender = SCEFgender.replace(RGplus,'+');
 				SCEFpost_date = SCEFpost_date.replace(RGplus,'+');
+				SCEForganization = SCEForganization.replace(RGplus,'+');
+				SCEForganization_title = SCEForganization_title.replace(RGplus,'+');
 				SCEFvendor_lead_code = SCEFvendor_lead_code.replace(RGplus,'+');
 				SCEFcustom1 = SCEFcustom1.replace(RGplus,'+');
 				SCEFcustom2 = SCEFcustom2.replace(RGplus,'+');
@@ -5482,6 +5518,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			var RGSIPexten = new RegExp("\\[\\[SIPexten\\]\\]","g");
 			var RGsession_id = new RegExp("\\[\\[session_id\\]\\]","g");
 			var RGpost_date = new RegExp("\\[\\[post_date\\]\\]","g");
+			var RGorganization = new RegExp("\\[\\[organization\\]\\]","g");
+			var RGorganization_title = new RegExp("\\[\\[organization_title\\]\\]","g");
 
 			// Editable Fields
 			var RGEFtitle = new RegExp("\\[\\[EFtitle\\]\\]","g");
@@ -5504,6 +5542,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			var RGEFgender = new RegExp("\\[\\[EFgender\\]\\]","g");
 			var RGEFdate_of_birth = new RegExp("\\[\\[EFdate_of_birth\\]\\]","g");
 			var RGEFpost_date = new RegExp("\\[\\[EFpost_date\\]\\]","g");
+			var RGEForganization = new RegExp("\\[\\[EForganization\\]\\]","g");
+			var RGEForganization_title = new RegExp("\\[\\[EForganization_title\\]\\]","g");
 			var RGEFvendor_lead_code = new RegExp("\\[\\[EFvendor_lead_code\\]\\]","g");
 			var RGEFcustom1 = new RegExp("\\[\\[EFcustom1\\]\\]","g");
 			var RGEFcustom2 = new RegExp("\\[\\[EFcustom2\\]\\]","g");
@@ -5595,6 +5635,9 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			encoded = encoded.replace(RGserver_ip, SCserver_ip);
 			encoded = encoded.replace(RGSIPexten, SCSIPexten);
 			encoded = encoded.replace(RGsession_id, SCsession_id);
+			encoded = encoded.replace(RGpost_date, SCpost_date);
+			encoded = encoded.replace(RGorganization, SCorganization);
+			encoded = encoded.replace(RGorganization_title, SCorganization_title);
 
 			// Editable Fields
 			encoded = encoded.replace(RGEFtitle,            SCEFtitle);
@@ -5617,6 +5660,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			encoded = encoded.replace(RGEFdate_of_birth,    SCEFdate_of_birth);
 			encoded = encoded.replace(RGEFgender,           SCEFgender);
 			encoded = encoded.replace(RGEFpost_date,        SCEFpost_date);
+			encoded = encoded.replace(RGEForganization,     SCEForganization);
+			encoded = encoded.replace(RGEForganization_title,SCEForganization_title);
 			encoded = encoded.replace(RGEFvendor_lead_code, SCEFvendor_lead_code);
 			encoded = encoded.replace(RGEFcustom1,          SCEFcustom1);
 			encoded = encoded.replace(RGEFcustom2,          SCEFcustom2);
@@ -5792,6 +5837,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		scriptEFUpdateData('vendor_lead_code',null);
 		scriptEFUpdateData('custom1',null);
 		scriptEFUpdateData('custom2',null);
+		scriptEFUpdateData('organization',null);
+		scriptEFUpdateData('organization_title',null);
 	}
 
 
@@ -5934,6 +5981,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		document.osdial_form.comments.value='';
 		document.osdial_form.called_count.value='';
 		document.osdial_form.post_date.value='';
+		document.osdial_form.organization.value='';
+		document.osdial_form.organization_title.value='';
 		document.osdial_form.source_id.value='';
 		document.osdial_form.external_key.value='';
 
@@ -6306,7 +6355,9 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 					document.osdial_form.custom2.value		= check_MCIC_array[39];
 					document.osdial_form.external_key.value		= check_MCIC_array[40];
 					document.osdial_form.post_date.value		= check_MCIC_array[41];
-					var pos = 42;
+					document.osdial_form.organization.value		= check_MCIC_array[42];
+					document.osdial_form.organization_title.value	= check_MCIC_array[43];
+					var pos = 44;
 					for (var i=0; i<AFids.length; i++) {
 						document.getElementById(AFids[i]).value = check_MCIC_array[pos];
 						pos++;
