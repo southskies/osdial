@@ -13,3 +13,4 @@ www/admin/ploticus
 www/osdial_auth_entries.txt
 www/osdial_debug.txt
 www/ivr
+ChangeLog-generate.sh
