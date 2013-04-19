@@ -50,6 +50,8 @@ if ($ADD=="7email") {
     $first_name = 'JOHN';
     $middle_initial = 'Q';
     $last_name = 'PUBLIC';
+    $organization = 'ACME, Inc.';
+    $organization_title = 'Office Manager';
     $address1 = '1234 Main St.';
     $address2 = 'Apt. 3';
     $address3 = 'ADDRESS3';
@@ -113,6 +115,8 @@ if ($ADD=="7email") {
         $server_ip = OSDpreg_replace('/ /','+',$server_ip);
         $SIPexten = OSDpreg_replace('/ /','+',$SIPexten);
         $session_id = OSDpreg_replace('/ /','+',$session_id);
+        $organziation = OSDpreg_replace('/ /','+',$organziation);
+        $organziation_title = OSDpreg_replace('/ /','+',$organziation_title);
     }
 
     $et_text = OSDpreg_replace('/\[\[list_id\]\]/',             $list_id,             $et_text);
@@ -157,6 +161,8 @@ if ($ADD=="7email") {
     $et_text = OSDpreg_replace('/\[\[comments\]\]/',            $comments,            $et_text);
     $et_text = OSDpreg_replace('/\[\[custom1\]\]/',             $custom1,             $et_text);
     $et_text = OSDpreg_replace('/\[\[custom2\]\]/',             $custom2,             $et_text);
+    $et_text = OSDpreg_replace('/\[\[organization\]\]/',        $organization,        $et_text);
+    $et_text = OSDpreg_replace('/\[\[organization_title\]\]/',  $organization_title,  $et_text);
 
     $et_text = OSDpreg_replace("/\n/","",$et_text);
 
@@ -260,6 +266,8 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                 mlbf.add('server_ip', 'server_ip');
                 mlbf.add('SIPexten', 'SIPexten');
                 mlbf.add('session_id', 'session_id');
+                mlbf.add('organization', 'organization');
+                mlbf.add('organization_title', 'organization_title');
 
                 // Return the new listbox instance
                 return mlbf;
@@ -516,6 +524,8 @@ if ($ADD=="4email") {
                 $first_name = 'JOHN';
                 $middle_initial = 'Q';
                 $last_name = 'PUBLIC';
+                $organization = 'ACME, Inc.';
+                $organization_title = 'Office Manager';
                 $address1 = '1234 Main St.';
                 $address2 = 'Apt. 3';
                 $address3 = 'ADDRESS3';
@@ -577,6 +587,8 @@ if ($ADD=="4email") {
                 $et_subject   = OSDpreg_replace('/\[\[comments\]\]/',            $comments,            $et_subject);
                 $et_subject   = OSDpreg_replace('/\[\[custom1\]\]/',             $custom1,             $et_subject);
                 $et_subject   = OSDpreg_replace('/\[\[custom2\]\]/',             $custom2,             $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[organization\]\]/',        $organization,        $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[organization_title\]\]/',  $organization_title,  $et_subject);
 
                 $et_body_html = OSDpreg_replace('/\[\[list_id\]\]/',             $list_id,             $et_body_html);
                 $et_body_html = OSDpreg_replace('/\[\[gmt_offset_now\]\]/',      $gmt_offset_now,      $et_body_html);
@@ -619,6 +631,8 @@ if ($ADD=="4email") {
                 $et_body_html = OSDpreg_replace('/\[\[comments\]\]/',            $comments,            $et_body_html);
                 $et_body_html = OSDpreg_replace('/\[\[custom1\]\]/',             $custom1,             $et_body_html);
                 $et_body_html = OSDpreg_replace('/\[\[custom2\]\]/',             $custom2,             $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[organization\]\]/',        $organization,        $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[organization_title\]\]/',  $organization_title,  $et_body_html);
 
                 $et_body_text = OSDpreg_replace('/\[\[list_id\]\]/',             $list_id,             $et_body_text);
                 $et_body_text = OSDpreg_replace('/\[\[gmt_offset_now\]\]/',      $gmt_offset_now,      $et_body_text);
@@ -661,6 +675,8 @@ if ($ADD=="4email") {
                 $et_body_text = OSDpreg_replace('/\[\[comments\]\]/',            $comments,            $et_body_text);
                 $et_body_text = OSDpreg_replace('/\[\[custom1\]\]/',             $custom1,             $et_body_text);
                 $et_body_text = OSDpreg_replace('/\[\[custom2\]\]/',             $custom2,             $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[organization\]\]/',        $organization,        $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[organization_title\]\]/',  $organization_title,  $et_body_text);
 
                 send_email($et_host, $et_port, $et_user, $et_pass, $email, $et_from, $et_subject, $et_body_html, $et_body_text);
                 echo "<br><b><font color=$default_text>TEST EMAIL TEMPLATE SENT</font></b>\n";
@@ -822,6 +838,8 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                 mlbf.add('server_ip', 'server_ip');
                 mlbf.add('SIPexten', 'SIPexten');
                 mlbf.add('session_id', 'session_id');
+                mlbf.add('organization', 'organization');
+                mlbf.add('organization_title', 'organization_title');
                 return mlbf;
 
             case 'myaddtlfields':

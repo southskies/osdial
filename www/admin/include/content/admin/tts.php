@@ -336,6 +336,8 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                 mlbf.add('server_ip', 'server_ip');
                 mlbf.add('SIPexten', 'SIPexten');
                 mlbf.add('session_id', 'session_id');
+                mlbf.add('organization', 'organization');
+                mlbf.add('organization_title', 'organization_title');
                 return mlbf;
             case 'myaddtlfields':
                 var mlbaf = cm.createListBox('myaddtlfields', {

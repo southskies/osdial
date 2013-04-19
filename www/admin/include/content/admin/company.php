@@ -93,7 +93,7 @@ if ($ADD=="21comp") {
             echo "<font size=1 color=$default_text>SAMPLE USERGROUP CONFIGURATION ADDED - ".mysql_affected_rows()."</font><br>\n";
 
             $sins = "INSERT INTO osdial_scripts VALUES ";
-            $sins .= sprintf("('%sTEST','Test Script','Just a quick test','Hello Mr/Mrs [[last_name]],<br><br>We are calling you at [[phone_number]].<br><br>Your address is:<br>[[address1]]<br>[[city]], [[state]] [[postal_code]]<br><br>Thank-you','Y');",$cmp);
+            $sins .= sprintf("('%sTEST','Test Script','Just a quick test','Hello Mr/Mrs [[last_name]], are you the [[organization_title]] with [[organization]],<br><br>We are calling you at [[phone_number]].<br><br>Your address is:<br>[[address1]]<br>[[city]], [[state]] [[postal_code]]<br><br>Thank-you','Y');",$cmp);
             $rslt=mysql_query($sins, $link);
             echo "<font size=1 color=$default_text>SAMPLE SCRIPT ADDED - ".mysql_affected_rows()."</font><br>\n";
 

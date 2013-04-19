@@ -58,6 +58,10 @@ if ($ADD==7111111)
     $EFmiddle_initial = "<input type=text size=1 name=middle_initial id=middle_initial maxlength=1 value=\"$middle_initial\">";
 	$last_name = 'PUBLIC';
     $EFlast_name = "<input type=text size=15 name=last_name id=last_name maxlength=30 value=\"$last_name\">";
+	$organization = 'ACME, Inc.';
+    $EForganization = "<input type=text size=30 name=organization id=organization maxlength=255 value=\"$organization\">";
+	$organization_title = 'Office Manager';
+    $EForganization_title = "<input type=text size=20 name=organization_title id=organization_title maxlength=255 value=\"$organization_title\">";
 	$address1 = '1234 Main St.';
     $EFaddress1 = "<input type=text size=58 name=address1 id=address1 maxlength=100 value=\"$address1\">";
 	$address2 = 'Apt. 3';
@@ -162,6 +166,8 @@ if (OSDpreg_match("/iframe src/i",$script_text)) {
 	$server_ip = OSDpreg_replace('/ /','+',$server_ip);
 	$SIPexten = OSDpreg_replace('/ /','+',$SIPexten);
 	$session_id = OSDpreg_replace('/ /','+',$session_id);
+	$organization = OSDpreg_replace('/ /','+',$organization);
+	$organization_title = OSDpreg_replace('/ /','+',$organization_title);
 }
 
 # old variable substitution
@@ -272,6 +278,10 @@ $script_text = OSDpreg_replace('/\[\[custom1\]\]/',           $custom1,$script_t
 $script_text = OSDpreg_replace('/\[\[EFcustom1\]\]/',         $EFcustom1,$script_text);
 $script_text = OSDpreg_replace('/\[\[custom2\]\]/',           $custom2,$script_text);
 $script_text = OSDpreg_replace('/\[\[EFcustom2\]\]/',         $EFcustom2,$script_text);
+$script_text = OSDpreg_replace('/\[\[organization\]\]/',      $organization,$script_text);
+$script_text = OSDpreg_replace('/\[\[EForganization\]\]/',    $EForganization,$script_text);
+$script_text = OSDpreg_replace('/\[\[organization_title\]\]/',$organization_title,$script_text);
+$script_text = OSDpreg_replace('/\[\[EForganization_title\]\]/',$EForganization_title,$script_text);
 
 $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='" . $script_id . "'",'');
 if (is_array($buttons)) {
@@ -388,6 +398,8 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                 mlbf.add('server_ip', 'server_ip');
                 mlbf.add('SIPexten', 'SIPexten');
                 mlbf.add('session_id', 'session_id');
+                mlbf.add('organization', 'organization');
+                mlbf.add('organization_title', 'organization_title');
 
                 // Return the new listbox instance
                 return mlbf;
@@ -426,6 +438,8 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                 mlbef.add('vendor_lead_code', 'EFvendor_lead_code');
                 mlbef.add('custom1',          'EFcustom1');
                 mlbef.add('custom2',          'EFcustom2');
+                mlbef.add('organization',     'EForganization');
+                mlbef.add('organization_title','EForganization_title');
 
                 // Return the new listbox instance
                 return mlbef;
@@ -757,6 +771,8 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                 mlbf.add('server_ip', 'server_ip');
                 mlbf.add('SIPexten', 'SIPexten');
                 mlbf.add('session_id', 'session_id');
+                mlbf.add('organization', 'organization');
+                mlbf.add('organization_title', 'organization_title');
                 return mlbf;
 
             case 'myeditfields':
@@ -791,6 +807,8 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                 mlbef.add('vendor_lead_code', 'EFvendor_lead_code');
                 mlbef.add('custom1',          'EFcustom1');
                 mlbef.add('custom2',          'EFcustom2');
+                mlbef.add('organization',     'EForganization');
+                mlbef.add('organization_title','EForganization_title');
                 return mlbef;
 
             case 'myaddtlfields':
