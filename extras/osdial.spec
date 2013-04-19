@@ -416,6 +416,7 @@ Requires(post):	coreutils grep gawk lsof ip_relay perl
 Requires:	osdial = %{version}-%{release}
 Requires:	osdial-profile = %{version}-%{release}
 Requires:	perl-OSDial = %{version}-%{release}
+Requires:	tuned
 Requires:	openvpn
 Requires:	sysstat
 Requires:	httpd
@@ -444,6 +445,7 @@ Requires:	perl-Number-Format
 Requires:	perl-version
 Requires:	perl-Parse-RecDescent
 Requires:	perl-Proc-Exists
+Requires:	perl-TermReadKey
 Requires:	readline
 Requires:	sox
 Requires:	lame
@@ -563,34 +565,6 @@ Requires:       asterisk12-sounds >= %{asterisk12_version}
 Requires:       gawk
 Provides:	osdial-asterisk-version
 Provides:	osdial-asterisk12 = %{version}-%{release}
-#Requires:       kernel%{?kpae}%{?kxen}-module-wanpipe12-%{krelver} >= 3.4.4-8
-#Requires:	kernel%{?kpae}%{?kxen}-module-zaptel12-%{krelver} >= 1.2.27-9
-#Requires:	kernel%{?kpae}%{?kxen}-module-voicetime12-%{krelver} >= 1.0.9-23
-#Obsoletes:	osdial-asterisk-version < %{version}-%{release}
-#Obsoletes:	osdial-asterisk12 < %{version}-%{release}
-#Obsoletes:       wanpipe-util
-#Obsoletes:       kernel%{?kpae}%{?kxen}-module-wanpipe
-#Obsoletes:	kernel%{?kpae}%{?kxen}-module-zaptel
-#Obsoletes:       libpri14
-#Obsoletes:       dahdi
-#Obsoletes:	dahdi-tools
-#Obsoletes:       dahdi16-module
-#Obsoletes:       kernel%{?kpae}%{?kxen}-module-dahdi
-#Obsoletes:       kernel%{?kpae}%{?kxen}-module-dahdi-%{krelver}
-#Obsoletes:       kernel%{?kpae}%{?kxen}-module-wanpipe16
-#Obsoletes:       kernel%{?kpae}%{?kxen}-module-wanpipe16-%{krelver}
-#Obsoletes:       kernel%{?kpae}%{?kxen}-module-voicetime16
-#Obsoletes:       kernel%{?kpae}%{?kxen}-module-voicetime16-%{krelver}
-#Obsoletes:       wanpipe-util16
-#Obsoletes:      asterisk16
-#Obsoletes:      asterisk16-addons
-#Obsoletes:      asterisk16-sounds
-#Obsoletes:      asterisk16-sounds-en-ulaw
-#Obsoletes:      asterisk16-sounds-en-gsm
-#Obsoletes:      asterisk16-sounds-en-sln16
-#Obsoletes:      asterisk16-sounds-en-wav
-#Obsoletes:      asterisk16-sounds-en-g729
-#Obsoletes:      asterisk16-g729
 Obsoletes:      osdial-asterisk
 Conflicts:	osdial-asterisk-version16
 BuildArch:      noarch
@@ -615,36 +589,10 @@ Requires:       wanpipe16 >= %{wanpipe_version}
 Requires:       asterisk16 >= %{asterisk16_version}
 Requires:       asterisk16-addons >= %{asterisk16_version}
 Requires:       asterisk16-sounds-en-gsm >= %{asterisk16_version}
-#Requires:       asterisk16-sounds-en-g729 >= %{asterisk16_version}
-#Requires:       asterisk16-sounds-en-ulaw >= %{asterisk16_version}
 Requires:	mysql-server >= %{mysql_version}
 Requires:       gawk
 Provides:	osdial-asterisk-version
 Provides:	osdial-asterisk16 = %{version}-%{release}
-#Requires:       kernel%{?kpae}%{?kxen}-module-dahdi-%{krelver} >= 2.2.0.2-999913
-#Requires:       kernel%{?kpae}%{?kxen}-module-wanpipe16-%{krelver} >= 3.4.4-8
-#Requires:       kernel%{?kpae}%{?kxen}-module-voicetime16-%{krelver} >= 1.0.9-23
-#Requires:       wanpipe-util16 >= 3.4.4-8
-##Obsoletes:	osdial-asterisk-version < %{version}-%{release}
-##Obsoletes:	osdial-asterisk16 < %{version}-%{release}
-#Obsoletes:       libpri12
-#Obsoletes:       zaptel12
-#Obsoletes:       zaptel12-module
-#Obsoletes:       wanpipe-util12
-#Obsoletes:       kernel%{?kpae}%{?kxen}-module-wanpipe12
-#Obsoletes:       kernel%{?kpae}%{?kxen}-module-wanpipe12-%{krelver}
-#Obsoletes:	kernel%{?kpae}%{?kxen}-module-zaptel12
-#Obsoletes:	kernel%{?kpae}%{?kxen}-module-zaptel12-%{krelver}
-#Obsoletes:	kernel%{?kpae}%{?kxen}-module-voicetime
-#Obsoletes:	kernel%{?kpae}%{?kxen}-module-voicetime-%{krelver}
-#Obsoletes:	kernel%{?kpae}%{?kxen}-module-voicetime12
-#Obsoletes:	kernel%{?kpae}%{?kxen}-module-voicetime12-%{krelver}
-#Obsoletes:	kernel%{?kpae}%{?kxen}-module-wanpipe-voicetime
-#Obsoletes:	kernel%{?kpae}%{?kxen}-module-wanpipe-voicetime-%{krelver}
-#Obsoletes:       asterisk12
-#Obsoletes:       asterisk12-sounds
-#Obsoletes:       asterisk12-addons
-#Obsoletes:      asterisk12-g729
 Conflicts:	osdial-asterisk-version12
 BuildArch:      noarch
 
@@ -676,9 +624,6 @@ Large Dial Presets Template
 %package web-template-highcontrast
 Summary:	OSDial user interface files
 Group:		Applications/Telephony
-#Requires:	osdial = %{version}-%{release}
-#Requires:	osdial-common = %{version}-%{release}
-#Requires:	osdial-profile = %{version}-%{release}
 Requires:	osdial-web = %{version}-%{release}
 Provides:	osdial-template-highcontrast = %{version}-%{release}
 BuildArch:      noarch
@@ -709,7 +654,6 @@ OSDial Non-Free
 Summary:	OSDial user interface files
 Group:		Applications/Telephony
 BuildRequires:	perl(ExtUtils::MakeMaker), perl
-#Requires:	osdial-common = %{version}-%{release}
 Requires:	perl
 BuildArch:      noarch
 
@@ -722,9 +666,6 @@ the OSDial database, and interface with Asterisk as needed.
 %package -n slingdial
 Summary:	OSDial user interface files
 Group:		Applications/Telephony
-#Requires:	osdial = %{version}-%{release}
-#Requires:	osdial-common = %{version}-%{release}
-#Requires:	osdial-profile = %{version}-%{release}
 Requires:	osdial-web = %{version}-%{release}
 Provides:	osdial-web-template-slingdial = %{version}-%{release}
 Provides:	osdial-template-slingdial = %{version}-%{release}
@@ -803,7 +744,6 @@ echo -e "#!/bin/bash\nexport TTY=screen" > %{buildroot}/etc/asterisk/startup.d/t
 %{__perl} -pi -e 's|^VARHTTP_path.*|VARHTTP_path => http://127.0.0.1|' %{buildroot}/etc/osdial.conf
 %{__perl} -pi -e 's|^VARFTP_host.*|VARFTP_host => 127.0.0.1|' %{buildroot}/etc/osdial.conf
 %{__perl} -pi -e 's|^VARREPORT_host.*|VARREPORT_host => 127.0.0.1|' %{buildroot}/etc/osdial.conf
-#%{__mv} %{buildroot}/etc/asterisk/dahdi_system.conf %{buildroot}/etc/dahdi/system.conf
 %{__rm} -f %{buildroot}/etc/asterisk/dahdi_system.conf
 
 echo > %{buildroot}/opt/osdial/.osdial-all
@@ -849,15 +789,15 @@ cat > %{buildroot}%{_sysconfdir}/security/limits.d/99-osdial.conf <<EOF
 *                  -       nproc              unlimited
 *                  -       locks              unlimited
 EOF
-%ifarch x86_64
+if [ "`uname -m`" = "x86_64" ]; then
 cat >> %{buildroot}%{_sysconfdir}/security/limits.d/99-osdial.conf <<EOF
 *                  -       stack              8192
 EOF
-%else
+else
 cat >> %{buildroot}%{_sysconfdir}/security/limits.d/99-osdial.conf <<EOF
-*                  -       stack              240
+*                  -       stack              2048
 EOF
-%endif
+fi
 
 
 %clean
@@ -916,10 +856,10 @@ if [ "$INTY" -eq 1 ]; then
 	if [ ! -d "/usr/lib/syslinux" ]; then
 		if [ -d "/usr/share/syslinux" ]; then
 			echo "    osdial-live: Fixing broken syslinux"
-			%{__ln_s} /usr/share/syslinux /usr/lib/syslinux
+			%{__ln_s} /usr/share/syslinux /usr/lib/syslinux > /dev/null 2>&1 || :
 		fi
 	fi
-	/sbin/service syslog stop > /dev/null 2>&1
+	/sbin/service syslog stop > /dev/null 2>&1 || :
 fi
 echo -n
 
@@ -1004,13 +944,13 @@ echo -n
 
 
 %post common
-/sbin/chkconfig --add osdial > /dev/null 2>&1
+/sbin/chkconfig --add osdial > /dev/null 2>&1 || :
 INTY=$1
 if [ "$INTY" -eq 1 ]; then
-        /sbin/chkconfig --del osdial_resource_send > /dev/null 2>&1
-        /sbin/chkconfig --add osdial_resource_send > /dev/null 2>&1
-	/sbin/service osdial_resource_send restart > /dev/null 2>&1
-        /sbin/chkconfig osdial on > /dev/null 2>&1
+        /sbin/chkconfig --del osdial_resource_send > /dev/null 2>&1 || :
+        /sbin/chkconfig --add osdial_resource_send > /dev/null 2>&1 || :
+	/sbin/service osdial_resource_send restart > /dev/null 2>&1 || :
+        /sbin/chkconfig osdial on > /dev/null 2>&1 || :
 	# Make sure SELINUX didn't get turned on...
 	if [ -f /etc/selinux/config ]; then
         	SELINUX="`%{__grep} '^SELINUX=' /etc/selinux/config | %{__awk} -F= '{ print $2 }'`"
@@ -1039,37 +979,38 @@ if [ "$INTY" -eq 1 ]; then
 fi
 if [ "$INTY" -eq 2 ]; then
 	/opt/osdial/bin/osdial_killall.sh
-	%{__mkdir_p} /opt/osdial/backups/%{version}-%{release} > /dev/null 2>&1
-	%{__cp} -a /opt/osdial/bin /opt/osdial/backups/%{version}-%{release} > /dev/null 2>&1
+	%{__mkdir_p} /opt/osdial/backups/%{version}-%{release} > /dev/null 2>&1 || :
+	%{__cp} -a /opt/osdial/bin /opt/osdial/backups/%{version}-%{release} > /dev/null 2>&1 || :
 
-	%{__mkdir} /opt/osdial/backups/%{version}-%{release}/etc > /dev/null 2>&1
-	%{__cp} -a /etc/osdial.conf /opt/osdial/backups/%{version}-%{release}/etc > /dev/null 2>&1
+	%{__mkdir} /opt/osdial/backups/%{version}-%{release}/etc > /dev/null 2>&1 || :
+	%{__cp} -a /etc/osdial.conf /opt/osdial/backups/%{version}-%{release}/etc > /dev/null 2>&1 || :
 	if [ -d /etc/asterisk ]; then
-		[ -f /etc/dahdi/system.conf ] && %{__cp} -a /etc/dahdi/system.conf /opt/osdial/backups/%{version}-%{release}/etc > /dev/null 2>&1
-		[ -f /etc/zaptel.conf ] && %{__cp} -a /etc/zaptel.conf /opt/osdial/backups/%{version}-%{release}/etc > /dev/null 2>&1
-		[ -d /etc/asterisk ] && %{__cp} -a /etc/asterisk /opt/osdial/backups/%{version}-%{release}/etc > /dev/null 2>&1
+		[ -f /etc/dahdi/system.conf ] && %{__cp} -a /etc/dahdi/system.conf /opt/osdial/backups/%{version}-%{release}/etc > /dev/null 2>&1 || :
+		[ -f /etc/zaptel.conf ] && %{__cp} -a /etc/zaptel.conf /opt/osdial/backups/%{version}-%{release}/etc > /dev/null 2>&1 || :
+		[ -d /etc/asterisk ] && %{__cp} -a /etc/asterisk /opt/osdial/backups/%{version}-%{release}/etc > /dev/null 2>&1 || :
 	fi
 	if [ -d /var/lib/asterisk/agi-bin ]; then
-		%{__mkdir} /opt/osdial/backups/%{version}-%{release}/agi > /dev/null 2>&1
-		%{__cp} -a /var/lib/asterisk/agi-bin /opt/osdial/backups/%{version}-%{release}/agi > /dev/null 2>&1
+		%{__mkdir} /opt/osdial/backups/%{version}-%{release}/agi > /dev/null 2>&1 || :
+		%{__cp} -a /var/lib/asterisk/agi-bin /opt/osdial/backups/%{version}-%{release}/agi > /dev/null 2>&1 || :
 	fi
 	if [ -d /opt/osdial/html ]; then
-		%{__mkdir} /opt/osdial/backups/%{version}-%{release}/html > /dev/null 2>&1
-		%{__mkdir} /opt/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1
-		%{__mkdir} /opt/osdial/backups/%{version}-%{release}/html/agent > /dev/null 2>&1
-		%{__cp} -a /opt/osdial/html/*.php /opt/osdial/backups/%{version}-%{release}/html > /dev/null 2>&1
-		%{__cp} -a /opt/osdial/html/*.txt /opt/osdial/backups/%{version}-%{release}/html > /dev/null 2>&1
-		%{__cp} -a /opt/osdial/html/*.ico /opt/osdial/backups/%{version}-%{release}/html > /dev/null 2>&1
-		%{__cp} -a /opt/osdial/html/ivr /opt/osdial/backups/%{version}-%{release}/html > /dev/null 2>&1
-		%{__cp} -a /opt/osdial/html/admin/*.php /opt/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1
-		%{__cp} -a /opt/osdial/html/admin/*.pl /opt/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1
-		%{__cp} -a /opt/osdial/html/admin/*.css /opt/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1
-		%{__cp} -a /opt/osdial/html/admin/*.gif /opt/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1
-		%{__cp} -a /opt/osdial/html/admin/include /opt/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1
-		%{__cp} -a /opt/osdial/html/admin/templates /opt/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1
-		%{__cp} -a /opt/osdial/html/agent/*.php /opt/osdial/backups/%{version}-%{release}/html/agent > /dev/null 2>&1
-		%{__cp} -a /opt/osdial/html/agent/include /opt/osdial/backups/%{version}-%{release}/html/agent > /dev/null 2>&1
-		%{__cp} -a /opt/osdial/html/agent/templates /opt/osdial/backups/%{version}-%{release}/html/agent > /dev/null 2>&1
+		%{__mkdir} /opt/osdial/backups/%{version}-%{release}/html > /dev/null 2>&1 || :
+		%{__mkdir} /opt/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1 || :
+		%{__mkdir} /opt/osdial/backups/%{version}-%{release}/html/agent > /dev/null 2>&1 || :
+		%{__cp} -a /opt/osdial/html/*.php /opt/osdial/backups/%{version}-%{release}/html > /dev/null 2>&1 || :
+		%{__cp} -a /opt/osdial/html/*.txt /opt/osdial/backups/%{version}-%{release}/html > /dev/null 2>&1 || :
+		%{__cp} -a /opt/osdial/html/*.ico /opt/osdial/backups/%{version}-%{release}/html > /dev/null 2>&1 || :
+		%{__cp} -a /opt/osdial/html/ivr /opt/osdial/backups/%{version}-%{release}/html > /dev/null 2>&1 || :
+		%{__cp} -a /opt/osdial/html/admin/*.php /opt/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1 || :
+		%{__cp} -a /opt/osdial/html/admin/*.pl /opt/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1 || :
+		%{__cp} -a /opt/osdial/html/admin/*.css /opt/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1 || :
+		%{__cp} -a /opt/osdial/html/admin/*.gif /opt/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1 || :
+		%{__cp} -a /opt/osdial/html/admin/*.png /opt/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1 || :
+		%{__cp} -a /opt/osdial/html/admin/include /opt/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1 || :
+		%{__cp} -a /opt/osdial/html/admin/templates /opt/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1 || :
+		%{__cp} -a /opt/osdial/html/agent/*.php /opt/osdial/backups/%{version}-%{release}/html/agent > /dev/null 2>&1 || :
+		%{__cp} -a /opt/osdial/html/agent/include /opt/osdial/backups/%{version}-%{release}/html/agent > /dev/null 2>&1 || :
+		%{__cp} -a /opt/osdial/html/agent/templates /opt/osdial/backups/%{version}-%{release}/html/agent > /dev/null 2>&1 || :
 	fi
 	if [ -f /etc/openvpn/osdial.up ]; then
 		HST=`/bin/hostname -s`        
@@ -1082,28 +1023,28 @@ if [ "$INTY" -eq 2 ]; then
 		fi                                                                                
 	fi    
 	# Run update script.
-	/opt/osdial/bin/sql/upgrade_sql.pl --info
+	/opt/osdial/bin/sql/upgrade_sql.pl --info 2>&1 || :
 
-	/opt/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1
+	/opt/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1 || :
 
-        /sbin/chkconfig --del osdial_resource_send > /dev/null 2>&1
-        /sbin/chkconfig --add osdial_resource_send > /dev/null 2>&1
-	/sbin/service osdial_resource_send restart > /dev/null 2>&1
+        /sbin/chkconfig --del osdial_resource_send > /dev/null 2>&1 || :
+        /sbin/chkconfig --add osdial_resource_send > /dev/null 2>&1 || :
+	/sbin/service osdial_resource_send restart > /dev/null 2>&1 || :
 fi
-%{__mkdir_p} /opt/osdial/tts > /dev/null 2>&1
-%{__mkdir_p} /opt/osdial/reports > /dev/null 2>&1
-%{__mkdir_p} /opt/osdial/recordings > /dev/null 2>&1
-%{__mkdir_p} /opt/osdial/recordings/processing > /dev/null 2>&1
-%{__mkdir_p} /opt/osdial/recordings/processing/mixed > /dev/null 2>&1
-%{__mkdir_p} /opt/osdial/recordings/processing/unmixed > /dev/null 2>&1
-%{__mkdir_p} /opt/osdial/recordings/completed > /dev/null 2>&1
-%{__mkdir_p} /opt/osdial/backups/recordings > /dev/null 2>&1
-%{__chown} -R asterisk:asterisk /opt/osdial/backups/recordings > /dev/null 2>&1
-%{__chown} -R asterisk:asterisk /opt/osdial/tts > /dev/null 2>&1
+%{__mkdir_p} /opt/osdial/tts > /dev/null 2>&1 || :
+%{__mkdir_p} /opt/osdial/reports > /dev/null 2>&1 || :
+%{__mkdir_p} /opt/osdial/recordings > /dev/null 2>&1 || :
+%{__mkdir_p} /opt/osdial/recordings/processing > /dev/null 2>&1 || :
+%{__mkdir_p} /opt/osdial/recordings/processing/mixed > /dev/null 2>&1 || :
+%{__mkdir_p} /opt/osdial/recordings/processing/unmixed > /dev/null 2>&1 || :
+%{__mkdir_p} /opt/osdial/recordings/completed > /dev/null 2>&1 || :
+%{__mkdir_p} /opt/osdial/backups/recordings > /dev/null 2>&1 || :
+%{__chown} -R asterisk:asterisk /opt/osdial/backups/recordings > /dev/null 2>&1 || :
+%{__chown} -R asterisk:asterisk /opt/osdial/tts > /dev/null 2>&1 || :
 [ -z "`%{__grep} /opt/osdial/reports /proc/mounts`" ] && %{__chown} -R asterisk:asterisk /opt/osdial/reports > /dev/null 2>&1 || :
 [ -z "`%{__grep} /opt/osdial/recordings /proc/mounts`" ] && %{__chown} -R asterisk:asterisk /opt/osdial/recordings > /dev/null 2>&1 || :
-%{__chmod} 7755 /usr/sbin/lsof > /dev/null 2>&1
-%{__ln_s} -f /usr/bin/ip_relay /opt/osdial/bin/ip_relay > /dev/null 2>&1
+%{__chmod} 7755 /usr/sbin/lsof > /dev/null 2>&1 || :
+%{__ln_s} -f /usr/bin/ip_relay /opt/osdial/bin/ip_relay > /dev/null 2>&1 || :
 
 if [ -n "`%{__grep} OSDbuild /etc/osdial.conf`" ]; then
 	%{__perl} -pi -e 's|^OSDversion =>.*|OSDversion => %{version}|' /etc/osdial.conf
@@ -1115,123 +1056,33 @@ fi
 [ -z "`%{__grep} PATHarchive_backup /etc/osdial.conf`" ] && %{__perl} -pi -e 's|^PATHarchive_home =>.*|PATHarchive_home => /opt/osdial/recordings\nPATHarchive_backup => /opt/osdial/backups/recordings|' /etc/osdial.conf || :
 
 %{__perl} -pi -e 's|stacks|stack|' /etc/security/limits.conf
-#if [ -z "`%{__grep} OSDial /etc/security/limits.conf`" ]; then
-#	echo "" >> /etc/security/limits.conf
-#	echo "# OSDial modifications" >> /etc/security/limits.conf
-#	echo "root            soft    core             unlimited" >> /etc/security/limits.conf
-#	echo "root            hard    core             unlimited" >> /etc/security/limits.conf
-#	echo "asterisk        soft    core             unlimited" >> /etc/security/limits.conf
-#	echo "asterisk        hard    core             unlimited" >> /etc/security/limits.conf
-#	echo "apache          soft    core             unlimited" >> /etc/security/limits.conf
-#	echo "apache          hard    core             unlimited" >> /etc/security/limits.conf
-#	echo "mysql           soft    core             unlimited" >> /etc/security/limits.conf
-#	echo "mysql           hard    core             unlimited" >> /etc/security/limits.conf
-#	echo "root            soft    data             unlimited" >> /etc/security/limits.conf
-#	echo "root            hard    data             unlimited" >> /etc/security/limits.conf
-#	echo "asterisk        soft    data             unlimited" >> /etc/security/limits.conf
-#	echo "asterisk        hard    data             unlimited" >> /etc/security/limits.conf
-#	echo "apache          soft    data             unlimited" >> /etc/security/limits.conf
-#	echo "apache          hard    data             unlimited" >> /etc/security/limits.conf
-#	echo "mysql           soft    data             unlimited" >> /etc/security/limits.conf
-#	echo "mysql           hard    data             unlimited" >> /etc/security/limits.conf
-#	echo "root            soft    fsize            unlimited" >> /etc/security/limits.conf
-#	echo "root            hard    fsize            unlimited" >> /etc/security/limits.conf
-#	echo "asterisk        soft    fsize            unlimited" >> /etc/security/limits.conf
-#	echo "asterisk        hard    fsize            unlimited" >> /etc/security/limits.conf
-#	echo "apache          soft    fsize            unlimited" >> /etc/security/limits.conf
-#	echo "apache          hard    fsize            unlimited" >> /etc/security/limits.conf
-#	echo "mysql           soft    fsize            unlimited" >> /etc/security/limits.conf
-#	echo "mysql           hard    fsize            unlimited" >> /etc/security/limits.conf
-#	echo "root            soft    memlock          unlimited" >> /etc/security/limits.conf
-#	echo "root            hard    memlock          unlimited" >> /etc/security/limits.conf
-#	echo "asterisk        soft    memlock          unlimited" >> /etc/security/limits.conf
-#	echo "asterisk        hard    memlock          unlimited" >> /etc/security/limits.conf
-#	echo "apache          soft    memlock          unlimited" >> /etc/security/limits.conf
-#	echo "apache          hard    memlock          unlimited" >> /etc/security/limits.conf
-#	echo "mysql           soft    memlock          unlimited" >> /etc/security/limits.conf
-#	echo "mysql           hard    memlock          unlimited" >> /etc/security/limits.conf
-#	echo "root            soft    nofile           8192" >> /etc/security/limits.conf
-#	echo "root            hard    nofile           65535" >> /etc/security/limits.conf
-#	echo "asterisk        soft    nofile           16384" >> /etc/security/limits.conf
-#	echo "asterisk        hard    nofile           16384" >> /etc/security/limits.conf
-#	echo "apache          soft    nofile           8192" >> /etc/security/limits.conf
-#	echo "apache          hard    nofile           8192" >> /etc/security/limits.conf
-#	echo "mysql           soft    nofile           32768" >> /etc/security/limits.conf
-#	echo "mysql           hard    nofile           32768" >> /etc/security/limits.conf
-#	echo "root            soft    msgqueue         unlimited" >> /etc/security/limits.conf
-#	echo "root            hard    msgqueue         unlimited" >> /etc/security/limits.conf
-#	echo "asterisk        soft    msgqueue         unlimited" >> /etc/security/limits.conf
-#	echo "asterisk        hard    msgqueue         unlimited" >> /etc/security/limits.conf
-#	echo "apache          soft    msgqueue         unlimited" >> /etc/security/limits.conf
-#	echo "apache          hard    msgqueue         unlimited" >> /etc/security/limits.conf
-#	echo "mysql           soft    msgqueue         unlimited" >> /etc/security/limits.conf
-#	echo "mysql           hard    msgqueue         unlimited" >> /etc/security/limits.conf
-#	echo "root            soft    cpu              unlimited" >> /etc/security/limits.conf
-#	echo "root            hard    cpu              unlimited" >> /etc/security/limits.conf
-#	echo "asterisk        soft    cpu              unlimited" >> /etc/security/limits.conf
-#	echo "asterisk        hard    cpu              unlimited" >> /etc/security/limits.conf
-#	echo "apache          soft    cpu              unlimited" >> /etc/security/limits.conf
-#	echo "apache          hard    cpu              unlimited" >> /etc/security/limits.conf
-#	echo "mysql           soft    cpu              unlimited" >> /etc/security/limits.conf
-#	echo "mysql           hard    cpu              unlimited" >> /etc/security/limits.conf
-#	echo "root            soft    nproc            unlimited" >> /etc/security/limits.conf
-#	echo "root            hard    nproc            unlimited" >> /etc/security/limits.conf
-#	echo "asterisk        soft    nproc            unlimited" >> /etc/security/limits.conf
-#	echo "asterisk        hard    nproc            unlimited" >> /etc/security/limits.conf
-#	echo "apache          soft    nproc            unlimited" >> /etc/security/limits.conf
-#	echo "apache          hard    nproc            unlimited" >> /etc/security/limits.conf
-#	echo "mysql           soft    nproc            unlimited" >> /etc/security/limits.conf
-#	echo "mysql           hard    nproc            unlimited" >> /etc/security/limits.conf
-#	echo "root            soft    sigpending       unlimited" >> /etc/security/limits.conf
-#	echo "root            hard    sigpending       unlimited" >> /etc/security/limits.conf
-#	echo "asterisk        soft    sigpending       unlimited" >> /etc/security/limits.conf
-#	echo "asterisk        hard    sigpending       unlimited" >> /etc/security/limits.conf
-#	echo "apache          soft    sigpending       unlimited" >> /etc/security/limits.conf
-#	echo "apache          hard    sigpending       unlimited" >> /etc/security/limits.conf
-#	echo "mysql           soft    sigpending       unlimited" >> /etc/security/limits.conf
-#	echo "mysql           hard    sigpending       unlimited" >> /etc/security/limits.conf
-#	echo "root            soft    stack            unlimited" >> /etc/security/limits.conf
-#	echo "root            hard    stack            unlimited" >> /etc/security/limits.conf
-#	echo "asterisk        soft    stack            unlimited" >> /etc/security/limits.conf
-#	echo "asterisk        hard    stack            unlimited" >> /etc/security/limits.conf
-#	echo "apache          soft    stack            8192" >> /etc/security/limits.conf
-#	echo "apache          hard    stack            20480" >> /etc/security/limits.conf
-#	echo "mysql           soft    stack            8192" >> /etc/security/limits.conf
-#	echo "mysql           hard    stack            20480" >> /etc/security/limits.conf
-#	echo "root            soft    locks            unlimited" >> /etc/security/limits.conf
-#	echo "root            hard    locks            unlimited" >> /etc/security/limits.conf
-#	echo "asterisk        soft    locks            unlimited" >> /etc/security/limits.conf
-#	echo "asterisk        hard    locks            unlimited" >> /etc/security/limits.conf
-#	echo "apache          soft    locks            unlimited" >> /etc/security/limits.conf
-#	echo "apache          hard    locks            unlimited" >> /etc/security/limits.conf
-#	echo "mysql           soft    locks            unlimited" >> /etc/security/limits.conf
-#	echo "mysql           hard    locks            unlimited" >> /etc/security/limits.conf
-#fi
+
 if [ -n "`%{__grep} OSDial /etc/security/limits.conf`" ]; then
 	%{__sed} -ie '/# OSDial modifications/,//d' /etc/security/limits.conf
 fi
-if [ -z "`%{__grep} scan_sleep_millisecs /etc/rc.local`" ]; then
-	echo >> /etc/rc.local.conf
-	echo "# Set scan_sleep_millisecs at the recomendation of numad." >> /etc/rc.local
-	echo "if [ -f /sys/kernel/mm/redhat_transparent_hugepage/khugepaged/scan_sleep_millisecs ]; then" >> /etc/rc.local
-	echo "    echo 100 > /sys/kernel/mm/redhat_transparent_hugepage/khugepaged/scan_sleep_millisecs" >> /etc/rc.local
-	echo "fi" >> /etc/rc.local
+
+/sbin/chkconfig cgconfig on > /dev/null 2>&1 || :
+/sbin/service cgconfig restart > /dev/null 2>&1 || :
+/sbin/chkconfig cgred on > /dev/null 2>&1 || :
+/sbin/service cgred restart > /dev/null 2>&1 || :
+/sbin/chkconfig numad on > /dev/null 2>&1 || :
+/sbin/service numad restart > /dev/null 2>&1 || :
+/sbin/chkconfig httpd on > /dev/null 2>&1 || :
+/sbin/service httpd restart > /dev/null 2>&1 || :
+/sbin/chkconfig tuned on > /dev/null 2>&1 || :
+TUNEDTST="`/usr/sbin/tuned-adm active | grep '^Current active profile: default'`"
+RES=$?
+if [ $RES -eq 0 ]; then
+	/usr/sbin/tuned-adm profile throughput-performance > /dev/null 2>&1 ||:
+	/sbin/service tuned stop > /dev/null 2>&1 || :
+	/sbin/service tuned start > /dev/null 2>&1 || :
 fi
-if [ -f /sys/kernel/mm/redhat_transparent_hugepage/khugepaged/scan_sleep_millisecs ]; then
-	echo 100 > /sys/kernel/mm/redhat_transparent_hugepage/khugepaged/scan_sleep_millisecs
-fi
-/sbin/chkconfig cgconfig on > /dev/null 2>&1
-/sbin/service cgconfig restart > /dev/null 2>&1
-/sbin/chkconfig cgred on > /dev/null 2>&1
-/sbin/service cgred restart > /dev/null 2>&1
-/sbin/chkconfig numad on > /dev/null 2>&1
-/sbin/service numad restart > /dev/null 2>&1
-/sbin/chkconfig httpd on > /dev/null 2>&1
-/sbin/service httpd restart > /dev/null 2>&1
+
+
 DRIVES=`ls /dev/sd[a-z] /dev/hd[a-z] /dev/cciss/c[0-9]d[0-9] 2>/dev/null | tr "\n" "," | sed 's|,$||'`
-%{__perl} -pi -e "s|/dev/sda, /dev/sdb|${DRIVES}|" /opt/osdial/html/phpsysinfo/plugins/SMART/SMART.config.php
-/usr/sbin/usermod -G asterisk,disk apache
-/usr/sbin/usermod -G tty,apache,disk asterisk
+%{__perl} -pi -e "s|/dev/sda, /dev/sdb|${DRIVES}|" /opt/osdial/html/phpsysinfo/plugins/SMART/SMART.config.php || :
+/usr/sbin/usermod -G asterisk,disk apache || :
+/usr/sbin/usermod -G tty,apache,disk asterisk || :
 echo -n
 
 
@@ -1244,40 +1095,56 @@ if [ "$INTY" -eq 1 ]; then
 	if [ ! "`%{__grep} innodb_data_home_dir /etc/my.cnf`" ]; then
 		MEM=`head -1 /proc/meminfo | %{__sed} 's/MemTotal:\s*\(.*\) kB.*/\1/'`
 		let MEM=MEM/1024/2
-		MCNF="old_passwords=1\n\n"
-		MCNF="${MCNF}#===== BEGIN OSDIAL my.cnf Additions =====\n"
-		[ -z "`%{__grep} skip_name_resolve /etc/my.cnf`" ] &&               MCNF="${MCNF}skip_name_resolve\n"
-		[ -z "`%{__grep} max_connections /etc/my.cnf`" ] &&                 MCNF="${MCNF}max_connections=250\n"
-		[ -z "`%{__grep} open_files_limit /etc/my.cnf`" ] &&                MCNF="${MCNF}open_files_limit=32768\n"
-		[ -z "`%{__grep} query_cache_type /etc/my.cnf`" ] &&                MCNF="${MCNF}query_cache_type = 1\nquery_cache_size = 100000000\nquery_cache_min_res_unit = 4096\nquery_cache_limit = 1048576\nquery_prealloc_size = 8192\nquery_cache_wlock_invalidate = 0\n"
-		[ -z "`%{__grep} innodb_strict_mode /etc/my.cnf`" ] &&              MCNF="${MCNF}loose_innodb_strict_mode = 1\n"
-		[ -z "`%{__grep} innodb_file_format /etc/my.cnf`" ] &&              MCNF="${MCNF}loose_innodb_file_format = barracuda\n"
-		[ -z "`%{__grep} innodb_data_home_dir /etc/my.cnf`" ] &&            MCNF="${MCNF}loose_innodb_data_home_dir = /var/lib/mysql/\n"
-		[ -z "`%{__grep} innodb_log_group_home_dir /etc/my.cnf`" ] &&       MCNF="${MCNF}loose_innodb_log_group_home_dir = /var/lib/mysql/\n"
-		[ -z "`%{__grep} innodb_data_file_path /etc/my.cnf`" ] &&           MCNF="${MCNF}loose_innodb_data_file_path = ibdata1:10M:autoextend\n"
-		[ -z "`%{__grep} innodb_additional_mem_pool_size /etc/my.cnf`" ] && MCNF="${MCNF}loose_innodb_additional_mem_pool_size = 8M\n"
-		[ -z "`%{__grep} innodb_log_file_size /etc/my.cnf`" ] &&            MCNF="${MCNF}loose_innodb_log_file_size = 5M\n"
-		[ -z "`%{__grep} innodb_log_buffer_size /etc/my.cnf`" ] &&          MCNF="${MCNF}loose_innodb_log_buffer_size = 8M\n"
-		[ -z "`%{__grep} innodb_file_per_table /etc/my.cnf`" ] &&           MCNF="${MCNF}loose_innodb_file_per_table = 1\n"
-		[ -z "`%{__grep} innodb_flush_log_at_trx_commit /etc/my.cnf`" ] &&  MCNF="${MCNF}loose_innodb_flush_log_at_trx_commit = 2\n"
-		[ -z "`%{__grep} innodb_lock_wait_timeout /etc/my.cnf`" ] &&        MCNF="${MCNF}loose_innodb_lock_wait_timeout = 50\n"
-		[ -z "`%{__grep} innodb_adaptive_hash_index /etc/my.cnf`" ] &&      MCNF="${MCNF}loose_innodb_adaptive_hash_index = 1\n"
-		[ -z "`%{__grep} innodb_checksums /etc/my.cnf`" ] &&                MCNF="${MCNF}loose_innodb_checksums = 1\n"
-		[ -z "`%{__grep} innodb_doublewrite /etc/my.cnf`" ] &&              MCNF="${MCNF}loose_innodb_doublewrite = 1\n"
-		[ -z "`%{__grep} innodb_flush_method /etc/my.cnf`" ] &&             MCNF="${MCNF}loose_innodb_flush_method = O_DIRECT\n"
-		[ -z "`%{__grep} innodb_locks_unsafe_for_binlog /etc/my.cnf`" ] &&  MCNF="${MCNF}loose_innodb_locks_unsafe_for_binlog = 0\n"
-		[ -z "`%{__grep} innodb_max_dirty_pages_pct /etc/my.cnf`" ] &&      MCNF="${MCNF}loose_innodb_max_dirty_pages_pct = 90\n"
-		[ -z "`%{__grep} innodb_table_locks /etc/my.cnf`" ] &&              MCNF="${MCNF}loose_innodb_table_locks = 1\n"
-		[ -z "`%{__grep} innodb_thread_concurrency /etc/my.cnf`" ] &&       MCNF="${MCNF}loose_innodb_thread_concurrency = 0\n"
-		[ -z "`%{__grep} innodb_use_sys_malloc /etc/my.cnf`" ] &&           MCNF="${MCNF}loose_innodb_use_sys_malloc = 0\n"
-		[ -z "`%{__grep} innodb_fast_shutdown /etc/my.cnf`" ] &&            MCNF="${MCNF}loose_innodb_fast_shutdown = 0\n"
-		[ -z "`%{__grep} innodb_open_files /etc/my.cnf`" ] &&               MCNF="${MCNF}loose_innodb_open_files = 2048\n"
-		[ -z "`%{__grep} innodb_buffer_pool_size /etc/my.cnf`" ] &&         MCNF="${MCNF}# Should be set to 50% system memory\n"
-		[ -z "`%{__grep} innodb_buffer_pool_size /etc/my.cnf`" ] &&         MCNF="${MCNF}loose_innodb_buffer_pool_size = ${MEM}M\n"
-		MCNF="${MCNF}#===== END OSDIAL my.cnf Additions =====\n\n"
-		%{__perl} -pi -e "s|old_passwords=1|$MCNF|" /etc/my.cnf
-		# Restart mysql
-		/sbin/service mysqld restart > /dev/null 2>&1
+		# Stop mysql
+		/sbin/service mysqld stop > /dev/null 2>&1 || :
+		sleep 3
+		if [ -f "/etc/my.cnf.d/server.cnf`" ]; then
+			%{__perl} -pi -e "s|^innodb_buffer_pool_size = 512M$|innodb_buffer_pool_size = ${MEM}M|" /etc/my.cnf.d/server.cnf > /dev/null 2>&1 || :
+			if [ ! -f "/var/lib/mysql/mysql.lock" ]; then
+				if [ -f "/var/lib/mysql/ib_logfile0" ]; then
+					rm -f /var/lib/mysql/ib_logfile0 > /dev/null 2>&1 || :
+					if [ -f "/var/lib/mysql/ib_logfile1" ]; then
+						rm -f /var/lib/mysql/ib_logfile1 > /dev/null 2>&1 || :
+					fi
+				fi
+			fi
+		else
+			MCNF="old_passwords=1\n\n"
+			MCNF="${MCNF}#===== BEGIN OSDIAL my.cnf Additions =====\n"
+			[ -z "`%{__grep} skip_name_resolve /etc/my.cnf`" ] &&               MCNF="${MCNF}skip_name_resolve\n" || :
+			[ -z "`%{__grep} max_connections /etc/my.cnf`" ] &&                 MCNF="${MCNF}max_connections=250\n" || :
+			[ -z "`%{__grep} open_files_limit /etc/my.cnf`" ] &&                MCNF="${MCNF}open_files_limit=32768\n" || :
+			[ -z "`%{__grep} query_cache_type /etc/my.cnf`" ] &&                MCNF="${MCNF}query_cache_type = 1\nquery_cache_size = 100000000\nquery_cache_min_res_unit = 4096\nquery_cache_limit = 1048576\nquery_prealloc_size = 8192\nquery_cache_wlock_invalidate = 0\n" || :
+			[ -z "`%{__grep} innodb_strict_mode /etc/my.cnf`" ] &&              MCNF="${MCNF}loose_innodb_strict_mode = 1\n" || :
+			[ -z "`%{__grep} innodb_file_format /etc/my.cnf`" ] &&              MCNF="${MCNF}loose_innodb_file_format = barracuda\n" || :
+			[ -z "`%{__grep} innodb_data_home_dir /etc/my.cnf`" ] &&            MCNF="${MCNF}loose_innodb_data_home_dir = /var/lib/mysql/\n" || :
+			[ -z "`%{__grep} innodb_log_group_home_dir /etc/my.cnf`" ] &&       MCNF="${MCNF}loose_innodb_log_group_home_dir = /var/lib/mysql/\n" || :
+			[ -z "`%{__grep} innodb_data_file_path /etc/my.cnf`" ] &&           MCNF="${MCNF}loose_innodb_data_file_path = ibdata1:10M:autoextend\n" || :
+			[ -z "`%{__grep} innodb_additional_mem_pool_size /etc/my.cnf`" ] && MCNF="${MCNF}loose_innodb_additional_mem_pool_size = 8M\n" || :
+			[ -z "`%{__grep} innodb_log_file_size /etc/my.cnf`" ] &&            MCNF="${MCNF}loose_innodb_log_file_size = 5M\n" || :
+			[ -z "`%{__grep} innodb_log_buffer_size /etc/my.cnf`" ] &&          MCNF="${MCNF}loose_innodb_log_buffer_size = 8M\n" || :
+			[ -z "`%{__grep} innodb_file_per_table /etc/my.cnf`" ] &&           MCNF="${MCNF}loose_innodb_file_per_table = 1\n" || :
+			[ -z "`%{__grep} innodb_flush_log_at_trx_commit /etc/my.cnf`" ] &&  MCNF="${MCNF}loose_innodb_flush_log_at_trx_commit = 2\n" || :
+			[ -z "`%{__grep} innodb_lock_wait_timeout /etc/my.cnf`" ] &&        MCNF="${MCNF}loose_innodb_lock_wait_timeout = 50\n" || :
+			[ -z "`%{__grep} innodb_adaptive_hash_index /etc/my.cnf`" ] &&      MCNF="${MCNF}loose_innodb_adaptive_hash_index = 1\n" || :
+			[ -z "`%{__grep} innodb_checksums /etc/my.cnf`" ] &&                MCNF="${MCNF}loose_innodb_checksums = 1\n" || :
+			[ -z "`%{__grep} innodb_doublewrite /etc/my.cnf`" ] &&              MCNF="${MCNF}loose_innodb_doublewrite = 1\n" || :
+			[ -z "`%{__grep} innodb_flush_method /etc/my.cnf`" ] &&             MCNF="${MCNF}loose_innodb_flush_method = O_DIRECT\n" || :
+			[ -z "`%{__grep} innodb_locks_unsafe_for_binlog /etc/my.cnf`" ] &&  MCNF="${MCNF}loose_innodb_locks_unsafe_for_binlog = 0\n" || :
+			[ -z "`%{__grep} innodb_max_dirty_pages_pct /etc/my.cnf`" ] &&      MCNF="${MCNF}loose_innodb_max_dirty_pages_pct = 90\n" || :
+			[ -z "`%{__grep} innodb_table_locks /etc/my.cnf`" ] &&              MCNF="${MCNF}loose_innodb_table_locks = 1\n" || :
+			[ -z "`%{__grep} innodb_thread_concurrency /etc/my.cnf`" ] &&       MCNF="${MCNF}loose_innodb_thread_concurrency = 0\n" || :
+			[ -z "`%{__grep} innodb_use_sys_malloc /etc/my.cnf`" ] &&           MCNF="${MCNF}loose_innodb_use_sys_malloc = 0\n" || :
+			[ -z "`%{__grep} innodb_fast_shutdown /etc/my.cnf`" ] &&            MCNF="${MCNF}loose_innodb_fast_shutdown = 0\n" || :
+			[ -z "`%{__grep} innodb_open_files /etc/my.cnf`" ] &&               MCNF="${MCNF}loose_innodb_open_files = 2048\n" || :
+			[ -z "`%{__grep} innodb_buffer_pool_size /etc/my.cnf`" ] &&         MCNF="${MCNF}# Should be set to 50% system memory\n" || :
+			[ -z "`%{__grep} innodb_buffer_pool_size /etc/my.cnf`" ] &&         MCNF="${MCNF}loose_innodb_buffer_pool_size = ${MEM}M\n" || :
+			MCNF="${MCNF}#===== END OSDIAL my.cnf Additions =====\n\n"
+			%{__perl} -pi -e "s|old_passwords=1|$MCNF|" /etc/my.cnf > /dev/null 2>&1 || :
+		fi
+		# Start mysql
+		/sbin/service mysqld start > /dev/null 2>&1 || :
+		sleep 3
 	fi
 	# Run update script.
 	[ -f "/opt/osdial/.osdial-live" ] && /sbin/service mysqld start > /dev/null 2>&1 || :
@@ -1300,8 +1167,12 @@ if [ "$INTY" -eq 1 ]; then
 fi
 if [ "$INTY" -eq 2 ]; then
 	# Reset running procs.
-	[ -n "`ps -ef | %{__grep} FastAGI`" ] && kill -9 `ps -ef | %{__grep} FastAGI | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
-	[ -n "`ps -ef | %{__grep} AST`" ] && kill -9 `ps -ef | %{__grep} AST | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
+	if [ -f "/opt/osdial/bin/osdial_killall.sh" ]; then
+		/opt/osdial/bin/osdial_killall.sh > /dev/null 2>&1 || :
+	else
+		[ -n "`ps -ef | %{__grep} FastAGI`" ] && kill -9 `ps -ef | %{__grep} FastAGI | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
+		[ -n "`ps -ef | %{__grep} AST`" ] && kill -9 `ps -ef | %{__grep} AST | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
+	fi
 fi
 echo -n
 
@@ -1319,42 +1190,71 @@ if [ "$INTY" -eq 1 ]; then
 	# modify php.ini for our defaults.
 	if [ ! "`%{__grep} OSDIAL /etc/php.ini`" ]; then
 		%{__perl} -pi -e "s|^max_execution_time = 30     ; Maximum execution|max_execution_time = 300000 ; Maximum execution|" /etc/php.ini
+		%{__perl} -pi -e "s|^max_execution_time = 30     $|max_execution_time = 300000|" /etc/php.ini
+		%{__perl} -pi -e "s|^max_execution_time = 30$|max_execution_time = 300000|" /etc/php.ini
 		%{__perl} -pi -e "s|^max_input_time = 60    ; Maximum amount of time|max_input_time = 600000 ; Maximum amount of time|" /etc/php.ini
+		%{__perl} -pi -e "s|^max_input_time = 60$|max_input_time = 600000|" /etc/php.ini
 		%{__perl} -pi -e "s|^memory_limit = 16M      ; Maximum amount of mem|memory_limit = 512M      ; Maximum amount of mem|" /etc/php.ini
 		%{__perl} -pi -e "s|^memory_limit = 128M$|memory_limit = 512M|" /etc/php.ini
 		%{__perl} -pi -e "s|^;error_reporting = E_ALL \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_NOTICE|" /etc/php.ini
 		%{__perl} -pi -e "s|^error_reporting  =  E_ALL|;error_reporting  =  E_ALL|" /etc/php.ini
+		%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE|" /etc/php.ini
 		%{__perl} -pi -e "s|^post_max_size = 8M|post_max_size = 100M|" /etc/php.ini
 		%{__perl} -pi -e "s|^upload_max_filesize = 2M|upload_max_filesize = 100M|" /etc/php.ini
 		%{__perl} -pi -e "s|^short_open_tag = Off$|short_open_tag = On|" /etc/php.ini
+		%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& E_WARNING|" /etc/php.ini
 		echo "; OSDIAL: modified" >> /etc/php.ini
-		/sbin/service httpd restart > /dev/null 2>&1 t
 	fi
 	[ -f "/opt/osdial/.osdial-live" ] && /sbin/service httpd stop > /dev/null 2>&1 || :
 	# cpuspeed can do bad things to ISDN/T1 cards
 	if [ -f /etc/rc3.d/S06cpuspeed ]; then
                 	echo "    osdial-config: cpuspeed (scaling) detected, disabling!"
-                	/etc/init.d/cpuspeed stop > /dev/null 2>&1
-                	/sbin/chkconfig cpuspeed off > /dev/null 2>&1
+                	/etc/init.d/cpuspeed stop > /dev/null 2>&1 || :
+                	/sbin/chkconfig cpuspeed off > /dev/null 2>&1 || :
 	fi
 	# We don't need cups
 	if [ -f /etc/rc3.d/S56cups ]; then
                 	echo "    osdial-config: CUPS detected, disabling!"
-                	/etc/init.d/cups stop > /dev/null 2>&1
-                	/sbin/chkconfig cups off > /dev/null 2>&1
+                	/etc/init.d/cups stop > /dev/null 2>&1 || :
+                	/sbin/chkconfig cups off > /dev/null 2>&1 || :
 	fi
 fi
 if [ "$INTY" -eq 2 ]; then
-        /sbin/chkconfig --del osdial_resource_listen > /dev/null 2>&1
-        /sbin/chkconfig --add osdial_resource_listen > /dev/null 2>&1
-	/sbin/service osdial_resource_listen restart > /dev/null 2>&1
+        /sbin/chkconfig --del osdial_resource_listen > /dev/null 2>&1 || :
+        /sbin/chkconfig --add osdial_resource_listen > /dev/null 2>&1 || :
+	/sbin/service osdial_resource_listen restart > /dev/null 2>&1 || :
 	if [ -f "/var/www/html/index.html" ]; then
 		[ -n "`%{__grep} osdial /var/www/html/index.html`" ] && %{__mv} /var/www/html/index.html /var/www/html/index.html.bak || :
+	fi
+	if [ ! "`%{__grep} OSDIAL /etc/php.ini`" ]; then
+		%{__perl} -pi -e "s|^memory_limit = 128M$|memory_limit = 512M|" /etc/php.ini
+		%{__perl} -pi -e "s|^max_execution_time = 30     $|max_execution_time = 300000|" /etc/php.ini
+		%{__perl} -pi -e "s|^max_execution_time = 30$|max_execution_time = 300000|" /etc/php.ini
+		%{__perl} -pi -e "s|^max_input_time = 60$|max_input_time = 600000|" /etc/php.ini
+		%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE|" /etc/php.ini
+		%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& E_WARNING|" /etc/php.ini
 	fi
 	[ ! -f /var/www/html/index.php ] && %{__ln_s} /opt/osdial/html/index.php /var/www/html/index.php || :
 	# Reset running procs.
 	[ -n "`ps -ef | %{__grep} FastAGI`" ] && kill -9 `ps -ef | %{__grep} FastAGI | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
 	[ -n "`ps -ef | %{__grep} AST`" ] && kill -9 `ps -ef | %{__grep} AST | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
+fi
+if [ -f "/etc/php.ini" ]; then
+	%{__perl} -pi -e "s|^max_execution_time = 30     ; Maximum execution|max_execution_time = 300000 ; Maximum execution|" /etc/php.ini
+	%{__perl} -pi -e "s|^max_execution_time = 30     $|max_execution_time = 300000|" /etc/php.ini
+	%{__perl} -pi -e "s|^max_execution_time = 30$|max_execution_time = 300000|" /etc/php.ini
+	%{__perl} -pi -e "s|^max_input_time = 60    ; Maximum amount of time|max_input_time = 600000 ; Maximum amount of time|" /etc/php.ini
+	%{__perl} -pi -e "s|^max_input_time = 60$|max_input_time = 600000|" /etc/php.ini
+	%{__perl} -pi -e "s|^memory_limit = 16M      ; Maximum amount of mem|memory_limit = 512M      ; Maximum amount of mem|" /etc/php.ini
+	%{__perl} -pi -e "s|^memory_limit = 128M$|memory_limit = 512M|" /etc/php.ini
+	%{__perl} -pi -e "s|^;error_reporting = E_ALL \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_NOTICE|" /etc/php.ini
+	%{__perl} -pi -e "s|^error_reporting  =  E_ALL|;error_reporting  =  E_ALL|" /etc/php.ini
+	%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE|" /etc/php.ini
+	%{__perl} -pi -e "s|^post_max_size = 8M|post_max_size = 100M|" /etc/php.ini
+	%{__perl} -pi -e "s|^upload_max_filesize = 2M|upload_max_filesize = 100M|" /etc/php.ini
+	%{__perl} -pi -e "s|^short_open_tag = Off$|short_open_tag = On|" /etc/php.ini
+	%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& E_WARNING|" /etc/php.ini
+	/sbin/service httpd restart > /dev/null 2>&1 || :
 fi
 echo -n
 
@@ -1374,23 +1274,23 @@ if [ "$INTY" -eq 1 ]; then
                 	# It already exists, so lets overwrite our existing.
                 	echo "    osdial-config: Cron for user 'asterisk' already in place."
                 	%{__cat} /var/spool/cron/asterisk > /opt/osdial/bin/osdial.cron
-                	%{__rm} -f /var/spool/cron/asterisk
+                	%{__rm} -f /var/spool/cron/asterisk > /dev/null 2>&1 || :
         	fi
 	fi
 	echo "    osdial-config: Installing cron for user 'asterisk'."
 	/usr/bin/crontab -u asterisk /opt/osdial/bin/osdial.cron > /dev/null 2>&1
 	# If it didn't succeed, assume installcd
-	[ ! -f "/var/spool/cron/asterisk" ] && %{__cp} /opt/osdial/bin/osdial.cron /var/spool/cron/asterisk || :
+	[ ! -f "/var/spool/cron/asterisk" ] && %{__cp} /opt/osdial/bin/osdial.cron /var/spool/cron/asterisk > /dev/null 2>&1 || :
 	# Verify config was copied, if not, we are new.
 	if [ ! -f /etc/osdial.conf ]; then
         	echo "    osdial-config: Setting up keepalive services."
-        	%{__perl} -pi -e 's|^VARactive_keepalives => XX$|VARactive_keepalives => 1234569|' /etc/osdial.conf
+        	%{__perl} -pi -e 's|^VARactive_keepalives => XX$|VARactive_keepalives => 1234569|' /etc/osdial.conf > /dev/null 2>&1 || :
 	fi
 	# We don't need cups
 	if [ -f /etc/rc3.d/S56cups ]; then
                 	echo "    osdial-config: CUPS detected, disabling!"
-                	/etc/init.d/cups stop > /dev/null 2>&1
-                	/sbin/chkconfig cups off > /dev/null 2>&1
+                	/etc/init.d/cups stop > /dev/null 2>&1 || :
+                	/sbin/chkconfig cups off > /dev/null 2>&1 || :
 	fi
 fi
 [ "$INTY" -eq 2 ] && echo -n || :
@@ -1398,47 +1298,47 @@ fi
 [ -n "`ps -ef | %{__grep} FastAGI`" ] && kill -9 `ps -ef | %{__grep} FastAGI | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
 [ -n "`ps -ef | %{__grep} AST`" ] && kill -9 `ps -ef | %{__grep} AST | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
 # Make sure we have backups of the prompts and sync them to sounds and sounds.ramfs
-%{__mkdir_p} /var/lib/asterisk/OSDprompts
+%{__mkdir_p} /var/lib/asterisk/OSDprompts > /dev/null 2>&1 || :
 [ -d "/var/lib/asterisk/sounds.ramfs" ] && yes | %{__cp} -au /var/lib/asterisk/sounds.ramfs/851* /var/lib/asterisk/OSDprompts > /dev/null 2>&1 || :
 [ -d "/mnt/ramdisk/sounds" ] && yes | %{__cp} -au /mnt/ramdisk/sounds/851* /var/lib/asterisk/OSDprompts > /dev/null 2>&1 || :
 yes | %{__cp} -au /var/lib/asterisk/sounds/851* /var/lib/asterisk/OSDprompts > /dev/null 2>&1
 yes | %{__cp} -au /var/lib/asterisk/OSDprompts/851* /var/lib/asterisk/sounds > /dev/null 2>&1
 [ -d "/var/lib/asterisk/sounds.ramfs" ] && yes | %{__cp} -au /var/lib/asterisk/OSDprompts/851* /var/lib/asterisk/sounds.ramfs > /dev/null 2>&1 || :
 [ -d "/mnt/ramdisk/sounds" ] && yes | %{__cp} -au /var/lib/asterisk/OSDprompts/851* /mnt/ramdisk/sounds > /dev/null 2>&1 || :
-%{__chown} -R asterisk:asterisk /var/lib/asterisk/sounds
-%{__chown} -R asterisk:asterisk /var/lib/asterisk/OSDprompts
-[ -d "/var/lib/asterisk/sounds.ramfs" ] && %{__chown} -R asterisk:asterisk /var/lib/asterisk/sounds.ramfs || :
-[ -d "/mnt/ramdisk/sounds" ] && %{__chown} -R asterisk:asterisk /mnt/ramdisk/sounds || :
+%{__chown} -R asterisk:asterisk /var/lib/asterisk/sounds > /dev/null 2>&1 || :
+%{__chown} -R asterisk:asterisk /var/lib/asterisk/OSDprompts > /dev/null 2>&1 || :
+[ -d "/var/lib/asterisk/sounds.ramfs" ] && %{__chown} -R asterisk:asterisk /var/lib/asterisk/sounds.ramfs > /dev/null 2>&1 || :
+[ -d "/mnt/ramdisk/sounds" ] && %{__chown} -R asterisk:asterisk /mnt/ramdisk/sounds > /dev/null 2>&1 || :
 if [ -d "/var/lib/asterisk/sounds/osdial" ]; then
-	%{__chmod} 0777 /var/lib/asterisk/sounds/osdial > /dev/null 2>&1
-	%{__chmod} 0666 /var/lib/asterisk/sounds/osdial/* > /dev/null 2>&1
+	%{__chmod} 0777 /var/lib/asterisk/sounds/osdial > /dev/null 2>&1 || :
+	%{__chmod} 0666 /var/lib/asterisk/sounds/osdial/* > /dev/null 2>&1 || :
 fi
 if [ -d "/mnt/ramdisk/sounds/osdial" ]; then
-	%{__chmod} 0777 /mnt/ramdisk/sounds/osdial > /dev/null 2>&1
-	%{__chmod} 0666 /mnt/ramdisk/sounds/osdial/* > /dev/null 2>&1
+	%{__chmod} 0777 /mnt/ramdisk/sounds/osdial > /dev/null 2>&1 || :
+	%{__chmod} 0666 /mnt/ramdisk/sounds/osdial/* > /dev/null 2>&1 || :
 fi
 if [ -d "/opt/osdial/media" ]; then
-	%{__chmod} 0777 /opt/osdial/media > /dev/null 2>&1
-	%{__chmod} 0666 /opt/osdial/media/* > /dev/null 2>&1
+	%{__chmod} 0777 /opt/osdial/media > /dev/null 2>&1 || :
+	%{__chmod} 0666 /opt/osdial/media/* > /dev/null 2>&1 || :
 fi
-/opt/osdial/bin/osdial_media_sync.pl --file=/var/lib/asterisk/sounds/en/vm-goodbye.ulaw > /dev/null 2>&1
-/opt/osdial/bin/osdial_media_sync.pl --file=/var/lib/asterisk/sounds/generic_hold.ulaw > /dev/null 2>&1
+/opt/osdial/bin/osdial_media_sync.pl --file=/var/lib/asterisk/sounds/en/vm-goodbye.ulaw > /dev/null 2>&1 || :
+/opt/osdial/bin/osdial_media_sync.pl --file=/var/lib/asterisk/sounds/generic_hold.ulaw > /dev/null 2>&1 || :
 
 
 # Reload dsp.conf to ensure we have a silence_threshold
-/usr/sbin/asterisk -rx "reload dsp" > /dev/null 2>&1
-cd /opt/osdial/html/ari/bin
-tar xzf aribins.tgz .
+/usr/sbin/asterisk -rx "reload dsp" > /dev/null 2>&1 || :
+cd /opt/osdial/html/ari/bin || :
+tar xzf aribins.tgz . > /dev/null 2>&1 || :
 echo -n
 
 %post asterisk-version16
 INTY=$1
-/sbin/chkconfig asterisk on > /dev/null 2>&1
+/sbin/chkconfig asterisk on > /dev/null 2>&1 || :
 # cpuspeed can do bad things to ISDN/T1 cards
 if [ -f /etc/rc3.d/S06cpuspeed ]; then
                	echo "    osdial-config: cpuspeed (scaling) detected, disabling!"
-               	/etc/init.d/cpuspeed stop > /dev/null 2>&1
-               	/sbin/chkconfig cpuspeed off > /dev/null 2>&1
+               	/etc/init.d/cpuspeed stop > /dev/null 2>&1 || :
+               	/sbin/chkconfig cpuspeed off > /dev/null 2>&1 || :
 fi
 # Set some performance options in asterisk...
 if [ -f "/etc/asterisk/asterisk.conf" ]; then
@@ -1469,92 +1369,92 @@ fi
 # Remove bad chan-dahdi.conf, bad filename.
 [ -f "/etc/asterisk/chan-dahdi.conf" ] && %{__rm} -f /etc/asterisk/chan-dahdi.conf > /dev/null 2>&1 || :
 # Find and move zapata.conf
-%{__mkdir_p} /etc/zaptel.bak
+%{__mkdir_p} /etc/zaptel.bak > /dev/null 2>&1 || :
 MOVED=0
 if [ -f "/etc/asterisk/zapata.conf" ]; then
 	if [ "$MOVED" = "0" ]; then
 		MOVED=1
-		%{__cp} -f /etc/asterisk/zapata.conf /etc/zaptel.bak > /dev/null 2>&1
-		%{__mv} -f /etc/asterisk/zapata.conf /etc/asterisk/chan_dahdi.conf > /dev/null 2>&1
+		%{__cp} -f /etc/asterisk/zapata.conf /etc/zaptel.bak > /dev/null 2>&1 || :
+		%{__mv} -f /etc/asterisk/zapata.conf /etc/asterisk/chan_dahdi.conf > /dev/null 2>&1 || :
 	else
-		%{__mv} -f /etc/asterisk/zapata.conf /etc/zaptel.bak > /dev/null 2>&1
+		%{__mv} -f /etc/asterisk/zapata.conf /etc/zaptel.bak > /dev/null 2>&1 || :
 	fi
 fi
 if [ -f "/etc/asterisk/zapata.conf.rpmsave" ]; then
 	if [ "$MOVED" = "0" ]; then
 		MOVED=1
-		%{__cp} -f /etc/asterisk/zapata.conf.rpmsave /etc/zaptel.bak > /dev/null 2>&1
-		%{__mv} -f /etc/asterisk/zapata.conf.rpmsave /etc/asterisk/chan_dahdi.conf > /dev/null 2>&1
+		%{__cp} -f /etc/asterisk/zapata.conf.rpmsave /etc/zaptel.bak > /dev/null 2>&1 || :
+		%{__mv} -f /etc/asterisk/zapata.conf.rpmsave /etc/asterisk/chan_dahdi.conf > /dev/null 2>&1 || :
 	else
-		%{__mv} -f /etc/asterisk/zapata.conf.rpmsave /etc/zaptel.bak > /dev/null 2>&1
+		%{__mv} -f /etc/asterisk/zapata.conf.rpmsave /etc/zaptel.bak > /dev/null 2>&1 || :
 	fi
 fi
 if [ -f "/etc/asterisk/zapata.conf.rpmorig" ]; then
 	if [ "$MOVED" = "0" ]; then
 		MOVED=1
-		%{__cp} -f /etc/asterisk/zapata.conf.rpmorig /etc/zaptel.bak > /dev/null 2>&1
-		%{__mv} -f /etc/asterisk/zapata.conf.rpmorig /etc/asterisk/chan_dahdi.conf > /dev/null 2>&1
+		%{__cp} -f /etc/asterisk/zapata.conf.rpmorig /etc/zaptel.bak > /dev/null 2>&1 || :
+		%{__mv} -f /etc/asterisk/zapata.conf.rpmorig /etc/asterisk/chan_dahdi.conf > /dev/null 2>&1 || :
 	else
-		%{__mv} -f /etc/asterisk/zapata.conf.rpmorig /etc/zaptel.bak > /dev/null 2>&1
+		%{__mv} -f /etc/asterisk/zapata.conf.rpmorig /etc/zaptel.bak > /dev/null 2>&1 || :
 	fi
 fi
 if [ -f "/etc/asterisk/zapata.conf.rpmnew" ]; then
 	if [ "$MOVED" = "0" ]; then
 		MOVED=1
-		%{__cp} -f /etc/asterisk/zapata.conf.rpmnew /etc/zaptel.bak > /dev/null 2>&1
-		%{__mv} -f /etc/asterisk/zapata.conf.rpmnew /etc/asterisk/chan_dahdi.conf > /dev/null 2>&1
+		%{__cp} -f /etc/asterisk/zapata.conf.rpmnew /etc/zaptel.bak > /dev/null 2>&1 || :
+		%{__mv} -f /etc/asterisk/zapata.conf.rpmnew /etc/asterisk/chan_dahdi.conf > /dev/null 2>&1 || :
 	else
-		%{__mv} -f /etc/asterisk/zapata.conf.rpmnew /etc/zaptel.bak > /dev/null 2>&1
+		%{__mv} -f /etc/asterisk/zapata.conf.rpmnew /etc/zaptel.bak > /dev/null 2>&1 || :
 	fi
 fi
 echo -n
 
 %post asterisk-version12
 INTY=$1
-/sbin/chkconfig asterisk on > /dev/null 2>&1
+/sbin/chkconfig asterisk on > /dev/null 2>&1 || :
 # cpuspeed can do bad things to ISDN/T1 cards
 if [ -f /etc/rc3.d/S06cpuspeed ]; then
                	echo "    osdial-config: cpuspeed (scaling) detected, disabling!"
-               	/etc/init.d/cpuspeed stop > /dev/null 2>&1
-               	/sbin/chkconfig cpuspeed off > /dev/null 2>&1
+               	/etc/init.d/cpuspeed stop > /dev/null 2>&1 || :
+               	/sbin/chkconfig cpuspeed off > /dev/null 2>&1 || :
 fi
 # Find and move chan_dahdi.conf
-%{__mkdir_p} /etc/dahdi.bak
+%{__mkdir_p} /etc/dahdi.bak > /dev/null 2>&1 || :
 MOVED=0
 if [ -f "/etc/asterisk/chan_dahdi.conf" ]; then
 	if [ "$MOVED" = "0" ]; then
 		MOVED=1
-		%{__cp} -f /etc/asterisk/chan_dahdi.conf /etc/dahdi.bak > /dev/null 2>&1
-		%{__mv} -f /etc/asterisk/chan_dahdi.conf /etc/asterisk/zapata.conf > /dev/null 2>&1
+		%{__cp} -f /etc/asterisk/chan_dahdi.conf /etc/dahdi.bak > /dev/null 2>&1 || :
+		%{__mv} -f /etc/asterisk/chan_dahdi.conf /etc/asterisk/zapata.conf > /dev/null 2>&1 || :
 	else
-		%{__mv} -f /etc/asterisk/chan_dahdi.conf /etc/dahdi.bak > /dev/null 2>&1
+		%{__mv} -f /etc/asterisk/chan_dahdi.conf /etc/dahdi.bak > /dev/null 2>&1 || :
 	fi
 fi
 if [ -f "/etc/asterisk/chan_dahdi.conf.rpmsave" ]; then
 	if [ "$MOVED" = "0" ]; then
 		MOVED=1
-		%{__cp} -f /etc/asterisk/chan_dahdi.conf.rpmsave /etc/dahdi.bak > /dev/null 2>&1
-		%{__mv} -f /etc/asterisk/chan_dahdi.conf.rpmsave /etc/asterisk/zapata.conf > /dev/null 2>&1
+		%{__cp} -f /etc/asterisk/chan_dahdi.conf.rpmsave /etc/dahdi.bak > /dev/null 2>&1 || :
+		%{__mv} -f /etc/asterisk/chan_dahdi.conf.rpmsave /etc/asterisk/zapata.conf > /dev/null 2>&1 || :
 	else
-		%{__mv} -f /etc/asterisk/chan_dahdi.conf.rpmsave /etc/dahdi.bak > /dev/null 2>&1
+		%{__mv} -f /etc/asterisk/chan_dahdi.conf.rpmsave /etc/dahdi.bak > /dev/null 2>&1 || :
 	fi
 fi
 if [ -f "/etc/asterisk/chan_dahdi.conf.rpmorig" ]; then
 	if [ "$MOVED" = "0" ]; then
 		MOVED=1
-		%{__cp} -f /etc/asterisk/chan_dahdi.conf.rpmorig /etc/dahdi.bak > /dev/null 2>&1
-		%{__mv} -f /etc/asterisk/chan_dahdi.conf.rpmorig /etc/asterisk/zapata.conf > /dev/null 2>&1
+		%{__cp} -f /etc/asterisk/chan_dahdi.conf.rpmorig /etc/dahdi.bak > /dev/null 2>&1 || :
+		%{__mv} -f /etc/asterisk/chan_dahdi.conf.rpmorig /etc/asterisk/zapata.conf > /dev/null 2>&1 || :
 	else
-		%{__mv} -f /etc/asterisk/chan_dahdi.conf.rpmorig /etc/dahdi.bak > /dev/null 2>&1
+		%{__mv} -f /etc/asterisk/chan_dahdi.conf.rpmorig /etc/dahdi.bak > /dev/null 2>&1 || :
 	fi
 fi
 if [ -f "/etc/asterisk/chan_dahdi.conf.rpmnew" ]; then
 	if [ "$MOVED" = "0" ]; then
 		MOVED=1
-		%{__cp} -f /etc/asterisk/chan_dahdi.conf.rpmnew /etc/dahdi.bak > /dev/null 2>&1
-		%{__mv} -f /etc/asterisk/chan_dahdi.conf.rpmnew /etc/asterisk/zapata.conf > /dev/null 2>&1
+		%{__cp} -f /etc/asterisk/chan_dahdi.conf.rpmnew /etc/dahdi.bak > /dev/null 2>&1 || :
+		%{__mv} -f /etc/asterisk/chan_dahdi.conf.rpmnew /etc/asterisk/zapata.conf > /dev/null 2>&1 || :
 	else
-		%{__mv} -f /etc/asterisk/chan_dahdi.conf.rpmnew /etc/dahdi.bak > /dev/null 2>&1
+		%{__mv} -f /etc/asterisk/chan_dahdi.conf.rpmnew /etc/dahdi.bak > /dev/null 2>&1 || :
 	fi
 fi
 echo -n
@@ -1564,7 +1464,7 @@ echo -n
 INTY=$1
 if [ "$INTY" -eq 2 ]; then
 	CTB="/var/spool/cron/asterisk"
-	if [ -f "$CTB" ]; then
+	if [ -f "$CTB" -a ! -s "$CTB" ]; then
 		if [ -z "`%{__grep} 'remove old osdial logs' $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
@@ -1721,8 +1621,97 @@ if [ "$INTY" -eq 2 ]; then
 			echo -e "*/15 * * * * /opt/osdial/bin/AST_qc_transfer.pl > /dev/null 2>&1" >> $CTB
 		fi
 
-		kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1
+	else
+		touch $CTB > /dev/null 2>&1 || :
+		chown asterisk:asterisk $CTB > /dev/null 2>&1 || :
+		echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
+		echo -e "28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
+		echo -e "29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
+		echo -e "*/15 * * * * /opt/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) remove old csv exports more than 2 days old" >> $CTB
+		echo -e "24 0 * * * /usr/bin/find /opt/osdial/html/admin -name 'advsearch*' -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) Actual Scrub against external DNC" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/osdial_external_dnc.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) Schedule ALL to scrub against external DNC" >> $CTB
+		echo -e "0 1 * * * /opt/osdial/bin/osdial_external_dnc.pl --sched=ALL > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) Clean out auto-calls regularly" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/AST_CLEAR_auto_calls.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) flush queue DB table every hour for entries older than 1 hour" >> $CTB
+		echo -e "11,41 * * * * /opt/osdial/bin/AST_flush_DBqueue.pl -q > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) fix the osdial_agent_log once every hour" >> $CTB
+		echo -e "33 * * * * /opt/osdial/bin/AST_cleanup_agent_log.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) updater for OSDial hopper" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/AST_VDhopper.pl -q > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) adjust the GMT offset for the leads in the osdial_list table" >> $CTB
+		echo -e "1 1,7 * * * /opt/osdial/bin/ADMIN_adjust_GMTnow_on_leads.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) optimize the database tables within the asterisk database" >> $CTB
+		echo -e "3 1 * * * /opt/osdial/bin/AST_DB_optimize.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) OSDial campaign export scripts (OPTIONAL)" >> $CTB
+		echo -e "#32 0 * * * /opt/osdial/bin/AST_VDsales_export.pl > /dev/null 2>&1" >> $CTB
+		echo -e "#42 0 * * * /opt/osdial/bin/AST_sourceID_summary_export.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) OSDial agent time log weekly and daily summary report generation" >> $CTB
+		echo -e "#2 0 * * 0 /opt/osdial/bin/AST_agent_week.pl > /dev/null 2>&1" >> $CTB
+		echo -e "#22 0 * * * /opt/osdial/bin/AST_agent_day.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) Generate asterisk config files and reload modules" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/osdial_astgen.pl -q > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) Syncronize IVR recordings, arg is web server" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/osdial_ivr_sync.sh 127.0.0.1 > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) Write a file listing current voicemail" >> $CTB
+		echo -e "* * * * * /usr/sbin/asterisk -rx \"show voicemail users\" > /opt/osdial/html/admin/VMnow.txt" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) kill Hangup script for Asterisk updaters" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/AST_manager_kill_hung_congested.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) updater for voicemail" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/AST_vm_update.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) updater for conference validator" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/AST_conf_update.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) reset several temporary-info tables in the database" >> $CTB
+		echo -e "2 1 * * * /opt/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) remove old recordings more than 7 days old" >> $CTB
+		echo -e "24 0 * * * /usr/bin/find /var/spool/asterisk/monitor -maxdepth 2 -type f -mtime +7 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) remove old recording backups" >> $CTB
+		echo -e "24 0 * * * /usr/bin/find /opt/osdial/backups/recordings -maxdepth 2 -type f -mtime +7 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) Send Recordings to archive server" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/AST_audio_archive.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) Process to increase Asterisk performance by placing sounds on RAMFS." >> $CTB
+		echo -e "*/15 * * * * /opt/osdial/bin/osdial-astsnds-ramfs.sh > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (archive) Compress wav files to mp3" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/AST_audio_compress.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (archive) Sort MP3s into campaign_id/date directory structure" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/AST_sort_recordings.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (archive) Send select MP3s to a third-party quality-control or offste archive server." >> $CTB
+		echo -e "*/15 * * * * /opt/osdial/bin/AST_qc_transfer.pl > /dev/null 2>&1" >> $CTB
 	fi
+	kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
 fi
 echo -n
 
@@ -1730,7 +1719,7 @@ echo -n
 INTY=$1
 if [ "$INTY" -eq 2 ]; then
 	CTB="/var/spool/cron/asterisk"
-	if [ -f "$CTB" ]; then
+	if [ -f "$CTB" -a ! -s "$CTB" ]; then
 		if [ -z "`%{__grep} 'remove old osdial logs' $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
@@ -1804,8 +1793,55 @@ if [ "$INTY" -eq 2 ]; then
 			echo -e "#42 0 * * * /opt/osdial/bin/AST_sourceID_summary_export.pl > /dev/null 2>&1" >> $CTB
 		fi
 
-		kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1
+	else
+		touch $CTB > /dev/null 2>&1 || :
+		chown asterisk:asterisk $CTB > /dev/null 2>&1 || :
+		echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
+		echo -e "28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
+		echo -e "29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
+		echo -e "*/15 * * * * /opt/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) remove old csv exports more than 2 days old" >> $CTB
+		echo -e "24 0 * * * /usr/bin/find /opt/osdial/html/admin -name 'advsearch*' -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) Actual Scrub against external DNC" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/osdial_external_dnc.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) Schedule ALL to scrub against external DNC" >> $CTB
+		echo -e "0 1 * * * /opt/osdial/bin/osdial_external_dnc.pl --sched=ALL > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) Clean out auto-calls regularly" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/AST_CLEAR_auto_calls.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) flush queue DB table every hour for entries older than 1 hour" >> $CTB
+		echo -e "11,41 * * * * /opt/osdial/bin/AST_flush_DBqueue.pl -q > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) fix the osdial_agent_log once every hour" >> $CTB
+		echo -e "33 * * * * /opt/osdial/bin/AST_cleanup_agent_log.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) updater for OSDial hopper" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/AST_VDhopper.pl -q > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) adjust the GMT offset for the leads in the osdial_list table" >> $CTB
+		echo -e "1 1,7 * * * /opt/osdial/bin/ADMIN_adjust_GMTnow_on_leads.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) optimize the database tables within the asterisk database" >> $CTB
+		echo -e "3 1 * * * /opt/osdial/bin/AST_DB_optimize.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) OSDial campaign export scripts (OPTIONAL)" >> $CTB
+		echo -e "#32 0 * * * /opt/osdial/bin/AST_VDsales_export.pl > /dev/null 2>&1" >> $CTB
+		echo -e "#42 0 * * * /opt/osdial/bin/AST_sourceID_summary_export.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) OSDial agent time log weekly and daily summary report generation" >> $CTB
+		echo -e "#2 0 * * 0 /opt/osdial/bin/AST_agent_week.pl > /dev/null 2>&1" >> $CTB
+		echo -e "#22 0 * * * /opt/osdial/bin/AST_agent_day.pl > /dev/null 2>&1" >> $CTB
 	fi
+	kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
 fi
 echo -n
 
@@ -1813,7 +1849,7 @@ echo -n
 INTY=$1
 if [ "$INTY" -eq 2 ]; then
 	CTB="/var/spool/cron/asterisk"
-	if [ -f "$CTB" ]; then
+	if [ -f "$CTB" -a ! -s "$CTB" ]; then
 		if [ -z "`%{__grep} 'remove old osdial logs' $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
@@ -1886,8 +1922,55 @@ if [ "$INTY" -eq 2 ]; then
 			echo -e "#32 0 * * * /opt/osdial/bin/AST_VDsales_export.pl > /dev/null 2>&1" >> $CTB
 			echo -e "#42 0 * * * /opt/osdial/bin/AST_sourceID_summary_export.pl > /dev/null 2>&1" >> $CTB
 		fi
-		kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1
+	else
+		touch $CTB > /dev/null 2>&1 || :
+		chown asterisk:asterisk $CTB > /dev/null 2>&1 || :
+		echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
+		echo -e "28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
+		echo -e "29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
+		echo -e "*/15 * * * * /opt/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) remove old csv exports more than 2 days old" >> $CTB
+		echo -e "24 0 * * * /usr/bin/find /opt/osdial/html/admin -name 'advsearch*' -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) Actual Scrub against external DNC" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/osdial_external_dnc.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) Schedule ALL to scrub against external DNC" >> $CTB
+		echo -e "0 1 * * * /opt/osdial/bin/osdial_external_dnc.pl --sched=ALL > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) Clean out auto-calls regularly" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/AST_CLEAR_auto_calls.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) flush queue DB table every hour for entries older than 1 hour" >> $CTB
+		echo -e "11,41 * * * * /opt/osdial/bin/AST_flush_DBqueue.pl -q > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) fix the osdial_agent_log once every hour" >> $CTB
+		echo -e "33 * * * * /opt/osdial/bin/AST_cleanup_agent_log.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) updater for OSDial hopper" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/AST_VDhopper.pl -q > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) adjust the GMT offset for the leads in the osdial_list table" >> $CTB
+		echo -e "1 1,7 * * * /opt/osdial/bin/ADMIN_adjust_GMTnow_on_leads.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) optimize the database tables within the asterisk database" >> $CTB
+		echo -e "3 1 * * * /opt/osdial/bin/AST_DB_optimize.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) OSDial campaign export scripts (OPTIONAL)" >> $CTB
+		echo -e "#32 0 * * * /opt/osdial/bin/AST_VDsales_export.pl > /dev/null 2>&1" >> $CTB
+		echo -e "#42 0 * * * /opt/osdial/bin/AST_sourceID_summary_export.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (sql) OSDial agent time log weekly and daily summary report generation" >> $CTB
+		echo -e "#2 0 * * 0 /opt/osdial/bin/AST_agent_week.pl > /dev/null 2>&1" >> $CTB
+		echo -e "#22 0 * * * /opt/osdial/bin/AST_agent_day.pl > /dev/null 2>&1" >> $CTB
 	fi
+	kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
 fi
 echo -n
 
@@ -1895,7 +1978,7 @@ echo -n
 INTY=$1
 if [ "$INTY" -eq 2 ]; then
 	CTB="/var/spool/cron/asterisk"
-	if [ -f "$CTB" ]; then
+	if [ -f "$CTB" -a ! -s "$CTB" ]; then
 		if [ -z "`%{__grep} 'remove old osdial logs' $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
@@ -1912,8 +1995,20 @@ if [ "$INTY" -eq 2 ]; then
 			echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
 			echo -e "*/15 * * * * /opt/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
 		fi
-		kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1
+	else
+		touch $CTB > /dev/null 2>&1 || :
+		chown asterisk:asterisk $CTB > /dev/null 2>&1 || :
+		echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
+		echo -e "28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
+		echo -e "29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
+		echo -e "*/15 * * * * /opt/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
 	fi
+	kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
 fi
 echo -n
 
@@ -1921,7 +2016,7 @@ echo -n
 INTY=$1
 if [ "$INTY" -eq 2 ]; then
 	CTB="/var/spool/cron/asterisk"
-	if [ -f "$CTB" ]; then
+	if [ -f "$CTB" -a ! -s "$CTB" ]; then
 		if [ -z "`%{__grep} 'remove old osdial logs' $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
@@ -2004,8 +2099,53 @@ if [ "$INTY" -eq 2 ]; then
 			echo -e "### (dialer) Process to increase Asterisk performance by placing sounds on RAMFS." >> $CTB
 			echo -e "*/15 * * * * /opt/osdial/bin/osdial-astsnds-ramfs.sh > /dev/null 2>&1" >> $CTB
 		fi
-		kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1
+	else
+		touch $CTB > /dev/null 2>&1 || :
+		chown asterisk:asterisk $CTB > /dev/null 2>&1 || :
+		echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
+		echo -e "28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
+		echo -e "29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
+		echo -e "*/15 * * * * /opt/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) Generate asterisk config files and reload modules" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/osdial_astgen.pl -q > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) Syncronize IVR recordings, arg is web server" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/osdial_ivr_sync.sh 127.0.0.1 > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) Write a file listing current voicemail" >> $CTB
+		echo -e "* * * * * /usr/sbin/asterisk -rx \"show voicemail users\" > /opt/osdial/html/admin/VMnow.txt" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) kill Hangup script for Asterisk updaters" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/AST_manager_kill_hung_congested.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) updater for voicemail" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/AST_vm_update.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) updater for conference validator" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/AST_conf_update.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) reset several temporary-info tables in the database" >> $CTB
+		echo -e "2 1 * * * /opt/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) remove old recordings more than 7 days old" >> $CTB
+		echo -e "24 0 * * * /usr/bin/find /var/spool/asterisk/monitor -maxdepth 2 -type f -mtime +7 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) remove old recording backups" >> $CTB
+		echo -e "24 0 * * * /usr/bin/find /opt/osdial/backups/recordings -maxdepth 2 -type f -mtime +7 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) Send Recordings to archive server" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/AST_audio_archive.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) Process to increase Asterisk performance by placing sounds on RAMFS." >> $CTB
+		echo -e "*/15 * * * * /opt/osdial/bin/osdial-astsnds-ramfs.sh > /dev/null 2>&1" >> $CTB
 	fi
+	kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
 fi
 echo -n
 
@@ -2013,7 +2153,7 @@ echo -n
 INTY=$1
 if [ "$INTY" -eq 2 ]; then
 	CTB="/var/spool/cron/asterisk"
-	if [ -f "$CTB" ]; then
+	if [ -f "$CTB" -a ! -s "$CTB" ]; then
 		if [ -z "`%{__grep} 'remove old osdial logs' $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
@@ -2096,8 +2236,52 @@ if [ "$INTY" -eq 2 ]; then
 			echo -e "### (dialer) Process to increase Asterisk performance by placing sounds on RAMFS." >> $CTB
 			echo -e "*/15 * * * * /opt/osdial/bin/osdial-astsnds-ramfs.sh > /dev/null 2>&1" >> $CTB
 		fi
-		kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1
+	else
+		touch $CTB > /dev/null 2>&1 || :
+		chown asterisk:asterisk $CTB > /dev/null 2>&1 || :
+		echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
+		echo -e "28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
+		echo -e "29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
+		echo -e "*/15 * * * * /opt/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
+		echo -e "### (dialer) Generate asterisk config files and reload modules" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/osdial_astgen.pl -q > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) Syncronize IVR recordings, arg is web server" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/osdial_ivr_sync.sh 127.0.0.1 > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) Write a file listing current voicemail" >> $CTB
+		echo -e "* * * * * /usr/sbin/asterisk -rx \"show voicemail users\" > /opt/osdial/html/admin/VMnow.txt" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) kill Hangup script for Asterisk updaters" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/AST_manager_kill_hung_congested.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) updater for voicemail" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/AST_vm_update.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) updater for conference validator" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/AST_conf_update.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) reset several temporary-info tables in the database" >> $CTB
+		echo -e "2 1 * * * /opt/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) remove old recordings more than 7 days old" >> $CTB
+		echo -e "24 0 * * * /usr/bin/find /var/spool/asterisk/monitor -maxdepth 2 -type f -mtime +7 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) remove old recording backups" >> $CTB
+		echo -e "24 0 * * * /usr/bin/find /opt/osdial/backups/recordings -maxdepth 2 -type f -mtime +7 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) Send Recordings to archive server" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/AST_audio_archive.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (dialer) Process to increase Asterisk performance by placing sounds on RAMFS." >> $CTB
+		echo -e "*/15 * * * * /opt/osdial/bin/osdial-astsnds-ramfs.sh > /dev/null 2>&1" >> $CTB
 	fi
+	kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
 fi
 echo -n
 
@@ -2109,7 +2293,7 @@ if [ "$INTY" -eq 1 ]; then
 	%{__ln_s} -f /opt/osdial/reports /var/lib/asterisk/reports > /dev/null 2>&1
 elif [ "$INTY" -eq 2 ]; then
 	CTB="/var/spool/cron/asterisk"
-	if [ -f "$CTB" ]; then
+	if [ -f "$CTB" -a ! -s "$CTB" ]; then
 		if [ -z "`%{__grep} 'remove old osdial logs' $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
@@ -2142,8 +2326,29 @@ elif [ "$INTY" -eq 2 ]; then
 			echo -e "### (archive) Send select MP3s to a third-party quality-control or offste archive server." >> $CTB
 			echo -e "*/15 * * * * /opt/osdial/bin/AST_qc_transfer.pl > /dev/null 2>&1" >> $CTB
 		fi
-		kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1
+	else
+		touch $CTB > /dev/null 2>&1 || :
+		chown asterisk:asterisk $CTB > /dev/null 2>&1 || :
+		echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
+		echo -e "28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
+		echo -e "29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
+		echo -e "*/15 * * * * /opt/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (archive) Compress wav files to mp3" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/AST_audio_compress.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (archive) Sort MP3s into campaign_id/date directory structure" >> $CTB
+		echo -e "* * * * * /opt/osdial/bin/AST_sort_recordings.pl > /dev/null 2>&1" >> $CTB
+		echo -e "" >> $CTB
+		echo -e "### (archive) Send select MP3s to a third-party quality-control or offste archive server." >> $CTB
+		echo -e "*/15 * * * * /opt/osdial/bin/AST_qc_transfer.pl > /dev/null 2>&1" >> $CTB
 	fi
+	kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
 fi
 echo -n
 
@@ -2215,9 +2420,6 @@ echo -n
 
 %files sql
 %defattr(644,asterisk,asterisk,755)
-#%attr(0644,root,root) %{_opt}/osdial/bin/sql/*.sql
-#%attr(0644,root,root) %{_opt}/osdial/bin/sql/upgrade_sql.map
-#%attr(0755,root,root) %{_opt}/osdial/bin/sql/upgrade_sql.pl
 %attr(0755,root,root) %{_opt}/osdial/bin/sql/upstream_conversion.sh
 
 
@@ -2231,6 +2433,7 @@ echo -n
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/extensions.conf
 %attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/extconfig.conf
 %attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/res_mysql.conf
+%attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/http.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/iax.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/iaxprov.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/indications.conf
@@ -2270,21 +2473,14 @@ echo -n
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/rtp.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/voicemail.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/chan_dahdi.conf
-#%attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/dahdi/system.conf
 %attr(0644,asterisk,asterisk) %{_sysconfdir}/asterisk/README.osdial
 %dir %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/sounds/ivr
 %dir %attr(0777,asterisk,asterisk) %{_var}/lib/asterisk/sounds/osdial
 %dir %attr(0777,asterisk,asterisk) %{_var}/lib/asterisk/sounds/tts
-#%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/*.gsm
-#%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/*.g729
-#%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/*.sln
-#%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/*.sln16
-#%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/*.ulaw
-#%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/*.wav
+%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDagent_conf.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDamd.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDamd_post.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/VD_auto_post_VERIFY.agi
-#%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-IVR_recording_verification.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-VDAD_ALL_inbound.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-VDAD_LB_transfer.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-VDAD_LO_transfer.agi
@@ -2293,7 +2489,6 @@ echo -n
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-VDADautoREMINDERxfer.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDfixCXFER.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-VDADinbound_NI_DNC_CIDlookup.agi
-#%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-VDADlisten_DTMF.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-VDADselective_CID.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-VDADselective_CID_hangup.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-VDADtransfer.agi
@@ -2303,6 +2498,7 @@ echo -n
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDoutboundIVR.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDoutbound.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDivr.agi
+%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDivr-old.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDvmail_finder.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDtts.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDdtmf.agi
@@ -2351,56 +2547,7 @@ echo -n
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/gfx/images
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/gfx/treeTable
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/templates
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/templates/nextgen
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/templates/plugin
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/templates/cream
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/templates/aqua
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/templates/two
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/templates/html
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/Quotas
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/Quotas/lang
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/Quotas/js
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/Quotas/css
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/Quotas/gfx
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/MDStatus
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/MDStatus/lang
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/MDStatus/js
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/MDStatus/css
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/MDStatus/gfx
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/ipmi
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/ipmi/lang
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/ipmi/js
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/SNMPPInfo
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/SNMPPInfo/lang
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/SNMPPInfo/js
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/SNMPPInfo/css
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/SNMPPInfo/gfx
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/PS
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/PS/lang
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/PS/js
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/PS/css
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/PS/gfx
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/UpdateNotifier
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/UpdateNotifier/lang
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/UpdateNotifier/js
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/UpdateNotifier/css
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/UpdateNotifier/gfx
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/BAT
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/BAT/lang
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/BAT/js
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/BAT/css
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/BAT/gfx
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/PSStatus
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/PSStatus/lang
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/PSStatus/js
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/PSStatus/css
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/PSStatus/gfx
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/SMART
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/SMART/lang
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/SMART/js
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/SMART/css
-#%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/SMART/gfx
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/includes
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/includes/plugin
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/includes/ups
@@ -2485,7 +2632,6 @@ echo -n
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/AST_VDauto_dial.pl
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/AST_VDauto_dial_FILL.pl
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/AST_VDhopper.pl
-#%attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/AST_VDhopper_MIXtest.pl
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/AST_VDremote_agents.pl
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/AST_VDsales_export.pl
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/AST_agent_day.pl
@@ -2545,22 +2691,13 @@ echo -n
 %doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/trixbox.txt
 %doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/zhone_10b_24port.txt
 %doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/copyright
-#%doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/firewall.sh
-#%doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/osdial-template-example.tgz
-#%doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/httpd-osdial.conf
-#%doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/httpd-osdial-archive.conf
-#%doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/httpd-osdial-ari.conf
-#%doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/httpd-osdial-psi.conf
-#%doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/my.cnf
-#%doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/php.ini
-#%doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/osdial.conf
-#%doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/osdial.cron
 %doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/AUTHORS
 %doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/ChangeLog
 %doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/COPYING
 %doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/NEWS
 %doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/README
 %doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/TODO
+%doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/ISUP_codes.txt
 %doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/api/api-admin-add_lead.xml
 %doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/api/api.txt
 %doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/api/api-version.xml
@@ -2571,6 +2708,7 @@ echo -n
 %doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/conf_examples/extensions.conf
 %doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/conf_examples/extconfig.conf
 %doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/conf_examples/res_mysql.conf
+%doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/conf_examples/http.conf
 %doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/conf_examples/iax.conf
 %doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/conf_examples/iaxprov.conf
 %doc %attr(0644,root,root) %{_docdir}/osdial-%{version}/conf_examples/indications.conf
@@ -2694,7 +2832,6 @@ echo -n
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/robots.txt
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/favicon.ico
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/active_list_refresh.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/astguiclient.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/call_log_display.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/conf_exten_check.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/dbconnect.php
@@ -2705,7 +2842,6 @@ echo -n
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/vdc_db_query.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/osdial.php
 %attr(0644,apache,asterisk) %{_opt}/osdial/html/agent/print_email_template.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/voicemail_check.php
 %attr(0644,apache,asterisk) %{_opt}/osdial/html/agent/webform_redirect.php
 %attr(0644,apache,asterisk) %config(noreplace) %{_opt}/osdial/html/agent/webform_test.php
 %attr(0644,apache,asterisk) %config(noreplace) %{_opt}/osdial/html/agent/webform-event_members.php
@@ -2721,53 +2857,24 @@ echo -n
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/api.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/copyright.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/tocsv.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_CLOSERstats.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_VDADstats.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_OSDIAL_hopperlist.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_admin_log_display.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_agent_disposition.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_agent_performance.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_agent_performance_detail.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_agent_time_sheet.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_agent_time_sheet_archive.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_inboundEXTstats.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_inboundEXTstats_department.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_parkstats.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_server_performance.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_timeonVDAD.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_timeonVDADall.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_timeonVDADallREC.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_timeonVDADallSUMMARY.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_timeonpark.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/admin.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/admin_modify_lead.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/admin_search_lead.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/closer-fronter_popup.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/closer-fronter_popup2.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/closer.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/closer_dispo.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/closer_popup.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/dbconnect.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/group_hourly_stats.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/getmedia.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/help.png
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/help.gif
 %attr(0775,apache,asterisk) %{_opt}/osdial/html/admin/listloader.pl
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/listloaderMAIN.php
 %attr(0775,apache,asterisk) %{_opt}/osdial/html/admin/listloader_rowdisplay.pl
 %attr(0775,apache,asterisk) %{_opt}/osdial/html/admin/listloader_super.pl
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/log_test.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/new_listloader_superL.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/phone_stats.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/record_conf_1_hour.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/remote_dispo.php
 %attr(0775,apache,asterisk) %{_opt}/osdial/html/admin/spreadsheet_sales_viewer.pl
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/user_stats.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/user_status.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/vdremote.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/osdial_sales_viewer.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/voice_lab.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/vtiger_search.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/welcome.php
 %attr(0664,apache,asterisk) %config(noreplace) %{_opt}/osdial/html/admin/VMnow.txt
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/admin.js
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/EditableSelect.js
@@ -2796,16 +2903,12 @@ echo -n
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/campaigns/pause.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/campaigns/ivr.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/campaigns/realtime.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/campaigns/realtime_detail.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/campaigns/realtime_summary.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/campaigns/recycle.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/campaigns/status.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/filters/filters.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/filters/iframe.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/ingroups/iframe.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/ingroups/ingroups.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/lists/advanced_search.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/lists/basic_search.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/lists/export.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/lists/iframe.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/lists/list_loader.php
@@ -2831,13 +2934,10 @@ echo -n
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/reports/realtime_detail.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/reports/realtime_summary.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/reports/reports.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/reports/list_performance.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/reports/server_performance.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/reports/usergroup_hourly.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/reports/web_admin_log.php
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/remoteagent/iframe.php
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/remoteagent/remoteagent.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/scripts/email_templates.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/admin/remoteagent.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/scripts/iframe.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/scripts/scripts.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/usergroups/iframe.php
@@ -2849,6 +2949,8 @@ echo -n
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/functions.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/header.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/help.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/help.xml
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/help.xsd
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/includes.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/init.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/menu.php
@@ -2856,7 +2958,6 @@ echo -n
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/variables.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/index.php
 %attr(0664,apache,asterisk) %config(noreplace) %{_opt}/osdial/html/admin/admin_changes_log.txt
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/admin_config.inc
 %attr(0664,apache,asterisk) %config(noreplace) %{_opt}/osdial/html/admin/discover_stmts.txt
 %attr(0664,apache,asterisk) %config(noreplace) %{_opt}/osdial/html/admin/listloader_stmts.txt
 %attr(0664,apache,asterisk) %config(noreplace) %{_opt}/osdial/html/admin/project_auth_entries.txt
@@ -2871,14 +2972,15 @@ echo -n
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/include/osdial-login.js
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/include/osdial-static.js
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/index.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/test_OSDIAL_output.php
-#%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/test_callerid_output.php
 
 #%files debuginfo
 #%defattr(644,root,root,755)
 #/usr/lib/debug/opt/osdial/bin/ip_relay.debug
 
 %changelog
+* Fri Apr 19 2013 Lott Caskey <lottc@fugitol.com> 3.0.0.096
+- Release 3.0.0
+
 * Tue Dec 22 2009 Lott Caskey <lottc@fugitol.com> 2.2.0.038-182
 - Brand 2.2.0
 
