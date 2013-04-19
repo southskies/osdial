@@ -196,6 +196,7 @@ install-docs: .osdial.config
 	@install -p -m 666 ./www/admin/*.txt $(DESTDIR)$(PATHweb)/admin
 	@install -p -m 644 ./www/admin/*.php $(DESTDIR)$(PATHweb)/admin
 	@install -p -m 755 ./www/admin/*.pl $(DESTDIR)$(PATHweb)/admin
+	@install -p -m 644 ./www/admin/*.gif $(DESTDIR)$(PATHweb)/admin
 	@install -p -m 644 ./www/admin/*.png $(DESTDIR)$(PATHweb)/admin
 	@install -p -m 644 ./www/admin/*.css $(DESTDIR)$(PATHweb)/admin
 	@install -p -m 644 ./www/admin/templates/default/*.css $(DESTDIR)$(PATHweb)/admin/templates/default
