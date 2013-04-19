@@ -535,3 +535,84 @@ div.scroll_script {
     text-decoration: none;
     text-shadow: rgba(0,0,0,0.4) 1px -1px 4px;
 }
+#AddtlFormTab {
+    -webkit-transform: rotate(90deg);
+    font-size: 7pt;
+    color: #0D2999;
+    border-radius: 6px 6px 0px 0px;
+    padding-left: 2px;
+    padding-right: 2px;
+    background-color: #6C8DBB;
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-top-color: #000;
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-right-color: #000;
+    border-left-width: 1px;
+    border-left-style: solid;
+    border-left-color: #000;
+}
+#AddtlFormTabExpandedCancel {
+    -webkit-transform: rotate(90deg);
+    font-size: 7pt;
+    color: #0D2999;
+    border-radius: 6px 6px 0px 0px;
+    padding-left: 2px;
+    padding-right: 2px;
+    background-color: #6C8DBB;
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-top-color: #000;
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-right-color: #000;
+    border-left-width: 1px;
+    border-left-style: solid;
+    border-left-color: #000;
+}
+#AddtlFormTabExpanded {
+    border-radius: 6px 0px 0px 6px;
+    background: -webkit-linear-gradient(top, #6C8DBB, #5C7DAB);
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-top-color: #000;
+    border-left-width: 1px;
+    border-left-style: solid;
+    border-left-color: #000;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #000;
+}
+#AddtlFormTabExpandedTop {
+    font-size: 8pt;
+    color: #0D2999;
+    text-align: center;
+    padding: 2px;
+}
+.AddtlFormTabExpandedItem {
+}
+.AddtlFormTabExpandedButton {
+    text-align: center;
+    color: #0D2999;
+    font-size: 10pt;
+    background: -webkit-linear-gradient(top, #5C7DAB, #6C8DBB);
+    margin: 5px;
+    padding: 6px;
+}
+.AddtlFormTabExpandedButtonOver {
+    text-align: center;
+    color: #0D2999;
+    font-size: 10pt;
+    background: -webkit-linear-gradient(top, #7C9DCB, #6C8DBB);
+    margin: 5px;
+    padding: 6px;
+}
+.AddtlFormTabExpandedButtonSelect {
+    text-align: center;
+    color: #0D2999;
+    font-size: 10pt;
+    background: -webkit-linear-gradient(top, #7C9DCB, #7C9DCB);
+    margin: 5px;
+    padding: 6px;
+}

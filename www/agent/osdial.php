@@ -2755,41 +2755,36 @@ flush();
                 </td>
             </tr>
         </table>
-        <div id="AddtlFormTab" style="visibility:hidden;position:absolute;left:980px;top:22px;z-index:9;" onclick="AddtlFormOver();">
-            <img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/agentsidetab_tab.png" width="10" height="46" border="0">
+        <div id="AddtlFormTab" style="visibility:hidden;position:absolute;left:<? echo (980-15); ?>;px;top:36px;z-index:9;" onclick="AddtlFormOver();">
+            FORMS
         </div>
-        <div id="AddtlFormTabExpanded" style="visibility:hidden;position:absolute;left:840px;top:22px;z-index:9;">
-            <table width=140 cellspacing=0 cellpadding=0>
-                <tr background="templates/<?php echo $config['settings']['agent_template']; ?>/images/agentsidetab_top.png" height=15 onclick="AddtlFormSelect('Cancel');">
-                    <td></td>
-                </tr>
+        <div id="AddtlFormTabExpanded" style="visibility:hidden;position:absolute;left:847px;top:22px;z-index:9;">
+                <div id="AddtlFormTabExpandedTop" height=15 onclick="AddtlFormSelect('Cancel');">
+                    Select Additional Form
+                </div>
                 <?php
                 if ($email_templates) {
-                    echo "  <tr id=AddtlFormButEmailTemplates style=\"background-image:url(templates/" . $config['settings']['agent_template'] . "/images/agentsidetab_extra.png);\" height=29 ";
-                    echo "    onmouseover=\"AddtlFormButOver('EmailTemplates');\" onmouseout=\"AddtlFormButOut('EmailTemplates');\">\n";
-                    echo "      <td align=center onclick=\"AddtlFormSelect('EmailTemplates');\">\n";
-                    echo "          <div class=AFMenu>EmailTemplates</div>\n";
-                    echo "      </td>\n";
-                    echo "  </tr>\n";
+                    echo "  <div class=AddtlFormTabExpandedItem height=29>\n";
+                    echo "    <div class=AddtlFormTabExpandedButton id=AddtlFormButEmailTemplates";
+                    echo "     onclick=\"AddtlFormSelect('EmailTemplates');\" onmouseover=\"AddtlFormButOver('EmailTemplates');\" onmouseout=\"AddtlFormButOut('EmailTemplates');\" >\n";
+                    echo "      EmailTemplates\n";
+                    echo "    </div>\n";
+                    echo "  </div>\n";
                 }
                 foreach ($forms as $form) {
                     foreach (OSDpreg_split('/,/',$form['campaigns']) as $fcamp) {
                         if ($fcamp == 'ALL' or OSDstrtoupper($fcamp) == OSDstrtoupper($VD_campaign)) {
-                            echo "  <tr id=AddtlFormBut" . $form['name'] . " style=\"background-image:url(templates/" . $config['settings']['agent_template'] . "/images/agentsidetab_extra.png);\" height=29 ";
-                            echo "    onmouseover=\"AddtlFormButOver('" . $form['name'] . "');\" onmouseout=\"AddtlFormButOut('" . $form['name'] . "');\">\n";
-                            echo "      <td align=center onclick=\"AddtlFormSelect('" . $form['name'] . "');\">\n";
-                            echo "          <div class=AFMenu>" . $form['name'] . "</div>\n";
-                            echo "      </td>\n";
-                            echo "  </tr>\n";
+                            echo "  <div class=AddtlFormTabExpandedItem height=29>\n";
+                            echo "    <div class=AddtlFormTabExpandedButton id=AddtlFormBut" . $form['name'];
+                            echo "     onclick=\"AddtlFormSelect('" . $form['name'] . "');\" onmouseover=\"AddtlFormButOver('" . $form['name'] . "');\" onmouseout=\"AddtlFormButOut('" . $form['name'] . "');\" >\n";
+                            echo "     ".$form['name']."\n";
+                            echo "    </div>\n";
+                            echo "  </div>\n";
                         }
                     }
                 } ?>
-                <tr id="AddtlFormButSelect4" background="templates/<?php echo $config['settings']['agent_template']; ?>/images/agentsidetab_line.png" height=1>
-                    <td></td>
-                </tr>
-            </table>
-            <div style="position:absolute;left:139px;top:0px;z-index:9;">
-                <img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/agentsidetab_cancel.png" width="10" height="46" border="0" onclick="AddtlFormSelect('Cancel');">
+            <div id="AddtlFormTabExpandedCancel" style="position:absolute;left:<?php echo (139-24); ?>px;top:15px;z-index:9;" onclick="AddtlFormSelect('Cancel')";>
+                CANCEL
             </div>
         </div>
     </span>

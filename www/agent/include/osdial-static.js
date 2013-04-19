@@ -5645,7 +5645,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 // AddtlFormButOver(AFform) - Change to the selected image of AFform on mouseover.
 	function AddtlFormButOver(AFform) {
 		debug("<b>AddtlFormButOver:</b> AFform=" + AFform,2);
-		document.getElementById('AddtlFormBut' + AFform).style.background='url(templates/' + agent_template + '/images/agentsidetab_select.png)'; 
+		//document.getElementById('AddtlFormBut' + AFform).style.background='-webkit-linear-gradient(top, #7C9DCB, #6C8DBB)';
+		document.getElementById('AddtlFormBut' + AFform).className='AddtlFormTabExpandedButtonOver';
 	}
 
 
@@ -5654,7 +5655,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 // AddtlFormButOut(AFform) - Change to the deselected image of AFform on mouseout.
 	function AddtlFormButOut(AFform) {
 		debug("<b>AddtlFormButOut:</b> AFform=" + AFform,2);
-		document.getElementById('AddtlFormBut' + AFform).style.background='url(templates/' + agent_template + '/images/agentsidetab_extra.png)'; 
+		//document.getElementById('AddtlFormBut' + AFform).style.background='-webkit-linear-gradient(top, #5C7DAB, #6C8DBB)';
+		document.getElementById('AddtlFormBut' + AFform).className='AddtlFormTabExpandedButton';
 	}
 
 
@@ -5664,13 +5666,15 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 	function AddtlFormSelect(AFform) {
 		debug("<b>AddtlFormSelect:</b> AFform=" + AFform,2);
 		if (AFform != 'Cancel') {
-			document.getElementById('AddtlFormBut' + AFform).style.background='url(templates/' + agent_template + '/images/agentsidetab_press.png)'; 
+			//document.getElementById('AddtlFormBut' + AFform).style.background='-webkit-linear-gradient(top, #7C9DCB, #7C9DCB)';
+			document.getElementById('AddtlFormBut' + AFform).className='AddtlFormTabExpandedButtonSelect';
 			if (document.getElementById('AddtlFormsEmailTemplates')) document.getElementById('AddtlFormsEmailTemplates').style.visibility='hidden';
 			for (var i=0; i<AFforms.length; i++) {
 				document.getElementById('AddtlForms' + AFforms[i]).style.visibility='hidden';
 			}
 			document.getElementById('AddtlForms' + AFform).style.visibility='visible'; 
-			document.getElementById('AddtlFormBut' + AFform).style.background='url(templates/' + agent_template + '/images/agentsidetab_extra.png)'; 
+			//document.getElementById('AddtlFormBut' + AFform).style.background='-webkit-linear-gradient(top, #5C7DAB, #6C8DBB)';
+			document.getElementById('AddtlFormBut' + AFform).className='AddtlFormTabExpandedButton';
 		}
 		document.getElementById('AddtlFormTabExpanded').style.visibility='hidden';
 		document.getElementById('AddtlFormTab').style.visibility='visible';
