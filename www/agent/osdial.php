@@ -1804,7 +1804,7 @@ flush();
             <span id="AgentMuteSpan" style="position:absolute;top:0px;left:54px;"></span>
         </font>
     </span>
-    <span style="position:absolute;left:460px;top:460px;z-index:44;" id="MutedWarning"></span>
+    <span style="position:absolute;left:520px;top:455px;z-index:44;" id="MutedWarning"></span>
 
     
     <?php load_status('Initializing GUI...<br>VolumeControlSpan<br>&nbsp;'); ?>
