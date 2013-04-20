@@ -9,9 +9,34 @@ body {
 	font-family: 'dejavu sans',verdana,sans-serif;
 }
 
-Xtd {
-    border: 1px solid red;
-    
+input {
+    border: 1px solid #536E93;
+    height: 18px;
+    padding: 2px;
+}
+input:hover {
+    background-color:#F0F0F0;
+    border: 2px inset #B1CBEC;
+/*     height:18px; */
+}input:focus {
+    background-color:#B1CBEC;
+    border: 1px solid #B1CBEC;
+/*     height:18px; */
+}
+textarea {
+    border: solid 1px #536E93;
+    padding: 3px;
+    font-size: 11px;
+    color: #2a2e2c;
+    background-color: #fff;
+}
+textarea:hover {
+    background-color:#F0F0F0;
+    border: 2px inset #B1CBEC;
+}
+textarea:focus {
+    background-color:#B1CBEC;
+    border: 1px solid #B1CBEC;
 }
 
 .container {
@@ -101,7 +126,7 @@ Xtd {
 }
 
 .acrosslogin {
-	background-image: URL(images/down200.png);
+/* 	background-image: URL(images/down200.png); */
 	background-repeat:repeat-x;
 	width: 450px;
 	margin-left: auto;
@@ -121,7 +146,7 @@ Xtd {
 }
 
 .acrossagent {
-    background-color: #6987B1;
+    background-color: #6C8DBB; /*#698BBA;*/
 /*  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.0,#82A8DC ), color-stop(0.9,#6987B1 )); */
 /*  background-image:-moz-linear-gradient(top, #82A8DC, #FFF); */
 /*  background-image: URL(images/down550.png); */
@@ -146,7 +171,21 @@ Xtd {
 	color: #1C4754;
 	text-decoration: none;
 }
-
+.coveragent {
+    background-color: #6C8DBB; /*#698BBA;*/
+/*  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.0,#82A8DC ), color-stop(0.9,#6987B1 )); */
+/*  background-image:-moz-linear-gradient(top, #82A8DC, #FFF); */
+/*  background-image: URL(images/down550.png); */
+/*      background-repeat:repeat-x;  */
+/*      height:760px;  */
+    width: 990px;
+    margin-left: auto;
+    margin-right: auto; 
+    border-radius: 12px 12px 12px 12px;
+    box-shadow: rgba(0,0,0,0.3) 1px 1px 18px;
+    border:thin inset #9ABFF3;
+/*     border-style: outset inset inset outset; */
+}
 a {
 	color: #1C4754;
 	text-decoration: none;
@@ -408,9 +447,18 @@ div.text_input {
 }
 
 .submit {
+    background-color:#B1CBEC;
+    border: 1px outset #B1CBEC;
     width:80px;
 }
-
+.submit:hover {
+    background-color:#BBD7FC;
+    border: 1px outset #B1CBEC;
+}
+.submit:active {
+    background-color:#BBD7FC;
+    border: 1px inset #B1CBEC;
+}
 .containera input {
 	color: black;
 	font-family: 'dejavu sans',verdana,sans-serif;
@@ -429,7 +477,7 @@ div.text_input {
 .preview_text {
 	font-size: 13px;
 	font-family: 'dejavu sans',verdana,sans-serif;
-	background: #D0E0E7;
+/* 	background: #D0E0E7; */
 }
 
 .preview_text_red {
@@ -446,7 +494,10 @@ div.scroll_script {
 	font-size: 12px;
 	font-family: 'dejavu sans',verdana,sans-serif;
 }
-
+.script_window {
+    border: 2px solid;
+    border-style: none solid inset solid;
+}
 .scriptbutton {
 /*  background-color: #82A8DC; */
     height: 20;

@@ -4,29 +4,29 @@ $default_fc='#1C4754';
 
 $default_text=white; //'#000080';
 
-$panel_bg='#6987B1'; //'#6987B1';
+$panel_bg='#6987B1'; //'#6987B1'; #789BCA
 
 $status_fct          =white; //'#1C4754';
 $status_fc           ='#1C4754';
-$status_bg           ='#AFCFD7';
+$status_bg           ='#AFBDD7';
 $status_alert_color  ='#FF0000';
 $status_intense_color='#FFFF00';
 $status_preview_color='#1C4754';
-$status_callback_bg  ='#D0E0E7';
+$status_callback_bg  ='#AFBDD7';
 
 $system_alert_bg1    ='#FFCCCC';
 $system_alert_bg2    ='#FF9999';
 $system_alert_bg3    ='#FF3333';
 
-$preview_bg='#FFCCCC';
-$preview_fc='#D0E0E7';
+$preview_bg=$panel_bg;
+$preview_fc='black';
 
 #$script_bg='#7297A1';
 #$script_bg='#DAE1CF';
 $script_bg='#FFFFFF';
 $script_fc='#1C4754';
 
-$callback_bg ='#AECED7';
+$callback_bg ='#99ABC5';
 $callback_bg2='#E6E6E6';
 $callback_bg3='#7297A1';
 $callback_fc ='#1C4754';
@@ -64,12 +64,12 @@ $cal_fc     ='#000066';
 
 $forcedial_fc='#1C4754';
 
-$mandial_bg ='#84ABB6';
+$mandial_bg =$panel_bg;
 $mandial_fc ='#1C4754';
 $mandial_bfc='#FFD000';
 
-$hotkey_bg1='#B0DFA4';
-$hotkey_bg2='#9AC38F';
+$hotkey_bg1='#A4CCDF';
+$hotkey_bg2='#98BFD2';
 
 $hotkey_done_bg1='#FFDD99';
 $hotkey_done_bg2='#FFEEBB';
@@ -78,13 +78,13 @@ $xfer_bg1='#AFCFD7';
 $xfer_bg2='#CCCCCC';
 $xfer_fc ='#1C4754';
 
-$noone_bg ='#AFCFD7';
+$noone_bg =$panel_bg;
 $noone_fc ='#1C4754';
 $noone_fc2='#C0D0E8';
 
 $custgone_bg='#CCFFFF';
 
-$wrapup_bg='#7297A1';
+$wrapup_bg=$panel_bg;
 
 $form_fc ='#0D2999'; //'#1C4754';
 

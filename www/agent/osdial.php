@@ -151,6 +151,7 @@ $SSheight = ($MASTERheight +  20);      # 331 - script content
 $HTheight = ($MASTERheight +  10);      # 310 - transfer frame, callback comments and hotkey
 $BPheight = ($MASTERheight - 275);      # 50  - bottom buffer
 
+$title1width=60;
 
 $US='_';
 $CL=':';
@@ -1747,8 +1748,9 @@ flush();
     
 
     <!-- Logout Link -->
-    <span style="position:absolute;left:1px;top:1px;z-index:30;background-image: URL('templates/<?php echo $config['settings']['agent_template']; ?>/images/loginagain-bg.png');background-repeat:no-repeat;visibility:hidden;" id="LogouTBox">
-        <table width=1001 height=608 cellpadding=0 cellspacing=0>
+    <!--<span style="position:absolute;left:1px;top:1px;z-index:30;background-image: URL('templates/<?php echo $config['settings']['agent_template']; ?>/images/loginagain-bg.png');background-repeat:no-repeat;visibility:hidden;" id="LogouTBox">-->
+    <span style="position:absolute;left:1px;top:1px;z-index:30;background-image: URL('templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif');background-repeat:no-repeat;visibility:hidden;" id="LogouTBox">
+        <table width=1001 height=208 cellpadding=0 cellspacing=0>
             <tr>
                 <td align=center><br><span id="LogouTBoxLink">LOGOUT</span></td>
             </tr>
@@ -1757,7 +1759,7 @@ flush();
     
     
     <!-- Manual Dial Link -->
-    <span style="position:absolute;left:-60px;top:<?php echo ($MBheight-20); ?>px;z-index:12;visibility:hidden;" id="ManuaLDiaLButtons">
+    <span style="position:absolute;left:-58px;top:440px;z-index:12;visibility:hidden;" id="ManuaLDiaLButtons">
         <font class="body_text">
             <span id="MDstatusSpan"><span id="MDHopperListLink" <?php if ($allow_md_hopperlist!='Y') echo "style=\"visibility:hidden;\""; ?>><a href="#" onclick="MDHopperListCheck();return false;">HOPPER LIST</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('NO');return false;">MANUAL DIAL</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('FAST');return false;">FAST DIAL</a><br>
         </font>
@@ -1765,7 +1767,7 @@ flush();
         
 
     <!-- Call Back Link -->
-    <span style="position:absolute;left:40px;top:410px;z-index:13;visibility:hidden;" id="CallbacksButtons">
+    <span style="position:absolute;left:40px;top:<?php echo ($MBheight+10); ?>px;z-index:13;visibility:hidden;" id="CallbacksButtons">
         <font class="body_text">
             <span id="CBstatusSpan">X ACTIVE CALLBACKS</span><br>
         </font>
@@ -1780,20 +1782,13 @@ flush();
     </span>
 
     <!-- Voicmeail Button -->
-    <span style="position:absolute;left:660px;top:493px;z-index:16;" id="voicemailbutton">
+    <span style="position:absolute;left:820px;top:430px;z-index:16;" id="voicemailbutton">
         <a href="#" title="You have no messages!" onclick="voicemail_ariopen();"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/agc_check_voicemail_OFF.gif" width=170 height=30 border=0 alt="VOICEMAIL"></a>
     </span>
 
-    <!-- Hot Key Button -->
-    <?php if ($HK_statuses_camp > 0 and ($user_level >= $HKuser_level or $VU_hotkeys_active > 0)) { ?>
-        <span style="position:absolute;left:300px;top:495px;z-index:16;" id="hotkeysdisplay">
-            <a href="#" onMouseOver="HotKeys('ON')"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_XB_hotkeysactive_OFF.gif" width=137 height=32 border=0 alt="HOT KEYS INACTIVE"></a>
-        </span>
-    <?php } ?>
-
 
     <!-- D1, D2, Mute Links -->
-    <span style="position:absolute;left:840px;top:500px;z-index:22;" id="AgentMuteANDPreseTDiaL">
+    <span style="position:absolute;left:855px;top:465px;z-index:22;" id="AgentMuteANDPreseTDiaL">
         <font class="body_text">
             <?php if ($PreseT_DiaL_LinKs) {
                 if (OSDstrlen($xferconf_a_number)) { 
@@ -1809,12 +1804,12 @@ flush();
             <span id="AgentMuteSpan" style="position:absolute;top:0px;left:54px;"></span>
         </font>
     </span>
-    <span style="position:relative;left:490px;top:480px;z-index:22;" id="MutedWarning"></span>
+    <span style="position:absolute;left:460px;top:460px;z-index:44;" id="MutedWarning"></span>
 
     
     <?php load_status('Initializing GUI...<br>VolumeControlSpan<br>&nbsp;'); ?>
     <!-- Volume Control Links -->
-    <span style="position:absolute;left:935px;top:500px;z-index:19;visibility:hidden;" id="VolumeControlSpan">
+    <span style="position:absolute;left:945px;top:465px;z-index:19;visibility:hidden;" id="VolumeControlSpan">
         <span id="VolumeUpSpan" style="left:0px;top:0px;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_volume_up_off.gif" width=28 height=15 border=0></span>
         <span id="VolumeDownSpan" style="left:0px;top:17px;float:left;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_volume_down_off.gif" width=28 height=15 border=0></span>
     </span>
@@ -1828,7 +1823,7 @@ flush();
     <?php load_status('Initializing GUI...<br>CallBacKsLisTBox<br>&nbsp;'); ?>
     <!-- Choose From Available Call Backs -->
     <span style="position:absolute;left:0px;top:18px;z-index:38;visibility:hidden;" id="CallBacKsLisTBox">
-        <table border=1 bgcolor="<?php echo $callback_bg; ?>" width=<?php echo ($CAwidth+13); ?> height=460>
+        <table class=coveragent border=0 bgcolor="<?php echo $callback_bg; ?>" width=<?php echo ($CAwidth+13); ?> height=460>
             <tr>
                 <td align=center valign=top>
                     Callbacks For Agent <?php echo $VD_login; ?>
@@ -1873,8 +1868,8 @@ flush();
 
     <?php load_status('Initializing GUI...<br>NeWManuaLDiaLBox<br>&nbsp;'); ?>
     <!-- Manual Dial -->
-    <span style="position:absolute;left:0px;top:18px;z-index:39;visibility:hidden;" id="NeWManuaLDiaLBox">
-        <table border=1 bgcolor="<?php echo $mandial_bg; ?>" width=<?php echo ($CAwidth-10); ?> height=545>
+    <span class=coveragent style="position:absolute;left:2px;top:18px;z-index:39;visibility:hidden;" id="NeWManuaLDiaLBox">
+        <table class=coveragent border=0 bgcolor="<?php echo $mandial_bg; ?>" width=<?php echo ($CAwidth); ?> height=545>
             <tr>
                 <td align=center valign=top>
                     <br><b><font color=<?php echo $mandial_fc; ?>>New Manual Dial Lead For </font><font color=<?php echo $mandial_bfc; ?>><?php echo $VD_login; ?></font><font color=<?php echo $mandial_fc; ?>> In Campaign </font><font color=<?php echo $mandial_bfc; ?>><?php echo $VD_campaign; ?></font></b>
@@ -1920,10 +1915,16 @@ flush();
         </table>
     </span>
     
-    
+    <!-- Hot Key Button -->
+    <?php if ($HK_statuses_camp > 0 and ($user_level >= $HKuser_level or $VU_hotkeys_active > 0)) { ?>
+        <span style="position:relative;left:690px;top:450px;z-index:16;" id="hotkeysdisplay">
+            <a href="#" onMouseOver="HotKeys('ON')"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_XB_hotkeysactive_OFF.gif" width=137 height=32 border=0 alt="HOT KEYS INACTIVE"></a>
+        </span>
+    <?php } ?>
+                            
     <?php load_status('Initializing GUI...<br>HotKeyEntriesBox<br>&nbsp;'); ?>
     <!-- Disposition Hot Keys Window -->
-    <span style="position:absolute;left:0;top:540px;z-index:24;width:964px;visibility:hidden;" id="HotKeyEntriesBox">
+    <span style="position:absolute;left:20;top:420px;width:480px;z-index:24;visibility:hidden;" id="HotKeyEntriesBox">
         <table frame=box bgcolor="<?php echo $hotkey_bg1; ?>" height=70 align=center>
             <tr bgcolor="<?php echo $hotkey_bg2; ?>">
                 <td colspan=7><font class="sh_text"> Disposition Hot Keys: </font><font class="body_small">Press number for automatic disposition and hangup.</font></td>
@@ -2399,43 +2400,33 @@ flush();
     
     <?php load_status('Initializing GUI...<br>ScriptPanel<br>&nbsp;'); ?>
     <!-- Script window -->
-    <span style="position:absolute;left:190px;top:95px;z-index:17;width:<?php echo $SSwidth; ?>;height:<?php echo $SSheight; ?>;overflow-x:hidden;overflow-y:scroll;visibility:hidden;" id="ScriptPanel">
-        <table border=0 bgcolor="<?php echo $script_bg; ?>" width=<?php echo $SSwidth; ?> height=<?php echo $SSheight; ?>>
+    <span style="position:absolute;left:190px;top:90px;z-index:17;width:<?php echo $SSwidth; ?>;height:<?php echo ($SSheight+12); ?>;overflow-x:hidden;overflow-y:scroll;visibility:hidden;" id="ScriptPanel">
+        <table class=script_window border=0 bgcolor="<?php echo $script_bg; ?>" width=<?php echo $SSwidth; ?> height=<?php echo ($SSheight+12); ?>>
             <tr>
                 <td align=left valign=top><font class="sb_text"><span class="scroll_script" id="ScriptContents"><?php echo $t1; ?> Script will show here once a call is in progress.</span></font></td>
             </tr>
         </table>
     </span>
     
-
-    <?php load_status('Initializing GUI...<br>MaiNfooterspan<br>&nbsp;'); ?>
+                                    
     <!-- Footer Links -->
-    <span style="position:absolute;left:2px;top: 480px;z-index:15;" id="MaiNfooterspan">
-        <table id="MaiNfooter" width=<?php echo ($MNwidth+10); ?> class=bottom style="background-color:<?php echo $panel_bg; ?>;">
-            <tr height=15>
-                <td height=15>
-                    <font color=<?php echo $panel_bg; ?> face="Arial,Helvetica" size=1><?php //echo $t1; ?> Agent version: <?php echo $version; ?>&nbsp;&nbsp;Build: <?php echo $build; ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;Server: <?php echo $server_ip; ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><br>
-                    <font class="body_small"><span id="busycallsdisplay"><a href="#"  onclick="conf_channels_detail('SHOW');">Show conference call channel information</a><br><br>&nbsp;</span></font>
-                </td>
-                <td align=right height=0></td>
-            </tr>
-            <tr>
-                <td colspan=3><span id="outboundcallsspan"></span></td></tr>
-            <tr>
-                <td colspan=3>
-                    <font class="body_small">
-                        <span id="debugbottomspan"></span>
-                    </font>
-                </td>
-            </tr>
-        </table>
+    <?php load_status('Initializing GUI...<br>MaiNfooterspan<br>&nbsp;'); ?>
+    <span style="position:relative;left:40px;top:480px;z-index:4;" id="MaiNfooterspan">
+        <font color=white <?php //echo $panel_bg; ?> face="Arial,Helvetica" size=1><?php //echo $t1; ?> Agent version: <?php echo $version; ?>&nbsp;&nbsp;Build: <?php echo $build; ?>Server: <?php echo $server_ip; ?></font><br>
+        <font class="body_small"><span id="busycallsdisplay"><a href="#"  onclick="conf_channels_detail('SHOW');">Channel information</a><br><br>&nbsp;</span></font>
+        <span id="outboundcallsspan"></span>
+        <span id="debugbottomspan"></span>
     </span>
+                                                        
+                            
+
     
+    <!-- =======================================   Here is the main OSDIAL display panel  ======================================= -->
     
-    <!-- =============================   Here is the main OSDIAL display panel  ============================= -->
+<?php $citablewidth=490;$borderwidth=0; $large_comments='1'?>
     
     <?php load_status('Initializing GUI...<br>MainPanel<br>&nbsp;'); ?>
-    <span style="position:absolute;left:2px;top:46px;z-index:4;" id="MainPanel">
+    <span style="position:absolute;left:2px;top:46px;z-index:4;" id="MainPanel" border=<?php echo $borderwidth; ?>>
         <table class=acrossagent cellpadding=0 cellspacing=0>
             <tr>
                 <td>
@@ -2443,11 +2434,11 @@ flush();
 
                     <?php load_status('Initializing GUI...<br>MainPanel<br>MainTable'); ?>
                     <!-- Column widths 205 + 505 + 270 = 980 -->
-                    <table id="MainTable" class=acrossagent Xstyle="background-color:<?php //echo $panel_bg; ?>;" cellpadding=0 cellspacing=0>
+                    <table id="MainTable" class=acrossagent Xstyle="background-color:<?php //echo $panel_bg; ?>;" border=<?php echo $borderwidth; ?> cellpadding=0 cellspacing=0>
                         <tr>
                             <td width=22 colspan=2 class=curve2 style="vertical-align:bottom;">
 <!--                                 <img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/AgentTopLeft.png" width=22 height=22 align=left> -->
-                                <font class="body_text" color=<?php echo $status_fct; ?>>&nbsp;&nbsp;STATUS:&nbsp;&nbsp;</font>
+                                <font class="body_text" color=<?php echo $status_fct; ?>>&nbsp;&nbsp;&nbsp;STATUS:&nbsp;&nbsp;</font>
                                 <font class="body_text" color=<?php echo $status_fc; ?>><span id="MainStatuSSpan"></span></font>
                             </td>
 <!--                             <td width=22><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/AgentTopRight.png" width=22 height=22 align=right></td> -->
@@ -2508,7 +2499,7 @@ flush();
                                             </table>
                                         </div>
                                         
-                                        <div class="text_input" id="SendDTMFdiv">
+                                        <div class="text_input" id="SendDTMFdiv" style='margin-top:5px'>
                                             <span id="SendDTMF"><a href="#" onclick="SendConfDTMF('<?php echo $session_id; ?>');return false;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_LB_senddtmf.gif" height=19 width=93 border=0 alt="Send DTMF" align=top></a> <input type=text size=6 name=conf_dtmf class="cust_form" value="" maxlength=50></span>
                                         </div>
                                         
@@ -2527,12 +2518,12 @@ flush();
                                 <input type=hidden name=country_code value="">
                                 <input type=hidden name=uniqueid value="">
                                 <input type=hidden name=callserverip value="">
-                            
+
                                 <!-- Customer Information -->
                                 <div class="text_input" style="white-space:nowrap;overflow:hidden;" id="MainPanelCustInfo">
-                                    <table cellpadding=0 cellspacing=2>
+                                    <table cellpadding=0 cellspacing=2 width=<?php echo $citablewidth; ?> border=<?php echo $borderwidth; ?>>
                                         <tr valign=top>
-                                            <td align=center colspan=3>
+                                            <td align=center>
                                                 <table width=100% align=center border=0>
                                                     <tr valign=top>
                                                         <td width=40% align=right>
@@ -2549,115 +2540,245 @@ flush();
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>&nbsp;</td>
-                                            <td colspan=2 align=center valign=top><font class=AFHead><b>Customer Information</b></font><span id="CusTInfOSpaN"></span></td>
+                                            <td align=center valign=top><font class=AFHead><b>Customer Information</b></font><span id="CusTInfOSpaN"></span></td>
                                         </tr>
+                                    </table>
+                                    <table cellpadding=0 cellspacing=2 width=<?php echo $citablewidth; ?> border=<?php echo $borderwidth; ?>>
                                         <tr>
-                                            <td align=right><font class="body_text" color=<?php echo $form_fc; ?>><label for=lead_id>LeadID:&nbsp;</label></font></td>
-                                            <td align=left colspan=2><font class="body_input"><input type=text size=11 name=lead_id id=lead_id maxlength=11 class="cust_form" value="" readonly></font><font class="body_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font class="body_text" color=<?php echo $form_fc; ?>><label for=source_id>SourceID:&nbsp;</label></font><font class="body_input"><input type=text size=6 name=source_id id=source_id maxlength=6 class="cust_form" value="" readonly></font><font class="body_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font class="body_text" color=<?php echo $form_fc; ?>><label for=external_key>ExternalKey:&nbsp;</label></font><font class="body_input"><input type=text size=6 name=external_key id=external_key maxlength=100 class="cust_form" value="" readonly></font></td>
-                                        </tr>
-                                        <tr>
-                                            <td align=right>
-                                                <font class="body_text"><font color=<?php echo $form_fc; ?>><label for=title>Title:&nbsp;</label></font>
+                                            <td align=left width=<?php echo $title1width; ?>>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=lead_id>LeadID:</label></font>
                                             </td>
-                                            <td align=left colspan=2><font class="body_input"><input type=text size=4 name=title id=title maxlength=4 class="cust_form" value=""></font><font class="body_text" color=<?php echo $form_fc; ?>><label for=first_name>&nbsp;First:&nbsp;</label></font><font class="body_input"> <input type=text size=13 name=first_name id=first_name maxlength=30 class="cust_form" value=""></font><font class="body_text" color=<?php echo $form_fc; ?>><label for=middle_initial>&nbsp;MI:&nbsp;</label></font><font class="body_input"><input type=text size=1 name=middle_initial id=middle_initial maxlength=1 class="cust_form" value=""></font><font class="body_text" color=<?php echo $form_fc; ?>><label for=last_name>&nbsp;Last:&nbsp;</label></font><font class="body_input"><input type=text size=13 name=last_name id=last_name maxlength=30 class="cust_form" value=""></font></td>
-                                        </tr>
-                                        <tr>
-                                            <td align=right><font class="body_text" color=<?php echo $form_fc; ?>><label for=organization>Company:&nbsp;</label></font></td>
-                                            <td align=left><font class="body_input"><input type=text size=30 name=organization id=organization maxlength=255 class="cust_form" value=""></font></td>
+                                            <td align=left>
+                                                <font class="body_input"><input type=text size=11 name=lead_id id=lead_id maxlength=11 class="cust_form" value="" readonly></font>
+                                            </td>
+                                            <td>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=source_id>SourceID:</label></font>
+                                            </td>
+                                            <td>
+                                                <font class="body_input"><input type=text size=6 name=source_id id=source_id maxlength=6 class="cust_form" value="" readonly></font>
+                                            </td>
                                             <td align=right>
-                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=organization_title>Title:&nbsp;</label></font>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=external_key>ExternalKey:</label></font>
+                                            </td>
+                                            <td align=right>
+                                                <font class="body_input"><input type=text size=6 name=external_key id=external_key maxlength=100 class="cust_form" value="" readonly></font>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table cellpadding=0 cellspacing=2 width=<?php echo $citablewidth; ?> border=<?php echo $borderwidth; ?>>
+                                        <tr>
+                                            <td align=left width=<?php echo $title1width; ?>>
+                                                <font class="body_text"><font color=<?php echo $form_fc; ?>><label for=title>Mr/Ms/Prof:</label></font>
+                                            </td>
+                                            <td align=left colspan=2>
+                                                <font class="body_input"><input type=text size=4 name=title id=title maxlength=4 class="cust_form" value=""></font>
+                                            </td>
+                                            <td>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=first_name>&nbsp;First:</label></font>
+                                            </td>
+                                            <td>
+                                                <font class="body_input"> <input type=text size=13 name=first_name id=first_name maxlength=30 class="cust_form" value=""></font>
+                                            </td>
+                                            <td>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=middle_initial>&nbsp;MI:</label></font>
+                                            </td>
+                                            <td>
+                                                <font class="body_input"><input type=text size=1 name=middle_initial id=middle_initial maxlength=1 class="cust_form" value=""></font>
+                                            </td>
+                                            <td align=right>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=last_name>&nbsp;Last:</label></font>
+                                            </td>
+                                            <td align=right width=110>
+                                                <font class="body_input"><input type=text size=13 name=last_name id=last_name maxlength=30 class="cust_form" value=""></font>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table cellpadding=0 cellspacing=2 width=<?php echo $citablewidth; ?> border=<?php echo $borderwidth; ?>>
+                                        <tr>
+                                            <td align=left width=<?php echo $title1width; ?>>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=organization>Company:</label></font>
+                                            </td>
+                                            <td align=left>
+                                                <font class="body_input"><input type=text size=30 name=organization id=organization maxlength=255 class="cust_form" value=""></font>
+                                            </td>
+                                            <td align=left>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=organization_title>Title:</label></font>
+                                            </td>
+                                            <td align=right>
                                                 <font class="body_input"><input type=text size=20 name=organization_title id=organization_title maxlength=255 class="cust_form" value=""></font>
                                             </td>
-                                        <tr>
-                                            <td align=right><font class="body_text" color=<?php echo $form_fc; ?>><label for=address1>Address1:&nbsp;</label></font></td>
-                                            <td align=left colspan=2><font class="body_input"><input type=text size=58 name=address1 id=address1 maxlength=100 class="cust_form" value=""></font></td>
                                         </tr>
+                                    </table>
+                                    <table cellpadding=0 cellspacing=2 width=<?php echo $citablewidth; ?> border=<?php echo $borderwidth; ?>>
                                         <tr>
-                                            <td align=right><font class="body_text" color=<?php echo $form_fc; ?>><label for=address2>Address2:&nbsp;</label></font></td>
-                                            <td align=left><font class="body_input"><input type=text size=22 name=address2 id=address2 maxlength=100 class="cust_form" value=""></font></td>
-                                            <td align=right>
-                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=address3>Address3&nbsp;/&nbsp;Phone3:&nbsp;</label></font>
-                                                <font class="body_input"><input type=text size=15 name=address3 id=address3 maxlength=100 class="cust_form" value=""></font>
+                                            <td align=left width=<?php echo $title1width; ?>>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=address1>Address1:</label></font>
+                                            </td>
+                                            <td align=left>
+                                                <font class="body_input"><input type=text size=66 name=address1 id=address1 maxlength=100 class="cust_form" value=""></font>
                                             </td>
                                         </tr>
+                                    </table>
+                                    <table cellpadding=0 cellspacing=2 width=<?php echo $citablewidth; ?> border=<?php echo $borderwidth; ?>>
                                         <tr>
-                                            <td align=right><font class="body_text" color=<?php echo $form_fc; ?>><label for=city>City:&nbsp;</label></font></td>
-                                            <td align=left><font class="body_input"><input type=text size=22 name=city id=city maxlength=50 class="cust_form" value=""></font></td>
-                                            <td align=right> 
-                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=state>State:&nbsp;</label></font>
+                                            <td align=left width=<?php echo $title1width; ?>>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=address2>Address2:</label></font>
+                                            </td>
+                                            <td align=left>
+                                                <font class="body_input"><input type=text size=22 name=address2 id=address2 maxlength=100 class="cust_form" value=""></font>
+                                            </td>
+                                            <td align=left>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=address3>Address3&nbsp;/&nbsp;Phone3:</label></font>
+                                            </td>
+                                            <td align=right width=130>
+                                                <font class="body_input"><input type=text size=16 name=address3 id=address3 maxlength=100 class="cust_form" value=""></font>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table cellpadding=0 cellspacing=2 width=<?php echo $citablewidth; ?> border=<?php echo $borderwidth; ?>>
+                                        <tr>
+                                            <td align=left width=<?php echo $title1width; ?>>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=city>City:</label></font>
+                                            </td>
+                                            <td align=left width=181>
+                                                <font class="body_input"><input type=text size=22 name=city id=city maxlength=50 class="cust_form" value=""></font>
+                                            </td>
+                                            <td align=left width=43> 
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=state>State:</label></font>
+                                            </td>
+                                            <td>
                                                 <font class="body_input"><input type=text size=2 name=state id=state maxlength=2 class="cust_form" value=""></font>
-                                                <font class="body_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>
-                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=postal_code>Zip:&nbsp;</label></font>
+                                            </td>
+                                            <td align=right>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=postal_code>Zip:</label></font>
+                                                </td>
+                                            <td align=right width=90>
                                                 <font class="body_input"><input type=text size=9 name=postal_code id=postal_code maxlength=10 class="cust_form" value=""></font>
                                             </td>
                                         </tr>
+                                    </table>
+                                    <table cellpadding=0 cellspacing=2 width=<?php echo $citablewidth; ?> border=<?php echo $borderwidth; ?>>
                                         <tr>
-                                            <td align=right><font class="body_text" color=<?php echo $form_fc; ?>><label for=province>Province:&nbsp;</label></font></td>
+                                            <td align=left width=<?php echo $title1width; ?>>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=province>Province:</label></font>
+                                            </td>
+                                            <td align=lef>
+                                                <font class="body_input"><input type=text size=22 name=province id=province maxlength=50 class="cust_form" value=""></font>
+                                            </td>
+                                            <td align=left width=38>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=email>Email:</label></font>
+                                            </td>
+                                            <td align=right width=200>
+                                                <font class="body_input"><input type=text size=28 name=email id=email maxlength=70 class="cust_form" value="" onchange="checkEmailBlacklist();" onkeyup="checkEmailBlacklist();"></font>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table cellpadding=0 cellspacing=2 width=<?php echo $citablewidth; ?> border=<?php echo $borderwidth; ?>>
+                                        <tr>
+                                            <td align=left width=<?php echo $title1width; ?>>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=phone_number>Phone:</label></font>
+                                            </td>
                                             <td align=left>
-                                                <font class="body_input">
-                                                    <input type=text size=22 name=province id=province maxlength=50 class="cust_form" value="">
-                                                </font>
+                                                <font class="body_input"><input type=text size=11 name=phone_number id=phone_number maxlength=12 class="cust_form" value=""></font>
+                                            </td>
+                                            <td width=80>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>>&nbsp;<label for=phone_code>Country Code:</label></font>
+                                            </td>
+                                            <td>
+                                                <font class="body_input"><input type=text size=4 name=phone_code id=phone_code maxlength=10 class="cust_form" value=""></font>
                                             </td>
                                             <td align=right>
-                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=email>Email:&nbsp;</label></font>
-                                                <font class="body_input"><input type=text size=30 name=email id=email maxlength=70 class="cust_form" value="" onchange="checkEmailBlacklist();" onkeyup="checkEmailBlacklist();"></font>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=alt_phone>Phone2:</label></font>
+                                            </td>
+                                            <td align=right width=100>
+                                                <font class="body_input"><input type=text size=11 name=alt_phone id=alt_phone maxlength=12 class="cust_form" value=""></font>
                                             </td>
                                         </tr>
+                                    </table>
+                                    <table cellpadding=0 cellspacing=2 width=<?php echo $citablewidth; ?> border=<?php echo $borderwidth; ?>>
                                         <tr>
-                                            <td align=right><font class="body_text" color=<?php echo $form_fc; ?>><label for=phone_number>Phone:&nbsp;</label></font></td>
-                                            <td align=left colspan=2><font class="body_input"><input type=text size=11 name=phone_number id=phone_number maxlength=12 class="cust_form" value=""></font><font class="body_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font class="body_text" color=<?php echo $form_fc; ?>>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label for=phone_code>Country Code:&nbsp;</label></font><font class="body_input"><input type=text size=4 name=phone_code id=phone_code maxlength=10 class="cust_form" value=""></font><font class="body_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font class="body_text" color=<?php echo $form_fc; ?>><label for=alt_phone>Phone2:&nbsp;</label></font><font class="body_input"><input type=text size=11 name=alt_phone id=alt_phone maxlength=12 class="cust_form" value=""></font></td>
-                                        </tr>
-                                        <tr>
-                                            <td align=right valign=top><font class="body_text" color=<?php echo $form_fc; ?>><label for=comments>Comments:&nbsp;</label></font></td>
-                                            <td align=left colspan=2>
+                                            <td align=left valign=top width=<?php echo $title1width; ?>>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=comments>Comments:</label></font>
+                                            </td>
+                                            <td align=left>
                                                 <font class="body_tiny">
                                                     <?php if ($multi_line_comments) { ?>
-                                                        <textarea name=comments id=comments rows=3 cols=79 class="cust_form" style="height:45px;"></textarea>
+                                                        <?php if ($comment_size=='3') { ?>
+                                                                <textarea name=comments id=comments rows=20 cols=81 class="cust_form" style="height:250px;"></textarea>
+                                                            <?php } elseif ($comment_size=='2') { ?>
+                                                                <textarea name=comments id=comments rows=10 cols=81 class="cust_form" style="height:125px;"></textarea>
+                                                            <?php } else { ?>
+                                                                <textarea name=comments id=comments rows=3 cols=81 class="cust_form" style="height:45px;"></textarea>
+                                                            <?php } ?>
                                                     <?php } else { ?>
-                                                        <input type=text size=56 name=comments id=comments maxlength=255 class="cust_form" value="">
+                                                        <input type=text size=81 name=comments id=comments maxlength=255 class="cust_form" value="">
                                                     <?php } ?>
                                                 </font>
                                             </td>
                                         </tr>
+                                    </table>
+                                    <table cellpadding=0 cellspacing=2 width=<?php echo $citablewidth; ?> border=<?php echo $borderwidth; ?>>
                                         <tr>
-                                            <td align=right><font class="body_text"><font color=<?php echo $form_fc; ?>><label for=date_of_birth>Birth&nbsp;Date:&nbsp;</label></font></td>
-                                            <td align=left><font class="body_input"><input type=text size=12 name=date_of_birth id=date_of_birth maxlength=10 class="cust_form" value=""></font></td>
+                                            <td align=left width=<?php echo $title1width; ?>>
+                                                <font class="body_text"><font color=<?php echo $form_fc; ?>><label for=date_of_birth>Birth Date:</label></font>
+                                            </td>
+                                            <td align=left>
+                                                <font class="body_input"><input type=text size=12 name=date_of_birth id=date_of_birth maxlength=10 class="cust_form" value=""></font>
+                                            </td>
                                             <td align=right>
-                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=gender>Gender:&nbsp;</label></font>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=gender>Gender:</label></font>
+                                            </td>
+                                            <td align=right width=50>
                                                 <font class="body_input"><select name=gender id=gender class="cust_form"><option></option><option>M</option><option>F</option></select></font>
                                             </td>
                                         </tr>
+                                    </table>
+                                    <table cellpadding=0 cellspacing=2 width=<?php echo $citablewidth; ?> border=<?php echo $borderwidth; ?>>
                                         <tr>
-                                            <td align=right><font class="body_text"><font color=<?php echo $form_fc; ?>><label for=post_date>Post&nbsp;Date:&nbsp;</label></font></td>
-                                            <td align=left><font class="body_input"><input type=text size=22 name=post_date id=post_date maxlength=20 class="cust_form" value=""></font></td>
+                                            <td align=left width=<?php echo $title1width; ?>>
+                                                <font class="body_text"><font color=<?php echo $form_fc; ?>><label for=post_date>Post Date:</label></font>
+                                            </td>
+                                            <td align=left>
+                                                <font class="body_input"><input type=text size=22 name=post_date id=post_date maxlength=20 class="cust_form" value=""></font>
+                                            </td>
                                             <td align=right>
-                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=vendor_lead_code>Vendor&nbsp;Code:&nbsp;</label></font>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=vendor_lead_code>Vendor Code:</label></font>
+                                            </td>
+                                            <td align=right width=125>
                                                 <font class="body_input"><input type=text size=15 name=vendor_lead_code id=vendor_lead_code maxlength=20 class="cust_form" value=""></font>
                                             </td>
                                         </tr>
+                                    </table>
+                                    <table cellpadding=0 cellspacing=2 width=<?php echo $citablewidth; ?> border=<?php echo $borderwidth; ?>>
                                         <tr>
-                                            <td align=right><font class="body_text" color=<?php echo $form_fc; ?>><label for=custom1>Custom1:&nbsp;</label></font></td>
-                                            <td align=left><font class="body_input"><input type=text size=22 name=custom1 id=custom1 maxlength=100 class="cust_form" value=""></font></td>
+                                            <td align=left width=<?php echo $title1width; ?>>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=custom1>Custom1:</label></font>
+                                            </td>
+                                            <td align=left>
+                                                <font class="body_input"><input type=text size=22 name=custom1 id=custom1 maxlength=100 class="cust_form" value=""></font>
+                                            </td>
                                             <td align=right>
-                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=custom2>Custom2:&nbsp;</label></font>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=custom2>Custom2:</label></font>
+                                            </td>
+                                            <td align=right width=170>
                                                 <font class="body_input"><input type=text size=22 name=custom2 id=custom2 maxlength=100 class="cust_form" value=""></font>
                                             </td>
                                         </tr>
                                     </table>
                                 </div>
+                            
+
+
                             </td>
-
-
 
                             <?php load_status('Initializing GUI...<br>MainPanel<br>AdditionalFormFields'); ?>
                             <td width=270 align=center valign=top class=borderright>
-                                <div class="AFHead">Additional Information</div>
+                                <div class="AFHead">Additional Forms</div>
                                 <?php
                                 $cnt = 0;
 
                                 if ($email_templates) {
-                                    echo "  <div id=\"AddtlFormsEmailTemplates\" style=" . $cssvis . "position:absolute;left:710px;top:42px;z-index:6;width:265px;height:325px;overflow-x:hidden;overflow-y:auto;border-width:1px;border-style:solid;border-color:$form_fc;border-top-color:#CDEEE3;border-left-color:#CDEEE3;>\n";
+                                    echo "  <div id=\"AddtlFormsEmailTemplates\" style=" . $cssvis . "position:absolute;left:710px;top:44px;z-index:6;width:265px;height:330px;overflow-x:hidden;overflow-y:auto;border-width:1px;border-style:solid;border-color:$form_fc;border-top-color:#CDEEE3;border-left-color:#CDEEE3;>\n";
                                     echo "  <table width=265><tr><td><table align=center>\n";
                                     echo "      <tr>\n";
                                     echo "          <td colspan=3 align=center>\n";
@@ -2696,7 +2817,7 @@ flush();
                                             if ($cnt > 0) {
                                                 $cssvis = 'visibility:hidden;';
                                             }
-                                            echo "  <div id=\"AddtlForms" . $form['name'] . "\" style=" . $cssvis . "position:absolute;left:710px;top:42px;z-index:6;width:265px;height:325px;overflow-x:hidden;overflow-y:auto;border-width:1px;border-style:solid;border-color:$form_fc;border-top-color:#CDEEE3;border-left-color:#CDEEE3;>\n";
+                                            echo "  <div id=\"AddtlForms" . $form['name'] . "\" style=" . $cssvis . "position:absolute;left:710px;top:44px;z-index:6;width:265px;height:330px;overflow-x:hidden;overflow-y:auto;border-width:1px;border-style:solid;border-color:$form_fc;border-top-color:#CDEEE3;border-left-color:#CDEEE3;>\n";
                                             echo "  <table width=265><tr><td><table align=center>\n";
                                             echo "      <tr>\n";
                                             echo "          <td colspan=3 align=center>\n";
