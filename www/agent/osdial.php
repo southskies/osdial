@@ -1695,7 +1695,7 @@ flush();
                 <td colspan=3 valign=top align=center>
                     <input type=hidden name=extension>
                     <font class="body_text">
-                    <?php echo "<font color=" . $login_fc . ">&nbsp;&nbsp;Logged in as user <b>" . mclabel($VD_login) . "</b> on phone <b>" . mclabel($phone_login) . "</b> to campaign <b>" . mclabel($VD_campaign) . "</b>&nbsp;</font>\n"; ?>
+                    <?php echo "<font color=navy>&nbsp;&nbsp;Logged in as user <b> " . mclabel($VD_login) . " </b> on phone <b> " . mclabel($phone_login) . " </b> to campaign <b> " . mclabel($VD_campaign) . "</b>&nbsp;</font>\n"; ?>
                     </font>
                 </td>
                 <td colspan=3 valign=top align=right></td>
@@ -1712,26 +1712,39 @@ flush();
                 <td colspan=2>
                     <!-- Placeholder for Panel buttons. See PanelSelect element. -->
                     <div style="width:223;height:30;">&nbsp;</div>
-                    <!--img id="FormButtons" onclick="ChooseForm();" src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_tab_buttons1.gif" border="0" width="223" height="30"-->
+                    <!--img id="FormButtons" onclick="ChooseForm();" src="templates/<?php //echo $config['settings']['agent_template']; ?>/images/vdc_tab_buttons1.gif" border="0" width="223" height="30"-->
                 </td>
                 <td width=<?php echo $HSwidth; ?> valign=middle align=center>
-                    <font class="body_text" color=<?php echo $default_fc; ?>><b><span id=status>LIVE</span></b></font>
+<!--                     <font class="body_text" color=<?php echo $default_fc; ?>><b><span id=status>LIVE</span></b></font> -->
                 </td>
                 <td valign='middle' width=300>
-                    <font class="body_text" color=#FFFFFF>Session ID: <span id=sessionIDspan></span></font>
+<!--                     <font class="body_text" color=navy>Session ID: <span id=sessionIDspan></span></font> -->
                 </td>
                 <td valign='middle' width=400> 
-                    &nbsp;<font class="body_tiny" color=<?php echo $default_fc; ?>><span id=AgentStatusCalls></span></font>
+<!--                     <font class="body_small" color=navy <?php echo $default_fc; ?>><span id=AgentStatusCalls></span></font> -->
                 </td>
-                <td valign='middle'>
-                    &nbsp;<a href="#" onclick="LogouT('NORMAL');return false;"><font size=1 color='red'>LOGOUT</font></a>&nbsp;
+                <td valign='middle' width=65>
+<!--                     &nbsp;<span class=logout><a href="#" onclick="LogouT('NORMAL');return false;"><font size=1 Xcolor='red'>LOGOUT</font></a></span>&nbsp; -->
                 </td>
                 <td width=110>
-                    <font class="body_text"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/agc_live_call_OFF.gif" name=livecall alt="Live Call" width=109 height=30 border=0></font>
+<!--                     <font class="body_text"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/agc_live_call_OFF.gif" name=livecall alt="Live Call" width=109 height=30 border=0></font> -->
                 </td>
             </tr>
         </table>
+        
+        <div style="position:absolute;left:290px;top:13px;"><font class="body_text" color=white>Session ID: <span id=sessionIDspan></span></font></div>
+
+        <div style="position:absolute;left:460px;top:11px;"><font class="body_text" color=navy><b><span id=status>LIVE</span></b></font></div>
+    
+        <div style="position:absolute;left:680px;top:11px;"><font Xclass="body_tiny" color=navy><span id=AgentStatusCalls></span></font></div>
+    
+        <div style="position:absolute;left:785px;top:11px;"><span class=logout><a href="#" onclick="LogouT('NORMAL');return false;"><font>LOGOUT</font></a></span></div>
+    
+        <div style="position:absolute;left:850px;top:2px;"><font class="body_text"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/agc_live_call_OFF.gif" name=livecall alt="Live Call" width=109 height=30 border=0></font></div>
+<!--         <div class=livecall style="position:absolute;left:850px;top:2px;">NO LIVE CALL</div> -->
+    
     </span>
+    
     <span style="position:absolute;left:29px;top:18px;z-index:9;" id="PanelSelection">
       <div id="AgentPanelMAIN" style="padding:4px;position:relative;" class="AgentPanelSelect" onclick="ChoosePanel('MAIN');">
         FORM
@@ -1769,7 +1782,7 @@ flush();
         
 
     <!-- Call Back Link -->
-    <span style="position:absolute;left:40px;top:460px;z-index:13;visibility:hidden;" id="CallbacksButtons">
+    <span style="position:absolute;left:40px;top:458px;z-index:13;visibility:hidden;" id="CallbacksButtons">
         <font class="body_text">
             <span id="CBstatusSpan">&nbsp;&nbsp;&nbsp;Checking Callbacks...</span><br>
         </font>
@@ -1919,7 +1932,7 @@ flush();
     
     <!-- Hot Key Button -->
     <?php if ($HK_statuses_camp > 0 and ($user_level >= $HKuser_level or $VU_hotkeys_active > 0)) { ?>
-        <span style="position:relative;left:690px;top:450px;z-index:16;" id="hotkeysdisplay">
+        <span style="position:relative;left:695px;top:450px;z-index:16;" id="hotkeysdisplay">
             <a href="#" onMouseOver="HotKeys('ON')"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_XB_hotkeysactive_OFF.gif" width=137 height=32 border=0 alt="HOT KEYS INACTIVE"></a>
         </span>
     <?php } ?>

@@ -3025,7 +3025,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		isodate = year + "-" + month + "-" + daym;
 		tinydate = Tyear + "" + month + "" + daym + "" + hours + "" + min + "" + sec;
 		SQLdate = year + "-" + month + "-" + daym + " " + hours + ":" + min + ":" + sec;
-		document.getElementById("status").innerHTML = year + "-" + month + "-" + daym + " " + hours + ":" + min + ":" + sec  + display_message;
+		document.getElementById("status").innerHTML = "<font size=2>" + year + "-" + month + "-" + daym + " " + hours + ":" + min + ":" + sec  + display_message + "</font>";
 		if (VD_live_customer_call==1) {
 			var customer_gmt = parseFloat(document.osdial_form.gmt_offset_now.value);
 			var AMPM = 'AM';
@@ -3300,7 +3300,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		debug("<b>conf_channels_detail:</b> divvar=" + divvar,2);
 		if (divvar == 'SHOW') {
 			conf_channels_xtra_display = 1;
-			document.getElementById("busycallsdisplay").innerHTML = "<a href=\"#\"  onclick=\"conf_channels_detail('HIDE');\">Hide information</a><br/><br/>";
+			document.getElementById("busycallsdisplay").innerHTML = "<a href=\"#\"  onclick=\"conf_channels_detail('HIDE');\">Hide Information</a><br/><br/>";
 			LMAe[0]=''; LMAe[1]=''; LMAe[2]=''; LMAe[3]=''; LMAe[4]=''; LMAe[5]=''; 
 			LMAcount=0;
 		} else {
