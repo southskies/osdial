@@ -1,3 +1,5 @@
+/* admin stylesheet */
+
 :root {
     -webkit-var-myColor: rgba(255,40,10, 0.8);
     -moz-var-myColor: rgba(255,40,10, 0.8);
@@ -22,8 +24,6 @@
 	.homepagebg {
 		background-image:-webkit-gradient(linear, center top, left bottom, color-stop(0.0,#82A8DC ), color-stop(0.9,#FFF ));
 		background-image:-moz-linear-gradient(top right,#82A8DC, #FFF);
-
-		
 		border-radius: 20px 20px 20px 20px;
 		box-shadow: rgba(0,0,0,0.5) 1px 1px 28px;
 		margin-top:50px;
