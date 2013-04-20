@@ -145,7 +145,7 @@ start() {
 			echo "Agent Login and Password:  1000 / 1000" | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}' >> /etc/issue
 			echo >> /etc/issue
 		fi
-		echo "Temporary root password is osdial1234, change ASAP!" | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}' >> /etc/issue
+		#echo "Temporary root password is osdial1234, change ASAP!" | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}' >> /etc/issue
 		echo >> /etc/issue
 		echo " --- " >> /etc/issue
 
