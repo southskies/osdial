@@ -2411,9 +2411,8 @@ flush();
                                     
     <!-- Footer Links -->
     <?php load_status('Initializing GUI...<br>MaiNfooterspan<br>&nbsp;'); ?>
-    <span style="position:relative;left:40px;top:480px;z-index:4;" id="MaiNfooterspan">
-        <font color=white <?php //echo $panel_bg; ?> face="Arial,Helvetica" size=1><?php //echo $t1; ?> Agent version: <?php echo $version; ?>&nbsp;&nbsp;Build: <?php echo $build; ?>Server: <?php echo $server_ip; ?></font><br>
-        <font class="body_small"><span id="busycallsdisplay"><a href="#"  onclick="conf_channels_detail('SHOW');">Channel information</a><br><br>&nbsp;</span></font>
+    <span style="position:relative;left:-105px;top:480px;z-index:40;" id="MaiNfooterspan">
+        <font class="body_small"><span id="busycallsdisplay"><a href="#"  onclick="conf_channels_detail('SHOW');">Channel information</a><br></span></font>
         <span id="outboundcallsspan"></span>
         <span id="debugbottomspan"></span>
     </span>

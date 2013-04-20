@@ -504,7 +504,7 @@
 								var LMAcontent_match=0;
 								agentphonelive=0;
 								var conv_start=-1;
-								var live_conf_HTML = "<font face=\"Arial,Helvetica\"><B>LIVE CALLS IN YOUR SESSION:</B></font><BR><TABLE WIDTH=" + SDwidth + "><TR><TD><font class=\"log_title\">#</TD><TD><font class=\"log_title\">REMOTE CHANNEL</TD><TD><font class=\"log_title\">HANGUP</TD><TD width=80><font class=\"log_title\">VOLUME</TD></TR>";
+								var live_conf_HTML = "<div align=center class=bottom><font face=\"Arial,Helvetica\"><TABLE WIDTH=" + SDwidth + "><tr height=20><td align=center colspan=5><font class=\"log_title\">Live Calls In Your Session:</font></td></tr><TR align=center><TD><font class=\"log_title\">#</TD><TD><font class=\"log_title\">Remote Channel</TD><TD><font class=\"log_title\">Hangup</TD><TD width=80><font class=\"log_title\">Volume</TD><td width=120><font class=\"log_title\">Muted/Unmuted</font></td></TR>";
 								if ( (LMAcount > live_conf_calls)  || (LMAcount < live_conf_calls) || (LMAforce > 0)) {
 									LMAe[0]=''; LMAe[1]=''; LMAe[2]=''; LMAe[3]=''; LMAe[4]=''; LMAe[5]=''; 
 									LMAcount=0;   LMAcontent_change++;
@@ -530,18 +530,21 @@
 									} else if ( channelfieldA.match(/^Local\/386.....@osdial/) ) {
 										var hide_channel=1;
 									} else if (volumecontrol_active!=1) {
-										live_conf_HTML = live_conf_HTML + "<tr id=\"channel_row_"+loop_ct+"\" bgcolor=\"" + row_color + "\"><td><font class=\"log_text\">" + loop_ct + "</td><td><font class=\"" + chan_name_color + "\">" + channelfieldA + "</td><td><font class=\"log_text\"><a href=\"#\" onclick=\"livehangup_send_hangup('" + channelfieldA + "');return false;\">HANGUP</a></td><td></td></tr>";
+										live_conf_HTML = live_conf_HTML + "<tr id=\"channel_row_"+loop_ct+"\" bgcolor=\"" + row_color + "\"><td><font class=\"log_text\">" + loop_ct + "</td><td><font class=\"" + chan_name_color + "\">" + channelfieldA + "</td><td><font class=\"log_text\"><a href=\"#\" onclick=\"livehangup_send_hangup('" + channelfieldA + "');return false;\">HANGUP</a></td><td></td><td></td></tr>";
 									} else {
 										live_conf_HTML += "<tr id=\"channel_row_"+loop_ct+"\" height=30 bgcolor=\"" + row_color + "\">";
 										live_conf_HTML += "<td><font class=\"log_text\">" + loop_ct + "</td>";
 										live_conf_HTML += "<td><font class=\"" + chan_name_color + "\">" + channelfieldA + "</td>";
-										live_conf_HTML += "<td><font class=\"log_text\"><a href=\"#\" onclick=\"livehangup_send_hangup('" + channelfieldA + "');return false;\">HANGUP</a></td>";
+										live_conf_HTML += "<td align=center><font class=\"log_text\"><a href=\"#\" onclick=\"livehangup_send_hangup('" + channelfieldA + "');return false;\">HANGUP</a></td>";
 										live_conf_HTML += "<td><span id=CHAN"+loop_ct+"controlVOL style=\"position:relative;top:-14px;left:10px;\">";
 										live_conf_HTML += "<span id=\"CHAN"+loop_ct+"volUP\" style=\"position:absolute;top:0px;left:0px;\"><a href=\"#\" onclick=\"volume_control('UP','" + channelfieldA + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_up.gif\" width=28 height=15 BORDER=0></a></span>";
 										live_conf_HTML += "<span id=\"CHAN"+loop_ct+"volDOWN\" style=\"position:absolute;top:14px;left:0px;\"><a href=\"#\" onclick=\"volume_control('DOWN','" + channelfieldA + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_down.gif\" width=28 height=14 BORDER=0></a></span>";
+                                        
 										live_conf_HTML += "<span id=\"CHAN"+loop_ct+"mute\" style=\"position:absolute;top:0px;left:33px;visibility:visible;\"><a href=\"#\" onclick=\"volume_control('MUTING','" + channelfieldA + "','');document.getElementById('CHAN"+loop_ct+"mute').style.visibility='hidden';document.getElementById('CHAN"+loop_ct+"unmute').style.visibility='visible';document.getElementById('CHANIMG"+loop_ct+"muted').style.visibility='visible';return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_MUTE.gif\" width=28 height=28 BORDER=0></a></span>";
+                                        
 										live_conf_HTML += "<span id=\"CHAN"+loop_ct+"unmute\" style=\"position:absolute;top:0px;left:33px;visibility:hidden;\"><a href=\"#\" onclick=\"volume_control('UNMUTE','" + channelfieldA + "','');document.getElementById('CHAN"+loop_ct+"unmute').style.visibility='hidden';document.getElementById('CHAN"+loop_ct+"mute').style.visibility='visible';document.getElementById('CHANIMG"+loop_ct+"muted').style.visibility='hidden';return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_UNMUTE.gif\" onclick=\"document.getElementById('CHANIMG"+loop_ct+"muted').style.visibility='hidden';\" width=28 height=28 BORDER=0></a></span>";
-										live_conf_HTML += "<span id=\"CHANIMG"+loop_ct+"muted\" style=\"position:absolute;top:0px;left:80;visibility:hidden;\"><img src=\"templates/" + agent_template + "/images/muted.gif\" width=120 height=28 BORDER=0></span></td></tr>";
+                                        
+										live_conf_HTML += "<span id=\"CHANIMG"+loop_ct+"muted\" style=\"position:absolute;top:-5px;left:75;visibility:hidden;\"><div class=muted_on width=140 height=35 BORDER=0>MUTED</div></span></td></tr><tr height=20px><td align=center colspan=5><font color=black face=\"Arial,Helvetica\" size=1><?php echo $t1; ?> Agent version: <?php echo $version; ?>&nbsp;&nbsp;Build: <?php echo $build; ?>Server: <?php echo $server_ip; ?></font></td></tr></table></div>";
 									}
 									//var debugspan = document.getElementById("debugbottomspan").innerHTML;
 
@@ -610,7 +613,7 @@
 								if (LMAcontent_change > 0) {
 									if (conf_channels_xtra_display == 1) {
 										document.getElementById("outboundcallsspan").innerHTML = live_conf_HTML;
-										document.getElementById("channel_row_"+agentphonelive).style.backgroundColor = '#AFCFD7';
+										document.getElementById("channel_row_"+agentphonelive).style.backgroundColor = '#AFBFD7';
 									}
 								}
 								nochannelinsession=0;
@@ -3293,7 +3296,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		debug("<b>conf_channels_detail:</b> divvar=" + divvar,2);
 		if (divvar == 'SHOW') {
 			conf_channels_xtra_display = 1;
-			document.getElementById("busycallsdisplay").innerHTML = "<a href=\"#\"  onclick=\"conf_channels_detail('HIDE');\">Hide channel information</a><br/>";
+			document.getElementById("busycallsdisplay").innerHTML = "<a href=\"#\"  onclick=\"conf_channels_detail('HIDE');\">Hide information</a><br/><br/>";
 			LMAe[0]=''; LMAe[1]=''; LMAe[2]=''; LMAe[3]=''; LMAe[4]=''; LMAe[5]=''; 
 			LMAcount=0;
 		} else {

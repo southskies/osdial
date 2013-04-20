@@ -97,9 +97,11 @@ textarea:focus {
 }
 
 .bottom {
-	Xbackground-repeat:no-repeat;
-    border-radius: 0px 0px 12px 12px;
+	background: #6987B1;
+    border-radius: 12px 12px 12px 12px;
     box-shadow: rgba(0,0,0,0.5) 2px 2px 18px;
+    margin:0 0 0 105px;
+    width:530px;
 }
 
 .across-top {
@@ -393,7 +395,8 @@ div.text_input {
 }
 
 .log_title {
-	font-size: 12px;
+    color: white;
+	font-size: 13px;
 	font-family: monospace;
 	font-weight: bold;
 }
