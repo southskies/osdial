@@ -3,10 +3,12 @@
 	font-style: normal;
 	font-weight: normal;
 	src: local('dejavu sans'), url('DejaVuSans.ttf') format('truetype');
+    
 }
 
 body {
 	font-family: 'dejavu sans',verdana,sans-serif;
+    text-decoration: none;
 }
 
 input {
@@ -17,11 +19,10 @@ input {
 input:hover {
     background-color:#F0F0F0;
     border: 2px inset #B1CBEC;
-/*     height:18px; */
-}input:focus {
+}
+input:focus {
     background-color:#B1CBEC;
     border: 1px solid #B1CBEC;
-/*     height:18px; */
 }
 textarea {
     border: solid 1px #536E93;
@@ -37,6 +38,32 @@ textarea:hover {
 textarea:focus {
     background-color:#B1CBEC;
     border: 1px solid #B1CBEC;
+}
+
+div.scroll_callback {
+    height: 300px;
+    width: 920px;
+    overflow: scroll;
+}
+
+div.scroll_list {
+    height: 400px;
+    width: 140px;
+    overflow: scroll;
+}
+
+div.text_input {
+    overflow: auto;
+    font-size: 10px;
+    font-family: 'dejavu sans',verdana,sans-serif;
+}
+div.scroll_script {
+    height:306px;
+    width:514px;
+    background: #FFF5EC;
+    overflow: scroll;
+    font-size: 12px;
+    font-family: 'dejavu sans',verdana,sans-serif;
 }
 
 .container {
@@ -320,32 +347,6 @@ a:visited {
 
 }
 
-input, textarea {
-	color: black;
-	font-family: 'dejavu sans',verdana,sans-serif;
-	font-size: 12px;
-	height: 20px;
-	padding: 0px;
-}
-
-div.scroll_callback {
-	height: 300px;
-	width: 920px;
-	overflow: scroll;
-}
-
-div.scroll_list {
-	height: 400px;
-	width: 140px;
-	overflow: scroll;
-}
-
-div.text_input {
-	overflow: auto;
-	font-size: 10px;
-	font-family: 'dejavu sans',verdana,sans-serif;
-}
-
 .body_text {
 	font-size: 10px;
 	font-family: 'dejavu sans',verdana,sans-serif;
@@ -489,14 +490,6 @@ div.text_input {
 	background: #FFCCCC;
 }
 
-div.scroll_script {
-	height:306px;
-	width:514px;
-	background: #FFF5EC;
-	overflow: scroll;
-	font-size: 12px;
-	font-family: 'dejavu sans',verdana,sans-serif;
-}
 .script_window {
     border: 2px solid;
     border-style: none solid inset solid;
@@ -580,9 +573,58 @@ div.scroll_script {
     height:200px;
     width:500px;
 }
+.login_again_bg2 {
+    background: #5676B1; /* #5884DC; */
+    height:600px;
+    width:1000px;
+}
+.login_again2 {
+    font-size:20pt;
+    font-weight: bold;
+    text-decoration: none;
+    background-position:center;
+    background-image:-webkit-gradient(linear, top, bottom, color-stop(0.0,#82A8DC ), color-stop(0.9,#DDE));
+    background-image:-moz-linear-gradient(top right,#82A8DC, #FFF);
+    border-radius: 12px 12px 12px 12px;
+    border:thin solid #E2EBEE;
+    border-style: outset groove none outset;
+    box-shadow: rgba(0,0,0,0.7) 1px 1px 12px;
+    margin: 10px 0 0 10px;
+    height:600px;
+    width:990px;
+}
 .login_again a:link {
     color: #82A8DC;
     text-shadow: rgba(0,0,0,0.7) 0px 0px 1px;
+}
+.homepagelogo {
+    /*margin-left:30px;
+    margin-top:0px;*/
+}
+.homepagever {
+    color: #F60;
+    font-size: 28pt;
+    /*margin:0px 40px 25px 0px;*/
+    text-shadow: rgba(0,0,0,.4) 3px 3px 10px;
+}
+.homepage {
+    text-align: center;
+    text-decoration: none;
+    font-size: 18pt;
+    color: #D4A322;
+}
+.homepage a {
+    color: #D4A322;
+    
+}
+.homepage a:link {
+    color: #D4A322;
+    text-shadow: rgba(0,0,0,.6) 1px -1px 1px;
+    
+}
+.homepage a:hover {
+    color: #F90;
+    text-shadow: rgba(1,1,3,0.8) 1px 1px 1px;
 }
 .login_again a:hover {
     color: #0007D4;

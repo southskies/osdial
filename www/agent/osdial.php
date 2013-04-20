@@ -50,6 +50,7 @@ $VD_login=get_variable("VD_login");
 $VD_pass=get_variable("VD_pass");
 $VD_campaign=get_variable("VD_campaign");
 $relogin=get_variable("relogin");
+$admin_version=$config['settings']['version'];
 
 if (empty($phone_login)) $phone_login=get_variable("pl");
 if (empty($phone_pass)) $phone_pass=get_variable("pp");
@@ -1749,17 +1750,18 @@ flush();
 
     <!-- Logout Link -->
     <!--<span style="position:absolute;left:1px;top:1px;z-index:30;background-image: URL('templates/<?php echo $config['settings']['agent_template']; ?>/images/loginagain-bg.png');background-repeat:no-repeat;visibility:hidden;" id="LogouTBox">-->
-    <span style="position:absolute;left:1px;top:1px;z-index:30;background-image: URL('templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif');background-repeat:no-repeat;visibility:hidden;" id="LogouTBox">
-        <table width=1001 height=208 cellpadding=0 cellspacing=0>
-            <tr>
-                <td align=center><br><span id="LogouTBoxLink">LOGOUT</span></td>
-            </tr>
-        </table>
+    <?php $AdmVer=substr($admin_version,0,3); ?>
+    <span style="position:absolute;left:1px;top:1px;z-index:100;background:white;visibility:hidden;" id="LogouTBox">
+        <div bgcolor=white class=login_again2>
+            <div style="position:absolute;left:417px;top:280px;" id="LogouTBoxLink"></div>
+            <div style="position:absolute;left:30px;top:495px;"><img class=homepagelogo src='templates/default/images/osdial-logo.gif' height=100></div>
+            <div class=homepagever style="position:absolute;left:880px;top:550px;"><font style='font-size:17pt;'>V</font><?php echo $AdmVer?></div>
+        </div>
     </span>
     
     
     <!-- Manual Dial Link -->
-    <span style="position:absolute;left:-58px;top:440px;z-index:12;visibility:hidden;" id="ManuaLDiaLButtons">
+    <span style="position:absolute;left:-58px;top:430px;z-index:12;visibility:hidden;" id="ManuaLDiaLButtons">
         <font class="body_text">
             <span id="MDstatusSpan"><span id="MDHopperListLink" <?php if ($allow_md_hopperlist!='Y') echo "style=\"visibility:hidden;\""; ?>><a href="#" onclick="MDHopperListCheck();return false;">HOPPER LIST</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('NO');return false;">MANUAL DIAL</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('FAST');return false;">FAST DIAL</a><br>
         </font>
@@ -1767,9 +1769,9 @@ flush();
         
 
     <!-- Call Back Link -->
-    <span style="position:absolute;left:40px;top:<?php echo ($MBheight+10); ?>px;z-index:13;visibility:hidden;" id="CallbacksButtons">
+    <span style="position:absolute;left:40px;top:460px;z-index:13;visibility:hidden;" id="CallbacksButtons">
         <font class="body_text">
-            <span id="CBstatusSpan">X ACTIVE CALLBACKS</span><br>
+            <span id="CBstatusSpan">&nbsp;&nbsp;&nbsp;Checking Callbacks...</span><br>
         </font>
     </span>
         
@@ -1924,7 +1926,7 @@ flush();
                             
     <?php load_status('Initializing GUI...<br>HotKeyEntriesBox<br>&nbsp;'); ?>
     <!-- Disposition Hot Keys Window -->
-    <span style="position:absolute;left:20;top:420px;width:480px;z-index:24;visibility:hidden;" id="HotKeyEntriesBox">
+    <span style="position:absolute;left:20;top:415px;width:480px;z-index:24;visibility:hidden;" id="HotKeyEntriesBox">
         <table frame=box bgcolor="<?php echo $hotkey_bg1; ?>" height=70 align=center>
             <tr bgcolor="<?php echo $hotkey_bg2; ?>">
                 <td colspan=7><font class="sh_text"> Disposition Hot Keys: </font><font class="body_small">Press number for automatic disposition and hangup.</font></td>
@@ -2411,8 +2413,8 @@ flush();
                                     
     <!-- Footer Links -->
     <?php load_status('Initializing GUI...<br>MaiNfooterspan<br>&nbsp;'); ?>
-    <span style="position:relative;left:-105px;top:480px;z-index:40;" id="MaiNfooterspan">
-        <font class="body_small"><span id="busycallsdisplay"><a href="#"  onclick="conf_channels_detail('SHOW');">Channel information</a><br></span></font>
+    <span style="position:relative;left:-105px;top:455px;z-index:5;" id="MaiNfooterspan">
+        <font class="body_small"><span id="busycallsdisplay"><a href="#"  onclick="conf_channels_detail('SHOW');">Channel Information</a><br></span></font>
         <span id="outboundcallsspan"></span>
         <span id="debugbottomspan"></span>
     </span>
@@ -2766,7 +2768,7 @@ flush();
                                     </table>
                                 </div>
                             
-
+<br/>
 
                             </td>
 
