@@ -137,7 +137,7 @@ start() {
 		echo >> /etc/issue
 		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-control" -o -f "/opt/osdial/.osdial-install-control" -o -f "/opt/osdial/.osdial-sql" -o -f "/opt/osdial/.osdial-install-sql" -o -f "/opt/osdial/.osdial-live" ]; then
 			echo "You may now boot the Agent-DemoCD in another computer" | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}' >> /etc/issue
-			echo "or point your Firefox browser to http://$INET/" | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}' >> /etc/issue
+			echo "or point your Chrome or Firefox browser to http://$INET/" | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}' >> /etc/issue
 			echo >> /etc/issue
 			echo "Admin Login and Password: admin / admin" | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}' >> /etc/issue
 			echo >> /etc/issue
@@ -146,6 +146,9 @@ start() {
 			echo >> /etc/issue
 		fi
 		#echo "Temporary root password is osdial1234, change ASAP!" | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}' >> /etc/issue
+		echo "You may login to the console by using the username 'root'" | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}' >> /etc/issue
+		echo "and the password you chose during installation." | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}' >> /etc/issue
+		echo "The password can be changed by issuing the 'passwd' command after login." | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}' >> /etc/issue
 		echo >> /etc/issue
 		echo " --- " >> /etc/issue
 
