@@ -11,29 +11,16 @@ body {
     text-decoration: none;
 }
 
-input {
+input, textarea {
     border: 1px solid #4B668B;
     height: 18px;
     padding: 2px;
 }
-input:hover {
+input:hover, textarea:hover {
     background-color:#D3D0AB;
     border: 1px solid #4B668B;
 }
-input:focus {
-    background-color:#B1CBEC;
-    border: 1px solid #4B668B;
-}
-textarea {
-    border: 1px solid #4B668B;
-    padding: 2px;
-    background-color: #fff;
-}
-textarea:hover {
-    background-color:#D3D0AB;
-    border: 1px solid #4B668B;
-}
-textarea:focus {
+input:focus, textarea:focus {
     background-color:#B1CBEC;
     border: 1px solid #4B668B;
 }

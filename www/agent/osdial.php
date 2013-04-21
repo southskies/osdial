@@ -2639,13 +2639,13 @@ flush();
                                             <td align=left width=<?php echo $title1width; ?>>
                                                 <font class="body_text" color=<?php echo $form_fc; ?>><label for=address2>Address 2:</label></font>
                                             </td>
-                                            <td align=left>
+                                            <td align=left >
                                                 <font class="body_input"><input type=text size=22 name=address2 id=address2 maxlength=100 class="cust_form" value=""></font>
                                             </td>
                                             <td align=left>
-                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=address3>Address 3&nbsp;/&nbsp;Phone 3:</label></font>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=address3>Address 3 / Phone 3:</label></font>
                                             </td>
-                                            <td align=right width=130>
+                                            <td align=right width=125>
                                                 <font class="body_input"><input type=text size=16 name=address3 id=address3 maxlength=100 class="cust_form" value=""></font>
                                             </td>
                                         </tr>
@@ -2710,10 +2710,10 @@ flush();
                                             </td>
                                         </tr>
                                     </table>
-                                    <table cellpadding=0 cellspacing=2 width=<?php echo $citablewidth; ?> border=<?php echo $borderwidth; ?>>
+                                    <table cellpadding=0 cellspacing=2 width=480 <?php echo $citablewidth; ?> border=<?php echo $borderwidth; ?>>
                                         <tr>
                                             <td align=left valign=top width=<?php echo $title1width; ?>>
-                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=comments>Comments:</label></font>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=comments style='margin-right:2px;'>Comments:</label></font>
                                             </td>
                                             <td align=left>
                                                 <font class="body_tiny">
@@ -2723,7 +2723,7 @@ flush();
                                                             <?php } elseif ($comment_size=='2') { ?>
                                                                 <textarea name=comments id=comments rows=10 cols=81 class="cust_form" style="height:125px;"></textarea>
                                                             <?php } else { ?>
-                                                                <textarea name=comments id=comments rows=3 cols=81 class="cust_form" style="height:45px;"></textarea>
+                                                                <textarea name=comments id=comments rows=3 cols=100% class="cust_form" style="height:45px;width:424px !important;"></textarea>
                                                             <?php } ?>
                                                     <?php } else { ?>
                                                         <input type=text size=81 name=comments id=comments maxlength=255 class="cust_form" value="">
