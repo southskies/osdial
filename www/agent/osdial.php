@@ -1695,7 +1695,7 @@ flush();
                 <td colspan=3 valign=top align=center>
                     <input type=hidden name=extension>
                     <font class="body_text">
-                    <?php echo "<font color=navy>&nbsp;&nbsp;Logged in as user <b> " . mclabel($VD_login) . " </b> on phone <b> " . mclabel($phone_login) . " </b> to campaign <b> " . mclabel($VD_campaign) . "</b>&nbsp;</font>\n"; ?>
+                    <?php echo "<font color=#698DBB>Logged in as user <font color=navy><b> " . mclabel($VD_login) . "</font> </b> on phone <font color=navy><b> " . mclabel($phone_login) . "</font> </b> to campaign <font color=navy><b> " . mclabel($VD_campaign) . "</b>&nbsp;</font>\n"; ?>
                     </font>
                 </td>
                 <td colspan=3 valign=top align=right></td>
@@ -1706,12 +1706,12 @@ flush();
 
     <?php load_status('Initializing GUI...<br>Tabs<br>&nbsp;'); ?>
     <!-- 2nd line -->
-    <span style="position:absolute;left:0px;top:13px;z-index:1;" id="Tabs">
+    <span style="position:absolute;left:0px;top:3px;z-index:1;margin-top:7px;" id="Tabs">
         <table width=<?php echo ($MNwidth-10); ?> height=30 border=0> 
             <tr valign=top align=left>
                 <td colspan=2>
                     <!-- Placeholder for Panel buttons. See PanelSelect element. -->
-                    <div style="width:223;height:30;">&nbsp;</div>
+                    <div style="width:200;height:30;">&nbsp;</div>
                     <!--img id="FormButtons" onclick="ChooseForm();" src="templates/<?php //echo $config['settings']['agent_template']; ?>/images/vdc_tab_buttons1.gif" border="0" width="223" height="30"-->
                 </td>
                 <td width=<?php echo $HSwidth; ?> valign=middle align=center>
@@ -1734,9 +1734,9 @@ flush();
         
         <div style="position:absolute;left:270px;top:13px;"><font class="body_text" color=white>Session ID: <span id=sessionIDspan></span></font></div>
 
-        <div style="position:absolute;left:420px;top:11px;"><font class="body_text" color=navy><b><span id=status>LIVE</span></b></font></div>
+        <div style="position:absolute;left:420px;top:11px;text-shadow: rgba(0,0,0,0.2) 1px 1px 1px;"><font class="body_text" color=navy><b><span id=status>LIVE</span></b></font></div>
     
-        <div style="position:absolute;left:610px;top:11px;"><font Xclass="body_tiny" color=navy><span id=AgentStatusCalls></span></font></div>
+        <div style="position:absolute;left:610px;top:11px;text-shadow: rgba(0,0,0,0.2) 1px 1px 1px;"><font Xclass="body_tiny" color=navy><span id=AgentStatusCalls></span></font></div>
     
         <div style="position:absolute;left:785px;top:11px;"><span class=logout><a href="#" onclick="LogouT('NORMAL');return false;"><font>LOGOUT</font></a></span></div>
     
@@ -2903,12 +2903,12 @@ flush();
                 </td>
             </tr>
         </table>
-        <div id="AddtlFormTab" style="visibility:hidden;position:absolute;left:<? echo (980-15); ?>;px;top:36px;z-index:9;" onclick="AddtlFormOver();">
+        <div id="AddtlFormTab" style="visibility:hidden;position:absolute;left:<? echo (980-15); ?>;px;top:36px;z-index:9;" class=sidetab onclick="AddtlFormOver();">
             FORMS
         </div>
-        <div id="AddtlFormTabExpanded" style="visibility:hidden;position:absolute;left:847px;top:22px;z-index:9;">
-                <div id="AddtlFormTabExpandedTop" height=15 onclick="AddtlFormSelect('Cancel');">
-                    Select Additional Form
+        <div id="AddtlFormTabExpanded" style="visibility:hidden;position:absolute;left:831px;top:22px;z-index:9;box-shadow: rgba(0,0,0,0.5) -1px -1px 18px;background:#8FB1DC;">
+                <div id="AddtlFormTabExpandedTop" height=16 onclick="AddtlFormSelect('Cancel');" style='width:142px !important;'>
+                    Select A Form
                 </div>
                 <?php
                 if ($email_templates) {
@@ -2931,7 +2931,7 @@ flush();
                         }
                     }
                 } ?>
-            <div id="AddtlFormTabExpandedCancel" style="position:absolute;left:<?php echo (139-24); ?>px;top:15px;z-index:9;" onclick="AddtlFormSelect('Cancel')";>
+            <div id="AddtlFormTabExpandedCancel" style="position:absolute;left:<?php echo (139-10); ?>px;top:15px;z-index:9;box-shadow: rgba(0,0,0,0.5) 1px -1px 18px;background:#86A6D3;" onclick="AddtlFormSelect('Cancel')";>
                 CANCEL
             </div>
         </div>

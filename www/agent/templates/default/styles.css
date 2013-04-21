@@ -93,7 +93,7 @@ div.scroll_script {
 }
 
 .mainpage {
-    background: -webkit-gradient(linear, left bottom, center top, color-stop(0.0,#82A8DC ), color-stop(0.3,#698DBB ));
+    background: -webkit-gradient(linear, right top, center bottom, color-stop(0.0,#89A9D6 ), color-stop(0.4,#698DBB ));
     background:-moz-linear-gradient(top, #82A8DC, #6987B1);
     background-color: #6C8DBB; /*#698BBA; */
     border-radius: 12px 12px 12px 12px;
@@ -748,41 +748,41 @@ a:visited {
     z-index: 8;
     font-family: 'dejavu sans',verdana,sans-serif;
     font-weight: bold;
-    font-size: 12pt;
+    font-size: 9pt;
     text-align: center;
     display: inline-block;
-    color: #373737;
+    color: #5A5A5A;
     border-radius: 10px 10px 0px 0px;
     width: 90px;
     background: -webkit-linear-gradient(top, #5C7DAB, #A3B7D3);
-    border-top-width: 1px;
-    border-top-style: solid;
-    border-top-color: #000;
-    border-right-width: 1px;
-    border-right-style: solid;
-    border-right-color: #000;
-    border-left-width: 1px;
-    border-left-style: solid;
-    border-left-color: #000;
+    border-top: 0px solid #000;
+    border-right: 0px solid #000;
+    border-left: 0px solid #000;
+    border-bottom: 1px solid #97ADCC;
+    box-shadow: rgba(0,0,0,0.4) -1px -1px 4px;
 }
 .AgentPanelSelect {
     z-index: 9;
+    margin-top:4px;
     font-family: 'dejavu sans',verdana,sans-serif;
     font-weight: bold;
-    font-size: 12pt;
+    font-size: 10pt;
     text-align: center;
     display: inline-block;
-    color: #000;
+    color: #FFF;
     border-radius: 10px 10px 0px 0px;
     width: 90px;
-    background: -webkit-linear-gradient(top, #D4DFEE, #6C8DBB);
-    border-top-width: 1px;
-    border-top-style: solid;
-    border-top-color: #000;
-    border-right-width: 1px;
-    border-right-style: solid;
-    border-right-color: #000;
-    border-left-width: 1px;
-    border-left-style: solid;
-    border-left-color: #000;
+    background: -webkit-linear-gradient(top, #C3D3E8, #698DBB);
+    border-top: 0px solid #000;
+    border-right: 0px solid #000;
+    border-left: 0px solid #000;
+    border-bottom: 1px solid #698DBB;
+    box-shadow: rgba(0,0,0,0.5) -2px -2px 10px;
 }
+.sidetab {
+    background: -webkit-linear-gradient(bottom, #86A6D3, #AACBFA);
+/*     background: -webkit-linear-gradient(bottom, #999, #DDD); */
+    box-shadow: rgba(0,0,0,0.2) 6px -6px 6px;
+    padding: 1px;
+}
+
