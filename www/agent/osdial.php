@@ -2442,14 +2442,14 @@ flush();
     
     <?php load_status('Initializing GUI...<br>MainPanel<br>&nbsp;'); ?>
     <span style="position:absolute;left:2px;top:46px;z-index:4;" id="MainPanel" border=<?php echo $borderwidth; ?>>
-        <table class=acrossagent cellpadding=0 cellspacing=0>
+        <table cellpadding=0 cellspacing=0>
             <tr>
                 <td>
 
 
                     <?php load_status('Initializing GUI...<br>MainPanel<br>MainTable'); ?>
                     <!-- Column widths 205 + 505 + 270 = 980 -->
-                    <table id="MainTable" class=acrossagent Xstyle="background-color:<?php //echo $panel_bg; ?>;" border=<?php echo $borderwidth; ?> cellpadding=0 cellspacing=0>
+                    <table id="MainTable" class=mainpage Xstyle="background-color:<?php //echo $panel_bg; ?>;" border=<?php echo $borderwidth; ?> cellpadding=0 cellspacing=0>
                         <tr>
                             <td width=22 colspan=2 class=curve2 style="vertical-align:bottom;">
 <!--                                 <img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/AgentTopLeft.png" width=22 height=22 align=left> -->

@@ -92,6 +92,14 @@ div.scroll_script {
 	color: navy;
 }
 
+.mainpage {
+    background: -webkit-gradient(linear, left bottom, center top, color-stop(0.0,#82A8DC ), color-stop(0.3,#698DBB ));
+    background:-moz-linear-gradient(top, #82A8DC, #6987B1);
+    background-color: #6C8DBB; /*#698BBA; */
+    border-radius: 12px 12px 12px 12px;
+    box-shadow: rgba(0,0,0,0.6) 1px 1px 18px;
+}
+
 .curve2 {
 	background-repeat:no-repeat;
 	background-position:left;
