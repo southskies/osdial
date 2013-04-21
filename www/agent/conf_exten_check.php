@@ -235,7 +235,7 @@ if ($ACTION == 'refresh') {
                     if ($RingCalls > 0) {
                         $RingCalls = "<font class=\"queue_text_red\">Call Queue: In-$RingCallsin Out-$RingCallsout</font>";
                     } else {
-                        $RingCalls = "<font class=\"queue_text\">Call Queue: $RingCalls</font>";
+                        $RingCalls = "<span style='margin-left:25px;'><font class=\"queue_text\">Call Queue: $RingCalls</font></span>";
                     }
 
                     ### grab the number of calls being placed from this server and campaign
