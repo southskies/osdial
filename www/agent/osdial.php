@@ -2187,7 +2187,7 @@ flush();
 
     <?php load_status('Initializing GUI...<br>SysteMAlerTBoX<br>&nbsp;'); ?>
     <!-- System Alert -->
-    <span style="position:absolute;left:0px;top:300px;z-index:41;visibility:hidden;" id="SysteMAlerTBoX">
+    <span style="position:absolute;left:2px;top:300px;z-index:41;visibility:hidden;" id="SysteMAlerTBoX">
         <table class=acrossagent border=1 width=<?php echo $CAwidth; ?> height=300 cellspacing=20>
             <tr>
                 <td align=center bgcolor="<?php echo $system_alert_bg2; ?>">
@@ -2250,7 +2250,7 @@ flush();
         </table>
     </span>
     <!-- Hide Disposition Button A -->
-    <span style="position:absolute;left:0px;top:70px;z-index:31;visibility:hidden;" id="DispoButtonHideA">
+    <span style="position:absolute;left:2px;top:70px;z-index:31;visibility:hidden;" id="DispoButtonHideA">
         <table border=0 bgcolor="<?php echo $dispo_hide; ?>" width=165 height=22>
             <tr>
                 <td align=center valign=top></td>
@@ -2258,7 +2258,7 @@ flush();
         </table>
     </span>
     <!-- Hide Disposition Button B -->
-    <span style="position:absolute;left:0px;top:138px;z-index:32;visibility:hidden;" id="DispoButtonHideB">
+    <span style="position:absolute;left:2px;top:138px;z-index:32;visibility:hidden;" id="DispoButtonHideB">
         <table border=0 bgcolor="<?php echo $dispo_hide; ?>" width=165 height=250>
             <tr>
                 <td align=center valign=top>&nbsp;</td>
@@ -2266,7 +2266,7 @@ flush();
         </table>
     </span>
     <!-- Hide Disposition Button C -->
-    <span style="position:absolute;left:0px;top:18px;z-index:33;visibility:hidden;" id="DispoButtonHideC">
+    <span style="position:absolute;left:2px;top:18px;z-index:33;visibility:hidden;" id="DispoButtonHideC">
         <table border=0 bgcolor="<?php echo $dispo_hide; ?>" width=<?php echo $CAwidth; ?> height=47>
             <tr>
                 <td align=center valign=top>Any changes made to the customer information below at this time will not be comitted, You must change customer information before you Hangup the call.</td>
@@ -2277,7 +2277,7 @@ flush();
     
     <?php load_status('Initializing GUI...<br>PauseCodeSelectBox<br>&nbsp;'); ?>
     <!-- Pause Code Window -->
-    <span style="position:absolute;left:0px;top:18px;z-index:40;visibility:hidden;" id="PauseCodeSelectBox">
+    <span style="position:absolute;left:2px;top:18px;z-index:40;visibility:hidden;" id="PauseCodeSelectBox">
         <table class=acrossagent frame=box width=<?php echo ($CAwidth-10); ?> height=500>
             <tr>
                 <td align=center valign=top>
@@ -2296,7 +2296,7 @@ flush();
     
     <?php load_status('Initializing GUI...<br>CallBackSelectBox<br>&nbsp;'); ?>
     <!-- Callback Window -->
-    <span style="position:absolute;left:0px;top:18px;z-index:35;visibility:hidden;" id="CallBackSelectBox">
+    <span style="position:absolute;left:2px;top:18px;z-index:35;visibility:hidden;" id="CallBackSelectBox">
         <table border=1 bgcolor="<?php echo $callback_bg3; ?>" width=<?php echo $CAwidth; ?> height=480>
             <tr>
                 <td align=center valign=top>
@@ -2359,7 +2359,7 @@ flush();
 
     <?php load_status('Initializing GUI...<br>PostDateSelectBox<br>&nbsp;'); ?>
     <!-- PostDate Window -->
-    <span style="position:absolute;left:0px;top:18px;z-index:35;visibility:hidden;" id="PostDateSelectBox">
+    <span style="position:absolute;left:2px;top:18px;z-index:35;visibility:hidden;" id="PostDateSelectBox">
         <table border=1 bgcolor="<?php echo $callback_bg3; ?>" width=<?php echo $CAwidth; ?> height=480>
             <tr>
                 <td align=center valign=top>
