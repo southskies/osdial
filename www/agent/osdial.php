@@ -1732,11 +1732,11 @@ flush();
             </tr>
         </table>
         
-        <div style="position:absolute;left:290px;top:13px;"><font class="body_text" color=white>Session ID: <span id=sessionIDspan></span></font></div>
+        <div style="position:absolute;left:270px;top:13px;"><font class="body_text" color=white>Session ID: <span id=sessionIDspan></span></font></div>
 
-        <div style="position:absolute;left:460px;top:11px;"><font class="body_text" color=navy><b><span id=status>LIVE</span></b></font></div>
+        <div style="position:absolute;left:420px;top:11px;"><font class="body_text" color=navy><b><span id=status>LIVE</span></b></font></div>
     
-        <div style="position:absolute;left:680px;top:11px;"><font Xclass="body_tiny" color=navy><span id=AgentStatusCalls></span></font></div>
+        <div style="position:absolute;left:610px;top:11px;"><font Xclass="body_tiny" color=navy><span id=AgentStatusCalls></span></font></div>
     
         <div style="position:absolute;left:785px;top:11px;"><span class=logout><a href="#" onclick="LogouT('NORMAL');return false;"><font>LOGOUT</font></a></span></div>
     
@@ -1755,11 +1755,6 @@ flush();
     </span>
 
 
-    <!-- Debug -->
-    <span style="position:absolute;left:970px;top:<?php echo $DBheight; ?>px;z-index:16;" id="DebugLink">
-        <font class="body_text"><a href="#" onclick="openDebugWindow();return false;">o</a></font>
-    </span>
-    
 
     <!-- Logout Link -->
     <!--<span style="position:absolute;left:1px;top:1px;z-index:30;background-image: URL('templates/<?php echo $config['settings']['agent_template']; ?>/images/loginagain-bg.png');background-repeat:no-repeat;visibility:hidden;" id="LogouTBox">-->
@@ -2430,9 +2425,15 @@ flush();
         <font class="body_small"><span id="busycallsdisplay"><a href="#"  onclick="conf_channels_detail('SHOW');">Channel Information</a><br></span></font>
         <span id="outboundcallsspan"></span>
         <span id="debugbottomspan"></span>
+        
+    <!-- Debug -->
+    <!--<span style="position:absolute;left:9px;top:9px <?php //echo $DBheight; ?>;" id="DebugLink">
+        <font class="body_text"><a href="#" onclick="openDebugWindow();return false;">o</a></font>
+    </span>-->
+    
     </span>
-                                                        
-                            
+    
+    
 
     
     <!-- =======================================   Here is the main OSDIAL display panel  ======================================= -->
@@ -2539,15 +2540,15 @@ flush();
                                         <tr valign=top>
                                             <td align=center>
                                                 <table width=100% align=center border=0>
-                                                    <tr valign=top>
-                                                        <td width=40% align=right>
-                                                            <font class="body_text" color=<?php echo $form_fc; ?>><label for=SecondS>CallDuration:&nbsp;</label></font>
-                                                            <font class="body_input"><input type=text size=4 name=SecondS id=SecondS class="cust_form" value="" readonly></font>
-                                                        </td>
+                                                    <tr align=center valign=top>
+                                                        <td align=center>
+                                                            <font class="body_text" color=<?php echo $form_fc; ?>><label for=SecondS>Call Duration:&nbsp;</label></font>
+                                                            <font class="body_input_rev"><input type=text size=4 name=SecondS id=SecondS class="display_field" value="" readonly></font>&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        <!--</td>
                                                         <td width=10% align=center><font class="body_text" color=#ABCBD4><span id=callchannel style="font-size:5pt;overflow:hidden;"></span></font></td>
-                                                        <td width=50% align=left>
-                                                            <font class="body_text" color=<?php echo $form_fc; ?>><label for=custdatetime>Cust Time:&nbsp;</label></font>
-                                                            <font class="body_input"><input type=text size=19 maxlength=22 name=custdatetime id=custdatetime class="cust_form" value="" readonly></font>
+                                                        <td align=left>-->
+                                                            <font class="body_text" color=<?php echo $form_fc; ?>><label for=custdatetime>Customer's Time:&nbsp;</label></font>
+                                                            <font class="body_input_rev"><input type=text size=17 maxlength=22 name=custdatetime id=custdatetime class="display_field" value="" readonly></font>
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -2560,32 +2561,32 @@ flush();
                                     <table cellpadding=0 cellspacing=2 width=<?php echo $citablewidth; ?> border=<?php echo $borderwidth; ?>>
                                         <tr>
                                             <td align=left width=<?php echo $title1width; ?>>
-                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=lead_id>LeadID:</label></font>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=lead_id>Lead ID:</label></font>
                                             </td>
                                             <td align=left>
-                                                <font class="body_input"><input type=text size=11 name=lead_id id=lead_id maxlength=11 class="cust_form" value="" readonly></font>
+                                                <font class="body_input"><input type=text size=11 name=lead_id id=lead_id maxlength=11 class="display_field_border" value="" readonly></font>
+                                            </td>
+                                            <td width=55>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=source_id>Source ID:</label></font>
                                             </td>
                                             <td>
-                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=source_id>SourceID:</label></font>
-                                            </td>
-                                            <td>
-                                                <font class="body_input"><input type=text size=6 name=source_id id=source_id maxlength=6 class="cust_form" value="" readonly></font>
+                                                <font class="body_input"><input type=text size=6 name=source_id id=source_id maxlength=6 class="display_field_border" value="" readonly></font>
                                             </td>
                                             <td align=right>
-                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=external_key>ExternalKey:</label></font>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=external_key>External Key:</label></font>
                                             </td>
-                                            <td align=right>
-                                                <font class="body_input"><input type=text size=6 name=external_key id=external_key maxlength=100 class="cust_form" value="" readonly></font>
+                                            <td align=right width=70>
+                                                <font class="body_input"><input type=text size=6 name=external_key id=external_key maxlength=100 class="display_field_border" value="" readonly></font>
                                             </td>
                                         </tr>
                                     </table>
                                     <table cellpadding=0 cellspacing=2 width=<?php echo $citablewidth; ?> border=<?php echo $borderwidth; ?>>
                                         <tr>
                                             <td align=left width=<?php echo $title1width; ?>>
-                                                <font class="body_text"><font color=<?php echo $form_fc; ?>><label for=title>Mr/Ms/Prof:</label></font>
+                                                <font class="body_text"><font color=<?php echo $form_fc; ?>><label for=title>Mr / Ms:</label></font>
                                             </td>
                                             <td align=left colspan=2>
-                                                <font class="body_input"><input type=text size=4 name=title id=title maxlength=4 class="cust_form" value=""></font>
+                                                <font class="body_input_rev"><input type=text size=4 name=title id=title maxlength=4 class="cust_form" value=""></font>
                                             </td>
                                             <td>
                                                 <font class="body_text" color=<?php echo $form_fc; ?>><label for=first_name>&nbsp;First:</label></font>
@@ -2626,7 +2627,7 @@ flush();
                                     <table cellpadding=0 cellspacing=2 width=<?php echo $citablewidth; ?> border=<?php echo $borderwidth; ?>>
                                         <tr>
                                             <td align=left width=<?php echo $title1width; ?>>
-                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=address1>Address1:</label></font>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=address1>Address 1:</label></font>
                                             </td>
                                             <td align=left>
                                                 <font class="body_input"><input type=text size=66 name=address1 id=address1 maxlength=100 class="cust_form" value=""></font>
@@ -2636,13 +2637,13 @@ flush();
                                     <table cellpadding=0 cellspacing=2 width=<?php echo $citablewidth; ?> border=<?php echo $borderwidth; ?>>
                                         <tr>
                                             <td align=left width=<?php echo $title1width; ?>>
-                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=address2>Address2:</label></font>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=address2>Address 2:</label></font>
                                             </td>
                                             <td align=left>
                                                 <font class="body_input"><input type=text size=22 name=address2 id=address2 maxlength=100 class="cust_form" value=""></font>
                                             </td>
                                             <td align=left>
-                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=address3>Address3&nbsp;/&nbsp;Phone3:</label></font>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=address3>Address 3&nbsp;/&nbsp;Phone 3:</label></font>
                                             </td>
                                             <td align=right width=130>
                                                 <font class="body_input"><input type=text size=16 name=address3 id=address3 maxlength=100 class="cust_form" value=""></font>
@@ -2702,7 +2703,7 @@ flush();
                                                 <font class="body_input"><input type=text size=4 name=phone_code id=phone_code maxlength=10 class="cust_form" value=""></font>
                                             </td>
                                             <td align=right>
-                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=alt_phone>Phone2:</label></font>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=alt_phone>Phone 2:</label></font>
                                             </td>
                                             <td align=right width=100>
                                                 <font class="body_input"><input type=text size=11 name=alt_phone id=alt_phone maxlength=12 class="cust_form" value=""></font>
@@ -2766,13 +2767,13 @@ flush();
                                     <table cellpadding=0 cellspacing=2 width=<?php echo $citablewidth; ?> border=<?php echo $borderwidth; ?>>
                                         <tr>
                                             <td align=left width=<?php echo $title1width; ?>>
-                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=custom1>Custom1:</label></font>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=custom1>Custom 1:</label></font>
                                             </td>
                                             <td align=left>
                                                 <font class="body_input"><input type=text size=22 name=custom1 id=custom1 maxlength=100 class="cust_form" value=""></font>
                                             </td>
                                             <td align=right>
-                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=custom2>Custom2:</label></font>
+                                                <font class="body_text" color=<?php echo $form_fc; ?>><label for=custom2>Custom 2:</label></font>
                                             </td>
                                             <td align=right width=170>
                                                 <font class="body_input"><input type=text size=22 name=custom2 id=custom2 maxlength=100 class="cust_form" value=""></font>
@@ -2842,10 +2843,10 @@ flush();
                                             foreach ($fields as $field) {
                                                 $desc = OSDpreg_replace('/"/','',$field['description']);
                                                 echo "      <tr title=\"$desc\">\n";
-                                                echo "          <td width=95 align=right><div style=\"overflow:hidden;white-space:nowrap;\"><font color=$form_fc class=body_text style=\"font-size:10px;\">" . $field['description'] . ":&nbsp;</font></div></td>\n";
+                                                echo "          <td width=95 align=left><div style=\"overflow:hidden;white-space:nowrap;\"><font color=$form_fc class=body_text style=\"font-size:11px;\">" . $field['description'] . ":&nbsp;</font></div></td>\n";
                                                 echo "          <td align=left>\n";
                                                 if (empty($field['options'])) {
-                                                    echo "          <input type=text style=\"font-size:10px;\" size=" . $field['length'] . " maxlength=255 name=AF" . $field['id'] . " id=AF" . $field['id'];
+                                                    echo "          <input type=text style=\"font-size:11px;\" size=" . $field['length'] . " maxlength=255 name=AF" . $field['id'] . " id=AF" . $field['id'];
                                                     #echo "            onclick=\"alert(document.osdial_form.AF" . $field['id'] . ".clientWidth);\"";
                                                     echo "            onchange=\"var afv=this;";
                                                     echo "              var aflist=document.getElementsByName('" . $form['name'] . '_' . $field['name'] . "');";
@@ -2854,7 +2855,7 @@ flush();
                                                     echo "              };\"";
                                                     echo "            class=cust_form value=\"\">\n";
                                                 } else {
-                                                    echo "          <select style=\"font-size:10px;\" name=AF" . $field['id'] . " id=AF" . $field['id'];
+                                                    echo "          <select style=\"font-size:11px;\" name=AF" . $field['id'] . " id=AF" . $field['id'];
                                                     echo "            onchange=\"var afv=this;";
                                                     echo "              var aflist=document.getElementsByName('" . $form['name'] . '_' . $field['name'] . "');";
                                                     echo "              for(var afli=0;afli<aflist.length;afli++){";

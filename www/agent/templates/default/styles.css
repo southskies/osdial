@@ -12,50 +12,51 @@ body {
 }
 
 input {
-    border: 1px solid #536E93;
+    border: 1px solid #4B668B;
     height: 18px;
     padding: 2px;
 }
 input:hover {
-    background-color:#F0F0F0;
-    border: 2px inset #B1CBEC;
+    background-color:#D3D0AB;
+    border: 1px solid #4B668B;
 }
 input:focus {
     background-color:#B1CBEC;
-    border: 1px solid #B1CBEC;
+    border: 1px solid #4B668B;
 }
 textarea {
-    border: solid 1px #536E93;
-    padding: 3px;
-    font-size: 11px;
-    color: #2a2e2c;
+    border: 1px solid #4B668B;
+    padding: 2px;
     background-color: #fff;
 }
 textarea:hover {
-    background-color:#F0F0F0;
-    border: 2px inset #B1CBEC;
+    background-color:#D3D0AB;
+    border: 1px solid #4B668B;
 }
 textarea:focus {
     background-color:#B1CBEC;
-    border: 1px solid #B1CBEC;
+    border: 1px solid #4B668B;
 }
 
 div.scroll_callback {
     height: 300px;
     width: 920px;
     overflow: scroll;
+    padding: 2px;
 }
 
 div.scroll_list {
     height: 400px;
     width: 140px;
     overflow: scroll;
+    padding: 2px;
 }
 
 div.text_input {
     overflow: auto;
     font-size: 10px;
     font-family: 'dejavu sans',verdana,sans-serif;
+    padding: 2px;
 }
 div.scroll_script {
     height:306px;
@@ -64,6 +65,7 @@ div.scroll_script {
     overflow: scroll;
     font-size: 12px;
     font-family: 'dejavu sans',verdana,sans-serif;
+    padding: 2px;
 }
 
 .container {
@@ -124,10 +126,10 @@ div.scroll_script {
 }
 
 .bottom {
-	background: #6987B1;
+	background: #4D678A;
     border-radius: 12px 12px 12px 12px;
-    box-shadow: rgba(0,0,0,0.5) 2px 2px 18px;
-    margin:0 0 0 105px;
+    box-shadow: rgba(0,0,0,0.8) 1px 1px 20px;
+    margin:10px 0 0 105px;
     width:530px;
 }
 
@@ -353,9 +355,26 @@ a:visited {
 }
 
 .body_input {
-	font-size: 10px;
+	font-size: 11px;
 	font-family: 'dejavu sans',verdana,sans-serif;
 	overflow: auto;
+}
+.display_field_border {
+    background: #6C8DBB;
+    border:1px dotted #4B668B;
+    color:navy;
+    font-size: 11px;
+    font-family: 'dejavu sans',verdana,sans-serif;
+}
+.display_field {
+    background: #6C8DBB;
+    border:0px;
+    color:white;
+    font-size: 11px;
+    font-family: 'dejavu sans',verdana,sans-serif;
+}
+.body_input_rev {
+    color:white;
 }
 
 .queue_text_red {
@@ -368,7 +387,7 @@ a:visited {
 .queue_text {
 	font-size: 12px;
 	font-family: 'dejavu sans',verdana,sans-serif;
-	color: black;
+	color: navy;
 }
 
 .body_small {
@@ -445,7 +464,7 @@ a:visited {
 
 .cust_form {
 	font-family: 'dejavu sans',verdana,sans-serif;
-	font-size: 10px;
+	font-size: 11px;
 	overflow: auto;
 }
 
