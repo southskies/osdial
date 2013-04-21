@@ -1837,8 +1837,8 @@ flush();
 
     <?php load_status('Initializing GUI...<br>CallBacKsLisTBox<br>&nbsp;'); ?>
     <!-- Choose From Available Call Backs -->
-    <span style="position:absolute;left:0px;top:18px;z-index:38;visibility:hidden;" id="CallBacKsLisTBox">
-        <table class=coveragent border=0 bgcolor="<?php echo $callback_bg; ?>" width=<?php echo ($CAwidth+13); ?> height=460>
+    <span style="position:absolute;left:2px;top:18px;z-index:38;visibility:hidden;" id="CallBacKsLisTBox">
+        <table class=coveragent border=0 bgcolor="<?php echo $callback_bg; ?>" width=<?php echo ($CAwidth+13); ?> height=500>
             <tr>
                 <td align=center valign=top>
                     Callbacks For Agent <?php echo $VD_login; ?>
