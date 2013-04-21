@@ -785,4 +785,16 @@ a:visited {
     box-shadow: rgba(0,0,0,0.2) 6px -6px 6px;
     padding: 1px;
 }
+.hotkeyson {
+    background: #CBB491;
+    box-shadow: rgba(0,0,0,0.2) 2px 3px 6px;
+    color:red;
+    padding: 10px;
+}
+.hotkeysoff {
+    background: #DCD9AB;
+    box-shadow: rgba(0,0,0,0.2) 6px 6px 6px;
+    color:red;
+    padding: 10px;
+}
 
