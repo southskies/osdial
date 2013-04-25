@@ -70,7 +70,7 @@
                     //	alert(logincampaign_query);
                     //	alert(xmlhttp.responseText);
                     document.getElementById("LogiNCamPaigns").innerHTML = Nactiveext;
-                    document.getElementById("LogiNReseT").innerHTML = "<INPUT TYPE=BUTTON VALUE=\"Refresh Campaign List\" OnClick=\"login_allowable_campaigns()\">";
+                    document.getElementById("LogiNReseT").innerHTML = "<INPUT class=refresh TYPE=BUTTON VALUE=\"Refresh Campaign List\" OnClick=\"login_allowable_campaigns()\">";
                     document.getElementById("VD_campaign").focus();
                     }
                 }
