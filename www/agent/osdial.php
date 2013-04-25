@@ -492,7 +492,7 @@ if ($user_login_first == 1) {
             echo "  <tr><td colspan=2>&nbsp;</td></tr>\n";
             echo "  <tr>\n";
             echo "    <td align=center colspan=2>\n";
-            echo "      <input type=button onclick=\"login_submit(); return false;\" name=SUBMIT value=SUBMIT> &nbsp; <span id=\"LogiNReseT\"></span>\n";
+            echo "      <input type=button onclick=\"login_submit(); return false;\" name=SUBMIT value=SUBMIT><span class=refresh id=\"LogiNReseT\"></span>\n";
             echo "    </td>\n";
             echo "  </tr>\n";
             echo "  <tr><td align=left colspan=2><font size=1><br>VERSION: $version</font></td></tr>\n";
@@ -1296,6 +1296,7 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
 
             if ($ola_user_ct) {
                 $row=mysql_fetch_row($rslt);
+                
                 echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
                 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $config['settings']['agent_template'] . "/styles.css\" media=\"screen\">\n";
                 #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
@@ -1304,40 +1305,47 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
                 echo "</script>\n";
                 echo "</head>\n";
                 echo "<body bgcolor=white name=osdial>\n";
+                echo "<div align=center>";
+                echo "<div align=left class=mainpage style='width:550;'><br/>";
                 echo $welcome_span;
-                echo "<b>Sorry, your user account is logged into another station!</b><br>\n";
-                echo "<i>Please see your manager and give him the following information:</i><br>\n";
-                echo "<table border=1>\n";
+                echo "<div align=center><font color=white><b>LOGIN ERROR!</b><br/><br/>\n";
+                echo "Please let your manager know your login is already in use</font></div><br>\n";
+                echo "<table align=center border=0 width=275 cellpadding=2>\n";
                 echo "  <tr>\n";
-                echo "    <td>UserID</td>\n";
+                echo "    <td>UserID:</td>\n";
                 echo "    <td>$row[0]</td>\n";
                 echo "  </tr>\n";
                 echo "  <tr>\n";
-                echo "    <td>Extension</td>\n";
+                echo "    <td>Extension:</td>\n";
                 echo "    <td>$row[1]</td>\n";
                 echo "  </tr>\n";
                 echo "  <tr>\n";
-                echo "    <td>ServerID</td>\n";
+                echo "    <td>ServerID:</td>\n";
                 echo "    <td>$row[2]</td>\n";  
                 echo "  </tr>\n";
                 echo "  <tr>\n";
-                echo "    <td>SessionID</td>\n";
+                echo "    <td>SessionID:</td>\n";
                 echo "    <td>$row[3]</td>\n";
                 echo "  </tr>\n";
                 echo "</table>\n";
                 echo "<hr>\n";
+                echo "<div style='margin:10px 0 10px 10px;color:white;'>";
+                echo "Once your manager have given the OK to continue try to login again</div>";
+                echo "<div style='margin:10px 0 10px 10px;color:white;'>";
                 echo "<form name=osdial_form id=osdial_form action=\"$PHP_SELF\" method=post>\n";
                 echo "<input type=hidden name=DB value=\"$DB\">\n";
                 echo "<input type=hidden name=phone_login value=\"$phone_login\">\n";
                 echo "<input type=hidden name=phone_pass value=\"$phone_pass\">\n";
-                echo "Login: <input type=text name=VD_login size=10 maxlength=20 value=\"$VD_login\">\n<br>";
+                echo "<div style='margin-left:100px;'>Login: <input style='margin-left:37px;' type=text name=VD_login size=10 maxlength=20 value=\"$VD_login\">\n<br>";
                 echo "Password: <input type=password name=VD_pass size=10 maxlength=20 value=\"$VD_pass\"><br>\n";
-                echo "Campaign: <span id=\"LogiNCamPaigns\">$camp_form_code</span><br>\n";
-                echo "<input type=submit name=SUBMIT value=SUBMIT> &nbsp; \n";
+                echo "Campaign: <span id=\"LogiNCamPaigns\">$camp_form_code</span><br></div>\n";
+                echo "<div style='margin:5px 0 0 220px;'><input class=submit type=submit name=SUBMIT value=Login></div>\n";
                 echo "<span id=\"LogiNReseT\"></span>\n";
                 echo "</form>\n";
+                echo "</div>&nbsp;";
                 echo "</body>\n";
                 echo "</html>\n";
+                echo "</div></div>";
                 exit;
             }
 
@@ -1746,10 +1754,10 @@ flush();
     </span>
     
     <span style="position:absolute;left:29px;top:18px;z-index:9;" id="PanelSelection">
-      <div id="AgentPanelMAIN" style="padding:4px;position:relative;" class="AgentPanelSelect" onclick="ChoosePanel('MAIN');">
+      <div id="AgentPanelMAIN" style="padding:4px;position:relative;cursor:pointer;" class="AgentPanelSelect" onclick="ChoosePanel('MAIN');">
         FORM
       </div>
-      <div id="AgentPanelSCRIPT" style="padding:4px;position:relative;left:-14px;" class="AgentPanel" onclick="ChoosePanel('SCRIPT');">
+      <div id="AgentPanelSCRIPT" style="padding:4px;position:relative;left:-14px;cursor:pointer" class="AgentPanel" onclick="ChoosePanel('SCRIPT');">
         SCRIPT
       </div>
     </span>
@@ -1769,20 +1777,33 @@ flush();
     
     
     <!-- Manual Dial Link -->
-    <span style="position:absolute;left:-58px;top:430px;z-index:12;visibility:hidden;" id="ManuaLDiaLButtons">
+    <!--<span style="position:absolute;left:-58px;top:430px;z-index:12;visibility:hidden;" id="ManuaLDiaLButtons">-->
+    <span style="position:relative;left:-58px;top:450px;z-index:12;visibility:hidden;" id="ManuaLDiaLButtons">
         <font class="body_text">
             <span id="MDstatusSpan"><span id="MDHopperListLink" <?php if ($allow_md_hopperlist!='Y') echo "style=\"visibility:hidden;\""; ?>><a href="#" onclick="MDHopperListCheck();return false;">HOPPER LIST</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('NO');return false;">MANUAL DIAL</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('FAST');return false;">FAST DIAL</a><br>
         </font>
     </span>
-        
 
     <!-- Call Back Link -->
-    <span style="position:absolute;left:40px;top:458px;z-index:13;visibility:hidden;" id="CallbacksButtons">
+    <!--<span style="position:absolute;left:40px;top:458px;z-index:13;visibility:hidden;" id="CallbacksButtons">-->
+    <span style="position:relative;left:40px;top:455px;z-index:13;visibility:hidden;" id="CallbacksButtons">
         <font class="body_text">
             <span id="CBstatusSpan">&nbsp;&nbsp;&nbsp;Checking Callbacks...</span><br>
         </font>
     </span>
-        
+                                        
+    <!-- Footer Links -->
+    <?php load_status('Initializing GUI...<br>MaiNfooterspan<br>&nbsp;'); ?>
+    <span style="position:relative;left:46px;top:460px;z-index:5;" id="MaiNfooterspan">
+        <font class="body_small"><span id="busycallsdisplay"><a href="#"  onclick="conf_channels_detail('SHOW');">Channel Information</a><br></span></font>
+        <span id="outboundcallsspan"></span>
+        <span id="debugbottomspan"></span>
+    <!-- Debug -->
+    <!--<span style="position:absolute;left:9px;top:9px <?php //echo $DBheight; ?>;" id="DebugLink">
+        <font class="body_text"><a href="#" onclick="openDebugWindow();return false;">o</a></font>
+    </span>-->
+    </span>
+    
 
     <!-- Pause Code Link -->
     <span style="position:absolute;left:650px;top:<?php echo ($CBheight-3); ?>px;z-index:14;visibility:hidden;" id="PauseCodeButtons">
@@ -1927,7 +1948,7 @@ flush();
     
     <!-- Hot Key Button -->
     <?php if ($HK_statuses_camp > 0 and ($user_level >= $HKuser_level or $VU_hotkeys_active > 0)) { ?>
-        <span style="position:relative;left:695px;top:450px;z-index:16;" id="hotkeysdisplay">
+        <span style="position:absolute;left:700px;top:450px;z-index:16;" id="hotkeysdisplay">
             <a href="#" onMouseOver="HotKeys('ON')"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_XB_hotkeysactive_OFF.gif" width=137 height=32 border=0 alt="HOT KEYS INACTIVE"></a>
         </span>
     <?php } ?>
@@ -2418,20 +2439,6 @@ flush();
         </table>
     </span>
     
-                                    
-    <!-- Footer Links -->
-    <?php load_status('Initializing GUI...<br>MaiNfooterspan<br>&nbsp;'); ?>
-    <span style="position:relative;left:-105px;top:455px;z-index:5;" id="MaiNfooterspan">
-        <font class="body_small"><span id="busycallsdisplay"><a href="#"  onclick="conf_channels_detail('SHOW');">Channel Information</a><br></span></font>
-        <span id="outboundcallsspan"></span>
-        <span id="debugbottomspan"></span>
-        
-    <!-- Debug -->
-    <!--<span style="position:absolute;left:9px;top:9px <?php //echo $DBheight; ?>;" id="DebugLink">
-        <font class="body_text"><a href="#" onclick="openDebugWindow();return false;">o</a></font>
-    </span>-->
-    
-    </span>
     
     
 
@@ -2453,7 +2460,7 @@ flush();
                         <tr>
                             <td width=22 colspan=2 class=curve2 style="vertical-align:bottom;">
 <!--                                 <img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/AgentTopLeft.png" width=22 height=22 align=left> -->
-                                <font class="body_text" color=<?php echo $status_fct; ?>>&nbsp;&nbsp;&nbsp;STATUS:&nbsp;&nbsp;</font>
+                                <font style='margin-left:210px;' class="body_text" color=<?php echo $status_fct; ?>>STATUS:&nbsp;&nbsp;</font>
                                 <font class="body_text" color=<?php echo $status_fc; ?>><span id="MainStatuSSpan"></span></font>
                             </td>
 <!--                             <td width=22><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/AgentTopRight.png" width=22 height=22 align=right></td> -->
