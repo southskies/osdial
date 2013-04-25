@@ -1310,8 +1310,10 @@ if ($ADD==31) {
 				$NotActiveRatio='<span class=alert style="margin-left:275px;">(Not Active)</span>';
 			}
 			echo "<div style=\"width:".$section_width."px;padding:5px;margin-bottom:5px;\" class=rounded-corners2>";
+			echo "<div align=left class=top_header_sect style='position:relative;left:0px;top:0px;'>Dial Method</div>";
+			echo "<div style='font-size:11px;position:relative;left:0px;top:0px;'>Select Dial Method to view settings, click Change Mode to activate new dial method.</div>";
 			echo "<table cellpadding=0 cellspacing=3 width=100%>";
-			echo "<tr><td align=left class=top_header_sect valign=top colspan=2>Dial Method</td></tr>";
+			echo "<tr><td align=left class=top_header_sect valign=top colspan=2></td></tr>";
 			
 			echo "<input type=hidden name=\"dial_method\" value=\"$dial_method\">";
 			echo "<input type=hidden name=\"tmp_dial_method\" value=\"$dial_method\">";
@@ -1363,6 +1365,15 @@ if ($ADD==31) {
 
 			$section_width10=($section_width*.99);
 			
+            
+            /*if (number of agents < 10) {
+                $auto_assist='Y';
+                $auto_assist_adapt='Y';
+            } else {
+                $auto_assist='N';
+                $auto_assist_adapt='N';
+            }
+            */
 
 				// MANUAL DIAL
 			echo "<tr id=\"dm_manual\" style=\"$manual_visible\"><td colspan=2 align=center>";
@@ -1390,13 +1401,15 @@ if ($ADD==31) {
 			echo "</td></tr>";
 
 				
-				// RATIO DIAL
+                // RATIO DIAL
 			echo "<tr id=\"dm_ratio\" style=\"$ratio_visible\"><td colspan=2 align=center>";
 			echo "<div style=\"width:".$section_width_narrow."px;padding:5px;\" class=rounded-corners3>";
 			echo "<table width=100% cellpadding=0 cellspacing=3>";
 			echo "<tr><td align=left class=top_header_sect valign=top width=50%>Ratio Dial Options $NotActiveRatio<br /><br /></td></tr>";
 			echo "<tr><td align=center><table border=0 cellpadding=0 cellspacing=0 width=50%>";
 			echo "<tr><td align=left>Auto Dial Level: </td><td align=left nowrap><input type=text name=auto_dial_level size=6 maxlength=6 value=\"$auto_dial_level\" selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;4.0;4.5;5.0\"> ".helptag("osdial_campaigns-auto_dial_level")."</td></tr>";
+			
+// 			echo "<tr><td align=left>Auto Assist: </td><td align=left nowrap><select size=1 name=available_only_ratio_tally><option >Y</option><option>N</option><option SELECTED>$auto_assist</option></select>".helptag("osdial_campaigns-auto_dial_assist")."</td></tr>";
 
 			echo "<tr><td align=left>Available Only Tally: </td><td align=left><select size=1 name=available_only_ratio_tally><option >Y</option><option>N</option><option SELECTED>$available_only_ratio_tally</option></select>".helptag("osdial_campaigns-available_only_ratio_tally")."</td></tr>";
 
@@ -1458,6 +1471,7 @@ if ($ADD==31) {
 				<td align=left nowrap><input type=text name=ADAPT_auto_dial_level size=6 maxlength=6 value=\"$auto_dial_level\" disabled selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;3.5;4.0;4.5;5.0;5.5;6.0;6.5;7.0;7.5;8.0;8.5;9.0;10.0\"> 
 				<input type=checkbox onchange=\"if (this.checked) { document.forms[0].ADAPT_auto_dial_level.enable(); } else { document.forms[0].ADAPT_auto_dial_level.disable();}\" name=dial_level_override id=dial_level_override value=\"1\"><label for=dial_level_override class=font2>Activate</label> &nbsp; ".helptag("osdial_campaigns-auto_dial_level")."</td>
 				</tr>";
+//             echo "<tr><td align=left>Auto Assist: </td><td align=left nowrap><select size=1 name=available_only_ratio_tally><option >Y</option><option>N</option><option SELECTED>$auto_assist_adapt</option></select>".helptag("osdial_campaigns-auto_dial_assist")."</td></tr>";
 			echo "<tr><td align=left>Available Only Tally: </td>
 					<td align=left><select size=1 name=ADAPT_available_only_ratio_tally>
 						<option >Y</option>
@@ -1572,6 +1586,7 @@ if ($ADD==31) {
 			echo "<tr><td align=left>Dial Timeout: </td><td align=left class=font2><input type=text name=dial_timeout size=3 maxlength=3 value=\"$dial_timeout\"> in seconds".helptag("osdial_campaigns-dial_timeout")."</td></tr>";
 
 			echo "<tr><td align=left>Drop Call Seconds: </td><td align=left><input type=text name=drop_call_seconds size=5 maxlength=2 value=\"$drop_call_seconds\">".helptag("osdial_campaigns-drop_call_seconds")."</td></tr>";
+// 			echo "<tr><td align=left>Server Stop: </td><td align=left><input type=text name=adaptive_latest_server_time size=5 maxlength=2 value=\"$adaptive_latest_server_time\">".helptag("osdial_campaigns-adapive_latest_server_time")."</td></tr>";
 			echo "<tr><td colspan=2>&nbsp;</td></tr>";
 			echo "</td></tr></table>";
 			echo "<tr><td align=right class=no-ul colspan=2>";

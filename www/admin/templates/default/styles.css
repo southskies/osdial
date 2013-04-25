@@ -46,6 +46,9 @@
 		font-size: 20pt;
 		text-shadow: rgba(0,0,0,0.8) 1px 1px 2px;
 	}
+	.shadow {
+        text-shadow: rgba(0,0,0,0.4) 1px 1px 2px;
+    }
 	.homepage {
 		text-align: center;
 		text-decoration: none;

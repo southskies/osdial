@@ -392,6 +392,10 @@
   AVERAGE works to maintain an average or the dropped percentage not imposing hard limits as aggressively as the other two methods. You cannot change the Auto Dial Level if you are in any of the ADAPT dial methods. Only the Dialer can change the dial level when in predictive dialing mode. HARD LIMIT will dial predictively up to the dropped percentage and then not allow aggressive dialing once the drop limit is reached until the percentage goes down again. TAPERED allows for running over the dropped percentage in the first half of the shift -as defined by call_time selected for campaign- and gets more strict as the shift goes on. 
     </item>
 
+    <item pathId="auto_dial_assist" sectionId="24" title="Auto Assist">
+    When active this option will use Available Only Tally automatically when you have less than 10 agents. This is an effective setting to avoid high drop % with few agents in Ratio mode.
+    </item>
+    
     <item pathId="auto_dial_level" sectionId="24" title="Auto Dial Level">
   This is where you set how many lines OSDial should use per active agent. zero 0 means auto dialing is off and the agents will click to dial each number. Otherwise OSDial will keep dialing lines equal to active agents multiplied by the dial level to arrive at how many lines this campaign on each server should allow. The ADAPT OVERRIDE checkbox allows you to force a new dial level even though the dial method is in an ADAPT mode. This is useful if there is a dramatic shift in the quality of leads and you want to drastically change the dial_level manually.
     </item>
