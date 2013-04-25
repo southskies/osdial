@@ -477,9 +477,35 @@ function report_realtime_detail() {
         } else {
             $html .= "$drpctTODAY%";
         }
+/*
+        Only display with stats matching the update time.
+        Keep measures every 5, min, every 15 min, every hour, every 3 hours.
+        Show m5 and m15, unless both are the same then show h1 h2, and if same show h3 and h6. Only once stats are available.
+        Take a drop% count once every 5 minutes. After 5 minutes compare with first read and note the change. Compute % change.
+        If change is increasing by 10% or more show upright arrow.
+        If change is decreasing by 10% or more show downright arrow.
+        If change is with 1% show level arrow.
+        If change is more than 1% but less than 10% use slightly up or down arrow according to direction.
+        If drop 15 minutes ago is the same as current show a second arrow.
+*/
+/*
+        if (update < 6 minutes) { 
+            if ($lastCheck >59 secs) {
+                add drop5 into array(?)
+                check change
+                display arrows
+            }
+        }
+        
+*/
+/*
+        $html .= "<span style='margin-left:10px'>&nbsp;</span>";
+        $html .= "5m &#x2197"; // UTF U+2191 straignt up U+2192 level U+2193 straign down U+2197 45 degree up U+2198 120 degree down "&#x2191;"
+        $html .= "<span style='margin-left:10px'>&nbsp;</span>";
+        $html .= "10m &#x2191";
         $html .= "&nbsp;&nbsp;</td>";
         $html .= "</tr>";
-
+*/
         $html .= "<tr>";
         $html .= "<td align=right><font size=2 color=$default_text><b>Order:</b></td><td align=left colspan=7><font size=2>&nbsp; $DIALorder&nbsp;&nbsp;</td>";
         $html .= "</tr><tr>";
@@ -632,6 +658,7 @@ function report_realtime_detail() {
         if ($out_live > 9) {$F='<font class="r3">'; $FG='</font>';}
         if ($out_live > 14) {$F='<font class="r4">'; $FG='</font>';}
 
+        echo "<div style='position:relative;left:10px;top:0px;text-shadow: rgba(0,0,0,0.3) 1px 1px 4px;'>&nbsp;";
         if ($campaign_allow_inbound > 0) {
             $html .= "$NFB$out_total$NFE <font color=blue>current active calls</font> &nbsp; &nbsp; &nbsp; \n";
         } else {
@@ -639,9 +666,9 @@ function report_realtime_detail() {
         }
 
         $html .= "$NFB$out_ring$NFE <font color=blue>calls ringing</font> &nbsp; &nbsp; &nbsp; &nbsp; \n";
-        $html .= "$NFB$F &nbsp;$out_live $FG$NFE <font color=blue>calls waiting for agents</font> &nbsp; &nbsp; &nbsp; \n";
+        $html .= "$NFB$F &nbsp;$out_live $FG$NFE <font color=blue>calls waiting for agents</font> &nbsp; &nbsp; &nbsp;</div> \n";
     } else {
-        $html .= "&nbsp;<font color=red>NO LIVE CALLS WAITING</font>&nbsp;";
+        $html .= "<span style='text-shadow: rgba(0,0,0,0.4) 1px 1px 2px'><font color=red size=5>NO LIVE CALLS WAITING</font></span><br/>";
     }
 
 
@@ -670,6 +697,10 @@ function report_realtime_detail() {
     $Chtml .=$LNtopleft.HorizLine(8).$LNtopdown.HorizLine(17).$LNtopdown.HorizLine(14).$LNtopdown.HorizLine(17).$LNtopdown.HorizLine(10).$LNtopdown.HorizLine(12).$LNtopright."\n";
     $Chtml .="$LNleft STATUS $LNcenterbar    CAMPAIGN     $LNcenterbar PHONE NUMBER $LNcenterbar    SERVER_IP    $LNcenterbar DIALTIME $LNcenterbar CALL TYPE  $LNright\n";
     $Chtml .=$LNcenterleft.CenterLine(8).$LNcentcross.CenterLine(17).$LNcentcross.CenterLine(14).$LNcentcross.CenterLine(17).$LNcentcross.CenterLine(10).$LNcentcross.CenterLine(12).$LNcentright."\n";
+    /*  Replace box with table, shadow etc.
+    $Chtml .="<table>";
+    $Chtml .="<tr><td>STATUS</td><td>CAMPAIGN</td><td>PHONE</td><td>NUMBER</td><td>SERVER IP</td><td>DIALTIME</td><td>CALL TYPE</td>"\n";
+    */
 
     $p=0;
     while($p<$k) {
@@ -747,10 +778,9 @@ function report_realtime_detail() {
     $agent_paused=0;
     $agent_dead=0;
     $agent_total=0;
-    $Ahtml = '';
-    $Ahtml .= "<font color=$default_text size=1 face=fixed,monospace>&nbsp;&nbsp;Agents Time On Calls Campaign: $group                    $NOW_TIME\n";
+    
 
-
+    
     $HDstation = HorizLine(15).$LNtopdown; //12
     $HTstation = "   <a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&group=$group&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=exten&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\">STATION</a>     ".$LNcenterbar;
     $HXstation = CenterLine(15).$LNcentcross;
@@ -822,7 +852,7 @@ function report_realtime_detail() {
         $HBcall_server_ip = HorizLine(17).$LNbottomup;
     }
     $HDtime = HorizLine(9).$LNtopdown; //9
-    $HTtime = "  <a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&group=$group&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=time&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\">MM:SS</a>  ".$LNcenterbar;
+    $HTtime = "  <a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&group=$group&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=time&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\">MM:SS</a>&nbsp;&nbsp;".$LNcenterbar;
     $HXtime = CenterLine(9).$LNcentcross;
     $HBtime = HorizLine(9).$LNbottomup;
     $HDcampaign = HorizLine(15).$LNtopdown; //15
@@ -838,7 +868,8 @@ function report_realtime_detail() {
     $HXingrp = CenterLine(21);
     $HBingrp = HorizLine(21);
 
-
+    $Ahtml = '';
+    $Ahtml .= "<font color=$default_text size=1 face=fixed,monospace>&nbsp;&nbsp;Agents Time On Campaign: <b>$group</b>                    $NOW_TIME\n";
     $Ahtml .= $LNtopleft.   $HDstation.$HDuser.$HDusergroup.$HDsessionid.$HDmonitor.$HDstatus.$HDpause.$HDserver_ip.$HDcall_server_ip.$HDtime.$HDcampaign.$HDcalls.$HDingrp.$LNtopright."\n";
     $Ahtml .= $LNleft.      $HTstation.$HTuser.$HTusergroup.$HTsessionid.$HTmonitor.$HTstatus.$HTpause.$HTserver_ip.$HTcall_server_ip.$HTtime.$HTcampaign.$HTcalls.$HTingrp.$LNright."\n";
     $Ahtml .= $LNcenterleft.$HXstation.$HXuser.$HXusergroup.$HXsessionid.$HXmonitor.$HXstatus.$HXpause.$HXserver_ip.$HXcall_server_ip.$HXtime.$HXcampaign.$HXcalls.$HXingrp.$LNcentright."\n";
@@ -1216,7 +1247,6 @@ function report_realtime_detail() {
 
         $Ahtml .= $Dline;
 
-        $Ahtml .= "  $agentcount <font color=$default_text>agents logged in on all servers</font>\n";
 
 
         if ($agent_ready > 0) {$B='<font class="b1">'; $BG='</font>';}
@@ -1227,50 +1257,55 @@ function report_realtime_detail() {
 
         $html .= "\n<br>\n";
 
-        $html .= "$NFB$agent_total$NFE <font color=blue>agents logged in</font> &nbsp; &nbsp; &nbsp; &nbsp; \n";
-        $html .= "$NFB$agent_incall$NFE <font color=blue>agents in calls</font> &nbsp; &nbsp; &nbsp; \n";
-        $html .= "&nbsp;$NFB$B$agent_ready$BG$NFE <font color=blue>agents waiting</font> &nbsp; &nbsp; &nbsp; \n";
-        $html .= "$NFB$agent_paused$NFE <font color=blue>paused agents</font> &nbsp; &nbsp; &nbsp; \n";
+        $html .= "<div style='position:relative;left:0px;top:0px;text-shadow: rgba(0,0,0,0.3) 1px -1px 4px;'>$NFB$agent_total$NFE <font color=blue>Agents logged in</font> &nbsp; &nbsp; &nbsp; &nbsp; \n";
+        $html .= " $NFB$agent_incall$NFE <font color=blue>Agents in calls</font> &nbsp; &nbsp; &nbsp; \n";
+        $html .= " &nbsp;$NFB$B$agent_ready$BG$NFE <font color=blue>Agents waiting</font> &nbsp; &nbsp; &nbsp;\n";
+        $html .= " $NFB$agent_paused$NFE <font color=blue>paused agents</font></div>\n";
 
-        $html .= '<pre><font size=2>';
-
+        $html .= "<br/><pre><font size=2>";
+        if ($agentcount==1) {
+            $Ahtml .= "<font color=$default_text>$agentcount agent logged in on all servers</font>\n";
+        } else {
+            $Ahtml .= "<font color=$default_text>$agentcount agents logged in on all servers</font>\n";
+        }
         $html .= $Chtml;
         $html .= $Ahtml;
-
+    
+    
         $html .= "<br><br><center>";
         $html .= "<table width=700><tr><td width=5px>&nbsp;</td><td width=265>";
-        $html .= "  <font color=$default_text>";
+        $html .= "  <font color=$default_text style='font-size:10pt;'>";
         $html .= "  <span class=wait0>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> Waiting for call</b><br>";
         $html .= "  <span class=wait1>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> Waiting for call > 30sec</b><br>";
         $html .= "  <span class=wait2>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> Waiting for call >&nbsp;&nbsp;1min</b><br>";
         $html .= "  <span class=wait3>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> Waiting for call >&nbsp;&nbsp;2min</b>";
         $html .= "  </font>";
         $html .= "</td><td width=230px>";
-        $html .= "  <font color=$default_text>";
+        $html .= "  <font color=$default_text style='font-size:10pt;'>";
         $html .= "  <span class=call0>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> On call</b><br>";
         $html .= "  <span class=call1>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> On call > 30sec</b><br>";
         $html .= "  <span class=call2>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> On call >&nbsp;&nbsp;2min</b><br>";
         $html .= "  <span class=call3>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> On call >&nbsp;10min</b>";
         $html .= "  </font>";
         $html .= "</td><td width=200px>";
-        $html .= "  <font color=$default_text>";
+        $html .= "  <font color=$default_text style='font-size:10pt;'>";
         $html .= "  <span class=pause0>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> Paused</b><br>";
         $html .= "  <span class=pause1>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> Paused > 10sec</b><br>";
-        $html .= "  <span class=pause2><b>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> Paused >&nbsp;&nbsp;1min</b><br>";
-        $html .= "  <span class=pause3><b>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> Paused >&nbsp;&nbsp;5min</b>";
+        $html .= "  <span class=pause2>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> Paused >&nbsp;&nbsp;1min</b><br>";
+        $html .= "  <span class=pause3>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> Paused >&nbsp;&nbsp;5min</b>";
         $html .= "  </font>";
-        $html .= "</td></tr><tr><td colspan=4 height=1px></td>";
+        $html .= "</td></tr><tr><td colspan=4 height=1px>&nbsp;</td>";
         $html .= "</tr><tr><td>&nbsp;</td><td valign=top>";
-        $html .= "  <font color=$default_text>&nbsp;</font>";
+        $html .= "  <font color=$default_text style='font-size:10pt;'>&nbsp;</font>";
         $html .= "</td><td valign=top>";
-        $html .= "  <font color=$default_text>";
+        $html .= "  <font color=$default_text style='font-size:10pt;'>";
         $html .= "  <span class=dispo0>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> Disposition</b><br>";
         $html .= "  <span class=dispo1>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> Disposition > 15sec</b><br>";
         $html .= "  <span class=dispo2>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> Disposition > 30sec</b><br>";
         $html .= "  <span class=dispo3>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> Disposition >&nbsp;&nbsp;1min</b>";
         $html .= "  </font>";
         $html .= "</td><td valign=top>";
-        $html .= "  <font color=$default_text>";
+        $html .= "  <font color=$default_text style='font-size:10pt;'>";
         $html .= "  <span class=pausecode>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> Pause Code</b><br><br>";
         $html .= "  <span class=agtphn1>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> Agent Phone Issue</b><br>";
         $html .= "  <span class=dead1>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> Dead Call/Hungup</b>";
@@ -1278,9 +1313,8 @@ function report_realtime_detail() {
         $html .= "</td></tr>";
         $html .= "</table></center>";
     } else {
-        $html .= "&nbsp;&nbsp;<font color=red>&bull;&nbsp;&nbsp;NO AGENTS ON CALLS</font> \n";
-        $html .= '<br>';
-        $html .= '<br>';
+        $html .= "<br/><span style='text-shadow: rgba(0,0,0,0.4) 1px 1px 2px'><font color=red size=5>NO AGENTS LOGGED IN</font></span> \n";
+        $html .= '<br/><br/><br/><br/>';
     }
 
     $html .= '</pre>';
