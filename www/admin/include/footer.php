@@ -44,8 +44,7 @@ if (OSDpreg_match("/^Sli/",$config['settings']['admin_template'])) {
 //     echo "      <img src=\"templates/" . $config['settings']['admin_template'] . "/images/dlfoot.png\" height=\"9\" width=\"120\"></a>";
     echo "      Download OSDial here!";
     echo "    </td>\n";
-# ===================================================================================================================================================
-#
+
 }
 
 # Update Check
@@ -79,11 +78,16 @@ $uvtest2 = explode('.',$uvtest1[0]);
 $uvtest = sprintf('%02d%04d%04d%05d',$uvtest2[0],$uvtest2[1],$uvtest2[2],$uvtest2[3]);
 
 echo "    <td height=\"15\" align=\"right\" width=\"16%\">\n";
+#
+# ===================================================================================================================================================
+# NOTICE: NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE
+# REMOVAL or MODIFICATION of these lines, and ANY copyright notice, constitutes a breach of License and doing so will result in legal action.
+#
 if ($uvtest > $avtest) {
 	echo "      <font color=\"#1A4349\" style=\"text-decoration: blink;\" title=\"Version #$update_version is now available!  You should run 'yum update' on all servers when all agents are logged out and their is sufficient time to complete the update.\">NEW UPDATE #$update_version</font>\n";
 }
 echo "    </td>\n";
-echo "    <td height=\"15\" align=\"right\" width=\"16%\"><font size=1 color=\"#1A4349\">Version: ".$config['settings']['version']."/".$config['settings']['build']."&nbsp;&nbsp;</font></td>\n";
+echo "    <td height=\"15\" align=\"right\" width=\"16%\"><font size=1 color=\"#1A4349\"><a href=\"$PHP_SELF?ADD=311111111111111\">Version: ".substr($config['settings']['version'],0,3)."</a>&nbsp;&nbsp;</font></td>\n";
 echo "  </tr>\n";
 echo "  <tr><td align=\"left\" colspan=\"4\" height=\"1\" bgcolor=\"#666666\"></td></tr>\n";
 echo " </table>\n";
