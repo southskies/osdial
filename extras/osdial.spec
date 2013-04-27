@@ -1,25 +1,27 @@
 %{!?kernel: %{expand: %%define kernel %(uname -r)}}
 %if %(echo %{kernel} | %{__grep} -c smp)
-        %{expand:%%define ksmp -smp}
+    %{expand:%%define ksmp -smp}
 %endif
 %if %(echo %{kernel} | %{__grep} -c PAE)
-        %{expand:%%define kpae -PAE}
+    %{expand:%%define kpae -PAE}
 %endif
 %if %(echo %{kernel} | %{__grep} -c xen)
-        %{expand:%%define kxen -xen}
+    %{expand:%%define kxen -xen}
 %endif
 
 %define kversion2 %(echo %{kernel} | %{__sed} -e s/smp// -)
 %define kversion3 %(echo %{kversion2} | %{__sed} -e s/xen// -)
 %define kversion %(echo %{kversion3} | %{__sed} -e s/PAE// -)
-%define krelver  %(echo %{kversion2} | tr -s '-' '_')
+%define krelver %(echo %{kversion2} | tr -s '-' '_')
 
 %define perl_vendorlib %(eval "`%{__perl} -V:installvendorlib`"; echo $installvendorlib)
 %define perl_vendorarch %(eval "`%{__perl} -V:installvendorarch`"; echo $installvendorarch)
 
-%define version %(if [ -f osdial.version ]; then cat osdial.version; else cat /builddir/build/SOURCES/osdial.version; fi)
-%define release %(if [ -f osdial.release ]; then cat osdial.release; else cat /builddir/build/SOURCES/osdial.release; fi)
-%define buildver %(if [ -f osdial.build ]; then cat osdial.build; else cat /builddir/build/SOURCES/osdial.build; fi)
+%define _opt /opt
+
+%define version %(if [ -f osdial.version ]; then %{__cat} osdial.version; else %{__cat} /builddir/build/SOURCES/osdial.version; fi)
+%define release %(if [ -f osdial.release ]; then %{__cat} osdial.release; else %{__cat} /builddir/build/SOURCES/osdial.release; fi)
+%define buildver %(if [ -f osdial.build ]; then %{__cat} osdial.build; else %{__cat} /builddir/build/SOURCES/osdial.build; fi)
 
 # Current versions
 %define mysql_version 5.1.39-5
@@ -33,31 +35,31 @@
 %define wanpipe_version 3.5.17-20
 
 
-Summary:	The OSDial predictive dialing suite.
-Name:		osdial
-Version:	%{version}
-Release:	%{release}%{?dist}
-License:	GPL
-Group:		Applications/Telephony
-Source0:	osdial-%{version}.tgz
-Source1:	osdial-template-highcontrast.tgz
-Source2:	osdial-template-slingdial.tgz
-Source3:	osdial-template-largedialpresets.tgz
-Source4:	osdial.version
-Source5:	osdial.release
-Source6:	osdial.build
-URL:		http://www.callcentersg.com
-Packager:	lottc@fugitol.com
+Summary:        The OSDial predictive dialing suite.
+Name:           osdial
+Version:        %{version}
+Release:        %{release}%{?dist}
+License:        GPL
+Group:          Applications/Telephony
+Source0:        osdial-%{version}.tgz
+Source1:        osdial-template-highcontrast.tgz
+Source2:        osdial-template-slingdial.tgz
+Source3:        osdial-template-largedialpresets.tgz
+Source4:        osdial.version
+Source5:        osdial.release
+Source6:        osdial.build
+URL:            http://www.callcentersg.com
+Packager:       lottc@fugitol.com
 Vendor:         Call Center Service Group
-Requires(pre):	openssh coreutils e2fsprogs grep
-Requires:	openvpn
-Requires:	osdial-profile = %{version}-%{release}
-Conflicts:	astguiclient
-Conflicts:	vicidial
+Requires(pre):  openssh coreutils e2fsprogs grep
+Requires:       openvpn
+Requires:       osdial-profile = %{version}-%{release}
+Conflicts:      astguiclient
+Conflicts:      vicidial
 BuildRequires:  dialog
 BuildRequires:  /bin/cat
-BuildArch:	noarch
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}
+BuildArch:      noarch
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}
 
 %description
 OSDial is a predictive dialing system, an off-shoot of VICIdial,
@@ -65,16 +67,16 @@ currently being developed by Lott Caskey and Steve Szmidt.
 
 
 %package conflict
-Summary:	The OSDial predictive dialing suite.
-Group:		Applications/Telephony
-Conflicts:	osdial
-Conflicts:	osdial-profile
-Conflicts:	osdial-install
-Conflicts:	osdial-common
-Conflicts:	osdial-dialer
-Conflicts:	osdial-web
-Conflicts:	osdial-sql
-BuildArch:	noarch
+Summary:        The OSDial predictive dialing suite.
+Group:          Applications/Telephony
+Conflicts:      osdial
+Conflicts:      osdial-profile
+Conflicts:      osdial-install
+Conflicts:      osdial-common
+Conflicts:      osdial-dialer
+Conflicts:      osdial-web
+Conflicts:      osdial-sql
+BuildArch:      noarch
 
 %description conflict
 Meta package which will conflict with OSDial base packages.
@@ -83,71 +85,71 @@ Meta package which will conflict with OSDial base packages.
 
 
 %package profile
-Summary:	The OSDial predictive dialing suite.
-Group:		Applications/Telephony
-Conflicts:	astguiclient
-Conflicts:	vicidial
+Summary:        The OSDial predictive dialing suite.
+Group:          Applications/Telephony
+Conflicts:      astguiclient
+Conflicts:      vicidial
 BuildRequires:  dialog
-Requires(post):	coreutils grep gawk procps
-Requires:	osdial-profile-all = %{version}-%{release}
-Requires:	osdial = %{version}-%{release}
-Requires:	osdial-common = %{version}-%{release}
-Requires:	osdial-dialer = %{version}-%{release}
-Requires:	osdial-sql = %{version}-%{release}
-Requires:	osdial-web = %{version}-%{release}
-Obsoletes:	osdial-profile-live
-Obsoletes:	osdial-installcd
-BuildArch:	noarch
+Requires(post): coreutils grep gawk procps
+Requires:       osdial-profile-all = %{version}-%{release}
+Requires:       osdial = %{version}-%{release}
+Requires:       osdial-common = %{version}-%{release}
+Requires:       osdial-dialer = %{version}-%{release}
+Requires:       osdial-sql = %{version}-%{release}
+Requires:       osdial-web = %{version}-%{release}
+Obsoletes:      osdial-profile-live
+Obsoletes:      osdial-installcd
+BuildArch:      noarch
 
 %description profile
 OSDial - Single / All-in-One Server Profile.
-          osdial-common
-          osdial-dialer
-          osdial-sql
-          osdial-web
+    osdial-common
+    osdial-dialer
+    osdial-sql
+    osdial-web
 
 
 %package profile-all
-Summary:	The OSDial predictive dialing suite.
-Group:		Applications/Telephony
-Provides:	osdial-profile-single = %{version}-%{release}
-Conflicts:	astguiclient
-Conflicts:	vicidial
+Summary:        The OSDial predictive dialing suite.
+Group:          Applications/Telephony
+Provides:       osdial-profile-single = %{version}-%{release}
+Conflicts:      astguiclient
+Conflicts:      vicidial
 BuildRequires:  dialog
-Requires(post):	coreutils grep gawk procps
-Requires:	osdial = %{version}-%{release}
-Requires:	osdial-common = %{version}-%{release}
-Requires:	osdial-dialer = %{version}-%{release}
-Requires:	osdial-sql = %{version}-%{release}
-Requires:	osdial-web = %{version}-%{release}
-Obsoletes:	osdial-profile-install-all
-Obsoletes:	osdial-installcd
-BuildArch:	noarch
+Requires(post): coreutils grep gawk procps
+Requires:       osdial = %{version}-%{release}
+Requires:       osdial-common = %{version}-%{release}
+Requires:       osdial-dialer = %{version}-%{release}
+Requires:       osdial-sql = %{version}-%{release}
+Requires:       osdial-web = %{version}-%{release}
+Obsoletes:      osdial-profile-install-all
+Obsoletes:      osdial-installcd
+BuildArch:      noarch
 
 %description profile-all
 OSDial - Single / All-in-One Server Profile.
-          osdial-common
-          osdial-dialer
-          osdial-sql
-          osdial-web
+    osdial-common
+    osdial-dialer
+    osdial-sql
+    osdial-web
 
 
 
 %package profile-live
-Summary:	The OSDial predictive dialing suite.
-Group:		Applications/Telephony
-Provides:	osdial-profile = %{version}-%{release}
-Conflicts:	astguiclient
-Conflicts:	vicidial
+Summary:        The OSDial predictive dialing suite.
+Group:          Applications/Telephony
+Provides:       osdial-profile = %{version}-%{release}
+Conflicts:      astguiclient
+Conflicts:      vicidial
 BuildRequires:  dialog
-Obsoletes:	osdial-livecd
-Requires(post):	coreutils grep gawk procps
-Requires:	osdial = %{version}-%{release}
-Requires:	osdial-common = %{version}-%{release}
-Requires:	osdial-dialer = %{version}-%{release}
-Requires:	osdial-sql = %{version}-%{release}
-Requires:	osdial-web = %{version}-%{release}
-BuildArch:	noarch
+Obsoletes:      osdial-livecd
+Requires(post): coreutils grep gawk procps
+Requires:       osdial = %{version}-%{release}
+Requires:       osdial-common = %{version}-%{release}
+Requires:       osdial-dialer = %{version}-%{release}
+Requires:       osdial-sql = %{version}-%{release}
+Requires:       osdial-web = %{version}-%{release}
+BuildArch:      noarch
 
 %description profile-live
 Package for creating a live disk.
@@ -159,100 +161,100 @@ Package for creating a live disk.
 %if 0%{?blah}
 
 %package profile-install-all
-Summary:	The OSDial predictive dialing suite.
-Group:		Applications/Telephony
-Provides:	osdial-profile = %{version}-%{release}
-Conflicts:	astguiclient
-Conflicts:	vicidial
+Summary:        The OSDial predictive dialing suite.
+Group:          Applications/Telephony
+Provides:       osdial-profile = %{version}-%{release}
+Conflicts:      astguiclient
+Conflicts:      vicidial
 BuildRequires:  dialog
-Obsoletes:	osdial-livecd
-Requires(post):	coreutils grep
-Requires:	osdial = %{version}-%{release}
-Requires:	osdial-common = %{version}-%{release}
-Requires:	osdial-dialer = %{version}-%{release}
-Requires:	osdial-sql = %{version}-%{release}
-Requires:	osdial-web = %{version}-%{release}
-BuildArch:	noarch
+Obsoletes:      osdial-livecd
+Requires(post): coreutils grep
+Requires:       osdial = %{version}-%{release}
+Requires:       osdial-common = %{version}-%{release}
+Requires:       osdial-dialer = %{version}-%{release}
+Requires:       osdial-sql = %{version}-%{release}
+Requires:       osdial-web = %{version}-%{release}
+BuildArch:      noarch
 
 %description profile-install-all
 Package for creating an install disk.
 
 %package profile-install-control
-Summary:	The OSDial predictive dialing suite.
-Group:		Applications/Telephony
-Provides:	osdial-profile = %{version}-%{release}
-Conflicts:	astguiclient
-Conflicts:	vicidial
+Summary:        The OSDial predictive dialing suite.
+Group:          Applications/Telephony
+Provides:       osdial-profile = %{version}-%{release}
+Conflicts:      astguiclient
+Conflicts:      vicidial
 BuildRequires:  dialog
-Requires(post):	coreutils grep
-Requires:	osdial = %{version}-%{release}
-Requires:	osdial-common = %{version}-%{release}
-Requires:	osdial-sql = %{version}-%{release}
-Requires:	osdial-web = %{version}-%{release}
-BuildArch:	noarch
+Requires(post): coreutils grep
+Requires:       osdial = %{version}-%{release}
+Requires:       osdial-common = %{version}-%{release}
+Requires:       osdial-sql = %{version}-%{release}
+Requires:       osdial-web = %{version}-%{release}
+BuildArch:      noarch
 
 %description profile-install-control
 Package for creating an install disk.
 
 %package profile-install-dialer
-Summary:	The OSDial predictive dialing suite.
-Group:		Applications/Telephony
-Provides:	osdial-profile = %{version}-%{release}
-Conflicts:	astguiclient
-Conflicts:	vicidial
+Summary:        The OSDial predictive dialing suite.
+Group:          Applications/Telephony
+Provides:       osdial-profile = %{version}-%{release}
+Conflicts:      astguiclient
+Conflicts:      vicidial
 BuildRequires:  dialog
-Requires(post):	coreutils grep
-Requires:	osdial = %{version}-%{release}
-Requires:	osdial-common = %{version}-%{release}
-Requires:	osdial-dialer = %{version}-%{release}
-BuildArch:	noarch
+Requires(post): coreutils grep
+Requires:       osdial = %{version}-%{release}
+Requires:       osdial-common = %{version}-%{release}
+Requires:       osdial-dialer = %{version}-%{release}
+BuildArch:      noarch
 
 %description profile-install-dialer
 Package for creating an install disk.
 
 %package profile-install-sql
-Summary:	The OSDial predictive dialing suite.
-Group:		Applications/Telephony
-Provides:	osdial-profile = %{version}-%{release}
-Conflicts:	astguiclient
-Conflicts:	vicidial
+Summary:        The OSDial predictive dialing suite.
+Group:          Applications/Telephony
+Provides:       osdial-profile = %{version}-%{release}
+Conflicts:      astguiclient
+Conflicts:      vicidial
 BuildRequires:  dialog
-Requires(post):	coreutils grep
-Requires:	osdial = %{version}-%{release}
-Requires:	osdial-common = %{version}-%{release}
-Requires:	osdial-sql = %{version}-%{release}
-BuildArch:	noarch
+Requires(post): coreutils grep
+Requires:       osdial = %{version}-%{release}
+Requires:       osdial-common = %{version}-%{release}
+Requires:       osdial-sql = %{version}-%{release}
+BuildArch:      noarch
 
 %description profile-install-sql
 Package for creating an install disk.
 
 %package profile-install-web
-Summary:	The OSDial predictive dialing suite.
-Group:		Applications/Telephony
-Provides:	osdial-profile = %{version}-%{release}
-Conflicts:	astguiclient
-Conflicts:	vicidial
+Summary:        The OSDial predictive dialing suite.
+Group:          Applications/Telephony
+Provides:       osdial-profile = %{version}-%{release}
+Conflicts:      astguiclient
+Conflicts:      vicidial
 BuildRequires:  dialog
-Requires(post):	coreutils grep
-Requires:	osdial = %{version}-%{release}
-Requires:	osdial-common = %{version}-%{release}
-Requires:	osdial-web = %{version}-%{release}
-BuildArch:	noarch
+Requires(post): coreutils grep
+Requires:       osdial = %{version}-%{release}
+Requires:       osdial-common = %{version}-%{release}
+Requires:       osdial-web = %{version}-%{release}
+BuildArch:      noarch
 
 %description profile-install-web
 Package for creating an install disk.
 
 %package profile-install-archive
-Summary:	The OSDial predictive dialing suite.
-Group:		Applications/Telephony
-Provides:	osdial-profile = %{version}-%{release}
-Conflicts:	astguiclient
-Conflicts:	vicidial
+Summary:        The OSDial predictive dialing suite.
+Group:          Applications/Telephony
+Provides:       osdial-profile = %{version}-%{release}
+Conflicts:      astguiclient
+Conflicts:      vicidial
 BuildRequires:  dialog
-Requires(post):	coreutils grep
-Requires:	osdial = %{version}-%{release}
-Requires:	osdial-common = %{version}-%{release}
-BuildArch:	noarch
+Requires(post): coreutils grep
+Requires:       osdial = %{version}-%{release}
+Requires:       osdial-common = %{version}-%{release}
+BuildArch:      noarch
 
 %description profile-install-archive
 Package for creating an install disk.
@@ -265,240 +267,241 @@ Package for creating an install disk.
 
 
 %package profile-control
-Summary:	The OSDial predictive dialing suite.
-Group:		Applications/Telephony
-Provides:	osdial-profile = %{version}-%{release}
-Conflicts:	astguiclient
-Conflicts:	vicidial
+Summary:        The OSDial predictive dialing suite.
+Group:          Applications/Telephony
+Provides:       osdial-profile = %{version}-%{release}
+Conflicts:      astguiclient
+Conflicts:      vicidial
 BuildRequires:  dialog
-Conflicts:	osdial-dialer
-Requires(post):	coreutils grep gawk procps
-Requires:	osdial = %{version}-%{release}
-Requires:	osdial-common = %{version}-%{release}
-Requires:	osdial-web = %{version}-%{release}
-Requires:	osdial-sql = %{version}-%{release}
-Obsoletes:	osdial-profile-install-control
-BuildArch:	noarch
+Conflicts:      osdial-dialer
+Requires(post): coreutils grep gawk procps
+Requires:       osdial = %{version}-%{release}
+Requires:       osdial-common = %{version}-%{release}
+Requires:       osdial-web = %{version}-%{release}
+Requires:       osdial-sql = %{version}-%{release}
+Obsoletes:      osdial-profile-install-control
+BuildArch:      noarch
 
 %description profile-control
 OSDial - Provides packages needed for multi-server
-         configuration.  Only installs web and SQL
-         components.
-          osdial-common
-          osdial-sql
-          osdial-web
+    configuration.  Only installs web and SQL
+    components.
+        osdial-common
+        osdial-sql
+        osdial-web
 
 %package profile-dialer
-Summary:	The OSDial predictive dialing suite.
-Group:		Applications/Telephony
-Provides:	osdial-profile = %{version}-%{release}
-Conflicts:	astguiclient
-Conflicts:	vicidial
+Summary:        The OSDial predictive dialing suite.
+Group:          Applications/Telephony
+Provides:       osdial-profile = %{version}-%{release}
+Conflicts:      astguiclient
+Conflicts:      vicidial
 BuildRequires:  dialog
-Conflicts:	osdial-web
-Conflicts:	osdial-sql
-Requires(post):	coreutils grep gawk procps
-Requires:	osdial = %{version}-%{release}
-Requires:	osdial-common = %{version}-%{release}
-Requires:	osdial-dialer = %{version}-%{release}
-Obsoletes:	osdial-profile-install-dialer
-BuildArch:	noarch
+Conflicts:      osdial-web
+Conflicts:      osdial-sql
+Requires(post): coreutils grep gawk procps
+Requires:       osdial = %{version}-%{release}
+Requires:       osdial-common = %{version}-%{release}
+Requires:       osdial-dialer = %{version}-%{release}
+Obsoletes:      osdial-profile-install-dialer
+BuildArch:      noarch
 
 %description profile-dialer
 OSDial - Provides packages needed for multi-server
-         configuration.  Only installs dialer
-         components.
-               osdial-common
-               osdial-dialer
+    configuration.  Only installs dialer
+    components.
+        osdial-common
+        osdial-dialer
 
 %package profile-dialer-web
-Summary:	The OSDial predictive dialing suite.
-Group:		Applications/Telephony
-Provides:	osdial-profile = %{version}-%{release}
-Conflicts:	astguiclient
-Conflicts:	vicidial
+Summary:        The OSDial predictive dialing suite.
+Group:          Applications/Telephony
+Provides:       osdial-profile = %{version}-%{release}
+Conflicts:      astguiclient
+Conflicts:      vicidial
 BuildRequires:  dialog
-Conflicts:	osdial-sql
-Requires(post):	coreutils grep gawk procps
-Requires:	osdial = %{version}-%{release}
-Requires:	osdial-common = %{version}-%{release}
-Requires:	osdial-dialer = %{version}-%{release}
-Requires:	osdial-web = %{version}-%{release}
-Obsoletes:	osdial-profile-install-dialer-web
-BuildArch:	noarch
+Conflicts:      osdial-sql
+Requires(post): coreutils grep gawk procps
+Requires:       osdial = %{version}-%{release}
+Requires:       osdial-common = %{version}-%{release}
+Requires:       osdial-dialer = %{version}-%{release}
+Requires:       osdial-web = %{version}-%{release}
+Obsoletes:      osdial-profile-install-dialer-web
+BuildArch:      noarch
 
 %description profile-dialer-web
 OSDial - Provides packages needed for multi-server
-         configuration.  Only installs dialer
-         components.
-               osdial-common
-               osdial-dialer
-               osdial-web
+    configuration.  Only installs dialer
+    components.
+        osdial-common
+        osdial-dialer
+        osdial-web
 
 %package profile-sql
-Summary:	The OSDial predictive dialing suite.
-Group:		Applications/Telephony
-Provides:	osdial-profile = %{version}-%{release}
-Conflicts:	astguiclient
-Conflicts:	vicidial
+Summary:        The OSDial predictive dialing suite.
+Group:          Applications/Telephony
+Provides:       osdial-profile = %{version}-%{release}
+Conflicts:      astguiclient
+Conflicts:      vicidial
 BuildRequires:  dialog
-Conflicts:	osdial-web
-Conflicts:	osdial-dialer
-Requires(post):	coreutils grep gawk procps
-Requires:	osdial = %{version}-%{release}
-Requires:	osdial-common = %{version}-%{release}
-Requires:	osdial-sql = %{version}-%{release}
-Obsoletes:	osdial-profile-install-sql
-BuildArch:	noarch
+Conflicts:      osdial-web
+Conflicts:      osdial-dialer
+Requires(post): coreutils grep gawk procps
+Requires:       osdial = %{version}-%{release}
+Requires:       osdial-common = %{version}-%{release}
+Requires:       osdial-sql = %{version}-%{release}
+Obsoletes:      osdial-profile-install-sql
+BuildArch:      noarch
 
 %description profile-sql
 OSDial - Provides packages needed for multi-server
-         configuration.  Only installs SQL
-         components.
-               osdial-common
-               osdial-sql
+    configuration.  Only installs SQL
+    components.
+        osdial-common
+        osdial-sql
 
 %package profile-web
-Summary:	The OSDial predictive dialing suite.
-Group:		Applications/Telephony
-Provides:	osdial-profile = %{version}-%{release}
-Conflicts:	astguiclient
-Conflicts:	vicidial
+Summary:        The OSDial predictive dialing suite.
+Group:          Applications/Telephony
+Provides:       osdial-profile = %{version}-%{release}
+Conflicts:      astguiclient
+Conflicts:      vicidial
 BuildRequires:  dialog
-Conflicts:	osdial-dialer
-Conflicts:	osdial-sql
-Requires(post):	coreutils grep gawk procps
-Requires:	osdial = %{version}-%{release}
-Requires:	osdial-common = %{version}-%{release}
-Requires:	osdial-web = %{version}-%{release}
-Obsoletes:	osdial-profile-install-web
-BuildArch:	noarch
+Conflicts:      osdial-dialer
+Conflicts:      osdial-sql
+Requires(post): coreutils grep gawk procps
+Requires:       osdial = %{version}-%{release}
+Requires:       osdial-common = %{version}-%{release}
+Requires:       osdial-web = %{version}-%{release}
+Obsoletes:      osdial-profile-install-web
+BuildArch:      noarch
 
 %description profile-web
 OSDial - Provides packages needed for multi-server
-         configuration.  Only installs Web
-         components.
-               osdial-common
-               osdial-web
+    configuration.  Only installs Web
+    components.
+        osdial-common
+        osdial-web
 
 %package profile-archive
-Summary:	The OSDial predictive dialing suite.
-Group:		Applications/Telephony
-Provides:	osdial-profile = %{version}-%{release}
-Conflicts:	astguiclient
-Conflicts:	vicidial
+Summary:        The OSDial predictive dialing suite.
+Group:          Applications/Telephony
+Provides:       osdial-profile = %{version}-%{release}
+Conflicts:      astguiclient
+Conflicts:      vicidial
 BuildRequires:  dialog
-Conflicts:	osdial-dialer
-Conflicts:	osdial-sql
-Conflicts:	osdial-web
-Requires(post):	coreutils grep gawk procps vsftpd
-Requires:	vsftpd
-Requires:	httpd
-Requires:	osdial = %{version}-%{release}
-Requires:	osdial-common = %{version}-%{release}
-Obsoletes:	osdial-profile-install-archive
-BuildArch:	noarch
+Conflicts:      osdial-dialer
+Conflicts:      osdial-sql
+Conflicts:      osdial-web
+Requires(post): coreutils grep gawk procps vsftpd
+Requires:       vsftpd
+Requires:       httpd
+Requires:       osdial = %{version}-%{release}
+Requires:       osdial-common = %{version}-%{release}
+Obsoletes:      osdial-profile-install-archive
+BuildArch:      noarch
 
 %description profile-archive
 OSDial - Provides packages needed for multi-server
-         configuration.  Only installs archive
-         components.
-               osdial-common
+    configuration.  Only installs archive
+    components.
+        osdial-common
 
 
 
 
 %package common
-Summary:	OSDial backend scripts
-Group:		Applications/Telephony
-Obsoletes:	osdial-bin
-Requires(post):	coreutils grep gawk lsof ip_relay perl
-Requires:	osdial = %{version}-%{release}
-Requires:	osdial-profile = %{version}-%{release}
-Requires:	perl-OSDial = %{version}-%{release}
-Requires:	tuned
-Requires:	openvpn
-Requires:	sysstat
-Requires:	httpd
-Requires:	php-mbstring
-Requires:	php-xml
-Requires:	perl-MD5
-Requires:	perl-Digest-SHA1
-Requires:	perl-DBI
-Requires:	perl-DBD-MySQL
-Requires:	perl-Time-modules
-Requires:	perl-Unicode-Map
-Requires:	perl-Jcode
-Requires:	perl-OLE-Storage_Lite
-Requires:	perl-Proc-ProcessTable
-Requires:	perl-IO-stringy
-Requires:	perl-IO-Socket-Multicast
-Requires:	perl-Spreadsheet-ParseExcel
-Requires:	perl-Spreadsheet-WriteExcel
-Requires:	perl-Net-Telnet
-Requires:	perl-Net-Server
-Requires:	perl-Net-IP
-Requires:	perl-Net-Address-IP-Local
-Requires:	perl-Net-Netmask
-Requires:	perl-Data-Validate-IP
-Requires:	perl-Number-Format
-Requires:	perl-version
-Requires:	perl-Parse-RecDescent
-Requires:	perl-Proc-Exists
-Requires:	perl-TermReadKey
-Requires:	readline
-Requires:	sox
-Requires:	lame
-Requires:	toolame
-Requires:	screen
-Requires:	ntp
-Requires:	iftop
-Requires:	ploticus
-Requires:	balance
+Summary:        OSDial backend scripts
+Group:          Applications/Telephony
+Obsoletes:      osdial-bin
+Requires(post): coreutils grep gawk lsof ip_relay perl
+Requires:       osdial = %{version}-%{release}
+Requires:       osdial-profile = %{version}-%{release}
+Requires:       perl-OSDial = %{version}-%{release}
+Requires:       tuned
+Requires:       openvpn
+Requires:       sysstat
+Requires:       httpd
+Requires:       php-mbstring
+Requires:       php-xml
+Requires:       perl-MD5
+Requires:       perl-Digest-SHA1
+Requires:       perl-DBI
+Requires:       perl-DBD-MySQL
+Requires:       perl-Time-modules
+Requires:       perl-Time-HiRes
+Requires:       perl-Unicode-Map
+Requires:       perl-Jcode
+Requires:       perl-OLE-Storage_Lite
+Requires:       perl-Proc-ProcessTable
+Requires:       perl-IO-stringy
+Requires:       perl-IO-Socket-Multicast
+Requires:       perl-Spreadsheet-ParseExcel
+Requires:       perl-Spreadsheet-WriteExcel
+Requires:       perl-Net-Telnet
+Requires:       perl-Net-Server
+Requires:       perl-Net-IP
+Requires:       perl-Net-Address-IP-Local
+Requires:       perl-Net-Netmask
+Requires:       perl-Data-Validate-IP
+Requires:       perl-Number-Format
+Requires:       perl-version
+Requires:       perl-Parse-RecDescent
+Requires:       perl-Proc-Exists
+Requires:       perl-TermReadKey
+Requires:       readline
+Requires:       sox
+Requires:       lame
+Requires:       toolame
+Requires:       screen
+Requires:       ntp
+Requires:       iftop
+Requires:       ploticus
+Requires:       balance
 %if 0%{?rhel} < 6
-Requires:	subversion
+Requires:       subversion
 %endif
-Requires:	mtop
-Requires:	perl-Curses
-Requires:	perl-Asterisk
-Requires:	htop
-Requires:	sipsak
-Requires:	ttyload
-Requires:	sqlite2
-Requires:	dialog
-Requires:	ip_relay
-Requires:	system-switch-asterisk
-Requires:	festival
-Requires:	festival-lib
-Requires:	festival-speechtools-libs
-Requires:	festvox-awb-arctic-hts
-Requires:	festvox-bdl-arctic-hts
-Requires:	festvox-clb-arctic-hts
-Requires:	festvox-jmk-arctic-hts
-Requires:	festvox-kal-diphone
-Requires:	festvox-ked-diphone
-Requires:	festvox-rms-arctic-hts
-Requires:	festvox-slt-arctic-hts
-Requires:	hispavoces-pal-diphone
-Requires:	hispavoces-sfl-diphone
+Requires:       mtop
+Requires:       perl-Curses
+Requires:       perl-Asterisk
+Requires:       htop
+Requires:       sipsak
+Requires:       ttyload
+Requires:       sqlite2
+Requires:       dialog
+Requires:       ip_relay
+Requires:       system-switch-asterisk
+Requires:       festival
+Requires:       festival-lib
+Requires:       festival-speechtools-libs
+Requires:       festvox-awb-arctic-hts
+Requires:       festvox-bdl-arctic-hts
+Requires:       festvox-clb-arctic-hts
+Requires:       festvox-jmk-arctic-hts
+Requires:       festvox-kal-diphone
+Requires:       festvox-ked-diphone
+Requires:       festvox-rms-arctic-hts
+Requires:       festvox-slt-arctic-hts
+Requires:       hispavoces-pal-diphone
+Requires:       hispavoces-sfl-diphone
 Requires:       libcgroup
 Requires:       numad
-BuildArch:	noarch
+BuildArch:      noarch
 
 %description common
 OSDial backend scripts, needed by web, sql, etc.
 
 %package sql
-Summary: 	OSDial SQL files and update scripts.
-Group:		Applications/Telephony
-Requires(post):	coreutils grep sed mysql-server perl gawk procps
-Requires:	osdial = %{version}-%{release}
-Requires:	osdial-profile = %{version}-%{release}
-Requires:	osdial-common = %{version}-%{release}
-Requires:	perl-DBI
-Requires:	perl-DBD-MySQL
-Requires:	mysql-server >= %{mysql_version}
-BuildArch:	noarch
+Summary:        OSDial SQL files and update scripts.
+Group:          Applications/Telephony
+Requires(post): coreutils grep sed mysql-server perl gawk procps
+Requires:       osdial = %{version}-%{release}
+Requires:       osdial-profile = %{version}-%{release}
+Requires:       osdial-common = %{version}-%{release}
+Requires:       perl-DBI
+Requires:       perl-DBD-MySQL
+Requires:       mysql-server >= %{mysql_version}
+BuildArch:      noarch
 
 %description sql
 OSDial SQL file and update scripts.  Provides a method of
@@ -506,20 +509,20 @@ automatically updating the OSDial database, both through the
 install package and RPM.
 
 %package web
-Summary:	OSDial user interface files
-Group:		Applications/Telephony
-Requires(post):	coreutils grep httpd perl gawk procps php php-common
-Requires:	osdial = %{version}-%{release}
-Requires:	osdial-profile = %{version}-%{release}
-Requires:	osdial-common = %{version}-%{release}
-Requires:	php-pear
-Requires:	php-pear-Date
-Requires:	php-pear-Mail
-Requires:	php-pear-Mail-Mime
-Requires:	php-mysql
-Requires:	ploticus
-Requires:	httpd
-Requires:	tinymce
+Summary:        OSDial user interface files
+Group:          Applications/Telephony
+Requires(post): coreutils grep httpd perl gawk procps php php-common
+Requires:       osdial = %{version}-%{release}
+Requires:       osdial-profile = %{version}-%{release}
+Requires:       osdial-common = %{version}-%{release}
+Requires:       php-pear
+Requires:       php-pear-Date
+Requires:       php-pear-Mail
+Requires:       php-pear-Mail-Mime
+Requires:       php-mysql
+Requires:       ploticus
+Requires:       httpd
+Requires:       tinymce
 BuildArch:      noarch
 
 %description web
@@ -531,15 +534,15 @@ structure and other supporting files.
 %package dialer
 Summary:        OSDial Asterisk System and Configuration
 Group:          Applications/Telephony
-Requires(post):	coreutils grep sed gawk perl
-Requires(pre):	osdial = %{version}-%{release}
-Requires(pre):	osdial-profile = %{version}-%{release}
-Requires(pre): osdial-common = %{version}-%{release}
+Requires(post): coreutils grep sed gawk perl
+Requires(pre):  osdial = %{version}-%{release}
+Requires(pre):  osdial-profile = %{version}-%{release}
+Requires(pre):  osdial-common = %{version}-%{release}
 Requires:       osdial-asterisk-version
 Requires:       osdial-sounds
 Requires:       php-pear-db
 Requires:       gawk
-Obsoletes:	osdial-config
+Obsoletes:      osdial-config
 BuildArch:      noarch
 
 %description dialer
@@ -550,12 +553,12 @@ The is a generic Asterisk configuration that should work out of box for most cli
 %package asterisk-version12
 Summary:        OSDial Asterisk 1.2 System
 Group:          Applications/Telephony
-Requires(post):	coreutils grep sed gawk perl
-Requires(pre):	osdial = %{version}-%{release}
-Requires(pre):	osdial-profile = %{version}-%{release}
-Requires(pre):       osdial-common = %{version}-%{release}
-Requires(pre):       osdial-dialer = %{version}-%{release}
-Requires:	asterisk12-system
+Requires(post): coreutils grep sed gawk perl
+Requires(pre):  osdial = %{version}-%{release}
+Requires(pre):  osdial-profile = %{version}-%{release}
+Requires(pre):  osdial-common = %{version}-%{release}
+Requires(pre):  osdial-dialer = %{version}-%{release}
+Requires:       asterisk12-system
 Requires:       libpri12 >= %{libpri12_version}
 Requires:       zaptel12 >= %{zaptel12_version}
 Requires:       wanpipe12 >= %{wanpipe_version}
@@ -563,10 +566,10 @@ Requires:       asterisk12 >= %{asterisk12_version}
 Requires:       asterisk12-addons >= %{asterisk12_version}
 Requires:       asterisk12-sounds >= %{asterisk12_version}
 Requires:       gawk
-Provides:	osdial-asterisk-version
-Provides:	osdial-asterisk12 = %{version}-%{release}
+Provides:       osdial-asterisk-version
+Provides:       osdial-asterisk12 = %{version}-%{release}
 Obsoletes:      osdial-asterisk
-Conflicts:	osdial-asterisk-version16
+Conflicts:      osdial-asterisk-version16
 BuildArch:      noarch
 
 %description asterisk-version12
@@ -576,24 +579,24 @@ This package contains dependency and setup instructions for Asterisk 1.2.
 %package asterisk-version16
 Summary:        OSDial Asterisk 1.6 System
 Group:          Applications/Telephony
-Requires(post):	coreutils grep sed gawk perl
-Requires(pre):	osdial = %{version}-%{release}
-Requires(pre):	osdial-profile = %{version}-%{release}
-Requires(pre):       osdial-common = %{version}-%{release}
-Requires(pre):       osdial-dialer = %{version}-%{release}
-Requires:	asterisk16-system
+Requires(post): coreutils grep sed gawk perl
+Requires(pre):  osdial = %{version}-%{release}
+Requires(pre):  osdial-profile = %{version}-%{release}
+Requires(pre):  osdial-common = %{version}-%{release}
+Requires(pre):  osdial-dialer = %{version}-%{release}
+Requires:       asterisk16-system
 Requires:       libpri14 >= %{libpri14_version}
 Requires:       dahdi >= %{dahdi_version}
-Requires:	dahdi-tools >= %{dahdi_tools_version}
+Requires:       dahdi-tools >= %{dahdi_tools_version}
 Requires:       wanpipe16 >= %{wanpipe_version}
 Requires:       asterisk16 >= %{asterisk16_version}
 Requires:       asterisk16-addons >= %{asterisk16_version}
 Requires:       asterisk16-sounds-en-gsm >= %{asterisk16_version}
-Requires:	mysql-server >= %{mysql_version}
+Requires:       mysql-server >= %{mysql_version}
 Requires:       gawk
-Provides:	osdial-asterisk-version
-Provides:	osdial-asterisk16 = %{version}-%{release}
-Conflicts:	osdial-asterisk-version12
+Provides:       osdial-asterisk-version
+Provides:       osdial-asterisk16 = %{version}-%{release}
+Conflicts:      osdial-asterisk-version12
 BuildArch:      noarch
 
 %description asterisk-version16
@@ -603,18 +606,18 @@ This package contains dependency and setup instructions for Asterisk 1.6.
 
 
 #%package debuginfo
-#Summary:	OSDial debuginfo
-#Group:		Applications/Telephony
+#Summary:        OSDial debuginfo
+#Group:          Applications/Telephony
 #BuildArch:      i386
 #
 #%description debuginfo
 #OSDial debuginfo
 
 %package web-template-largedialpresets
-Summary:	OSDial user interface files
-Group:		Applications/Telephony
-Requires:	osdial-web = %{version}-%{release}
-Provides:	osdial-template-largedialpresets = %{version}-%{release}
+Summary:        OSDial user interface files
+Group:          Applications/Telephony
+Requires:       osdial-web = %{version}-%{release}
+Provides:       osdial-template-largedialpresets = %{version}-%{release}
 BuildArch:      noarch
 
 %description web-template-largedialpresets
@@ -622,39 +625,39 @@ Large Dial Presets Template
 
 
 %package web-template-highcontrast
-Summary:	OSDial user interface files
-Group:		Applications/Telephony
-Requires:	osdial-web = %{version}-%{release}
-Provides:	osdial-template-highcontrast = %{version}-%{release}
+Summary:        OSDial user interface files
+Group:          Applications/Telephony
+Requires:       osdial-web = %{version}-%{release}
+Provides:       osdial-template-highcontrast = %{version}-%{release}
 BuildArch:      noarch
 
 %description web-template-highcontrast
 High Contrast Template
 
 %package nonfree
-Summary:	OSDial Non-Free
-Group:		Applications/Telephony
-Requires:	osdial-web = %{version}-%{release}
-Provides:	osdial-nonfree-companies = %{version}-%{release}
+Summary:        OSDial Non-Free
+Group:          Applications/Telephony
+Requires:       osdial-web = %{version}-%{release}
+Provides:       osdial-nonfree-companies = %{version}-%{release}
 BuildArch:      noarch
 
 %description nonfree
 OSDial Non-Free
 
 %package nonfree-emailtemplates
-Summary:	OSDial Non-Free
-Group:		Applications/Telephony
-Requires:	osdial-web = %{version}-%{release}
+Summary:        OSDial Non-Free
+Group:          Applications/Telephony
+Requires:       osdial-web = %{version}-%{release}
 BuildArch:      noarch
 
 %description nonfree-emailtemplates
 OSDial Non-Free
 
 %package -n perl-OSDial
-Summary:	OSDial user interface files
-Group:		Applications/Telephony
-BuildRequires:	perl(ExtUtils::MakeMaker), perl
-Requires:	perl
+Summary:        OSDial user interface files
+Group:          Applications/Telephony
+BuildRequires:  perl(ExtUtils::MakeMaker), perl
+Requires:       perl
 BuildArch:      noarch
 
 
@@ -664,11 +667,11 @@ in OSDial.  The module will read existing configuration files, connect to
 the OSDial database, and interface with Asterisk as needed.
 
 %package -n slingdial
-Summary:	OSDial user interface files
-Group:		Applications/Telephony
-Requires:	osdial-web = %{version}-%{release}
-Provides:	osdial-web-template-slingdial = %{version}-%{release}
-Provides:	osdial-template-slingdial = %{version}-%{release}
+Summary:        OSDial user interface files
+Group:          Applications/Telephony
+Requires:       osdial-web = %{version}-%{release}
+Provides:       osdial-web-template-slingdial = %{version}-%{release}
+Provides:       osdial-template-slingdial = %{version}-%{release}
 BuildArch:      noarch
 
 %description -n slingdial
@@ -677,22 +680,20 @@ template
 
 
 %prep
-%{__rm} -rf %{buildroot}
-%setup -a 0 -n osdial-%{version}
-%setup -a 1 -D
-%setup -a 2 -D
-%setup -a 3 -D
+%setup -q -a 0 -n osdial-%{version}
+%setup -q -a 1 -D
+%setup -q -a 2 -D
+%setup -q -a 3 -D
 
 %build
-%{__install} -dp %{buildroot}
 
 %install
-%{__mkdir_p} %{buildroot}/usr/lib/debug
-%{__mkdir_p} %{buildroot}/usr/src/debug
+%{__mkdir_p} %{buildroot}%{_usr}/lib/debug
+%{__mkdir_p} %{buildroot}%{_usrsrc}/debug
 %{__make} DESTDIR=%{buildroot} HTTPDUSER=asterisk install
-%{__rm} -f %{buildroot}%{_var}/lib/asterisk/sounds/*.ulaw
-%{__rm} -f %{buildroot}%{_var}/lib/asterisk/sounds/*.gsm
-%{__rm} -f %{buildroot}%{_var}/lib/asterisk/sounds/*.g729
+%{__rm} -f %{buildroot}%{_sharedstatedir}/asterisk/sounds/*.ulaw
+%{__rm} -f %{buildroot}%{_sharedstatedir}/asterisk/sounds/*.gsm
+%{__rm} -f %{buildroot}%{_sharedstatedir}/asterisk/sounds/*.g729
 cd perl
 %{__perl} Makefile.PL PREFIX="%{buildroot}%{_prefix}" INSTALLDIRS="vendor"
 %{__make} %{?_smp_mflags}
@@ -700,70 +701,70 @@ cd perl
 find %{buildroot} -name .packlist -exec %{__rm} {} \;
 find %{buildroot} -name perllocal.pod -exec %{__rm} {} \;
 cd ..
-%{__mkdir_p} %{buildroot}/etc/httpd/conf.d
-%{__mkdir_p} %{buildroot}/etc/init.d
-%{__mkdir_p} %{buildroot}/etc/profile.d
-%{__mkdir_p} %{buildroot}/etc/pki/osdial-support
-%{__mkdir_p} %{buildroot}/opt/osdial/html/ivr
-%{__mkdir_p} %{buildroot}/opt/osdial/backups/recordings
-%{__mkdir_p} %{buildroot}/opt/osdial/recordings/processing/unmixed
-%{__mkdir_p} %{buildroot}/opt/osdial/recordings/processing/mixed
-%{__mkdir_p} %{buildroot}/opt/osdial/recordings/completed
-%{__mkdir_p} %{buildroot}/opt/osdial/recordings
-%{__mkdir_p} %{buildroot}/opt/osdial/reports
-%{__mkdir_p} %{buildroot}/opt/osdial/tts
-%{__mkdir_p} %{buildroot}/opt/osdial/backups
-%{__mkdir_p} %{buildroot}/opt/osdial/backups/recordings
-%{__mkdir_p} %{buildroot}/opt/osdial/media
-%{__mkdir_p} %{buildroot}/var/log/osdial
-%{__mkdir_p} %{buildroot}/var/lib/asterisk/sounds/tts
-%{__mkdir_p} %{buildroot}/var/lib/asterisk/sounds/ivr
-%{__mkdir_p} %{buildroot}/var/lib/asterisk/sounds/osdial
-%{__cp} extras/bash.profile %{buildroot}/etc/profile.d/osdial.sh
-%{__cp} extras/httpd-osdial.conf %{buildroot}/etc/httpd/conf.d/osdial.conf
-%{__cp} extras/httpd-osdial-archive.conf %{buildroot}/etc/httpd/conf.d/osdial-archive.conf
-%{__cp} extras/httpd-osdial-ari.conf %{buildroot}/etc/httpd/conf.d/osdial-ari.conf
-%{__cp} extras/httpd-osdial-psi.conf %{buildroot}/etc/httpd/conf.d/osdial-psi.conf
-%{__cp} extras/osdial.init %{buildroot}/etc/init.d/osdial
-%{__cp} extras/osdial_resource_send.init %{buildroot}/etc/init.d/osdial_resource_send
-%{__cp} extras/osdial_resource_listen.init %{buildroot}/etc/init.d/osdial_resource_listen
-%{__cp} extras/osdial-support.pub %{buildroot}/etc/pki/osdial-support
-%{__mkdir_p} %{buildroot}/etc/cron.daily
-%{__ln_s} /opt/osdial/bin/AST_ntp_update.sh %{buildroot}/etc/cron.daily
-touch %{buildroot}/opt/osdial/html/admin/VMnow.txt
+%{__mkdir_p} %{buildroot}%{_sysconfdir}/httpd/conf.d
+%{__mkdir_p} %{buildroot}%{_sysconfdir}/init.d
+%{__mkdir_p} %{buildroot}%{_sysconfdir}/profile.d
+%{__mkdir_p} %{buildroot}%{_sysconfdir}/pki/osdial-support
+%{__mkdir_p} %{buildroot}%{_opt}/osdial/html/ivr
+%{__mkdir_p} %{buildroot}%{_opt}/osdial/backups/recordings
+%{__mkdir_p} %{buildroot}%{_opt}/osdial/recordings/processing/unmixed
+%{__mkdir_p} %{buildroot}%{_opt}/osdial/recordings/processing/mixed
+%{__mkdir_p} %{buildroot}%{_opt}/osdial/recordings/completed
+%{__mkdir_p} %{buildroot}%{_opt}/osdial/recordings
+%{__mkdir_p} %{buildroot}%{_opt}/osdial/reports
+%{__mkdir_p} %{buildroot}%{_opt}/osdial/tts
+%{__mkdir_p} %{buildroot}%{_opt}/osdial/backups
+%{__mkdir_p} %{buildroot}%{_opt}/osdial/backups/recordings
+%{__mkdir_p} %{buildroot}%{_opt}/osdial/media
+%{__mkdir_p} %{buildroot}%{_localstatedir}/log/osdial
+%{__mkdir_p} %{buildroot}%{_sharedstatedir}/asterisk/sounds/tts
+%{__mkdir_p} %{buildroot}%{_sharedstatedir}/asterisk/sounds/ivr
+%{__mkdir_p} %{buildroot}%{_sharedstatedir}/asterisk/sounds/osdial
+%{__cp} extras/bash.profile %{buildroot}%{_sysconfdir}/profile.d/osdial.sh
+%{__cp} extras/httpd-osdial.conf %{buildroot}%{_sysconfdir}/httpd/conf.d/osdial.conf
+%{__cp} extras/httpd-osdial-archive.conf %{buildroot}%{_sysconfdir}/httpd/conf.d/osdial-archive.conf
+%{__cp} extras/httpd-osdial-ari.conf %{buildroot}%{_sysconfdir}/httpd/conf.d/osdial-ari.conf
+%{__cp} extras/httpd-osdial-psi.conf %{buildroot}%{_sysconfdir}/httpd/conf.d/osdial-psi.conf
+%{__cp} extras/osdial.init %{buildroot}%{_sysconfdir}/init.d/osdial
+%{__cp} extras/osdial_resource_send.init %{buildroot}%{_sysconfdir}/init.d/osdial_resource_send
+%{__cp} extras/osdial_resource_listen.init %{buildroot}%{_sysconfdir}/init.d/osdial_resource_listen
+%{__cp} extras/osdial-support.pub %{buildroot}%{_sysconfdir}/pki/osdial-support
+%{__mkdir_p} %{buildroot}%{_sysconfdir}/cron.daily
+%{__ln_s} %{_opt}/osdial/bin/AST_ntp_update.sh %{buildroot}%{_sysconfdir}/cron.daily
+touch %{buildroot}%{_opt}/osdial/html/admin/VMnow.txt
 
-%{__mv} %{buildroot}/opt/osdial/bin/osdial_resource_send.pl %{buildroot}/opt/osdial/bin/osdial_resource_send
-%{__mv} %{buildroot}/opt/osdial/bin/osdial_resource_listen.pl %{buildroot}/opt/osdial/bin/osdial_resource_listen
+%{__mv} %{buildroot}%{_opt}/osdial/bin/osdial_resource_send.pl %{buildroot}%{_opt}/osdial/bin/osdial_resource_send
+%{__mv} %{buildroot}%{_opt}/osdial/bin/osdial_resource_listen.pl %{buildroot}%{_opt}/osdial/bin/osdial_resource_listen
 
 # copy in asterisk configs
-%{__mkdir_p} %{buildroot}/etc/asterisk/startup.d
-%{__mkdir_p} %{buildroot}/etc/dahdi
-echo -e "#!/bin/bash\nexport TTY=screen" > %{buildroot}/etc/asterisk/startup.d/tty_screen.sh
-%{__cp} docs/conf_examples/*.conf %{buildroot}/etc/asterisk
-%{__cp} docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
+%{__mkdir_p} %{buildroot}%{_sysconfdir}/asterisk/startup.d
+%{__mkdir_p} %{buildroot}%{_sysconfdir}/dahdi
+echo -e "#!/bin/bash\nexport TTY=screen" > %{buildroot}%{_sysconfdir}/asterisk/startup.d/tty_screen.sh
+%{__cp} docs/conf_examples/*.conf %{buildroot}%{_sysconfdir}/asterisk
+%{__cp} docs/conf_examples/README.osdial %{buildroot}%{_sysconfdir}/asterisk
 
-%{__perl} -pi -e 's|^VARserver_ip.*|VARserver_ip => 127.0.0.1|' %{buildroot}/etc/osdial.conf
-%{__perl} -pi -e 's|^VARHTTP_path.*|VARHTTP_path => http://127.0.0.1|' %{buildroot}/etc/osdial.conf
-%{__perl} -pi -e 's|^VARFTP_host.*|VARFTP_host => 127.0.0.1|' %{buildroot}/etc/osdial.conf
-%{__perl} -pi -e 's|^VARREPORT_host.*|VARREPORT_host => 127.0.0.1|' %{buildroot}/etc/osdial.conf
-%{__rm} -f %{buildroot}/etc/asterisk/dahdi_system.conf
+%{__perl} -pi -e 's|^VARserver_ip.*|VARserver_ip => 127.0.0.1|' %{buildroot}%{_sysconfdir}/osdial.conf
+%{__perl} -pi -e 's|^VARHTTP_path.*|VARHTTP_path => http://127.0.0.1|' %{buildroot}%{_sysconfdir}/osdial.conf
+%{__perl} -pi -e 's|^VARFTP_host.*|VARFTP_host => 127.0.0.1|' %{buildroot}%{_sysconfdir}/osdial.conf
+%{__perl} -pi -e 's|^VARREPORT_host.*|VARREPORT_host => 127.0.0.1|' %{buildroot}%{_sysconfdir}/osdial.conf
+%{__rm} -f %{buildroot}%{_sysconfdir}/asterisk/dahdi_system.conf
 
-echo > %{buildroot}/opt/osdial/.osdial-all
+echo > %{buildroot}%{_opt}/osdial/.osdial-all
 %if 0%{?blah}
-echo > %{buildroot}/opt/osdial/.osdial-install-all
-echo > %{buildroot}/opt/osdial/.osdial-install-control
-echo > %{buildroot}/opt/osdial/.osdial-install-dialer
-echo > %{buildroot}/opt/osdial/.osdial-install-sql
-echo > %{buildroot}/opt/osdial/.osdial-install-web
-echo > %{buildroot}/opt/osdial/.osdial-install-archive
+echo > %{buildroot}%{_opt}/osdial/.osdial-install-all
+echo > %{buildroot}%{_opt}/osdial/.osdial-install-control
+echo > %{buildroot}%{_opt}/osdial/.osdial-install-dialer
+echo > %{buildroot}%{_opt}/osdial/.osdial-install-sql
+echo > %{buildroot}%{_opt}/osdial/.osdial-install-web
+echo > %{buildroot}%{_opt}/osdial/.osdial-install-archive
 %endif
-echo > %{buildroot}/opt/osdial/.osdial-live
-echo > %{buildroot}/opt/osdial/.osdial-control
-echo > %{buildroot}/opt/osdial/.osdial-dialer
-echo > %{buildroot}/opt/osdial/.osdial-dialer-web
-echo > %{buildroot}/opt/osdial/.osdial-sql
-echo > %{buildroot}/opt/osdial/.osdial-web
-echo > %{buildroot}/opt/osdial/.osdial-archive
+echo > %{buildroot}%{_opt}/osdial/.osdial-live
+echo > %{buildroot}%{_opt}/osdial/.osdial-control
+echo > %{buildroot}%{_opt}/osdial/.osdial-dialer
+echo > %{buildroot}%{_opt}/osdial/.osdial-dialer-web
+echo > %{buildroot}%{_opt}/osdial/.osdial-sql
+echo > %{buildroot}%{_opt}/osdial/.osdial-web
+echo > %{buildroot}%{_opt}/osdial/.osdial-archive
 
 cd osdial-template-largedialpresets
 %{__make} DESTDIR=%{buildroot} install
@@ -778,27 +779,21 @@ cd osdial-template-slingdial
 cd ..
 
 %{__mkdir_p} %{buildroot}%{_sysconfdir}/security/limits.d
-cat > %{buildroot}%{_sysconfdir}/security/limits.d/99-osdial.conf <<EOF
-*                  -       core               unlimited
-*                  -       data               unlimited
-*                  -       fsize              unlimited
-*                  -       sigpending         unlimited
-*                  -       memlock            unlimited
-*                  -       as                 unlimited
-*                  -       nofile             999999
-*                  -       msgqueue           unlimited
-*                  -       cpu                unlimited
-*                  -       nproc              unlimited
-*                  -       locks              unlimited
-EOF
+echo "*                  -       core               unlimited" > %{buildroot}%{_sysconfdir}/security/limits.d/99-osdial.conf
+echo "*                  -       data               unlimited" >> %{buildroot}%{_sysconfdir}/security/limits.d/99-osdial.conf
+echo "*                  -       fsize              unlimited" >> %{buildroot}%{_sysconfdir}/security/limits.d/99-osdial.conf
+echo "*                  -       sigpending         unlimited" >> %{buildroot}%{_sysconfdir}/security/limits.d/99-osdial.conf
+echo "*                  -       memlock            unlimited" >> %{buildroot}%{_sysconfdir}/security/limits.d/99-osdial.conf
+echo "*                  -       as                 unlimited" >> %{buildroot}%{_sysconfdir}/security/limits.d/99-osdial.conf
+echo "*                  -       nofile             999999" >> %{buildroot}%{_sysconfdir}/security/limits.d/99-osdial.conf
+echo "*                  -       msgqueue           unlimited" >> %{buildroot}%{_sysconfdir}/security/limits.d/99-osdial.conf
+echo "*                  -       cpu                unlimited" >> %{buildroot}%{_sysconfdir}/security/limits.d/99-osdial.conf
+echo "*                  -       nproc              unlimited" >> %{buildroot}%{_sysconfdir}/security/limits.d/99-osdial.conf
+echo "*                  -       locks              unlimited" >> %{buildroot}%{_sysconfdir}/security/limits.d/99-osdial.conf
 if [ "`uname -m`" = "x86_64" ]; then
-cat >> %{buildroot}%{_sysconfdir}/security/limits.d/99-osdial.conf <<EOF
-*                  -       stack              8192
-EOF
+    echo "*                  -       stack              8192" >> %{buildroot}%{_sysconfdir}/security/limits.d/99-osdial.conf
 else
-cat >> %{buildroot}%{_sysconfdir}/security/limits.d/99-osdial.conf <<EOF
-*                  -       stack              2048
-EOF
+    echo "*                  -       stack              2048" >> %{buildroot}%{_sysconfdir}/security/limits.d/99-osdial.conf
 fi
 
 
@@ -806,62 +801,62 @@ fi
 %{__rm} -rf %{buildroot}
 
 %pre
-ASTUSER=`id asterisk 2>/dev/null`
+ASTUSER=`%{__id} asterisk 2>/dev/null`
 RETVAL=$?
-if [ $RETVAL -eq 1 ]; then
-	/usr/sbin/useradd -c "Asterisk PBX" -G tty -s /bin/bash -r -d "/var/lib/asterisk" asterisk > /dev/null 2>&1
+if [ "$RETVAL" -eq 1 ]; then
+    %{_sbindir}/useradd -c "Asterisk PBX" -G tty -s /bin/bash -r -d "%{_sharedstatedir}/asterisk" asterisk > /dev/null 2>&1
 fi
-if [ ! -d "/var/lib/asterisk" ]; then
-	/bin/mkdir -p /var/lib/asterisk
-	/bin/chown asterisk:asterisk /var/lib/asterisk
+if [ ! -d "%{_sharedstatedir}/asterisk" ]; then
+    %{__mkdir_p} %{_sharedstatedir}/asterisk
+    %{__chown} asterisk:asterisk %{_sharedstatedir}/asterisk
 fi
-UUIDPW=`/usr/bin/uuidgen`
-if [ -f "/var/lib/asterisk/.asterisk_pw" ]; then
-	UUIDPW=`/bin/cat /var/lib/asterisk/.asterisk_pw`
+UUIDPW=`%{_bindir}/uuidgen`
+if [ -f "%{_sharedstatedir}/asterisk/.asterisk_pw" ]; then
+    UUIDPW=`%{__cat} %{_sharedstatedir}/asterisk/.asterisk_pw`
 fi
-if [ ! -f "/opt/osdial/.osdial-archive" ]; then
-	echo "$UUIDPW" | /usr/bin/passwd --stdin asterisk > /dev/null 2>&1
+if [ ! -f "%{_opt}/osdial/.osdial-archive" ]; then
+    echo "$UUIDPW" | %{_bindir}/passwd --stdin asterisk > /dev/null 2>&1
 fi
-echo "$UUIDPW" > /var/lib/asterisk/.asterisk_pw
-/bin/chown root:root /var/lib/asterisk/.asterisk_pw
-/bin/chmod 600 /var/lib/asterisk/.asterisk_pw
+echo "$UUIDPW" > %{_sharedstatedir}/asterisk/.asterisk_pw
+%{__chown} root:root %{_sharedstatedir}/asterisk/.asterisk_pw
+%{__chmod} 600 %{_sharedstatedir}/asterisk/.asterisk_pw
 if [ ! -f "/root/.ssh/id_rsa" ]; then
-	/usr/bin/ssh-keygen -t rsa -f /root/.ssh/id_rsa -q -N '' 2>/dev/null
+    %{_bindir}/ssh-keygen -t rsa -f /root/.ssh/id_rsa -q -N '' 2>/dev/null
 fi
-RKEY=`/bin/cat /root/.ssh/id_rsa.pub 2>/dev/null`
-if [ ! -d "/var/lib/asterisk/.ssh" ]; then
-	/bin/mkdir -p /var/lib/asterisk/.ssh
+RKEY=`%{__cat} /root/.ssh/id_rsa.pub 2>/dev/null`
+if [ ! -d "%{_sharedstatedir}/asterisk/.ssh" ]; then
+    %{__mkdir_p} %{_sharedstatedir}/asterisk/.ssh
 fi
-if [ ! -f "/var/lib/asterisk/.ssh/authorized_keys" ]; then
-	/bin/echo "$RKEY" > /var/lib/asterisk/.ssh/authorized_keys
+if [ ! -f "%{_sharedstatedir}/asterisk/.ssh/authorized_keys" ]; then
+    echo "$RKEY" > %{_sharedstatedir}/asterisk/.ssh/authorized_keys
 fi
-KCHK=`/bin/grep "$RKEY" /var/lib/asterisk/.ssh/authorized_keys`
+KCHK=`%{__grep} "$RKEY" %{_sharedstatedir}/asterisk/.ssh/authorized_keys`
 if [ -z "$KCHK" ]; then
-	/bin/echo "$RKEY" > /var/lib/asterisk/.ssh/authorized_keys
+    echo "$RKEY" > %{_sharedstatedir}/asterisk/.ssh/authorized_keys
 fi
-/bin/chown -R asterisk:asterisk /var/lib/asterisk/.ssh
-/bin/chmod 700 /var/lib/asterisk/.ssh
-/bin/chmod 600 /var/lib/asterisk/.ssh/*
+%{__chown_Rhf} -R asterisk:asterisk %{_sharedstatedir}/asterisk/.ssh
+%{__chmod} 700 %{_sharedstatedir}/asterisk/.ssh
+%{__chmod} 600 %{_sharedstatedir}/asterisk/.ssh/*
 exit 0
 
 %post profile-live
 INTY=$1
 if [ "$INTY" -eq 1 ]; then
-	echo > /opt/osdial/.osdial-live
-        echo "RUN_FIRSTBOOT=\"NO\"" > /etc/sysconfig/firstboot
-        echo "NETWORKING=yes" > /etc/sysconfig/network
-        echo "NETWORKING_IPV6=no" >> /etc/sysconfig/network
-        echo "HOSTNAME=osdial-live.callcentersg.com" >> /etc/sysconfig/network
-        echo "127.0.0.1 osdial-live.callcentersg.com osdial-live" > /etc/hosts
-        echo "127.0.0.1 localhost.localdomain localhost" >> /etc/hosts
-        echo "::1       localhost6.localdomain6 localhost6" >> /etc/hosts
-	if [ ! -d "/usr/lib/syslinux" ]; then
-		if [ -d "/usr/share/syslinux" ]; then
-			echo "    osdial-live: Fixing broken syslinux"
-			%{__ln_s} /usr/share/syslinux /usr/lib/syslinux > /dev/null 2>&1 || :
-		fi
-	fi
-	/sbin/service syslog stop > /dev/null 2>&1 || :
+    echo > %{_opt}/osdial/.osdial-live
+    echo "RUN_FIRSTBOOT=\"NO\"" > %{_sysconfdir}/sysconfig/firstboot
+    echo "NETWORKING=yes" > %{_sysconfdir}/sysconfig/network
+    echo "NETWORKING_IPV6=no" >> %{_sysconfdir}/sysconfig/network
+    echo "HOSTNAME=osdial-live.callcentersg.com" >> %{_sysconfdir}/sysconfig/network
+    echo "127.0.0.1 osdial-live.callcentersg.com osdial-live" > %{_sysconfdir}/hosts
+    echo "127.0.0.1 localhost.localdomain localhost" >> %{_sysconfdir}/hosts
+    echo "::1       localhost6.localdomain6 localhost6" >> %{_sysconfdir}/hosts
+    if [ ! -d "%{_usr}/lib/syslinux" ]; then
+        if [ -d "%{_usr}/share/syslinux" ]; then
+            echo "    osdial-live: Fixing broken syslinux"
+            %{__ln_s} %{_usr}/share/syslinux %{_usr}/lib/syslinux > /dev/null 2>&1 || :
+        fi
+    fi
+    /sbin/service syslog stop > /dev/null 2>&1 || :
 fi
 echo -n
 
@@ -870,72 +865,72 @@ echo -n
 %post profile-install-all
 INTY=$1
 if [ "$INTY" -eq 1 ]; then
-        echo "NETWORKING=yes" > /etc/sysconfig/network
-        echo "NETWORKING_IPV6=no" >> /etc/sysconfig/network
-        echo "HOSTNAME=osdial.callcentersg.com" >> /etc/sysconfig/network
-        echo "127.0.0.1 osdial.callcentersg.com osdial" > /etc/hosts
-        echo "127.0.0.1 localhost.localdomain localhost" >> /etc/hosts
-        echo "::1       localhost6.localdomain6 localhost6" >> /etc/hosts
+    echo "NETWORKING=yes" > %{_sysconfdir}/sysconfig/network
+    echo "NETWORKING_IPV6=no" >> %{_sysconfdir}/sysconfig/network
+    echo "HOSTNAME=osdial.callcentersg.com" >> %{_sysconfdir}/sysconfig/network
+    echo "127.0.0.1 osdial.callcentersg.com osdial" > %{_sysconfdir}/hosts
+    echo "127.0.0.1 localhost.localdomain localhost" >> %{_sysconfdir}/hosts
+    echo "::1       localhost6.localdomain6 localhost6" >> %{_sysconfdir}/hosts
 fi
 echo -n
 
 %post profile-install-control
 INTY=$1
 if [ "$INTY" -eq 1 ]; then
-        echo "NETWORKING=yes" > /etc/sysconfig/network
-        echo "NETWORKING_IPV6=no" >> /etc/sysconfig/network
-        echo "HOSTNAME=osdial-c1.callcentersg.com" >> /etc/sysconfig/network
-        echo "127.0.0.1 osdial-c1.callcentersg.com osdial-c1 c1" > /etc/hosts
-        echo "127.0.0.1 localhost.localdomain localhost" >> /etc/hosts
-        echo "::1       localhost6.localdomain6 localhost6" >> /etc/hosts
+    echo "NETWORKING=yes" > %{_sysconfdir}/sysconfig/network
+    echo "NETWORKING_IPV6=no" >> %{_sysconfdir}/sysconfig/network
+    echo "HOSTNAME=osdial-c1.callcentersg.com" >> %{_sysconfdir}/sysconfig/network
+    echo "127.0.0.1 osdial-c1.callcentersg.com osdial-c1 c1" > %{_sysconfdir}/hosts
+    echo "127.0.0.1 localhost.localdomain localhost" >> %{_sysconfdir}/hosts
+    echo "::1       localhost6.localdomain6 localhost6" >> %{_sysconfdir}/hosts
 fi
 echo -n
 
 %post profile-install-dialer
 INTY=$1
 if [ "$INTY" -eq 1 ]; then
-        echo "NETWORKING=yes" > /etc/sysconfig/network
-        echo "NETWORKING_IPV6=no" >> /etc/sysconfig/network
-        echo "HOSTNAME=osdial-dN.callcentersg.com" >> /etc/sysconfig/network
-        echo "127.0.0.1 osdial-dN.callcentersg.com osdial-dN dN" > /etc/hosts
-        echo "127.0.0.1 localhost.localdomain localhost" >> /etc/hosts
-        echo "::1       localhost6.localdomain6 localhost6" >> /etc/hosts
+    echo "NETWORKING=yes" > %{_sysconfdir}/sysconfig/network
+    echo "NETWORKING_IPV6=no" >> %{_sysconfdir}/sysconfig/network
+    echo "HOSTNAME=osdial-dN.callcentersg.com" >> %{_sysconfdir}/sysconfig/network
+    echo "127.0.0.1 osdial-dN.callcentersg.com osdial-dN dN" > %{_sysconfdir}/hosts
+    echo "127.0.0.1 localhost.localdomain localhost" >> %{_sysconfdir}/hosts
+    echo "::1       localhost6.localdomain6 localhost6" >> %{_sysconfdir}/hosts
 fi
 echo -n
 
 %post profile-install-sql
 INTY=$1
 if [ "$INTY" -eq 1 ]; then
-        echo "NETWORKING=yes" > /etc/sysconfig/network
-        echo "NETWORKING_IPV6=no" >> /etc/sysconfig/network
-        echo "HOSTNAME=osdial-s1.callcentersg.com" >> /etc/sysconfig/network
-        echo "127.0.0.1 osdial-s1.callcentersg.com osdial-s1 s1" > /etc/hosts
-        echo "127.0.0.1 localhost.localdomain localhost" >> /etc/hosts
-        echo "::1       localhost6.localdomain6 localhost6" >> /etc/hosts
+    echo "NETWORKING=yes" > %{_sysconfdir}/sysconfig/network
+    echo "NETWORKING_IPV6=no" >> %{_sysconfdir}/sysconfig/network
+    echo "HOSTNAME=osdial-s1.callcentersg.com" >> %{_sysconfdir}/sysconfig/network
+    echo "127.0.0.1 osdial-s1.callcentersg.com osdial-s1 s1" > %{_sysconfdir}/hosts
+    echo "127.0.0.1 localhost.localdomain localhost" >> %{_sysconfdir}/hosts
+    echo "::1       localhost6.localdomain6 localhost6" >> %{_sysconfdir}/hosts
 fi
 echo -n
 
 %post profile-install-web
 INTY=$1
 if [ "$INTY" -eq 1 ]; then
-        echo "NETWORKING=yes" > /etc/sysconfig/network
-        echo "NETWORKING_IPV6=no" >> /etc/sysconfig/network
-        echo "HOSTNAME=osdial-w1.callcentersg.com" >> /etc/sysconfig/network
-        echo "127.0.0.1 osdial-w1.callcentersg.com osdial-w1 w1" > /etc/hosts
-        echo "127.0.0.1 localhost.localdomain localhost" >> /etc/hosts
-        echo "::1       localhost6.localdomain6 localhost6" >> /etc/hosts
+    echo "NETWORKING=yes" > %{_sysconfdir}/sysconfig/network
+    echo "NETWORKING_IPV6=no" >> %{_sysconfdir}/sysconfig/network
+    echo "HOSTNAME=osdial-w1.callcentersg.com" >> %{_sysconfdir}/sysconfig/network
+    echo "127.0.0.1 osdial-w1.callcentersg.com osdial-w1 w1" > %{_sysconfdir}/hosts
+    echo "127.0.0.1 localhost.localdomain localhost" >> %{_sysconfdir}/hosts
+    echo "::1       localhost6.localdomain6 localhost6" >> %{_sysconfdir}/hosts
 fi
 echo -n
 
 %post profile-install-archive
 INTY=$1
 if [ "$INTY" -eq 1 ]; then
-        echo "NETWORKING=yes" > /etc/sysconfig/network
-        echo "NETWORKING_IPV6=no" >> /etc/sysconfig/network
-        echo "HOSTNAME=osdial-a1.callcentersg.com" >> /etc/sysconfig/network
-        echo "127.0.0.1 osdial-a1.callcentersg.com osdial-a1 a1" > /etc/hosts
-        echo "127.0.0.1 localhost.localdomain localhost" >> /etc/hosts
-        echo "::1       localhost6.localdomain6 localhost6" >> /etc/hosts
+    echo "NETWORKING=yes" > %{_sysconfdir}/sysconfig/network
+    echo "NETWORKING_IPV6=no" >> %{_sysconfdir}/sysconfig/network
+    echo "HOSTNAME=osdial-a1.callcentersg.com" >> %{_sysconfdir}/sysconfig/network
+    echo "127.0.0.1 osdial-a1.callcentersg.com osdial-a1 a1" > %{_sysconfdir}/hosts
+    echo "127.0.0.1 localhost.localdomain localhost" >> %{_sysconfdir}/hosts
+    echo "::1       localhost6.localdomain6 localhost6" >> %{_sysconfdir}/hosts
 fi
 echo -n
 
@@ -948,119 +943,132 @@ echo -n
 %post common
 /sbin/chkconfig --add osdial > /dev/null 2>&1 || :
 INTY=$1
-if [ "$INTY" -eq 1 ]; then
-        /sbin/chkconfig --del osdial_resource_send > /dev/null 2>&1 || :
-        /sbin/chkconfig --add osdial_resource_send > /dev/null 2>&1 || :
-	/sbin/service osdial_resource_send restart > /dev/null 2>&1 || :
-        /sbin/chkconfig osdial on > /dev/null 2>&1 || :
-	# Make sure SELINUX didn't get turned on...
-	if [ -f /etc/selinux/config ]; then
-        	SELINUX="`%{__grep} '^SELINUX=' /etc/selinux/config | %{__awk} -F= '{ print $2 }'`"
-        	if [ "$SELINUX" == "enforcing" ]; then
-                	echo "    osdial-config: SELINUX is set to ENFORCING!"
-                	echo "                         Setting to SELINUX=disabled in /etc/selinux/config."
-                	echo "                         You must reboot after install!!!"
-                	%{__perl} -pi -e 's|^SELINUX=.*|SELINUX=disabled|' /etc/selinux/config
-        	elif [ "$SELINUX" == "permissive" ]; then
-                	echo "    osdial-config: SELINUX is set to PERMISSIVE!"
-                	echo "                         This should be fine, but if you have problems"
-                	echo "                         logging in, you should modify /etc/selinux/config,"
-                	echo "                         change the line SELINUX=permissive to SELINUX=disabled"
-                	echo "                         and reboot the server."
-        	elif [ -z "$SELINUX" ]; then
-                	echo "    osdial-config: SELINUX directive not found!"
-                	echo "                         Adding SELINUX=disabled to /etc/selinux/config."
-                	echo "SELINUX=disabled" >> /etc/selinux/config
-        	elif [ "$SELINUX" != "disabled" ]; then
-                	echo "    osdial-config: SELINUX is set to an UNKNOWN MODE! ($SELINUX)"
-                	echo "                         Setting to SELINUX=disabled in /etc/selinux/config."
-                	echo "                         You must reboot after install!!!"
-                	%{__perl} -pi -e 's|^SELINUX=.*|SELINUX=disabled|' /etc/selinux/config
-        	fi
-	fi
+if [ "${INTY}" -eq 1 ]; then
+    /sbin/chkconfig --del osdial_resource_send > /dev/null 2>&1 || :
+    /sbin/chkconfig --add osdial_resource_send > /dev/null 2>&1 || :
+    /sbin/service osdial_resource_send restart > /dev/null 2>&1 || :
+    /sbin/chkconfig osdial on > /dev/null 2>&1 || :
+    # Make sure SELINUX didn't get turned on...
+    if [ -f "%{_sysconfdir}/selinux/config" ]; then
+        SELINUX="`%{__grep} '^SELINUX=' %{_sysconfdir}/selinux/config | %{__awk} -F= '{ print $2 }'`"
+        if [ "${SELINUX}" == "enforcing" ]; then
+            echo "    osdial-config: SELINUX is set to ENFORCING!"
+            echo "                         Setting to SELINUX=disabled in %{_sysconfdir}/selinux/config."
+            echo "                         You must reboot after install!!!"
+            %{__perl} -pi -e 's|^SELINUX=.*|SELINUX=disabled|' %{_sysconfdir}/selinux/config
+        elif [ "${SELINUX}" == "permissive" ]; then
+            echo "    osdial-config: SELINUX is set to PERMISSIVE!"
+            echo "                         This should be fine, but if you have problems"
+            echo "                         logging in, you should modify %{_sysconfdir}/selinux/config,"
+            echo "                         change the line SELINUX=permissive to SELINUX=disabled"
+            echo "                         and reboot the server."
+        elif [ -z "${SELINUX}" ]; then
+            echo "    osdial-config: SELINUX directive not found!"
+            echo "                         Adding SELINUX=disabled to %{_sysconfdir}/selinux/config."
+            echo "SELINUX=disabled" >> %{_sysconfdir}/selinux/config
+        elif [ "${SELINUX}" != "disabled" ]; then
+            echo "    osdial-config: SELINUX is set to an UNKNOWN MODE! (${SELINUX})"
+            echo "                         Setting to SELINUX=disabled in %{_sysconfdir}/selinux/config."
+            echo "                         You must reboot after install!!!"
+            %{__perl} -pi -e 's|^SELINUX=.*|SELINUX=disabled|' %{_sysconfdir}/selinux/config
+        fi
+    fi
+    if [ -f "%{_opt}/osdial/.osdial-control" ]; then
+        %{__perl} -pi -e 's|^VARactive_keepalives =\> 1234569$|VARactive_keepalives => 579|' %{_sysconfdir}/osdial.conf
+    elif [ -f "%{_opt}/osdial/.osdial-sql" ]; then
+        %{__perl} -pi -e 's|^VARactive_keepalives =\> 1234569$|VARactive_keepalives => 579|' %{_sysconfdir}/osdial.conf
+    elif [ -f "%{_opt}/osdial/.osdial-dialer" ]; then
+        %{__perl} -pi -e 's|^VARactive_keepalives =\> 1234569$|VARactive_keepalives => 12346|' %{_sysconfdir}/osdial.conf
+    elif [ -f "%{_opt}/osdial/.osdial-dialer-web" ]; then
+        %{__perl} -pi -e 's|^VARactive_keepalives =\> 1234569$|VARactive_keepalives => 12346|' %{_sysconfdir}/osdial.conf
+    elif [ -f "%{_opt}/osdial/.osdial-web" ]; then
+        %{__perl} -pi -e 's|^VARactive_keepalives =\> 1234569$|VARactive_keepalives => X|' %{_sysconfdir}/osdial.conf
+    elif [ -f "%{_opt}/osdial/.osdial-archive" ]; then
+        %{__perl} -pi -e 's|^VARactive_keepalives =\> 1234569$|VARactive_keepalives => X|' %{_sysconfdir}/osdial.conf
+    fi
 fi
-if [ "$INTY" -eq 2 ]; then
-	/opt/osdial/bin/osdial_killall.sh
-	%{__mkdir_p} /opt/osdial/backups/%{version}-%{release} > /dev/null 2>&1 || :
-	%{__cp} -a /opt/osdial/bin /opt/osdial/backups/%{version}-%{release} > /dev/null 2>&1 || :
+if [ "${INTY}" -eq 2 ]; then
+    %{_opt}/osdial/bin/osdial_killall.sh
+    %{__mkdir_p} %{_opt}/osdial/backups/%{version}-%{release} > /dev/null 2>&1 || :
+    %{__cp} -a %{_opt}/osdial/bin %{_opt}/osdial/backups/%{version}-%{release} > /dev/null 2>&1 || :
 
-	%{__mkdir} /opt/osdial/backups/%{version}-%{release}/etc > /dev/null 2>&1 || :
-	%{__cp} -a /etc/osdial.conf /opt/osdial/backups/%{version}-%{release}/etc > /dev/null 2>&1 || :
-	if [ -d /etc/asterisk ]; then
-		[ -f /etc/dahdi/system.conf ] && %{__cp} -a /etc/dahdi/system.conf /opt/osdial/backups/%{version}-%{release}/etc > /dev/null 2>&1 || :
-		[ -f /etc/zaptel.conf ] && %{__cp} -a /etc/zaptel.conf /opt/osdial/backups/%{version}-%{release}/etc > /dev/null 2>&1 || :
-		[ -d /etc/asterisk ] && %{__cp} -a /etc/asterisk /opt/osdial/backups/%{version}-%{release}/etc > /dev/null 2>&1 || :
-	fi
-	if [ -d /var/lib/asterisk/agi-bin ]; then
-		%{__mkdir} /opt/osdial/backups/%{version}-%{release}/agi > /dev/null 2>&1 || :
-		%{__cp} -a /var/lib/asterisk/agi-bin /opt/osdial/backups/%{version}-%{release}/agi > /dev/null 2>&1 || :
-	fi
-	if [ -d /opt/osdial/html ]; then
-		%{__mkdir} /opt/osdial/backups/%{version}-%{release}/html > /dev/null 2>&1 || :
-		%{__mkdir} /opt/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1 || :
-		%{__mkdir} /opt/osdial/backups/%{version}-%{release}/html/agent > /dev/null 2>&1 || :
-		%{__cp} -a /opt/osdial/html/*.php /opt/osdial/backups/%{version}-%{release}/html > /dev/null 2>&1 || :
-		%{__cp} -a /opt/osdial/html/*.txt /opt/osdial/backups/%{version}-%{release}/html > /dev/null 2>&1 || :
-		%{__cp} -a /opt/osdial/html/*.ico /opt/osdial/backups/%{version}-%{release}/html > /dev/null 2>&1 || :
-		%{__cp} -a /opt/osdial/html/ivr /opt/osdial/backups/%{version}-%{release}/html > /dev/null 2>&1 || :
-		%{__cp} -a /opt/osdial/html/admin/*.php /opt/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1 || :
-		%{__cp} -a /opt/osdial/html/admin/*.pl /opt/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1 || :
-		%{__cp} -a /opt/osdial/html/admin/*.css /opt/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1 || :
-		%{__cp} -a /opt/osdial/html/admin/*.gif /opt/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1 || :
-		%{__cp} -a /opt/osdial/html/admin/*.png /opt/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1 || :
-		%{__cp} -a /opt/osdial/html/admin/include /opt/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1 || :
-		%{__cp} -a /opt/osdial/html/admin/templates /opt/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1 || :
-		%{__cp} -a /opt/osdial/html/agent/*.php /opt/osdial/backups/%{version}-%{release}/html/agent > /dev/null 2>&1 || :
-		%{__cp} -a /opt/osdial/html/agent/include /opt/osdial/backups/%{version}-%{release}/html/agent > /dev/null 2>&1 || :
-		%{__cp} -a /opt/osdial/html/agent/templates /opt/osdial/backups/%{version}-%{release}/html/agent > /dev/null 2>&1 || :
-	fi
-	if [ -f /etc/openvpn/osdial.up ]; then
-		HST=`/bin/hostname -s`        
-		if [ "$HST" = "osdial" -o "$HST" = "osdial-live" -o "$HST" = "osdial-ccsg" ]; then
-			echo "osdial" > /etc/openvpn/osdial.up                                    
-			echo "osdial1234" >> /etc/openvpn/osdial.up                               
-			else                                                                              
-			echo "${HST}" > /etc/openvpn/osdial.up                                    
-			echo "0o1s2d3i4a5l6${HST}6l5a4i3d2s1o0" >> /etc/openvpn/osdial.up         
-		fi                                                                                
-	fi    
-	# Run update script.
-	/opt/osdial/bin/sql/upgrade_sql.pl --info 2>&1 || :
+    %{__mkdir} %{_opt}/osdial/backups/%{version}-%{release}%{_sysconfdir} > /dev/null 2>&1 || :
+    %{__cp} -a %{_sysconfdir}/osdial.conf %{_opt}/osdial/backups/%{version}-%{release}%{_sysconfdir} > /dev/null 2>&1 || :
+    if [ -d "%{_sysconfdir}/asterisk" ]; then
+        [ -f "%{_sysconfdir}/dahdi/system.conf" ] && %{__cp} -a %{_sysconfdir}/dahdi/system.conf %{_opt}/osdial/backups/%{version}-%{release}%{_sysconfdir} > /dev/null 2>&1 || :
+        [ -f "%{_sysconfdir}/zaptel.conf" ] && %{__cp} -a %{_sysconfdir}/zaptel.conf %{_opt}/osdial/backups/%{version}-%{release}%{_sysconfdir} > /dev/null 2>&1 || :
+        [ -d "%{_sysconfdir}/asterisk" ] && %{__cp} -a %{_sysconfdir}/asterisk %{_opt}/osdial/backups/%{version}-%{release}%{_sysconfdir} > /dev/null 2>&1 || :
+    fi
+    if [ -d "%{_sharedstatedir}/asterisk/agi-bin" ]; then
+        %{__mkdir} %{_opt}/osdial/backups/%{version}-%{release}/agi > /dev/null 2>&1 || :
+        %{__cp} -a %{_sharedstatedir}/asterisk/agi-bin %{_opt}/osdial/backups/%{version}-%{release}/agi > /dev/null 2>&1 || :
+    fi
+    if [ -d "%{_opt}/osdial/html" ]; then
+        %{__mkdir} %{_opt}/osdial/backups/%{version}-%{release}/html > /dev/null 2>&1 || :
+        %{__mkdir} %{_opt}/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1 || :
+        %{__mkdir} %{_opt}/osdial/backups/%{version}-%{release}/html/agent > /dev/null 2>&1 || :
+        %{__cp} -a %{_opt}/osdial/html/*.php %{_opt}/osdial/backups/%{version}-%{release}/html > /dev/null 2>&1 || :
+        %{__cp} -a %{_opt}/osdial/html/*.txt %{_opt}/osdial/backups/%{version}-%{release}/html > /dev/null 2>&1 || :
+        %{__cp} -a %{_opt}/osdial/html/*.ico %{_opt}/osdial/backups/%{version}-%{release}/html > /dev/null 2>&1 || :
+        %{__cp} -a %{_opt}/osdial/html/ivr %{_opt}/osdial/backups/%{version}-%{release}/html > /dev/null 2>&1 || :
+        %{__cp} -a %{_opt}/osdial/html/admin/*.php %{_opt}/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1 || :
+        %{__cp} -a %{_opt}/osdial/html/admin/*.pl %{_opt}/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1 || :
+        %{__cp} -a %{_opt}/osdial/html/admin/*.css %{_opt}/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1 || :
+        %{__cp} -a %{_opt}/osdial/html/admin/*.gif %{_opt}/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1 || :
+        %{__cp} -a %{_opt}/osdial/html/admin/*.png %{_opt}/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1 || :
+        %{__cp} -a %{_opt}/osdial/html/admin/include %{_opt}/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1 || :
+        %{__cp} -a %{_opt}/osdial/html/admin/templates %{_opt}/osdial/backups/%{version}-%{release}/html/admin > /dev/null 2>&1 || :
+        %{__cp} -a %{_opt}/osdial/html/agent/*.php %{_opt}/osdial/backups/%{version}-%{release}/html/agent > /dev/null 2>&1 || :
+        %{__cp} -a %{_opt}/osdial/html/agent/include %{_opt}/osdial/backups/%{version}-%{release}/html/agent > /dev/null 2>&1 || :
+        %{__cp} -a %{_opt}/osdial/html/agent/templates %{_opt}/osdial/backups/%{version}-%{release}/html/agent > /dev/null 2>&1 || :
+    fi
+    if [ -f "%{_sysconfdir}/openvpn/osdial.up" ]; then
+        HST=`/bin/hostname -s`        
+        if [ "$HST" = "osdial" -o "$HST" = "osdial-live" -o "$HST" = "osdial-ccsg" ]; then
+            echo "osdial" > %{_sysconfdir}/openvpn/osdial.up                                    
+            echo "osdial1234" >> %{_sysconfdir}/openvpn/osdial.up                               
+        else
+            echo "${HST}" > %{_sysconfdir}/openvpn/osdial.up                                    
+            echo "0o1s2d3i4a5l6${HST}6l5a4i3d2s1o0" >> %{_sysconfdir}/openvpn/osdial.up         
+        fi                                                                                
+    fi    
+    # Run update script.
+    %{_opt}/osdial/bin/sql/upgrade_sql.pl --info 2>&1 || :
 
-	/opt/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1 || :
+    %{_opt}/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1 || :
 
-        /sbin/chkconfig --del osdial_resource_send > /dev/null 2>&1 || :
-        /sbin/chkconfig --add osdial_resource_send > /dev/null 2>&1 || :
-	/sbin/service osdial_resource_send restart > /dev/null 2>&1 || :
+    /sbin/chkconfig --del osdial_resource_send > /dev/null 2>&1 || :
+    /sbin/chkconfig --add osdial_resource_send > /dev/null 2>&1 || :
+    /sbin/service osdial_resource_send restart > /dev/null 2>&1 || :
 fi
-%{__mkdir_p} /opt/osdial/tts > /dev/null 2>&1 || :
-%{__mkdir_p} /opt/osdial/reports > /dev/null 2>&1 || :
-%{__mkdir_p} /opt/osdial/recordings > /dev/null 2>&1 || :
-%{__mkdir_p} /opt/osdial/recordings/processing > /dev/null 2>&1 || :
-%{__mkdir_p} /opt/osdial/recordings/processing/mixed > /dev/null 2>&1 || :
-%{__mkdir_p} /opt/osdial/recordings/processing/unmixed > /dev/null 2>&1 || :
-%{__mkdir_p} /opt/osdial/recordings/completed > /dev/null 2>&1 || :
-%{__mkdir_p} /opt/osdial/backups/recordings > /dev/null 2>&1 || :
-%{__chown} -R asterisk:asterisk /opt/osdial/backups/recordings > /dev/null 2>&1 || :
-%{__chown} -R asterisk:asterisk /opt/osdial/tts > /dev/null 2>&1 || :
-[ -z "`%{__grep} /opt/osdial/reports /proc/mounts`" ] && %{__chown} -R asterisk:asterisk /opt/osdial/reports > /dev/null 2>&1 || :
-[ -z "`%{__grep} /opt/osdial/recordings /proc/mounts`" ] && %{__chown} -R asterisk:asterisk /opt/osdial/recordings > /dev/null 2>&1 || :
-%{__chmod} 7755 /usr/sbin/lsof > /dev/null 2>&1 || :
-%{__ln_s} -f /usr/bin/ip_relay /opt/osdial/bin/ip_relay > /dev/null 2>&1 || :
+%{__mkdir_p} %{_opt}/osdial/tts > /dev/null 2>&1 || :
+%{__mkdir_p} %{_opt}/osdial/reports > /dev/null 2>&1 || :
+%{__mkdir_p} %{_opt}/osdial/recordings > /dev/null 2>&1 || :
+%{__mkdir_p} %{_opt}/osdial/recordings/processing > /dev/null 2>&1 || :
+%{__mkdir_p} %{_opt}/osdial/recordings/processing/mixed > /dev/null 2>&1 || :
+%{__mkdir_p} %{_opt}/osdial/recordings/processing/unmixed > /dev/null 2>&1 || :
+%{__mkdir_p} %{_opt}/osdial/recordings/completed > /dev/null 2>&1 || :
+%{__mkdir_p} %{_opt}/osdial/backups/recordings > /dev/null 2>&1 || :
+%{__chown} -R asterisk:asterisk %{_opt}/osdial/backups/recordings > /dev/null 2>&1 || :
+%{__chown} -R asterisk:asterisk %{_opt}/osdial/tts > /dev/null 2>&1 || :
+[ -z "`%{__grep} %{_opt}/osdial/reports /proc/mounts`" ] && %{__chown} -R asterisk:asterisk %{_opt}/osdial/reports > /dev/null 2>&1 || :
+[ -z "`%{__grep} %{_opt}/osdial/recordings /proc/mounts`" ] && %{__chown} -R asterisk:asterisk %{_opt}/osdial/recordings > /dev/null 2>&1 || :
+%{__chmod} 7755 %{_sbindir}/lsof > /dev/null 2>&1 || :
+%{__ln_s} -f %{_bindir}/ip_relay %{_opt}/osdial/bin/ip_relay > /dev/null 2>&1 || :
 
-if [ -n "`%{__grep} OSDbuild /etc/osdial.conf`" ]; then
-	%{__perl} -pi -e 's|^OSDversion =>.*|OSDversion => %{version}|' /etc/osdial.conf
-	%{__perl} -pi -e 's|^OSDbuild =>.*|OSDbuild => %{buildver}|' /etc/osdial.conf
+if [ -n "`%{__grep} OSDbuild %{_sysconfdir}/osdial.conf`" ]; then
+    %{__perl} -pi -e 's|^OSDversion =>.*|OSDversion => %{version}|' %{_sysconfdir}/osdial.conf
+    %{__perl} -pi -e 's|^OSDbuild =>.*|OSDbuild => %{buildver}|' %{_sysconfdir}/osdial.conf
 else
-	%{__perl} -pi -e 's|^OSDversion =>.*|OSDversion => %{version}\nOSDbuild => %{buildver}|' /etc/osdial.conf
+    %{__perl} -pi -e 's|^OSDversion =>.*|OSDversion => %{version}\nOSDbuild => %{buildver}|' %{_sysconfdir}/osdial.conf
 fi
-%{__perl} -pi -e 's|^PATHdocs =>.*|PATHdocs => /usr/share/doc/osdial-%{version}|' /etc/osdial.conf
-[ -z "`%{__grep} PATHarchive_backup /etc/osdial.conf`" ] && %{__perl} -pi -e 's|^PATHarchive_home =>.*|PATHarchive_home => /opt/osdial/recordings\nPATHarchive_backup => /opt/osdial/backups/recordings|' /etc/osdial.conf || :
+%{__perl} -pi -e 's|^PATHdocs =>.*|PATHdocs => %{_docdir}/osdial-%{version}|' %{_sysconfdir}/osdial.conf
+[ -z "`%{__grep} PATHarchive_backup %{_sysconfdir}/osdial.conf`" ] && %{__perl} -pi -e 's|^PATHarchive_home =>.*|PATHarchive_home => %{_opt}/osdial/recordings\nPATHarchive_backup => %{_opt}/osdial/backups/recordings|' %{_sysconfdir}/osdial.conf || :
 
-%{__perl} -pi -e 's|stacks|stack|' /etc/security/limits.conf
+%{__perl} -pi -e 's|stacks|stack|' %{_sysconfdir}/security/limits.conf
 
-if [ -n "`%{__grep} OSDial /etc/security/limits.conf`" ]; then
-	%{__sed} -ie '/# OSDial modifications/,//d' /etc/security/limits.conf
+if [ -n "`%{__grep} OSDial %{_sysconfdir}/security/limits.conf`" ]; then
+    %{__sed} -ie '/# OSDial modifications/,//d' %{_sysconfdir}/security/limits.conf
 fi
 
 /sbin/chkconfig cgconfig on > /dev/null 2>&1 || :
@@ -1072,34 +1080,34 @@ fi
 /sbin/chkconfig httpd on > /dev/null 2>&1 || :
 /sbin/service httpd restart > /dev/null 2>&1 || :
 /sbin/chkconfig tuned on > /dev/null 2>&1 || :
-TUNEDTST="`/usr/sbin/tuned-adm active | grep '^Current active profile: default'`"
+TUNEDTST="`%{_sbindir}/tuned-adm active | %{__grep} '^Current active profile: default'`"
 RES=$?
 if [ $RES -eq 0 ]; then
-	/usr/sbin/tuned-adm profile throughput-performance > /dev/null 2>&1 ||:
-	/sbin/service tuned stop > /dev/null 2>&1 || :
-	/sbin/service tuned start > /dev/null 2>&1 || :
+    %{_sbindir}/tuned-adm profile throughput-performance > /dev/null 2>&1 ||:
+    /sbin/service tuned stop > /dev/null 2>&1 || :
+    /sbin/service tuned start > /dev/null 2>&1 || :
 fi
 
 
 DRIVES=`ls /dev/sd[a-z] /dev/hd[a-z] /dev/cciss/c[0-9]d[0-9] 2>/dev/null | tr "\n" "," | sed 's|,$||'`
-%{__perl} -pi -e "s|/dev/sda, /dev/sdb|${DRIVES}|" /opt/osdial/html/phpsysinfo/plugins/SMART/SMART.config.php || :
-/usr/sbin/usermod -G asterisk,disk apache || :
-/usr/sbin/usermod -G tty,apache,disk asterisk || :
+%{__perl} -pi -e "s|/dev/sda, /dev/sdb|${DRIVES}|" %{_opt}/osdial/html/phpsysinfo/plugins/SMART/SMART.config.php || :
+%{_sbindir}/usermod -G asterisk,disk apache || :
+%{_sbindir}/usermod -G tty,apache,disk asterisk || :
 
-OSDKEY=`/bin/cat /etc/pki/osdial-support/osdial-support.pub 2>/dev/null`
+OSDKEY=`%{__cat} %{_sysconfdir}/pki/osdial-support/osdial-support.pub 2>/dev/null`
 if [ ! -d "/root/.ssh" ]; then
-	/bin/mkdir -p /root/.ssh
+    %{__mkdir_p} /root/.ssh
 fi
 if [ ! -f "/root/.ssh/authorized_keys" ]; then
-	/bin/echo "$OSDKEY" > /root/.ssh/authorized_keys
+    echo "$OSDKEY" > /root/.ssh/authorized_keys
 fi
-KCHK=`/bin/grep "$OSDKEY" /root/.ssh/authorized_keys`
+KCHK=`%{__grep} "$OSDKEY" /root/.ssh/authorized_keys`
 if [ -z "$KCHK" ]; then
-	/bin/echo "$OSDKEY" >> /root/.ssh/authorized_keys
+    echo "$OSDKEY" >> /root/.ssh/authorized_keys
 fi
-/bin/chown -R root:root /root/.ssh
-/bin/chmod 700 /root/.ssh
-/bin/chmod 600 /root/.ssh/*
+%{__chown_Rhf} root:root /root/.ssh
+%{__chmod} 700 /root/.ssh
+%{__chmod} 600 /root/.ssh/*
 echo -n
 
 
@@ -1107,251 +1115,251 @@ echo -n
 %post sql
 INTY=$1
 if [ "$INTY" -eq 1 ]; then
-	/sbin/chkconfig mysqld on > /dev/null 2>&1
-	# Apply OSDial SQL changes to /etc/my.cnf
-	if [ ! "`%{__grep} innodb_data_home_dir /etc/my.cnf`" ]; then
-		MEM=`head -1 /proc/meminfo | %{__sed} 's/MemTotal:\s*\(.*\) kB.*/\1/'`
-		let MEM=MEM/1024/2
-		# Stop mysql
-		/sbin/service mysqld stop > /dev/null 2>&1 || :
-		sleep 3
-		if [ -f "/etc/my.cnf.d/server.cnf" ]; then
-			%{__perl} -pi -e "s|^innodb_buffer_pool_size = 512M$|innodb_buffer_pool_size = ${MEM}M|" /etc/my.cnf.d/server.cnf > /dev/null 2>&1 || :
-			if [ ! -f "/var/lib/mysql/mysql.lock" ]; then
-				if [ -f "/var/lib/mysql/ib_logfile0" ]; then
-					rm -f /var/lib/mysql/ib_logfile0 > /dev/null 2>&1 || :
-					if [ -f "/var/lib/mysql/ib_logfile1" ]; then
-						rm -f /var/lib/mysql/ib_logfile1 > /dev/null 2>&1 || :
-					fi
-				fi
-			fi
-		else
-			MCNF="old_passwords=1\n\n"
-			MCNF="${MCNF}#===== BEGIN OSDIAL my.cnf Additions =====\n"
-			[ -z "`%{__grep} skip_name_resolve /etc/my.cnf`" ] &&               MCNF="${MCNF}skip_name_resolve\n" || :
-			[ -z "`%{__grep} max_connections /etc/my.cnf`" ] &&                 MCNF="${MCNF}max_connections=250\n" || :
-			[ -z "`%{__grep} open_files_limit /etc/my.cnf`" ] &&                MCNF="${MCNF}open_files_limit=32768\n" || :
-			[ -z "`%{__grep} query_cache_type /etc/my.cnf`" ] &&                MCNF="${MCNF}query_cache_type = 1\nquery_cache_size = 100000000\nquery_cache_min_res_unit = 4096\nquery_cache_limit = 1048576\nquery_prealloc_size = 8192\nquery_cache_wlock_invalidate = 0\n" || :
-			[ -z "`%{__grep} innodb_strict_mode /etc/my.cnf`" ] &&              MCNF="${MCNF}loose_innodb_strict_mode = 1\n" || :
-			[ -z "`%{__grep} innodb_file_format /etc/my.cnf`" ] &&              MCNF="${MCNF}loose_innodb_file_format = barracuda\n" || :
-			[ -z "`%{__grep} innodb_data_home_dir /etc/my.cnf`" ] &&            MCNF="${MCNF}loose_innodb_data_home_dir = /var/lib/mysql/\n" || :
-			[ -z "`%{__grep} innodb_log_group_home_dir /etc/my.cnf`" ] &&       MCNF="${MCNF}loose_innodb_log_group_home_dir = /var/lib/mysql/\n" || :
-			[ -z "`%{__grep} innodb_data_file_path /etc/my.cnf`" ] &&           MCNF="${MCNF}loose_innodb_data_file_path = ibdata1:10M:autoextend\n" || :
-			[ -z "`%{__grep} innodb_additional_mem_pool_size /etc/my.cnf`" ] && MCNF="${MCNF}loose_innodb_additional_mem_pool_size = 8M\n" || :
-			[ -z "`%{__grep} innodb_log_file_size /etc/my.cnf`" ] &&            MCNF="${MCNF}loose_innodb_log_file_size = 5M\n" || :
-			[ -z "`%{__grep} innodb_log_buffer_size /etc/my.cnf`" ] &&          MCNF="${MCNF}loose_innodb_log_buffer_size = 8M\n" || :
-			[ -z "`%{__grep} innodb_file_per_table /etc/my.cnf`" ] &&           MCNF="${MCNF}loose_innodb_file_per_table = 1\n" || :
-			[ -z "`%{__grep} innodb_flush_log_at_trx_commit /etc/my.cnf`" ] &&  MCNF="${MCNF}loose_innodb_flush_log_at_trx_commit = 2\n" || :
-			[ -z "`%{__grep} innodb_lock_wait_timeout /etc/my.cnf`" ] &&        MCNF="${MCNF}loose_innodb_lock_wait_timeout = 50\n" || :
-			[ -z "`%{__grep} innodb_adaptive_hash_index /etc/my.cnf`" ] &&      MCNF="${MCNF}loose_innodb_adaptive_hash_index = 1\n" || :
-			[ -z "`%{__grep} innodb_checksums /etc/my.cnf`" ] &&                MCNF="${MCNF}loose_innodb_checksums = 1\n" || :
-			[ -z "`%{__grep} innodb_doublewrite /etc/my.cnf`" ] &&              MCNF="${MCNF}loose_innodb_doublewrite = 1\n" || :
-			[ -z "`%{__grep} innodb_flush_method /etc/my.cnf`" ] &&             MCNF="${MCNF}loose_innodb_flush_method = O_DIRECT\n" || :
-			[ -z "`%{__grep} innodb_locks_unsafe_for_binlog /etc/my.cnf`" ] &&  MCNF="${MCNF}loose_innodb_locks_unsafe_for_binlog = 0\n" || :
-			[ -z "`%{__grep} innodb_max_dirty_pages_pct /etc/my.cnf`" ] &&      MCNF="${MCNF}loose_innodb_max_dirty_pages_pct = 90\n" || :
-			[ -z "`%{__grep} innodb_table_locks /etc/my.cnf`" ] &&              MCNF="${MCNF}loose_innodb_table_locks = 1\n" || :
-			[ -z "`%{__grep} innodb_thread_concurrency /etc/my.cnf`" ] &&       MCNF="${MCNF}loose_innodb_thread_concurrency = 0\n" || :
-			[ -z "`%{__grep} innodb_use_sys_malloc /etc/my.cnf`" ] &&           MCNF="${MCNF}loose_innodb_use_sys_malloc = 0\n" || :
-			[ -z "`%{__grep} innodb_fast_shutdown /etc/my.cnf`" ] &&            MCNF="${MCNF}loose_innodb_fast_shutdown = 0\n" || :
-			[ -z "`%{__grep} innodb_open_files /etc/my.cnf`" ] &&               MCNF="${MCNF}loose_innodb_open_files = 2048\n" || :
-			[ -z "`%{__grep} innodb_buffer_pool_size /etc/my.cnf`" ] &&         MCNF="${MCNF}# Should be set to 50% system memory\n" || :
-			[ -z "`%{__grep} innodb_buffer_pool_size /etc/my.cnf`" ] &&         MCNF="${MCNF}loose_innodb_buffer_pool_size = ${MEM}M\n" || :
-			MCNF="${MCNF}#===== END OSDIAL my.cnf Additions =====\n\n"
-			%{__perl} -pi -e "s|old_passwords=1|$MCNF|" /etc/my.cnf > /dev/null 2>&1 || :
-		fi
-		# Start mysql
-		/sbin/service mysqld start > /dev/null 2>&1 || :
-		sleep 3
-	fi
-	# Run update script.
-	[ -f "/opt/osdial/.osdial-live" ] && /sbin/service mysqld start > /dev/null 2>&1 || :
-	/opt/osdial/bin/sql/upgrade_sql.pl --install 2> /dev/null
-	[ -f "/opt/osdial/.osdial-live" ] && /sbin/service mysqld stop > /dev/null 2>&1 || :
-	# If it didn't get created, assume it is an installcd
-	[ ! -d "/var/lib/mysql/osdial" ] && echo "OSDIAL_MYSQL_INSTALL=YES" >> /etc/sysconfig/osdial
-	# cpuspeed can do bad things to ISDN/T1 cards
-	if [ -f /etc/rc3.d/S06cpuspeed ]; then
-                	echo "    osdial-config: cpuspeed (scaling) detected, disabling!"
-                	/etc/init.d/cpuspeed stop > /dev/null 2>&1
-                	/sbin/chkconfig cpuspeed off > /dev/null 2>&1
-	fi
-	# We don't need cups
-	if [ -f /etc/rc3.d/S56cups ]; then
-                	echo "    osdial-config: CUPS detected, disabling!"
-                	/etc/init.d/cups stop > /dev/null 2>&1
-                	/sbin/chkconfig cups off > /dev/null 2>&1
-	fi
+    /sbin/chkconfig mysqld on > /dev/null 2>&1
+    # Apply OSDial SQL changes to %{_sysconfdir}/my.cnf
+    if [ ! "`%{__grep} innodb_data_home_dir %{_sysconfdir}/my.cnf`" ]; then
+        MEM=`head -1 /proc/meminfo | %{__sed} 's/MemTotal:\s*\(.*\) kB.*/\1/'`
+        let MEM=MEM/1024/2
+        # Stop mysql
+        /sbin/service mysqld stop > /dev/null 2>&1 || :
+        sleep 3
+        if [ -f "%{_sysconfdir}/my.cnf.d/server.cnf" ]; then
+            %{__perl} -pi -e "s|^innodb_buffer_pool_size = 512M$|innodb_buffer_pool_size = ${MEM}M|" %{_sysconfdir}/my.cnf.d/server.cnf > /dev/null 2>&1 || :
+            if [ ! -f "%{_sharedstatedir}/mysql/mysql.lock" ]; then
+                if [ -f "%{_sharedstatedir}/mysql/ib_logfile0" ]; then
+                    %{__rm} -f %{_sharedstatedir}/mysql/ib_logfile0 > /dev/null 2>&1 || :
+                    if [ -f "%{_sharedstatedir}/mysql/ib_logfile1" ]; then
+                        %{__rm} -f %{_sharedstatedir}/mysql/ib_logfile1 > /dev/null 2>&1 || :
+                    fi
+                fi
+            fi
+        else
+            MCNF="old_passwords=1\n\n"
+            MCNF="${MCNF}#===== BEGIN OSDIAL my.cnf Additions =====\n"
+            [ -z "`%{__grep} skip_name_resolve %{_sysconfdir}/my.cnf`" ] &&               MCNF="${MCNF}skip_name_resolve\n" || :
+            [ -z "`%{__grep} max_connections %{_sysconfdir}/my.cnf`" ] &&                 MCNF="${MCNF}max_connections=250\n" || :
+            [ -z "`%{__grep} open_files_limit %{_sysconfdir}/my.cnf`" ] &&                MCNF="${MCNF}open_files_limit=32768\n" || :
+            [ -z "`%{__grep} query_cache_type %{_sysconfdir}/my.cnf`" ] &&                MCNF="${MCNF}query_cache_type = 1\nquery_cache_size = 100000000\nquery_cache_min_res_unit = 4096\nquery_cache_limit = 1048576\nquery_prealloc_size = 8192\nquery_cache_wlock_invalidate = 0\n" || :
+            [ -z "`%{__grep} innodb_strict_mode %{_sysconfdir}/my.cnf`" ] &&              MCNF="${MCNF}loose_innodb_strict_mode = 1\n" || :
+            [ -z "`%{__grep} innodb_file_format %{_sysconfdir}/my.cnf`" ] &&              MCNF="${MCNF}loose_innodb_file_format = barracuda\n" || :
+            [ -z "`%{__grep} innodb_data_home_dir %{_sysconfdir}/my.cnf`" ] &&            MCNF="${MCNF}loose_innodb_data_home_dir = %{_sharedstatedir}/mysql/\n" || :
+            [ -z "`%{__grep} innodb_log_group_home_dir %{_sysconfdir}/my.cnf`" ] &&       MCNF="${MCNF}loose_innodb_log_group_home_dir = %{_sharedstatedir}/mysql/\n" || :
+            [ -z "`%{__grep} innodb_data_file_path %{_sysconfdir}/my.cnf`" ] &&           MCNF="${MCNF}loose_innodb_data_file_path = ibdata1:10M:autoextend\n" || :
+            [ -z "`%{__grep} innodb_additional_mem_pool_size %{_sysconfdir}/my.cnf`" ] && MCNF="${MCNF}loose_innodb_additional_mem_pool_size = 8M\n" || :
+            [ -z "`%{__grep} innodb_log_file_size %{_sysconfdir}/my.cnf`" ] &&            MCNF="${MCNF}loose_innodb_log_file_size = 5M\n" || :
+            [ -z "`%{__grep} innodb_log_buffer_size %{_sysconfdir}/my.cnf`" ] &&          MCNF="${MCNF}loose_innodb_log_buffer_size = 8M\n" || :
+            [ -z "`%{__grep} innodb_file_per_table %{_sysconfdir}/my.cnf`" ] &&           MCNF="${MCNF}loose_innodb_file_per_table = 1\n" || :
+            [ -z "`%{__grep} innodb_flush_log_at_trx_commit %{_sysconfdir}/my.cnf`" ] &&  MCNF="${MCNF}loose_innodb_flush_log_at_trx_commit = 2\n" || :
+            [ -z "`%{__grep} innodb_lock_wait_timeout %{_sysconfdir}/my.cnf`" ] &&        MCNF="${MCNF}loose_innodb_lock_wait_timeout = 50\n" || :
+            [ -z "`%{__grep} innodb_adaptive_hash_index %{_sysconfdir}/my.cnf`" ] &&      MCNF="${MCNF}loose_innodb_adaptive_hash_index = 1\n" || :
+            [ -z "`%{__grep} innodb_checksums %{_sysconfdir}/my.cnf`" ] &&                MCNF="${MCNF}loose_innodb_checksums = 1\n" || :
+            [ -z "`%{__grep} innodb_doublewrite %{_sysconfdir}/my.cnf`" ] &&              MCNF="${MCNF}loose_innodb_doublewrite = 1\n" || :
+            [ -z "`%{__grep} innodb_flush_method %{_sysconfdir}/my.cnf`" ] &&             MCNF="${MCNF}loose_innodb_flush_method = O_DIRECT\n" || :
+            [ -z "`%{__grep} innodb_locks_unsafe_for_binlog %{_sysconfdir}/my.cnf`" ] &&  MCNF="${MCNF}loose_innodb_locks_unsafe_for_binlog = 0\n" || :
+            [ -z "`%{__grep} innodb_max_dirty_pages_pct %{_sysconfdir}/my.cnf`" ] &&      MCNF="${MCNF}loose_innodb_max_dirty_pages_pct = 90\n" || :
+            [ -z "`%{__grep} innodb_table_locks %{_sysconfdir}/my.cnf`" ] &&              MCNF="${MCNF}loose_innodb_table_locks = 1\n" || :
+            [ -z "`%{__grep} innodb_thread_concurrency %{_sysconfdir}/my.cnf`" ] &&       MCNF="${MCNF}loose_innodb_thread_concurrency = 0\n" || :
+            [ -z "`%{__grep} innodb_use_sys_malloc %{_sysconfdir}/my.cnf`" ] &&           MCNF="${MCNF}loose_innodb_use_sys_malloc = 0\n" || :
+            [ -z "`%{__grep} innodb_fast_shutdown %{_sysconfdir}/my.cnf`" ] &&            MCNF="${MCNF}loose_innodb_fast_shutdown = 0\n" || :
+            [ -z "`%{__grep} innodb_open_files %{_sysconfdir}/my.cnf`" ] &&               MCNF="${MCNF}loose_innodb_open_files = 2048\n" || :
+            [ -z "`%{__grep} innodb_buffer_pool_size %{_sysconfdir}/my.cnf`" ] &&         MCNF="${MCNF}# Should be set to 50% system memory\n" || :
+            [ -z "`%{__grep} innodb_buffer_pool_size %{_sysconfdir}/my.cnf`" ] &&         MCNF="${MCNF}loose_innodb_buffer_pool_size = ${MEM}M\n" || :
+            MCNF="${MCNF}#===== END OSDIAL my.cnf Additions =====\n\n"
+            %{__perl} -pi -e "s|old_passwords=1|$MCNF|" %{_sysconfdir}/my.cnf > /dev/null 2>&1 || :
+        fi
+        # Start mysql
+        /sbin/service mysqld start > /dev/null 2>&1 || :
+        sleep 3
+    fi
+    # Run update script.
+    [ -f "%{_opt}/osdial/.osdial-live" ] && /sbin/service mysqld start > /dev/null 2>&1 || :
+    %{_opt}/osdial/bin/sql/upgrade_sql.pl --install 2> /dev/null
+    [ -f "%{_opt}/osdial/.osdial-live" ] && /sbin/service mysqld stop > /dev/null 2>&1 || :
+    # If it didn't get created, assume it is an installcd
+    [ ! -d "%{_sharedstatedir}/mysql/osdial" ] && echo "OSDIAL_MYSQL_INSTALL=YES" >> %{_sysconfdir}/sysconfig/osdial
+    # cpuspeed can do bad things to ISDN/T1 cards
+    if [ -f "%{_sysconfdir}/rc3.d/S06cpuspeed" ]; then
+        echo "    osdial-config: cpuspeed (scaling) detected, disabling!"
+        %{_sysconfdir}/init.d/cpuspeed stop > /dev/null 2>&1
+        /sbin/chkconfig cpuspeed off > /dev/null 2>&1
+    fi
+    # We don't need cups
+    if [ -f "%{_sysconfdir}/rc3.d/S56cups" ]; then
+        echo "    osdial-config: CUPS detected, disabling!"
+        %{_sysconfdir}/init.d/cups stop > /dev/null 2>&1
+        /sbin/chkconfig cups off > /dev/null 2>&1
+    fi
 fi
 if [ "$INTY" -eq 2 ]; then
-	# Reset running procs.
-	if [ -f "/opt/osdial/bin/osdial_killall.sh" ]; then
-		/opt/osdial/bin/osdial_killall.sh > /dev/null 2>&1 || :
-	else
-		[ -n "`ps -ef | %{__grep} FastAGI`" ] && kill -9 `ps -ef | %{__grep} FastAGI | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
-		[ -n "`ps -ef | %{__grep} AST`" ] && kill -9 `ps -ef | %{__grep} AST | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
-	fi
+    # Reset running procs.
+    if [ -f "%{_opt}/osdial/bin/osdial_killall.sh" ]; then
+        %{_opt}/osdial/bin/osdial_killall.sh > /dev/null 2>&1 || :
+    else
+        [ -n "`ps -ef | %{__grep} FastAGI`" ] && kill -9 `ps -ef | %{__grep} FastAGI | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
+        [ -n "`ps -ef | %{__grep} AST`" ] && kill -9 `ps -ef | %{__grep} AST | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
+    fi
 fi
 echo -n
 
 %post web
 INTY=$1
 if [ "$INTY" -eq 1 ]; then
-        /sbin/chkconfig --del osdial_resource_listen > /dev/null 2>&1
-        /sbin/chkconfig --add osdial_resource_listen > /dev/null 2>&1
-	/sbin/service osdial_resource_listen restart > /dev/null 2>&1
-	/sbin/chkconfig httpd on > /dev/null 2>&1
-	if [ -f "/var/www/html/index.html" ]; then
-		[ -n "`%{__grep} osdial /var/www/html/index.html`" ] && %{__mv} /var/www/html/index.html /var/www/html/index.html.bak || :
-	fi
-	[ ! -f /var/www/html/index.php ] && %{__ln_s} /opt/osdial/html/index.php /var/www/html/index.php || :
-	# modify php.ini for our defaults.
-	if [ ! "`%{__grep} OSDIAL /etc/php.ini`" ]; then
-		%{__perl} -pi -e "s|^max_execution_time = 30     ; Maximum execution|max_execution_time = 300000 ; Maximum execution|" /etc/php.ini
-		%{__perl} -pi -e "s|^max_execution_time = 30     $|max_execution_time = 300000|" /etc/php.ini
-		%{__perl} -pi -e "s|^max_execution_time = 30$|max_execution_time = 300000|" /etc/php.ini
-		%{__perl} -pi -e "s|^max_input_time = 60    ; Maximum amount of time|max_input_time = 600000 ; Maximum amount of time|" /etc/php.ini
-		%{__perl} -pi -e "s|^max_input_time = 60$|max_input_time = 600000|" /etc/php.ini
-		%{__perl} -pi -e "s|^memory_limit = 16M      ; Maximum amount of mem|memory_limit = 512M      ; Maximum amount of mem|" /etc/php.ini
-		%{__perl} -pi -e "s|^memory_limit = 128M$|memory_limit = 512M|" /etc/php.ini
-		%{__perl} -pi -e "s|^post_max_size = 8M|post_max_size = 100M|" /etc/php.ini
-		%{__perl} -pi -e "s|^upload_max_filesize = 2M|upload_max_filesize = 100M|" /etc/php.ini
-		%{__perl} -pi -e "s|^short_open_tag = Off$|short_open_tag = On|" /etc/php.ini
-		%{__perl} -pi -e "s|^;error_reporting = E_ALL \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_NOTICE|" /etc/php.ini
-		%{__perl} -pi -e "s|^error_reporting  =  E_ALL|;error_reporting = E_ALL|" /etc/php.ini
-		%{__perl} -pi -e "s|^error_reporting = E_ALL$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
-		%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
-		%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
-		%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_NOTICE \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
-		%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
-		echo "; OSDIAL: modified" >> /etc/php.ini
-	fi
-	[ -f "/opt/osdial/.osdial-live" ] && /sbin/service httpd stop > /dev/null 2>&1 || :
-	# cpuspeed can do bad things to ISDN/T1 cards
-	if [ -f /etc/rc3.d/S06cpuspeed ]; then
-                	echo "    osdial-config: cpuspeed (scaling) detected, disabling!"
-                	/etc/init.d/cpuspeed stop > /dev/null 2>&1 || :
-                	/sbin/chkconfig cpuspeed off > /dev/null 2>&1 || :
-	fi
-	# We don't need cups
-	if [ -f /etc/rc3.d/S56cups ]; then
-                	echo "    osdial-config: CUPS detected, disabling!"
-                	/etc/init.d/cups stop > /dev/null 2>&1 || :
-                	/sbin/chkconfig cups off > /dev/null 2>&1 || :
-	fi
+    /sbin/chkconfig --del osdial_resource_listen > /dev/null 2>&1
+    /sbin/chkconfig --add osdial_resource_listen > /dev/null 2>&1
+    /sbin/service osdial_resource_listen restart > /dev/null 2>&1
+    /sbin/chkconfig httpd on > /dev/null 2>&1
+    if [ -f "%{_localstatedir}/www/html/index.html" ]; then
+        [ -n "`%{__grep} osdial %{_localstatedir}/www/html/index.html`" ] && %{__mv} %{_localstatedir}/www/html/index.html %{_localstatedir}/www/html/index.html.bak || :
+    fi
+    [ ! -f "%{_localstatedir}/www/html/index.php" ] && %{__ln_s} %{_opt}/osdial/html/index.php %{_localstatedir}/www/html/index.php || :
+    # modify php.ini for our defaults.
+    if [ ! "`%{__grep} OSDIAL %{_sysconfdir}/php.ini`" ]; then
+        %{__perl} -pi -e "s|^max_execution_time = 30     ; Maximum execution|max_execution_time = 300000 ; Maximum execution|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^max_execution_time = 30     $|max_execution_time = 300000|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^max_execution_time = 30$|max_execution_time = 300000|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^max_input_time = 60    ; Maximum amount of time|max_input_time = 600000 ; Maximum amount of time|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^max_input_time = 60$|max_input_time = 600000|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^memory_limit = 16M      ; Maximum amount of mem|memory_limit = 512M      ; Maximum amount of mem|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^memory_limit = 128M$|memory_limit = 512M|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^post_max_size = 8M|post_max_size = 100M|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^upload_max_filesize = 2M|upload_max_filesize = 100M|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^short_open_tag = Off$|short_open_tag = On|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^;error_reporting = E_ALL \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_NOTICE|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^error_reporting  =  E_ALL|;error_reporting = E_ALL|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^error_reporting = E_ALL$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_NOTICE \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
+        echo "; OSDIAL: modified" >> %{_sysconfdir}/php.ini
+    fi
+    [ -f "%{_opt}/osdial/.osdial-live" ] && /sbin/service httpd stop > /dev/null 2>&1 || :
+    # cpuspeed can do bad things to ISDN/T1 cards
+    if [ -f "%{_sysconfdir}/rc3.d/S06cpuspeed" ]; then
+        echo "    osdial-config: cpuspeed (scaling) detected, disabling!"
+        %{_sysconfdir}/init.d/cpuspeed stop > /dev/null 2>&1 || :
+        /sbin/chkconfig cpuspeed off > /dev/null 2>&1 || :
+    fi
+    # We don't need cups
+    if [ -f "%{_sysconfdir}/rc3.d/S56cups" ]; then
+        echo "    osdial-config: CUPS detected, disabling!"
+        %{_sysconfdir}/init.d/cups stop > /dev/null 2>&1 || :
+        /sbin/chkconfig cups off > /dev/null 2>&1 || :
+    fi
 fi
 if [ "$INTY" -eq 2 ]; then
-        /sbin/chkconfig --del osdial_resource_listen > /dev/null 2>&1 || :
-        /sbin/chkconfig --add osdial_resource_listen > /dev/null 2>&1 || :
-	/sbin/service osdial_resource_listen restart > /dev/null 2>&1 || :
-	if [ -f "/var/www/html/index.html" ]; then
-		[ -n "`%{__grep} osdial /var/www/html/index.html`" ] && %{__mv} /var/www/html/index.html /var/www/html/index.html.bak || :
-	fi
-	if [ ! "`%{__grep} OSDIAL /etc/php.ini`" ]; then
-		%{__perl} -pi -e "s|^memory_limit = 128M$|memory_limit = 512M|" /etc/php.ini
-		%{__perl} -pi -e "s|^max_execution_time = 30     $|max_execution_time = 300000|" /etc/php.ini
-		%{__perl} -pi -e "s|^max_execution_time = 30$|max_execution_time = 300000|" /etc/php.ini
-		%{__perl} -pi -e "s|^max_input_time = 60$|max_input_time = 600000|" /etc/php.ini
-		%{__perl} -pi -e "s|^error_reporting = E_ALL$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
-		%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
-		%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
-		%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_NOTICE \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
-		%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
-	fi
-	[ ! -f /var/www/html/index.php ] && %{__ln_s} /opt/osdial/html/index.php /var/www/html/index.php || :
-	# Reset running procs.
-	[ -n "`ps -ef | %{__grep} FastAGI`" ] && kill -9 `ps -ef | %{__grep} FastAGI | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
-	[ -n "`ps -ef | %{__grep} AST`" ] && kill -9 `ps -ef | %{__grep} AST | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
+    /sbin/chkconfig --del osdial_resource_listen > /dev/null 2>&1 || :
+    /sbin/chkconfig --add osdial_resource_listen > /dev/null 2>&1 || :
+    /sbin/service osdial_resource_listen restart > /dev/null 2>&1 || :
+    if [ -f "%{_localstatedir}/www/html/index.html" ]; then
+        [ -n "`%{__grep} osdial %{_localstatedir}/www/html/index.html`" ] && %{__mv} %{_localstatedir}/www/html/index.html %{_localstatedir}/www/html/index.html.bak || :
+    fi
+    if [ ! "`%{__grep} OSDIAL %{_sysconfdir}/php.ini`" ]; then
+        %{__perl} -pi -e "s|^memory_limit = 128M$|memory_limit = 512M|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^max_execution_time = 30     $|max_execution_time = 300000|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^max_execution_time = 30$|max_execution_time = 300000|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^max_input_time = 60$|max_input_time = 600000|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^error_reporting = E_ALL$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_NOTICE \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
+    fi
+    [ ! -f "%{_localstatedir}/www/html/index.php" ] && %{__ln_s} %{_opt}/osdial/html/index.php %{_localstatedir}/www/html/index.php || :
+    # Reset running procs.
+    [ -n "`ps -ef | %{__grep} FastAGI`" ] && kill -9 `ps -ef | %{__grep} FastAGI | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
+    [ -n "`ps -ef | %{__grep} AST`" ] && kill -9 `ps -ef | %{__grep} AST | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
 fi
-if [ -f "/etc/php.ini" ]; then
-	%{__perl} -pi -e "s|^max_execution_time = 30     ; Maximum execution|max_execution_time = 300000 ; Maximum execution|" /etc/php.ini
-	%{__perl} -pi -e "s|^max_execution_time = 30     $|max_execution_time = 300000|" /etc/php.ini
-	%{__perl} -pi -e "s|^max_execution_time = 30$|max_execution_time = 300000|" /etc/php.ini
-	%{__perl} -pi -e "s|^max_input_time = 60    ; Maximum amount of time|max_input_time = 600000 ; Maximum amount of time|" /etc/php.ini
-	%{__perl} -pi -e "s|^max_input_time = 60$|max_input_time = 600000|" /etc/php.ini
-	%{__perl} -pi -e "s|^memory_limit = 16M      ; Maximum amount of mem|memory_limit = 512M      ; Maximum amount of mem|" /etc/php.ini
-	%{__perl} -pi -e "s|^memory_limit = 128M$|memory_limit = 512M|" /etc/php.ini
-	%{__perl} -pi -e "s|^post_max_size = 8M|post_max_size = 100M|" /etc/php.ini
-	%{__perl} -pi -e "s|^upload_max_filesize = 2M|upload_max_filesize = 100M|" /etc/php.ini
-	%{__perl} -pi -e "s|^short_open_tag = Off$|short_open_tag = On|" /etc/php.ini
-	%{__perl} -pi -e "s|^error_reporting = E_ALL$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
-	%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
-	%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
-	%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_NOTICE \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
-	%{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" /etc/php.ini
-	/sbin/service httpd restart > /dev/null 2>&1 || :
+if [ -f "%{_sysconfdir}/php.ini" ]; then
+    %{__perl} -pi -e "s|^max_execution_time = 30     ; Maximum execution|max_execution_time = 300000 ; Maximum execution|" %{_sysconfdir}/php.ini
+    %{__perl} -pi -e "s|^max_execution_time = 30     $|max_execution_time = 300000|" %{_sysconfdir}/php.ini
+    %{__perl} -pi -e "s|^max_execution_time = 30$|max_execution_time = 300000|" %{_sysconfdir}/php.ini
+    %{__perl} -pi -e "s|^max_input_time = 60    ; Maximum amount of time|max_input_time = 600000 ; Maximum amount of time|" %{_sysconfdir}/php.ini
+    %{__perl} -pi -e "s|^max_input_time = 60$|max_input_time = 600000|" %{_sysconfdir}/php.ini
+    %{__perl} -pi -e "s|^memory_limit = 16M      ; Maximum amount of mem|memory_limit = 512M      ; Maximum amount of mem|" %{_sysconfdir}/php.ini
+    %{__perl} -pi -e "s|^memory_limit = 128M$|memory_limit = 512M|" %{_sysconfdir}/php.ini
+    %{__perl} -pi -e "s|^post_max_size = 8M|post_max_size = 100M|" %{_sysconfdir}/php.ini
+    %{__perl} -pi -e "s|^upload_max_filesize = 2M|upload_max_filesize = 100M|" %{_sysconfdir}/php.ini
+    %{__perl} -pi -e "s|^short_open_tag = Off$|short_open_tag = On|" %{_sysconfdir}/php.ini
+    %{__perl} -pi -e "s|^error_reporting = E_ALL$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
+    %{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
+    %{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
+    %{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_NOTICE \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
+    %{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
+    /sbin/service httpd restart > /dev/null 2>&1 || :
 fi
 echo -n
 
 %post dialer
 INTY=$1
 if [ "$INTY" -eq 1 ]; then
-	# Put in some ramdisk on the dialer.
-	if [ "`%{__grep} OSDIAL /etc/rc.local`" ]; then
-		OSDTMP=/tmp/osdtmp.$$
-		%{__sed} -e '/BEGIN OSDIAL/,/END OSDIAL/d' /etc/rc.local > $OSDTMP
-		%{__sed} -e '/ramdisk/d' $OSDTMP > /etc/rc.local
-	fi
-	# Lets turn on the cron!
-	if [ -f /var/spool/cron/asterisk ]; then
-        	CRGRP="`%{__grep} ADMIN_keepalive_ALL /var/spool/cron/asterisk`"
-        	if [ -n "$CRGRP" ]; then
-                	# It already exists, so lets overwrite our existing.
-                	echo "    osdial-config: Cron for user 'asterisk' already in place."
-                	%{__cat} /var/spool/cron/asterisk > /opt/osdial/bin/osdial.cron
-                	%{__rm} -f /var/spool/cron/asterisk > /dev/null 2>&1 || :
-        	fi
-	fi
-	echo "    osdial-config: Installing cron for user 'asterisk'."
-	/usr/bin/crontab -u asterisk /opt/osdial/bin/osdial.cron > /dev/null 2>&1
-	# If it didn't succeed, assume installcd
-	[ ! -f "/var/spool/cron/asterisk" ] && %{__cp} /opt/osdial/bin/osdial.cron /var/spool/cron/asterisk > /dev/null 2>&1 || :
-	# Verify config was copied, if not, we are new.
-	if [ ! -f /etc/osdial.conf ]; then
-        	echo "    osdial-config: Setting up keepalive services."
-        	%{__perl} -pi -e 's|^VARactive_keepalives => XX$|VARactive_keepalives => 1234569|' /etc/osdial.conf > /dev/null 2>&1 || :
-	fi
-	# We don't need cups
-	if [ -f /etc/rc3.d/S56cups ]; then
-                	echo "    osdial-config: CUPS detected, disabling!"
-                	/etc/init.d/cups stop > /dev/null 2>&1 || :
-                	/sbin/chkconfig cups off > /dev/null 2>&1 || :
-	fi
+    # Put in some ramdisk on the dialer.
+    if [ "`%{__grep} OSDIAL %{_sysconfdir}/rc.local`" ]; then
+        OSDTMP=/tmp/osdtmp.$$
+        %{__sed} -e '/BEGIN OSDIAL/,/END OSDIAL/d' %{_sysconfdir}/rc.local > $OSDTMP
+        %{__sed} -e '/ramdisk/d' $OSDTMP > %{_sysconfdir}/rc.local
+    fi
+    # Lets turn on the cron!
+    if [ -f "%{_localstatedir}/spool/cron/asterisk" ]; then
+        CRGRP="`%{__grep} ADMIN_keepalive_ALL %{_localstatedir}/spool/cron/asterisk`"
+        if [ -n "$CRGRP" ]; then
+            # It already exists, so lets overwrite our existing.
+            echo "    osdial-config: Cron for user 'asterisk' already in place."
+            %{__cat} %{_localstatedir}/spool/cron/asterisk > %{_opt}/osdial/bin/osdial.cron
+            %{__rm} -f %{_localstatedir}/spool/cron/asterisk > /dev/null 2>&1 || :
+        fi
+    fi
+    echo "    osdial-config: Installing cron for user 'asterisk'."
+    %{_bindir}/crontab -u asterisk %{_opt}/osdial/bin/osdial.cron > /dev/null 2>&1
+    # If it didn't succeed, assume installcd
+    [ ! -f "%{_localstatedir}/spool/cron/asterisk" ] && %{__cp} %{_opt}/osdial/bin/osdial.cron %{_localstatedir}/spool/cron/asterisk > /dev/null 2>&1 || :
+    # Verify config was copied, if not, we are new.
+    if [ ! -f "%{_sysconfdir}/osdial.conf" ]; then
+        echo "    osdial-config: Setting up keepalive services."
+        %{__perl} -pi -e 's|^VARactive_keepalives => XX$|VARactive_keepalives => 1234569|' %{_sysconfdir}/osdial.conf > /dev/null 2>&1 || :
+    fi
+    # We don't need cups
+    if [ -f "%{_sysconfdir}/rc3.d/S56cups" ]; then
+        echo "    osdial-config: CUPS detected, disabling!"
+        %{_sysconfdir}/init.d/cups stop > /dev/null 2>&1 || :
+        /sbin/chkconfig cups off > /dev/null 2>&1 || :
+    fi
 fi
 [ "$INTY" -eq 2 ] && echo -n || :
 # Reset running procs.
 [ -n "`ps -ef | %{__grep} FastAGI`" ] && kill -9 `ps -ef | %{__grep} FastAGI | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
 [ -n "`ps -ef | %{__grep} AST`" ] && kill -9 `ps -ef | %{__grep} AST | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
 # Make sure we have backups of the prompts and sync them to sounds and sounds.ramfs
-%{__mkdir_p} /var/lib/asterisk/OSDprompts > /dev/null 2>&1 || :
-[ -d "/var/lib/asterisk/sounds.ramfs" ] && yes | %{__cp} -au /var/lib/asterisk/sounds.ramfs/851* /var/lib/asterisk/OSDprompts > /dev/null 2>&1 || :
-[ -d "/mnt/ramdisk/sounds" ] && yes | %{__cp} -au /mnt/ramdisk/sounds/851* /var/lib/asterisk/OSDprompts > /dev/null 2>&1 || :
-yes | %{__cp} -au /var/lib/asterisk/sounds/851* /var/lib/asterisk/OSDprompts > /dev/null 2>&1
-yes | %{__cp} -au /var/lib/asterisk/OSDprompts/851* /var/lib/asterisk/sounds > /dev/null 2>&1
-[ -d "/var/lib/asterisk/sounds.ramfs" ] && yes | %{__cp} -au /var/lib/asterisk/OSDprompts/851* /var/lib/asterisk/sounds.ramfs > /dev/null 2>&1 || :
-[ -d "/mnt/ramdisk/sounds" ] && yes | %{__cp} -au /var/lib/asterisk/OSDprompts/851* /mnt/ramdisk/sounds > /dev/null 2>&1 || :
-%{__chown} -R asterisk:asterisk /var/lib/asterisk/sounds > /dev/null 2>&1 || :
-%{__chown} -R asterisk:asterisk /var/lib/asterisk/OSDprompts > /dev/null 2>&1 || :
-[ -d "/var/lib/asterisk/sounds.ramfs" ] && %{__chown} -R asterisk:asterisk /var/lib/asterisk/sounds.ramfs > /dev/null 2>&1 || :
+%{__mkdir_p} %{_sharedstatedir}/asterisk/OSDprompts > /dev/null 2>&1 || :
+[ -d "%{_sharedstatedir}/asterisk/sounds.ramfs" ] && yes | %{__cp} -au %{_sharedstatedir}/asterisk/sounds.ramfs/851* %{_sharedstatedir}/asterisk/OSDprompts > /dev/null 2>&1 || :
+[ -d "/mnt/ramdisk/sounds" ] && yes | %{__cp} -au /mnt/ramdisk/sounds/851* %{_sharedstatedir}/asterisk/OSDprompts > /dev/null 2>&1 || :
+yes | %{__cp} -au %{_sharedstatedir}/asterisk/sounds/851* %{_sharedstatedir}/asterisk/OSDprompts > /dev/null 2>&1
+yes | %{__cp} -au %{_sharedstatedir}/asterisk/OSDprompts/851* %{_sharedstatedir}/asterisk/sounds > /dev/null 2>&1
+[ -d "%{_sharedstatedir}/asterisk/sounds.ramfs" ] && yes | %{__cp} -au %{_sharedstatedir}/asterisk/OSDprompts/851* %{_sharedstatedir}/asterisk/sounds.ramfs > /dev/null 2>&1 || :
+[ -d "/mnt/ramdisk/sounds" ] && yes | %{__cp} -au %{_sharedstatedir}/asterisk/OSDprompts/851* /mnt/ramdisk/sounds > /dev/null 2>&1 || :
+%{__chown} -R asterisk:asterisk %{_sharedstatedir}/asterisk/sounds > /dev/null 2>&1 || :
+%{__chown} -R asterisk:asterisk %{_sharedstatedir}/asterisk/OSDprompts > /dev/null 2>&1 || :
+[ -d "%{_sharedstatedir}/asterisk/sounds.ramfs" ] && %{__chown} -R asterisk:asterisk %{_sharedstatedir}/asterisk/sounds.ramfs > /dev/null 2>&1 || :
 [ -d "/mnt/ramdisk/sounds" ] && %{__chown} -R asterisk:asterisk /mnt/ramdisk/sounds > /dev/null 2>&1 || :
-if [ -d "/var/lib/asterisk/sounds/osdial" ]; then
-	%{__chmod} 0777 /var/lib/asterisk/sounds/osdial > /dev/null 2>&1 || :
-	%{__chmod} 0666 /var/lib/asterisk/sounds/osdial/* > /dev/null 2>&1 || :
+if [ -d "%{_sharedstatedir}/asterisk/sounds/osdial" ]; then
+    %{__chmod} 0777 %{_sharedstatedir}/asterisk/sounds/osdial > /dev/null 2>&1 || :
+    %{__chmod} 0666 %{_sharedstatedir}/asterisk/sounds/osdial/* > /dev/null 2>&1 || :
 fi
 if [ -d "/mnt/ramdisk/sounds/osdial" ]; then
-	%{__chmod} 0777 /mnt/ramdisk/sounds/osdial > /dev/null 2>&1 || :
-	%{__chmod} 0666 /mnt/ramdisk/sounds/osdial/* > /dev/null 2>&1 || :
+    %{__chmod} 0777 /mnt/ramdisk/sounds/osdial > /dev/null 2>&1 || :
+    %{__chmod} 0666 /mnt/ramdisk/sounds/osdial/* > /dev/null 2>&1 || :
 fi
-if [ -d "/opt/osdial/media" ]; then
-	%{__chmod} 0777 /opt/osdial/media > /dev/null 2>&1 || :
-	%{__chmod} 0666 /opt/osdial/media/* > /dev/null 2>&1 || :
+if [ -d "%{_opt}/osdial/media" ]; then
+    %{__chmod} 0777 %{_opt}/osdial/media > /dev/null 2>&1 || :
+    %{__chmod} 0666 %{_opt}/osdial/media/* > /dev/null 2>&1 || :
 fi
-/opt/osdial/bin/osdial_media_sync.pl --file=/var/lib/asterisk/sounds/en/vm-goodbye.ulaw > /dev/null 2>&1 || :
-/opt/osdial/bin/osdial_media_sync.pl --file=/var/lib/asterisk/sounds/generic_hold.ulaw > /dev/null 2>&1 || :
+%{_opt}/osdial/bin/osdial_media_sync.pl --file=%{_sharedstatedir}/asterisk/sounds/en/vm-goodbye.ulaw > /dev/null 2>&1 || :
+%{_opt}/osdial/bin/osdial_media_sync.pl --file=%{_sharedstatedir}/asterisk/sounds/generic_hold.ulaw > /dev/null 2>&1 || :
 
 
 # Reload dsp.conf to ensure we have a silence_threshold
-/usr/sbin/asterisk -rx "reload dsp" > /dev/null 2>&1 || :
-cd /opt/osdial/html/ari/bin || :
+%{_sbindir}/asterisk -rx "reload dsp" > /dev/null 2>&1 || :
+cd %{_opt}/osdial/html/ari/bin || :
 tar xzf aribins.tgz . > /dev/null 2>&1 || :
 echo -n
 
@@ -1359,77 +1367,77 @@ echo -n
 INTY=$1
 /sbin/chkconfig asterisk on > /dev/null 2>&1 || :
 # cpuspeed can do bad things to ISDN/T1 cards
-if [ -f /etc/rc3.d/S06cpuspeed ]; then
-               	echo "    osdial-config: cpuspeed (scaling) detected, disabling!"
-               	/etc/init.d/cpuspeed stop > /dev/null 2>&1 || :
-               	/sbin/chkconfig cpuspeed off > /dev/null 2>&1 || :
+if [ -f "%{_sysconfdir}/rc3.d/S06cpuspeed" ]; then
+    echo "    osdial-config: cpuspeed (scaling) detected, disabling!"
+    %{_sysconfdir}/init.d/cpuspeed stop > /dev/null 2>&1 || :
+    /sbin/chkconfig cpuspeed off > /dev/null 2>&1 || :
 fi
 # Set some performance options in asterisk...
-if [ -f "/etc/asterisk/asterisk.conf" ]; then
-        	%{__perl} -pi -e 's|^;timestamp = yes|timestamp = yes|' /etc/asterisk/asterisk.conf
-        	%{__perl} -pi -e 's|^timestamp = no|timestamp = yes|' /etc/asterisk/asterisk.conf
+if [ -f "%{_sysconfdir}/asterisk/asterisk.conf" ]; then
+    %{__perl} -pi -e 's|^;timestamp = yes|timestamp = yes|' %{_sysconfdir}/asterisk/asterisk.conf
+    %{__perl} -pi -e 's|^timestamp = no|timestamp = yes|' %{_sysconfdir}/asterisk/asterisk.conf
 
-        	%{__perl} -pi -e 's|^;highpriority = yes|highpriority = yes|' /etc/asterisk/asterisk.conf
-        	%{__perl} -pi -e 's|^highpriority = no|highpriority = yes|' /etc/asterisk/asterisk.conf
+    %{__perl} -pi -e 's|^;highpriority = yes|highpriority = yes|' %{_sysconfdir}/asterisk/asterisk.conf
+    %{__perl} -pi -e 's|^highpriority = no|highpriority = yes|' %{_sysconfdir}/asterisk/asterisk.conf
 
-        	%{__perl} -pi -e 's|^;internal_timing = yes|internal_timing = yes|' /etc/asterisk/asterisk.conf
-        	%{__perl} -pi -e 's|^internal_timing = no|internal_timing = yes|' /etc/asterisk/asterisk.conf
+    %{__perl} -pi -e 's|^;internal_timing = yes|internal_timing = yes|' %{_sysconfdir}/asterisk/asterisk.conf
+    %{__perl} -pi -e 's|^internal_timing = no|internal_timing = yes|' %{_sysconfdir}/asterisk/asterisk.conf
 
-        	%{__perl} -pi -e 's|^;transmit_silence = yes|transmit_silence = no|' /etc/asterisk/asterisk.conf
-        	%{__perl} -pi -e 's|^transmit_silence = yes|transmit_silence = no|' /etc/asterisk/asterisk.conf
+    %{__perl} -pi -e 's|^;transmit_silence = yes|transmit_silence = no|' %{_sysconfdir}/asterisk/asterisk.conf
+    %{__perl} -pi -e 's|^transmit_silence = yes|transmit_silence = no|' %{_sysconfdir}/asterisk/asterisk.conf
 
-        	%{__perl} -pi -e 's|^;transmit_silence_during_record = yes|transmit_silence_during_record = yes|' /etc/asterisk/asterisk.conf
-        	%{__perl} -pi -e 's|^transmit_silence_during_record = no|transmit_silence_during_record = yes|' /etc/asterisk/asterisk.conf
+    %{__perl} -pi -e 's|^;transmit_silence_during_record = yes|transmit_silence_during_record = yes|' %{_sysconfdir}/asterisk/asterisk.conf
+    %{__perl} -pi -e 's|^transmit_silence_during_record = no|transmit_silence_during_record = yes|' %{_sysconfdir}/asterisk/asterisk.conf
 
-        	%{__perl} -pi -e 's|^;transcode_via_sln = yes|transcode_via_sln = no|' /etc/asterisk/asterisk.conf
-        	%{__perl} -pi -e 's|^transcode_via_sln = yes|transcode_via_sln = no|' /etc/asterisk/asterisk.conf
+    %{__perl} -pi -e 's|^;transcode_via_sln = yes|transcode_via_sln = no|' %{_sysconfdir}/asterisk/asterisk.conf
+    %{__perl} -pi -e 's|^transcode_via_sln = yes|transcode_via_sln = no|' %{_sysconfdir}/asterisk/asterisk.conf
 
-        	%{__perl} -pi -e 's|^;cache_record_files = yes|cache_record_files = yes|' /etc/asterisk/asterisk.conf
-        	%{__perl} -pi -e 's|^cache_record_files = no|cache_record_files = yes|' /etc/asterisk/asterisk.conf
+    %{__perl} -pi -e 's|^;cache_record_files = yes|cache_record_files = yes|' %{_sysconfdir}/asterisk/asterisk.conf
+    %{__perl} -pi -e 's|^cache_record_files = no|cache_record_files = yes|' %{_sysconfdir}/asterisk/asterisk.conf
 
-        	%{__perl} -pi -e 's|^;record_cache_dir = /tmp|record_cache_dir = /var/spool/asterisk/record_cache|' /etc/asterisk/asterisk.conf
-        	%{__perl} -pi -e 's|^record_cache_dir = .*$|record_cache_dir = /var/spool/asterisk/record_cache|' /etc/asterisk/asterisk.conf
+    %{__perl} -pi -e 's|^;record_cache_dir = /tmp|record_cache_dir = %{_localstatedir}/spool/asterisk/record_cache|' %{_sysconfdir}/asterisk/asterisk.conf
+    %{__perl} -pi -e 's|^record_cache_dir = .*$|record_cache_dir = %{_localstatedir}/spool/asterisk/record_cache|' %{_sysconfdir}/asterisk/asterisk.conf
 fi
 # Remove bad chan-dahdi.conf, bad filename.
-[ -f "/etc/asterisk/chan-dahdi.conf" ] && %{__rm} -f /etc/asterisk/chan-dahdi.conf > /dev/null 2>&1 || :
+[ -f "%{_sysconfdir}/asterisk/chan-dahdi.conf" ] && %{__rm} -f %{_sysconfdir}/asterisk/chan-dahdi.conf > /dev/null 2>&1 || :
 # Find and move zapata.conf
-%{__mkdir_p} /etc/zaptel.bak > /dev/null 2>&1 || :
+%{__mkdir_p} %{_sysconfdir}/zaptel.bak > /dev/null 2>&1 || :
 MOVED=0
-if [ -f "/etc/asterisk/zapata.conf" ]; then
-	if [ "$MOVED" = "0" ]; then
-		MOVED=1
-		%{__cp} -f /etc/asterisk/zapata.conf /etc/zaptel.bak > /dev/null 2>&1 || :
-		%{__mv} -f /etc/asterisk/zapata.conf /etc/asterisk/chan_dahdi.conf > /dev/null 2>&1 || :
-	else
-		%{__mv} -f /etc/asterisk/zapata.conf /etc/zaptel.bak > /dev/null 2>&1 || :
-	fi
+if [ -f "%{_sysconfdir}/asterisk/zapata.conf" ]; then
+    if [ "$MOVED" = "0" ]; then
+        MOVED=1
+        %{__cp} -f %{_sysconfdir}/asterisk/zapata.conf %{_sysconfdir}/zaptel.bak > /dev/null 2>&1 || :
+        %{__mv} -f %{_sysconfdir}/asterisk/zapata.conf %{_sysconfdir}/asterisk/chan_dahdi.conf > /dev/null 2>&1 || :
+    else
+        %{__mv} -f %{_sysconfdir}/asterisk/zapata.conf %{_sysconfdir}/zaptel.bak > /dev/null 2>&1 || :
+    fi
 fi
-if [ -f "/etc/asterisk/zapata.conf.rpmsave" ]; then
-	if [ "$MOVED" = "0" ]; then
-		MOVED=1
-		%{__cp} -f /etc/asterisk/zapata.conf.rpmsave /etc/zaptel.bak > /dev/null 2>&1 || :
-		%{__mv} -f /etc/asterisk/zapata.conf.rpmsave /etc/asterisk/chan_dahdi.conf > /dev/null 2>&1 || :
-	else
-		%{__mv} -f /etc/asterisk/zapata.conf.rpmsave /etc/zaptel.bak > /dev/null 2>&1 || :
-	fi
+if [ -f "%{_sysconfdir}/asterisk/zapata.conf.rpmsave" ]; then
+    if [ "$MOVED" = "0" ]; then
+        MOVED=1
+        %{__cp} -f %{_sysconfdir}/asterisk/zapata.conf.rpmsave %{_sysconfdir}/zaptel.bak > /dev/null 2>&1 || :
+        %{__mv} -f %{_sysconfdir}/asterisk/zapata.conf.rpmsave %{_sysconfdir}/asterisk/chan_dahdi.conf > /dev/null 2>&1 || :
+    else
+        %{__mv} -f %{_sysconfdir}/asterisk/zapata.conf.rpmsave %{_sysconfdir}/zaptel.bak > /dev/null 2>&1 || :
+    fi
 fi
-if [ -f "/etc/asterisk/zapata.conf.rpmorig" ]; then
-	if [ "$MOVED" = "0" ]; then
-		MOVED=1
-		%{__cp} -f /etc/asterisk/zapata.conf.rpmorig /etc/zaptel.bak > /dev/null 2>&1 || :
-		%{__mv} -f /etc/asterisk/zapata.conf.rpmorig /etc/asterisk/chan_dahdi.conf > /dev/null 2>&1 || :
-	else
-		%{__mv} -f /etc/asterisk/zapata.conf.rpmorig /etc/zaptel.bak > /dev/null 2>&1 || :
-	fi
+if [ -f "%{_sysconfdir}/asterisk/zapata.conf.rpmorig" ]; then
+    if [ "$MOVED" = "0" ]; then
+        MOVED=1
+        %{__cp} -f %{_sysconfdir}/asterisk/zapata.conf.rpmorig %{_sysconfdir}/zaptel.bak > /dev/null 2>&1 || :
+        %{__mv} -f %{_sysconfdir}/asterisk/zapata.conf.rpmorig %{_sysconfdir}/asterisk/chan_dahdi.conf > /dev/null 2>&1 || :
+    else
+        %{__mv} -f %{_sysconfdir}/asterisk/zapata.conf.rpmorig %{_sysconfdir}/zaptel.bak > /dev/null 2>&1 || :
+    fi
 fi
-if [ -f "/etc/asterisk/zapata.conf.rpmnew" ]; then
-	if [ "$MOVED" = "0" ]; then
-		MOVED=1
-		%{__cp} -f /etc/asterisk/zapata.conf.rpmnew /etc/zaptel.bak > /dev/null 2>&1 || :
-		%{__mv} -f /etc/asterisk/zapata.conf.rpmnew /etc/asterisk/chan_dahdi.conf > /dev/null 2>&1 || :
-	else
-		%{__mv} -f /etc/asterisk/zapata.conf.rpmnew /etc/zaptel.bak > /dev/null 2>&1 || :
-	fi
+if [ -f "%{_sysconfdir}/asterisk/zapata.conf.rpmnew" ]; then
+    if [ "$MOVED" = "0" ]; then
+        MOVED=1
+        %{__cp} -f %{_sysconfdir}/asterisk/zapata.conf.rpmnew %{_sysconfdir}/zaptel.bak > /dev/null 2>&1 || :
+        %{__mv} -f %{_sysconfdir}/asterisk/zapata.conf.rpmnew %{_sysconfdir}/asterisk/chan_dahdi.conf > /dev/null 2>&1 || :
+    else
+        %{__mv} -f %{_sysconfdir}/asterisk/zapata.conf.rpmnew %{_sysconfdir}/zaptel.bak > /dev/null 2>&1 || :
+    fi
 fi
 echo -n
 
@@ -1437,951 +1445,949 @@ echo -n
 INTY=$1
 /sbin/chkconfig asterisk on > /dev/null 2>&1 || :
 # cpuspeed can do bad things to ISDN/T1 cards
-if [ -f /etc/rc3.d/S06cpuspeed ]; then
-               	echo "    osdial-config: cpuspeed (scaling) detected, disabling!"
-               	/etc/init.d/cpuspeed stop > /dev/null 2>&1 || :
-               	/sbin/chkconfig cpuspeed off > /dev/null 2>&1 || :
+if [ -f "%{_sysconfdir}/rc3.d/S06cpuspeed" ]; then
+    echo "    osdial-config: cpuspeed (scaling) detected, disabling!"
+    %{_sysconfdir}/init.d/cpuspeed stop > /dev/null 2>&1 || :
+    /sbin/chkconfig cpuspeed off > /dev/null 2>&1 || :
 fi
 # Find and move chan_dahdi.conf
-%{__mkdir_p} /etc/dahdi.bak > /dev/null 2>&1 || :
+%{__mkdir_p} %{_sysconfdir}/dahdi.bak > /dev/null 2>&1 || :
 MOVED=0
-if [ -f "/etc/asterisk/chan_dahdi.conf" ]; then
-	if [ "$MOVED" = "0" ]; then
-		MOVED=1
-		%{__cp} -f /etc/asterisk/chan_dahdi.conf /etc/dahdi.bak > /dev/null 2>&1 || :
-		%{__mv} -f /etc/asterisk/chan_dahdi.conf /etc/asterisk/zapata.conf > /dev/null 2>&1 || :
-	else
-		%{__mv} -f /etc/asterisk/chan_dahdi.conf /etc/dahdi.bak > /dev/null 2>&1 || :
-	fi
+if [ -f "%{_sysconfdir}/asterisk/chan_dahdi.conf" ]; then
+    if [ "$MOVED" = "0" ]; then
+        MOVED=1
+        %{__cp} -f %{_sysconfdir}/asterisk/chan_dahdi.conf %{_sysconfdir}/dahdi.bak > /dev/null 2>&1 || :
+        %{__mv} -f %{_sysconfdir}/asterisk/chan_dahdi.conf %{_sysconfdir}/asterisk/zapata.conf > /dev/null 2>&1 || :
+    else
+        %{__mv} -f %{_sysconfdir}/asterisk/chan_dahdi.conf %{_sysconfdir}/dahdi.bak > /dev/null 2>&1 || :
+    fi
 fi
-if [ -f "/etc/asterisk/chan_dahdi.conf.rpmsave" ]; then
-	if [ "$MOVED" = "0" ]; then
-		MOVED=1
-		%{__cp} -f /etc/asterisk/chan_dahdi.conf.rpmsave /etc/dahdi.bak > /dev/null 2>&1 || :
-		%{__mv} -f /etc/asterisk/chan_dahdi.conf.rpmsave /etc/asterisk/zapata.conf > /dev/null 2>&1 || :
-	else
-		%{__mv} -f /etc/asterisk/chan_dahdi.conf.rpmsave /etc/dahdi.bak > /dev/null 2>&1 || :
-	fi
+if [ -f "%{_sysconfdir}/asterisk/chan_dahdi.conf.rpmsave" ]; then
+    if [ "$MOVED" = "0" ]; then
+        MOVED=1
+        %{__cp} -f %{_sysconfdir}/asterisk/chan_dahdi.conf.rpmsave %{_sysconfdir}/dahdi.bak > /dev/null 2>&1 || :
+        %{__mv} -f %{_sysconfdir}/asterisk/chan_dahdi.conf.rpmsave %{_sysconfdir}/asterisk/zapata.conf > /dev/null 2>&1 || :
+    else
+        %{__mv} -f %{_sysconfdir}/asterisk/chan_dahdi.conf.rpmsave %{_sysconfdir}/dahdi.bak > /dev/null 2>&1 || :
+    fi
 fi
-if [ -f "/etc/asterisk/chan_dahdi.conf.rpmorig" ]; then
-	if [ "$MOVED" = "0" ]; then
-		MOVED=1
-		%{__cp} -f /etc/asterisk/chan_dahdi.conf.rpmorig /etc/dahdi.bak > /dev/null 2>&1 || :
-		%{__mv} -f /etc/asterisk/chan_dahdi.conf.rpmorig /etc/asterisk/zapata.conf > /dev/null 2>&1 || :
-	else
-		%{__mv} -f /etc/asterisk/chan_dahdi.conf.rpmorig /etc/dahdi.bak > /dev/null 2>&1 || :
-	fi
+if [ -f "%{_sysconfdir}/asterisk/chan_dahdi.conf.rpmorig" ]; then
+    if [ "$MOVED" = "0" ]; then
+        MOVED=1
+        %{__cp} -f %{_sysconfdir}/asterisk/chan_dahdi.conf.rpmorig %{_sysconfdir}/dahdi.bak > /dev/null 2>&1 || :
+        %{__mv} -f %{_sysconfdir}/asterisk/chan_dahdi.conf.rpmorig %{_sysconfdir}/asterisk/zapata.conf > /dev/null 2>&1 || :
+    else
+        %{__mv} -f %{_sysconfdir}/asterisk/chan_dahdi.conf.rpmorig %{_sysconfdir}/dahdi.bak > /dev/null 2>&1 || :
+    fi
 fi
-if [ -f "/etc/asterisk/chan_dahdi.conf.rpmnew" ]; then
-	if [ "$MOVED" = "0" ]; then
-		MOVED=1
-		%{__cp} -f /etc/asterisk/chan_dahdi.conf.rpmnew /etc/dahdi.bak > /dev/null 2>&1 || :
-		%{__mv} -f /etc/asterisk/chan_dahdi.conf.rpmnew /etc/asterisk/zapata.conf > /dev/null 2>&1 || :
-	else
-		%{__mv} -f /etc/asterisk/chan_dahdi.conf.rpmnew /etc/dahdi.bak > /dev/null 2>&1 || :
-	fi
+if [ -f "%{_sysconfdir}/asterisk/chan_dahdi.conf.rpmnew" ]; then
+    if [ "$MOVED" = "0" ]; then
+        MOVED=1
+        %{__cp} -f %{_sysconfdir}/asterisk/chan_dahdi.conf.rpmnew %{_sysconfdir}/dahdi.bak > /dev/null 2>&1 || :
+        %{__mv} -f %{_sysconfdir}/asterisk/chan_dahdi.conf.rpmnew %{_sysconfdir}/asterisk/zapata.conf > /dev/null 2>&1 || :
+    else
+        %{__mv} -f %{_sysconfdir}/asterisk/chan_dahdi.conf.rpmnew %{_sysconfdir}/dahdi.bak > /dev/null 2>&1 || :
+    fi
 fi
 echo -n
 
 
 %post profile-all
 INTY=$1
-if [ "$INTY" -eq 2 ]; then
-	CTB="/var/spool/cron/asterisk"
-	if [ -f "$CTB" -a ! -s "$CTB" ]; then
-		if [ -z "`%{__grep} 'remove old osdial logs' $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
-			echo -e "28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-			echo -e "29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} ADMIN_keepalive_ALL $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} osdial_media_sync $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
-			echo -e "*/15 * * * * /opt/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
-		fi
+if [ "$INTY" -ge 1 ]; then
+    CTB="%{_localstatedir}/spool/cron/asterisk"
+    if [ -f "$CTB" ]; then
+        if [ -z "`%{__grep} 'remove old osdial logs' $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
+            echo -e "28 0 * * * %{_bindir}/find %{_localstatedir}/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+            echo -e "29 0 * * * %{_bindir}/find %{_localstatedir}/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} ADMIN_keepalive_ALL $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} osdial_media_sync $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
+            echo -e "*/15 * * * * %{_opt}/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
+        fi
 
 
-		if [ -z "`%{__grep} 'remove old csv exports more than 2 days old' $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (sql) remove old csv exports more than 2 days old" >> $CTB
-			echo -e "24 0 * * * /usr/bin/find /opt/osdial/html/admin -name 'advsearch*' -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} osdial_external_dnc $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo "### (sql) Actual Scrub against external DNC" >> $CTB
-			echo "* * * * * /opt/osdial/bin/osdial_external_dnc.pl > /dev/null 2>&1" >> $CTB
-			echo -e "" >> $CTB
-			echo "### (sql) Schedule ALL to scrub against external DNC" >> $CTB
-			echo "0 1 * * * /opt/osdial/bin/osdial_external_dnc.pl --sched=ALL > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_CLEAR_auto_calls $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (sql) Clean out auto-calls regularly" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_CLEAR_auto_calls.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_flush_DBqueue $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (sql) flush queue DB table every hour for entries older than 1 hour" >> $CTB
-			echo -e "11,41 * * * * /opt/osdial/bin/AST_flush_DBqueue.pl -q > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_cleanup_agent_log $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (sql) fix the osdial_agent_log once every hour" >> $CTB
-			echo -e "33 * * * * /opt/osdial/bin/AST_cleanup_agent_log.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_VDhopper $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (sql) updater for OSDial hopper" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_VDhopper.pl -q > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} ADMIN_adjust_GMTnow_on_leads $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (sql) adjust the GMT offset for the leads in the osdial_list table" >> $CTB
-			echo -e "1 1,7 * * * /opt/osdial/bin/ADMIN_adjust_GMTnow_on_leads.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_DB_optimize $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (sql) optimize the database tables within the asterisk database" >> $CTB
-			echo -e "3 1 * * * /opt/osdial/bin/AST_DB_optimize.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_agent_week $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (sql) OSDial agent time log weekly and daily summary report generation" >> $CTB
-			echo -e "#2 0 * * 0 /opt/osdial/bin/AST_agent_week.pl > /dev/null 2>&1" >> $CTB
-			echo -e "#22 0 * * * /opt/osdial/bin/AST_agent_day.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_VDsales_export $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (sql) OSDial campaign export scripts (OPTIONAL)" >> $CTB
-			echo -e "#32 0 * * * /opt/osdial/bin/AST_VDsales_export.pl > /dev/null 2>&1" >> $CTB
-			echo -e "#42 0 * * * /opt/osdial/bin/AST_sourceID_summary_export.pl > /dev/null 2>&1" >> $CTB
-		fi
+        if [ -z "`%{__grep} 'remove old csv exports more than 2 days old' $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) remove old csv exports more than 2 days old" >> $CTB
+            echo -e "24 0 * * * %{_bindir}/find %{_opt}/osdial/html/admin -name 'advsearch*' -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} osdial_external_dnc $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo "### (sql) Actual Scrub against external DNC" >> $CTB
+            echo "* * * * * %{_opt}/osdial/bin/osdial_external_dnc.pl > /dev/null 2>&1" >> $CTB
+            echo -e "" >> $CTB
+            echo "### (sql) Schedule ALL to scrub against external DNC" >> $CTB
+            echo "0 1 * * * %{_opt}/osdial/bin/osdial_external_dnc.pl --sched=ALL > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_CLEAR_auto_calls $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) Clean out auto-calls regularly" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/AST_CLEAR_auto_calls.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_flush_DBqueue $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) flush queue DB table every hour for entries older than 1 hour" >> $CTB
+            echo -e "11,41 * * * * %{_opt}/osdial/bin/AST_flush_DBqueue.pl -q > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_cleanup_agent_log $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) fix the osdial_agent_log once every hour" >> $CTB
+            echo -e "33 * * * * %{_opt}/osdial/bin/AST_cleanup_agent_log.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_VDhopper $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) updater for OSDial hopper" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/AST_VDhopper.pl -q > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} ADMIN_adjust_GMTnow_on_leads $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) adjust the GMT offset for the leads in the osdial_list table" >> $CTB
+            echo -e "1 1,7 * * * %{_opt}/osdial/bin/ADMIN_adjust_GMTnow_on_leads.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_DB_optimize $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) optimize the database tables within the asterisk database" >> $CTB
+            echo -e "3 1 * * * %{_opt}/osdial/bin/AST_DB_optimize.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_agent_week $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) OSDial agent time log weekly and daily summary report generation" >> $CTB
+            echo -e "#2 0 * * 0 %{_opt}/osdial/bin/AST_agent_week.pl > /dev/null 2>&1" >> $CTB
+            echo -e "#22 0 * * * %{_opt}/osdial/bin/AST_agent_day.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_VDsales_export $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) OSDial campaign export scripts (OPTIONAL)" >> $CTB
+            echo -e "#32 0 * * * %{_opt}/osdial/bin/AST_VDsales_export.pl > /dev/null 2>&1" >> $CTB
+            echo -e "#42 0 * * * %{_opt}/osdial/bin/AST_sourceID_summary_export.pl > /dev/null 2>&1" >> $CTB
+        fi
 
-		if [ -z "`%{__grep} osdial_astgen $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) Generate asterisk config files and reload modules" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/osdial_astgen.pl -q > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} osdial_ivr_sync $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) Syncronize IVR recordings, arg is web server" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/osdial_ivr_sync.sh 127.0.0.1 > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} VMnow $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) Write a file listing current voicemail" >> $CTB
-			echo -e "* * * * * /usr/sbin/asterisk -rx \"show voicemail users\" > /opt/osdial/html/admin/VMnow.txt" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_manager_kill_hung_congested $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) kill Hangup script for Asterisk updaters" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_manager_kill_hung_congested.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_vm_update $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) updater for voicemail" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_vm_update.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_conf_update $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) updater for conference validator" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_conf_update.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_reset_mysql_vars $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) reset several temporary-info tables in the database" >> $CTB
-			echo -e "2 1 * * * /opt/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} 'remove old recordings more than' $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) remove old recordings more than 7 days old" >> $CTB
-			echo -e "24 0 * * * /usr/bin/find /var/spool/asterisk/monitor -maxdepth 2 -type f -mtime +7 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} 'remove old recording backups' $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) remove old recording backups" >> $CTB
-			echo -e "28 0 * * * /usr/bin/find /opt/osdial/backups/recordings -maxdepth 1 -type f -mtime +7 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} 'remove old tts cache' $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) remove old tts cache" >> $CTB
-			echo -e "28 0 * * * /usr/bin/find /opt/osdial/tts -maxdepth 1 -type f -mtime +14 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} 'remove old asterisk tts cache' $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) remove old asterisk tts cache" >> $CTB
-			echo -e "28 0 * * * /usr/bin/find /var/lib/asterisk/sounds/tts -maxdepth 1 -type f -mtime +14 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_audio_archive $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) Send Recordings to archive server" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_audio_archive.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} osdial-astsnds-ramfs.sh $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) Process to increase Asterisk performance by placing sounds on RAMFS." >> $CTB
-			echo -e "*/15 * * * * /opt/osdial/bin/osdial-astsnds-ramfs.sh > /dev/null 2>&1" >> $CTB
-		fi
+        if [ -z "`%{__grep} osdial_astgen $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) Generate asterisk config files and reload modules" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/osdial_astgen.pl -q > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} osdial_ivr_sync $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) Syncronize IVR recordings, arg is web server" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/osdial_ivr_sync.sh 127.0.0.1 > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} VMnow $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) Write a file listing current voicemail" >> $CTB
+            echo -e "* * * * * %{_sbindir}/asterisk -rx \"show voicemail users\" > %{_opt}/osdial/html/admin/VMnow.txt" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_manager_kill_hung_congested $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) kill Hangup script for Asterisk updaters" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/AST_manager_kill_hung_congested.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_vm_update $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) updater for voicemail" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/AST_vm_update.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_conf_update $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) updater for conference validator" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/AST_conf_update.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_reset_mysql_vars $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) reset several temporary-info tables in the database" >> $CTB
+            echo -e "2 1 * * * %{_opt}/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} 'remove old recordings more than' $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) remove old recordings more than 7 days old" >> $CTB
+            echo -e "24 0 * * * %{_bindir}/find %{_localstatedir}/spool/asterisk/monitor -maxdepth 2 -type f -mtime +7 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} 'remove old recording backups' $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) remove old recording backups" >> $CTB
+            echo -e "28 0 * * * %{_bindir}/find %{_opt}/osdial/backups/recordings -maxdepth 1 -type f -mtime +7 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} 'remove old tts cache' $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) remove old tts cache" >> $CTB
+            echo -e "28 0 * * * %{_bindir}/find %{_opt}/osdial/tts -maxdepth 1 -type f -mtime +14 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} 'remove old asterisk tts cache' $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) remove old asterisk tts cache" >> $CTB
+            echo -e "28 0 * * * %{_bindir}/find %{_sharedstatedir}/asterisk/sounds/tts -maxdepth 1 -type f -mtime +14 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_audio_archive $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) Send Recordings to archive server" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/AST_audio_archive.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} osdial-astsnds-ramfs.sh $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) Process to increase Asterisk performance by placing sounds on RAMFS." >> $CTB
+            echo -e "*/15 * * * * %{_opt}/osdial/bin/osdial-astsnds-ramfs.sh > /dev/null 2>&1" >> $CTB
+        fi
 
-		if [ -z "`%{__grep} AST_audio_compress $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (archive) Compress wav files to mp3" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_audio_compress.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_sort_recordings $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (archive) Sort MP3s into campaign_id/date directory structure" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_sort_recordings.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_qc_transfer $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (archive) Send select MP3s to a third-party quality-control or offste archive server." >> $CTB
-			echo -e "*/15 * * * * /opt/osdial/bin/AST_qc_transfer.pl > /dev/null 2>&1" >> $CTB
-		fi
+        if [ -z "`%{__grep} AST_audio_compress $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (archive) Compress wav files to mp3" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/AST_audio_compress.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_sort_recordings $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (archive) Sort MP3s into campaign_id/date directory structure" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/AST_sort_recordings.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_qc_transfer $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (archive) Send select MP3s to a third-party quality-control or offste archive server." >> $CTB
+            echo -e "*/15 * * * * %{_opt}/osdial/bin/AST_qc_transfer.pl > /dev/null 2>&1" >> $CTB
+        fi
 
-	else
-		touch $CTB > /dev/null 2>&1 || :
-		chown asterisk:asterisk $CTB > /dev/null 2>&1 || :
-		echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
-		echo -e "28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
-		echo -e "29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
-		echo -e "*/15 * * * * /opt/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) remove old csv exports more than 2 days old" >> $CTB
-		echo -e "24 0 * * * /usr/bin/find /opt/osdial/html/admin -name 'advsearch*' -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) Actual Scrub against external DNC" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/osdial_external_dnc.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) Schedule ALL to scrub against external DNC" >> $CTB
-		echo -e "0 1 * * * /opt/osdial/bin/osdial_external_dnc.pl --sched=ALL > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) Clean out auto-calls regularly" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/AST_CLEAR_auto_calls.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) flush queue DB table every hour for entries older than 1 hour" >> $CTB
-		echo -e "11,41 * * * * /opt/osdial/bin/AST_flush_DBqueue.pl -q > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) fix the osdial_agent_log once every hour" >> $CTB
-		echo -e "33 * * * * /opt/osdial/bin/AST_cleanup_agent_log.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) updater for OSDial hopper" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/AST_VDhopper.pl -q > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) adjust the GMT offset for the leads in the osdial_list table" >> $CTB
-		echo -e "1 1,7 * * * /opt/osdial/bin/ADMIN_adjust_GMTnow_on_leads.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) optimize the database tables within the asterisk database" >> $CTB
-		echo -e "3 1 * * * /opt/osdial/bin/AST_DB_optimize.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) OSDial campaign export scripts (OPTIONAL)" >> $CTB
-		echo -e "#32 0 * * * /opt/osdial/bin/AST_VDsales_export.pl > /dev/null 2>&1" >> $CTB
-		echo -e "#42 0 * * * /opt/osdial/bin/AST_sourceID_summary_export.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) OSDial agent time log weekly and daily summary report generation" >> $CTB
-		echo -e "#2 0 * * 0 /opt/osdial/bin/AST_agent_week.pl > /dev/null 2>&1" >> $CTB
-		echo -e "#22 0 * * * /opt/osdial/bin/AST_agent_day.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) Generate asterisk config files and reload modules" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/osdial_astgen.pl -q > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) Syncronize IVR recordings, arg is web server" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/osdial_ivr_sync.sh 127.0.0.1 > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) Write a file listing current voicemail" >> $CTB
-		echo -e "* * * * * /usr/sbin/asterisk -rx \"show voicemail users\" > /opt/osdial/html/admin/VMnow.txt" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) kill Hangup script for Asterisk updaters" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/AST_manager_kill_hung_congested.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) updater for voicemail" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/AST_vm_update.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) updater for conference validator" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/AST_conf_update.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) reset several temporary-info tables in the database" >> $CTB
-		echo -e "2 1 * * * /opt/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) remove old recordings more than 7 days old" >> $CTB
-		echo -e "24 0 * * * /usr/bin/find /var/spool/asterisk/monitor -maxdepth 2 -type f -mtime +7 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) remove old recording backups" >> $CTB
-		echo -e "24 0 * * * /usr/bin/find /opt/osdial/backups/recordings -maxdepth 2 -type f -mtime +7 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) Send Recordings to archive server" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/AST_audio_archive.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) Process to increase Asterisk performance by placing sounds on RAMFS." >> $CTB
-		echo -e "*/15 * * * * /opt/osdial/bin/osdial-astsnds-ramfs.sh > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (archive) Compress wav files to mp3" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/AST_audio_compress.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (archive) Sort MP3s into campaign_id/date directory structure" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/AST_sort_recordings.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (archive) Send select MP3s to a third-party quality-control or offste archive server." >> $CTB
-		echo -e "*/15 * * * * /opt/osdial/bin/AST_qc_transfer.pl > /dev/null 2>&1" >> $CTB
-	fi
-	kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
+    else
+        touch $CTB > /dev/null 2>&1 || :
+        chown asterisk:asterisk $CTB > /dev/null 2>&1 || :
+        echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
+        echo -e "28 0 * * * %{_bindir}/find %{_localstatedir}/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        echo -e "29 0 * * * %{_bindir}/find %{_localstatedir}/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
+        echo -e "*/15 * * * * %{_opt}/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) remove old csv exports more than 2 days old" >> $CTB
+        echo -e "24 0 * * * %{_bindir}/find %{_opt}/osdial/html/admin -name 'advsearch*' -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) Actual Scrub against external DNC" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/osdial_external_dnc.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) Schedule ALL to scrub against external DNC" >> $CTB
+        echo -e "0 1 * * * %{_opt}/osdial/bin/osdial_external_dnc.pl --sched=ALL > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) Clean out auto-calls regularly" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/AST_CLEAR_auto_calls.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) flush queue DB table every hour for entries older than 1 hour" >> $CTB
+        echo -e "11,41 * * * * %{_opt}/osdial/bin/AST_flush_DBqueue.pl -q > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) fix the osdial_agent_log once every hour" >> $CTB
+        echo -e "33 * * * * %{_opt}/osdial/bin/AST_cleanup_agent_log.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) updater for OSDial hopper" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/AST_VDhopper.pl -q > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) adjust the GMT offset for the leads in the osdial_list table" >> $CTB
+        echo -e "1 1,7 * * * %{_opt}/osdial/bin/ADMIN_adjust_GMTnow_on_leads.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) optimize the database tables within the asterisk database" >> $CTB
+        echo -e "3 1 * * * %{_opt}/osdial/bin/AST_DB_optimize.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) OSDial campaign export scripts (OPTIONAL)" >> $CTB
+        echo -e "#32 0 * * * %{_opt}/osdial/bin/AST_VDsales_export.pl > /dev/null 2>&1" >> $CTB
+        echo -e "#42 0 * * * %{_opt}/osdial/bin/AST_sourceID_summary_export.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) OSDial agent time log weekly and daily summary report generation" >> $CTB
+        echo -e "#2 0 * * 0 %{_opt}/osdial/bin/AST_agent_week.pl > /dev/null 2>&1" >> $CTB
+        echo -e "#22 0 * * * %{_opt}/osdial/bin/AST_agent_day.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) Generate asterisk config files and reload modules" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/osdial_astgen.pl -q > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) Syncronize IVR recordings, arg is web server" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/osdial_ivr_sync.sh 127.0.0.1 > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) Write a file listing current voicemail" >> $CTB
+        echo -e "* * * * * %{_sbindir}/asterisk -rx \"show voicemail users\" > %{_opt}/osdial/html/admin/VMnow.txt" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) kill Hangup script for Asterisk updaters" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/AST_manager_kill_hung_congested.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) updater for voicemail" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/AST_vm_update.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) updater for conference validator" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/AST_conf_update.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) reset several temporary-info tables in the database" >> $CTB
+        echo -e "2 1 * * * %{_opt}/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) remove old recordings more than 7 days old" >> $CTB
+        echo -e "24 0 * * * %{_bindir}/find %{_localstatedir}/spool/asterisk/monitor -maxdepth 2 -type f -mtime +7 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) remove old recording backups" >> $CTB
+        echo -e "24 0 * * * %{_bindir}/find %{_opt}/osdial/backups/recordings -maxdepth 2 -type f -mtime +7 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) Send Recordings to archive server" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/AST_audio_archive.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) Process to increase Asterisk performance by placing sounds on RAMFS." >> $CTB
+        echo -e "*/15 * * * * %{_opt}/osdial/bin/osdial-astsnds-ramfs.sh > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (archive) Compress wav files to mp3" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/AST_audio_compress.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (archive) Sort MP3s into campaign_id/date directory structure" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/AST_sort_recordings.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (archive) Send select MP3s to a third-party quality-control or offste archive server." >> $CTB
+        echo -e "*/15 * * * * %{_opt}/osdial/bin/AST_qc_transfer.pl > /dev/null 2>&1" >> $CTB
+    fi
+    kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
 fi
 echo -n
 
 %post profile-control
 INTY=$1
-if [ "$INTY" -eq 2 ]; then
-	CTB="/var/spool/cron/asterisk"
-	if [ -f "$CTB" -a ! -s "$CTB" ]; then
-		if [ -z "`%{__grep} 'remove old osdial logs' $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
-			echo -e "28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-			echo -e "29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} ADMIN_keepalive_ALL $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} osdial_media_sync $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
-			echo -e "*/15 * * * * /opt/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
-		fi
+if [ "$INTY" -ge 1 ]; then
+    CTB="%{_localstatedir}/spool/cron/asterisk"
+    if [ -f "$CTB" ]; then
+        if [ -z "`%{__grep} 'remove old osdial logs' $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
+            echo -e "28 0 * * * %{_bindir}/find %{_localstatedir}/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+            echo -e "29 0 * * * %{_bindir}/find %{_localstatedir}/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} ADMIN_keepalive_ALL $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} osdial_media_sync $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
+            echo -e "*/15 * * * * %{_opt}/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
+        fi
 
-		if [ -z "`%{__grep} 'remove old csv exports more than 2 days old' $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (sql) remove old csv exports more than 2 days old" >> $CTB
-			echo -e "24 0 * * * /usr/bin/find /opt/osdial/html/admin -name 'advsearch*' -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} osdial_external_dnc $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo "### (sql) Actual Scrub against external DNC" >> $CTB
-			echo "* * * * * /opt/osdial/bin/osdial_external_dnc.pl > /dev/null 2>&1" >> $CTB
-			echo -e "" >> $CTB
-			echo "### (sql) Schedule ALL to scrub against external DNC" >> $CTB
-			echo "0 1 * * * /opt/osdial/bin/osdial_external_dnc.pl --sched=ALL > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_CLEAR_auto_calls $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (sql) Clean out auto-calls regularly" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_CLEAR_auto_calls.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_flush_DBqueue $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (sql) flush queue DB table every hour for entries older than 1 hour" >> $CTB
-			echo -e "11,41 * * * * /opt/osdial/bin/AST_flush_DBqueue.pl -q > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_cleanup_agent_log $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (sql) fix the osdial_agent_log once every hour" >> $CTB
-			echo -e "33 * * * * /opt/osdial/bin/AST_cleanup_agent_log.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_VDhopper $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (sql) updater for OSDial hopper" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_VDhopper.pl -q > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} ADMIN_adjust_GMTnow_on_leads $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (sql) adjust the GMT offset for the leads in the osdial_list table" >> $CTB
-			echo -e "1 1,7 * * * /opt/osdial/bin/ADMIN_adjust_GMTnow_on_leads.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_DB_optimize $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (sql) optimize the database tables within the asterisk database" >> $CTB
-			echo -e "3 1 * * * /opt/osdial/bin/AST_DB_optimize.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_agent_week $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (sql) OSDial agent time log weekly and daily summary report generation" >> $CTB
-			echo -e "#2 0 * * 0 /opt/osdial/bin/AST_agent_week.pl > /dev/null 2>&1" >> $CTB
-			echo -e "#22 0 * * * /opt/osdial/bin/AST_agent_day.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_VDsales_export $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (sql) OSDial campaign export scripts (OPTIONAL)" >> $CTB
-			echo -e "#32 0 * * * /opt/osdial/bin/AST_VDsales_export.pl > /dev/null 2>&1" >> $CTB
-			echo -e "#42 0 * * * /opt/osdial/bin/AST_sourceID_summary_export.pl > /dev/null 2>&1" >> $CTB
-		fi
-
-	else
-		touch $CTB > /dev/null 2>&1 || :
-		chown asterisk:asterisk $CTB > /dev/null 2>&1 || :
-		echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
-		echo -e "28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
-		echo -e "29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
-		echo -e "*/15 * * * * /opt/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) remove old csv exports more than 2 days old" >> $CTB
-		echo -e "24 0 * * * /usr/bin/find /opt/osdial/html/admin -name 'advsearch*' -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) Actual Scrub against external DNC" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/osdial_external_dnc.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) Schedule ALL to scrub against external DNC" >> $CTB
-		echo -e "0 1 * * * /opt/osdial/bin/osdial_external_dnc.pl --sched=ALL > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) Clean out auto-calls regularly" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/AST_CLEAR_auto_calls.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) flush queue DB table every hour for entries older than 1 hour" >> $CTB
-		echo -e "11,41 * * * * /opt/osdial/bin/AST_flush_DBqueue.pl -q > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) fix the osdial_agent_log once every hour" >> $CTB
-		echo -e "33 * * * * /opt/osdial/bin/AST_cleanup_agent_log.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) updater for OSDial hopper" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/AST_VDhopper.pl -q > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) adjust the GMT offset for the leads in the osdial_list table" >> $CTB
-		echo -e "1 1,7 * * * /opt/osdial/bin/ADMIN_adjust_GMTnow_on_leads.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) optimize the database tables within the asterisk database" >> $CTB
-		echo -e "3 1 * * * /opt/osdial/bin/AST_DB_optimize.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) OSDial campaign export scripts (OPTIONAL)" >> $CTB
-		echo -e "#32 0 * * * /opt/osdial/bin/AST_VDsales_export.pl > /dev/null 2>&1" >> $CTB
-		echo -e "#42 0 * * * /opt/osdial/bin/AST_sourceID_summary_export.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) OSDial agent time log weekly and daily summary report generation" >> $CTB
-		echo -e "#2 0 * * 0 /opt/osdial/bin/AST_agent_week.pl > /dev/null 2>&1" >> $CTB
-		echo -e "#22 0 * * * /opt/osdial/bin/AST_agent_day.pl > /dev/null 2>&1" >> $CTB
-	fi
-	kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
+        if [ -z "`%{__grep} 'remove old csv exports more than 2 days old' $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) remove old csv exports more than 2 days old" >> $CTB
+            echo -e "24 0 * * * %{_bindir}/find %{_opt}/osdial/html/admin -name 'advsearch*' -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} osdial_external_dnc $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo "### (sql) Actual Scrub against external DNC" >> $CTB
+            echo "* * * * * %{_opt}/osdial/bin/osdial_external_dnc.pl > /dev/null 2>&1" >> $CTB
+            echo -e "" >> $CTB
+            echo "### (sql) Schedule ALL to scrub against external DNC" >> $CTB
+            echo "0 1 * * * %{_opt}/osdial/bin/osdial_external_dnc.pl --sched=ALL > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_CLEAR_auto_calls $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) Clean out auto-calls regularly" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/AST_CLEAR_auto_calls.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_flush_DBqueue $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) flush queue DB table every hour for entries older than 1 hour" >> $CTB
+            echo -e "11,41 * * * * %{_opt}/osdial/bin/AST_flush_DBqueue.pl -q > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_cleanup_agent_log $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) fix the osdial_agent_log once every hour" >> $CTB
+            echo -e "33 * * * * %{_opt}/osdial/bin/AST_cleanup_agent_log.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_VDhopper $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) updater for OSDial hopper" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/AST_VDhopper.pl -q > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} ADMIN_adjust_GMTnow_on_leads $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) adjust the GMT offset for the leads in the osdial_list table" >> $CTB
+            echo -e "1 1,7 * * * %{_opt}/osdial/bin/ADMIN_adjust_GMTnow_on_leads.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_DB_optimize $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) optimize the database tables within the asterisk database" >> $CTB
+            echo -e "3 1 * * * %{_opt}/osdial/bin/AST_DB_optimize.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_agent_week $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) OSDial agent time log weekly and daily summary report generation" >> $CTB
+            echo -e "#2 0 * * 0 %{_opt}/osdial/bin/AST_agent_week.pl > /dev/null 2>&1" >> $CTB
+            echo -e "#22 0 * * * %{_opt}/osdial/bin/AST_agent_day.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_VDsales_export $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) OSDial campaign export scripts (OPTIONAL)" >> $CTB
+            echo -e "#32 0 * * * %{_opt}/osdial/bin/AST_VDsales_export.pl > /dev/null 2>&1" >> $CTB
+            echo -e "#42 0 * * * %{_opt}/osdial/bin/AST_sourceID_summary_export.pl > /dev/null 2>&1" >> $CTB
+        fi
+    else
+        touch $CTB > /dev/null 2>&1 || :
+        chown asterisk:asterisk $CTB > /dev/null 2>&1 || :
+        echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
+        echo -e "28 0 * * * %{_bindir}/find %{_localstatedir}/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        echo -e "29 0 * * * %{_bindir}/find %{_localstatedir}/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
+        echo -e "*/15 * * * * %{_opt}/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) remove old csv exports more than 2 days old" >> $CTB
+        echo -e "24 0 * * * %{_bindir}/find %{_opt}/osdial/html/admin -name 'advsearch*' -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) Actual Scrub against external DNC" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/osdial_external_dnc.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) Schedule ALL to scrub against external DNC" >> $CTB
+        echo -e "0 1 * * * %{_opt}/osdial/bin/osdial_external_dnc.pl --sched=ALL > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) Clean out auto-calls regularly" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/AST_CLEAR_auto_calls.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) flush queue DB table every hour for entries older than 1 hour" >> $CTB
+        echo -e "11,41 * * * * %{_opt}/osdial/bin/AST_flush_DBqueue.pl -q > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) fix the osdial_agent_log once every hour" >> $CTB
+        echo -e "33 * * * * %{_opt}/osdial/bin/AST_cleanup_agent_log.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) updater for OSDial hopper" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/AST_VDhopper.pl -q > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) adjust the GMT offset for the leads in the osdial_list table" >> $CTB
+        echo -e "1 1,7 * * * %{_opt}/osdial/bin/ADMIN_adjust_GMTnow_on_leads.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) optimize the database tables within the asterisk database" >> $CTB
+        echo -e "3 1 * * * %{_opt}/osdial/bin/AST_DB_optimize.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) OSDial campaign export scripts (OPTIONAL)" >> $CTB
+        echo -e "#32 0 * * * %{_opt}/osdial/bin/AST_VDsales_export.pl > /dev/null 2>&1" >> $CTB
+        echo -e "#42 0 * * * %{_opt}/osdial/bin/AST_sourceID_summary_export.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) OSDial agent time log weekly and daily summary report generation" >> $CTB
+        echo -e "#2 0 * * 0 %{_opt}/osdial/bin/AST_agent_week.pl > /dev/null 2>&1" >> $CTB
+        echo -e "#22 0 * * * %{_opt}/osdial/bin/AST_agent_day.pl > /dev/null 2>&1" >> $CTB
+    fi
+    kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
 fi
 echo -n
 
 %post profile-sql
 INTY=$1
-if [ "$INTY" -eq 2 ]; then
-	CTB="/var/spool/cron/asterisk"
-	if [ -f "$CTB" -a ! -s "$CTB" ]; then
-		if [ -z "`%{__grep} 'remove old osdial logs' $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
-			echo -e "28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-			echo -e "29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} ADMIN_keepalive_ALL $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} osdial_media_sync $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
-			echo -e "*/15 * * * * /opt/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
-		fi
+if [ "$INTY" -ge 1 ]; then
+    CTB="%{_localstatedir}/spool/cron/asterisk"
+    if [ -f "$CTB" ]; then
+        if [ -z "`%{__grep} 'remove old osdial logs' $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
+            echo -e "28 0 * * * %{_bindir}/find %{_localstatedir}/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+            echo -e "29 0 * * * %{_bindir}/find %{_localstatedir}/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} ADMIN_keepalive_ALL $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} osdial_media_sync $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
+            echo -e "*/15 * * * * %{_opt}/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
+        fi
 
-		if [ -z "`%{__grep} 'remove old csv exports more than 2 days old' $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (sql) remove old csv exports more than 2 days old" >> $CTB
-			echo -e "24 0 * * * /usr/bin/find /opt/osdial/html/admin -name 'advsearch*' -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} osdial_external_dnc $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo "### (sql) Actual Scrub against external DNC" >> $CTB
-			echo "* * * * * /opt/osdial/bin/osdial_external_dnc.pl > /dev/null 2>&1" >> $CTB
-			echo -e "" >> $CTB
-			echo "### (sql) Schedule ALL to scrub against external DNC" >> $CTB
-			echo "0 1 * * * /opt/osdial/bin/osdial_external_dnc.pl --sched=ALL > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_CLEAR_auto_calls $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (sql) Clean out auto-calls regularly" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_CLEAR_auto_calls.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_flush_DBqueue $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (sql) flush queue DB table every hour for entries older than 1 hour" >> $CTB
-			echo -e "11,41 * * * * /opt/osdial/bin/AST_flush_DBqueue.pl -q > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_cleanup_agent_log $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (sql) fix the osdial_agent_log once every hour" >> $CTB
-			echo -e "33 * * * * /opt/osdial/bin/AST_cleanup_agent_log.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_VDhopper $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (sql) updater for OSDial hopper" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_VDhopper.pl -q > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} ADMIN_adjust_GMTnow_on_leads $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (sql) adjust the GMT offset for the leads in the osdial_list table" >> $CTB
-			echo -e "1 1,7 * * * /opt/osdial/bin/ADMIN_adjust_GMTnow_on_leads.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_DB_optimize $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (sql) optimize the database tables within the asterisk database" >> $CTB
-			echo -e "3 1 * * * /opt/osdial/bin/AST_DB_optimize.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_agent_week $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (sql) OSDial agent time log weekly and daily summary report generation" >> $CTB
-			echo -e "#2 0 * * 0 /opt/osdial/bin/AST_agent_week.pl > /dev/null 2>&1" >> $CTB
-			echo -e "#22 0 * * * /opt/osdial/bin/AST_agent_day.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_VDsales_export $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (sql) OSDial campaign export scripts (OPTIONAL)" >> $CTB
-			echo -e "#32 0 * * * /opt/osdial/bin/AST_VDsales_export.pl > /dev/null 2>&1" >> $CTB
-			echo -e "#42 0 * * * /opt/osdial/bin/AST_sourceID_summary_export.pl > /dev/null 2>&1" >> $CTB
-		fi
-	else
-		touch $CTB > /dev/null 2>&1 || :
-		chown asterisk:asterisk $CTB > /dev/null 2>&1 || :
-		echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
-		echo -e "28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
-		echo -e "29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
-		echo -e "*/15 * * * * /opt/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) remove old csv exports more than 2 days old" >> $CTB
-		echo -e "24 0 * * * /usr/bin/find /opt/osdial/html/admin -name 'advsearch*' -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) Actual Scrub against external DNC" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/osdial_external_dnc.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) Schedule ALL to scrub against external DNC" >> $CTB
-		echo -e "0 1 * * * /opt/osdial/bin/osdial_external_dnc.pl --sched=ALL > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) Clean out auto-calls regularly" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/AST_CLEAR_auto_calls.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) flush queue DB table every hour for entries older than 1 hour" >> $CTB
-		echo -e "11,41 * * * * /opt/osdial/bin/AST_flush_DBqueue.pl -q > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) fix the osdial_agent_log once every hour" >> $CTB
-		echo -e "33 * * * * /opt/osdial/bin/AST_cleanup_agent_log.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) updater for OSDial hopper" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/AST_VDhopper.pl -q > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) adjust the GMT offset for the leads in the osdial_list table" >> $CTB
-		echo -e "1 1,7 * * * /opt/osdial/bin/ADMIN_adjust_GMTnow_on_leads.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) optimize the database tables within the asterisk database" >> $CTB
-		echo -e "3 1 * * * /opt/osdial/bin/AST_DB_optimize.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) OSDial campaign export scripts (OPTIONAL)" >> $CTB
-		echo -e "#32 0 * * * /opt/osdial/bin/AST_VDsales_export.pl > /dev/null 2>&1" >> $CTB
-		echo -e "#42 0 * * * /opt/osdial/bin/AST_sourceID_summary_export.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (sql) OSDial agent time log weekly and daily summary report generation" >> $CTB
-		echo -e "#2 0 * * 0 /opt/osdial/bin/AST_agent_week.pl > /dev/null 2>&1" >> $CTB
-		echo -e "#22 0 * * * /opt/osdial/bin/AST_agent_day.pl > /dev/null 2>&1" >> $CTB
-	fi
-	kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
+        if [ -z "`%{__grep} 'remove old csv exports more than 2 days old' $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) remove old csv exports more than 2 days old" >> $CTB
+            echo -e "24 0 * * * %{_bindir}/find %{_opt}/osdial/html/admin -name 'advsearch*' -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} osdial_external_dnc $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo "### (sql) Actual Scrub against external DNC" >> $CTB
+            echo "* * * * * %{_opt}/osdial/bin/osdial_external_dnc.pl > /dev/null 2>&1" >> $CTB
+            echo -e "" >> $CTB
+            echo "### (sql) Schedule ALL to scrub against external DNC" >> $CTB
+            echo "0 1 * * * %{_opt}/osdial/bin/osdial_external_dnc.pl --sched=ALL > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_CLEAR_auto_calls $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) Clean out auto-calls regularly" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/AST_CLEAR_auto_calls.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_flush_DBqueue $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) flush queue DB table every hour for entries older than 1 hour" >> $CTB
+            echo -e "11,41 * * * * %{_opt}/osdial/bin/AST_flush_DBqueue.pl -q > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_cleanup_agent_log $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) fix the osdial_agent_log once every hour" >> $CTB
+            echo -e "33 * * * * %{_opt}/osdial/bin/AST_cleanup_agent_log.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_VDhopper $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) updater for OSDial hopper" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/AST_VDhopper.pl -q > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} ADMIN_adjust_GMTnow_on_leads $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) adjust the GMT offset for the leads in the osdial_list table" >> $CTB
+            echo -e "1 1,7 * * * %{_opt}/osdial/bin/ADMIN_adjust_GMTnow_on_leads.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_DB_optimize $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) optimize the database tables within the asterisk database" >> $CTB
+            echo -e "3 1 * * * %{_opt}/osdial/bin/AST_DB_optimize.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_agent_week $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) OSDial agent time log weekly and daily summary report generation" >> $CTB
+            echo -e "#2 0 * * 0 %{_opt}/osdial/bin/AST_agent_week.pl > /dev/null 2>&1" >> $CTB
+            echo -e "#22 0 * * * %{_opt}/osdial/bin/AST_agent_day.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_VDsales_export $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) OSDial campaign export scripts (OPTIONAL)" >> $CTB
+            echo -e "#32 0 * * * %{_opt}/osdial/bin/AST_VDsales_export.pl > /dev/null 2>&1" >> $CTB
+            echo -e "#42 0 * * * %{_opt}/osdial/bin/AST_sourceID_summary_export.pl > /dev/null 2>&1" >> $CTB
+        fi
+    else
+        touch $CTB > /dev/null 2>&1 || :
+        chown asterisk:asterisk $CTB > /dev/null 2>&1 || :
+        echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
+        echo -e "28 0 * * * %{_bindir}/find %{_localstatedir}/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        echo -e "29 0 * * * %{_bindir}/find %{_localstatedir}/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
+        echo -e "*/15 * * * * %{_opt}/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) remove old csv exports more than 2 days old" >> $CTB
+        echo -e "24 0 * * * %{_bindir}/find %{_opt}/osdial/html/admin -name 'advsearch*' -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) Actual Scrub against external DNC" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/osdial_external_dnc.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) Schedule ALL to scrub against external DNC" >> $CTB
+        echo -e "0 1 * * * %{_opt}/osdial/bin/osdial_external_dnc.pl --sched=ALL > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) Clean out auto-calls regularly" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/AST_CLEAR_auto_calls.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) flush queue DB table every hour for entries older than 1 hour" >> $CTB
+        echo -e "11,41 * * * * %{_opt}/osdial/bin/AST_flush_DBqueue.pl -q > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) fix the osdial_agent_log once every hour" >> $CTB
+        echo -e "33 * * * * %{_opt}/osdial/bin/AST_cleanup_agent_log.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) updater for OSDial hopper" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/AST_VDhopper.pl -q > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) adjust the GMT offset for the leads in the osdial_list table" >> $CTB
+        echo -e "1 1,7 * * * %{_opt}/osdial/bin/ADMIN_adjust_GMTnow_on_leads.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) optimize the database tables within the asterisk database" >> $CTB
+        echo -e "3 1 * * * %{_opt}/osdial/bin/AST_DB_optimize.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) OSDial campaign export scripts (OPTIONAL)" >> $CTB
+        echo -e "#32 0 * * * %{_opt}/osdial/bin/AST_VDsales_export.pl > /dev/null 2>&1" >> $CTB
+        echo -e "#42 0 * * * %{_opt}/osdial/bin/AST_sourceID_summary_export.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) OSDial agent time log weekly and daily summary report generation" >> $CTB
+        echo -e "#2 0 * * 0 %{_opt}/osdial/bin/AST_agent_week.pl > /dev/null 2>&1" >> $CTB
+        echo -e "#22 0 * * * %{_opt}/osdial/bin/AST_agent_day.pl > /dev/null 2>&1" >> $CTB
+    fi
+    kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
 fi
 echo -n
 
 %post profile-web
 INTY=$1
-if [ "$INTY" -eq 2 ]; then
-	CTB="/var/spool/cron/asterisk"
-	if [ -f "$CTB" -a ! -s "$CTB" ]; then
-		if [ -z "`%{__grep} 'remove old osdial logs' $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
-			echo -e "28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-			echo -e "29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} ADMIN_keepalive_ALL $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} osdial_media_sync $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
-			echo -e "*/15 * * * * /opt/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
-		fi
-	else
-		touch $CTB > /dev/null 2>&1 || :
-		chown asterisk:asterisk $CTB > /dev/null 2>&1 || :
-		echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
-		echo -e "28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
-		echo -e "29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
-		echo -e "*/15 * * * * /opt/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
-	fi
-	kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
+if [ "$INTY" -ge 1 ]; then
+    CTB="%{_localstatedir}/spool/cron/asterisk"
+    if [ -f "$CTB" ]; then
+        if [ -z "`%{__grep} 'remove old osdial logs' $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
+            echo -e "28 0 * * * %{_bindir}/find %{_localstatedir}/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+            echo -e "29 0 * * * %{_bindir}/find %{_localstatedir}/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} ADMIN_keepalive_ALL $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} osdial_media_sync $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
+            echo -e "*/15 * * * * %{_opt}/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
+        fi
+    else
+        touch $CTB > /dev/null 2>&1 || :
+        chown asterisk:asterisk $CTB > /dev/null 2>&1 || :
+        echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
+        echo -e "28 0 * * * %{_bindir}/find %{_localstatedir}/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        echo -e "29 0 * * * %{_bindir}/find %{_localstatedir}/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
+        echo -e "*/15 * * * * %{_opt}/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
+    fi
+    kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
 fi
 echo -n
 
 %post profile-dialer
 INTY=$1
-if [ "$INTY" -eq 2 ]; then
-	CTB="/var/spool/cron/asterisk"
-	if [ -f "$CTB" -a ! -s "$CTB" ]; then
-		if [ -z "`%{__grep} 'remove old osdial logs' $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
-			echo -e "28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-			echo -e "29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} ADMIN_keepalive_ALL $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} osdial_media_sync $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
-			echo -e "*/15 * * * * /opt/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
-		fi
+if [ "$INTY" -ge 1 ]; then
+    CTB="%{_localstatedir}/spool/cron/asterisk"
+    if [ -f "$CTB" ]; then
+        if [ -z "`%{__grep} 'remove old osdial logs' $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
+            echo -e "28 0 * * * %{_bindir}/find %{_localstatedir}/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+            echo -e "29 0 * * * %{_bindir}/find %{_localstatedir}/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} ADMIN_keepalive_ALL $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} osdial_media_sync $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
+            echo -e "*/15 * * * * %{_opt}/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
+        fi
 
-		if [ -z "`%{__grep} osdial_astgen $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) Generate asterisk config files and reload modules" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/osdial_astgen.pl -q > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} osdial_ivr_sync $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) Syncronize IVR recordings, arg is web server" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/osdial_ivr_sync.sh 127.0.0.1 > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} VMnow $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) Write a file listing current voicemail" >> $CTB
-			echo -e "* * * * * /usr/sbin/asterisk -rx \"show voicemail users\" > /opt/osdial/html/admin/VMnow.txt" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_manager_kill_hung_congested $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) kill Hangup script for Asterisk updaters" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_manager_kill_hung_congested.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_vm_update $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) updater for voicemail" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_vm_update.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_conf_update $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) updater for conference validator" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_conf_update.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_reset_mysql_vars $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) reset several temporary-info tables in the database" >> $CTB
-			echo -e "2 1 * * * /opt/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} 'remove old recordings more than' $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) remove old recordings more than 7 days old" >> $CTB
-			echo -e "24 0 * * * /usr/bin/find /var/spool/asterisk/monitor -maxdepth 2 -type f -mtime +7 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} 'remove old recording backups' $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) remove old recording backups" >> $CTB
-			echo -e "28 0 * * * /usr/bin/find /opt/osdial/backups/recordings -maxdepth 1 -type f -mtime +7 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} 'remove old tts cache' $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) remove old tts cache" >> $CTB
-			echo -e "28 0 * * * /usr/bin/find /opt/osdial/tts -maxdepth 1 -type f -mtime +14 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} 'remove old asterisk tts cache' $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) remove old asterisk tts cache" >> $CTB
-			echo -e "28 0 * * * /usr/bin/find /var/lib/asterisk/sounds/tts -maxdepth 1 -type f -mtime +14 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_audio_archive $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) Send Recordings to archive server" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_audio_archive.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} osdial-astsnds-ramfs.sh $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) Process to increase Asterisk performance by placing sounds on RAMFS." >> $CTB
-			echo -e "*/15 * * * * /opt/osdial/bin/osdial-astsnds-ramfs.sh > /dev/null 2>&1" >> $CTB
-		fi
-	else
-		touch $CTB > /dev/null 2>&1 || :
-		chown asterisk:asterisk $CTB > /dev/null 2>&1 || :
-		echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
-		echo -e "28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
-		echo -e "29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
-		echo -e "*/15 * * * * /opt/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) Generate asterisk config files and reload modules" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/osdial_astgen.pl -q > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) Syncronize IVR recordings, arg is web server" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/osdial_ivr_sync.sh 127.0.0.1 > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) Write a file listing current voicemail" >> $CTB
-		echo -e "* * * * * /usr/sbin/asterisk -rx \"show voicemail users\" > /opt/osdial/html/admin/VMnow.txt" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) kill Hangup script for Asterisk updaters" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/AST_manager_kill_hung_congested.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) updater for voicemail" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/AST_vm_update.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) updater for conference validator" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/AST_conf_update.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) reset several temporary-info tables in the database" >> $CTB
-		echo -e "2 1 * * * /opt/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) remove old recordings more than 7 days old" >> $CTB
-		echo -e "24 0 * * * /usr/bin/find /var/spool/asterisk/monitor -maxdepth 2 -type f -mtime +7 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) remove old recording backups" >> $CTB
-		echo -e "24 0 * * * /usr/bin/find /opt/osdial/backups/recordings -maxdepth 2 -type f -mtime +7 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) Send Recordings to archive server" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/AST_audio_archive.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) Process to increase Asterisk performance by placing sounds on RAMFS." >> $CTB
-		echo -e "*/15 * * * * /opt/osdial/bin/osdial-astsnds-ramfs.sh > /dev/null 2>&1" >> $CTB
-	fi
-	kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
+        if [ -z "`%{__grep} osdial_astgen $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) Generate asterisk config files and reload modules" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/osdial_astgen.pl -q > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} osdial_ivr_sync $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) Syncronize IVR recordings, arg is web server" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/osdial_ivr_sync.sh 127.0.0.1 > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} VMnow $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) Write a file listing current voicemail" >> $CTB
+            echo -e "* * * * * %{_sbindir}/asterisk -rx \"show voicemail users\" > %{_opt}/osdial/html/admin/VMnow.txt" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_manager_kill_hung_congested $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) kill Hangup script for Asterisk updaters" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/AST_manager_kill_hung_congested.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_vm_update $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) updater for voicemail" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/AST_vm_update.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_conf_update $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) updater for conference validator" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/AST_conf_update.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_reset_mysql_vars $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) reset several temporary-info tables in the database" >> $CTB
+            echo -e "2 1 * * * %{_opt}/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} 'remove old recordings more than' $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) remove old recordings more than 7 days old" >> $CTB
+            echo -e "24 0 * * * %{_bindir}/find %{_localstatedir}/spool/asterisk/monitor -maxdepth 2 -type f -mtime +7 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} 'remove old recording backups' $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) remove old recording backups" >> $CTB
+            echo -e "28 0 * * * %{_bindir}/find %{_opt}/osdial/backups/recordings -maxdepth 1 -type f -mtime +7 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} 'remove old tts cache' $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) remove old tts cache" >> $CTB
+            echo -e "28 0 * * * %{_bindir}/find %{_opt}/osdial/tts -maxdepth 1 -type f -mtime +14 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} 'remove old asterisk tts cache' $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) remove old asterisk tts cache" >> $CTB
+            echo -e "28 0 * * * %{_bindir}/find %{_sharedstatedir}/asterisk/sounds/tts -maxdepth 1 -type f -mtime +14 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_audio_archive $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) Send Recordings to archive server" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/AST_audio_archive.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} osdial-astsnds-ramfs.sh $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) Process to increase Asterisk performance by placing sounds on RAMFS." >> $CTB
+            echo -e "*/15 * * * * %{_opt}/osdial/bin/osdial-astsnds-ramfs.sh > /dev/null 2>&1" >> $CTB
+        fi
+    else
+        touch $CTB > /dev/null 2>&1 || :
+        chown asterisk:asterisk $CTB > /dev/null 2>&1 || :
+        echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
+        echo -e "28 0 * * * %{_bindir}/find %{_localstatedir}/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        echo -e "29 0 * * * %{_bindir}/find %{_localstatedir}/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
+        echo -e "*/15 * * * * %{_opt}/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) Generate asterisk config files and reload modules" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/osdial_astgen.pl -q > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) Syncronize IVR recordings, arg is web server" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/osdial_ivr_sync.sh 127.0.0.1 > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) Write a file listing current voicemail" >> $CTB
+        echo -e "* * * * * %{_sbindir}/asterisk -rx \"show voicemail users\" > %{_opt}/osdial/html/admin/VMnow.txt" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) kill Hangup script for Asterisk updaters" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/AST_manager_kill_hung_congested.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) updater for voicemail" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/AST_vm_update.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) updater for conference validator" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/AST_conf_update.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) reset several temporary-info tables in the database" >> $CTB
+        echo -e "2 1 * * * %{_opt}/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) remove old recordings more than 7 days old" >> $CTB
+        echo -e "24 0 * * * %{_bindir}/find %{_localstatedir}/spool/asterisk/monitor -maxdepth 2 -type f -mtime +7 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) remove old recording backups" >> $CTB
+        echo -e "24 0 * * * %{_bindir}/find %{_opt}/osdial/backups/recordings -maxdepth 2 -type f -mtime +7 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) Send Recordings to archive server" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/AST_audio_archive.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) Process to increase Asterisk performance by placing sounds on RAMFS." >> $CTB
+        echo -e "*/15 * * * * %{_opt}/osdial/bin/osdial-astsnds-ramfs.sh > /dev/null 2>&1" >> $CTB
+    fi
+    kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
 fi
 echo -n
 
 %post profile-dialer-web
 INTY=$1
-if [ "$INTY" -eq 2 ]; then
-	CTB="/var/spool/cron/asterisk"
-	if [ -f "$CTB" -a ! -s "$CTB" ]; then
-		if [ -z "`%{__grep} 'remove old osdial logs' $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
-			echo -e "28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-			echo -e "29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} ADMIN_keepalive_ALL $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} osdial_media_sync $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
-			echo -e "*/15 * * * * /opt/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
-		fi
+if [ "$INTY" -ge 1 ]; then
+    CTB="%{_localstatedir}/spool/cron/asterisk"
+    if [ -f "$CTB" ]; then
+        if [ -z "`%{__grep} 'remove old osdial logs' $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
+            echo -e "28 0 * * * %{_bindir}/find %{_localstatedir}/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+            echo -e "29 0 * * * %{_bindir}/find %{_localstatedir}/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} ADMIN_keepalive_ALL $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} osdial_media_sync $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
+            echo -e "*/15 * * * * %{_opt}/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
+        fi
 
-		if [ -z "`%{__grep} osdial_astgen $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) Generate asterisk config files and reload modules" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/osdial_astgen.pl -q > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} osdial_ivr_sync $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) Syncronize IVR recordings, arg is web server" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/osdial_ivr_sync.sh 127.0.0.1 > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} VMnow $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) Write a file listing current voicemail" >> $CTB
-			echo -e "* * * * * /usr/sbin/asterisk -rx \"show voicemail users\" > /opt/osdial/html/admin/VMnow.txt" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_manager_kill_hung_congested $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) kill Hangup script for Asterisk updaters" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_manager_kill_hung_congested.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_vm_update $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) updater for voicemail" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_vm_update.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_conf_update $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) updater for conference validator" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_conf_update.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_reset_mysql_vars $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) reset several temporary-info tables in the database" >> $CTB
-			echo -e "2 1 * * * /opt/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} 'remove old recordings more than' $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) remove old recordings more than 7 days old" >> $CTB
-			echo -e "24 0 * * * /usr/bin/find /var/spool/asterisk/monitor -maxdepth 2 -type f -mtime +7 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} 'remove old recording backups' $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) remove old recording backups" >> $CTB
-			echo -e "28 0 * * * /usr/bin/find /opt/osdial/backups/recordings -maxdepth 1 -type f -mtime +7 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} 'remove old tts cache' $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) remove old tts cache" >> $CTB
-			echo -e "28 0 * * * /usr/bin/find /opt/osdial/tts -maxdepth 1 -type f -mtime +14 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} 'remove old asterisk tts cache' $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) remove old asterisk tts cache" >> $CTB
-			echo -e "28 0 * * * /usr/bin/find /var/lib/asterisk/sounds/tts -maxdepth 1 -type f -mtime +14 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_audio_archive $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) Send Recordings to archive server" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_audio_archive.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} osdial-astsnds-ramfs.sh $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (dialer) Process to increase Asterisk performance by placing sounds on RAMFS." >> $CTB
-			echo -e "*/15 * * * * /opt/osdial/bin/osdial-astsnds-ramfs.sh > /dev/null 2>&1" >> $CTB
-		fi
-	else
-		touch $CTB > /dev/null 2>&1 || :
-		chown asterisk:asterisk $CTB > /dev/null 2>&1 || :
-		echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
-		echo -e "28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
-		echo -e "29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
-		echo -e "*/15 * * * * /opt/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
-		echo -e "### (dialer) Generate asterisk config files and reload modules" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/osdial_astgen.pl -q > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) Syncronize IVR recordings, arg is web server" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/osdial_ivr_sync.sh 127.0.0.1 > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) Write a file listing current voicemail" >> $CTB
-		echo -e "* * * * * /usr/sbin/asterisk -rx \"show voicemail users\" > /opt/osdial/html/admin/VMnow.txt" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) kill Hangup script for Asterisk updaters" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/AST_manager_kill_hung_congested.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) updater for voicemail" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/AST_vm_update.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) updater for conference validator" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/AST_conf_update.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) reset several temporary-info tables in the database" >> $CTB
-		echo -e "2 1 * * * /opt/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) remove old recordings more than 7 days old" >> $CTB
-		echo -e "24 0 * * * /usr/bin/find /var/spool/asterisk/monitor -maxdepth 2 -type f -mtime +7 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) remove old recording backups" >> $CTB
-		echo -e "24 0 * * * /usr/bin/find /opt/osdial/backups/recordings -maxdepth 2 -type f -mtime +7 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) Send Recordings to archive server" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/AST_audio_archive.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (dialer) Process to increase Asterisk performance by placing sounds on RAMFS." >> $CTB
-		echo -e "*/15 * * * * /opt/osdial/bin/osdial-astsnds-ramfs.sh > /dev/null 2>&1" >> $CTB
-	fi
-	kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
+        if [ -z "`%{__grep} osdial_astgen $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) Generate asterisk config files and reload modules" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/osdial_astgen.pl -q > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} osdial_ivr_sync $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) Syncronize IVR recordings, arg is web server" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/osdial_ivr_sync.sh 127.0.0.1 > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} VMnow $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) Write a file listing current voicemail" >> $CTB
+            echo -e "* * * * * %{_sbindir}/asterisk -rx \"show voicemail users\" > %{_opt}/osdial/html/admin/VMnow.txt" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_manager_kill_hung_congested $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) kill Hangup script for Asterisk updaters" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/AST_manager_kill_hung_congested.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_vm_update $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) updater for voicemail" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/AST_vm_update.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_conf_update $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) updater for conference validator" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/AST_conf_update.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_reset_mysql_vars $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) reset several temporary-info tables in the database" >> $CTB
+            echo -e "2 1 * * * %{_opt}/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} 'remove old recordings more than' $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) remove old recordings more than 7 days old" >> $CTB
+            echo -e "24 0 * * * %{_bindir}/find %{_localstatedir}/spool/asterisk/monitor -maxdepth 2 -type f -mtime +7 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} 'remove old recording backups' $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) remove old recording backups" >> $CTB
+            echo -e "28 0 * * * %{_bindir}/find %{_opt}/osdial/backups/recordings -maxdepth 1 -type f -mtime +7 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} 'remove old tts cache' $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) remove old tts cache" >> $CTB
+            echo -e "28 0 * * * %{_bindir}/find %{_opt}/osdial/tts -maxdepth 1 -type f -mtime +14 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} 'remove old asterisk tts cache' $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) remove old asterisk tts cache" >> $CTB
+            echo -e "28 0 * * * %{_bindir}/find %{_sharedstatedir}/asterisk/sounds/tts -maxdepth 1 -type f -mtime +14 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_audio_archive $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) Send Recordings to archive server" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/AST_audio_archive.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} osdial-astsnds-ramfs.sh $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (dialer) Process to increase Asterisk performance by placing sounds on RAMFS." >> $CTB
+            echo -e "*/15 * * * * %{_opt}/osdial/bin/osdial-astsnds-ramfs.sh > /dev/null 2>&1" >> $CTB
+        fi
+    else
+        touch $CTB > /dev/null 2>&1 || :
+        chown asterisk:asterisk $CTB > /dev/null 2>&1 || :
+        echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
+        echo -e "28 0 * * * %{_bindir}/find %{_localstatedir}/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        echo -e "29 0 * * * %{_bindir}/find %{_localstatedir}/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
+        echo -e "*/15 * * * * %{_opt}/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
+        echo -e "### (dialer) Generate asterisk config files and reload modules" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/osdial_astgen.pl -q > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) Syncronize IVR recordings, arg is web server" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/osdial_ivr_sync.sh 127.0.0.1 > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) Write a file listing current voicemail" >> $CTB
+        echo -e "* * * * * %{_sbindir}/asterisk -rx \"show voicemail users\" > %{_opt}/osdial/html/admin/VMnow.txt" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) kill Hangup script for Asterisk updaters" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/AST_manager_kill_hung_congested.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) updater for voicemail" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/AST_vm_update.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) updater for conference validator" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/AST_conf_update.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) reset several temporary-info tables in the database" >> $CTB
+        echo -e "2 1 * * * %{_opt}/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) remove old recordings more than 7 days old" >> $CTB
+        echo -e "24 0 * * * %{_bindir}/find %{_localstatedir}/spool/asterisk/monitor -maxdepth 2 -type f -mtime +7 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) remove old recording backups" >> $CTB
+        echo -e "24 0 * * * %{_bindir}/find %{_opt}/osdial/backups/recordings -maxdepth 2 -type f -mtime +7 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) Send Recordings to archive server" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/AST_audio_archive.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (dialer) Process to increase Asterisk performance by placing sounds on RAMFS." >> $CTB
+        echo -e "*/15 * * * * %{_opt}/osdial/bin/osdial-astsnds-ramfs.sh > /dev/null 2>&1" >> $CTB
+    fi
+    kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
 fi
 echo -n
 
 %post profile-archive
 INTY=$1
 if [ "$INTY" -eq 1 ]; then
-	/sbin/chkconfig vsftpd on > /dev/null 2>&1
-	%{__ln_s} -f /opt/osdial/recordings /var/lib/asterisk/recordings > /dev/null 2>&1
-	%{__ln_s} -f /opt/osdial/reports /var/lib/asterisk/reports > /dev/null 2>&1
-elif [ "$INTY" -eq 2 ]; then
-	CTB="/var/spool/cron/asterisk"
-	if [ -f "$CTB" -a ! -s "$CTB" ]; then
-		if [ -z "`%{__grep} 'remove old osdial logs' $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
-			echo -e "28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-			echo -e "29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} ADMIN_keepalive_ALL $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} osdial_media_sync $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
-			echo -e "*/15 * * * * /opt/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
-		fi
+    /sbin/chkconfig vsftpd on > /dev/null 2>&1
+    %{__ln_s} -f %{_opt}/osdial/recordings %{_sharedstatedir}/asterisk/recordings > /dev/null 2>&1
+    %{__ln_s} -f %{_opt}/osdial/reports %{_sharedstatedir}/asterisk/reports > /dev/null 2>&1
+fi
+if [ "$INTY" -ge 1 ]; then
+    CTB="%{_localstatedir}/spool/cron/asterisk"
+    if [ -f "$CTB" ]; then
+        if [ -z "`%{__grep} 'remove old osdial logs' $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
+            echo -e "28 0 * * * %{_bindir}/find %{_localstatedir}/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+            echo -e "29 0 * * * %{_bindir}/find %{_localstatedir}/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} ADMIN_keepalive_ALL $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} osdial_media_sync $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
+            echo -e "*/15 * * * * %{_opt}/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
+        fi
 
-		if [ -z "`%{__grep} AST_audio_compress $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (archive) Compress wav files to mp3" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_audio_compress.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_sort_recordings $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (archive) Sort MP3s into campaign_id/date directory structure" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_sort_recordings.pl > /dev/null 2>&1" >> $CTB
-		fi
-		if [ -z "`%{__grep} AST_qc_transfer $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (archive) Send select MP3s to a third-party quality-control or offste archive server." >> $CTB
-			echo -e "*/15 * * * * /opt/osdial/bin/AST_qc_transfer.pl > /dev/null 2>&1" >> $CTB
-		fi
-	else
-		touch $CTB > /dev/null 2>&1 || :
-		chown asterisk:asterisk $CTB > /dev/null 2>&1 || :
-		echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
-		echo -e "28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
-		echo -e "29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
-		echo -e "*/15 * * * * /opt/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (archive) Compress wav files to mp3" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/AST_audio_compress.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (archive) Sort MP3s into campaign_id/date directory structure" >> $CTB
-		echo -e "* * * * * /opt/osdial/bin/AST_sort_recordings.pl > /dev/null 2>&1" >> $CTB
-		echo -e "" >> $CTB
-		echo -e "### (archive) Send select MP3s to a third-party quality-control or offste archive server." >> $CTB
-		echo -e "*/15 * * * * /opt/osdial/bin/AST_qc_transfer.pl > /dev/null 2>&1" >> $CTB
-	fi
-	kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
+        if [ -z "`%{__grep} AST_audio_compress $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (archive) Compress wav files to mp3" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/AST_audio_compress.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_sort_recordings $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (archive) Sort MP3s into campaign_id/date directory structure" >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/AST_sort_recordings.pl > /dev/null 2>&1" >> $CTB
+        fi
+        if [ -z "`%{__grep} AST_qc_transfer $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (archive) Send select MP3s to a third-party quality-control or offste archive server." >> $CTB
+            echo -e "*/15 * * * * %{_opt}/osdial/bin/AST_qc_transfer.pl > /dev/null 2>&1" >> $CTB
+        fi
+    else
+        touch $CTB > /dev/null 2>&1 || :
+        chown asterisk:asterisk $CTB > /dev/null 2>&1 || :
+        echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
+        echo -e "28 0 * * * %{_bindir}/find %{_localstatedir}/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        echo -e "29 0 * * * %{_bindir}/find %{_localstatedir}/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs %{__rm} -f > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (ALL) Syncronize media files with osdial_media_sync." >> $CTB
+        echo -e "*/15 * * * * %{_opt}/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (archive) Compress wav files to mp3" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/AST_audio_compress.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (archive) Sort MP3s into campaign_id/date directory structure" >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/AST_sort_recordings.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (archive) Send select MP3s to a third-party quality-control or offste archive server." >> $CTB
+        echo -e "*/15 * * * * %{_opt}/osdial/bin/AST_qc_transfer.pl > /dev/null 2>&1" >> $CTB
+    fi
+    kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
 fi
 echo -n
 
 
 %post -n slingdial
-[ -d "/var/lib/mysql/osdial" ] && echo "UPDATE system_settings SET admin_template='SlingDial',agent_template='SlingDial';" | /usr/bin/mysql osdial || :
+[ -d "%{_sharedstatedir}/mysql/osdial" ] && echo "UPDATE system_settings SET admin_template='SlingDial',agent_template='SlingDial';" | %{_bindir}/mysql osdial || :
 echo -n
-
-%define _opt /opt
 
 %files conflict
 
@@ -2437,6 +2443,7 @@ echo -n
 
 
 %files
+%defattr(644,asterisk,asterisk,755)
 %dir %attr(0777,asterisk,asterisk) %{_opt}/osdial/tts
 %dir %attr(0755,asterisk,asterisk) %{_opt}/osdial/backups
 %dir %attr(0755,asterisk,asterisk) %{_opt}/osdial/backups/recordings
@@ -2498,41 +2505,41 @@ echo -n
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/voicemail.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/chan_dahdi.conf
 %attr(0644,asterisk,asterisk) %{_sysconfdir}/asterisk/README.osdial
-%dir %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/sounds/ivr
-%dir %attr(0777,asterisk,asterisk) %{_var}/lib/asterisk/sounds/osdial
-%dir %attr(0777,asterisk,asterisk) %{_var}/lib/asterisk/sounds/tts
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDagent_conf.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDamd.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDamd_post.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/VD_auto_post_VERIFY.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-VDAD_ALL_inbound.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-VDAD_LB_transfer.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-VDAD_LO_transfer.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-VDAD_pin_IVR.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-VDADautoREMINDER.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-VDADautoREMINDERxfer.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDfixCXFER.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-VDADinbound_NI_DNC_CIDlookup.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-VDADselective_CID.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-VDADselective_CID_hangup.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-VDADtransfer.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-VDADtransferBROADCAST.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-VDADtransferSURVEY.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-VDADtransferTEST.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDoutboundIVR.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDoutbound.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDivr.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDivr-old.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDvmail_finder.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDtts.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDdtmf.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-record_prompts.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDstation_spy.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDstation_spy_prompted.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/call_inbound.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/debug_speak.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/invalid_speak.agi
-%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDpark.agi
+%dir %attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/sounds/ivr
+%dir %attr(0777,asterisk,asterisk) %{_sharedstatedir}/asterisk/sounds/osdial
+%dir %attr(0777,asterisk,asterisk) %{_sharedstatedir}/asterisk/sounds/tts
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-OSDagent_conf.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-OSDamd.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-OSDamd_post.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/VD_auto_post_VERIFY.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-VDAD_ALL_inbound.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-VDAD_LB_transfer.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-VDAD_LO_transfer.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-VDAD_pin_IVR.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-VDADautoREMINDER.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-VDADautoREMINDERxfer.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-OSDfixCXFER.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-VDADinbound_NI_DNC_CIDlookup.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-VDADselective_CID.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-VDADselective_CID_hangup.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-VDADtransfer.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-VDADtransferBROADCAST.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-VDADtransferSURVEY.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-VDADtransferTEST.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-OSDoutboundIVR.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-OSDoutbound.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-OSDivr.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-OSDivr-old.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-OSDvmail_finder.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-OSDtts.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-OSDdtmf.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-record_prompts.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-OSDstation_spy.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-OSDstation_spy_prompted.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/call_inbound.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/debug_speak.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/invalid_speak.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-OSDpark.agi
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/ari
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/ari/bin
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/ari/includes
@@ -2555,7 +2562,7 @@ echo -n
 
 %files common
 %defattr(644,asterisk,asterisk,755)
-%dir %attr(0755,asterisk,asterisk) %{_var}/log/osdial
+%dir %attr(0755,asterisk,asterisk) %{_localstatedir}/log/osdial
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/security/limits.d/99-osdial.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/httpd/conf.d/osdial-archive.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/httpd/conf.d/osdial-ari.conf
@@ -3000,7 +3007,7 @@ echo -n
 
 #%files debuginfo
 #%defattr(644,root,root,755)
-#/usr/lib/debug/opt/osdial/bin/ip_relay.debug
+#%{_usr}/lib/debug%{_opt}/osdial/bin/ip_relay.debug
 
 %changelog
 * Fri Apr 19 2013 Lott Caskey <lottc@fugitol.com> 3.0.0.096
