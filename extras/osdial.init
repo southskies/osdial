@@ -36,6 +36,12 @@ if [ -f /usr/bin/plymouth ]; then
 fi
 
 start() {
+	# Get INET address from eth0 or eth1
+	INET=`/sbin/ip ad li dev eth0 | grep 'inet ' | cut -d ' ' -f 6 | cut -d '/' -f 1`
+	if [ -z "$INET" ]; then
+		INET=`/sbin/ip ad li dev eth1 | grep 'inet ' | cut -d ' ' -f 6 | cut -d '/' -f 1`
+	fi
+
 	if [ "$OSDIAL_FIRSTRUN" != "NO" ]; then
 		TIMEOUT=60
 		BINTIMEOUT=60
@@ -87,12 +93,6 @@ start() {
 			[ "$RET" = "0" ] && COMPANY=`cat $TEMP`
 			[ -z "$COMPANY" ] && COMPANY="Company Name Here"
 			echo "UPDATE system_settings SET company_name='$COMPANY';" | mysql osdial > /dev/null 2>&1
-
-			# Get INET address from eth0 or eth1
-			INET=`/sbin/ip ad li dev eth0 | grep 'inet ' | cut -d ' ' -f 6 | cut -d '/' -f 1`
-			if [ -z "$INET" ]; then
-				INET=`/sbin/ip ad li dev eth1 | grep 'inet ' | cut -d ' ' -f 6 | cut -d '/' -f 1`
-			fi
 		fi
 	
 		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-dialer" -o -f "/opt/osdial/.osdial-install-dialer" -o -f "/opt/osdial/.osdial-live" ]; then
@@ -163,6 +163,14 @@ start() {
 		fi
 	fi
 
+	# Update /etc/issue with current IP and company name.
+	grep 'OSDial - The OpenSource Dialer' /etc/issue > /dev/null 2>&1
+	if [ ! "$?" -gt 0 ]; then
+		/usr/bin/perl -pi -e "s|browser to http://(.*)/|browser to http://$INET/|" /etc/issue > /dev/null 2>&1
+		COMPANY=`echo "SELECT company_name FROM system_settings;" | mysql osdial | tail -1 | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}'`
+		/bin/sed -e"8c\\${COMPANY}" -i /etc/issue > /dev/null 2>&1
+	fi
+
 	# Make tmpfs filesystem for recordings
 	# Make sure it is not a live image.
 	if [ ! -f "/opt/osdial/.osdial-profile-live" ]; then
@@ -220,11 +228,14 @@ start() {
 
 	if [ -f /etc/openvpn/osdial.up ]; then
 		HST=`/bin/hostname -s`
-		if [ "$HST" = "osdial" -o "$HST" = "osdial-live" -o "$HST" = "osdial-ccsg" -o "$HST" = "osd" -o -z "$HST" ]; then
+		if [ "$HST" = "localhost" -o "$HST" = "osdial" -o "$HST" = "osdial-live" -o "$HST" = "osdial-ccsg" -o "$HST" = "osd" -o -z "$HST" ]; then
 			OVHST=`/usr/bin/head -1 /etc/openvpn/osdial.up`
-			if [ "$OVHST" = "osdial" -o "$OVHST" = "osdial-live" -o "$OVHST" = "osdial-ccsg" -o "$OVHST" = "osd" -o -z "$OVHST" ]; then
+			if [ "$HST" = "localhost" -o "$OVHST" = "osdial" -o "$OVHST" = "osdial-live" -o "$OVHST" = "osdial-ccsg" -o "$OVHST" = "osd" -o -z "$OVHST" ]; then
 				UUID=`/usr/bin/uuidgen | awk -F- '{ print $1 }'`
 				HST="osdial-${UUID}"
+				hostname ${HST}.osdial.com
+				/usr/bin/perl -pi -e "s|^HOSTNAME=(.*)$|HOSTNAME=${HST}.osdial.com|" /etc/sysconfig/network > /dev/null 2>&1
+				echo "127.0.0.1  ${HST}.osdial.com ${HST} osdial" >> /etc/hosts
 			fi
 		fi
 		echo "${HST}" > /etc/openvpn/osdial.up
