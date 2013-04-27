@@ -87,9 +87,11 @@ SetDefaults ()
 	VARfastagi_log_checkfordead="30"
 	VARfastagi_log_checkforwait="60"
 	# Other settings
-	VARcps="10"
-	VARadapt_min_level="1.5"
+	VARcps="15"
+	VARadapt_min_level="1.0"
 	VARadapt_overlimit_mod="20"
+	VARflush_hopper_each_run="0"
+	VARflush_hopper_manual="1"
 }
 
 FileLocationConfig ()
@@ -803,6 +805,12 @@ SaveConfig ()
 	echo "# Adaptive routine tweaks" >> $PATHconf
 	echo "VARadapt_min_level => $VARadapt_min_level" >> $PATHconf
 	echo "VARadapt_overlimit_mod  => $VARadapt_overlimit_mod " >> $PATHconf
+	echo "" >> $PATHconf
+	echo "# Flush hopper on each run" >> $PATHconf
+	echo "VARflush_hopper_each_run  => $VARflush_hopper_each_run " >> $PATHconf
+	echo "" >> $PATHconf
+	echo "# Flush hopper on each run for manual-dial campaigns" >> $PATHconf
+	echo "VARflush_hopper_manual  => $VARflush_hopper_manual " >> $PATHconf
 
 	chmod 644 $PATHconf
 
