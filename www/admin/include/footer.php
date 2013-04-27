@@ -87,7 +87,7 @@ if ($uvtest > $avtest) {
 	echo "      <font color=\"#1A4349\" style=\"text-decoration: blink;\" title=\"Version #$update_version is now available!  You should run 'yum update' on all servers when all agents are logged out and their is sufficient time to complete the update.\">NEW UPDATE #$update_version</font>\n";
 }
 echo "    </td>\n";
-echo "    <td height=\"15\" align=\"right\" width=\"16%\"><font size=1 color=\"#1A4349\">Version: ".substr($config['settings']['version'],0,3)."&nbsp;&nbsp;</font></td>\n";
+echo "    <td height=\"15\" align=\"right\" width=\"16%\"><font size=1 color=\"#1A4349\"><a href=\"$PHP_SELF?ADD=311111111111111\">Version: ".substr($config['settings']['version'],0,3)."</a>&nbsp;&nbsp;</font></td>\n";
 echo "  </tr>\n";
 echo "  <tr><td align=\"left\" colspan=\"4\" height=\"1\" bgcolor=\"#666666\"></td></tr>\n";
 echo " </table>\n";
