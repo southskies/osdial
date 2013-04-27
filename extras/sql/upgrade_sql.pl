@@ -37,7 +37,7 @@ $|++;
 my $prog = 'upgrade_sql.pl';
 
 my $secStart = time();
-my($DB, $CLOhelp, $CLOinfo, $CLOinst, $CLOsaf, $CLOtest, $CLOlatin, $CLOutf8, $CLOconvert);
+my($DB, $CLOhelp, $CLOinfo, $CLOinst, $CLOrollinst, $CLOnoexamp, $CLOsaf, $CLOtest, $CLOlatin, $CLOutf8, $CLOconvert);
 my($dbhT,$dbhA);
 
 # Get OSD configuration directives.
@@ -49,6 +49,8 @@ if (scalar @ARGV) {
 		'help!' => \$CLOhelp,
 		'info!' => \$CLOinfo,
 		'install!' => \$CLOinst,
+		'rolling-install!' => \$CLOrollinst,
+		'no-examples!' => \$CLOnoexamp,
 		'skip-auth-fix!' => \$CLOsaf,
 		'test!' => \$CLOtest,
 		'use-latin1!' => \$CLOlatin,
@@ -63,6 +65,8 @@ if (scalar @ARGV) {
 		print "CLOhelp-     $CLOhelp\n";
 		print "CLOinfo-     $CLOinfo\n";
 		print "CLOinst-     $CLOinst\n";
+		print "CLOrollinst- $CLOrollinst\n";
+		print "CLOnoexamp-  $CLOnoexamp\n";
 		print "CLOsaf-      $CLOsaf\n";
 		print "CLOtest-     $CLOtest\n";
 		print "CLOlatin-    $CLOlatin\n";
@@ -76,7 +80,9 @@ if (scalar @ARGV) {
 		print "  [--debug]                = debug\n";
 		print "  [--help]                 = This screen\n";
 		print "  [--info]                 = Display detailed information on changes.\n";
-		print "  [--install]              = Install DB on this server if not found.\n";
+		print "  [--install]              = Install DB on this server if not found, from latest.sql.\n";
+		print "  [--rolling-install]      = Install DB on this server if not found, from initial SQL file.\n";
+		print "  [--no-examples]          = Do not install examples from 999999.sql file.\n";
 		print "  [--skip-auth-fix]        = Skip the DB user authentication fixes.\n";
 		print "  [-t|--test]              = test only.\n";
 		print "  [--use-latin1|--use-utf8]= Use Latin1 (default) or UTF8 character-set.\n\n";
@@ -127,7 +133,7 @@ my $connerr = 0;
 my $install = 0;
 my $examples = 0;
 if ($CLOsaf != 1) {
-	if ( ($CLOinst) and (! -f "/var/lib/mysql/" . $config->{VARDB_database} . "/system_settings.ibd") ) {
+	if ( ($CLOinst or $CLOrollinst) and (! -f "/var/lib/mysql/" . $config->{VARDB_database} . "/system_settings.ibd") ) {
 		if ( (! -d "/var/lib/mysql/" . $config->{VARDB_database}) ) {
 			print "    OSDial database (" . $config->{VARDB_database} . ") is not detected, creating.\n";
 			my $cdb = "CREATE DATABASE " . $config->{VARDB_database} . " " . $charsql . ";";
@@ -136,8 +142,9 @@ if ($CLOsaf != 1) {
 		$connerr = 1;
 		$install = 1;
 		$examples = 1;
-		$vmap{'install'} = '000000';
-		$vmap{'examples'} = '999999';
+		$vmap{'install'} = 'latest' if ($CLOinst);
+		$vmap{'install'} = '000000' if ($CLOrollinst);
+		$vmap{'examples'} = '999999' if (!$CLOnoexamp);
 	} else {
 		print "Testing database connection...\n" if ($DB);
 		$dbhT = DBI->connect( 'DBI:mysql:' . $config->{VARDB_database} . ':' . $config->{VARDB_server} . ':' . $config->{VARDB_port}, $config->{VARDB_user}, $config->{VARDB_pass} ) or ($connerr=1);
