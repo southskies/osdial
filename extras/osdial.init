@@ -126,10 +126,9 @@ start() {
 		echo >> /etc/issue
 		echo "OSDial - The OpenSource Dialer" | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}' >> /etc/issue
 		echo >> /etc/issue
-		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-control" -o -f "/opt/osdial/.osdial-install-control" -o -f "/opt/osdial/.osdial-sql" -o -f "/opt/osdial/.osdial-install-sql" -o -f "/opt/osdial/.osdial-live" ]; then
-			echo "$COMPANY" | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}' >> /etc/issue
-			echo >> /etc/issue
-		fi
+		[ -z "$COMPANY" ] && COMPANY="Company Name Here"
+		echo "$COMPANY" | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}' >> /etc/issue
+		echo >> /etc/issue
 		echo "Paid support available through Call Center Service Group" | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}' >> /etc/issue
 		echo "800-221-0251" | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}' >> /etc/issue
 		echo >> /etc/issue
