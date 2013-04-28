@@ -112,7 +112,7 @@ OSDial - Single / All-in-One Server Profile.
 %package profile-all
 Summary:        The OSDial predictive dialing suite.
 Group:          Applications/Telephony
-Provides:       osdial-profile-single = %{version}-%{release}
+Provides:       osdial-profile = %{version}-%{release}
 Conflicts:      astguiclient
 Conflicts:      vicidial
 BuildRequires:  dialog
@@ -486,6 +486,7 @@ Requires:       hispavoces-pal-diphone
 Requires:       hispavoces-sfl-diphone
 Requires:       libcgroup
 Requires:       numad
+Requires:       plymouth-theme-osdial
 BuildArch:      noarch
 
 %description common
