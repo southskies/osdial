@@ -538,7 +538,7 @@ CREATE TABLE `osdial_carrier_servers` (
 );
 
 CREATE TABLE `osdial_carriers` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(20) DEFAULT '',
   `description` varchar(255) DEFAULT '',
   `active` enum('Y','N') DEFAULT 'N',
@@ -1633,7 +1633,7 @@ CREATE TABLE `system_settings` (
   `default_phone_code` varchar(10) DEFAULT '1'
 );
 
-INSERT INTO `system_settings` VALUES ('3.0.0.096',NOW(),'0','1','0','','','','','','VIC','NONE','NOT_ACTIVE','0','/','0','Company Name Here','default','default',NOW(),NULL,'1','0','1','0','admin',0,'SIP','Y-m-d H:i:s','Y','85100000','85110000','1');
+INSERT INTO `system_settings` VALUES ('3.0.0.097',NOW(),'0','1','0','','','','','','VIC','NONE','NOT_ACTIVE','0','/','0','Company Name Here','default','default',NOW(),NULL,'1','0','1','0','admin',0,'SIP','Y-m-d H:i:s','Y','85100000','85110000','1');
 
 CREATE TABLE `web_client_sessions` (
   `extension` varchar(100) NOT NULL,
