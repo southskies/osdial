@@ -200,16 +200,16 @@ my $lamebin = '';
 my $lameopts = '';
 if (-e '/usr/bin/toolame') {
 	$lamebin = '/usr/bin/toolame';
-	$lameopts = '-s 16 -b 16 -m j';
+	$lameopts = '-s 16 -b 8 -m j';
 } elsif (-e '/usr/local/bin/toolame') {
 	$lamebin = '/usr/local/bin/toolame';
-	$lameopts = '-s 16 -b 16 -m j';
+	$lameopts = '-s 16 -b 8 -m j';
 } elsif (-e '/usr/bin/lame') {
 	$lamebin = '/usr/bin/lame';
-	$lameopts = '-b 16 -m m --silent';
+	$lameopts = '-b 8 -m m --silent';
 } elsif (-e '/usr/local/bin/lame') {
 	$lamebin = '/usr/local/bin/lame';
-	$lameopts = '-b 16 -m m --silent';
+	$lameopts = '-b 8 -m m --silent';
 }
 
 if ($MP3) {
