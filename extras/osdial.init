@@ -79,7 +79,12 @@ start() {
 				[ "${PLACTIVE}" -gt 0 ] && (clear; /usr/bin/plymouth --hide-splash pause_progress) || :
 				/usr/sbin/system-config-network
 				[ "${PLACTIVE}" -gt 0 ] && (clear; /usr/bin/plymouth --show-splash unpause_progress) || :
-				/sbin/service network restart
+				/sbin/service network restart > /dev/null 2>&1
+				# Get INET address from eth0 or eth1
+				INET=`/sbin/ip ad li dev eth0 | grep 'inet ' | cut -d ' ' -f 6 | cut -d '/' -f 1`
+				if [ -z "$INET" ]; then
+					INET=`/sbin/ip ad li dev eth1 | grep 'inet ' | cut -d ' ' -f 6 | cut -d '/' -f 1`
+				fi
 			fi
 
 			[ "${PLACTIVE}" -gt 0 ] && (clear; /usr/bin/plymouth --hide-splash pause_progress) || :
