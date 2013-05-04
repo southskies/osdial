@@ -769,8 +769,12 @@ function bgcolor($cnt) {
 # Returns string with first three chars stripped if multicomp_user
 function mclabel($strdat) {
     global $LOG;
-    if ($LOG['multicomp_user'] > 0) $strdat = OSDsubstr($strdat,3,OSDstrlen($strdat));
-    if ($LOG['multicomp_admin'] > 0 and OSDpreg_match($LOG['companiesRE'],$strdat)) $strdat = OSDsubstr($strdat,0,3) . ' ' . OSDsubstr($strdat,3,OSDstrlen($strdat));
+    if ($LOG['multicomp_user'] > 0) {
+        $strdat = OSDsubstr($strdat,3,OSDstrlen($strdat));
+    }
+    if ($LOG['multicomp_admin'] > 0 and OSDpreg_match($LOG['companiesRE'],$strdat)) { 
+        $strdat = OSDsubstr($strdat,0,3) . '<span style="color:#900;font-weight:bold;">:</span>' . OSDsubstr($strdat,3,OSDstrlen($strdat));
+    }
     return $strdat;
 }
 

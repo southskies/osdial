@@ -2762,7 +2762,11 @@ if ($ADD==10) {
 
 	echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1>";
 	echo "  <tr class=tabheader>";
-	echo "    <td>ID</td>";
+	if ($LOG['multicomp_admin'] > 0) {
+        echo "    <td width=200>Company <span style=\"color:#F00\">:</span> Campaign ID</td>";
+	} else {
+        echo "    <td width=200>ID</td>";
+	}
 	echo "    <td>DESCRIPTION</td>";
 	echo "    <td align=center>ACTIVE</td>";
 	echo "    <td align=center colspan=7>LINKS</td>";
