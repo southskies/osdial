@@ -1123,7 +1123,11 @@ echo "</font><br>\n";
 
 echo "<table width=$section_width class=shadedtable cellspacing=0 cellpadding=1 align=center>\n";
 echo "  <tr class=tabheader>\n";
-echo "    <td><a href=\"$PHP_SELF?ADD=$ADD&let=$let&level=$level&group=$group&viewdisabled=$viewdisabled&$USERlink\">USER ID</a></td>\n";
+if ($LOG['multicomp_admin'] > 0) {
+    echo "    <td width=150><a href=\"$PHP_SELF?ADD=$ADD&let=$let&level=$level&group=$group&viewdisabled=$viewdisabled&$USERlink\">Company<span style=\"color:#900;font-weight:bold;\">:</span>Agent</a></td>\n";
+} else {
+    echo "    <td width=150><a href=\"$PHP_SELF?ADD=$ADD&let=$let&level=$level&group=$group&viewdisabled=$viewdisabled&$USERlink\">ID</a></td>\n";
+}
 echo "    <td><a href=\"$PHP_SELF?ADD=$ADD&let=$let&level=$level&group=$group&viewdisabled=$viewdisabled&$NAMElink\">FULL NAME</a></td>\n";
 if ($ADD==9) {
     echo "    <td align=center>NEW ATTEMPTS</td>\n";
@@ -1153,7 +1157,7 @@ echo "  </tr>\n";
 		    echo "  <tr class=\"row font1\" " . bgcolor($o) . " ondblclick=\"window.location='$PHP_SELF?ADD=3&user=$row[1]';\">\n";
             echo "    <td><a href=\"$PHP_SELF?ADD=3&user=$row[1]\">";
             if (($LOG['multicomp'] > 0 and OSDpreg_match($LOG['companiesRE'],$row[1])) or $LOG['multicomp_user'] > 0) {
-                echo OSDsubstr($row[1],0,3) . "&nbsp;" . OSDsubstr($row[1],3,OSDstrlen($row[1]));;
+                echo OSDsubstr($row[1],0,3) . "<span style=\"color:#900;font-weight:bold;\">:</span>" . OSDsubstr($row[1],3,OSDstrlen($row[1]));;
             } else {
                 echo $row[1];
             }

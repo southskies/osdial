@@ -947,7 +947,13 @@ if ($ADD==100) {
     echo "</font><br>\n";
     echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1 style=\"white-space:nowrap;\">\n";
     echo "<tr class=tabheader>";
-    echo "<td>ID</td>";
+    /*
+    if ($LOG['multicomp_admin'] > 0) {
+        echo "<td width=120>COMPANY<span style=\"color:#900;font-weight:bold;\">:</span>LIST ID</td>";
+    } else {
+    */
+        echo "<td width=100>ID</td>";
+//     }
     echo "<td>NAME</td>";
     echo "<td>CAMPAIGN</td>";
     echo "<td>DESCRIPTION</td>";

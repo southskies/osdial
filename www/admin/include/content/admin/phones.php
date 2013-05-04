@@ -35,7 +35,7 @@ if ($ADD==11111111111) {
         echo "<input type=hidden name=ADD value=21111111111>\n";
         echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
 
-        echo "<tr bgcolor=$oddrows><td align=right>Phone extension: </td><td align=left><input type=text name=extension size=20 maxlength=100 value=\"\">".helptag("phones-extension")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Phone Extension: </td><td align=left><input type=text name=extension size=20 maxlength=100 value=\"\">".helptag("phones-extension")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Dial Plan Number: </td><td align=left><input type=text name=dialplan_number size=15 maxlength=20 value=\"$row[1]\"> (digits only)".helptag("phones-dialplan_number")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Voicemail Box: </td><td align=left><input type=text name=voicemail_id size=10 maxlength=10 value=\"$row[2]\"> (digits only)".helptag("phones-voicemail_id")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Outbound CallerID Name: </td><td align=left><input type=text name=outbound_cid_name size=20 maxlength=40 value=\"$row[67]\">".helptag("phones-outbound_cid_name")."</td></tr>\n";
@@ -451,7 +451,11 @@ if ($ADD==10000000000) {
     echo "<center><br><font class=top_header color=$default_text size=+1>PHONES<br><br>\n";
     echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1>\n";
     echo "  <tr class=tabheader>";
-    echo "    <td><a href=\"$PHP_SELF?ADD=10000000000&$EXTENlink\">EXTEN</a></td>\n";
+    if ($LOG['multicomp_admin'] > 0) {
+        echo "    <td width=150><a href=\"$PHP_SELF?ADD=10000000000&$EXTENlink\">COMPANY<span style=\"color:#900;font-weight:bold;\">:</span>EXTEN</a></td>\n";
+    } else {
+        echo "    <td><a href=\"$PHP_SELF?ADD=10000000000&$EXTENlink\">EXTEN</a></td>\n";
+    }
     echo "    <td><a href=\"$PHP_SELF?ADD=10000000000&$PROTOlink\">PROTO</a></td>\n";
     echo "    <td><a href=\"$PHP_SELF?ADD=10000000000&$SERVERlink\">SERVER</a></td>\n";
     echo "    <td>DIALPLAN</B></td>\n";
@@ -467,7 +471,7 @@ if ($ADD==10000000000) {
         echo "  <tr " . bgcolor($o) ." class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=31111111111&extension=$row[0]&server_ip=$row[5]';\">\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=31111111111&extension=$row[0]&server_ip=$row[5]\">";
         if ($LOG['multicomp'] and !OSDpreg_match('/\/|@/',$row[0]) and OSDpreg_match($LOG['companiesRE'],$row[0])) {
-            echo $row[12] . "&nbsp;" . OSDsubstr($row[0],3,OSDstrlen($row[0]));
+            echo $row[12] . "<span style=\"color:#900;font-weight:bold;\">:</span>" . OSDsubstr($row[0],3,OSDstrlen($row[0]));
         } else {
             echo $row[0];
         }
