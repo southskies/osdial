@@ -53,6 +53,7 @@ my $HELP=0;
 
 my $GSM=0;
 my $MP3=0;
+my $OLDMP3=0;
 my $OGG=0;
 my $WAV=0;
 
@@ -75,6 +76,7 @@ if (scalar @ARGV) {
 		'CPS=i' => \$CPS,
 		'GSM!' => \$GSM,
 		'MP3!' => \$MP3,
+		'OLDMP3!' => \$OLDMP3,
 		'OGG!' => \$OGG,
 		'WAV!' => \$WAV
 	);
@@ -83,20 +85,28 @@ if (scalar @ARGV) {
 	$DB=1 if ($DBX);
 	$DB=1 if ($TEST);
 	if ($MP3) {
+		$OLDMP3=0;
 		$GSM=0;
 		$OGG=0;
 		$WAV=0;
+	} elsif ($OLDMP3) {
+		$MP3=0;
+		$OGG=0;
+		$WAV=0;
 	} elsif ($GSM) {
+		$OLDMP3=0;
 		$MP3=0;
 		$OGG=0;
 		$WAV=0;
 	} elsif ($OGG) {
 		$GSM=0;
+		$OLDMP3=0;
 		$MP3=0;
 		$WAV=0;
 	} elsif ($WAV) {
 		$GSM=0;
 		$OGG=0;
+		$OLDMP3=0;
 		$MP3=0;
 	} else {
 		$MP3=1;
@@ -115,6 +125,7 @@ if (scalar @ARGV) {
 		print "CPS-         $CPS\n";
 		print "GSM-         $GSM\n";
 		print "MP3-         $MP3\n";
+		print "OLDMP3-      $OLDMP3\n";
 		print "OGG-         $OGG\n";
 		print "WAV-         $WAV\n";
 		print "\n";
@@ -130,7 +141,8 @@ if (scalar @ARGV) {
 		print "  [--size_checks] = Use file-size check instead of open-file check.\n";
 		print "  [--CPS] = Size checks per second.\n";
 		print "  [--GSM] = compress into GSM codec\n";
-		print "  [--MP3] = compress into MPEG-Layer-3 codec\n";
+		print "  [--MP3] = compress into MPEG-Layer-3 codec, using sox only\n";
+		print "  [--OLDMP3] = compress into MPEG-Layer-3 codec, using lame\n";
 		print "  [--OGG] = compress into OGG Vorbis codec\n\n";
 		print "  [--WAV] = compress into WAV\n\n";
 		exit;
@@ -177,11 +189,13 @@ if (! -e $lock_file) {
 
 my $sret = $osdial->sql_query("SELECT data FROM configuration WHERE name='ArchiveMixFormat';");
 if ($osdial->{configuration}{ArchiveMixFormat} ne "") {
+	$OLDMP3=0;
 	$MP3=0;
 	$OGG=0;
 	$GSM=0;
 	$WAV=0;
 	$MP3=1 if ($osdial->{configuration}{ArchiveMixFormat} eq "MP3");
+	$OLDMP3=1 if ($osdial->{configuration}{ArchiveMixFormat} eq "OLDMP3");
 	$OGG=1 if ($osdial->{configuration}{ArchiveMixFormat} eq "OGG");
 	$GSM=1 if ($osdial->{configuration}{ArchiveMixFormat} eq "GSM");
 	$WAV=1 if ($osdial->{configuration}{ArchiveMixFormat} eq "WAV");
@@ -212,7 +226,7 @@ if (-e '/usr/bin/toolame') {
 	$lameopts = '-b 16 -m m --silent';
 }
 
-if ($MP3) {
+if ($OLDMP3) {
 	### Exit if lamebin not found and GSM/OGG/WAV
 	if ($lamebin eq '') {
 		print "Can't find lame binary! Exiting...\n";
@@ -278,7 +292,7 @@ foreach my $file (readdir(FILE)) {
 				unlink("$dir1/$file");
 				$osdial->event_logger('audio_compress',"Removed empty file: $dir1/$file   |$recording_id|$SQLfile||");
 
-			} elsif ($GSM or $OGG or $WAV) {
+			} elsif ($GSM or $OGG or $WAV or $MP3) {
 				$CNVfile =~ s/-all\.wav/-all.gsm/gi if ($GSM);
 				$CNVfile =~ s/-all\.wav/-all.ogg/gi if ($OGG);
 				$CNVfile =~ s/-all\.wav/-all.wav/gi if ($WAV);
@@ -287,7 +301,7 @@ foreach my $file (readdir(FILE)) {
 				unlink("$dir1/$file") if (-e "$dir2/mixed/$CNVfile");
 				$location = "http://" . $osdial->{VARserver_ip} . "/" . $osdial->{PATHarchive_mixed} . "/../mixed/" . $CNVfile;
 
-			} elsif ($MP3 > 0) {
+			} elsif ($OLDMP3 > 0) {
 				$CNVfile =~ s/-all\.wav/-all.mp3/gi;
 				print "|$recording_id|$file|$CNVfile|     |$SQLfile|\n" if ($DB);
 
