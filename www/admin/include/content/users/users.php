@@ -32,7 +32,7 @@ if ($ADD=="1") {
         echo "<input type=hidden name=ADD value=2>\n";
         echo "<div style=\"width:660px;padding:5px;\">";
         echo "<TABLE class=shadedtable border=0 cellspacing=3 width=650>\n";
-        echo "<tr bgcolor=$oddrows><td align=right with=45%>Agent Number: </td><td align=left width=55%>\n";
+        echo "<tr bgcolor=$oddrows><td align=right with=45%>Agent ID: </td><td align=left width=55%>\n";
         
         if ($LOG['multicomp_admin'] > 0) {
             $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
@@ -119,7 +119,7 @@ if ($ADD=="1A")
 	echo "<input type=hidden name=ADD value=2A>\n";
 	echo "<div style=\"width:660px;padding:5px;\">";
 	echo "<TABLE class=shadedtable cellspacing=3 width=650>\n";
-	echo "<tr bgcolor=$oddrows><td align=center colspan=2 width=100%>Agent Number: ";
+	echo "<tr bgcolor=$oddrows><td align=center colspan=2 width=100%>Agent ID: ";
     if ($LOG['multicomp_admin'] > 0) {
         $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
         echo "<select name=company_id>\n";
@@ -140,7 +140,7 @@ if ($ADD=="1A")
         $levelMAX=($LOG['user_level']-1);
     }
 
-	echo "<tr bgcolor=$oddrows><td align=right>Source Agent: </td><td align=left><select size=1 name=source_user_id>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Source Agent ID: </td><td align=left><select size=1 name=source_user_id>\n";
 
 		$stmt = sprintf("SELECT user,full_name FROM osdial_users WHERE user_level<='%s' AND user NOT IN ('PBX-OUT','PBX-IN') AND user_group IN %s ORDER BY full_name;",mres($levelMAX),$LOG['allowed_usergroupsSQL']);
 		$rslt=mysql_query($stmt, $link);
@@ -550,7 +550,7 @@ if ($ADD==3) {
 			echo "<input type=hidden name=user value=\"$row[1]\">\n";
 			echo "<div style=\"width:".$section_width."px;padding:5px;\">";
 			echo "<TABLE class=shadedtable cellspacing=3 width=550>\n";
-			echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Agent ID: </td><td align=left>\n";
 			$pcomp='';
 			if ($LOG['multicomp']>0 and OSDpreg_match($LOG['companiesRE'],$row[1])) {
 				echo "<font color=$default_text>" . OSDsubstr($row[1],0,3) . "</font>&nbsp;";
@@ -868,8 +868,8 @@ if ($ADD==550) {
     echo "<input type=hidden name=ADD value=660>\n";
     echo "<div style=\"width:660px;padding:5px;\">";
     echo "<TABLE class=shadedtable cellspacing=3 width=650>\n";
-    #echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left><input type=text name=user size=20 maxlength=20></td></tr>\n";
-    echo "<tr bgcolor=$oddrows><td align=center>Agent Number: \n";
+    #echo "<tr bgcolor=$oddrows><td align=right>Agent ID: </td><td align=left><input type=text name=user size=20 maxlength=20></td></tr>\n";
+    echo "<tr bgcolor=$oddrows><td align=center>Agent ID: \n";
     if ($LOG['multicomp_admin'] > 0) {
         $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
         echo "<select name=company_id>\n";

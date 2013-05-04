@@ -100,11 +100,11 @@
     </item>
 
     <item pathId="hotkeys_active" sectionId="7" title="Hot Keys Active">
-        This option if set to 1 allows the user to use the Hot Keys quick-dispositioning function in agent.php.
+        This option if set to Y allows the user to use the Hot Keys quick-dispositioning function in agent.php.
     </item>
 
     <item pathId="agent_choose_ingroups" sectionId="8" title="Agent Choose Ingroups">
-        This option if set to 1 allows the user to choose the ingroups that they will receive calls from when they login to a CLOSER or INBOUND campaign. Otherwise the Manager will need to set this in their user detail screen of the admin page.
+        This option if set to Y allows the user to choose the ingroups that they will receive calls from when they login to a CLOSER or INBOUND campaign. Otherwise the Manager will need to set this in their user detail screen of the admin page.
     </item>
 
     <item pathId="scheduled_callbacks" sectionId="9" title="Scheduled Callbacks">
@@ -115,8 +115,12 @@
         This option allows an agent to set a callback so that they are the only Agent that can call the customer back. This also allows the agent to see their callback listings and call them back any time they want to.
     </item>
 
-    <item pathId="agentcall_manual" sectionId="11" title="Agent Call Manual">
+    <item pathId="agentcall_manual" sectionId="11" title="Agent Manual Dial">
         This option allows an agent to manually enter a new lead into the system and call them. This also allows the calling of any phone number from their agent screen and puts that call into their session. Use this option with caution.
+    </item>
+    
+    <item pathId="manual_dial_allow_skip" sectionId="11" title="Preview-Dial Skip Lead">
+        Set to Y will allow the agent to skip dialing the lead.
     </item>
 
     <item pathId="osdial_recording" sectionId="12" title="Recording">
@@ -131,7 +135,7 @@
         This option simply defaults the Blended checkbox on a CLOSER login screen.
     </item>
 
-    <item pathId="osdial_recording_override" sectionId="15" title="Recording Override">
+    <item pathId="osdial_recording_override" sectionId="15" title="Recording Mode Override">
         This option will override whatever the option is in the campaign for recording. DISABLED will not override the campaign recording setting. NEVER will disable recording on the client. ONDEMAND is the default and allows the agent to start and stop recording as needed. ALLCALLS will start recording on the client whenever a call is sent to an agent. ALLFORCE will start recording on the client whenever a call is sent to an agent giving the agent no option to stop recording. For ALLCALLS and ALLFORCE there is an option to use the Recording Delay to cut down on very short recordings and recude system load.
     </item>
 
@@ -143,64 +147,64 @@
         Here is where you select the inbound groups you want to receive calls from if you have selected the CLOSER campaign. You will also be able to set the rank, or skill level, in this section for each of the inbound groups as well as being able to see the number of calls received from each inbound group for this specific agent. Also in this section is the ability to give the agent a rank for each inbound group. These ranks can be used for preferred call routing when that option is selected in the in-group screen.
     </item>
 
-    <item pathId="alter_custdata_override" sectionId="18" title="Agent Alter Customer Data Override">
+    <item pathId="alter_custdata_override" sectionId="18" title="Alter Lead Data Override">
         This option will override whatever the option is in the campaign for altering of customer data. NOT_ACTIVE will use whatever setting is present for the campaign. ALLOW_ALTER will always allow for the agent to alter the customer data, no matter what the campaign setting is. Default is NOT_ACTIVE.
     </item>
 
     <item pathId="alter_agent_interface_options" sectionId="19" title="Alter Agent Interface Options">
-        This option if set to 1 allows the administrative user to modify the Agents interface options in admin.php.
+        This option if set to Y allows the administrative user to modify the Agents interface options in admin.php.
     </item>
 
     <item pathId="delete_users" sectionId="20" title="Delete Agents">
-        This option if set to 1 allows the user to delete other users of equal or lesser user level from the system.
+        This option if set to Y allows the user to delete other users of equal or lesser user level from the system.
     </item>
 
     <item pathId="delete_user_groups" sectionId="21" title="Delete User Groups">
-        This option if set to 1 allows the user to delete user groups from the system.
+        This option if set to Y allows the user to delete user groups from the system.
     </item>
 
     <item pathId="delete_lists" sectionId="22" title="Delete Lists">
-        This option if set to 1 allows the user to delete OSDial lists from the system.
+        This option if set to Y allows the user to delete OSDial lists from the system.
     </item>
 
     <item pathId="delete_campaigns" sectionId="23" title="Delete Campaigns">
-        This option if set to 1 allows the user to delete OSDial campaigns from the system.
+        This option if set to Y allows the user to delete OSDial campaigns from the system.
     </item>
 
     <item pathId="delete_ingroups" sectionId="24" title="Delete In-Groups">
-        This option if set to 1 allows the user to delete OSDial In-Groups from the system.
+        This option if set to Y allows the user to delete OSDial In-Groups from the system.
     </item>
 
     <item pathId="delete_remote_agents" sectionId="25" title="Delete Remote Agents">
-        This option if set to 1 allows the user to delete OSDial remote agents from the system.
+        This option if set to Y allows the user to delete OSDial remote agents from the system.
     </item>
 
     <item pathId="load_leads" sectionId="26" title="Load Leads">
-        This option if set to 1 allows the user to load OSDial leads into the osdial_list table by way of the web based lead loader.
+        This option if set to Y allows the user to load OSDial leads into the osdial_list table by way of the web based lead loader.
     </item>
 
     <item pathId="campaign_detail" sectionId="27" title="Campaign Detail">
-        This option if set to 1 allows the user to view and modify the campaign detail screen elements.
+        This option if set to Y allows the user to view and modify the campaign detail screen elements.
     </item>
 
-    <item pathId="ast_admin_access" sectionId="28" title="AGC Admin Access">
-        This option if set to 1 allows the user to login to the OSDial admin pages.
+    <item pathId="ast_admin_access" sectionId="28" title="Setup Menu">
+        This option if set to Y allows the user to login to the OSDial manager module.
     </item>
 
-    <item pathId="ast_delete_phones" sectionId="29" title="AGC Delete Phones">
-        This option if set to 1 allows the user to delete phone entries in the OSDial admin pages.
+    <item pathId="ast_delete_phones" sectionId="29" title="Delete Phones">
+        This option if set to Y allows the user to delete phone entries in the OSDial manager module.
     </item>
 
     <item pathId="delete_scripts" sectionId="30" title="Delete Scripts">
-        This option if set to 1 allows the user to delete Campaign scripts in the script modification screen.
+        This option if set to Y allows the user to delete Campaign scripts in the script modification screen.
     </item>
 
     <item pathId="modify_leads" sectionId="31" title="Modify Leads">
-        This option if set to 1 allows the user to modify leads in the admin section lead search results page.
+        This option if set to Y allows the user to modify leads in the admin section lead search results page.
     </item>
 
     <item pathId="change_agent_campaign" sectionId="32" title="Change Agent Campaign">
-        This option if set to 1 allows the user to alter the campaign that an agent is logged into while they are logged into it.
+        This option if set to Y allows the user to alter the campaign that an agent is logged into while they are logged into it.
     </item>
 
     <item pathId="delete_filters" sectionId="33" title="Delete Filters">
@@ -215,8 +219,8 @@
         This option allows the user to view and modify the call times and state call times records. A user doesn't need this option enabled if they only need to change the call times option on the campaigns screen.
     </item>
 
-    <item pathId="modify_sections" sectionId="36" title="Modify Sections">
-        These options allow the user to view and modify each sections records. If set to 0, the user will be able to see the section list, but not the detail or modification screen of a record in that section.
+    <item pathId="modify_sections" sectionId="36" title="Modify Agents">
+        These options allow the user to view and modify each sections records. If set to N, the user will be able to see the section list, but not the detail or modification screen of a record in that section.
     </item>
 
     <item pathId="view_reports" sectionId="37" title="View Reports">
@@ -244,7 +248,7 @@
     </item>
 
     <item pathId="xfer_agent2agent_wait_seconds" sectionId="43" title="Agent2Agent Timeout Seconds">
-      How long to wait for agent to become avaialble before running the timeout action.
+      How long to wait for agent to become available before running the timeout action.
     </item>
 
     <item pathId="xfer_agent2agent_wait_action" sectionId="44" title="Agent2Agent Timeout Action">
@@ -1469,7 +1473,7 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
     </item>
 
     <item pathId="voicemail_dump_exten" sectionId="15" title="VMail Dump Exten">
-  The extension prefix used on this server to send calls directly through agc to a specific voicemail box. Default is '85026666666666'
+  The extension prefix used on this server to send calls directly through automatic gain control (voice level) to a specific voicemail box. Default is '85026666666666'
     </item>
 
     <item pathId="answer_transfer_agent" sectionId="16" title="OSDial AD extension">
