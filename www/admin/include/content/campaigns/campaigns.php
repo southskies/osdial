@@ -1192,8 +1192,8 @@ if ($ADD==31) {
 			echo "	<td colspan=2 align=left width=50%>&nbsp;Description:<input type=text name=campaign_description size=36 maxlength=255 value=\"$campaign_description\">".helptag("osdial_campaigns-campaign_description")."</td>";
 			echo "</tr>";
 			echo "<tr>";
-			echo "	<td colspan=2 align=left valign=bottom title=\"$campaign_changedate\" style=font-size:14px;>&nbsp;&nbsp;Change Date: ". dateToLocal($link,'first',$campaign_changedate,$webClientAdjGMT,'',$webClientDST,1) . "&nbsp;".helptag("osdial_campaigns-campaign_changedate")."</td>";
-			echo "	<td colspan=2 align=left valign=bottom title=\"$campaign_logindate\" Xstyle=font-size:14px;>&nbsp;Login Date: ". dateToLocal($link,'first',$campaign_logindate,$webClientAdjGMT,'',$webClientDST,1)."&nbsp;".helptag("osdial_campaigns-campaign_logindate")."</td>";
+			echo "	<td colspan=2 align=left valign=bottom Xtitle=\"$campaign_changedate\">&nbsp;&nbsp;Change Date: ". dateToLocal($link,'first',$campaign_changedate,$webClientAdjGMT,'',$webClientDST,1) . "&nbsp;".helptag("osdial_campaigns-campaign_changedate")."</td>";
+			echo "	<td colspan=2 align=left valign=bottom Xtitle=\"$campaign_logindate\">&nbsp;Login Date: ". dateToLocal($link,'first',$campaign_logindate,$webClientAdjGMT,'',$webClientDST,1)."&nbsp;".helptag("osdial_campaigns-campaign_logindate")."</td>";
 			echo "</tr>";
 			echo "<tr>";
 			echo "	<td align=left width=25%>&nbsp;&nbsp;Allow No-Leads Logins: </td>";
@@ -1381,17 +1381,17 @@ if ($ADD==31) {
 			echo "<table width=100% cellpadding=0 cellspacing=3>";
 			echo "<tr><td align=left class=top_header_sect colspan=2 valign=top width=40%>Manual Dial Options $NotActiveManual <br /><br /></td></tr>";
 			echo "<tr><td align=center colspan=2><table width=60% cellpadding=0 cellspacing=0>";
-			echo "<tr><td align=left>Preview Force Dial Time: </td><td align=left class=font2><input type=text name=preview_force_dial_time size=3 maxlength=3 value=\"$preview_force_dial_time\"> in seconds, 0 disables".helptag("osdial_campaigns-preview_force_dial_time")."</td></tr>";
 			echo "<tr><td align=left>Manual Preview Default: </td><td align=left><select size=1 name=manual_preview_default><option>Y</option><option>N</option><option selected>$manual_preview_default</option></select>".helptag("osdial_campaigns-manual_preview_default")."</td></tr>";
+			echo "<tr><td align=left>Preview Force Dial Time: </td><td align=left class=font2><input type=text name=preview_force_dial_time size=3 maxlength=3 value=\"$preview_force_dial_time\"> in seconds, 0 disables".helptag("osdial_campaigns-preview_force_dial_time")."</td></tr>";
 			echo "<tr>";
-			echo "  <td align=left>Allow ManualDial HopperList:</td>";
+			echo "  <td align=left>Allow Manual Dial Hopper List:</td>";
 			echo "  <td align=left>";
 			echo select_yesno('allow_md_hopperlist',$allow_md_hopperlist);
 			echo "    </select>";
 			echo "    ".helptag("osdial_campaigns-allow_md_hopperlist")."";
 			echo "  </td>";
 			echo "</tr>";
-			echo "<tr><td align=left>Disable Manual Dial: </td><td align=left><select size=1 name=disable_manual_dial><option>Y</option><option>N</option><option SELECTED>$disable_manual_dial</option></select>".helptag("osdial_campaigns-disable_manual_dial")."</td></tr>";
+			echo "<tr><td align=left>Disable Manual Dial: </td><td align=left><select size=1 name=disable_manual_dial><option>Y</option><option>N</option><option SELECTED>$disable_manual_dial</option></select> ".helptag("osdial_campaigns-disable_manual_dial")."</td></tr>";
 			echo "</table></td></tr>";
 			echo "<tr><td align=right class=no-ul colspan=2><br />";
 			jump_section(1);
@@ -1406,7 +1406,7 @@ if ($ADD==31) {
 			echo "<div style=\"width:".$section_width_narrow."px;padding:5px;\" class=rounded-corners3>";
 			echo "<table width=100% cellpadding=0 cellspacing=3>";
 			echo "<tr><td align=left class=top_header_sect valign=top width=50%>Ratio Dial Options $NotActiveRatio<br /><br /></td></tr>";
-			echo "<tr><td align=center><table border=0 cellpadding=0 cellspacing=0 width=50%>";
+			echo "<tr><td align=center><table border=0 cellpadding=2 cellspacing=3 width=50%>";
 			echo "<tr><td align=left>Auto Dial Level: </td><td align=left nowrap><input type=text name=auto_dial_level size=6 maxlength=6 value=\"$auto_dial_level\" selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;4.0;4.5;5.0\"> ".helptag("osdial_campaigns-auto_dial_level")."</td></tr>";
 			
 // 			echo "<tr><td align=left>Auto Assist: </td><td align=left nowrap><select size=1 name=available_only_ratio_tally><option >Y</option><option>N</option><option SELECTED>$auto_assist</option></select>".helptag("osdial_campaigns-auto_dial_assist")."</td></tr>";
@@ -1468,8 +1468,8 @@ if ($ADD==31) {
 				<td align=left nowrap><input type=text name=adaptive_maximum_level size=6 maxlength=6 value=\"$adaptive_maximum_level\" selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;3.5;4.0;4.5;5.0;5.5;6.0;6.5;7.0;7.5;8.0;8.5;9.0;10.0\"> &nbsp;".helptag("osdial_campaigns-adaptive_maximum_level")."</td>
 				</tr>";
 			echo "<tr><td align=left>Manual Dial Level: </td>
-				<td align=left nowrap><input type=text name=ADAPT_auto_dial_level size=6 maxlength=6 value=\"$auto_dial_level\" disabled selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;3.5;4.0;4.5;5.0;5.5;6.0;6.5;7.0;7.5;8.0;8.5;9.0;10.0\"> 
-				<input type=checkbox onchange=\"if (this.checked) { document.forms[0].ADAPT_auto_dial_level.enable(); } else { document.forms[0].ADAPT_auto_dial_level.disable();}\" name=dial_level_override id=dial_level_override value=\"1\"><label for=dial_level_override class=font2>Activate</label> &nbsp; ".helptag("osdial_campaigns-auto_dial_level")."</td>
+				<td align=left nowrap><input type=text name=ADAPT_auto_dial_level size=6 maxlength=6 value=\"$adaptmanual_dial_level\" disabled selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;3.5;4.0;4.5;5.0;5.5;6.0;6.5;7.0;7.5;8.0;8.5;9.0;10.0\"> 
+				<input type=checkbox onchange=\"if (this.checked) { document.forms[0].ADAPT_auto_dial_level.enable(); } else { document.forms[0].ADAPT_auto_dial_level.disable();}\" name=dial_level_override id=dial_level_override value=\"1\"><label for=dial_level_override class=font2>Activate</label> &nbsp; ".helptag("osdial_campaigns-adaptmanual_dial_level")."</td>
 				</tr>";
 //             echo "<tr><td align=left>Auto Assist: </td><td align=left nowrap><select size=1 name=available_only_ratio_tally><option >Y</option><option>N</option><option SELECTED>$auto_assist_adapt</option></select>".helptag("osdial_campaigns-auto_dial_assist")."</td></tr>";
 			echo "<tr><td align=left>Available Only Tally: </td>
