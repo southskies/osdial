@@ -128,7 +128,7 @@ if ($ADD==11) {
 
 		
 		// ADD A NEW CAMPAIGN
-		echo "<div style='overflow:auto;'>";
+		echo "<div Xstyle='overflow:auto;'>";
 			echo "<br><div style='text-align:center;margin:0 100 0 0;'><font class=top_header color=$default_text size=+1>ADD A NEW CAMPAIGN</font><form action=$PHP_SELF method=POST></div><br><br>";
 			echo "<input type=hidden name=DB value=$DB>";
 			echo "<input type=hidden name=ADD value=21>";
@@ -226,7 +226,7 @@ if ($ADD==12)
 		$rslt=mysql_query($stmt, $link);
 		$people_to_print = mysql_num_rows($rslt);
 		
-		echo "<div style='float:left;width:100px;height=200px;margin:10 0 0 5'>";
+		echo "<div style='float:left;width:100px;margin:10 0 0 5'>";
 			echo "<table bgcolor=#ddd width=87 cellspacing=0 cellpadding=1 class=rounded-inset>";
 			echo "  <tr>";
 			echo "    <th bgcolor=#ccc class=rounded-tab style=font-size:11px;text-align:center;color:#009;>Campaigns</th>";
@@ -246,7 +246,7 @@ if ($ADD==12)
 		echo "</div>";
 
 		// COPY A CAMPAIGN
-		echo "<div style='overflow:auto;'>";
+		echo "<div Xstyle='overflow:auto;'>";
 		echo "<br><div style='text-align:center;margin:0 100 0 0;'><font class=top_header color=$default_text size=+1>COPY A CAMPAIGN</font><form action=$PHP_SELF method=POST></div><br><br>";
 		echo "<input type=hidden name=DB value=$DB>";
 		echo "<input type=hidden name=ADD value=20>";
@@ -1761,12 +1761,12 @@ if ($ADD==31) {
 			echo "<div style=\"width:".$section_width."px;padding:5px;\" class=rounded-corners>";
 			echo "<table width=100% cellpadding=0 cellspacing=3>";
 			echo "<tr><td align=left class=top_header_sect valign=top width=40%>Answering Machine Options</td></tr>";
-			echo "<tr><td align=center><br /><table border=0 cellpadding=0 cellspacing=3 width=55%>";
+			echo "<tr><td align=center><br /><table border=0 cellpadding=2 cellspacing=3 width=60%>";
 			echo "<tr><td align=left>Answering Message Extension: </td><td align=left>";
 			#echo "<input type=text name=am_message_exten size=10 maxlength=20 value=\"$am_message_exten\">";
 			echo extension_text_options($link, 'am_message_exten', $am_message_exten, 10, 20);
 			echo "".helptag("osdial_campaigns-am_message_exten")."</td></tr>";
-			echo "<tr><td align=left>Send AMD to AM Extension: </td><td align=left><select size=1 name=amd_send_to_vmx><option>Y</option><option>N</option><option>CUSTOM1</option><option>CUSTOM2</option><option SELECTED>$amd_send_to_vmx</option></select>".helptag("osdial_campaigns-amd_send_to_vmx")."</td></tr>";
+			echo "<tr><td align=left>Send AMD to A/M Extension: </td><td align=left><select size=1 name=amd_send_to_vmx><option>Y</option><option>N</option><option>CUSTOM1</option><option>CUSTOM2</option><option SELECTED>$amd_send_to_vmx</option></select>".helptag("osdial_campaigns-amd_send_to_vmx")."</td></tr>";
 			echo "</td></tr></table><br /></td></tr>";
 			echo "<tr><td align=right class=no-ul colspan=2>";
 			jump_section(1);
@@ -1779,8 +1779,8 @@ if ($ADD==31) {
 			echo "<a name=drop></a>";
 			echo "<div style=\"width:".$section_width."px;padding:5px;\" class=rounded-corners>";
 			echo "<table width=100% cellpadding=0 cellspacing=3>";
-			echo "<tr><td align=left class=top_header_sect valign=top width=40%>Dropped Calls Options</td></tr>";
-			echo "<tr><td align=center><br /><table border=0 cellpadding=1 cellspacing=3 width=65%>";
+			echo "<tr><td align=left class=top_header_sect valign=top width=45%>Dropped Calls Options</td></tr>";
+			echo "<tr><td align=center><br /><table border=0 cellpadding=2 cellspacing=3 width=60%>";
 			echo "<tr><td align=left>Drop Call Handling (Safe Harbor): </td><td align=left>";
 			echo "<select size=1 name=safe_harbor_message>";
 			$sel1='';
@@ -1814,12 +1814,12 @@ if ($ADD==31) {
 			echo "<div style=\"width:".$section_width."px;padding:5px;\" class=rounded-corners>";
 			echo "<table width=100% cellpadding=0 cellspacing=3>";
 			echo "  <tr><td class=top_header_sect colspan=4 align=left valign=top width=40%>Call Transfer Options</td></tr>";
-			echo "  <tr><td align=center><br />";
+			echo "  <tr><td align=center>";
 			echo "      <table border=0 cellpadding=0 cellspacing=3 width=98%>";
 			echo "  <tr>";
 			echo "    <td align=left width=30%>Allow Transfer and Closers:</td>";
 			echo "    <td align=left width=20%><select size=1 name=allow_closers><option>Y</option><option>N</option><option SELECTED>$allow_closers</option></select>".helptag("osdial_campaigns-allow_closers")."</td>";
-			echo "    <td align=left width=30%>Local Closer - XFER Hide:</td>";
+			echo "    <td align=left width=30%>Local Closer:</td>";
 			echo "    <td align=left width=20%>";
 			echo select_yesno('hide_xfer_local_closer',$hide_xfer_local_closer);
 			echo "      </select>";
@@ -1827,25 +1827,25 @@ if ($ADD==31) {
 			echo "    </td>";
 			echo "  </tr>";
 			echo "  <tr>";
-			echo "    <td align=left>Dial Override - XFER Hide:</td>";
+			echo "    <td align=left>Dial Override:</td>";
 			echo "    <td align=left>";
 			echo select_yesno('hide_xfer_dial_override',$hide_xfer_dial_override);
 			echo "      </select>";
 			echo "    ".helptag("osdial_campaigns-hide_xfer_dial_override")."</td>";
-			echo "    <td align=left>Hangup Xfer Line - XFER Hide:</td>";
+			echo "    <td align=left>Hangup Xfer Line:</td>";
 			echo "    <td align=left>";
 			echo select_yesno('hide_xfer_hangup_xfer',$hide_xfer_hangup_xfer);
 			echo "      </select>";
 			echo "    ".helptag("osdial_campaigns-hide_xfer_hangup_xfer")."</td>";
 			echo "  </tr>";
 			echo "  <tr>";
-			echo "    <td align=left>Leave 3Way Call - XFER Hide:</td>";
+			echo "    <td align=left>Leave 3Way Call:</td>";
 			echo "    <td align=left>";
 			echo select_yesno('hide_xfer_leave_3way',$hide_xfer_leave_3way);
 			echo "      </select>";
 			echo "    ".helptag("osdial_campaigns-hide_xfer_leave_3way")."";
 			echo "  </td>";
-			echo "  <td align=left>Dial With Customer - XFER Hide:</td>";
+			echo "  <td align=left>Dial With Customer:</td>";
 			echo "  <td align=left>";
 			echo select_yesno('hide_xfer_dial_with',$hide_xfer_dial_with);
 			echo "    </select>";
@@ -1853,24 +1853,24 @@ if ($ADD==31) {
 			echo "    </td>";
 			echo "  </tr>";
 			echo "  <tr>";
-			echo "    <td align=left>Hangup Both Lines - XFER Hide:</td>";
+			echo "    <td align=left>Hangup Both Lines:</td>";
 			echo "    <td align=left>";
 			echo select_yesno('hide_xfer_hangup_both',$hide_xfer_hangup_both);
 			echo "    </select>";
 			echo "    ".helptag("osdial_campaigns-hide_xfer_hangup_both")."</td>";
-			echo "    <td align=left>Blind Transfer - XFER Hide:</td>";
+			echo "    <td align=left>Blind Transfer:</td>";
 			echo "    <td align=left>";
 			echo select_yesno('hide_xfer_blind_xfer',$hide_xfer_blind_xfer);
 			echo "    </select>";
 			echo "    ".helptag("osdial_campaigns-hide_xfer_blind_xfer")."</td>";
 			echo "  </tr>";
 			echo "  <tr>";
-			echo "    <td align=left>Park Customer Dial - XFER Hide:</td>";
+			echo "    <td align=left>Park Customer Dial:</td>";
 			echo "    <td align=left>";
 			echo select_yesno('hide_xfer_park_dial',$hide_xfer_park_dial);
 			echo "    </select>";
 			echo "    ".helptag("osdial_campaigns-hide_xfer_park_dial")."</td>";
-			echo "    <td align=left>Blind VMail - XFER Hide:</td>";
+			echo "    <td align=left>Blind VMail:</td>";
 			echo "    <td align=left>";
 			echo select_yesno('hide_xfer_blind_vmail',$hide_xfer_blind_vmail);
 			echo "    </select>";
@@ -1888,7 +1888,7 @@ if ($ADD==31) {
 			echo "    </td>";
 			echo "  </tr>";
 			echo "<br /></td></tr>";
-			echo "<tr><td align=right class=no-ul colspan=4>";
+			echo "<tr><td align=right class=no-ul colspan=4><br/>";
 			jump_section(1);
 			echo "<input style='color:#1C4754' type=submit name=SUBMIT value=Submit></td></tr>";
 			echo "</table></td></tr>";
@@ -1950,7 +1950,7 @@ if ($ADD==31) {
 				echo "<tr><td align=left valign=top>Email Templates: </td><td align=left><select size=4 multiple name=\"email_templates[]\">";
 				echo get_email_templates($link, $email_templates);
 				echo "</select>".helptag("osdial_campaigns-email_templates")."</td></tr>";
-				echo "<tr><td align=left>Email Blacklist: </td><td align=left><input type=button name=email_blacklist value=\"EDIT BLACKLIST\" onclick=\"window.location='$PHP_SELF?ADD=3eb&SUB=2&campaign_id=$campaign_id';\"></td></tr>";
+				echo "<tr><td align=left>Email Blacklist: </td><td align=left><input type=button name=email_blacklist value=\"EDIT BLACKLIST\" onclick=\"window.location='$PHP_SELF?ADD=3eb&SUB=2&campaign_id=$campaign_id';\">".helptag("osdial_campaigns-email_blacklist")."</td></tr>";
 			}
 			echo "<tr><td align=left>Agent Pause Codes Active: </td><td align=left><select size=1 name=agent_pause_codes_active><option>Y</option><option>N</option><option SELECTED>$agent_pause_codes_active</option></select>".helptag("osdial_campaigns-agent_pause_codes_active")."</td></tr>";
 			echo "</td></tr></table><br /></td></tr>";
