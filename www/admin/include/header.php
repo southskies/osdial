@@ -1772,7 +1772,7 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
         echo "          <td width=6></td>\n";
         echo "          <td class=$phones_show_class align=center bgcolor=$phones_show_color width=175><span class=\"font2 fgdefault\"><a href=\"$PHP_SELF?ADD=10000000000\"> Show Phones </a></span></td>\n";
         echo "          <td class=$phones_add_class align=center bgcolor=$phones_add_color width=175><span class=\"font2 fgdefault\"><a href=\"$PHP_SELF?ADD=11111111111\"> Add A New Phone </a></span></td>\n";
-        echo "          <td class=$phones_vmail_class align=center bgcolor=$phones_vmail_color width=175><span class=\"font2 fgdefault\"><a href=\"$PHP_SELF?ADD=10000000000?#VMList\">Show VoiceMail List</a></span></td>\n";
+//         echo "          <td class=$phones_vmail_class align=center bgcolor=$phones_vmail_color width=175><span class=\"font2 fgdefault\"><a href=\"$PHP_SELF?ADD=10000000000?#VMList\">Show VoiceMail List</a></span></td>\n";
         echo "          <td bgcolor=$inactivemenu3_color class='rounded-menu2' colspan=2 width=400>&nbsp;</td>";
         echo "          <td width=6></td>\n";
         echo "        </tr>\n";
