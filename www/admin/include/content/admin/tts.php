@@ -57,6 +57,7 @@ if ($ADD=="11tts") {
         echo "<input type=hidden name=last_general_extension value=\"".($config['settings']['last_general_extension']+1)."\">\n";
 
         echo "<table class=shadedtable width=$section_width cellspacing=3>\n";
+        echo "  <tr bgcolor=$oddrows><td colspan=2>&nbsp;</td></tr>";
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right width=50%>Description: </td>\n";
         echo "    <td align=left><input type=text name=tts_description size=50 maxlength=100 value=\"\">".helptag("tts-description")."</td>\n";
@@ -74,6 +75,7 @@ if ($ADD=="11tts") {
         }
         echo "      </select>".helptag("tts-voice")."</td>\n";
         echo "  </tr>\n";
+        echo "  <tr bgcolor=$oddrows><td colspan=2>&nbsp;</td></tr>";
         echo "  <tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
         echo "</table></form></center>\n";
     } else {

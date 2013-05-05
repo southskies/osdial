@@ -32,6 +32,7 @@ if ($ADD=="11media") {
         echo "<input type=hidden name=last_general_extension value=\"".($config['settings']['last_general_extension']+1)."\">\n";
 
         echo "<table class=shadedtable width=$section_width cellspacing=3>\n";
+        echo "  <tr bgcolor=$oddrows><td colspan=2>&nbsp;</td></tr>";
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right width=50%>Description: </td>\n";
         echo "    <td align=left><input type=text name=media_description size=50 maxlength=100 value=\"\">".helptag("media-description")."</td>\n";
@@ -44,6 +45,7 @@ if ($ADD=="11media") {
         echo "    <td align=right width=50%>Media File: </td>\n";
         echo "    <td align=left><input type=file name=recfile>".helptag("media-filename")."</td>\n";
         echo "  </tr>\n";
+        echo "  <tr bgcolor=$oddrows><td colspan=2>&nbsp;</td></tr>";
         echo "  <tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
         echo "</table></center>\n";
     } else {
@@ -170,12 +172,14 @@ if ($ADD=="31media") {
         echo "<input type=hidden name=ADD value=41media>\n";
         echo "<input type=hidden name=media_id value=$media[id]>\n";
         echo "<input type=hidden name=last_general_extension value=\"".($config['settings']['last_general_extension']+1)."\">\n";
-        echo "<table class=shadedtable cellspacing=3>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>ID: </td><td align=left><font color=$default_text>" . $media['id'] . "</font></td></tr>\n";
+        echo "<table class=shadedtable cellspacing=3 width=600>\n";
+        echo "<tr bgcolor=$oddrows><td colspan=2>&nbsp;</td></tr>";
+        echo "<tr bgcolor=$oddrows><td align=right width=125>ID: </td><td align=left><font color=$default_text>" . $media['id'] . "</font></td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>FileName: </td><td align=left>$media[filename]".helptag("media-filename")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>MimeType: </td><td align=left>$media[mimetype]".helptag("media-mimetype")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Description: </td><td align=left><input type=text name=media_description size=50 maxlength=255 value=\"$media[description]\">".helptag("media-description")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Extension: </td><td align=left><input type=text name=media_extension size=10 maxlength=20 value=\"$media[extension]\" onclick=\"if (this.value=='') { this.value='".($config['settings']['last_general_extension']+1)."';}\">".helptag("media-extension")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td colspan=2>&nbsp;</td></tr>";
         echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
         echo "</TABLE></center>\n";
 
