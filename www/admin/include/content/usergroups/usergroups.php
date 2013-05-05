@@ -33,7 +33,7 @@ if ($ADD==111111) {
         echo "  <input type=hidden name=ADD value=211111>\n";
         echo "  <table class=shadedtable width=$section_width cellspacing=3>\n";
         echo "    <tr bgcolor=$oddrows>\n";
-        echo "      <td width=40% align=right>Group: </td>\n";
+        echo "      <td width=40% align=right>ID: </td>\n";
         echo "      <td align=left>\n";
         if ($LOG['multicomp_admin'] > 0) {
             $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
@@ -50,7 +50,7 @@ if ($ADD==111111) {
         echo "    </tr>\n";
         echo "    <tr bgcolor=$oddrows>\n";
         echo "      <td align=right>Description: </td>\n";
-        echo "      <td align=left><input type=text name=group_name size=40 maxlength=40> ".helptag("osdial_user_groups-group_name")."</td>\n";
+        echo "      <td align=left><input type=text name=group_name size=40 maxlength=40> ".helptag("osdial_user_groups-group_description")."</td>\n";
         echo "    </tr>\n";
         echo "    <tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
         echo "  </table>\n";
@@ -323,7 +323,7 @@ if ($ADD==311111) {
         echo "    </tr>\n";
         echo "    <tr bgcolor=$oddrows>\n";
         echo "      <td align=right>Description: </td>\n";
-        echo "      <td align=left><input type=text name=group_name size=40 maxlength=40 value=\"$group_name\"> ".helptag("osdial_user_groups-group_name")."</td>\n";
+        echo "      <td align=left><input type=text name=group_name size=40 maxlength=40 value=\"$group_name\"> ".helptag("osdial_user_groups-group_description")."</td>\n";
         echo "    </tr>\n";
         echo "    <tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
         echo "  </table>\n";

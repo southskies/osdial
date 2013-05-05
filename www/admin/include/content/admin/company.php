@@ -201,8 +201,8 @@ if ($ADD=="31comp") {
         echo "<input type=hidden name=ADD value=41comp>\n";
         echo "<input type=hidden name=company_id value=$comp[id]>\n";
         echo "<table class=shadedtable width=$section_width cellspacing=3>\n";
-        echo "<tr bgcolor=$oddrows><td align=right width=50%>Company Prefix: </td><td align=left><font color=$default_text>" . (($comp['id'] * 1) + 100) . "</font></td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Company Name: </td><td align=left><input type=text name=company_name size=30 maxlength=100 value=\"$comp[name]\">".helptag("companies-company_name")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right width=50%>Prefix: </td><td align=left><font color=$default_text>" . (($comp['id'] * 1) + 100) . "</font></td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Name: </td><td align=left><input type=text name=company_name size=30 maxlength=100 value=\"$comp[name]\">".helptag("companies-company_name")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Status: </td><td align=left><select name=company_status><option>INACTIVE</option><option>ACTIVE</option><option>SUSPENDED</option><option>TERMINATED</option><option selected>$comp[status]</option></select>".helptag("companies-status")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Enable Campaign IVR: </td><td align=left><select name=company_enable_campaign_ivr><option>0</option><option>1</option><option selected>$comp[enable_campaign_ivr]</option></select>".helptag("companies-enable_campaign_ivr")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Enable Campaign ListMix: </td><td align=left><select name=company_enable_campaign_listmix><option>0</option><option>1</option><option selected>$comp[enable_campaign_listmix]</option></select>".helptag("companies-enable_campaign_listmix")."</td></tr>\n";

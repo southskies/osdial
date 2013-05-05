@@ -30,10 +30,10 @@ if ($ADD==111111111111) {
         echo "<center><br><font color=$default_text size=+1>ADD A NEW SERVER</font><form action=$PHP_SELF method=POST><br><br>\n";
         echo "<input type=hidden name=ADD value=211111111111>\n";
         echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Server ID: </td><td align=left><input type=text name=server_id size=10 maxlength=10>".helptag("servers-server_id")."</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Server Description: </td><td align=left><input type=text name=server_description size=30 maxlength=255>".helptag("servers-server_description")."</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Server IP Address: </td><td align=left><input type=text name=server_ip size=20 maxlength=15>".helptag("servers-server_ip")."</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Server Profile: </td><td align=left><select size=1 name=server_profile><option>AIO</option><option>CONTROL</option><option>SQL</option><option>WEB</option><option selected>DIALER</option><option>ARCHIVE</option><option>OTHER</option></select>".helptag("servers-server_profile")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right width=400>ID: </td><td align=left><input type=text name=server_id size=10 maxlength=10>".helptag("servers-server_id")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Description: </td><td align=left><input type=text name=server_description size=30 maxlength=255>".helptag("servers-server_description")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>IP Address: </td><td align=left><input type=text name=server_ip size=20 maxlength=15>".helptag("servers-server_ip")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Profile: </td><td align=left><select size=1 name=server_profile><option>AIO</option><option>CONTROL</option><option>SQL</option><option>WEB</option><option selected>DIALER</option><option>ARCHIVE</option><option>OTHER</option></select>".helptag("servers-server_profile")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option></select>".helptag("servers-active")."</td></tr>\n";
         echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
         echo "</TABLE></center>\n";
@@ -357,14 +357,14 @@ if ($ADD==311111111111) {
         echo "<input type=hidden name=old_server_id value=\"$server_id\">\n";
         echo "<input type=hidden name=old_server_ip value=\"$row[2]\">\n";
         echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Server ID: </td><td align=left><input type=text name=server_id size=10 maxlength=10 value=\"$row[0]\">".helptag("servers-server_id")."</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Server Description: </td><td align=left><input type=text name=server_description size=30 maxlength=255 value=\"$row[1]\">".helptag("servers-server_description")."</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Server IP Address: </td><td align=left><input type=text name=server_ip size=20 maxlength=15 value=\"$row[2]\">".helptag("servers-server_ip")."</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Server Profile: </td><td align=left><select size=1 name=server_profile><option>AIO</option><option>CONTROL</option><option>SQL</option><option>WEB</option><option>DIALER</option><option>ARCHIVE</option><option>OTHER</option><option selected>$row[22]</option></select>".helptag("servers-server_profile")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>ID: </td><td align=left><input type=text name=server_id size=10 maxlength=10 value=\"$row[0]\">".helptag("servers-server_id")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Description: </td><td align=left><input type=text name=server_description size=30 maxlength=255 value=\"$row[1]\">".helptag("servers-server_description")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>IP Address: </td><td align=left><input type=text name=server_ip size=20 maxlength=15 value=\"$row[2]\">".helptag("servers-server_ip")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Profile: </td><td align=left><select size=1 name=server_profile><option>AIO</option><option>CONTROL</option><option>SQL</option><option>WEB</option><option>DIALER</option><option>ARCHIVE</option><option>OTHER</option><option selected>$row[22]</option></select>".helptag("servers-server_profile")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option selected>$row[3]</option></select>".helptag("servers-active")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Local GMT: </td><td align=left><select size=1 name=local_gmt><option>12.75</option><option>12.00</option><option>11.00</option><option>10.00</option><option>9.50</option><option>9.00</option><option>8.00</option><option>7.00</option><option>6.50</option><option>6.00</option><option>5.75</option><option>5.50</option><option>5.00</option><option>4.50</option><option>4.00</option><option>3.50</option><option>3.00</option><option>2.00</option><option>1.00</option><option>0.00</option><option>-1.00</option><option>-2.00</option><option>-3.00</option><option>-3.50</option><option>-4.00</option><option>-5.00</option><option>-6.00</option><option>-7.00</option><option>-8.00</option><option>-9.00</option><option>-10.00</option><option>-11.00</option><option>-12.00</option><option selected>$row[13]</option></select> (Do NOT Adjust for DST)".helptag("servers-local_gmt")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>System Performance: </td><td align=left><select size=1 name=sys_perf_log><option>Y</option><option>N</option><option selected>$row[17]</option></select>".helptag("servers-sys_perf_log")."</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Server Logs: </td><td align=left><select size=1 name=vd_server_logs><option>Y</option><option>N</option><option selected>$row[18]</option></select>".helptag("servers-vd_server_logs")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Logs: </td><td align=left><select size=1 name=vd_server_logs><option>Y</option><option>N</option><option selected>$row[18]</option></select>".helptag("servers-vd_server_logs")."</td></tr>\n";
         if (OSDpreg_match('/CONTROL|SQL|WEB|ARCHIVE|OTHER/',$row[22])) {
             echo "<input type=hidden name=asterisk_version value=\"$row[4]\">\n";
             echo "<input type=hidden name=max_osdial_trunks value=\"$row[5]\">\n";
@@ -719,7 +719,7 @@ if ($ADD=="399111111111111") {
         echo "<center><br><font color=$default_text size=+1>MODIFY ARCHIVE SERVER SETTINGS</font><br><form action=$PHP_SELF method=POST><br><br>\n";
         echo "<input type=hidden name=ADD value=499111111111111>\n";
         echo "<center><TABLE class=shadedtable width=$section_width cellspacing=3>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Archive Server Address: </td><td align=left><input type=text name=archive_hostname size=30 maxlength=30 value=\"$archive_hostname\">".helptag("archive-hostname")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Server Address: </td><td align=left><input type=text name=archive_hostname size=30 maxlength=30 value=\"$archive_hostname\">".helptag("archive-hostname")."</td></tr>\n";
 
         $atmsel = "<option selected>" . $archive_transfer_method . "</option>";
         if ($archive_transfer_method == "FTP") {
@@ -1008,7 +1008,7 @@ if ($ADD=="399211111111111") {
             $qc_server_batch_time        = "0";
         } elseif ($SUB>1) {
             # Modify server
-            echo "<br><font color=$default_text>MODIFY QC SERVER</font>\n";
+            echo "<br><br/><font class=top_header color=$default_text>MODIFY QC SERVER</font><br/><br/>\n";
             echo "<form action=$PHP_SELF method=POST>\n";
             echo "<input type=hidden name=qc_server_id value=$qc_server_id>\n";
 
@@ -1064,7 +1064,7 @@ if ($ADD=="399211111111111") {
 
         if ($SUB>1) {
             # List QC rules
-            echo "<br><font color=$default_text>QC SERVER RULES</font>\n";
+            echo "<br><br/><font class=top_header color=$default_text>QC SERVER RULES</font><br/><br/>\n";
             echo "<center><table class=shadedtable cellspacing=1 width=$section_width bgcolor=grey>\n";
             echo "  <tr class=tabheader>\n";
             echo "    <td align=center>#</td>\n";

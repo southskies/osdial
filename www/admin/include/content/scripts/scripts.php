@@ -28,8 +28,7 @@
 # ADD=7111111 view sample script with test variables
 ######################
 
-if ($ADD==7111111)
-{
+if ($ADD==7111111) {
 	##### TEST VARIABLES #####
 	$fullname = 'JOE AGENT';
 	$user = '1001';
@@ -101,220 +100,220 @@ if ($ADD==7111111)
 	$custom2 = 'custom2';
     $EFcustom2 = "<input type=text size=22 name=custom2 id=custom2 maxlength=100 value=\"$custom2\">";
 
-$stmt=sprintf("SELECT * FROM osdial_scripts WHERE script_id='%s';",mres($script_id));
-$rslt=mysql_query($stmt, $link);
-$row=mysql_fetch_row($rslt);
-$script_name =		$row[1];
-$script_text =		$row[3];
+    $stmt=sprintf("SELECT * FROM osdial_scripts WHERE script_id='%s';",mres($script_id));
+    $rslt=mysql_query($stmt, $link);
+    $row=mysql_fetch_row($rslt);
+    $script_name =		$row[1];
+    $script_text =		$row[3];
 
-$script_text = "<span style=\"display:block;\" id=\"SCRIPT_MAIN\">" . $script_text . "</span>";
-$buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='" . $script_id . "'",'');
-$hidebuttons = "document.getElementById('SCRIPT_MAIN').style.display='none';";
-if (is_array($buttons)) {
-    foreach ($buttons as $button) {
-        $hidebuttons .= "document.getElementById('SCRIPT_" . $button['script_button_id'] . "').style.display='none';";
+    $script_text = "<span style=\"display:block;\" id=\"SCRIPT_MAIN\">" . $script_text . "</span>";
+    $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='" . $script_id . "'",'');
+    $hidebuttons = "document.getElementById('SCRIPT_MAIN').style.display='none';";
+    if (is_array($buttons)) {
+        foreach ($buttons as $button) {
+            $hidebuttons .= "document.getElementById('SCRIPT_" . $button['script_button_id'] . "').style.display='none';";
+        }
     }
-}
 
 
-if (is_array($buttons)) {
-    foreach ($buttons as $button) {
-        $script_text .= "<span style=\"display:none;\" id=\"SCRIPT_" . $button['script_button_id'] . "\">";
-        $script_text .= "<center><input type=\"button\" value=\"TOP\" onclick=\"$hidebuttons document.getElementById('SCRIPT_MAIN').style.display='block';\"></center><br>";
-        $script_text .= $button['script_button_text'];
-        $script_text .= "</span>";
+    if (is_array($buttons)) {
+        foreach ($buttons as $button) {
+            $script_text .= "<span style=\"display:none;\" id=\"SCRIPT_" . $button['script_button_id'] . "\">";
+            $script_text .= "<center><input type=\"button\" value=\"TOP\" onclick=\"$hidebuttons document.getElementById('SCRIPT_MAIN').style.display='block';\"></center><br>";
+            $script_text .= $button['script_button_text'];
+            $script_text .= "</span>";
+        }
     }
-}
 
-if (OSDpreg_match("/iframe src/i",$script_text)) {
-	$vendor_lead_code = OSDpreg_replace('/ /','+',$vendor_lead_code);
-	$list_id = OSDpreg_replace('/ /','+',$list_id);
-	$gmt_offset_now = OSDpreg_replace('/ /','+',$gmt_offset_now);
-	$phone_code = OSDpreg_replace('/ /','+',$phone_code);
-	$phone_number = OSDpreg_replace('/ /','+',$phone_number);
-	$title = OSDpreg_replace('/ /','+',$title);
-	$first_name = OSDpreg_replace('/ /','+',$first_name);
-	$middle_initial = OSDpreg_replace('/ /','+',$middle_initial);
-	$last_name = OSDpreg_replace('/ /','+',$last_name);
-	$address1 = OSDpreg_replace('/ /','+',$address1);
-	$address2 = OSDpreg_replace('/ /','+',$address2);
-	$address3 = OSDpreg_replace('/ /','+',$address2);
-	$city = OSDpreg_replace('/ /','+',$city);
-	$state = OSDpreg_replace('/ /','+',$state);
-	$province = OSDpreg_replace('/ /','+',$province);
-	$postal_code = OSDpreg_replace('/ /','+',$postal_code);
-	$country_code = OSDpreg_replace('/ /','+',$country_code);
-	$gender = OSDpreg_replace('/ /','+',$gender);
-	$date_of_birth = OSDpreg_replace('/ /','+',$date_of_birth);
-	$alt_phone = OSDpreg_replace('/ /','+',$alt_phone);
-	$email = OSDpreg_replace('/ /','+',$email);
-	$custom1 = OSDpreg_replace('/ /','+',$custom1);
-	$custom2 = OSDpreg_replace('/ /','+',$custom2);
-	$comments = OSDpreg_replace('/ /','+',$comments);
-	$fullname = OSDpreg_replace('/ /','+',$fullname);
-	$user = OSDpreg_replace('/ /','+',$user);
-	$pass = OSDpreg_replace('/ /','+',$pass);
-	$lead_id = OSDpreg_replace('/ /','+',$lead_id);
-	$campaign = OSDpreg_replace('/ /','+',$campaign);
-	$phone_login = OSDpreg_replace('/ /','+',$phone_login);
-	$group = OSDpreg_replace('/ /','+',$group);
-	$channel_group = OSDpreg_replace('/ /','+',$channel_group);
-	$SQLdate = OSDpreg_replace('/ /','+',$SQLdate);
-	$epoch = OSDpreg_replace('/ /','+',$epoch);
-	$uniqueid = OSDpreg_replace('/ /','+',$uniqueid);
-	$customer_zap_channel = OSDpreg_replace('/ /','+',$customer_zap_channel);
-	$server_ip = OSDpreg_replace('/ /','+',$server_ip);
-	$SIPexten = OSDpreg_replace('/ /','+',$SIPexten);
-	$session_id = OSDpreg_replace('/ /','+',$session_id);
-	$organization = OSDpreg_replace('/ /','+',$organization);
-	$organization_title = OSDpreg_replace('/ /','+',$organization_title);
-}
-
-# old variable substitution
-$script_text = OSDpreg_replace('/--A--vendor_lead_code--B--/',$vendor_lead_code,$script_text);
-$script_text = OSDpreg_replace('/--A--list_id--B--/',$list_id,$script_text);
-$script_text = OSDpreg_replace('/--A--gmt_offset_now--B--/',$gmt_offset_now,$script_text);
-$script_text = OSDpreg_replace('/--A--phone_code--B--/',$phone_code,$script_text);
-$script_text = OSDpreg_replace('/--A--phone_number--B--/',$phone_number,$script_text);
-$script_text = OSDpreg_replace('/--A--title--B--/',$title,$script_text);
-$script_text = OSDpreg_replace('/--A--first_name--B--/',$first_name,$script_text);
-$script_text = OSDpreg_replace('/--A--middle_initial--B--/',$middle_initial,$script_text);
-$script_text = OSDpreg_replace('/--A--last_name--B--/',$last_name,$script_text);
-$script_text = OSDpreg_replace('/--A--address1--B--/',$address1,$script_text);
-$script_text = OSDpreg_replace('/--A--address2--B--/',$address2,$script_text);
-$script_text = OSDpreg_replace('/--A--address3--B--/',$address3,$script_text);
-$script_text = OSDpreg_replace('/--A--city--B--/',$city,$script_text);
-$script_text = OSDpreg_replace('/--A--state--B--/',$state,$script_text);
-$script_text = OSDpreg_replace('/--A--province--B--/',$province,$script_text);
-$script_text = OSDpreg_replace('/--A--postal_code--B--/',$postal_code,$script_text);
-$script_text = OSDpreg_replace('/--A--country_code--B--/',$country_code,$script_text);
-$script_text = OSDpreg_replace('/--A--gender--B--/',$gender,$script_text);
-$script_text = OSDpreg_replace('/--A--date_of_birth--B--/',$date_of_birth,$script_text);
-$script_text = OSDpreg_replace('/--A--alt_phone--B--/',$alt_phone,$script_text);
-$script_text = OSDpreg_replace('/--A--email--B--/',$email,$script_text);
-$script_text = OSDpreg_replace('/--A--custom1--B--/',$custom1,$script_text);
-$script_text = OSDpreg_replace('/--A--custom2--B--/',$custom2,$script_text);
-$script_text = OSDpreg_replace('/--A--comments--B--/',$comments,$script_text);
-$script_text = OSDpreg_replace('/--A--fullname--B--/',$fullname,$script_text);
-$script_text = OSDpreg_replace('/--A--fronter--B--/',$fronter,$script_text);
-$script_text = OSDpreg_replace('/--A--user--B--/',$user,$script_text);
-$script_text = OSDpreg_replace('/--A--pass--B--/',$pass,$script_text);
-$script_text = OSDpreg_replace('/--A--lead_id--B--/',$lead_id,$script_text);
-$script_text = OSDpreg_replace('/--A--campaign--B--/',$campaign,$script_text);
-$script_text = OSDpreg_replace('/--A--phone_login--B--/',$phone_login,$script_text);
-$script_text = OSDpreg_replace('/--A--group--B--/',$group,$script_text);
-$script_text = OSDpreg_replace('/--A--channel_group--B--/',$channel_group,$script_text);
-$script_text = OSDpreg_replace('/--A--SQLdate--B--/',$SQLdate,$script_text);
-$script_text = OSDpreg_replace('/--A--epoch--B--/',$epoch,$script_text);
-$script_text = OSDpreg_replace('/--A--uniqueid--B--/',$uniqueid,$script_text);
-$script_text = OSDpreg_replace('/--A--customer_zap_channel--B--/',$customer_zap_channel,$script_text);
-$script_text = OSDpreg_replace('/--A--server_ip--B--/',$server_ip,$script_text);
-$script_text = OSDpreg_replace('/--A--SIPexten--B--/',$SIPexten,$script_text);
-$script_text = OSDpreg_replace('/--A--session_id--B--/',$session_id,$script_text);
-
-#new variable substitution
-$script_text = OSDpreg_replace('/\[\[list_id\]\]/',$list_id,$script_text);
-$script_text = OSDpreg_replace('/\[\[gmt_offset_now\]\]/',$gmt_offset_now,$script_text);
-$script_text = OSDpreg_replace('/\[\[fullname\]\]/',$fullname,$script_text);
-$script_text = OSDpreg_replace('/\[\[fronter\]\]/',$fronter,$script_text);
-$script_text = OSDpreg_replace('/\[\[user\]\]/',$user,$script_text);
-$script_text = OSDpreg_replace('/\[\[pass\]\]/',$pass,$script_text);
-$script_text = OSDpreg_replace('/\[\[lead_id\]\]/',$lead_id,$script_text);
-$script_text = OSDpreg_replace('/\[\[campaign\]\]/',$campaign,$script_text);
-$script_text = OSDpreg_replace('/\[\[phone_login\]\]/',$phone_login,$script_text);
-$script_text = OSDpreg_replace('/\[\[group\]\]/',$group,$script_text);
-$script_text = OSDpreg_replace('/\[\[channel_group\]\]/',$channel_group,$script_text);
-$script_text = OSDpreg_replace('/\[\[SQLdate\]\]/',$SQLdate,$script_text);
-$script_text = OSDpreg_replace('/\[\[epoch\]\]/',$epoch,$script_text);
-$script_text = OSDpreg_replace('/\[\[uniqueid\]\]/',$uniqueid,$script_text);
-$script_text = OSDpreg_replace('/\[\[customer_zap_channel\]\]/',$customer_zap_channel,$script_text);
-$script_text = OSDpreg_replace('/\[\[server_ip\]\]/',$server_ip,$script_text);
-$script_text = OSDpreg_replace('/\[\[SIPexten\]\]/',$SIPexten,$script_text);
-$script_text = OSDpreg_replace('/\[\[session_id\]\]/',$session_id,$script_text);
-
-$script_text = OSDpreg_replace('/\[\[title\]\]/',             $title,$script_text);
-$script_text = OSDpreg_replace('/\[\[EFtitle\]\]/',           $EFtitle,$script_text);
-$script_text = OSDpreg_replace('/\[\[first_name\]\]/',        $first_name,$script_text);
-$script_text = OSDpreg_replace('/\[\[EFfirst_name\]\]/',      $EFfirst_name,$script_text);
-$script_text = OSDpreg_replace('/\[\[middle_initial\]\]/',    $middle_initial,$script_text);
-$script_text = OSDpreg_replace('/\[\[EFmiddle_initial\]\]/',  $EFmiddle_initial,$script_text);
-$script_text = OSDpreg_replace('/\[\[last_name\]\]/',         $last_name,$script_text);
-$script_text = OSDpreg_replace('/\[\[EFlast_name\]\]/',       $EFlast_name,$script_text);
-$script_text = OSDpreg_replace('/\[\[address1\]\]/',          $address1,$script_text);
-$script_text = OSDpreg_replace('/\[\[EFaddress1\]\]/',        $EFaddress1,$script_text);
-$script_text = OSDpreg_replace('/\[\[address2\]\]/',          $address2,$script_text);
-$script_text = OSDpreg_replace('/\[\[EFaddress2\]\]/',        $EFaddress2,$script_text);
-$script_text = OSDpreg_replace('/\[\[address3\]\]/',          $address3,$script_text);
-$script_text = OSDpreg_replace('/\[\[EFaddress3\]\]/',        $EFaddress3,$script_text);
-$script_text = OSDpreg_replace('/\[\[city\]\]/',              $city,$script_text);
-$script_text = OSDpreg_replace('/\[\[EFcity\]\]/',            $EFcity,$script_text);
-$script_text = OSDpreg_replace('/\[\[state\]\]/',             $state,$script_text);
-$script_text = OSDpreg_replace('/\[\[EFstate\]\]/',           $EFstate,$script_text);
-$script_text = OSDpreg_replace('/\[\[province\]\]/',          $province,$script_text);
-$script_text = OSDpreg_replace('/\[\[EFprovince\]\]/',        $EFprovince,$script_text);
-$script_text = OSDpreg_replace('/\[\[postal_code\]\]/',       $postal_code,$script_text);
-$script_text = OSDpreg_replace('/\[\[EFpostal_code\]\]/',     $EFpostal_code,$script_text);
-$script_text = OSDpreg_replace('/\[\[country_code\]\]/',      $country_code,$script_text);
-$script_text = OSDpreg_replace('/\[\[EFcountry_code\]\]/',    $EFcountry_code,$script_text);
-$script_text = OSDpreg_replace('/\[\[phone_code\]\]/',        $phone_code,$script_text);
-$script_text = OSDpreg_replace('/\[\[EFphone_code\]\]/',      $EFphone_code,$script_text);
-$script_text = OSDpreg_replace('/\[\[phone_number\]\]/',      $phone_number,$script_text);
-$script_text = OSDpreg_replace('/\[\[EFphone_number\]\]/',    $EFphone_number,$script_text);
-$script_text = OSDpreg_replace('/\[\[alt_phone\]\]/',         $alt_phone,$script_text);
-$script_text = OSDpreg_replace('/\[\[EFalt_phone\]\]/',       $EFalt_phone,$script_text);
-$script_text = OSDpreg_replace('/\[\[email\]\]/',             $email,$script_text);
-$script_text = OSDpreg_replace('/\[\[EFemail\]\]/',           $EFemail,$script_text);
-$script_text = OSDpreg_replace('/\[\[gender\]\]/',            $gender,$script_text);
-$script_text = OSDpreg_replace('/\[\[EFgender\]\]/',          $EFgender,$script_text);
-$script_text = OSDpreg_replace('/\[\[date_of_birth\]\]/',     $date_of_birth,$script_text);
-$script_text = OSDpreg_replace('/\[\[EFdate_of_birth\]\]/',   $EFdate_of_birth,$script_text);
-$script_text = OSDpreg_replace('/\[\[post_date\]\]/',         $post_date,$script_text);
-$script_text = OSDpreg_replace('/\[\[EFpost_date\]\]/',       $EFpost_date,$script_text);
-$script_text = OSDpreg_replace('/\[\[vendor_lead_code\]\]/',  $vendor_lead_code,$script_text);
-$script_text = OSDpreg_replace('/\[\[EFvendor_lead_code\]\]/',$EFvendor_lead_code,$script_text);
-$script_text = OSDpreg_replace('/\[\[comments\]\]/',          $comments,$script_text);
-$script_text = OSDpreg_replace('/\[\[EFcomments\]\]/',        $EFcomments,$script_text);
-$script_text = OSDpreg_replace('/\[\[custom1\]\]/',           $custom1,$script_text);
-$script_text = OSDpreg_replace('/\[\[EFcustom1\]\]/',         $EFcustom1,$script_text);
-$script_text = OSDpreg_replace('/\[\[custom2\]\]/',           $custom2,$script_text);
-$script_text = OSDpreg_replace('/\[\[EFcustom2\]\]/',         $EFcustom2,$script_text);
-$script_text = OSDpreg_replace('/\[\[organization\]\]/',      $organization,$script_text);
-$script_text = OSDpreg_replace('/\[\[EForganization\]\]/',    $EForganization,$script_text);
-$script_text = OSDpreg_replace('/\[\[organization_title\]\]/',$organization_title,$script_text);
-$script_text = OSDpreg_replace('/\[\[EForganization_title\]\]/',$EForganization_title,$script_text);
-
-$buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='" . $script_id . "'",'');
-if (is_array($buttons)) {
-    foreach ($buttons as $button) {
-        $script_text = OSDpreg_replace('/\{\{' . $button['script_button_id'] . '\}\}/imU', '{{' . $button['script_button_id'] . ':' . $button['script_button_label'] . '}}',$script_text);
-        $script_text = OSDpreg_replace('/\{\{' . $button['script_button_id'] . ':(.*)\}\}/imU', '<input type="button" value="$1" onclick="' . $hidebuttons . ' document.getElementById(\'SCRIPT_' . $button['script_button_id'] . '\').style.display=\'block\';">',$script_text);
+    if (OSDpreg_match("/iframe src/i",$script_text)) {
+        $vendor_lead_code = OSDpreg_replace('/ /','+',$vendor_lead_code);
+        $list_id = OSDpreg_replace('/ /','+',$list_id);
+        $gmt_offset_now = OSDpreg_replace('/ /','+',$gmt_offset_now);
+        $phone_code = OSDpreg_replace('/ /','+',$phone_code);
+        $phone_number = OSDpreg_replace('/ /','+',$phone_number);
+        $title = OSDpreg_replace('/ /','+',$title);
+        $first_name = OSDpreg_replace('/ /','+',$first_name);
+        $middle_initial = OSDpreg_replace('/ /','+',$middle_initial);
+        $last_name = OSDpreg_replace('/ /','+',$last_name);
+        $address1 = OSDpreg_replace('/ /','+',$address1);
+        $address2 = OSDpreg_replace('/ /','+',$address2);
+        $address3 = OSDpreg_replace('/ /','+',$address2);
+        $city = OSDpreg_replace('/ /','+',$city);
+        $state = OSDpreg_replace('/ /','+',$state);
+        $province = OSDpreg_replace('/ /','+',$province);
+        $postal_code = OSDpreg_replace('/ /','+',$postal_code);
+        $country_code = OSDpreg_replace('/ /','+',$country_code);
+        $gender = OSDpreg_replace('/ /','+',$gender);
+        $date_of_birth = OSDpreg_replace('/ /','+',$date_of_birth);
+        $alt_phone = OSDpreg_replace('/ /','+',$alt_phone);
+        $email = OSDpreg_replace('/ /','+',$email);
+        $custom1 = OSDpreg_replace('/ /','+',$custom1);
+        $custom2 = OSDpreg_replace('/ /','+',$custom2);
+        $comments = OSDpreg_replace('/ /','+',$comments);
+        $fullname = OSDpreg_replace('/ /','+',$fullname);
+        $user = OSDpreg_replace('/ /','+',$user);
+        $pass = OSDpreg_replace('/ /','+',$pass);
+        $lead_id = OSDpreg_replace('/ /','+',$lead_id);
+        $campaign = OSDpreg_replace('/ /','+',$campaign);
+        $phone_login = OSDpreg_replace('/ /','+',$phone_login);
+        $group = OSDpreg_replace('/ /','+',$group);
+        $channel_group = OSDpreg_replace('/ /','+',$channel_group);
+        $SQLdate = OSDpreg_replace('/ /','+',$SQLdate);
+        $epoch = OSDpreg_replace('/ /','+',$epoch);
+        $uniqueid = OSDpreg_replace('/ /','+',$uniqueid);
+        $customer_zap_channel = OSDpreg_replace('/ /','+',$customer_zap_channel);
+        $server_ip = OSDpreg_replace('/ /','+',$server_ip);
+        $SIPexten = OSDpreg_replace('/ /','+',$SIPexten);
+        $session_id = OSDpreg_replace('/ /','+',$session_id);
+        $organization = OSDpreg_replace('/ /','+',$organization);
+        $organization_title = OSDpreg_replace('/ /','+',$organization_title);
     }
-}
 
-$script_text = OSDpreg_replace('/\{\{DISPO:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="alert(\'Disposition as $1 and Hangup\');">',$script_text);
-$script_text = OSDpreg_replace('/\{\{DISPO_NORMAL:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="alert(\'Disposition as $1 and Hangup, No WebForms.\');">',$script_text);
-$script_text = OSDpreg_replace('/\{\{DISPO_WEBFORM1:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="alert(\'Disposition as $1 and Hangup, Open WebForm1.\');">',$script_text);
-$script_text = OSDpreg_replace('/\{\{DISPO_WEBFORM2:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="alert(\'Disposition as $1 and Hangup, Open WebForm2.\');">',$script_text);
-$script_text = OSDpreg_replace('/\[\[(\w+)\]\]/imU','<input type="text" value="$1" size="30">',$script_text);
+    # old variable substitution
+    $script_text = OSDpreg_replace('/--A--vendor_lead_code--B--/',$vendor_lead_code,$script_text);
+    $script_text = OSDpreg_replace('/--A--list_id--B--/',$list_id,$script_text);
+    $script_text = OSDpreg_replace('/--A--gmt_offset_now--B--/',$gmt_offset_now,$script_text);
+    $script_text = OSDpreg_replace('/--A--phone_code--B--/',$phone_code,$script_text);
+    $script_text = OSDpreg_replace('/--A--phone_number--B--/',$phone_number,$script_text);
+    $script_text = OSDpreg_replace('/--A--title--B--/',$title,$script_text);
+    $script_text = OSDpreg_replace('/--A--first_name--B--/',$first_name,$script_text);
+    $script_text = OSDpreg_replace('/--A--middle_initial--B--/',$middle_initial,$script_text);
+    $script_text = OSDpreg_replace('/--A--last_name--B--/',$last_name,$script_text);
+    $script_text = OSDpreg_replace('/--A--address1--B--/',$address1,$script_text);
+    $script_text = OSDpreg_replace('/--A--address2--B--/',$address2,$script_text);
+    $script_text = OSDpreg_replace('/--A--address3--B--/',$address3,$script_text);
+    $script_text = OSDpreg_replace('/--A--city--B--/',$city,$script_text);
+    $script_text = OSDpreg_replace('/--A--state--B--/',$state,$script_text);
+    $script_text = OSDpreg_replace('/--A--province--B--/',$province,$script_text);
+    $script_text = OSDpreg_replace('/--A--postal_code--B--/',$postal_code,$script_text);
+    $script_text = OSDpreg_replace('/--A--country_code--B--/',$country_code,$script_text);
+    $script_text = OSDpreg_replace('/--A--gender--B--/',$gender,$script_text);
+    $script_text = OSDpreg_replace('/--A--date_of_birth--B--/',$date_of_birth,$script_text);
+    $script_text = OSDpreg_replace('/--A--alt_phone--B--/',$alt_phone,$script_text);
+    $script_text = OSDpreg_replace('/--A--email--B--/',$email,$script_text);
+    $script_text = OSDpreg_replace('/--A--custom1--B--/',$custom1,$script_text);
+    $script_text = OSDpreg_replace('/--A--custom2--B--/',$custom2,$script_text);
+    $script_text = OSDpreg_replace('/--A--comments--B--/',$comments,$script_text);
+    $script_text = OSDpreg_replace('/--A--fullname--B--/',$fullname,$script_text);
+    $script_text = OSDpreg_replace('/--A--fronter--B--/',$fronter,$script_text);
+    $script_text = OSDpreg_replace('/--A--user--B--/',$user,$script_text);
+    $script_text = OSDpreg_replace('/--A--pass--B--/',$pass,$script_text);
+    $script_text = OSDpreg_replace('/--A--lead_id--B--/',$lead_id,$script_text);
+    $script_text = OSDpreg_replace('/--A--campaign--B--/',$campaign,$script_text);
+    $script_text = OSDpreg_replace('/--A--phone_login--B--/',$phone_login,$script_text);
+    $script_text = OSDpreg_replace('/--A--group--B--/',$group,$script_text);
+    $script_text = OSDpreg_replace('/--A--channel_group--B--/',$channel_group,$script_text);
+    $script_text = OSDpreg_replace('/--A--SQLdate--B--/',$SQLdate,$script_text);
+    $script_text = OSDpreg_replace('/--A--epoch--B--/',$epoch,$script_text);
+    $script_text = OSDpreg_replace('/--A--uniqueid--B--/',$uniqueid,$script_text);
+    $script_text = OSDpreg_replace('/--A--customer_zap_channel--B--/',$customer_zap_channel,$script_text);
+    $script_text = OSDpreg_replace('/--A--server_ip--B--/',$server_ip,$script_text);
+    $script_text = OSDpreg_replace('/--A--SIPexten--B--/',$SIPexten,$script_text);
+    $script_text = OSDpreg_replace('/--A--session_id--B--/',$session_id,$script_text);
 
-$script_text = OSDpreg_replace("/\n/","",$script_text);
+    #new variable substitution
+    $script_text = OSDpreg_replace('/\[\[list_id\]\]/',$list_id,$script_text);
+    $script_text = OSDpreg_replace('/\[\[gmt_offset_now\]\]/',$gmt_offset_now,$script_text);
+    $script_text = OSDpreg_replace('/\[\[fullname\]\]/',$fullname,$script_text);
+    $script_text = OSDpreg_replace('/\[\[fronter\]\]/',$fronter,$script_text);
+    $script_text = OSDpreg_replace('/\[\[user\]\]/',$user,$script_text);
+    $script_text = OSDpreg_replace('/\[\[pass\]\]/',$pass,$script_text);
+    $script_text = OSDpreg_replace('/\[\[lead_id\]\]/',$lead_id,$script_text);
+    $script_text = OSDpreg_replace('/\[\[campaign\]\]/',$campaign,$script_text);
+    $script_text = OSDpreg_replace('/\[\[phone_login\]\]/',$phone_login,$script_text);
+    $script_text = OSDpreg_replace('/\[\[group\]\]/',$group,$script_text);
+    $script_text = OSDpreg_replace('/\[\[channel_group\]\]/',$channel_group,$script_text);
+    $script_text = OSDpreg_replace('/\[\[SQLdate\]\]/',$SQLdate,$script_text);
+    $script_text = OSDpreg_replace('/\[\[epoch\]\]/',$epoch,$script_text);
+    $script_text = OSDpreg_replace('/\[\[uniqueid\]\]/',$uniqueid,$script_text);
+    $script_text = OSDpreg_replace('/\[\[customer_zap_channel\]\]/',$customer_zap_channel,$script_text);
+    $script_text = OSDpreg_replace('/\[\[server_ip\]\]/',$server_ip,$script_text);
+    $script_text = OSDpreg_replace('/\[\[SIPexten\]\]/',$SIPexten,$script_text);
+    $script_text = OSDpreg_replace('/\[\[session_id\]\]/',$session_id,$script_text);
+
+    $script_text = OSDpreg_replace('/\[\[title\]\]/',             $title,$script_text);
+    $script_text = OSDpreg_replace('/\[\[EFtitle\]\]/',           $EFtitle,$script_text);
+    $script_text = OSDpreg_replace('/\[\[first_name\]\]/',        $first_name,$script_text);
+    $script_text = OSDpreg_replace('/\[\[EFfirst_name\]\]/',      $EFfirst_name,$script_text);
+    $script_text = OSDpreg_replace('/\[\[middle_initial\]\]/',    $middle_initial,$script_text);
+    $script_text = OSDpreg_replace('/\[\[EFmiddle_initial\]\]/',  $EFmiddle_initial,$script_text);
+    $script_text = OSDpreg_replace('/\[\[last_name\]\]/',         $last_name,$script_text);
+    $script_text = OSDpreg_replace('/\[\[EFlast_name\]\]/',       $EFlast_name,$script_text);
+    $script_text = OSDpreg_replace('/\[\[address1\]\]/',          $address1,$script_text);
+    $script_text = OSDpreg_replace('/\[\[EFaddress1\]\]/',        $EFaddress1,$script_text);
+    $script_text = OSDpreg_replace('/\[\[address2\]\]/',          $address2,$script_text);
+    $script_text = OSDpreg_replace('/\[\[EFaddress2\]\]/',        $EFaddress2,$script_text);
+    $script_text = OSDpreg_replace('/\[\[address3\]\]/',          $address3,$script_text);
+    $script_text = OSDpreg_replace('/\[\[EFaddress3\]\]/',        $EFaddress3,$script_text);
+    $script_text = OSDpreg_replace('/\[\[city\]\]/',              $city,$script_text);
+    $script_text = OSDpreg_replace('/\[\[EFcity\]\]/',            $EFcity,$script_text);
+    $script_text = OSDpreg_replace('/\[\[state\]\]/',             $state,$script_text);
+    $script_text = OSDpreg_replace('/\[\[EFstate\]\]/',           $EFstate,$script_text);
+    $script_text = OSDpreg_replace('/\[\[province\]\]/',          $province,$script_text);
+    $script_text = OSDpreg_replace('/\[\[EFprovince\]\]/',        $EFprovince,$script_text);
+    $script_text = OSDpreg_replace('/\[\[postal_code\]\]/',       $postal_code,$script_text);
+    $script_text = OSDpreg_replace('/\[\[EFpostal_code\]\]/',     $EFpostal_code,$script_text);
+    $script_text = OSDpreg_replace('/\[\[country_code\]\]/',      $country_code,$script_text);
+    $script_text = OSDpreg_replace('/\[\[EFcountry_code\]\]/',    $EFcountry_code,$script_text);
+    $script_text = OSDpreg_replace('/\[\[phone_code\]\]/',        $phone_code,$script_text);
+    $script_text = OSDpreg_replace('/\[\[EFphone_code\]\]/',      $EFphone_code,$script_text);
+    $script_text = OSDpreg_replace('/\[\[phone_number\]\]/',      $phone_number,$script_text);
+    $script_text = OSDpreg_replace('/\[\[EFphone_number\]\]/',    $EFphone_number,$script_text);
+    $script_text = OSDpreg_replace('/\[\[alt_phone\]\]/',         $alt_phone,$script_text);
+    $script_text = OSDpreg_replace('/\[\[EFalt_phone\]\]/',       $EFalt_phone,$script_text);
+    $script_text = OSDpreg_replace('/\[\[email\]\]/',             $email,$script_text);
+    $script_text = OSDpreg_replace('/\[\[EFemail\]\]/',           $EFemail,$script_text);
+    $script_text = OSDpreg_replace('/\[\[gender\]\]/',            $gender,$script_text);
+    $script_text = OSDpreg_replace('/\[\[EFgender\]\]/',          $EFgender,$script_text);
+    $script_text = OSDpreg_replace('/\[\[date_of_birth\]\]/',     $date_of_birth,$script_text);
+    $script_text = OSDpreg_replace('/\[\[EFdate_of_birth\]\]/',   $EFdate_of_birth,$script_text);
+    $script_text = OSDpreg_replace('/\[\[post_date\]\]/',         $post_date,$script_text);
+    $script_text = OSDpreg_replace('/\[\[EFpost_date\]\]/',       $EFpost_date,$script_text);
+    $script_text = OSDpreg_replace('/\[\[vendor_lead_code\]\]/',  $vendor_lead_code,$script_text);
+    $script_text = OSDpreg_replace('/\[\[EFvendor_lead_code\]\]/',$EFvendor_lead_code,$script_text);
+    $script_text = OSDpreg_replace('/\[\[comments\]\]/',          $comments,$script_text);
+    $script_text = OSDpreg_replace('/\[\[EFcomments\]\]/',        $EFcomments,$script_text);
+    $script_text = OSDpreg_replace('/\[\[custom1\]\]/',           $custom1,$script_text);
+    $script_text = OSDpreg_replace('/\[\[EFcustom1\]\]/',         $EFcustom1,$script_text);
+    $script_text = OSDpreg_replace('/\[\[custom2\]\]/',           $custom2,$script_text);
+    $script_text = OSDpreg_replace('/\[\[EFcustom2\]\]/',         $EFcustom2,$script_text);
+    $script_text = OSDpreg_replace('/\[\[organization\]\]/',      $organization,$script_text);
+    $script_text = OSDpreg_replace('/\[\[EForganization\]\]/',    $EForganization,$script_text);
+    $script_text = OSDpreg_replace('/\[\[organization_title\]\]/',$organization_title,$script_text);
+    $script_text = OSDpreg_replace('/\[\[EForganization_title\]\]/',$EForganization_title,$script_text);
+
+    $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='" . $script_id . "'",'');
+    if (is_array($buttons)) {
+        foreach ($buttons as $button) {
+            $script_text = OSDpreg_replace('/\{\{' . $button['script_button_id'] . '\}\}/imU', '{{' . $button['script_button_id'] . ':' . $button['script_button_label'] . '}}',$script_text);
+            $script_text = OSDpreg_replace('/\{\{' . $button['script_button_id'] . ':(.*)\}\}/imU', '<input type="button" value="$1" onclick="' . $hidebuttons . ' document.getElementById(\'SCRIPT_' . $button['script_button_id'] . '\').style.display=\'block\';">',$script_text);
+        }
+    }
+
+    $script_text = OSDpreg_replace('/\{\{DISPO:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="alert(\'Disposition as $1 and Hangup\');">',$script_text);
+    $script_text = OSDpreg_replace('/\{\{DISPO_NORMAL:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="alert(\'Disposition as $1 and Hangup, No WebForms.\');">',$script_text);
+    $script_text = OSDpreg_replace('/\{\{DISPO_WEBFORM1:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="alert(\'Disposition as $1 and Hangup, Open WebForm1.\');">',$script_text);
+    $script_text = OSDpreg_replace('/\{\{DISPO_WEBFORM2:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="alert(\'Disposition as $1 and Hangup, Open WebForm2.\');">',$script_text);
+    $script_text = OSDpreg_replace('/\[\[(\w+)\]\]/imU','<input type="text" value="$1" size="30">',$script_text);
+
+    $script_text = OSDpreg_replace("/\n/","",$script_text);
 
 
-echo "Preview Script: $script_id<BR>\n";
-echo "<center>";
-echo "<table class=shadedtable width=600 cellpadding=10>";
-echo "  <tr bgcolor=$oddrows>";
-echo "    <td>";
-echo "      <center><b>$script_name</b></center>\n";
-echo "    </td>";
-echo "  </tr>";
-echo "  <tr bgcolor=$evenrows>";
-echo "    <td>";
-echo "$script_text\n";
-echo "    </td>";
-echo "  </tr>";
-echo "</table>";
-echo "</center>\n";
+    echo "Preview Script: $script_id<BR>\n";
+    echo "<center>";
+    echo "<table class=shadedtable width=600 cellpadding=10>";
+    echo "  <tr bgcolor=$oddrows>";
+    echo "    <td>";
+    echo "      <center><b>$script_name</b></center>\n";
+    echo "    </td>";
+    echo "  </tr>";
+    echo "  <tr bgcolor=$evenrows>";
+    echo "    <td>";
+    echo "$script_text\n";
+    echo "    </td>";
+    echo "  </tr>";
+    echo "</table>";
+    echo "</center>\n";
 
 }
 
@@ -979,7 +978,7 @@ tinyMCE.init({
 
     $script_text = OSDpreg_replace("/\n/","",$script_text);
 
-	echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY A $stypec</font><form name=scriptForm action=$PHP_SELF method=POST><br>\n";
+	echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY $stypec</font><form name=scriptForm action=$PHP_SELF method=POST><br>\n";
 	echo "<input type=hidden name=ADD value=4111111>\n";
 	echo "<input type=hidden name=script_id value=\"$script_id\">\n";
     if ($SUB != "") {

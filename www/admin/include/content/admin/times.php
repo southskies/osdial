@@ -34,8 +34,8 @@ if ($ADD==111111111)
 	echo "<input type=hidden name=ADD value=211111111>\n";
 	echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
 // 	echo "<tr bgcolor=$oddrows><td align=right width=30%>Call Time ID: </td><td align=left><input type=text name=call_time_id size=12 maxlength=10> (no spaces or punctuation)".helptag("osdial_call_times-call_time_id")."</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Call Time Name: </td><td align=left><input type=text name=call_time_name size=30 maxlength=30> (short description of the call time)".helptag("osdial_call_times-call_time_name")."</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Call Time Comments: </td><td align=left><input type=text name=call_time_comments size=50 maxlength=255> ".helptag("osdial_call_times-call_time_comments")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Name: </td><td align=left><input type=text name=call_time_name size=30 maxlength=30> (short description of the call time)".helptag("osdial_call_times-call_time_name")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Comments: </td><td align=left><input type=text name=call_time_comments size=50 maxlength=255> ".helptag("osdial_call_times-call_time_comments")."</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=center colspan=2>Day and time options will appear once you have created the Call Time Definition</td></tr>\n";
 	echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
@@ -277,9 +277,9 @@ echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY A CA
 echo "<input type=hidden name=ADD value=411111111>\n";
 echo "<input type=hidden name=call_time_id value=\"$call_time_id\">\n";
 echo "<table class=shadedtable cellspacing=1>";
-echo "<tr bgcolor=$oddrows><td align=right>Call Time ID: </td><td align=left colspan=3><B>$call_time_id</B>".helptag("osdial_call_times-call_time_id")."</td></tr>\n";
-echo "<tr bgcolor=$oddrows><td align=right>Call Time Name: </td><td align=left colspan=3><input type=text name=call_time_name size=40 maxlength=50 value=\"$call_time_name\"> (short description of the call time)".helptag("osdial_call_times-call_time_name")."</td></tr>\n";
-echo "<tr bgcolor=$oddrows><td align=right>Call Time Comments: </td><td align=left colspan=3><input type=text name=call_time_comments size=50 maxlength=255 value=\"$call_time_comments\"> ".helptag("osdial_call_times-call_time_comments")."</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>ID: </td><td align=left colspan=3><B>$call_time_id</B>".helptag("osdial_call_times-call_time_id")."</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>Name: </td><td align=left colspan=3><input type=text name=call_time_name size=40 maxlength=50 value=\"$call_time_name\"> (short description of the call time)".helptag("osdial_call_times-call_time_name")."</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>Comments: </td><td align=left colspan=3><input type=text name=call_time_comments size=50 maxlength=255 value=\"$call_time_comments\"> ".helptag("osdial_call_times-call_time_comments")."</td></tr>\n";
 echo "<tr bgcolor=$oddrows><td align=right>Default Start:</td><td align=left><input type=text name=ct_default_start size=5 maxlength=4 value=\"$ct_default_start\"> </td><td align=right>Default Stop:</td><td align=left><input type=text name=ct_default_stop size=5 maxlength=4 value=\"$ct_default_stop\"> ".helptag("osdial_call_times-ct_default_start")."</td></tr>\n";
 echo "<tr bgcolor=$oddrows><td align=right>Sunday Start:</td><td align=left><input type=text name=ct_sunday_start size=5 maxlength=4 value=\"$ct_sunday_start\"> </td><td align=right>Sunday Stop:</td><td align=left><input type=text name=ct_sunday_stop size=5 maxlength=4 value=\"$ct_sunday_stop\"> ".helptag("osdial_call_times-ct_sunday_start")."</td></tr>\n";
 echo "<tr bgcolor=$oddrows><td align=right>Monday Start:</td><td align=left><input type=text name=ct_monday_start size=5 maxlength=4 value=\"$ct_monday_start\"> </td><td align=right>Monday Stop:</td><td align=left><input type=text name=ct_monday_stop size=5 maxlength=4 value=\"$ct_monday_stop\"> ".helptag("osdial_call_times-ct_sunday_start")."</td></tr>\n";
@@ -288,7 +288,7 @@ echo "<tr bgcolor=$oddrows><td align=right>Wednesday Start:</td><td align=left><
 echo "<tr bgcolor=$oddrows><td align=right>Thursday Start:</td><td align=left><input type=text name=ct_thursday_start size=5 maxlength=4 value=\"$ct_thursday_start\"> </td><td align=right>Thursday Stop:</td><td align=left><input type=text name=ct_thursday_stop size=5 maxlength=4 value=\"$ct_thursday_stop\"> ".helptag("osdial_call_times-ct_sunday_start")."</td></tr>\n";
 echo "<tr bgcolor=$oddrows><td align=right>Friday Start:</td><td align=left><input type=text name=ct_friday_start size=5 maxlength=4 value=\"$ct_friday_start\"> </td><td align=right>Friday Stop:</td><td align=left><input type=text name=ct_friday_stop size=5 maxlength=4 value=\"$ct_friday_stop\"> ".helptag("osdial_call_times-ct_sunday_start")."</td></tr>\n";
 echo "<tr bgcolor=$oddrows><td align=right>Saturday Start:</td><td align=left><input type=text name=ct_saturday_start size=5 maxlength=4 value=\"$ct_saturday_start\"> </td><td align=right>Saturday Stop:</td><td align=left><input type=text name=ct_saturday_stop size=5 maxlength=4 value=\"$ct_saturday_stop\"> ".helptag("osdial_call_times-ct_sunday_start")."</td></tr>\n";
-echo "<tr bgcolor=$oddrows><td align=right>Add No-Call Periods to Recylce Delay: </td><td align=left colspan=3><select name=use_recycle_gap><option>N</option><option>Y</option><option>$use_recycle_gap</option></select>".helptag("osdial_call_times-use_recycle_gap")."</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=center colspan=4>Add No-Call Periods to Recycle Delay: <select name=use_recycle_gap><option>N</option><option>Y</option><option>$use_recycle_gap</option></select>".helptag("osdial_call_times-use_recycle_gap")."</td></tr>\n";
 echo "<tr class=tabfooter><td align=center class=tabbutton colspan=4><input type=submit name=SUBMIT value=SUBMIT></FORM></td></tr>\n";
 echo "</table><br><br>\n";
 
@@ -471,10 +471,10 @@ if ($ADD==1111111111)
 	echo "<center><br><font color=$default_text size=+1>ADD NEW STATE CALL TIME</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2111111111>\n";
 	echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=$oddrows><td align=right width=30%>State Call Time ID: </td><td align=left><input type=text name=call_time_id size=12 maxlength=10> (no spaces or punctuation)".helptag("osdial_call_times-call_time_id")."</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>State Call Time State: </td><td align=left><input type=text name=state_call_time_state size=4 maxlength=2> (no spaces or punctuation)".helptag("osdial_call_times-state_call_time_state")."</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>State Call Time Name: </td><td align=left><input type=text name=call_time_name size=30 maxlength=30> (short description of the call time)".helptag("osdial_call_times-call_time_name")."</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>State Call Time Comments: </td><td align=left><input type=text name=call_time_comments size=50 maxlength=255> ".helptag("osdial_call_times-call_time_comments")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right width=30%>ID: </td><td align=left><input type=text name=call_time_id size=12 maxlength=10> (no spaces or punctuation)".helptag("osdial_call_times-call_time_id")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>State: </td><td align=left><input type=text name=state_call_time_state size=4 maxlength=2> (no spaces or punctuation)".helptag("osdial_call_times-state_call_time_state")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Name: </td><td align=left><input type=text name=call_time_name size=30 maxlength=30> (short description of the call time)".helptag("osdial_call_times-call_time_name")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Comments: </td><td align=left><input type=text name=call_time_comments size=50 maxlength=255> ".helptag("osdial_call_times-call_time_comments")."</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=center colspan=2>Day and time options will appear once you have created the Call Time Definition</td></tr>\n";
 	echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
@@ -693,10 +693,10 @@ echo "<center><br><font color=$default_text size=+1>MODIFY A STATE CALL TIME</fo
 echo "<input type=hidden name=ADD value=4111111111>\n";
 echo "<input type=hidden name=call_time_id value=\"$call_time_id\">\n";
 echo "<TABLE class=shadedtable>";
-echo "<tr bgcolor=$oddrows><td align=right>Call Time ID: </td><td align=left colspan=3><B>$call_time_id</B>".helptag("osdial_call_times-call_time_id")."</td></tr>\n";
-echo "<tr bgcolor=$oddrows><td align=right>State Call Time State: </td><td align=left colspan=3><input type=text name=state_call_time_state size=4 maxlength=2 value=\"$state_call_time_state\"> ".helptag("osdial_call_times-state_call_time_state")."</td></tr>\n";
-echo "<tr bgcolor=$oddrows><td align=right>State Call Time Name: </td><td align=left colspan=3><input type=text name=call_time_name size=40 maxlength=50 value=\"$call_time_name\"> (short description of the call time)".helptag("osdial_call_times-call_time_name")."</td></tr>\n";
-echo "<tr bgcolor=$oddrows><td align=right>State Call Time Comments: </td><td align=left colspan=3><input type=text name=call_time_comments size=50 maxlength=255 value=\"$call_time_comments\"> ".helptag("osdial_call_times-call_time_comments")."</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>ID: </td><td align=left colspan=3><B>$call_time_id</B>".helptag("osdial_call_times-call_time_id")."</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>State: </td><td align=left colspan=3><input type=text name=state_call_time_state size=4 maxlength=2 value=\"$state_call_time_state\"> ".helptag("osdial_call_times-state_call_time_state")."</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>Name: </td><td align=left colspan=3><input type=text name=call_time_name size=40 maxlength=50 value=\"$call_time_name\"> (short description of the call time)".helptag("osdial_call_times-call_time_name")."</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>Comments: </td><td align=left colspan=3><input type=text name=call_time_comments size=50 maxlength=255 value=\"$call_time_comments\"> ".helptag("osdial_call_times-call_time_comments")."</td></tr>\n";
 echo "<tr bgcolor=$oddrows><td align=right>Default Start:</td><td align=left><input type=text name=ct_default_start size=5 maxlength=4 value=\"$ct_default_start\"> </td><td align=right>Default Stop:</td><td align=left><input type=text name=ct_default_stop size=5 maxlength=4 value=\"$ct_default_stop\"> ".helptag("osdial_call_times-ct_default_start")."</td></tr>\n";
 echo "<tr bgcolor=$oddrows><td align=right>Sunday Start:</td><td align=left><input type=text name=ct_sunday_start size=5 maxlength=4 value=\"$ct_sunday_start\"> </td><td align=right>Sunday Stop:</td><td align=left><input type=text name=ct_sunday_stop size=5 maxlength=4 value=\"$ct_sunday_stop\"> ".helptag("osdial_call_times-ct_sunday_start")."</td></tr>\n";
 echo "<tr bgcolor=$oddrows><td align=right>Monday Start:</td><td align=left><input type=text name=ct_monday_start size=5 maxlength=4 value=\"$ct_monday_start\"> </td><td align=right>Monday Stop:</td><td align=left><input type=text name=ct_monday_stop size=5 maxlength=4 value=\"$ct_monday_stop\"> ".helptag("osdial_call_times-ct_sunday_start")."</td></tr>\n";

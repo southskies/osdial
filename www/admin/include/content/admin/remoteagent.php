@@ -57,7 +57,7 @@ if ($ADD==11111) {
 		echo "</select>".helptag("osdial_remote_agents-campaign_id")."</td></tr>\n";
 		echo "<tr bgcolor=$oddrows><td align=right>Inbound Groups: </td><td align=left>\n";
 		echo "$groups_list";
-		echo "".helptag("osdial_remote_agents-closer_campaigns")."</td></tr>\n";
+		echo "&nbsp;&nbsp;&nbsp;".helptag("osdial_remote_agents-closer_campaigns")."</td></tr>\n";
 		echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 		echo "</TABLE></center>\n";
 	} else {
@@ -244,7 +244,7 @@ if ($ADD==31111)
 	echo "</select>".helptag("osdial_remote_agents-campaign_id")."</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Inbound Groups: </td><td align=left>\n";
 	echo "$groups_list";
-	echo "".helptag("osdial_remote_agents-closer_campaigns")."</td></tr>\n";
+	echo "&nbsp;&nbsp;&nbsp;".helptag("osdial_remote_agents-closer_campaigns")."</td></tr>\n";
 	echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	

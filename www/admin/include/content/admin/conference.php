@@ -38,7 +38,7 @@ if ($ADD==1111111111111)
 	echo "<center><br><font color=$default_text size=+1>ADD A NEW CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2111111111111>\n";
 	echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Conference Number: </td><td align=left><input type=text name=conf_exten size=8 maxlength=7> (digits only)".helptag("conferences-conf_exten")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Number: </td><td align=left><input type=text name=conf_exten size=8 maxlength=7> (digits only)".helptag("conferences-conf_exten")."</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Server IP: </td><td align=left><select size=1 name=server_ip>\n";
 
 	echo "$servers_list";
@@ -195,7 +195,7 @@ if ($ADD==3111111111111)
 	echo "<input type=hidden name=old_conf_exten value=\"$row[0]\">\n";
 	echo "<input type=hidden name=old_server_ip value=\"$row[1]\">\n";
 	echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Conference: </td><td align=left><input type=text name=conf_exten size=10 maxlength=7 value=\"$row[0]\">".helptag("conferences-conf_exten")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Number: </td><td align=left><input type=text name=conf_exten size=10 maxlength=7 value=\"$row[0]\">".helptag("conferences-conf_exten")."</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=311111111111&server_ip=$row[1]\">Server IP</a>: </td><td align=left><select size=1 name=server_ip>\n";
 
 	echo "$servers_list";
@@ -265,7 +265,7 @@ if ($ADD==11111111111111) {
 	echo "<center><br><font color=$default_text size=+1>ADD A NEW $t1 CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=21111111111111>\n";
 	echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Conference Number: </td><td align=left><input type=text name=conf_exten size=8 maxlength=7> (digits only)".helptag("conferences-conf_exten")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Number: </td><td align=left><input type=text name=conf_exten size=8 maxlength=7> (digits only)".helptag("conferences-conf_exten")."</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Server IP: </td><td align=left><select size=1 name=server_ip>\n";
 
 	echo "$servers_list";
@@ -394,7 +394,7 @@ if ($ADD==31111111111111) {
 	echo "<input type=hidden name=old_conf_exten value=\"$row[0]\">\n";
 	echo "<input type=hidden name=old_server_ip value=\"$row[1]\">\n";
 	echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Conference: </td><td align=left><input type=text name=conf_exten size=10 maxlength=7 value=\"$row[0]\">".helptag("conferences-conf_exten")."</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Number: </td><td align=left><input type=text name=conf_exten size=10 maxlength=7 value=\"$row[0]\">".helptag("conferences-conf_exten")."</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=311111111111&server_ip=$row[1]\">Server IP</a>: </td><td align=left><select size=1 name=server_ip>\n";
 
 	echo "$servers_list";

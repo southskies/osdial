@@ -35,7 +35,7 @@ if ($ADD==11111111111) {
         echo "<input type=hidden name=ADD value=21111111111>\n";
         echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
 
-        echo "<tr bgcolor=$oddrows><td align=right>Phone Extension: </td><td align=left><input type=text name=extension size=20 maxlength=100 value=\"\">".helptag("phones-extension")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Extension: </td><td align=left><input type=text name=extension size=20 maxlength=100 value=\"\">".helptag("phones-extension")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Dial Plan Number: </td><td align=left><input type=text name=dialplan_number size=15 maxlength=20 value=\"$row[1]\"> (digits only)".helptag("phones-dialplan_number")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Voicemail Box: </td><td align=left><input type=text name=voicemail_id size=10 maxlength=10 value=\"$row[2]\"> (digits only)".helptag("phones-voicemail_id")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Outbound CallerID Name: </td><td align=left><input type=text name=outbound_cid_name size=20 maxlength=40 value=\"$row[67]\">".helptag("phones-outbound_cid_name")."</td></tr>\n";
@@ -358,7 +358,7 @@ if ($ADD==31111111111) {
         echo "<tr bgcolor=$oddrows><td align=right>Default Pass: </td><td align=left><input type=text name=login_pass size=20 maxlength=20 value=\"$row[21]\">".helptag("phones-login_pass")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Default Campaign: </td><td align=left><input type=text name=login_campaign size=10 maxlength=10 value=\"$row[22]\">".helptag("phones-login_campaign")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Recording Exten: </td><td align=left><input type=text name=recording_exten size=10 maxlength=10 value=\"$row[28]\">".helptag("phones-recording_exten")."</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>DTMFSend Channel: </td><td align=left><input type=text name=dtmf_send_extension size=40 maxlength=100 value=\"$row[32]\">".helptag("phones-dtmf_send_extension")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>DTMF Send Channel: </td><td align=left><input type=text name=dtmf_send_extension size=40 maxlength=100 value=\"$row[32]\">".helptag("phones-dtmf_send_extension")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Fast Refresh: </td><td align=left><select size=1 name=enable_fast_refresh><option>1</option><option>0</option><option selected>$row[50]</option></select>".helptag("phones-enable_fast_refresh")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Fast Refresh Rate: </td><td align=left><input type=text size=5 name=fast_refresh_rate value=\"$row[51]\">(in ms)".helptag("phones-fast_refresh_rate")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Stop Rec after each call: </td><td align=left><select size=1 name=VDstop_rec_after_each_call><option>1</option><option>0</option><option selected>$row[54]</option></select>".helptag("phones-VDstop_rec_after_each_call")."</td></tr>\n";

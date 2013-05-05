@@ -776,13 +776,13 @@ if ($ADD == "3menu") {
     echo '<input type="hidden" name="oivr_id" value="' . $oivr['id'] . '">';
     echo '<input type="hidden" name="campaign_id" value="' . $campaign_id . '">';
 
-    echo "<table class=shadedtable cellspacing=1 cellpadding=5>\n";
+    echo "<table class=shadedtable cellspacing=1 cellpadding=5 width=550>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=$oddrows align=right>Name</td>\n";
+    echo "      <td bgcolor=$oddrows align=right>Name:</td>\n";
     echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="30" maxlength="50" name="oivr_name" value="' . $oivr['name'] . '"></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=$oddrows align=right>Announcement File</td>\n";
+    echo "      <td bgcolor=$oddrows align=right>Announcement File:</td>\n";
     echo '      <td bgcolor="' . $oddrows . '">';
     echo ivr_file_text_options($link, 'oivr_announcement', $oivr['announcement'], 20, 50);
     #echo media_file_text_options($link, 'oivr_announcement', $oivr['announcement'], 20, 50);
@@ -794,15 +794,15 @@ if ($ADD == "3menu") {
     echo '      </td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=$oddrows align=right>Announcement Repeat Attempt</td>\n";
+    echo "      <td bgcolor=$oddrows align=right>Announcement Repeat Attempt:</td>\n";
     echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="4" maxlength="2" name="oivr_repeat_loops" value="' . $oivr['repeat_loops'] . '"></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=$oddrows align=right>Wait for Key Attempts</td>\n";
+    echo "      <td bgcolor=$oddrows align=right>Wait for Key Attempts:</td>\n";
     echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="4" maxlength="2" name="oivr_wait_loops" value="' . $oivr['wait_loops'] . '"></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=$oddrows align=right>Wait Period per Attempt (ms)</td>\n";
+    echo "      <td bgcolor=$oddrows align=right>Wait Period per Attempt (ms):</td>\n";
     echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="4" maxlength="4" name="oivr_wait_timeout" value="' . $oivr['wait_timeout'] . '"></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
@@ -819,19 +819,19 @@ if ($ADD == "3menu") {
     echo "  </select></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=$oddrows align=right>Virtual Agents</td>\n";
+    echo "      <td bgcolor=$oddrows align=right>Virtual Agents:</td>\n";
     echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="4" maxlength="3" name="oivr_virtual_agents" value="' . $oivr['virtual_agents'] . '"> <font size=-1></font></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=$oddrows align=right>Reserve Agents</td>\n";
-    echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="4" maxlength="3" name="oivr_reserve_agents" value="' . $oivr['reserve_agents'] . '"> <font size=-1> Set to 10+ if Inbound.</font></td>';
+    echo "      <td bgcolor=$oddrows align=right>Reserve Agents:</td>\n";
+    echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="4" maxlength="3" name="oivr_reserve_agents" value="' . $oivr['reserve_agents'] . '"> <font size=-1> Set to 10, or higher, if Inbound.</font></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=$oddrows align=right>Allow Inbound</td>\n";
+    echo "      <td bgcolor=$oddrows align=right>Allow Inbound:</td>\n";
     echo '      <td bgcolor="' . $oddrows . '"><select name="oivr_allow_inbound"><option>Y</option><option>N</option><option selected>' . $oivr['allow_inbound'] . '</option></select></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=$oddrows align=right>Status</td>\n";
+    echo "      <td bgcolor=$oddrows align=right>Status:</td>\n";
     echo '      <td bgcolor="' . $oddrows . '">';
     echo '          <select name="oivr_status">';
     if ($oivr['status'] == 'ACTIVE') {
@@ -844,7 +844,7 @@ if ($ADD == "3menu") {
     echo '          </select>';
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=$oddrows align=right>Timeout Action</td>\n";
+    echo "      <td bgcolor=$oddrows align=right>Timeout Action:</td>\n";
     echo '      <td bgcolor="' . $oddrows . '">';
     echo '         <select name="oivr_timeout_action">';
     echo "              <option value=\"\"> - NONE - </option>";
@@ -872,7 +872,7 @@ if ($ADD == "3menu") {
     echo '      </td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=$oddrows align=right>Allow Agent Extensions</td>\n";
+    echo "      <td bgcolor=$oddrows align=right>Allow Agent Extensions:</td>\n";
     echo '      <td bgcolor="' . $oddrows . '"><select name="oivr_allow_agent_extensions"><option>Y</option><option>N</option><option selected>' . $oivr['allow_agent_extensions'] . '</option></select></td>';
     echo "  </tr>\n";
     echo "  <tr class=tabfooter>\n";

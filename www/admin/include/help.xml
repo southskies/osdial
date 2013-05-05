@@ -136,7 +136,7 @@
     </item>
 
     <item pathId="osdial_recording_override" sectionId="15" title="Recording Mode Override">
-        This option will override whatever the option is in the campaign for recording. DISABLED will not override the campaign recording setting. NEVER will disable recording on the client. ONDEMAND is the default and allows the agent to start and stop recording as needed. ALLCALLS will start recording on the client whenever a call is sent to an agent. ALLFORCE will start recording on the client whenever a call is sent to an agent giving the agent no option to stop recording. For ALLCALLS and ALLFORCE there is an option to use the Recording Delay to cut down on very short recordings and recude system load.
+        This option will override whatever the option is in the campaign for recording. DISABLED will not override the campaign recording setting. NEVER will disable recording on the client. ONDEMAND is the default and allows the agent to start and stop recording as needed. ALLCALLS will start recording on the client whenever a call is sent to an agent. ALLFORCE will start recording on the client whenever a call is sent to an agent giving the agent no option to stop recording. For ALLCALLS and ALLFORCE there is an option to use the Recording Delay to cut down on very short recordings and reduce system load.
     </item>
 
     <item pathId="campaign_ranks" sectionId="16" title="Campaign Ranks">
@@ -313,7 +313,7 @@
     </item>
 
     <item pathId="active" sectionId="7" title="Active">
-  This is where you set the campaign to Active or Inactive. If Inactive, noone can log into it.
+  This is where you set the campaign to Active or Inactive. If Inactive, no one can log into it.
     </item>
 
     <item pathId="park_ext" sectionId="8" title="Park Extension">
@@ -336,7 +336,7 @@
   "Y" will display the WebForm2 in an external window, "N" will display in a frame in the agent screen.
     </item>
 
-    <item pathId="allow_closers" sectionId="13" title="Allow Closers">
+    <item pathId="allow_closers" sectionId="13" title="Allow Tranfers and Closers">
   This is where you can set whether the users of this campaign will have the option to send the call to a closer.
     </item>
 
@@ -388,15 +388,10 @@
     </item>
 
     <item pathId="adapt_method" sectionId="23" title="Adapt Method">
-  This field is the way to define how dialing is to take place. AVERAGE works to maintain an average, or the dropped percentage, by not imposing hard limits as aggressively as the other two methods. This mode uses a strong formula which renders the other two out of date. While in ADAPTIVE mode you cannot change the Auto Dial Level, OSDial effectively monitors the dial level when in predictive dialing mode. Note: below a certain number of agents (usually 7) you are better of using Available Only Tally. HARD LIMIT will dial predictively up to the dropped percentage and then not allow aggressive dialing once the drop limit is reached until the percentage goes down again. TAPERED allows for running over the dropped percentage in the first half of the shift -as defined by call_time selected for campaign- and gets more strict as the shift goes on. Note: The latter two are replaced with the much improved AVERAGE and are only kept for backward compatibility.
+  This field is the way to define how dialing is to take place. AVERAGE works to maintain an average, or the dropped percentage, by not imposing hard limits as aggressively as the other two methods. This mode uses a strong formula which renders the other two out of date. While in ADAPTIVE mode you cannot change the Auto Dial Level, OSDial effectively monitors the dial level when in predictive dialing mode. Note: below a certain number of agents (usually 7) you are better off using Available Only Tally. HARD LIMIT will dial predictively up to the dropped percentage and then not allow aggressive dialing once the drop limit is reached until the percentage goes down again. TAPERED allows for running over the dropped percentage in the first half of the shift -as defined by call_time selected for campaign- and gets more strict as the shift goes on. Note: The latter two are replaced with the much improved AVERAGE and are only kept for backward compatibility.
     </item>
 	
-	<item pathId="dial_method" sectionId="23" title="Adapt Method">
-  This field is the way to define how dialing is to take place. If MANUAL then the auto_dial_level will be locked at 0 unless Dial Method is changed. If RATIO then the normal dialing a number of lines for Active agents.
-  AVERAGE works to maintain an average or the dropped percentage not imposing hard limits as aggressively as the other two methods. You cannot change the Auto Dial Level if you are in any of the ADAPT dial methods. Only the Dialer can change the dial level when in predictive dialing mode. HARD LIMIT will dial predictively up to the dropped percentage and then not allow aggressive dialing once the drop limit is reached until the percentage goes down again. TAPERED allows for running over the dropped percentage in the first half of the shift -as defined by call_time selected for campaign- and gets more strict as the shift goes on. 
-    </item>
-
-    <item pathId="auto_dial_assist" sectionId="24" title="Auto Assist">
+	<item pathId="auto_dial_assist" sectionId="24" title="Auto Assist">
     When active this option will use Available Only Tally automatically when you have less than 10 agents. This is an effective setting to avoid high drop % with few agents in Ratio mode.
     </item>
     
@@ -405,7 +400,7 @@
     </item>
 
     <item pathId="available_only_ratio_tally" sectionId="25" title="Available Only Tally">
-  This field if set to Y will leave out INCALL and QUEUE status agents when calculating the number of calls to dial when not in MANUAL dial mode. Default is N.
+  When set to Y, will leave out agents not available when calculating the number of calls to dial when not in MANUAL dial mode. Helps keeping the drop percentage low when runnin with few agents. Depending on list and talktime this can be helpful anytime with single digit number of agents.
     </item>
 
     <item pathId="adaptive_dropped_percentage" sectionId="26" title="Drop Percentage Limit">
@@ -414,6 +409,10 @@
 
     <item pathId="adaptive_maximum_level" sectionId="27" title="Maximum Adapt Dial Level">
   This field is where you set the limit of the number of lines you would like dialed per agent while using the adaptive dial method. This number can be higher than the Auto Dial Level if your hardware will support it. Value must be a positive number greater than one and can have decimal places Default 3.0. You can also enter a value manually.
+    </item>
+
+    <item pathId="adaptmanual_dial_level" sectionId="27" title="Manual Dial Level">
+  When actived, will temporarily drop you out of Adaptive mode into Manual dial mode.
     </item>
 
     <item pathId="adaptive_latest_server_time" sectionId="28" title="Latest Server Time">
@@ -446,11 +445,11 @@
  &lt;br&gt; - fewest_calls: orders by the number of calls received by an agent for that specific inbound group. Least calls first.
     </item>
 
-    <item pathId="campaign_call_time" sectionId="34" title="Campaign Call Time">
+    <item pathId="campaign_call_time" sectionId="34" title="Operation Call Time">
   This is where you set during which hours you would like to dial, as determined by the local time in the area &lt;b&gt;where you are calling from&lt;/b&gt;. This is controlled by area code and is adjusted for Daylight Savings time if applicable.  This is essentially an automated on/off switch based on time for the campaign and has no effect on the times you are calling into in various time-zones.
     </item>
 
-    <item pathId="local_call_time" sectionId="35" title="Local Call Time">
+    <item pathId="local_call_time" sectionId="35" title="Local Timezone Call Time">
   This is where you set during which hours you would like to dial, as determined by the local time in the area &lt;b&gt;in which you are calling&lt;/b&gt;. This is controlled by area code and is adjusted for Daylight Savings time if applicable. General Guidelines in the USA for Business to Business is 9am to 5pm and Business to Consumer calls is 9am to 9pm.
     </item>
 
@@ -459,7 +458,7 @@
     </item>
 
     <item pathId="preview_force_dial_time" sectionId="37" title="Preview Force Dial Time">
-  If this is set to a number greater than 0, then when in manual-preview dial mode, the call will be placed after the number of seconds set in this field as elapsed with the user needing to click DIAL LEAD.
+  If this is set to a number greater than 0, then when in manual-preview dial mode, the call will be placed after the number of seconds set in this field has elapsed with the user needing to click DIAL LEAD.
     </item>
 
     <item pathId="manual_preview_default" sectionId="38" title="Manual Preview Default">
@@ -614,8 +613,8 @@
   The method of mixing all of the parts of the List Mix Detail together. EVEN_MIX will mix leads from each part interleaved with the other parts, like this 1,2,3,1,2,3,1,2,3. IN_ORDER will put the leads in the order in which they are listed in the List Mix Detail screen 1,1,1,2,2,2,3,3,3. RANDOM will put them in RANDOM order 1,3,2,1,1,3,2,1,3. Default is IN_ORDER.
     </item>
 
-    <item pathId="manual_dial_list_id" sectionId="75" title="Manual Dial List ID">
-  The default list_id to be used when an agent placces a manual call and a new lead record is created in osdial_list. Default is 999. This field can contain digits only.
+    <item pathId="manual_dial_list_id" sectionId="75" title="Add Manual Dialed Calls To List">
+  The default list_id to be used when an agent places a manual call and a new lead record is created in osdial_list. Default is 999. This field can only contain digits.
     </item>
 
     <item pathId="answers_per_hour_limit" sectionId="76" title="Answers per hour limit">
@@ -623,7 +622,7 @@
     </item>
 
     <item pathId="allow_md_hopperlist" sectionId="77" title="Allow Manual Dial Hopper List">
-  If the Dial Method is MANUAL and this option is enabled, the can see what leads are in the hopper and can change the priorities, modifying that leads position within the hopper.
+  If the Dial Method is MANUAL and this option is enabled, the agent can see what leads are in the hopper and can change the priorities, modifying that leads position within the hopper.
     </item>
 
     <item pathId="use_custom2_callerid" sectionId="78" title="Use Custom2 CallerID">
@@ -634,35 +633,35 @@
   This specifies where the disposition will be made from. Normal means disposition from within OSDial, and Web Form 1 and 2 from either of these two.
     </item>
 
-    <item pathId="hide_xfer_dial_override" sectionId="80" title="Dial Override - XFER Hide">
+    <item pathId="hide_xfer_dial_override" sectionId="80" title="Dial Override">
   This is where you can set whether the users of this campaign will have the Dial Override option in their Transfer/Conf window.
     </item>
 
-    <item pathId="hide_xfer_hangup_xfer" sectionId="81" title="Hangup Xfer Line - XFER Hide">
+    <item pathId="hide_xfer_hangup_xfer" sectionId="81" title="Hangup Xfer Line">
   This is where you can set whether the users of this campaign will have the Hangup Xfer Line option in their Transfer/Conf window.
     </item>
 
-    <item pathId="hide_xfer_leave_3way" sectionId="82" title="Leave 3Way Call - XFER Hide">
+    <item pathId="hide_xfer_leave_3way" sectionId="82" title="Leave 3Way Call">
   This is where you can set whether the users of this campaign will have the Leave 3Way Call option in their Transfer/Conf window.
     </item>
 
-    <item pathId="hide_xfer_dial_with" sectionId="83" title="Dial With Customer - XFER Hide">
+    <item pathId="hide_xfer_dial_with" sectionId="83" title="Dial With Customer">
   This is where you can set whether the users of this campaign will have the Dial With Customer option in their Transfer/Conf window.
     </item>
 
-    <item pathId="hide_xfer_hangup_both" sectionId="84" title="Hangup Both Lines - XFER Hide">
+    <item pathId="hide_xfer_hangup_both" sectionId="84" title="Hangup Both Lines">
   This is where you can set whether the users of this campaign will have the Hangup Both Lines option in their Transfer/Conf window.
     </item>
 
-    <item pathId="hide_xfer_blind_xfer" sectionId="85" title="Blind Transfer - XFER Hide">
+    <item pathId="hide_xfer_blind_xfer" sectionId="85" title="Blind Transfer">
   This is where you can set whether the users of this campaign will have the Blind Transfer option in their Transfer/Conf window.
     </item>
 
-    <item pathId="hide_xfer_park_dial" sectionId="86" title="Park Customer Dial - XFER Hide">
+    <item pathId="hide_xfer_park_dial" sectionId="86" title="Park Customer Dial">
   This is where you can set whether the users of this campaign will have the Park Customer Dial option in their Transfer/Conf window.
     </item>
 
-    <item pathId="hide_xfer_blind_vmail" sectionId="87" title="Blind VMail - XFER Hide">
+    <item pathId="hide_xfer_blind_vmail" sectionId="87" title="Blind VMail">
   This is where you can set whether the users of this campaign will have the Blind VMail option in their Transfer/Conf window.
     </item>
 	
@@ -675,13 +674,17 @@
 	</item>
 	
 	<item pathId="osdial_delete_campaign" sectionId="90" title="Delete This Campaign">
-  Deleting this campaign will stop any activity related to your life.
+  Deleting this campaign might get you fired. Better check again!
 	</item>
 
 	<item pathId="email_templates" sectionId="91" title="Email Templates">
   The selected email templates will be available for the agent based on the options defined in each template.
 	</item>
-	
+
+	<item pathId="email_blacklist" sectionId="91" title="Email Blacklist">
+  A list of email addresses which will not receive any email.
+    </item>
+    	
   </section>
 
 
@@ -755,7 +758,7 @@
     </item>
 
     <item pathId="group_name" sectionId="2" title="Group Name">
-  This is the description of the group, it must be between 2 and 30 characters in length. Cannot include dashes, plusses or spaces .
+  This is the description of the group, it must be between 2 and 30 characters in length. Cannot include dashes, plus signs or spaces.
     </item>
 
     <item pathId="group_color" sectionId="3" title="Group Color">
@@ -822,7 +825,7 @@
   If the Drop Trigger event occurs, EXTENSION (Y) will transfer to the Drop Extension, VOICEMAIL (N) will transfer to the Drop Voicemail box.
     </item>
 
-    <item pathId="voicemail_ext" sectionId="17" title="Drop Voicemail">
+    <item pathId="voicemail_ext" sectionId="17" title="Voicemail">
   If defined, calls that would normally DROP would instead be directed to this voicemail box to hear and leave a message.
     </item>
 
@@ -835,7 +838,7 @@
     </item>
 
     <item pathId="after_hours_action" sectionId="20" title="After Hours Action">
-  The action to perform if it is after hours as defined in the call time for this inbound group. HANGUP will immediately hangup the call, MESSASGE will play the file in the After Hours Message Filenam field, EXTENSION will send the call to the After Hours Extension in the dialplan and VOICEMAIL will send the call to the voicemail box listed in the After Hours Voicemail field. Default is MESSAGE.
+  The action to perform if it is after hours as defined in the call time for this inbound group. HANGUP will immediately hangup the call, MESSAGE will play the file in the After Hours Message Filename field, EXTENSION will send the call to the After Hours Extension in the dialplan and VOICEMAIL will send the call to the voicemail box listed in the After Hours Voicemail field. Default is MESSAGE.
     </item>
 
     <item pathId="after_hours_message_filename" sectionId="21" title="After Hours Message Filename">
@@ -867,7 +870,7 @@
     </item>
 
     <item pathId="agent_alert_exten" sectionId="28" title="Agent Alert Extension">
-  The extension to send into the agent session to announce that a call is coming to the agent. This extension should have a Playback of an audio file. To not use this function set this to X. Default is X.
+  The extension to send into the agent session to announce that a call is coming to the agent. This extension should have a Playback of an audio file. To not use this function set this to 8304. Default is 8304.
     </item>
 
     <item pathId="agent_alert_delay" sectionId="29" title="Agent Alert Delay">
@@ -991,12 +994,12 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
 
 
 
-  <section pathId="osdial_user_groups" sectionId="13" title="User Group">
+  <section pathId="osdial_user_groups" sectionId="13" title="Group ID">
     <item pathId="user_group" sectionId="1" title="User Group">
-  This is the short name of a OSDial User group, try not to use any spaces or punctuation for this field. max 20 characters, minimum of 2 characters.
+  This is the ID of a OSDial User group, do not to use any spaces or punctuation for this field. Max 20 characters, minimum of 2 characters.
     </item>
 
-    <item pathId="group_name" sectionId="2" title="Group Name">
+    <item pathId="group_description" sectionId="2" title="Description">
   This is the description of the OSDial user group max of 40 characters.
     </item>
 
@@ -1008,8 +1011,12 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
   This is a selectable list of Inbound Groups to which members of this user group can, if permitted under the agent and campaign settings, receive calls from. The ALL-INGROUP option allows the users in this group to be configured to use any and all InGroups, as selected under their Agent and Campaign settings.
     </item>
 
+    <item pathId="allowed_scripts" sectionId="4" title="Allowed Scripts">
+  This is a selectable list of Inbound Scrpts to which members of this user group can, if permitted under the agent and campaign settings, use. The ALL-INGROUP option allows the users in this group to be configured to use any and all Scripts, as selected under their Agent and Campaign settings.
+    </item>
+
     <item pathId="allowed_email_templates" sectionId="5" title="Allowed Email Templates">
-  This is a selectable list of Email Termplates from which the members of this user group can use. The ALL-EMAIL-TEMPLATES option allows the users in this group to use any email template on the system.
+  This is a selectable list of Email Templates from which the members of this user group can use. The ALL-EMAIL-TEMPLATES option allows the users in this group to use any email template on the system.
     </item>
 
     <item pathId="agent_reports" sectionId="6" title="Agent / Usergroup Report Permissions">
@@ -1037,11 +1044,11 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
 
   <section pathId="osdial_scripts" sectionId="14" title="Scripts">
     <item pathId="script_id" sectionId="1" title="Script ID">
-  This is the short name of a OSDial Script. This needs to be a unique identifier. Try not to use any spaces or punctuation for this field. max 10 characters, minimum of 2 characters.
+  This is the ID of a OSDial Script. This needs to be a unique identifier. Try not to use any spaces or punctuation for this field. max 10 characters, minimum of 2 characters.
     </item>
 
-    <item pathId="script_name" sectionId="2" title="Script Name">
-  This is the title of a OSDial Script. This is a short summary of the script. max 50 characters, minimum of 2 characters. There should be no spaces or punctuation of any kind in theis field.
+    <item pathId="script_name" sectionId="2" title="Script Description">
+  This is the descripion of a OSDial Script. This is a short summary of the script. max 50 characters, minimum of 2 characters. There should be no spaces or punctuation of any kind in theis field.
     </item>
 
     <item pathId="script_comments" sectionId="3" title="Script Comments">
@@ -1085,15 +1092,15 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
 
 
   <section pathId="osdial_call_times" sectionId="16" title="Call Times">
-    <item pathId="call_time_id" sectionId="1" title="Call Time ID">
+    <item pathId="call_time_id" sectionId="1" title="ID">
   This is the short name of a OSDial Call Time Definition. This needs to be a unique identifier. Do not use any spaces or punctuation for this field. max 10 characters, minimum of 2 characters.
     </item>
 
-    <item pathId="call_time_name" sectionId="2" title="Call Time Name">
+    <item pathId="call_time_name" sectionId="2" title="Name">
   This is a more descriptive name of the Call Time Definition. This is a short summary of the Call Time definition. max 30 characters, minimum of 2 characters.
     </item>
 
-    <item pathId="call_time_comments" sectionId="3" title="Call Time Comments">
+    <item pathId="call_time_comments" sectionId="3" title="Comments">
   This is where you can place comments for a OSDial Call Time Definition such as -10am to 4pm with extra call state restrictions-.  max 255 characters.
     </item>
 
@@ -1105,11 +1112,11 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
   These are the custom times per day that can be set for the call time definition. same rules apply as with the Default start and stop times.
     </item>
 
-    <item pathId="ct_state_call_times" sectionId="6" title="State Call Time Definitions">
+    <item pathId="ct_state_call_times" sectionId="6" title="Definitions">
   This is the list of State specific call time definitions that are followed in this Call Time Definition.
     </item>
 
-    <item pathId="state_call_time_state" sectionId="7" title="State Call Time State">
+    <item pathId="state_call_time_state" sectionId="7" title="State">
   This is the two letter code for the state that this calling time definition is for. For this to be in effect the local call time that is set in the campaign must have this state call time record in it as well as all of the leads having two letter state codes in them.
     </item>
 
@@ -1122,17 +1129,17 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
 
   <section pathId="osdial_list_loader" sectionId="17" title="List Loader">
     <item pathId="osdial_list_loader" sectionId="1" title="List Loader">
-The OSDial basic web-based lead loader is designed simply to take a lead file - up to 8MB in size - that is either tab or pipe delimited and load it into the osdial_list table. The lead loader allows for field choosing and TXT- Plain Text, CSV- Comma Separated Values and XLS- Excel file formats. The lead loader does not do data validation, but it does allow you to check for duplicates in itself, within the campaign or within the entire system. Also, make ensure that you have created the list that these leads are to be under so that you can use them. Here is a list of the fields in their proper order for the lead files:
+The OSDial basic web-based lead loader is designed simply to take a lead file - up to 8MB in size - that is either tab or pipe delimited and load it into the osdial_list table. The lead loader allows for field choosing and TXT- Plain Text, CSV- Comma Separated Values and XLS- Excel file formats. The lead loader does not do data validation, but it does allow you to check for duplicates in itself, within the campaign or within the entire system. Also, make sure that you have created the list that these leads are to be under so that you can use them. Here is a list of the fields in their proper order for the lead files:
 	&lt;ol&gt;&lt;li&gt;Vendor Lead Code - shows up in the Vendor ID field of the GUI&lt;/li&gt;&lt;li&gt;Source Code - internal use only for admins and DBAs&lt;/li&gt;&lt;li&gt;List ID - the list number that these leads will show up under&lt;/li&gt;&lt;li&gt;Phone Code - the prefix for the phone number - 1 for US, 01144 for UK, 01161 for AUS, etc&lt;/li&gt;&lt;li&gt;Phone Number - must be at least 8 digits long&lt;/li&gt;&lt;li&gt;Title - title of the customer - Mr. Ms. Mrs, etc...&lt;/li&gt;&lt;li&gt;First Name&lt;/li&gt;&lt;li&gt;Middle Initial&lt;/li&gt;&lt;li&gt;Last Name&lt;/li&gt;&lt;li&gt;Address Line 1&lt;/li&gt;&lt;li&gt;Address Line 2&lt;/li&gt;&lt;li&gt;Address Line 3&lt;/li&gt;&lt;li&gt;City&lt;/li&gt;&lt;li&gt;State - limited to 2 characters&lt;/li&gt;&lt;li&gt;Province&lt;/li&gt;&lt;li&gt;Postal Code&lt;/li&gt;&lt;li&gt;Country&lt;/li&gt;&lt;li&gt;Gender&lt;/li&gt;&lt;li&gt;Date of Birth&lt;/li&gt;&lt;li&gt;Alternate Phone Number&lt;/li&gt;&lt;li&gt;Email Address&lt;/li&gt;&lt;li&gt;Custom1&lt;/li&gt;&lt;li&gt;Comments&lt;/li&gt;&lt;/ol&gt;
 
-&lt;br&gt;NOTES: The Excel Lead loader functionality is enabled by a series of perl scripts and needs to have a properly configured /etc/osdial.conf file in place on the web server. Also, a couple perl modules must be loaded for it to work as well - OLE-Storage_Lite and Spreadsheet-ParseExcel. You can check for runtime errors in these by looking at your apache error_log file. Also, for duplication checks against gampaign lists, the list that has new leads going into it does need to be created in the system before you start to load the leads.
+&lt;br&gt;NOTES: The Excel Lead loader functionality is enabled by a series of perl scripts and needs to have a properly configured /etc/osdial.conf file in place on the web server. Also, a couple perl modules must be loaded for it to work as well - OLE-Storage_Lite and Spreadsheet-ParseExcel. You can check for runtime errors in these by looking at your apache error_log file. Also, for duplication checks against campaign lists, the list that has new leads going into it does need to be created in the system before you start to load the leads.
     </item>
   </section>
 
 
 
   <section pathId="phones" sectionId="18" title="Phones">
-    <item pathId="extension" sectionId="1" title="Phone extension">
+    <item pathId="extension" sectionId="1" title="Phone Extension">
   This field is where you put the phones name as it appears to Asterisk not including the protocol or slash at the beginning. For Example: for the SIP phone 1001 the Phone extension would be 1001. Make sure to set the Protocol below correctly for your type of phone.
     </item>
 
@@ -1220,15 +1227,15 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
   This is the password that the GUI clients for this phone will use to access the Database where the server data resides.
     </item>
 
-    <item pathId="login_user" sectionId="23" title="OSDial Default Agent">
+    <item pathId="login_user" sectionId="23" title="Default Agent">
   This is to place a default value in the OSDial agent field whenever this phone user opens the OSDial client app. Leave blank for no agent.
     </item>
 
-    <item pathId="login_pass" sectionId="24" title="OSDial Default Pass">
-  This is to place a default value in the OSDial password field whenever this phone user opens the OSDial client app. Leave blank for no pass.
+    <item pathId="login_pass" sectionId="24" title="Default Password">
+  This is to place a default value in the OSDial password field whenever this phone user opens the OSDial client app. Leave blank for no password.
     </item>
 
-    <item pathId="login_campaign" sectionId="25" title="OSDial Default Campaign">
+    <item pathId="login_campaign" sectionId="25" title="Default Campaign">
   This is to place a default value in the OSDial campaign field whenever this phone user opens the OSDial client app. Leave blank for no campaign.
     </item>
 
@@ -1253,7 +1260,7 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
     </item>
 
     <item pathId="recording_exten" sectionId="31" title="Recording Exten">
-  This is the dial plan extension for the recording extension that is used to drop into meetme conferences to record them. It usually lasts upto one hour if not stopped. verify with extensions.conf file before changing.
+  This is the dial plan extension for the recording extension that is used to drop into meetme conferences to record them. It usually lasts up to one hour if not stopped. verify with extensions.conf file before changing.
     </item>
 
     <item pathId="voicemail_exten" sectionId="32" title="VMAIL Main Exten">
@@ -1268,7 +1275,7 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
   This is the dial plan context that this phone primarily uses. It is assumed that all numbers dialed by the client apps are using this context so it is a good idea to make sure this is the most wide context possible. verify with extensions.conf file before changing.
     </item>
 
-    <item pathId="dtmf_send_extension" sectionId="35" title="DTMF send Channel">
+    <item pathId="dtmf_send_extension" sectionId="35" title="DTMF Send Channel">
   This is the channel string used to send DTMF sounds into meetme conferences from the client apps. Verify the exten and context with the extensions.conf file.
     </item>
 
@@ -1417,7 +1424,7 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 
   <section pathId="servers" sectionId="19" title="SERVERS TABLE">
     <item pathId="server_id" sectionId="1" title="Server ID">
-  This field is where you put the Asterisk servers name, doesnt have to be an official domain sub, just a nickname to identify the server to Admin users.
+  This field is where you put the Asterisk server name, doesnt have to be an official domain sub, just a nickname to identify the server to Admin users. For example, osdial-d1.
     </item>
 
     <item pathId="server_description" sectionId="2" title="Server Description">
@@ -1436,7 +1443,7 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
   Set the version of Asterisk that you have installed on this server. Examples: '1.2', '1.0.8', '1.0.7', 'CVS_HEAD', 'REALLY OLD', etc... This is used because versions 1.0.8 and 1.0.9 have a different method of dealing with Local/ channels, a bug that has been fixed in CVS v1.0, and need to be treated differently when handling their Local/ channels. Also, current CVS_HEAD and the 1.2 release tree uses different manager and command output so it must be treated differently as well.
     </item>
 
-    <item pathId="max_osdial_trunks" sectionId="6" title="Max OSDial Trunks">
+    <item pathId="max_osdial_trunks" sectionId="6" title="Max Trunks">
   This field will determine the maximum number of lines that the OSDial auto-dialer will attempt to call on this server. If you want to dedicate two full PRI T1s to dialing on a server then you would set this to 46. Default is 96.
     </item>
 
@@ -1476,7 +1483,7 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
   The extension prefix used on this server to send calls directly through automatic gain control (voice level) to a specific voicemail box. Default is '85026666666666'
     </item>
 
-    <item pathId="answer_transfer_agent" sectionId="16" title="OSDial AD extension">
+    <item pathId="answer_transfer_agent" sectionId="16" title="AD extension">
   The default extension if none is present in the campaign to send calls to for OSDial auto dialing. Default is '8365'
     </item>
 
@@ -1492,15 +1499,15 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
   Setting this option to Y will enable logging of all OSDial related scripts to their text log files. Setting this to N will stop writing logs to files for these processes, also the screen logging of asterisk will be disabled if this is set to N when Asterisk is started. Default is Y.
     </item>
 
-    <item pathId="agi_output" sectionId="20" title="AGI Output">
+    <item pathId="agi_output" sectionId="20" title="AGI Log Output">
   Setting this option to NONE will disable output from all OSDial related AGI scripts. Setting this to STDERR will send the AGI output to the Asterisk CLI. Setting this to FILE will send the output to a file in the logs directory. Setting this to BOTH will send output to both the Asterisk CLI and a log file. Default is FILE.
     </item>
 
-    <item pathId="osdial_balance_active" sectionId="21" title="OSDial Balance Dialing">
+    <item pathId="osdial_balance_active" sectionId="21" title="Balance Dialing">
   Setting this field to Y will allow the server to place balance calls for campaigns in OSDial so that the defined dial level can be met even if there are no agents logged into that campaign on this server. Default is N.
     </item>
 
-    <item pathId="balance_trunks_offlimits" sectionId="22" title="OSDial Balance Offlimits">
+    <item pathId="balance_trunks_offlimits" sectionId="22" title="Balance Offlimits">
   This setting defines the number of trunks to not allow OSDial balance dialing to use. For example if you have 40 max OSDial trunks and balance offlimits is set to 10 you will only be able to use 30 trunk lines for OSDial balance dialing. Default is 0.
     </item>
 
@@ -1519,8 +1526,8 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 
 
   <section pathId="conferences" sectionId="20" title="Conferences">
-    <item pathId="conf_exten" sectionId="1" title="Conference Number">
-  This field is where you put the meetme conference dialpna number. It is also recommended that the meetme number in meetme.conf matches this number for each entry. This is for the conferences in OSDial and is used for leave-3way-call functionality in OSDial.
+    <item pathId="conf_exten" sectionId="1" title="Number">
+  This field is where you put the meetme conference dialplan number. It is also recommended that the meetme number in meetme.conf matches this number for each entry. This is for the conferences in OSDial and is used for leave-3way-call functionality in OSDial.
     </item>
 
     <item pathId="server_ip" sectionId="2" title="Server IP">
@@ -1532,7 +1539,7 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 
   <section pathId="osdial_server_trunks" sectionId="21" title="Server - Trunks">
     <item pathId="osdial_server_trunks" sectionId="1" title="Server - Trunks">
-OSDial Server Trunks allows you to restrict the outgoing lines that are used on this server for campaign dialing on a per-campaign basis. You have the option to reserve a specific number of lines to be used by only one campaign as well as allowing that campaign to run over its reserved lines into whatever lines remain open, as long at the total lines used by OSDial on this server is less than the Max OSDial Trunks setting. Not having any of these records will allow the campaign that dials the line first to have as many lines as it can get under the Max OSDial Trunks setting.
+OSDial Server Trunks allows you to restrict the outgoing lines that are used on this server for campaign dialing on a per-campaign basis. You have the option to reserve a specific number of lines to be used by only one campaign as well as allowing that campaign to run over its reserved lines into whatever lines remain open, as long at the total lines used by OSDial on this server is less than the Max Trunks setting. Not having any of these records will allow the campaign that dials the line first to have as many lines as it can get under the Max Trunks setting.
     </item>
   </section>
 
@@ -1579,7 +1586,7 @@ OSDial Server Trunks allows you to restrict the outgoing lines that are used on 
   This field is used to allow for prepending of one of the osdial_list data fields in front of the phone number of the customer for customized QueueMetrics reports. Default is NONE to not populate anything.
     </item>
 
-    <item pathId="osdial_agent_disable" sectionId="11" title="OSDial Agent Disable Display">
+    <item pathId="osdial_agent_disable" sectionId="11" title="Agent Disable Display">
   This field is used to select when to show an agent when their session has been disabled by the system, a manager action or by an external measure. The NOT_ACTIVE setting will disable the message on the agents screen. The LIVE_AGENT setting will only display the disabled message when the agents osdial_auto_calls record has been removed, such as during a force logout or emergency logout. 
     </item>
 
@@ -1652,7 +1659,7 @@ OSDial Server Trunks allows you to restrict the outgoing lines that are used on 
   A range of extensions that can be assigned to media, TTS, and phones without overlapping the recording extensions. Range is 85110000+.
     </item>
 
-    <item pathId="default_phone_code" sectionId="29" title="Default Phone Code">
+    <item pathId="default_phone_code" sectionId="29" title="Default Country Phone Code">
   The default country phone code for your area. This code will be the default for lead creation and upload.
     </item>
 
@@ -1744,7 +1751,7 @@ OSDial Server Trunks allows you to restrict the outgoing lines that are used on 
 
 
   <section pathId="osdial_statuses" sectionId="24" title="System Statuses">
-    <item pathId="osdial_statuses" sectionId="1" title="System Statuses"> Through the use of system statuses, you can have statuses that exist for campaign and in-group. The Status must be 1-6 characters in length, the description must be 2-30 characters in length and Selectable defines whether it shows up in OSDial as an agent disposition. The human_answered field is used when calculating the drop percentage, or abandon rate. Setting human_answered to Y will use this status when counting the human-answered calls. The Category option allows you to group several statuses into a catogy that can be used for statistical analysis.
+    <item pathId="osdial_statuses" sectionId="1" title="System Statuses"> Through the use of system statuses, you can have statuses that exist for campaign and in-group. The Status must be 1-6 characters in length, the description must be 2-30 characters in length and Selectable defines whether it shows up in OSDial as an agent disposition. The human_answered field is used when calculating the drop percentage, or abandon rate. Setting human_answered to Y will use this status when counting the human-answered calls. The Category option allows you to group several statuses into a category that can be used for statistical analysis.
     </item>
   </section>
 
@@ -1752,7 +1759,7 @@ OSDial Server Trunks allows you to restrict the outgoing lines that are used on 
 
   <section pathId="osdial_status_categories" sectionId="25" title="Status Categories">
     <item pathId="osdial_status_categories" sectionId="1" title="Status Categories">
-  Through the use of system status categories, you can group together statuses to allow for statistical analysis on a group of statuses. The Category ID must be 2-20 characters in length with no spaces, the name must be 2-50 characters in length, the description is optional and Time On OSDial Display defines whether that status will be one of the upto 4 statuses that can be calculated and displayed on the Time On OSDial Real-Time report.
+  Through the use of system status categories, you can group together statuses to allow for statistical analysis on a group of statuses. The Category ID must be 2-20 characters in length with no spaces, the name must be 2-50 characters in length, the description is optional and Time On OSDial Display defines whether that status will be one of the up to 4 statuses that can be calculated and displayed on the Time On OSDial Real-Time report.
     </item>
    </section>
 
@@ -1809,7 +1816,7 @@ For more information on protocol-specific Asterisk configuration, try one of the
     </item>
 
     <item pathId="selectable" sectionId="5" title="Selectable">
-  If set to &lt;b&gt;N&lt;/b&gt;, the carrier cannot be selected under as a default under System Settings or as an option under Campaigns. If set to &lt;b&gt;Y&lt;/b&gt;, the carrier can be selected as a default under System Settings or as an option under Campaigns.
+  If set to &lt;b&gt;N&lt;/b&gt;, the carrier cannot be selected under Modify System Settings as a Default Carrier or as an option under Modify Campaigns. If set to &lt;b&gt;Y&lt;/b&gt;, the carrier can be selected as a Default Carrer under Modify Campaigns.
     </item>
 
     <item pathId="protocol" sectionId="6" title="Protocol">
@@ -1839,7 +1846,7 @@ For more information on protocol-specific Asterisk configuration, try one of the
     </item>
 
     <item pathId="allow_international" sectionId="11" title="Allow International">
-  When set to &lt;br&gt;Y&lt;/b&gt;, the dialplan will allow international numbers to be dialed. This option only works when using the default dialplan configuration. Default is &lt;b&gt;N&lt;/b&gt;
+  When set to &lt;b&gt;Y&lt;/b&gt; the dialplan will allow international numbers to be dialed. This option only works when using the default dialplan configuration. Default is &lt;b&gt;N&lt;/b&gt;
     </item>
 
     <item pathId="default_callerid" sectionId="12" title="Default CallerID">
@@ -1847,7 +1854,7 @@ For more information on protocol-specific Asterisk configuration, try one of the
     </item>
 
     <item pathId="default_areacode" sectionId="13" title="Default Areacode">
-  If 7-digits the contents of this field will prefix the number dialed. This option only works when using the default dialplan configuration.
+  When using 7-digits phone numbers the contents of this field will become the prefix to the number dialed. This option only works when using the default dialplan configuration.
     </item>
 
     <item pathId="default_prefix" sectionId="14" title="Default Prefix">
@@ -1987,7 +1994,7 @@ user[:secret[:authuser]]@carrier_name[/extension]&lt;br/&gt;
 
   <section pathId="media" sectionId="29" title="Media">
     <item pathId="filename" sectionId="1" title="Filename">
-  The target filesystem identifier. Used by the filesystem export process so that Asterisk and other programs can read and stay syncronized with our data.
+  The target filesystem identifier. Used by the filesystem export process so that Asterisk and other programs can read and stay synchronized with our data.
     </item>
     <item pathId="mimetype" sectionId="2" title="Mime Type">
   A string which identifies the format of the data in this file.
@@ -1996,7 +2003,7 @@ user[:secret[:authuser]]@carrier_name[/extension]&lt;br/&gt;
   Short summary about the media file.
     </item>
     <item pathId="extension" sectionId="4" title="Extension">
-  This field allows you to assign a numeric extension to the file. Once an extension is assigned, the media file can be assigned to any OSDial option which prompts for an extension. It is best practice to start your media extension numbers at 85100000.
+  This field allows you to assign a numeric extension to the file. Once an extension is assigned, the media file can be assigned to any OSDial option which prompts for an extension. It is best practice to start your media extension numbers at 85110000.
     </item>
   </section>
 
@@ -2025,7 +2032,7 @@ user[:secret[:authuser]]@carrier_name[/extension]&lt;br/&gt;
     <item pathId="transfer_method" sectionId="3" title="Transfer Method">
     The protocol we will use to send the recording files over to the remote server with. FTP. SFTP. and SCP are valid options, however, SFTP and SCP may require you to manually install cryptographic keys.
     </item>
-    <item pathId="host" sectionId="4" title="Hostname/IP">
+    <item pathId="host" sectionId="4" title="Server Address">
     The fully-qualified-domain-name or IP address of the remote server.
     </item>
     <item pathId="username" sectionId="5" title="Username">
@@ -2062,7 +2069,7 @@ user[:secret[:authuser]]@carrier_name[/extension]&lt;br/&gt;
     <item pathId="active" sectionId="1" title="Active">
     Enable or disable processing of the External DNC Database.
     </item>
-    <item pathId="address" sectionId="2" title="Hostname/IP">
+    <item pathId="address" sectionId="2" title="Server Address">
     The fully-qualified-domain-name or IP address of the remote server.
     </item>
     <item pathId="database" sectionId="3" title="Database">
@@ -2084,7 +2091,7 @@ user[:secret[:authuser]]@carrier_name[/extension]&lt;br/&gt;
   </section>
 
   <section pathId="archive" sectionId="33" title="Recording Archive Server">
-    <item pathId="hostname" sectionId="1" title="Hostname/IP">
+    <item pathId="hostname" sectionId="1" title="Server Address">
     The fully-qualified-domain-name or IP address of the archive server.
     </item>
     <item pathId="transfer_method" sectionId="2" title="Transfer Method">
@@ -2100,15 +2107,15 @@ user[:secret[:authuser]]@carrier_name[/extension]&lt;br/&gt;
     The password used to access the archive server.
     </item>
     <item pathId="path" sectionId="6" title="Path">
-    Location to store recordings, relative to the transfer user's login directery.
+    Location to store recordings, relative to the transfer user's login directory.
     </item>
     <item pathId="report_path" sectionId="7" title="Report Path">
-    Location to store reports, relative to the transfer user's login directery.
+    Location to store reports, relative to the transfer user's login directory.
     </item>
     <item pathId="web_path" sectionId="8" title="Web Path">
     When storing a URL for the recording file, override with this prefix. Ie. http://127.0.0.1
     </item>
-    <item pathId="mix_format" sectionId="9" title="Mix File Format">
+    <item pathId="mix_format" sectionId="9" title="Mix Format">
     When the audio files, use the format selected here.&lt;br/&gt;
     MP3, WAV, GSM, OGG
     </item>
@@ -2127,7 +2134,7 @@ user[:secret[:authuser]]@carrier_name[/extension]&lt;br/&gt;
     <item pathId="active" sectionId="4" title="Active">
     Enable or disable the Email Template for use.
     </item>
-    <item pathId="et_host" sectionId="5" title="Hostname/IP">
+    <item pathId="et_host" sectionId="5" title="Server Address">
     The fully-qualified-domain-name or IP address of the SMTP server.
     </item>
     <item pathId="et_port" sectionId="6" title="Port">
