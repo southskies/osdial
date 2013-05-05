@@ -606,8 +606,8 @@ if ($ADD==100000000000) {
         echo "    <td>$row[4]</td>\n";
         echo "    <td align=center>$row[3]</td>\n";
         echo "    <td colspan=2 align=center>\n";
-        echo "      <a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=/sysinfo/$row[2]/psi/index.php\">SYSINFO</a>&nbsp;|&nbsp;\n";
-        echo "      <a href=\"$PHP_SELF?ADD=311111111111&server_id=$row[0]&server_ip=$row[2]\">MODIFY</a>\n";
+        echo "      <a href=\"$PHP_SELF?ADD=311111111111&server_id=$row[0]&server_ip=$row[2]\">MODIFY</a>&nbsp;|&nbsp;\n";
+        echo "      <a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=/sysinfo/$row[2]/psi/index.php\">SYSINFO</a>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
         $o++;
