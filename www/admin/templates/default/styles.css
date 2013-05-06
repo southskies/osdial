@@ -23,7 +23,7 @@
 	}
 	.homepagebg {
 		background-image:-webkit-gradient(linear, center top, left bottom, color-stop(0.0,#82A8DC ), color-stop(0.9,#FFF ));
-		background-image:-moz-linear-gradient(top right,#82A8DC, #FFF);
+		background-image:-moz-linear-gradient(top,#82A8DC, #FFF);
 		border-radius: 20px 20px 20px 20px;
 		box-shadow: rgba(0,0,0,0.5) 1px 1px 28px;
 		margin-top:50px;
@@ -115,7 +115,7 @@
 		margin-left: auto; 
 		margin-right: auto;	
 		background-image:-webkit-gradient(linear, center top, left bottom, color-stop(0.0,#82A8DC ), color-stop(0.9,#FFF ));
-		background-image:-moz-linear-gradient(left,#82A8DC, #FFF);
+		background-image:-moz-linear-gradient(top,#82A8DC, #FFF);
 /* 		background-image: linear-gradient(#82A8DC, #395873, #FFF); */
 		background-color:#82A8DC;
 	}
@@ -272,7 +272,7 @@
 	}
 	.maintable_top {
 		background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0.01, #77A0D9), color-stop(0.6, #E7EDF5)); /* #0A6A92 #9CC3D4 */
-		background-image:-moz-linear-gradient(left,#77A0D9, #FFF);
+		background-image:-moz-linear-gradient(top,#77A0D9, #FFF);
 		width: 980px;
 		border-radius: 18px 18px 0px 0px;
 		border-style: inset groove none inset;	
