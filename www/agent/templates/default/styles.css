@@ -654,6 +654,9 @@ a:visited {
     /*margin:0px 40px 25px 0px;*/
     text-shadow: rgba(0,0,0,.4) 3px 3px 10px;
 }
+.ver3 {
+    text-shadow: rgba(0,0,0,.6) 1px 1px 1px;
+}
 .homepage {
     text-align: center;
     text-decoration: none;

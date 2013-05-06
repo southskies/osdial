@@ -1771,7 +1771,7 @@ flush();
         <div bgcolor=white class=login_again2>
             <div style="position:absolute;left:417px;top:280px;" id="LogouTBoxLink"></div>
             <div style="position:absolute;left:30px;top:495px;"><img class=homepagelogo src='templates/default/images/osdial-logo.gif' height=100></div>
-            <div class=homepagever style="position:absolute;left:880px;top:550px;"><font style='font-size:17pt;'>V</font><?php echo $AdmVer?></div>
+            <div class=homepagever style="position:absolute;left:880px;top:550px;"><font style='font-size:17pt;'></font><?php echo $AdmVer; ?></div>
         </div>
     </span>
     
