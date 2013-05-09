@@ -32,7 +32,7 @@ if ($ADD=="1") {
         echo "<input type=hidden name=ADD value=2>\n";
         echo "<div style=\"width:660px;padding:5px;\">";
         echo "<TABLE class=shadedtable border=0 cellspacing=3 width=650>\n";
-        echo "<tr bgcolor=$oddrows><td align=right with=45%>Agent ID: </td><td align=left width=55%>\n";
+        echo "<tr bgcolor=$oddrows><td align=right with=45%>ID: </td><td align=left width=55%>\n";
         
         if ($LOG['multicomp_admin'] > 0) {
             $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
@@ -119,7 +119,7 @@ if ($ADD=="1A")
 	echo "<input type=hidden name=ADD value=2A>\n";
 	echo "<div style=\"width:660px;padding:5px;\">";
 	echo "<TABLE class=shadedtable cellspacing=3 width=650>\n";
-	echo "<tr bgcolor=$oddrows><td align=center colspan=2 width=100%>Agent ID: ";
+	echo "<tr bgcolor=$oddrows><td align=center colspan=2 width=100%>ID: ";
     if ($LOG['multicomp_admin'] > 0) {
         $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
         echo "<select name=company_id>\n";
@@ -548,9 +548,9 @@ if ($ADD==3) {
 				}
 			}
 			echo "<input type=hidden name=user value=\"$row[1]\">\n";
-			echo "<div style=\"width:".$section_width."px;padding:5px;\">";
-			echo "<TABLE class=shadedtable cellspacing=3 width=550>\n";
-			echo "<tr bgcolor=$oddrows><td align=right>Agent ID: </td><td align=left>\n";
+			echo "<div style=\"width:900px;padding:5px;\">";
+			echo "<TABLE class=shadedtable cellspacing=3 width=90%>\n";
+			echo "<tr bgcolor=$oddrows><td align=right Xwidth=300>ID: </td><td align=left>\n";
 			$pcomp='';
 			if ($LOG['multicomp']>0 and OSDpreg_match($LOG['companiesRE'],$row[1])) {
 				echo "<font color=$default_text>" . OSDsubstr($row[1],0,3) . "</font>&nbsp;";
@@ -604,6 +604,7 @@ if ($ADD==3) {
 			#echo "<tr bgcolor=$oddrows><td align=right>Phone Pass: </td><td align=left><input type=text name=phone_pass size=20 maxlength=20 value=\"$phone_pass\">".helptag("osdial_users-phone_pass")."</td></tr>\n";
 
 			echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr></table>\n";
+			
 
 			if (($LOG['user_level'] > 8) or ($LOG['alter_agent_interface_options'] == "1")) {
 				echo "<br/><TABLE class=shadedtable cellspacing=3 width=550>\n";
@@ -869,7 +870,7 @@ if ($ADD==550) {
     echo "<div style=\"width:660px;padding:5px;\">";
     echo "<TABLE class=shadedtable cellspacing=3 width=650>\n";
     #echo "<tr bgcolor=$oddrows><td align=right>Agent ID: </td><td align=left><input type=text name=user size=20 maxlength=20></td></tr>\n";
-    echo "<tr bgcolor=$oddrows><td align=center>Agent ID: \n";
+    echo "<tr bgcolor=$oddrows><td align=center>ID: \n";
     if ($LOG['multicomp_admin'] > 0) {
         $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
         echo "<select name=company_id>\n";
