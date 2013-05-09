@@ -251,7 +251,7 @@ function report_realtime_detail() {
     $html .= "<font size=2>";
 
     if (!OSDpreg_match('/^XXXX/',$group)) $html .= "&nbsp;-&nbsp;<a href=\"./admin.php?ADD=31&campaign_id=$group\">Modify</a>";
-    if ($LOG['view_agent_realtime_summary']) $html .= "&nbsp;-&nbsp;<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=" . ($SUB - 1) . "&group=$group&RR=$RR&DB=$DB&adastats=$adastats\">Summary</a>&nbsp;-&nbsp;\n";
+    if ($LOG['view_agent_realtime_summary']) $html .= "&nbsp;-&nbsp;<a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=" . ($SUB - 1) . "&group=$group&RR=$RR&DB=$DB&adastats=$adastats&active_only=Y\">Summary</a>&nbsp;-&nbsp;\n";
     $html .= "<br></font>\n";
     $html .= "</font>";
 
