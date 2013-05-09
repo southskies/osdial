@@ -2551,6 +2551,7 @@ flush();
                                                         <td align=center>
                                                             <font class="body_text" color=<?php echo $form_fc; ?>><label for=SecondS>Call Duration:&nbsp;</label></font>
                                                             <font class="body_input_rev"><input type=text size=4 name=SecondS id=SecondS class="display_field" value="" readonly></font>&nbsp;&nbsp;&nbsp;&nbsp;
+                                                            <span id=callchannel style="font-size:5pt;overflow:hidden;visibility:hidden;"></span>
                                                         <!--</td>
                                                         <td width=10% align=center><font class="body_text" color=#ABCBD4><span id=callchannel style="font-size:5pt;overflow:hidden;"></span></font></td>
                                                         <td align=left>-->
