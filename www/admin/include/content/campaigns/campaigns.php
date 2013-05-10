@@ -1213,6 +1213,67 @@ if ($ADD==31) {
 			
 			
 			
+            // Allowed Groups
+            echo "<span width=900>";
+            echo "<script type=\"text/javascript\">";
+            echo "createEditableSelect(document.forms[0].auto_dial_level);";
+            echo "createEditableSelect(document.forms[0].adaptive_maximum_level);";
+            echo "createEditableSelect(document.forms[0].ADAPT_auto_dial_level);";
+            echo "</script>";
+            $disp_inbound_closer = "visibility:collapse;";
+            $disp_allow_inbound = "visibility:collapse;";
+            $disp_allow_closers = "visibility:collapse;";
+            if ($campaign_allow_inbound == 'Y' or $allow_closers == 'Y') {
+                $disp_inbound_closer = "visibility:visible;";
+                if ($campaign_allow_inbound == 'Y') $disp_allow_inbound = "visibility:visible;";
+                if ($allow_closers == 'Y') $disp_allow_closers = "visibility:visible;";
+            }
+            echo "</span>";
+            echo "<a name=groups></a>";
+            if ($campaign_allow_inbound == 'Y' or $allow_closers == 'Y') {
+                echo "<div style=\"width:".$section_width."px;padding:5px;\" class=rounded-corners>";
+                echo "<table width=100% cellpadding=0 cellspacing=3>";
+                echo "<tr style=\"$disp_inbound_closer\">";
+                echo " <td align=left class=top_header_sect>Allowed Groups</td></tr>";
+                echo "  <tr><td align=center><br>";
+            
+                echo "  <table cellspacing=0 cellpadding=0 border=0 align=center>";
+                echo "    <tr>";
+                echo "      <td style=\"$disp_allow_closers\" align=center>Allowed Transfer Groups: ".helptag("osdial_campaigns-xfer_groups")."</td>";
+                echo "      <td width=15%>&nbsp;</td>";
+                echo "      <td style=\"$disp_allow_inbound\" align=center>Allowed Inbound Groups: ".helptag("osdial_campaigns-closer_campaigns")."</td>";
+                echo "    </tr>";
+                echo "    <tr>";
+                echo "      <td style=\"$disp_allow_closers\" align=center valign=top>";
+                echo "        <table bgcolor=grey cellspacing=1 border=0>";
+                echo "          $XFERgroups_listTAB";
+                echo "          <tr class=tabfooter>";
+                echo "            <td align=center colspan=2 class=tabbutton>";
+                echo "              Default: <select style=\"font-size: 10px;\" size=1 name=default_xfer_group>$Xgroups_menu</select><br><br>";
+                echo "              <input style='color:#1C4754' type=submit name=SUBMIT value=Submit>";
+                echo "            </td>";
+                echo "          </tr>";
+                echo "        </table>";
+                echo "      </td>";
+                echo "      <td>&nbsp;</td>";
+                echo "      <td style=\"$disp_allow_inbound\" align=center valign=top>";
+                echo "        <table bgcolor=grey cellspacing=1 border=0>";
+                echo "          $groups_listTAB";
+                echo "          <tr class=tabfooter><td align=center colspan=2 class=tabbutton><input style='color:#1C4754' type=submit name=SUBMIT value=Submit></td></tr>";
+                echo "        </table>";
+                echo "      </td>";
+                echo "    </tr>";
+                echo "  </table>";
+                echo " </td>";
+                echo "</tr>";
+                echo "<tr><td align=center class=no-ul colspan=3><br />";
+                jump_section(1);
+                echo "</td></tr>";
+                echo "</table></div>"; // No &nbsp; here as it doubles the space to the next section below
+            }
+            echo "</FORM>";
+
+            
 			// DIALING
 			echo "<a name=status></a>";
 			echo "<div style=\"width:".$section_width_wide."px;padding:5px;\" class=rounded-corners>";
@@ -1705,6 +1766,82 @@ if ($ADD==31) {
 		
 
 
+            # List Statuses
+            echo "<a name=alists></a>";
+            echo "<div style=\"width:".$section_width."px;padding:5px;\" class=rounded-corners>";
+            echo "<table width=100% cellpadding=0 cellspacing=3>";
+            echo "<tr><td align=left class=top_header_sect>List Statuses</td></tr>";
+            echo "<tr><td align=center><br /><table border=0 cellpadding=0 cellspacing=3 width=75%>";
+
+            $dispinact = get_variable('dispinact');
+            $dispinactSQL = "AND active='Y'";
+            if ($dispinact == 1) $dispinactSQL = "";
+            
+            echo "<font color=$default_text size=+1>LISTS WITHIN THIS CAMPAIGN &nbsp; </font>".helptag("osdial_campaign_lists-osdial_campaign_lists")."</font></b><br>";
+            echo "<center><font color=$default_text size=-1>";
+            if ($dispinact == '1') {
+                echo "<a href=\"$PHP_SELF?ADD=$ADD&campaign_id=$campaign_id&dispinact=\">(Hide Inactive)</a>";
+            } else {
+                echo "<a href=\"$PHP_SELF?ADD=$ADD&campaign_id=$campaign_id&dispinact=1\">(Show Inactive)</a>";
+            }
+            echo "</font><br>";
+            
+            echo "<table bgcolor=grey width=400 cellspacing=1>";
+            echo "<tr class=tabheader><td align=center>LIST ID</td><td align=center>LIST NAME</td><td align=center>ACTIVE</td></tr>";
+
+
+            $active_lists = 0;
+            $inactive_lists = 0;
+            $stmt=sprintf("SELECT list_id,active,list_name FROM osdial_lists WHERE 1=1 $dispinactSQL and campaign_id='%s';",mres($campaign_id));
+            $rslt=mysql_query($stmt, $link);
+            $lists_to_print = mysql_num_rows($rslt);
+            $camp_lists='';
+
+            $o=0;
+            while ($lists_to_print > $o) {
+                    $rowx=mysql_fetch_row($rslt);
+                    $o++;
+                if (OSDpreg_match("/Y/", $rowx[1])) {$active_lists++;   $camp_lists .= "'$rowx[0]',";}
+                if (OSDpreg_match("/N/", $rowx[1])) {$inactive_lists++;}
+
+                echo "<tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=311&list_id=$rowx[0]');\"><td><a href=\"$PHP_SELF?ADD=311&list_id=$rowx[0]\">$rowx[0]</a></td><td>$rowx[2]</td><td align=center>$rowx[1]</td></tr>";
+            }
+            echo "<tr class=tabfooter><td colspan=3></td></tr>";
+            echo "</table></center><br>";
+            echo "<center><b>";
+
+            $fSQL = '';
+            $Tfilter = get_first_record($link, 'osdial_lead_filters', '*', sprintf("lead_filter_id='%s'",mres($lead_filter_id)) );
+            if (OSDstrlen($Tfilter['lead_filter_sql'])>4) $fSQL = "and " . OSDpreg_replace('/^and|and$|^or|or$/i','',$Tfilter['lead_filter_sql']);
+
+            $camp_lists = OSDpreg_replace('/,$/','',$camp_lists);
+            echo "<br><font>This campaign has $active_lists active lists and $inactive_lists inactive lists</font><br><br>";
+
+            if ($display_dialable_count == 'Y') {
+                ### call function to calculate and print dialable leads
+                dialable_leads($DB,$link,$local_call_time,$dial_statuses,$camp_lists,$fSQL);
+                echo " - <font size=1><a href=\"$PHP_SELF?ADD=31&campaign_id=$campaign_id&stage=hide_dialable\">HIDE</a></font><br><br>";
+            } else {
+                echo "<a href=\"$PHP_SELF?ADD=73&campaign_id=$campaign_id\" target=\"_blank\">Popup Dialable Leads Count</a>";
+                echo " - <font size=1><a href=\"$PHP_SELF?ADD=31&campaign_id=$campaign_id&stage=show_dialable\">SHOW</a></font><br><br>";
+            }
+
+
+            $Thopper = get_first_record($link, 'osdial_hopper', 'count(*) AS count', sprintf("campaign_id='%s' AND status IN ('API')",mres($campaign_id)) );
+            echo "<font>This campaign has " . $Thopper['count'] . " API leads in the dial hopper<br><br>";
+
+            $Thopper = get_first_record($link, 'osdial_hopper', 'count(*) AS count', sprintf("campaign_id='%s' AND status IN ('READY')",mres($campaign_id)) );
+            echo "<font>This campaign has " . $Thopper['count'] . " READY leads in the dial hopper<br><br>";
+
+            echo "<span class=no-ul><a href=\"$PHP_SELF?ADD=999999&SUB=28&group=$campaign_id\">Click here to see what leads are in the hopper right now</a></span><br><br>";
+            echo "<span class=no-ul><a href=\"$PHP_SELF?ADD=81&campaign_id=$campaign_id\">Click here to see all CallBack Holds in this campaign</a></span><br><br>";
+            if ($LOG['view_agent_realtime']) echo "<span class=no-ul><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12&group=$campaign_id\">Click here to see a Time On Dialer report for this campaign</a></span></font><br><br><br />";
+            
+            echo "</b></center>";
+            echo "</td></tr></table></div>&nbsp;";
+            
+            
+            
 			// CARRIER OPTIONS
 			echo "<a name=carrier></a>";
 			echo "<div style=\"width:".$section_width."px;padding:5px;\" class=rounded-corners>";
@@ -1975,141 +2112,8 @@ if ($ADD==31) {
 			echo "</table></div>&nbsp;";
 			
 
-			// Allowed Groups
-			echo "<span width=900>";
-			echo "<script type=\"text/javascript\">";
-			echo "createEditableSelect(document.forms[0].auto_dial_level);";
-			echo "createEditableSelect(document.forms[0].adaptive_maximum_level);";
-			echo "createEditableSelect(document.forms[0].ADAPT_auto_dial_level);";
-			echo "</script>";
-			$disp_inbound_closer = "visibility:collapse;";
-			$disp_allow_inbound = "visibility:collapse;";
-			$disp_allow_closers = "visibility:collapse;";
-			if ($campaign_allow_inbound == 'Y' or $allow_closers == 'Y') {
-				$disp_inbound_closer = "visibility:visible;";
-				if ($campaign_allow_inbound == 'Y') $disp_allow_inbound = "visibility:visible;";
-				if ($allow_closers == 'Y') $disp_allow_closers = "visibility:visible;";
-			}
-			echo "</span>";
-			echo "<a name=groups></a>";
-			if ($campaign_allow_inbound == 'Y' or $allow_closers == 'Y') {
-				echo "<div style=\"width:".$section_width."px;padding:5px;\" class=rounded-corners>";
-				echo "<table width=100% cellpadding=0 cellspacing=3>";
-				echo "<tr style=\"$disp_inbound_closer\">";
-				echo " <td align=left class=top_header_sect>Allowed Groups</td></tr>";
-				echo "  <tr><td align=center><br>";
-			
-				echo "  <table cellspacing=0 cellpadding=0 border=0 align=center>";
-				echo "    <tr>";
-				echo "      <td style=\"$disp_allow_closers\" align=center>Allowed Transfer Groups: ".helptag("osdial_campaigns-xfer_groups")."</td>";
-				echo "      <td width=15%>&nbsp;</td>";
-				echo "      <td style=\"$disp_allow_inbound\" align=center>Allowed Inbound Groups: ".helptag("osdial_campaigns-closer_campaigns")."</td>";
-				echo "    </tr>";
-				echo "    <tr>";
-				echo "      <td style=\"$disp_allow_closers\" align=center valign=top>";
-				echo "        <table bgcolor=grey cellspacing=1 border=0>";
-				echo "          $XFERgroups_listTAB";
-				echo "          <tr class=tabfooter>";
-				echo "            <td align=center colspan=2 class=tabbutton>";
-				echo "              Default: <select style=\"font-size: 10px;\" size=1 name=default_xfer_group>$Xgroups_menu</select><br><br>";
-				echo "              <input style='color:#1C4754' type=submit name=SUBMIT value=Submit>";
-				echo "            </td>";
-				echo "          </tr>";
-				echo "        </table>";
-				echo "      </td>";
-				echo "      <td>&nbsp;</td>";
-				echo "      <td style=\"$disp_allow_inbound\" align=center valign=top>";
-				echo "        <table bgcolor=grey cellspacing=1 border=0>";
-				echo "          $groups_listTAB";
-				echo "          <tr class=tabfooter><td align=center colspan=2 class=tabbutton><input style='color:#1C4754' type=submit name=SUBMIT value=Submit></td></tr>";
-				echo "        </table>";
-				echo "      </td>";
-				echo "    </tr>";
-				echo "  </table>";
-				echo " </td>";
-				echo "</tr>";
-				echo "<tr><td align=center class=no-ul colspan=3><br />";
-				jump_section(1);
-				echo "</td></tr>";
-				echo "</table></div>"; // No &nbsp; here as it doubles the space to the next section below
-			}
-			echo "</FORM>";
-
 			
 			
-			# List Statuses
-			echo "<a name=alists></a>";
-			echo "<div style=\"width:".$section_width."px;padding:5px;\" class=rounded-corners>";
-			echo "<table width=100% cellpadding=0 cellspacing=3>";
-			echo "<tr><td align=left class=top_header_sect>List Statuses</td></tr>";
-			echo "<tr><td align=center><br /><table border=0 cellpadding=0 cellspacing=3 width=75%>";
-
-			$dispinact = get_variable('dispinact');
-			$dispinactSQL = "AND active='Y'";
-			if ($dispinact == 1) $dispinactSQL = "";
-			
-			echo "<font color=$default_text size=+1>LISTS WITHIN THIS CAMPAIGN &nbsp; </font>".helptag("osdial_campaign_lists-osdial_campaign_lists")."</font></b><br>";
-			echo "<center><font color=$default_text size=-1>";
-			if ($dispinact == '1') {
-				echo "<a href=\"$PHP_SELF?ADD=$ADD&campaign_id=$campaign_id&dispinact=\">(Hide Inactive)</a>";
-			} else {
-				echo "<a href=\"$PHP_SELF?ADD=$ADD&campaign_id=$campaign_id&dispinact=1\">(Show Inactive)</a>";
-			}
-			echo "</font><br>";
-			
-			echo "<table bgcolor=grey width=400 cellspacing=1>";
-			echo "<tr class=tabheader><td align=center>LIST ID</td><td align=center>LIST NAME</td><td align=center>ACTIVE</td></tr>";
-
-
-			$active_lists = 0;
-			$inactive_lists = 0;
-			$stmt=sprintf("SELECT list_id,active,list_name FROM osdial_lists WHERE 1=1 $dispinactSQL and campaign_id='%s';",mres($campaign_id));
-			$rslt=mysql_query($stmt, $link);
-			$lists_to_print = mysql_num_rows($rslt);
-			$camp_lists='';
-
-			$o=0;
-			while ($lists_to_print > $o) {
-					$rowx=mysql_fetch_row($rslt);
-					$o++;
-				if (OSDpreg_match("/Y/", $rowx[1])) {$active_lists++;   $camp_lists .= "'$rowx[0]',";}
-				if (OSDpreg_match("/N/", $rowx[1])) {$inactive_lists++;}
-
-				echo "<tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=311&list_id=$rowx[0]');\"><td><a href=\"$PHP_SELF?ADD=311&list_id=$rowx[0]\">$rowx[0]</a></td><td>$rowx[2]</td><td align=center>$rowx[1]</td></tr>";
-			}
-			echo "<tr class=tabfooter><td colspan=3></td></tr>";
-			echo "</table></center><br>";
-			echo "<center><b>";
-
-			$fSQL = '';
-			$Tfilter = get_first_record($link, 'osdial_lead_filters', '*', sprintf("lead_filter_id='%s'",mres($lead_filter_id)) );
-			if (OSDstrlen($Tfilter['lead_filter_sql'])>4) $fSQL = "and " . OSDpreg_replace('/^and|and$|^or|or$/i','',$Tfilter['lead_filter_sql']);
-
-			$camp_lists = OSDpreg_replace('/,$/','',$camp_lists);
-			echo "<br><font>This campaign has $active_lists active lists and $inactive_lists inactive lists</font><br><br>";
-
-			if ($display_dialable_count == 'Y') {
-				### call function to calculate and print dialable leads
-				dialable_leads($DB,$link,$local_call_time,$dial_statuses,$camp_lists,$fSQL);
-				echo " - <font size=1><a href=\"$PHP_SELF?ADD=31&campaign_id=$campaign_id&stage=hide_dialable\">HIDE</a></font><br><br>";
-			} else {
-				echo "<a href=\"$PHP_SELF?ADD=73&campaign_id=$campaign_id\" target=\"_blank\">Popup Dialable Leads Count</a>";
-				echo " - <font size=1><a href=\"$PHP_SELF?ADD=31&campaign_id=$campaign_id&stage=show_dialable\">SHOW</a></font><br><br>";
-			}
-
-
-			$Thopper = get_first_record($link, 'osdial_hopper', 'count(*) AS count', sprintf("campaign_id='%s' AND status IN ('API')",mres($campaign_id)) );
-			echo "<font>This campaign has " . $Thopper['count'] . " API leads in the dial hopper<br><br>";
-
-			$Thopper = get_first_record($link, 'osdial_hopper', 'count(*) AS count', sprintf("campaign_id='%s' AND status IN ('READY')",mres($campaign_id)) );
-			echo "<font>This campaign has " . $Thopper['count'] . " READY leads in the dial hopper<br><br>";
-
-			echo "<span class=no-ul><a href=\"$PHP_SELF?ADD=999999&SUB=28&group=$campaign_id\">Click here to see what leads are in the hopper right now</a></span><br><br>";
-			echo "<span class=no-ul><a href=\"$PHP_SELF?ADD=81&campaign_id=$campaign_id\">Click here to see all CallBack Holds in this campaign</a></span><br><br>";
-			if ($LOG['view_agent_realtime']) echo "<span class=no-ul><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12&group=$campaign_id\">Click here to see a Time On Dialer report for this campaign</a></span></font><br><br><br />";
-			
-			echo "</b></center>";
-			echo "</td></tr></table></div>&nbsp;";
 		}
 		
 		
@@ -2394,7 +2398,7 @@ if ($ADD==31) {
 		# Terminate
         if ($SUB < 1) {
 			echo "<br /><div style=\"width:".$section_width."px;padding:5px;\" class=rounded-corners>";
-			echo "<table width=100% cellpadding=0 cellspacing=3><tr><td align=left class=top_header_sect>&nbsp;Terminate</td></tr>";
+			echo "<table width=100% cellpadding=0 cellspacing=3><tr><td align=left class=top_header_sect>Terminate</td></tr>";
             echo "<tr class=no-ul><td align=center class=alert><br><br>";
             echo "<a href=\"$PHP_SELF?ADD=52&campaign_id=$campaign_id\">LOG ALL AGENTS OUT OF THIS CAMPAIGN</a>&nbsp;".helptag("osdial_campaigns-osdial_logout_agents")."<br><br>";
             echo "<a href=\"$PHP_SELF?ADD=53&campaign_id=$campaign_id\">Emergency Clear Auto Calls For This Campaign</a>".helptag("osdial_campaigns-osdial_clear_autocalls")."<br><br>";
