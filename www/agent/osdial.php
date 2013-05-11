@@ -1714,7 +1714,7 @@ flush();
 
     <?php load_status('Initializing GUI...<br>Tabs<br>&nbsp;'); ?>
     <!-- 2nd line -->
-    <span style="position:absolute;left:0px;top:3px;z-index:1;margin-top:7px;" id="Tabs">
+    <span style="position:absolute;left:0px;top:4px;z-index:1;margin-top:7px;" id="Tabs">
         <table width=<?php echo ($MNwidth-10); ?> height=30 border=0> 
             <tr valign=top align=left>
                 <td colspan=2>
@@ -1748,12 +1748,12 @@ flush();
     
         <div style="position:absolute;left:785px;top:11px;"><span class=logout><a href="#" onclick="LogouT('NORMAL');return false;"><font>LOGOUT</font></a></span></div>
     
-        <div style="position:absolute;left:850px;top:2px;"><font class="body_text"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/agc_live_call_OFF.gif" name=livecall alt="Live Call" width=109 height=30 border=0></font></div>
+        <div style="position:absolute;left:855px;top:2px;"><font class="body_text"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/agc_live_call_OFF.gif" name=livecall alt="Live Call" width=109 height=30 border=0></font></div>
 <!--         <div class=livecall style="position:absolute;left:850px;top:2px;">NO LIVE CALL</div> -->
     
     </span>
     
-    <span style="position:absolute;left:29px;top:18px;z-index:9;" id="PanelSelection">
+    <span style="position:absolute;left:29px;top:17px;z-index:9;" id="PanelSelection">
       <div id="AgentPanelMAIN" style="padding:4px;position:relative;cursor:pointer;" class="AgentPanelSelect" onclick="ChoosePanel('MAIN');">
         FORM
       </div>
