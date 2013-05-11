@@ -520,8 +520,10 @@ a:visited {
 }
 
 .script_window {
-    border: 2px solid;
-    border-style: none solid inset solid;
+    background:#435A78; /* #ACC4FF; */
+    border: 2px solid #56749A;
+    border-style: inset inset inset solid;
+    color:white; /* #13224A; */
 }
 .scriptbutton {
 /*  background-color: #82A8DC; */

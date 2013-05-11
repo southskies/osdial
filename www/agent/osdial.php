@@ -2434,7 +2434,7 @@ flush();
     <span style="position:absolute;left:190px;top:90px;z-index:17;width:<?php echo $SSwidth; ?>;height:<?php echo ($SSheight+12); ?>;overflow-x:hidden;overflow-y:scroll;visibility:hidden;" id="ScriptPanel">
         <table class=script_window border=0 bgcolor="<?php echo $script_bg; ?>" width=<?php echo $SSwidth; ?> height=<?php echo ($SSheight+12); ?>>
             <tr>
-                <td align=left valign=top><font class="sb_text"><span class="scroll_script" id="ScriptContents"><?php echo $t1; ?> Script will show here once a call is in progress.</span></font></td>
+                <td align=left valign=top><font class="sb_text"><span class="scroll_script" id="ScriptContents">The script will show here once a call is in progress.</span></font></td>
             </tr>
         </table>
     </span>
