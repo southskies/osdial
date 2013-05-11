@@ -852,7 +852,7 @@ function report_realtime_detail() {
         $HBcall_server_ip = HorizLine(17).$LNbottomup;
     }
     $HDtime = HorizLine(9).$LNtopdown; //9
-    $HTtime = "  <a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&group=$group&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=time&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\">MM:SS</a>&nbsp;&nbsp;".$LNcenterbar;
+    $HTtime = "  <a href=\"$PHP_SELF?useOAC=$useOAC&ADD=$ADD&SUB=$SUB&group=$group&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=time&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\">TIME </a>&nbsp;&nbsp;".$LNcenterbar;
     $HXtime = CenterLine(9).$LNcentcross;
     $HBtime = HorizLine(9).$LNbottomup;
     $HDcampaign = HorizLine(15).$LNtopdown; //15
@@ -1109,7 +1109,8 @@ function report_realtime_detail() {
             }
             $call_time_MS = "$call_time_M_int:$call_time_SEC";
             $call_time_MS = sprintf("%7s", $call_time_MS);
-
+            
+            
             $G = '';
             $EG = '';
             $pausecode='';
@@ -1240,7 +1241,7 @@ function report_realtime_detail() {
             $userlink = "$user";
             if ($LOG['view_agent_status']) $userlink = "<a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$Luser&close_after_emergency_logout=Y\" target=\"_blank\">$G$user$EG</a>";
 
-            if ($disp_agent) $Ahtml .= "$LNleft<span name=agent_bar>$G <span name=agent_extension style=\"width:78px;display:inline-block;text-align:left;\">$extension</span> $LNcenterbar <span name=agent_user style=\"width:108px;display:inline-block;text-align:left;\"><a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$Luser&close_after_emergency_logout=Y\" target=\"_blank\">$G$user$EG</a></span> $LNcenterbar $UGD<span name=agent_session style=\"width:54px;display:inline-block;text-align:left;\">$sessionid</span>$L$R $LNcenterbar <span name=agent_status style=\"width:54px;display:inline-block;text-align:left;\">$status $CM</span>$LNcenterbar $pausecode$SVD<span name=agent_time style=\"width:42;display:inline-block;text-align:left;\">$call_time_MS</span> $LNcenterbar <span name=agent_campaign style=\"width:78px;display:inline-block;text-align:left;\">$campaign_id</span> $LNcenterbar <span name=agent_calls style=\"width:30px;display:inline-block;text-align:right;\">$calls_today</span> $LNcenterbar <span name=agent_ingroup style=\"width:120px;display:inline-block;text-align:right;\">$INGRP</span>$EG</span>$LNright\n";
+            if ($disp_agent) $Ahtml .= "$LNleft<span name=agent_bar>$G <span name=agent_extension style=\"width:78px;display:inline-block;text-align:left;\">$extension</span> $LNcenterbar <span name=agent_user style=\"width:108px;display:inline-block;text-align:left;\"><a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$Luser&close_after_emergency_logout=Y\" target=\"_blank\">$G$user$EG</a></span> $LNcenterbar $UGD<span name=agent_session style=\"width:54px;display:inline-block;text-align:left;\">$sessionid</span>$L$R $LNcenterbar <span name=agent_status style=\"width:54px;display:inline-block;text-align:left;\">$status $CM</span>$LNcenterbar $pausecode$SVD<span name=agent_time style=\"width:42;display:inline-block;text-align:left;\">".gmdate('G:i:s', $call_time_S)."</span> $LNcenterbar <span name=agent_campaign style=\"width:78px;display:inline-block;text-align:left;\">$campaign_id</span> $LNcenterbar <span name=agent_calls style=\"width:30px;display:inline-block;text-align:right;\">$calls_today</span> $LNcenterbar <span name=agent_ingroup style=\"width:120px;display:inline-block;text-align:right;\">$INGRP</span>$EG</span>$LNright\n";
 
             $j++;
         }
