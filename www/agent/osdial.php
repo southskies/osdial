@@ -2456,11 +2456,11 @@ flush();
 
                     <?php load_status('Initializing GUI...<br>MainPanel<br>MainTable'); ?>
                     <!-- Column widths 205 + 505 + 270 = 980 -->
-                    <table id="MainTable" class=mainpage Xstyle="background-color:<?php //echo $panel_bg; ?>;" border=<?php echo $borderwidth; ?> cellpadding=0 cellspacing=0>
+                    <table id="MainTable" class=mainpage Xstyle="background-color:<?php //echo $panel_bg; ?>;" border=<?php echo $borderwidth; ?> cellpadding=0 cellspacing=0 border=1>
                         <tr>
                             <td width=22 colspan=2 class=curve2 style="vertical-align:bottom;">
 <!--                                 <img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/AgentTopLeft.png" width=22 height=22 align=left> -->
-                                <font style='margin-left:210px;' class="body_text" color=<?php echo $status_fct; ?>>STATUS:&nbsp;&nbsp;</font>
+                                <font style='margin-left:180px;' class="body_text" color=<?php echo $status_fct; ?>>STATUS:&nbsp;</font>
                                 <font class="body_text" color=<?php echo $status_fc; ?>><span id="MainStatuSSpan"></span></font>
                             </td>
 <!--                             <td width=22><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/AgentTopRight.png" width=22 height=22 align=right></td> -->

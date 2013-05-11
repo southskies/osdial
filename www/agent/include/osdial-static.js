@@ -544,7 +544,14 @@
                                         
 										live_conf_HTML += "<span id=\"CHAN"+loop_ct+"unmute\" style=\"position:absolute;top:0px;left:33px;visibility:hidden;\"><a href=\"#\" onclick=\"volume_control('UNMUTE','" + channelfieldA + "','');document.getElementById('CHAN"+loop_ct+"unmute').style.visibility='hidden';document.getElementById('CHAN"+loop_ct+"mute').style.visibility='visible';document.getElementById('CHANIMG"+loop_ct+"muted').style.visibility='hidden';return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_UNMUTE.gif\" onclick=\"document.getElementById('CHANIMG"+loop_ct+"muted').style.visibility='hidden';\" width=28 height=28 BORDER=0></a></span>";
                                         
-										live_conf_HTML += "<span id=\"CHANIMG"+loop_ct+"muted\" style=\"position:absolute;top:-5px;left:75;visibility:hidden;\"><div class=muted_on width=140 height=35 BORDER=0>MUTED</div></span></td></tr><tr height=20px><td align=center colspan=5><font color=black face=\"Arial,Helvetica\" size=1><?php echo $t1; ?> Agent version: <?php echo $version; ?>&nbsp;&nbsp;Build: <?php echo $build; ?>Server: <?php echo $server_ip; ?></font><span id=\"DebugLink\"><font color=black class=\"body_text\"><a href=\"#\" onclick=\"openDebugWindow();return false;\">.</a></font></span></td></tr><tr><td align=center colspan=5><font color=black face=\"Arial,Helvetica\" size=1>UID: " + MDnextCID  + "</font></span></td></tr></table></div>";
+                                        live_conf_HTML += "<span id=\"CHAN"+loop_ct+"unmute\" style=\"position:absolute;top:0px;left:33px;visibility:hidden;\"><a href=\"#\" onclick=\"volume_control('UNMUTE','" + channelfieldA + "','');document.getElementById('CHAN"+loop_ct+"unmute').style.visibility='hidden';document.getElementById('CHAN"+loop_ct+"mute').style.visibility='visible';document.getElementById('CHANIMG"+loop_ct+"muted').style.visibility='hidden';return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_UNMUTE.gif\" onclick=\"document.getElementById('CHANIMG"+loop_ct+"muted').style.visibility='hidden';\" width=28 height=28 BORDER=0></a></span>";
+                                    
+//                                     current
+                                        live_conf_HTML += "<span id=\"CHANIMG"+loop_ct+"muted\" style=\"position:absolute;top:-5px;left:75;visibility:hidden;\"><div class=muted_on width=140 height=35 BORDER=0>MUTED</div></span></td></tr>";
+                                        
+//                                         XdesiredDebugWindowSomeWhereElse +="<tr height=20px><td align=center colspan=5><font color=black face=\"Arial,Helvetica\" size=1><?php echo $t1; ?> Agent version: <?php echo $version; ?>&nbsp;&nbsp;Build: <?php echo $build; ?>Server: <?php echo $server_ip; ?></font><span id=\"DebugLink\"><font color=black class=\"body_text\"><a href=\"#\" onclick=\"openDebugWindow();return false;\">.</a></font></span></td></tr><tr><td align=center colspan=5><font color=black face=\"Arial,Helvetica\" size=1>UID: " + MDnextCID  + "</font></span></td></tr></table></div>";
+                                    
+
 									}
 									//var debugspan = document.getElementById("debugbottomspan").innerHTML;
 
@@ -825,7 +832,7 @@
 					taskvar = 'NOTHING';
 					osdalert("Transfer number must have more than 1 digit:" + blindxferdialstring,5);
 				} else {
-					xferredirect_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=RedirectVD&format=text&channel=" + redirectvalue + "&call_server_ip=" + redirectserverip + "&queryCID=" + queryCID + "&exten=" + blindxferdialstring + "&ext_context=" + blindxfercontext + "&ext_priority=1&auto_dial_level=" + auto_dial_level + "&campaign=" + campaign + "&uniqueid=" + document.osdial_form.uniqueid.value + "&lead_id=" + document.osdial_form.lead_id.value + "&secondS=" + VD_live_call_secondS + "&session_id=" + session_id + "&outbound_cid=" + outbound_cid + "&outbound_cid_name=" + outbound_cid_name;
+					xferredirect_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=RedirectVD&format=text&channel=" + redirectvalue + "&call_server_ip=" + redirectserverip + "&queryCID=" + queryCID + "&exten=" + blindxferdialstring + "&ext_context=" + blindxfercontext + "&ext_priority=1&auto_dial_level=" + auto_dial_level + "&campaign=" + campaign + "&uniqueid=" + document.osdial_form.uniqueid.value + "&lead_id=" + document.osdial_form.lead_id.value + "&secondS=" + sec2time(VD_live_call_secondS,0) + "&session_id=" + session_id + "&outbound_cid=" + outbound_cid + "&outbound_cid_name=" + outbound_cid_name;
 				}
 			} else if (taskvar == 'XfeRLOCAL') {
 				CustomerData_update();
@@ -834,7 +841,7 @@
 				//"90009*$group**$lead_id**$phone_number*$user*";
 				var redirectdestination = closerxferinternal + '90009*' + XfeRSelecT.value + '**' + document.osdial_form.lead_id.value + '**' + document.osdial_form.phone_number.value + '*' + user + '*';
 
-				xferredirect_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=RedirectVD&format=text&channel=" + redirectvalue + "&call_server_ip=" + redirectserverip + "&queryCID=" + queryCID + "&exten=" + redirectdestination + "&ext_context=" + ext_context + "&ext_priority=1&auto_dial_level=" + auto_dial_level + "&campaign=" + campaign + "&uniqueid=" + document.osdial_form.uniqueid.value + "&lead_id=" + document.osdial_form.lead_id.value + "&secondS=" + VD_live_call_secondS + "&session_id=" + session_id;
+				xferredirect_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=RedirectVD&format=text&channel=" + redirectvalue + "&call_server_ip=" + redirectserverip + "&queryCID=" + queryCID + "&exten=" + redirectdestination + "&ext_context=" + ext_context + "&ext_priority=1&auto_dial_level=" + auto_dial_level + "&campaign=" + campaign + "&uniqueid=" + document.osdial_form.uniqueid.value + "&lead_id=" + document.osdial_form.lead_id.value + "&secondS=" + sec2time(VD_live_call_secondS,0) + "&session_id=" + session_id;
 			} else if (taskvar == '3WAY') {
 				xferredirect_query='';
 
@@ -999,7 +1006,7 @@
 				reselect_alt_dial = 1;
 				alt_dial_active = 1;
 				alt_dial_menu = 1;
-				var man_status = "Dial Alt Phone Number: <a href=\"#\" id=\"mainphonelink\" onclick=\"document.getElementById('mainphonelink').setAttribute('onclick','void(0);'); alt_dial_menu=0; ManualDialOnly('MaiNPhonE');\"><font class=\"preview_text\">MAIN PHONE</font></a> or <a href=\"#\" id=\"altphonelink\" onclick=\"document.getElementById('altphonelink').setAttribute('onclick','void(0);'); alt_dial_menu=0; ManualDialOnly('ALTPhoneE');\"><font class=\"preview_text\">ALT PHONE</font></a> or <a href=\"#\" id=\"address3link\" onclick=\"document.getElementById('address3link').setAttribute('onclick','void(0);'); alt_dial_menu=0; ManualDialOnly('AddresS3');\"><font class=\"preview_text\">ADDRESS3</font></a> or <a href=\"#\" id=\"finishleadlink\" onclick=\"document.getElementById('finishleadlink').setAttribute('onclick','void(0);'); alt_dial_menu=0; ManualDialAltDonE();\"><font class=\"preview_text_red\" style=color:" + status_preview_color + ">FINISH LEAD</font></a>"; 
+				var man_status = "<font color=white>Dial Alt Phone Number: <a href=\"#\" id=\"mainphonelink\" onclick=\"document.getElementById('mainphonelink').setAttribute('onclick','void(0);'); alt_dial_menu=0; ManualDialOnly('MaiNPhonE');\"><font class=\"preview_text\">MAIN PHONE</font></a> or <a href=\"#\" id=\"altphonelink\" onclick=\"document.getElementById('altphonelink').setAttribute('onclick','void(0);'); alt_dial_menu=0; ManualDialOnly('ALTPhoneE');\"><font class=\"preview_text\">ALT PHONE</font></a> or <a href=\"#\" id=\"address3link\" onclick=\"document.getElementById('address3link').setAttribute('onclick','void(0);'); alt_dial_menu=0; ManualDialOnly('AddresS3');\"><font class=\"preview_text\">ADDRESS3</font></a> or <a href=\"#\" id=\"finishleadlink\" onclick=\"document.getElementById('finishleadlink').setAttribute('onclick','void(0);'); alt_dial_menu=0; ManualDialAltDonE();\"><font class=\"preview_text_red\" style=color:" + status_preview_color + "> END</font></font></a>"; 
 				document.getElementById("MainStatuSSpan").innerHTML = man_status;
 			}
 		}
@@ -1297,7 +1304,7 @@
 
 							document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
 // 							document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "&nbsp;&nbsp;</font><font color=" + panel_bg + ">UID: " + CIDcheck + "</font><font color=" + status_intense_color + " style='text-decoration:blink;'></font>1<font style='margin-left:40px;' color=white><b>Waiting for Ring... " + MD_ring_secondS + " seconds<b></font>";
-                            document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "&nbsp;&nbsp;</font><font color=" + status_intense_color + " style='text-decoration:blink;'></font>1<font style='margin-left:40px;' color=white><b>Waiting for Ring... " + MD_ring_secondS + " seconds<b></font>";
+                            document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "&nbsp;&nbsp;</font><font color=" + status_intense_color + " style='text-decoration:blink;'></font><font style='margin-left:40px;' color=white><b>Waiting for Ring... " + MD_ring_secondS + " seconds<b></font>";
 							//osdalert("channel not found yet:\n" + campaign,30);
 						}
 					} else {
@@ -1310,7 +1317,7 @@
 								MD_ring_secondS++;
 								var status_display_number = formatPhone(document.osdial_form.phone_code.value,dialed_number);
 // 								document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
-								document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "&nbsp;&nbsp;</font><font color=" + status_intense_color + " style='text-decoration:blink;'></font>2<font style='margin-left:40px;' color=white><b>Waiting for Ring... " + MD_ring_secondS + " seconds<b></font>";
+								document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "&nbsp;&nbsp;</font><font color=" + status_intense_color + " style='text-decoration:blink;'></font><font style='margin-left:40px;' color=white><b>Waiting for Ring... " + MD_ring_secondS + " seconds<b></font>";
 							} else {
 								document.osdial_form.xferuniqueid.value	= MDlookResponse_array[0];
 								document.osdial_form.xferchannel.value	= MDlookResponse_array[1];
@@ -1346,7 +1353,7 @@
 								var status_display_number = formatPhone(document.osdial_form.phone_code.value,dialed_number);
 
 // 								document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
-								document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "&nbsp;&nbsp;</font><font color=" + status_intense_color + " style='text-decoration:blink;'></font>3<font style='margin-left:40px;' color=white><b>Waiting for Ring... " + MD_ring_secondS + " seconds<b></font>";
+								document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "&nbsp;&nbsp;</font><font color=" + status_intense_color + " style='text-decoration:blink;'></font><font style='margin-left:40px;' color=white><b>Waiting for Ring... " + MD_ring_secondS + " seconds<b></font>";
 							} else {
 								custchannellive=1;
 
@@ -1370,7 +1377,7 @@
 								if (dispnum.length==10) status_display_number = '('+dispnum.substring(0,3)+')'+dispnum.substring(3,6)+'-'+dispnum.substring(6,10);
 								document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
 
-								document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Called " + status_display_number + "&nbsp;&nbsp;&nbsp;&nbsp;</font>>"; 
+								document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Called " + status_display_number + "&nbsp;&nbsp;&nbsp;&nbsp;</font>"; 
 
 								document.getElementById("ParkControl").innerHTML ="<a href=\"#\" onclick=\"mainxfer_send_redirect('ParK','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_LB_parkcall.gif\" width=145 height=16 border=0 alt=\"Park Call\"></a>";
 
@@ -1507,7 +1514,7 @@
 
 // 						document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
 // 						document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "&nbsp;&nbsp;</font><font color=" + panel_bg + ">UID: " + MDnextCID + "</font><span style='margin-left:35px;'>4</span> Waiting for Ring...";
-                        document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "&nbsp;&nbsp;</font><span style='margin-left:40px;'>4</span> Waiting for Ring...";
+                        document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "&nbsp;&nbsp;</font><span style='margin-left:40px;'></span> Waiting for Ring...";
 
 						document.getElementById("HangupControl").innerHTML = "<a href=\"#\" onclick=\"dialedcall_send_hangup();\"><img src=\"templates/" + agent_template + "/images/vdc_LB_hangupcustomer.gif\" width=145 height=16 border=0 alt=\"Hangup Customer\"></a>";
 
@@ -1748,7 +1755,8 @@
 				var queryCID = "HLvdcW" + epoch_sec + user_abb;
 				var hangupvalue = customer_channel;
 				//osdalert(auto_dial_level + "|" + CalLCID + "|" + customer_server_ip + "|" + hangupvalue + "|" + VD_live_call_secondS,30);
-				custhangup_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=Hangup&format=text&user=" + user + "&pass=" + pass + "&channel=" + hangupvalue + "&call_server_ip=" + customer_server_ip + "&queryCID=" + queryCID + "&auto_dial_level=" + auto_dial_level + "&CalLCID=" + CalLCID + "&secondS=" + VD_live_call_secondS + "&exten=" + session_id + "&campaign=" + group + "&stage=CALLHANGUP&nodeletevdac=" + nodeletevdac + "&log_campaign=" + campaign;
+// 				custhangup_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=Hangup&format=text&user=" + user + "&pass=" + pass + "&channel=" + hangupvalue + "&call_server_ip=" + customer_server_ip + "&queryCID=" + queryCID + "&auto_dial_level=" + auto_dial_level + "&CalLCID=" + CalLCID + "&secondS=" + VD_live_call_secondS + "&exten=" + session_id + "&campaign=" + group + "&stage=CALLHANGUP&nodeletevdac=" + nodeletevdac + "&log_campaign=" + campaign;
+                custhangup_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=Hangup&format=text&user=" + user + "&pass=" + pass + "&channel=" + hangupvalue + "&call_server_ip=" + customer_server_ip + "&queryCID=" + queryCID + "&auto_dial_level=" + auto_dial_level + "&CalLCID=" + CalLCID + "&secondS=" + sec2time(VD_live_call_secondS,0) + "&exten=" + session_id + "&campaign=" + group + "&stage=CALLHANGUP&nodeletevdac=" + nodeletevdac + "&log_campaign=" + campaign;
 				xmlhttp.open('POST', 'manager_send.php'); 
 				xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 				xmlhttp.send(custhangup_query); 
@@ -2902,7 +2910,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				}
 				if (VD_live_customer_call==1) {
 					VD_live_call_secondS++;
-					document.osdial_form.SecondS.value		= VD_live_call_secondS;
+					document.osdial_form.SecondS.value		= sec2time(VD_live_call_secondS,1);
 					document.getElementById("voicemailbutton").innerHTML = "<a href=\"#\" onclick=\"voicemail_ariopen();\"><img src=\"templates/" + agent_template + "/images/agc_check_voicemail_OFF.gif\" width=170 height=30 border=0 alt=\"VOICEMAIL\"></a>";
 				}
 				if (XD_live_customer_call==1) {
@@ -3837,7 +3845,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 						document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
 // 						document.getElementById("MainStatuSSpan").innerHTML = " Calling " + status_display_number + "&nbsp;&nbsp;<font color=" + status_bg+ ">UID: " + MDnextCID + "</font> &nbsp; " + man_status;
-                        document.getElementById("MainStatuSSpan").innerHTML = " Calling " + status_display_number + "&nbsp;&nbsp;";
+                        document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "</font>&nbsp;&nbsp;";
 						if ( (dialed_label.length < 3) || (dialed_label=='NONE') ) {
 							dialed_label='MAIN';
 						}
@@ -4231,7 +4239,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 							document.getElementById("MainStatuSSpan").style.backgroundColor = '';
 							/*document.getElementById("MainStatuSSpan").innerHTML = " Calling " + status_display_number + "&nbsp;&nbsp;<font color=" + status_bg + ">UID: " + CIDcheck + "</font> &nbsp; " + VDIC_fronter;*/ 
-                            document.getElementById("MainStatuSSpan").innerHTML = " Calling " + status_display_number + "&nbsp;&nbsp;";
+                            document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "</font>&nbsp;&nbsp;";
 
 							document.getElementById("RepullControl").innerHTML = "<a href=\"#\" onclick=\"RepullLeadData('all');\"><img src=\"templates/" + agent_template + "/images/vdc_RPLD_on.gif\" width=145 height=16 border=0 alt=\"Repull Lead Data\"></a>";
 
@@ -6284,7 +6292,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 					CIDcheck 						= CalLCID 		= VDIC_data_MCAC[2];
 					document.getElementById("callchannel").innerHTML	= lastcustchannel 	= VDIC_data_MCAC[3];
 					document.osdial_form.callserverip.value 		= lastcustserverip 	= VDIC_data_MCAC[4];
-					document.osdial_form.SecondS.value 			= VD_live_call_secondS 	= (VDIC_data_MCAC[5]*1).toFixed(0);
+                    VD_live_call_secondS    = (VDIC_data_MCAC[5]*1).toFixed(0);
+					document.osdial_form.SecondS.value 			= sec2time(VD_live_customer_call,1);
 
 
 					LasTCID						= check_MCIC_array[4];
@@ -6338,7 +6347,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 					var status_display_number = formatPhone(document.osdial_form.phone_code.value,dialed_number);
 
 					document.getElementById("MainStatuSSpan").style.backgroundColor = '';
-					document.getElementById("MainStatuSSpan").innerHTML = " Calling " + status_display_number + "&nbsp;&nbsp;<font color=" + status_bg + ">UID: " + CIDcheck + "</font> &nbsp; " + VDIC_fronter; 
+					document.getElementById("MainStatuSSpan").innerHTML = "<font color=white>Called " + status_display_number + "</font>&nbsp;&nbsp;<font color=" + status_bg + "> UID: " + CIDcheck + "</font> &nbsp; " + VDIC_fronter; 
 					document.getElementById("RepullControl").innerHTML = "<a href=\"#\" onclick=\"RepullLeadData('all');\"><img src=\"templates/" + agent_template + "/images/vdc_RPLD_on.gif\" width=145 height=16 border=0 alt=\"Repull Lead Data\"></a>";
 
 					if (LeaDPreVDispO == 'CALLBK') {
@@ -6650,3 +6659,31 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			delete hxmlhttp;
 		}
 	}
+
+// ################################################################################
+// Return seconds as hh:mm:sec as applicable
+    function sec2time (secIn,mode) {
+        var hours   = Math.floor(secIn / 3600);
+        var minutes = Math.floor((secIn - (hours * 3600)) / 60);
+        var seconds = secIn - (hours * 3600) - (minutes * 60);
+        
+        if (mode=1) {
+            if (hours   < 10) {hours   = hours;}
+            if (minutes < 10 && hours !=0) {minutes = "0"+minutes;}
+            if (seconds < 10 && (hours!=0 || minutes !=0)) {seconds = "0"+seconds;}
+            
+            var timeOut=hours+':'+minutes+':'+seconds;
+            
+            if (hours==0 && minutes >0) { timeOut=minutes+':'+seconds; }
+            if (hours==0 && minutes==0) { timeOut=seconds; }
+            
+        } else {
+            
+            if (hours   < 10) {hours   = "0"+hours;}
+            if (minutes < 10) {minutes = "0"+minutes;}
+            if (seconds < 10) {seconds = "0"+seconds;}
+            
+            var timeOut=hours+':'+minutes+':'+seconds;
+        }
+        return timeOut;
+    }
