@@ -1955,8 +1955,8 @@ flush();
                             
     <?php load_status('Initializing GUI...<br>HotKeyEntriesBox<br>&nbsp;'); ?>
     <!-- Disposition Hot Keys Window -->
-    <span style="position:absolute;left:20;top:415px;width:480px;z-index:24;visibility:hidden;" id="HotKeyEntriesBox">
-        <table frame=box bgcolor="<?php echo $hotkey_bg1; ?>" height=70 align=center>
+    <span style="position:absolute;left:20;top:415px;width:490px;z-index:24;visibility:hidden;" id="HotKeyEntriesBox">
+        <table class=hotkeywindow frame=box bgcolor="<?php echo $hotkey_bg1; ?>" height=70 align=center>
             <tr bgcolor="<?php echo $hotkey_bg2; ?>">
                 <td colspan=7><font class="sh_text"> Disposition Hot Keys: </font><font class="body_small">Press number for automatic disposition and hangup.</font></td>
             </tr>

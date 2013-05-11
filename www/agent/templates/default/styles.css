@@ -821,4 +821,8 @@ a:visited {
     color:red;
     padding: 10px;
 }
-
+.hotkeywindow {
+    background: #A3C2DF;
+    border-radius: 9px 9px 9px 9px;
+    box-shadow: rgba(0,0,0,0.4) 2px 2px 4px 2px;
+}
