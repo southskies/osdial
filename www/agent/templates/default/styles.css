@@ -810,16 +810,22 @@ a:visited {
     padding: 1px;
 }
 .hotkeyson {
-    background: #CBB491;
-    box-shadow: rgba(0,0,0,0.2) 2px 3px 6px;
-    color:red;
-    padding: 10px;
+    background: #CCCA9F;
+    border-radius: 9px 9px 9px 9px;
+    box-shadow: rgba(0,0,0,0.2) 1px 1px 2px 1px;
+    border:2px outset #A3C2DF;
+    color:#5B7AA2;
+    font-weight:bold;
+    padding: 6px;
 }
 .hotkeysoff {
     background: #DCD9AB;
-    box-shadow: rgba(0,0,0,0.2) 6px 6px 6px;
-    color:red;
-    padding: 10px;
+    border-radius: 9px 9px 9px 9px;
+    box-shadow: rgba(0,0,0,0.2) 1px 1px 2px 1px;
+    border:2px outset #A3C2DF;
+    color:#5B7AA2;
+    font-weight:bold;
+    padding: 6px;
 }
 .hotkeywindow {
     background: #A3C2DF;

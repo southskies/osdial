@@ -1948,8 +1948,9 @@ flush();
     
     <!-- Hot Key Button -->
     <?php if ($HK_statuses_camp > 0 and ($user_level >= $HKuser_level or $VU_hotkeys_active > 0)) { ?>
-        <span style="position:absolute;left:700px;top:450px;z-index:16;" id="hotkeysdisplay">
-            <a href="#" onMouseOver="HotKeys('ON')"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_XB_hotkeysactive_OFF.gif" width=137 height=32 border=0 alt="HOT KEYS INACTIVE"></a>
+        <span style="position:absolute;left:720px;top:450px;z-index:16;" id="hotkeysdisplay">
+            <!--<a href="#" onMouseOver="HotKeys('ON')"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_XB_hotkeysactive_OFF.gif" width=137 height=32 border=0 alt="HOT KEYS INACTIVE"></a>-->
+            <a href="#" onMouseOver="HotKeys('ON')"><div class=hotkeysoff>HOT KEYS</div></a>
         </span>
     <?php } ?>
                             
