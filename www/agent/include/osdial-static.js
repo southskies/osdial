@@ -3330,13 +3330,11 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		if ( (HKstate == 'ON') && (HKbutton_allowed == 1) ) {
 			showDiv('HotKeyEntriesBox');
 			hot_keys_active = 1;
-// 			document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onMouseOut=\"HotKeys('OFF')\"><img src=\"templates/" + agent_template + "/images/vdc_XB_hotkeysactive.gif\" width=137 height=32 border=0 alt=\"HOT KEYS ACTIVE\"></a>";
-            document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onMouseOut=\"HotKeys('OFF')\"><div class=hotkeysoff>HOT KEYS</div></a>";
+            document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onMouseOut=\"HotKeys('OFF')\"><div class=hotkeyson>HOT KEYS</div></a>";
 		} else {
 			hideDiv('HotKeyEntriesBox');
 			hot_keys_active = 0;
-// 			document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onMouseOver=\"HotKeys('ON')\"><img src=\"templates/" + agent_template + "/images/vdc_XB_hotkeysactive_OFF.gif\" width=137 height=32 border=0 alt=\"HOT KEYS INACTIVE\"></a>";
-            document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onMouseOver=\"HotKeys('ON')\"><div class=hotkeyson>HOT KEYS</div></a>";
+            document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onMouseOver=\"HotKeys('ON')\"><div class=hotkeysoff>HOT KEYS</div></a>";
 		}
 	}
 

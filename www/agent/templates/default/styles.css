@@ -809,21 +809,21 @@ a:visited {
     box-shadow: rgba(0,0,0,0.2) 6px -6px 6px;
     padding: 1px;
 }
-.hotkeyson {
+.hotkeysoff {
     background: #CCCA9F;
     border-radius: 9px 9px 9px 9px;
     box-shadow: rgba(0,0,0,0.2) 1px 1px 2px 1px;
     border:2px outset #A3C2DF;
-    color:#5B7AA2;
+    color:#5D6F80;
     font-weight:bold;
     padding: 6px;
 }
-.hotkeysoff {
+.hotkeyson {
     background: #DCD9AB;
     border-radius: 9px 9px 9px 9px;
     box-shadow: rgba(0,0,0,0.2) 1px 1px 2px 1px;
     border:2px outset #A3C2DF;
-    color:#5B7AA2;
+    color:#303942;
     font-weight:bold;
     padding: 6px;
 }
