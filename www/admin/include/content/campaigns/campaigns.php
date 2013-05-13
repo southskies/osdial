@@ -1838,7 +1838,11 @@ if ($ADD==31) {
             if ($LOG['view_agent_realtime']) echo "<span class=no-ul><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12&group=$campaign_id\">Click here to see a Time On Dialer report for this campaign</a></span></font><br><br><br />";
             
             echo "</b></center>";
-            echo "</td></tr></table></div>&nbsp;";
+            echo "</td></tr>";
+            echo "<tr class=tabfooter2><td align=center class=no-ul colspan=2>";
+            jump_section(1);
+            echo "</td></tr>";
+            echo "</table></div>&nbsp;";
             
             
             
