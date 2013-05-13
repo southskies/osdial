@@ -1269,9 +1269,9 @@ if ($ADD==31) {
                 echo "<tr><td align=center class=no-ul colspan=3><br />";
                 jump_section(1);
                 echo "</td></tr>";
-                echo "</table></div>"; // No &nbsp; here as it doubles the space to the next section below
+                echo "</table></div>&nbsp;";
             }
-            echo "</FORM>";
+            
 
             
 			// DIALING
@@ -1839,9 +1839,9 @@ if ($ADD==31) {
             
             echo "</b></center>";
             echo "</td></tr>";
-            echo "<tr class=tabfooter2><td align=center class=no-ul colspan=2>";
-            jump_section(1);
-            echo "</td></tr>";
+//             echo "<tr class=tabfooter2><td align=center class=no-ul colspan=2>";
+//             jump_section(1);
+//             echo "</td></tr>";
             echo "</table></div>&nbsp;";
             
             
@@ -2119,7 +2119,7 @@ if ($ADD==31) {
 			
 			
 		}
-		
+		echo "</FORM>";
 		
 		
 		#echo "<table align=center bgcolor=#E9E8D9 width=100% cellspacing=3 cellpadding=0 cellspacing=0 class=tablefont>";
