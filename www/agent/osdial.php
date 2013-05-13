@@ -2,8 +2,8 @@
 # 
 #
 # Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
-# Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
-# Copyright (C) 2009  Steve Szmidt <techs@callcentersg.com>  LICENSE: AGPLv3
+# Copyright (C) 2009-2013  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+# Copyright (C) 2009-2013  Steve Szmidt <techs@callcentersg.com>  LICENSE: AGPLv3
 #
 #     This file is part of OSDial.
 #
@@ -1794,7 +1794,7 @@ flush();
                                         
     <!-- Footer Links -->
     <?php load_status('Initializing GUI...<br>MaiNfooterspan<br>&nbsp;'); ?>
-    <span style="position:relative;left:46px;top:460px;z-index:5;" id="MaiNfooterspan">
+    <span style="position:relative;left:46px;top:460px;z-index:9;" id="MaiNfooterspan">
         <font class="body_small"><span id="busycallsdisplay"><a href="#"  onclick="conf_channels_detail('SHOW');">Channel Information</a><br></span></font>
         <span id="outboundcallsspan"></span>
         <span id="debugbottomspan"></span>
