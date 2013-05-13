@@ -504,7 +504,7 @@
 								var LMAcontent_match=0;
 								agentphonelive=0;
 								var conv_start=-1;
-								var live_conf_HTML = "<div align=center class=bottom><font face=\"Arial,Helvetica\"><TABLE WIDTH=" + SDwidth + "><tr height=20><td align=center colspan=5><font class=\"log_title\">Live Calls In Your Session:</font></td></tr><TR align=center><TD><font class=\"log_title\">#</TD><TD><font class=\"log_title\">Remote Channel</TD><TD><font class=\"log_title\">Hangup</TD><TD width=80><font class=\"log_title\">Volume</TD><td width=120><font class=\"log_title\">Muted/Unmuted</font></td></TR>";
+								var live_conf_HTML = "<div align=center class=bottom style='position:relative;z-index:9;'><font face=\"Arial,Helvetica\"><TABLE WIDTH=" + SDwidth + "><tr height=20><td align=center colspan=5><font class=\"log_title\">Live Calls In Your Session:</font></td></tr><TR align=center><TD><font class=\"log_title\">#</TD><TD><font class=\"log_title\">Remote Channel</TD><TD><font class=\"log_title\">Hangup</TD><TD width=80><font class=\"log_title\">Volume</TD><td width=120><font class=\"log_title\">Muted/Unmuted</font></td></TR>";
 								if ( (LMAcount > live_conf_calls)  || (LMAcount < live_conf_calls) || (LMAforce > 0)) {
 									LMAe[0]=''; LMAe[1]=''; LMAe[2]=''; LMAe[3]=''; LMAe[4]=''; LMAe[5]=''; 
 									LMAcount=0;   LMAcontent_change++;
@@ -5975,7 +5975,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		}
 
 		if ( (view_scripts == 1) && (campaign_script.length > 0) ) {
-			document.getElementById("ScriptContents").innerHTML = t1 + " Script Will Show Here";
+			document.getElementById("ScriptContents").innerHTML = t1 + " Script will show up here once a call is in progress.";
 			scriptUpdateFields();
 		}
 
