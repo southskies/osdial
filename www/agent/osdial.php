@@ -2912,10 +2912,10 @@ flush();
                 </td>
             </tr>
         </table>
-        <div id="AddtlFormTab" style="visibility:hidden;position:absolute;left:<? echo (980-15); ?>;px;top:36px;z-index:9;" class=sidetab onclick="AddtlFormOver();">
+        <div id="AddtlFormTab" style="visibility:hidden;position:absolute;left:966px;top:36px;z-index:9;" class=sidetab onclick="AddtlFormOver();">
             FORMS
         </div>
-        <div id="AddtlFormTabExpanded" style="visibility:hidden;position:absolute;left:831px;top:22px;z-index:9;box-shadow: rgba(0,0,0,0.5) -1px -1px 18px;background:#8FB1DC;">
+        <div id="AddtlFormTabExpanded" style="visibility:hidden;position:absolute;left:835px;top:22px;z-index:9;box-shadow: rgba(0,0,0,0.5) -1px -1px 18px;background:#8FB1DC;">
                 <div id="AddtlFormTabExpandedTop" height=16 onclick="AddtlFormSelect('Cancel');" style='width:142px !important;'>
                     Select A Form
                 </div>
@@ -2940,7 +2940,7 @@ flush();
                         }
                     }
                 } ?>
-            <div id="AddtlFormTabExpandedCancel" style="position:absolute;left:<?php echo (139-10); ?>px;top:15px;z-index:9;box-shadow: rgba(0,0,0,0.5) 1px -1px 18px;background:#86A6D3;" onclick="AddtlFormSelect('Cancel')";>
+            <div id="AddtlFormTabExpandedCancel" style="position:absolute;left:<?php echo (139-10); ?>px;top:15px;z-index:9;box-shadow: rgba(0,0,0,0.5) 1px -4px 18px;background:#86A6D3;" onclick="AddtlFormSelect('Cancel')";>
                 CANCEL
             </div>
         </div>
