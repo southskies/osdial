@@ -2476,26 +2476,28 @@ flush();
                             <td width=205 height=350 align=left valign=top class=curve3>
                                 <font class="body_text" style="">
                                     <center>
-                                        <span style="" id="DiaLControl"><a href="#" onclick="ManualDialNext('','','','','');"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_LB_dialnextnumber_OFF.gif" width=145 height=16 border=0 alt="Dial Next Number"></a></span><br>
+                                        <!--<span style="" id="DiaLControl"><a href="#" onclick="ManualDialNext('','','','','');"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_LB_dialnextnumber_OFF.gif" width=145 height=16 border=0 alt="Dial Next Number"></a></span><br>-->
+                                        <span style="" id="DiaLControl"><a href="#" onclick="ManualDialNext('','','','','');"><span class=DialNextButtonOff>Dial Next Number</span></a></span><br>
+                                        
                                         <span id="DiaLLeaDPrevieW"><font class="preview_text"><input type=checkbox name=LeadPreview id=LeadPreview size=1 value="0"><label for="LeadPreview"> LEAD PREVIEW</label><br></font></span>
                                         <span id="DiaLDiaLAltPhonE"><font class="preview_text"><input type=checkbox name=DiaLAltPhonE id=DiaLAltPhonE size=1 value="0"><label for="DaiLAltPhonE"> ALT PHONE DIAL</label><br></font></span>
                             
                                         <font color=<?php echo $form_fc; ?>>Recording File</font><br>
                                         <font class="body_tiny">&nbsp;<span id="RecorDingFilename"></span></font><br>
-                                        <font color=<?php echo $form_fc; ?>>Recording ID:&nbsp;</font><font class="body_small">&nbsp;<span id="RecorDID"></span></font>
-                                        <span id="RecorDControl"><a href="#" onclick="conf_send_recording('MonitorConf','<?php echo $session_id; ?>','');return false;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_LB_startrecording.gif" width=145 height=16 border=0 alt="Start Recording"></a></span>
+                                        <font color=<?php echo $form_fc; ?>>Recording ID:&nbsp;</font><font class="body_small">&nbsp;<span id="RecorDID"></span></font><br/>
+                                        <!--<span id="RecorDControl"><a href="#" onclick="conf_send_recording('MonitorConf','<?php echo $session_id; ?>','');return false;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_LB_startrecording.gif" width=145 height=16 border=0 alt="Start Recording"></a></span>-->
+                                        <span id="RecorDControl"><a href="#" onclick="conf_send_recording('MonitorConf','<?php echo $session_id; ?>','');return false;"><span class=RecordingButton>Start Recording</span></a></span>
                                         
                                         <span id="SpacerSpanA"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>
-                                        <span id="WebFormSpan"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_LB_webform_OFF.gif" width=145 height=16 border=0 alt="Web Form"></span>
-                                        <span id="SpacerSpanB"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:2px;border:0px;"></span><br>
-                                        <span id="WebFormSpan2"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_LB_webform2_OFF.gif" width=145 height=16 border=0 alt="Web Form"></span>
+                                        <span id="WebFormSpan"><span class=WebFormButtonOff>Web Form 1</span></span>
+                                        <span id="SpacerSpanB"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:px;border:0px;"></span><br>
+                                        <span id="WebFormSpan2"><span class=WebFormButtonOff>Web Form 2</span></span>
                                         <span id="SpacerSpanC"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>
-                                        <span id="ParkControl"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_LB_parkcall_OFF.gif" width=145 height=16 border=0 alt="Park Call"></span>
-                                        <span id="SpacerSpanD"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:2px;border:0px;"></span><br>
-                                        <span id="XferControl"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_LB_transferconf_OFF.gif" width=145 height=16 border=0 alt="Transfer - Conference"></span>
-                                        <span id="SpacerSpanE"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>
-                                        <span id="HangupControl"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_LB_hangupcustomer_OFF.gif" width=145 height=16 border=0 alt="Hangup Customer"></span>
-                                        <span id="SpacerSpanF"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>
+                                        <span id="ParkControl"><span class=ParkButtonOff>Park Call</span></span>
+                                        <span id="SpacerSpanD"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:4px;border:0px;"></span><br>
+                                        <span id="XferControl"><span class=XferButtonOff>Transfer / Conference</span></span>
+                                        
+                                        <span id="SpacerSpanF"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:10px;border:0px;"></span><br>
             
                                         <div class="text_input" id="DTMFDialPad" onMouseOver="DTMFKeys('ON');">
                                             <table cellspacing=1 cellpadding=1 border=0>
@@ -2523,8 +2525,11 @@ flush();
                                         </div>
                                         
                                         <div class="text_input" id="SendDTMFdiv" style='margin-top:5px'>
-                                            <span id="SendDTMF"><a href="#" onclick="SendConfDTMF('<?php echo $session_id; ?>');return false;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_LB_senddtmf.gif" height=19 width=93 border=0 alt="Send DTMF" align=top></a> <input type=text size=6 name=conf_dtmf class="cust_form" value="" maxlength=50></span>
+                                            <span id="SendDTMF"><a href="#" onclick="SendConfDTMF('<?php echo $session_id; ?>');return false;"><span class=SendDTMF>Send DTMF</span></a> <input type=text size=6 name=conf_dtmf class="cust_form" value="" maxlength=50></span>
                                         </div>
+                                        
+                                        <span id="SpacerSpanE"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>
+                                        <span id="HangupControl"><span class=HangupButtonOff>Hangup Customer</span></span>
                                         
                                         <span id="RepullControl"></span>
                                         <span id="SpacerSpanG"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>

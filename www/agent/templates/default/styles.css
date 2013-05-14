@@ -812,7 +812,6 @@ a:visited {
 }
 .sidetab {
     background: -webkit-linear-gradient(bottom, #86A6D3, #AACBFA);
-/*     background: -webkit-linear-gradient(bottom, #999, #DDD); */
     box-shadow: rgba(0,0,0,0.2) 2px -4px 6px 1px;
     padding: 1px;
 }
@@ -839,3 +838,162 @@ a:visited {
     border-radius: 9px 9px 9px 9px;
     box-shadow: rgba(0,0,0,0.4) 2px 2px 4px 2px;
 }
+
+.PauseButtonOff, .ResumeButtonOff {
+    background: #B5B4B4; /* Gray */
+    border-radius: 5px 5px 5px 5px;
+    color:#989797;
+    padding:0px 17px 0px 17px;
+    height:12px;
+    width:70px;
+}
+.PauseButton, .ResumeButton {
+/*     background: #BFE0B7; /* Green */ 
+    background: -webkit-linear-gradient(top, #BFE0B7, #DAFFD1);
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
+    color:#000;
+    padding:0px 17px 0px 17px;
+    height:12px;
+    width:70px;
+}
+.DialNextButtonOff {
+    background: #B5B4B4; /* Gray */
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
+    padding:0px 18px 0px 18px;
+    color:#6F6E6E;
+    height:12px;
+    width:140px;
+}
+.DialNextButton {
+    background: #BFE0B7; /* Green */
+    border-radius: 5px 5px 5px 5px;
+    padding:0px 18px 0px 18px;
+    color:#000;
+    height:12px;
+    width:140px;
+}
+.RecordingButton {
+    background: #B5B4B4; /* Yellow */
+    background: -webkit-linear-gradient(top, #E8E5C0, #FFFCD3);
+    border-radius: 5px 5px 5px 5px;
+    color:#000;
+    padding:0px 32px 0px 32px;
+    height:12px;
+    width:140px;
+}
+.RecordingButtonStart {
+    background: #B5B4B4; /* Yellow */
+    background: -webkit-linear-gradient(top, #E8E5C0, #FFFCD3);
+    border-radius: 5px 5px 5px 5px;
+    color:#000;
+/*     padding:0px 12px 0px 12px; */
+    height:12px;
+    width:140px;
+}
+.RecordingButtonStop {
+    background: #E8E5C0; /* Orange */
+    background: -webkit-linear-gradient(top, #E8E5C0, #FFC1C1);
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
+    color:#000;
+/*     padding:0px 13px 0px 13px; */
+    height:12px;
+    width:140px;
+}
+.RecordingButtonStartOff {
+    background: #B5B4B4; /* Gray */
+    border-radius: 5px 5px 5px 5px;
+    color:#000;
+/*     padding:0px 12px 0px 12px; */
+    height:12px;
+    width:140px;
+}
+.RecordingButtonStopOff {
+    background: #B5B4B4; /* Gray */
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
+    color:#000;
+/*     padding:0px 13px 0px 13px; */
+    height:12px;
+    width:140px;
+}
+.HangupButtonOff {
+    background: #B5B4B4; /* Gray */
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
+    padding:0px 25px 0px 25px;
+    color:#6F6E6E;
+    height:12px;
+    width:140px;
+}
+.HangupButton {
+    background: -webkit-linear-gradient(top, #B65050, #FF7070); /* Orange */
+    border-radius: 5px 5px 5px 5px;
+    padding:0px 25px 0px 25px;
+    color:#000;
+    height:12px;
+    width:140px;
+}
+.SendDTMF {
+    background: -webkit-linear-gradient(top, #E8E5C0, #FFFCD3); /* Yellow */
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 1px 1px 1px 2px;
+    padding:2px 5px 2px 5px;
+    color:#000;
+    height:12px;
+    width:40px;
+}
+.WebFormButton {
+/*     background: #B5B4B4; /* Yellow */ 
+    background: -webkit-linear-gradient(top, #E8E5C0, #FFFCD3);
+    border-radius: 5px 5px 5px 5px;
+    color:#000;
+    padding:0px 32px 0px 32px;
+    height:12px;
+    width:140px;
+}
+.WebFormButtonOff {
+    background: #B5B4B4; /* Gray */
+    border-radius: 5px 5px 5px 5px;
+    color:#6F6E6E;
+    padding:0px 32px 0px 32px;
+    height:12px;
+    width:140px;
+}
+.ParkButton {
+/*     background: #B5B4B4; /* Yellow */ 
+    background: -webkit-linear-gradient(top, #E8E5C0, #FFFCD3);
+    border-radius: 5px 5px 5px 5px;
+    color:#000;
+    padding:0px 30px 0px 30px;
+    height:12px;
+    width:140px;
+}
+.ParkButtonOff {
+    background: #B5B4B4; /* Gray */
+    border-radius: 5px 5px 5px 5px;
+    color:#6F6E6E;
+    padding:0px 40px 0px 40px;
+    height:12px;
+    width:140px;
+}
+.XferButton {
+/*     background: #B5B4B4; /* Yellow */ 
+    background: -webkit-linear-gradient(top, #E8E5C0, #FFFCD3);
+    border-radius: 5px 5px 5px 5px;
+    color:#000;
+    padding:0px 5px 0px 5px;
+    height:12px;
+    width:140px;
+}
+.XferButtonOff {
+    background: #B5B4B4; /* Gray */
+    border-radius: 5px 5px 5px 5px;
+    color:#6F6E6E;
+    padding:0px 8px 0px 8px;
+    height:12px;
+    width:140px;
+}
+
