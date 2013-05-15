@@ -2487,8 +2487,12 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
         
 //         document.getElementById("LogouTBoxLink").innerHTML = "<map=Loginmap><a OnMouseOver=\"lagain.src='templates/" + agent_template + "/images/LoginAgainDn.png'\" OnMouseOut=\"lagain.src='templates/" + agent_template + "/images/LoginAgainUp.png'\" usemap=Loginmap href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\"><img src='templates/" + agent_template + "/images/LoginAgainUp.png' width='128' height='28' align=center border='0' name=lagain></a>";
         
-        document.getElementById("LogouTBoxLink").innerHTML = "<span class=homepage><a href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\">Login Again</a></span>";
-        
+        // If allowed to exit to welcome page
+        if (1==2) {
+            document.getElementById("LogouTBoxLink").innerHTML = "<span class=homepage><div class=loginagainBox><span class=LoginAgainHeader>Login Again?</span><br/><br/><a href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\">Yes</a>&nbsp;/&nbsp;<a href=/>No</a></div></span>";
+        } else {
+            document.getElementById("LogouTBoxLink").innerHTML = "<span class=homepage><div class=loginagainBox><span class=LoginAgainHeader>Login Again?</span><br/><br/><a href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\">Yes</a>&nbsp;/&nbsp;<a href=>No</a></div></span>";
+        }
 		logout_stop_timeouts = 1;
 					
 		//window.location= agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass;
@@ -3338,16 +3342,20 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 	function HotKeys(HKstate) {
 		debug("<b>HotKeys:</b> HKstate=" + HKstate,2);
+        var az = document.getElementById('HKstate'); 
 		if ( (HKstate == 'ON') && (HKbutton_allowed == 1) ) {
 			showDiv('HotKeyEntriesBox');
 			hot_keys_active = 1;
-            document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onMouseOut=\"HotKeys('OFF')\"><div class=hotkeyson>HOT KEYS</div></a>";
+            az.onmouseover = az.onfocus = az.onclick = az.onkeypress 
+            document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onClick=\"HotKeys('OFF')\"><div class=hotkeyson>HOT KEYS</div></a>";
+//             document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onClick=\"HotKeys('OFF');\" onMouseOut=\"HotKeys('OFF');\"><div class=hotkeyson>HOT KEYS</div></a>";
 		} else {
 			hideDiv('HotKeyEntriesBox');
 			hot_keys_active = 0;
-            document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onMouseOver=\"HotKeys('ON')\"><div class=hotkeysoff>HOT KEYS</div></a>";
+            document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onClick=\"HotKeys('ON')\"><div class=hotkeysoff>HOT KEYS</div></a>";
+//             document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onClick=\"HotKeys('ON');\" onMouseOver=\"HotKeys('ON');\"><div class=hotkeysoff>HOT KEYS</div></a>";
 		}
-	}
+    }
 
 	function DTMFKeys(DTMFstate) {
 		debug("<b>DTMFKeys:</b> DTMFstate=" + DTMFstate,2);

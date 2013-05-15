@@ -1769,9 +1769,10 @@ flush();
     <?php $AdmVer=substr($admin_version,0,3); ?>
     <span style="position:absolute;left:1px;top:1px;z-index:100;background:white;visibility:hidden;" id="LogouTBox">
         <div bgcolor=white class=login_again2>
-            <div style="position:absolute;left:417px;top:280px;" id="LogouTBoxLink"></div>
+            <!--<div style="position:absolute;left:417px;top:280px;" id="LogouTBoxLink"></div>-->
+            <div style="position:absolute;left:345px;top:218px;width:300px;align:center;" id="LogouTBoxLink"></div>
             <div style="position:absolute;left:30px;top:495px;"><img class=homepagelogo src='templates/default/images/osdial-logo.gif' height=100></div>
-            <div class=homepagever style="position:absolute;left:880px;top:550px;"><font style='font-size:17pt;'></font><?php echo $AdmVer; ?></div>
+            <div class=homepagever style="position:absolute;left:895px;top:550px;"><font style='font-size:17pt;'></font><?php echo $AdmVer; ?></div>
         </div>
     </span>
     
@@ -1949,8 +1950,7 @@ flush();
     <!-- Hot Key Button -->
     <?php if ($HK_statuses_camp > 0 and ($user_level >= $HKuser_level or $VU_hotkeys_active > 0)) { ?>
         <span style="position:absolute;left:720px;top:450px;z-index:16;" id="hotkeysdisplay">
-            <!--<a href="#" onMouseOver="HotKeys('ON')"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_XB_hotkeysactive_OFF.gif" width=137 height=32 border=0 alt="HOT KEYS INACTIVE"></a>-->
-            <a href="#" onMouseOver="HotKeys('ON')"><div class=hotkeysoff>HOT KEYS</div></a>
+            <a href="#" onMouseOver="HotKeys('ON');"  onClick="HotKeys('ON');"><div class=hotkeysoff>HOT KEYS</div></a>
         </span>
     <?php } ?>
                             
@@ -2490,7 +2490,7 @@ flush();
                                         
                                         <span id="SpacerSpanA"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>
                                         <span id="WebFormSpan"><span class=WebFormButtonOff>Web Form 1</span></span>
-                                        <span id="SpacerSpanB"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:px;border:0px;"></span><br>
+                                        <span id="SpacerSpanB"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:4px;border:0px;"></span><br>
                                         <span id="WebFormSpan2"><span class=WebFormButtonOff>Web Form 2</span></span>
                                         <span id="SpacerSpanC"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>
                                         <span id="ParkControl"><span class=ParkButtonOff>Park Call</span></span>
