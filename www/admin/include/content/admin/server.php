@@ -404,7 +404,7 @@ if ($ADD==311111111111) {
 
         if ($row[22] == 'AIO' or $row[22] == 'DIALER') {
             ### osdial server trunk records for this server
-            echo "<br><br><center><font class=top_header2 color=$default_text size=+1>TRUNKS FOR THIS SERVER &nbsp;</font> ".helptag("osdial_server_trunks")."<br><br />\n";
+            echo "<br><br><center><font class=top_header2 color=$default_text size=+1>TRUNKS FOR THIS SERVER &nbsp;</font> ".helptag("osdial_server_trunks-osdial_server_trunks")."<br><br />\n";
             echo "<table class=shadedtable width=600 cellspacing=1 bgcolor=grey>\n";
             echo "  <tr class=tabheader>\n";
             echo "    <td align=center>TRUNKS</td>\n";

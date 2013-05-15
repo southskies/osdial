@@ -88,7 +88,7 @@ if ($ADD==311111111111111) {
 
         echo "        <tr bgcolor=$oddrows>\n";
         echo "          <td align=right>Company Name:</td>\n";
-        echo "          <td align=left><input type=text name=company_name size=30 maxlength=100 value=\"$system_settings[company_name]\"></td>\n";
+        echo "          <td align=left><input type=text name=company_name size=30 maxlength=100 value=\"$system_settings[company_name]\">".helptag("system_settings-company_name")."</td>\n";
         echo "        </tr>\n";
         echo "        <tr bgcolor=$oddrows>\n";
         echo "          <td align=right>Admin Home URL:</td>\n";
@@ -307,7 +307,7 @@ if ($ADD==311111111111111) {
             echo "        </tr>\n";
             echo "        <tr bgcolor=$oddrows>\n";
             echo "          <td align=right>Multi-Company Administator:</td>\n";
-            echo "          <td align=left><input type=text name=multicompany_admin size=10 maxlength=15 value=\"$system_settings[multicompany_admin]\"></td>\n";
+            echo "          <td align=left><input type=text name=multicompany_admin size=10 maxlength=15 value=\"$system_settings[multicompany_admin]\">".helptag("system_settings-multicompany_admin")."</td>\n";
             echo "        </tr>\n";
         }
 

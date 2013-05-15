@@ -126,7 +126,7 @@ if ($ADD==131 && $SUB==2 && $LOG['user_level'] > 8 && $LOG['export_leads'] > 0) 
 
         if ($list_id == '') {
             $lists = get_krh($link,'osdial_lists','*','',sprintf('campaign_id IN %s',$LOG['allowed_campaignsSQL']),'');
-            echo "  <b>Select List ID</b>\n";
+            echo "  <b>Select List ID</b>".helptag("lead_exporter-list_id")."\n";
             echo "  <br />";
             echo "  <br />";
             echo "  <select name=list_id>";
@@ -147,7 +147,7 @@ if ($ADD==131 && $SUB==2 && $LOG['user_level'] > 8 && $LOG['export_leads'] > 0) 
             echo "  <br />\n";
             echo "  <hr width='75%'>\n";
             echo "  <br />\n";
-            echo "  <b>Select Statuses to Include in File:</b>\n";
+            echo "  <b>Select Statuses to Include in File:</b>".helptag("lead_exporter-statuses")."\n";
             echo "  <br />\n";
             echo "  <br />\n";
 
@@ -215,7 +215,7 @@ if ($ADD==131 && $SUB==2 && $LOG['user_level'] > 8 && $LOG['export_leads'] > 0) 
             }
             echo "  <hr width='75%'>\n";
             echo "  <br />\n";
-            echo "  <b>Select Fields to Include in File:</b>\n";
+            echo "  <b>Select Fields to Include in File:</b>".helptag("lead_exporter-fields")."\n";
             echo "  <br />\n";
             echo "  <br />\n";
 

@@ -49,7 +49,7 @@ if ($ADD==11111111111) {
         echo "</select>".helptag("phones-server_ip")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Login: </td><td align=left><input type=text name=login size=10 maxlength=10 value=\"$row[6]\">".helptag("phones-login")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=pass size=10 maxlength=10 value=\"$row[7]\">".helptag("phones-pass")."</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Status: </td><td align=left><select size=1 name=status><option selected>ACTIVE</option><option>SUSPENDED</option><option>CLOSED</option><option>PENDING</option><option>ADMIN</option>".helptag("phones-status")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Status: </td><td align=left><select size=1 name=status><option selected>ACTIVE</option><option>SUSPENDED</option><option>CLOSED</option><option>PENDING</option><option>ADMIN</option></select>".helptag("phones-status")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Active Account: </td><td align=left><select size=1 name=active><option selected>Y</option><option>N</option></select>".helptag("phones-active")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Phone Type: </td><td align=left><input type=text name=phone_type size=20 maxlength=50 value=\"$row[10]\">".helptag("phones-phone_type")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=fullname size=20 maxlength=50 value=\"$row[11]\">".helptag("phones-fullname")."</td></tr>\n";

@@ -201,7 +201,7 @@ if ($ADD==3111111111111)
 	echo "$servers_list";
 	#echo "<option SELECTED>$row[1]</option>\n";
 	echo "</select>".helptag("conferences-server_ip")."</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Current Extension: </td><td align=left><input type=text name=extension size=20 maxlength=20 value=\"$row[2]\"></td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Current Extension: </td><td align=left><input type=text name=extension size=20 maxlength=20 value=\"$row[2]\">".helptag("conferences-extension")."</td></tr>\n";
 	echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 
@@ -400,7 +400,7 @@ if ($ADD==31111111111111) {
 	echo "$servers_list";
 	#echo "<option SELECTED>$row[1]</option>\n";
 	echo "</select>".helptag("conferences-server_ip")."</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Current Extension: </td><td align=left><input type=text name=extension size=20 maxlength=20 value=\"$row[2]\"></td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Current Extension: </td><td align=left><input type=text name=extension size=20 maxlength=20 value=\"$row[2]\">".helptag("conferences-extension")."</td></tr>\n";
 	echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 

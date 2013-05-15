@@ -1517,11 +1517,7 @@ function jump_section ($section_level) {
 	echo "<a href=#method class=jump>Method</a>&nbsp;";  
 	echo "<a href=#options class=jump>Options</a>&nbsp;";  
 	echo "<a href=#list class=jump>Lists</a>&nbsp;";  
-	if ($section_level == '') {
-        echo "<a href=#alists class=jumpend>ActiveLists</a>&nbsp;"; 
-    } else {
-        echo "<a href=#alists class=jumpend2>ActiveLists</a>&nbsp;"; 
-    }
+	echo "<a href=#alists class=jump>ActiveLists</a>&nbsp;"; 
 	echo "<a href=#carrier class=jump>Carrier</a>&nbsp;";  
 	echo "<a href=#record class=jump>Record</a>&nbsp;";  
 	echo "<a href=#am class=jump>A-M</a>&nbsp;";  
@@ -1530,9 +1526,7 @@ function jump_section ($section_level) {
 	echo "<a href=#webform class=jump>WebForm</a>&nbsp;";  
 	echo "<a href=#script class=jump>Script</a>&nbsp;";  
 	echo "<a href=#eoc class=jump>End-Of-Call</a>&nbsp;";  
-	echo "<a href=#dnc class=jump>DNC</a>&nbsp;";  
-	  
-	
+	echo "<a href=#dnc class=jump>DNC</a>&nbsp;";
 }    
 
 /**************************************************************/

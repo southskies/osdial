@@ -92,19 +92,19 @@ if ($ADD == "2form") {
         echo "<table cellspacing=1 cellpadding=3 class=shadedtable width=700>\n";
         echo "  <tr>\n";
         echo "      <td bgcolor=$evenrows align=right>Name</td>\n";
-        echo "      <td bgcolor=$evenrows><input type=\"text\" size=\"15\" maxlength=\"15\" name=\"form_name\" value=\"\"></td>";
+        echo "      <td bgcolor=$evenrows><input type=\"text\" size=\"15\" maxlength=\"15\" name=\"form_name\" value=\"\">".helptag("aff-name")."</td>";
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "      <td bgcolor=$evenrows align=right>Description</td>\n";
-        echo "      <td bgcolor=$evenrows><input type=\"text\" size=\"50\" maxlength=\"50\" name=\"form_description\" value=\"\"></td>";
+        echo "      <td bgcolor=$evenrows><input type=\"text\" size=\"50\" maxlength=\"50\" name=\"form_description\" value=\"\">".helptag("aff-description")."</td>";
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "      <td bgcolor=$evenrows align=right>Description (Line 2)</td>\n";
-        echo "      <td bgcolor=$evenrows><input type=\"text\" size=\"50\" maxlength=\"50\" name=\"form_description2\" value=\"\"></td>";
+        echo "      <td bgcolor=$evenrows><input type=\"text\" size=\"50\" maxlength=\"50\" name=\"form_description2\" value=\"\">".helptag("aff-description2")."</td>";
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "      <td bgcolor=$evenrows align=right>Priority:</td>\n";
-        echo "      <td bgcolor=$evenrows><input type=\"text\" size=\"2\" maxlength=\"2\" name=\"form_priority\" value=\"" . $pri . "\"></td>";
+        echo "      <td bgcolor=$evenrows><input type=\"text\" size=\"2\" maxlength=\"2\" name=\"form_priority\" value=\"" . $pri . "\">".helptag("aff-priority")."</td>";
         echo "  </tr>\n";
         if ($LOG['allowed_campaignsALL'] > 0) {
             echo "  <tr>\n";
@@ -113,7 +113,7 @@ if ($ADD == "2form") {
             if ($LOG['multicomp'] == 0) {
                 echo "        <input type=\"checkbox\" name=\"campaigns[]\" value=\"-ALL-\"> <b>ALL - FORM IN ALL CAMPAIGNS</b>\n";
             }
-            echo "      </td>";
+            echo "      ".helptag("aff-campaigns")."</td>";
             echo "  </tr>\n";
             $campaigns = get_krh($link, 'osdial_campaigns', 'campaign_id,campaign_name','',sprintf('campaign_id IN %s',$LOG['allowed_campaignsSQL']),'');
             foreach ($campaigns as $camp) {
@@ -391,19 +391,19 @@ if ($ADD == 72 or ($ADD == "3fields" and $SUB == '2fields')) {
     echo "<table cellspacing=1 cellpadding=1>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$evenrows align=right>Name</td>\n";
-    echo '      <td bgcolor=' . $evenrows . '><input type="text" size="15" maxlength="15" name="form_name" value="' . $form['name'] . '"></td>';
+    echo '      <td bgcolor=' . $evenrows . '><input type="text" size="15" maxlength="15" name="form_name" value="' . $form['name'] . '">'.helptag("aff-name").'</td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$evenrows align=right>Description</td>\n";
-    echo '      <td bgcolor=' . $evenrows . '><input type="text" size="50" maxlength="50" name="form_description" value="' . $form['description'] . '"></td>';
+    echo '      <td bgcolor=' . $evenrows . '><input type="text" size="50" maxlength="50" name="form_description" value="' . $form['description'] . '">'.helptag("aff-description").'</td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$evenrows align=right>Description (Line 2)</td>\n";
-    echo '      <td bgcolor=' . $evenrows . '><input type="text" size="50" maxlength="50" name="form_description2" value="' . $form['description2'] . '"></td>';
+    echo '      <td bgcolor=' . $evenrows . '><input type="text" size="50" maxlength="50" name="form_description2" value="' . $form['description2'] . '">'.helptag("aff-description2").'</td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$evenrows align=right>Priority:</td>\n";
-    echo '      <td bgcolor=' . $evenrows . '><input type="text" size="2" maxlength="2" name="form_priority" value="' . $form['priority'] . '"></td>';
+    echo '      <td bgcolor=' . $evenrows . '><input type="text" size="2" maxlength="2" name="form_priority" value="' . $form['priority'] . '">'.helptag("aff-priority").'</td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$oddrows align=right>Campaigns:</td>\n";
@@ -416,7 +416,7 @@ if ($ADD == 72 or ($ADD == "3fields" and $SUB == '2fields')) {
             echo '<input type="checkbox" name="campaigns[]" id=campaigns value="-ALL-" ' . $ac . " onclick=\"var ctmp=this.checked; for(var i=0;i<document.getElementsByName('campaigns[]').length;i++) { document.getElementsByName('campaigns[]')[i].checked=false; }; this.checked=ctmp;\"" . '><label for=campaigns> <b>ALL - FORM IN ALL CAMPAIGNS</b></label>';
         }
     }
-    echo '</td>';
+    echo "    ".helptag("aff-campaigns")."</td>";
     echo "  </tr>\n";
     if (($LOG['allowed_campaignsALL']<1 and $form['campaigns'] != 'ALL') or $LOG['allowed_campaignsALL']>0) {
         $campaigns = get_krh($link, 'osdial_campaigns', 'campaign_id,campaign_name','',sprintf('campaign_id IN %s',$LOG['allowed_campaignsSQL']),'');
@@ -444,7 +444,7 @@ if ($ADD == 72 or ($ADD == "3fields" and $SUB == '2fields')) {
     echo "</form>";
 
     echo "<br /><br /><hr width=50%>\n";
-    echo "<center><font class=top_header color=$default_text size=+1>ADDITIONAL FORM FIELDS</font><br><br>\n";
+    echo "<center><font class=top_header color=$default_text size=+1>ADDITIONAL FORM FIELDS</font>".helptag("aff-fields")."<br><br>\n";
     echo "<table width=$section_width cellspacing=1 cellpadding=0 bgcolor=grey>\n";
     echo "  <tr class=tabheader>\n";
     echo "      <td align=center>NAME</td>\n";

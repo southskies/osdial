@@ -25,7 +25,7 @@ if ($ADD==122) {
     #@apache_setenv('no-gzip', 1);
     #@ini_set('zlib.output_compression', 0);
 	
-	echo "<center><br><font class=top_header color=$default_text size=+1>LOAD NEW LEADS</font><br><hr><br>\n";
+	echo "<center><br><font class=top_header color=$default_text size=+1>LOAD NEW LEADS</font>".helptag("osdial_list_loader-summary")."<br><hr><br>\n";
 	
 	$leadfile=$_FILES["leadfile"];
 	$LF_orig = $_FILES['leadfile']['name'];
@@ -71,10 +71,10 @@ if ($ADD==122) {
     echo "      <input type=hidden name='leadfile_name' value=\"$leadfile_name\">\n";
 	if (!$OK_to_process and ($file_layout != "custom" or $leadfile_name == "")) {
         if ($phone_code_override == "") $phone_code_override = $config['settings']['default_phone_code'];
-        echo "	        <table align=center class=shadedtable width=\"700\" border=0 cellpadding=5 cellspacing=0 bgcolor=$oddrows>\n";
+        echo "	        <table align=center class=shadedtable width=\"900\" border=0 cellpadding=5 cellspacing=0 bgcolor=$oddrows>\n";
         echo "              <tr>\n";
         echo "                  <td align=right width=\"35%\"><B><font face=\"dejavu sans,verdana,sans-serif\" size=2>Load leads from this file:</font></B></td>\n";
-        echo "                  <td align=left width=\"65%\"><input type=file name=\"leadfile\" value=\"$leadfile\">".helptag("osdial_list_loader-osdial_list_loader")."</td>\n";
+        echo "                  <td align=left width=\"65%\"><input type=file name=\"leadfile\" value=\"$leadfile\">".helptag("osdial_list_loader-select_file")."</td>\n";
         echo "              </tr>\n";
         echo "              <tr>\n";
         echo "                  <td align=right width=\"25%\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>List ID: </font></td>\n";
@@ -98,19 +98,19 @@ if ($ADD==122) {
             echo "            <option value=\"1\">[ ERROR, YOU MUST FIRST ADD A LIST]</option>\n";
         }
 
-        echo "                      </select>\n";
+        echo "                      </select>".helptag("osdial_list_loader-list_id")."\n";
         echo "                    </td>\n";
         echo "                  </tr>\n";
         echo "                  <tr>\n";
         echo "                      <td align=right width=\"25%\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Phone (Country) Code: </font></td>\n";
         echo "                      <td align=left width=\"75%\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>\n";
-        echo "                          <input type=text value=\"$phone_code_override\" name='phone_code_override' size=8 maxlength=6> (numbers only or leave blank for values in the file)\n";
+        echo "                          <input type=text value=\"$phone_code_override\" name='phone_code_override' size=8 maxlength=6> (numbers only, leave blank for values in file)".helptag("osdial_list_loader-phone_code")."\n";
         echo "                      </td>\n";
         echo "                  </tr>\n";
         echo "                  <tr>\n";
         echo "                      <td align=right><B><font face=\"dejavu sans,verdana,sans-serif\" size=2>File layout to use:</font></B></td>\n";
         echo "                      <td align=left><font face=\"dejavu sans,verdana,sans-serif\" size=2>\n";
-        echo "                          <input type=radio name=\"file_layout\" value=\"custom\" checked>Custom Layout&nbsp;&nbsp;&nbsp;&nbsp;<input type=radio name=\"file_layout\" value=\"standard\">Predefined Layout\n";
+        echo "                          <input type=radio name=\"file_layout\" value=\"custom\" checked>Custom Layout".helptag("osdial_list_loader-custom_layout")."&nbsp;&nbsp;&nbsp;&nbsp;<input type=radio name=\"file_layout\" value=\"standard\">Predefined Layout".helptag("osdial_list_loader-predefined_layout")."\n";
         echo "                      </td>\n";
         echo "                  </tr>\n";
         echo "                  <tr>\n";
@@ -124,7 +124,7 @@ if ($ADD==122) {
         echo "                              <option value=\"DUPCAMPEXTKEY\">CHECK EXTERNAL KEY DUPS IN CAMPAIGN, ADD UNIQUE PHONES TO DUPS</option>\n";
         echo "                              <option value=\"DUPSYS\">CHECK FOR DUPLICATES BY PHONE IN ALL LISTS ON SYSTEM</option>\n";
         echo "                              <option value=\"DUPSYSACT\">CHECK FOR DUPLICATES BY PHONE IN ONLY ACTIVE LISTS ON SYSTEM</option>\n";
-        echo "                          </select>\n";
+        echo "                          </select>".helptag("osdial_list_loader-duplicate_check")."\n";
         echo "                      </td>\n";
         echo "                  </tr>\n";
         echo "                  <tr>\n";
@@ -133,7 +133,7 @@ if ($ADD==122) {
         echo "                          <select size=1 name=postalgmt>\n";
         echo "                              <option selected value=\"AREA\">COUNTRY CODE AND AREA CODE ONLY</option>\n";
         echo "                              <option value=\"POSTAL\">POSTAL CODE FIRST</option>\n";
-        echo "                          </select>\n";
+        echo "                          </select>".helptag("osdial_list_loader-timezone_lookup")."\n";
         echo "                      </td>\n";
         echo "                  </tr>\n";
         echo "                  <tr class=tabfooter>\n";

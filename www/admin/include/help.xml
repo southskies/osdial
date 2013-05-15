@@ -119,167 +119,167 @@
         This option allows an agent to manually enter a new lead into the system and call them. This also allows the calling of any phone number from their agent screen and puts that call into their session. Use this option with caution.
     </item>
     
-    <item pathId="manual_dial_allow_skip" sectionId="11" title="Preview-Dial Skip Lead">
+    <item pathId="manual_dial_allow_skip" sectionId="12" title="Preview-Dial Skip Lead">
         Set to Y will allow the agent to skip dialing the lead.
     </item>
 
-    <item pathId="osdial_recording" sectionId="12" title="Recording">
+    <item pathId="osdial_recording" sectionId="13" title="Recording">
         This option can prevent an agent from doing any recordings after they log in to OSDial. This option must be on for OSDial to follow the campaign recording session.
     </item>
 
-    <item pathId="osdial_transfers" sectionId="13" title="Transfers">
+    <item pathId="osdial_transfers" sectionId="14" title="Transfers">
         This option can prevent an agent from opening the transfer - conference session of OSDial. If this is disabled, the agent cannot third party call or blind transfer any calls.
     </item>
 
-    <item pathId="closer_default_blended" sectionId="14" title="Closer Default Blended">
+    <item pathId="closer_default_blended" sectionId="15" title="Closer Default Blended">
         This option simply defaults the Blended checkbox on a CLOSER login screen.
     </item>
 
-    <item pathId="osdial_recording_override" sectionId="15" title="Recording Mode Override">
+    <item pathId="osdial_recording_override" sectionId="16" title="Recording Mode Override">
         This option will override whatever the option is in the campaign for recording. DISABLED will not override the campaign recording setting. NEVER will disable recording on the client. ONDEMAND is the default and allows the agent to start and stop recording as needed. ALLCALLS will start recording on the client whenever a call is sent to an agent. ALLFORCE will start recording on the client whenever a call is sent to an agent giving the agent no option to stop recording. For ALLCALLS and ALLFORCE there is an option to use the Recording Delay to cut down on very short recordings and reduce system load.
     </item>
 
-    <item pathId="campaign_ranks" sectionId="16" title="Campaign Ranks">
+    <item pathId="campaign_ranks" sectionId="17" title="Campaign Ranks">
         In this section you can define the rank an agent will have for each campaign. These ranks can be used to allow for preferred call routing when Next Agent Call is set to campaign_rank.
     </item>
 
-    <item pathId="closer_campaigns" sectionId="17" title="Inbound Groups">
+    <item pathId="closer_campaigns" sectionId="18" title="Inbound Groups">
         Here is where you select the inbound groups you want to receive calls from if you have selected the CLOSER campaign. You will also be able to set the rank, or skill level, in this section for each of the inbound groups as well as being able to see the number of calls received from each inbound group for this specific agent. Also in this section is the ability to give the agent a rank for each inbound group. These ranks can be used for preferred call routing when that option is selected in the in-group screen.
     </item>
 
-    <item pathId="alter_custdata_override" sectionId="18" title="Alter Lead Data Override">
+    <item pathId="alter_custdata_override" sectionId="19" title="Alter Lead Data Override">
         This option will override whatever the option is in the campaign for altering of customer data. NOT_ACTIVE will use whatever setting is present for the campaign. ALLOW_ALTER will always allow for the agent to alter the customer data, no matter what the campaign setting is. Default is NOT_ACTIVE.
     </item>
 
-    <item pathId="alter_agent_interface_options" sectionId="19" title="Alter Agent Interface Options">
+    <item pathId="alter_agent_interface_options" sectionId="20" title="Alter Agent Interface Options">
         This option if set to Y allows the administrative user to modify the Agents interface options in admin.php.
     </item>
 
-    <item pathId="delete_users" sectionId="20" title="Delete Agents">
+    <item pathId="delete_users" sectionId="21" title="Delete Agents">
         This option if set to Y allows the user to delete other users of equal or lesser user level from the system.
     </item>
 
-    <item pathId="delete_user_groups" sectionId="21" title="Delete User Groups">
+    <item pathId="delete_user_groups" sectionId="22" title="Delete User Groups">
         This option if set to Y allows the user to delete user groups from the system.
     </item>
 
-    <item pathId="delete_lists" sectionId="22" title="Delete Lists">
+    <item pathId="delete_lists" sectionId="23" title="Delete Lists">
         This option if set to Y allows the user to delete OSDial lists from the system.
     </item>
 
-    <item pathId="delete_campaigns" sectionId="23" title="Delete Campaigns">
+    <item pathId="delete_campaigns" sectionId="24" title="Delete Campaigns">
         This option if set to Y allows the user to delete OSDial campaigns from the system.
     </item>
 
-    <item pathId="delete_ingroups" sectionId="24" title="Delete In-Groups">
+    <item pathId="delete_ingroups" sectionId="25" title="Delete In-Groups">
         This option if set to Y allows the user to delete OSDial In-Groups from the system.
     </item>
 
-    <item pathId="delete_remote_agents" sectionId="25" title="Delete Remote Agents">
+    <item pathId="delete_remote_agents" sectionId="26" title="Delete Remote Agents">
         This option if set to Y allows the user to delete OSDial remote agents from the system.
     </item>
 
-    <item pathId="load_leads" sectionId="26" title="Load Leads">
+    <item pathId="load_leads" sectionId="27" title="Load Leads">
         This option if set to Y allows the user to load OSDial leads into the osdial_list table by way of the web based lead loader.
     </item>
 
-    <item pathId="campaign_detail" sectionId="27" title="Campaign Detail">
+    <item pathId="campaign_detail" sectionId="28" title="Campaign Detail">
         This option if set to Y allows the user to view and modify the campaign detail screen elements.
     </item>
 
-    <item pathId="ast_admin_access" sectionId="28" title="Setup Menu">
+    <item pathId="ast_admin_access" sectionId="29" title="Setup Menu">
         This option if set to Y allows the user to login to the OSDial manager module.
     </item>
 
-    <item pathId="ast_delete_phones" sectionId="29" title="Delete Phones">
+    <item pathId="ast_delete_phones" sectionId="30" title="Delete Phones">
         This option if set to Y allows the user to delete phone entries in the OSDial manager module.
     </item>
 
-    <item pathId="delete_scripts" sectionId="30" title="Delete Scripts">
+    <item pathId="delete_scripts" sectionId="31" title="Delete Scripts">
         This option if set to Y allows the user to delete Campaign scripts in the script modification screen.
     </item>
 
-    <item pathId="modify_leads" sectionId="31" title="Modify Leads">
+    <item pathId="modify_leads" sectionId="32" title="Modify Leads">
         This option if set to Y allows the user to modify leads in the admin section lead search results page.
     </item>
 
-    <item pathId="change_agent_campaign" sectionId="32" title="Change Agent Campaign">
+    <item pathId="change_agent_campaign" sectionId="33" title="Change Agent Campaign">
         This option if set to Y allows the user to alter the campaign that an agent is logged into while they are logged into it.
     </item>
 
-    <item pathId="delete_filters" sectionId="33" title="Delete Filters">
+    <item pathId="delete_filters" sectionId="34" title="Delete Filters">
         This option allows the user to be able to delete OSDial lead filters from the system.
     </item>
 
-    <item pathId="delete_call_times" sectionId="34" title="Delete Call Times">
+    <item pathId="delete_call_times" sectionId="35" title="Delete Call Times">
         This option allows the user to be able to delete OSDial call times records and OSDial state call times records from the system.
     </item>
 
-    <item pathId="modify_call_times" sectionId="35" title="Modify Call Times">
+    <item pathId="modify_call_times" sectionId="36" title="Modify Call Times">
         This option allows the user to view and modify the call times and state call times records. A user doesn't need this option enabled if they only need to change the call times option on the campaigns screen.
     </item>
 
-    <item pathId="modify_sections" sectionId="36" title="Modify Agents">
+    <item pathId="modify_sections" sectionId="37" title="Modify Agents">
         These options allow the user to view and modify each sections records. If set to N, the user will be able to see the section list, but not the detail or modification screen of a record in that section.
     </item>
 
-    <item pathId="view_reports" sectionId="37" title="View Reports">
+    <item pathId="view_reports" sectionId="38" title="View Reports">
         This option allows the user to view the OSDial reports.
     </item>
 
-    <item pathId="export_leads" sectionId="38" title="Export Leads">
+    <item pathId="export_leads" sectionId="39" title="Export Leads">
         This option allows you to export leads from both Lead Export and Advanced Lead Search reports.
     </item>
 
-    <item pathId="agent_api_access" sectionId="39" title="Agent API Access">
+    <item pathId="agent_api_access" sectionId="40" title="Agent API Access">
         The option grants API access for Agent functions using this users credentials.
     </item>
 
-    <item pathId="admin_api_access" sectionId="40" title="Admin API Access">
+    <item pathId="admin_api_access" sectionId="41" title="Admin API Access">
         The option grants API access for Admin functions using this users credentials.
     </item>
 
-    <item pathId="xfer_agent2agent" sectionId="41" title="Agent2Agent Transfers">
+    <item pathId="xfer_agent2agent" sectionId="42" title="Agent2Agent Transfers">
       If enabled, this agent will be allowed to transfer calls to other agents that also have this option enabled.
     </item>
 
-    <item pathId="xfer_agent2agent_wait" sectionId="42" title="Agent2Agent Timeout">
+    <item pathId="xfer_agent2agent_wait" sectionId="43" title="Agent2Agent Timeout">
       Determines wait will happen if the Agent is current unavailable.  ALWAYS_WAIT: If agent is unavailable or logged off, timeout and run timeout action.  WHEN_LOGGED_IN: If agent is unavailable and logged in, timeout and run timeout action.  NEVER_WAIT: If agent is unavailable or logged off, immediately run timeout action.
     </item>
 
-    <item pathId="xfer_agent2agent_wait_seconds" sectionId="43" title="Agent2Agent Timeout Seconds">
+    <item pathId="xfer_agent2agent_wait_seconds" sectionId="44" title="Agent2Agent Timeout Seconds">
       How long to wait for agent to become available before running the timeout action.
     </item>
 
-    <item pathId="xfer_agent2agent_wait_action" sectionId="44" title="Agent2Agent Timeout Action">
+    <item pathId="xfer_agent2agent_wait_action" sectionId="45" title="Agent2Agent Timeout Action">
       Send the call to the agents VOICEMAIL or to the timeout EXTENSION.
     </item>
 
-    <item pathId="xfer_agent2agent_wait_extension" sectionId="45" title="Agent2Agent Timeout Extension">
+    <item pathId="xfer_agent2agent_wait_extension" sectionId="46" title="Agent2Agent Timeout Extension">
       The extension to send the call too.
     </item>
 
-    <item pathId="script_override" sectionId="46" title="Script Override">
+    <item pathId="script_override" sectionId="47" title="Script Override">
       This is the script ID that is forced on the agent.  The value in this field will override any script set in the campaign or list.
     </item>
 
-    <item pathId="load_dnc" sectionId="47" title="Load DNC Records">
+    <item pathId="load_dnc" sectionId="48" title="Load DNC Records">
       If set to 'Y' and the user's level is 9, this option will allow the user to load DNC records from a CSV file.  It is recommend that this option only be enabled for the system adminitrator for maintenance purposes.  Default: 'N'
     </item>
 
-    <item pathId="export_dnc" sectionId="48" title="Export DNC Records">
+    <item pathId="export_dnc" sectionId="49" title="Export DNC Records">
       If set to 'Y' and the user's level is 9, this option will allow the user to export DNC records to a CSV file.  It is recommend that this option only be enabled for the system adminitrator for maintenance purposes.  Default: 'N'
     </item>
 
-    <item pathId="delete_dnc" sectionId="49" title="Delete DNC Records">
+    <item pathId="delete_dnc" sectionId="50" title="Delete DNC Records">
       If set to 'Y' and the user's level is 9, this option will enable the user to remove DNC records.  It is recommend that this option only be enabled for the system adminitrator for maintenance purposes.  Default: 'N'
     </item>
 
-    <item pathId="preview_dial_skip_lead" sectionId="50" title="Preview Dial - Skip Lead">
+    <item pathId="preview_dial_skip_lead" sectionId="51" title="Preview Dial - Skip Lead">
       When using preview dial in manual-dial mode, allow user to skip to the next lead.
     </item>
 
-    <item pathId="xfer_agent2agent_allow_multicall" sectionId="51" title="Agent2Agent Allow Multicall">
+    <item pathId="xfer_agent2agent_allow_multicall" sectionId="52" title="Agent2Agent Allow Multicall">
       Allows an agent to handle multiple inbound calls. Agent may place the current call on hold and answer the next call currently in their Inbound Group queue. The agent can then switch back and forth between the two calls.
     </item>
 
@@ -665,24 +665,28 @@
   This is where you can set whether the users of this campaign will have the Blind VMail option in their Transfer/Conf window.
     </item>
 	
-	<item pathId="osdial_logout_agents" sectionId="88" title="Logout Agents">
+    <item pathId="osdial_logout_agents" sectionId="88" title="Logout Agents">
   This will logout all agents in this campaign, and hang up on any active calls. However, by always Disabling the campaign to stop any new calls from being made and letting the calls stop ringing, with some agents still available, you will prevent the situation of calls from being answered (with your Caller ID) and then being hung up on, and upsetting the people you are trying to sell to.
-	</item>
+    </item>
 	
-	<item pathId="osdial_clear_autocalls" sectionId="89" title="Clear Auto Calls">
+    <item pathId="osdial_clear_autocalls" sectionId="89" title="Clear Auto Calls">
   This will clear the part of the database which holds pending calls. Clearing it will remove all pending calls. If a calls erroniously are stuck in here it will impeed the dialing. (Which is not a normal occurence.)
-	</item>
+    </item>
 	
-	<item pathId="osdial_delete_campaign" sectionId="90" title="Delete This Campaign">
+    <item pathId="osdial_delete_campaign" sectionId="90" title="Delete This Campaign">
   Deleting this campaign might get you fired. Better check again!
-	</item>
+    </item>
 
-	<item pathId="email_templates" sectionId="91" title="Email Templates">
+    <item pathId="email_templates" sectionId="91" title="Email Templates">
   The selected email templates will be available for the agent based on the options defined in each template.
-	</item>
+    </item>
 
-	<item pathId="email_blacklist" sectionId="91" title="Email Blacklist">
+    <item pathId="email_blacklist" sectionId="92" title="Email Blacklist">
   A list of email addresses which will not receive any email.
+    </item>
+
+    <item pathId="carrier" sectionId="93" title="Carrier">
+  When a carrier is selected, it will use it for all outbound calls from this campaign, otherwise it will use the default carrier set in the system settings.
     </item>
     	
   </section>
@@ -1120,7 +1124,7 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
   This is the two letter code for the state that this calling time definition is for. For this to be in effect the local call time that is set in the campaign must have this state call time record in it as well as all of the leads having two letter state codes in them.
     </item>
 
-    <item pathId="use_recylce_gap" sectionId="8" title="Add No-Call Period to Recylce Delay">
+    <item pathId="use_recycle_gap" sectionId="8" title="Add No-Call Period to Recylce Delay">
   This option when enabled will add a "gap" to the recylce delay.  This "gap" is the length of time between when the call-time started today and when it last ended.
     </item>
   </section>
@@ -1128,11 +1132,37 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
 
 
   <section pathId="osdial_list_loader" sectionId="17" title="List Loader">
-    <item pathId="osdial_list_loader" sectionId="1" title="List Loader">
-The OSDial basic web-based lead loader is designed simply to take a lead file - up to 8MB in size - that is either tab or pipe delimited and load it into the osdial_list table. The lead loader allows for field choosing and TXT- Plain Text, CSV- Comma Separated Values and XLS- Excel file formats. The lead loader does not do data validation, but it does allow you to check for duplicates in itself, within the campaign or within the entire system. Also, make sure that you have created the list that these leads are to be under so that you can use them. Here is a list of the fields in their proper order for the lead files:
-	&lt;ol&gt;&lt;li&gt;Vendor Lead Code - shows up in the Vendor ID field of the GUI&lt;/li&gt;&lt;li&gt;Source Code - internal use only for admins and DBAs&lt;/li&gt;&lt;li&gt;List ID - the list number that these leads will show up under&lt;/li&gt;&lt;li&gt;Phone Code - the prefix for the phone number - 1 for US, 01144 for UK, 01161 for AUS, etc&lt;/li&gt;&lt;li&gt;Phone Number - must be at least 8 digits long&lt;/li&gt;&lt;li&gt;Title - title of the customer - Mr. Ms. Mrs, etc...&lt;/li&gt;&lt;li&gt;First Name&lt;/li&gt;&lt;li&gt;Middle Initial&lt;/li&gt;&lt;li&gt;Last Name&lt;/li&gt;&lt;li&gt;Address Line 1&lt;/li&gt;&lt;li&gt;Address Line 2&lt;/li&gt;&lt;li&gt;Address Line 3&lt;/li&gt;&lt;li&gt;City&lt;/li&gt;&lt;li&gt;State - limited to 2 characters&lt;/li&gt;&lt;li&gt;Province&lt;/li&gt;&lt;li&gt;Postal Code&lt;/li&gt;&lt;li&gt;Country&lt;/li&gt;&lt;li&gt;Gender&lt;/li&gt;&lt;li&gt;Date of Birth&lt;/li&gt;&lt;li&gt;Alternate Phone Number&lt;/li&gt;&lt;li&gt;Email Address&lt;/li&gt;&lt;li&gt;Custom1&lt;/li&gt;&lt;li&gt;Comments&lt;/li&gt;&lt;/ol&gt;
+    <item pathId="summary" sectionId="1" title="List Loader">
+The OSDial basic web-based lead loader is designed simply to take a lead file, that is either in excel format, comma, tab, pipe delimited and load it into the osdial_list table. The lead loader allows for field choosing and TXT- Plain Text, CSV- Comma Separated Values and XLS- Excel file formats. The lead loader does not do data validation, but it does allow you to check for duplicates in itself, within the campaign, or within the entire system. Also, make sure that you have created the list that these leads are to be under so that you can use them.
+    </item>
 
-&lt;br&gt;NOTES: The Excel Lead loader functionality is enabled by a series of perl scripts and needs to have a properly configured /etc/osdial.conf file in place on the web server. Also, a couple perl modules must be loaded for it to work as well - OLE-Storage_Lite and Spreadsheet-ParseExcel. You can check for runtime errors in these by looking at your apache error_log file. Also, for duplication checks against campaign lists, the list that has new leads going into it does need to be created in the system before you start to load the leads.
+    <item pathId="select_file" sectionId="2" title="File Selection">
+    The file on your local system to load data from. File should be in either ODF, XLS, or plain-text (value-separated) format. Files in OOXML (Microsoft XLSX) format are not supported.
+    </item>
+
+    <item pathId="list_id" sectionId="3" title="List ID">
+    The List in which to load leads into.
+    </item>
+
+    <item pathId="phone_code" sectionId="4" title="Phone (Country) Code">
+    The default country-code to use for the loaded leads. If this field is present in the loaded file, it will override this value.
+    </item>
+
+    <item pathId="custom_layout" sectionId="5" title="Custom Layout">
+    The custom layout allows you to map the columns in your file to the desired field in the osdial_list table or additional form field.
+    </item>
+
+    <item pathId="predefined_layout" sectionId="6" title="Predefined Layout">
+    Here is a list of the fields in their proper order for the lead files:
+	&lt;ol&gt;&lt;li&gt;Vendor Lead Code - shows up in the Vendor ID field of the GUI&lt;/li&gt;&lt;li&gt;Source Code - internal use only for admins and DBAs&lt;/li&gt;&lt;li&gt;List ID - the list number that these leads will show up under&lt;/li&gt;&lt;li&gt;Phone Code - the prefix for the phone number - 1 for US, 01144 for UK, 01161 for AUS, etc&lt;/li&gt;&lt;li&gt;Phone Number - must be at least 8 digits long&lt;/li&gt;&lt;li&gt;Title - title of the customer - Mr. Ms. Mrs, etc...&lt;/li&gt;&lt;li&gt;First Name&lt;/li&gt;&lt;li&gt;Middle Initial&lt;/li&gt;&lt;li&gt;Last Name&lt;/li&gt;&lt;li&gt;Address Line 1&lt;/li&gt;&lt;li&gt;Address Line 2&lt;/li&gt;&lt;li&gt;Address Line 3&lt;/li&gt;&lt;li&gt;City&lt;/li&gt;&lt;li&gt;State - limited to 2 characters&lt;/li&gt;&lt;li&gt;Province&lt;/li&gt;&lt;li&gt;Postal Code&lt;/li&gt;&lt;li&gt;Country&lt;/li&gt;&lt;li&gt;Gender&lt;/li&gt;&lt;li&gt;Date of Birth&lt;/li&gt;&lt;li&gt;Alternate Phone Number&lt;/li&gt;&lt;li&gt;Email Address&lt;/li&gt;&lt;li&gt;Custom1&lt;/li&gt;&lt;li&gt;Comments&lt;/li&gt;&lt;/ol&gt;
+    </item>
+
+    <item pathId="duplicate_check" sectionId="7" title="Lead Duplicate Check">
+    Selection of the vairous options here allows for the exlusion of leads in the loaded file based on the duplicate checking method mentioned.
+    </item>
+
+    <item pathId="timezone_lookup" sectionId="8" title="Lead Time Zone Lookup">
+    The method to use to for GMT/Timzone lookup.
     </item>
   </section>
 
@@ -1533,6 +1563,10 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
     <item pathId="server_ip" sectionId="2" title="Server IP">
   The menu where you select the Asterisk server that this conference will be on.
     </item>
+
+    <item pathId="extension" sectionId="3" title="Extension">
+  The extension currently in use of the conference channel.
+    </item>
   </section>
 
 
@@ -1627,7 +1661,7 @@ OSDial Server Trunks allows you to restrict the outgoing lines that are used on 
     </item>
 
     <item pathId="multicompany_admin" sectionId="21" title="Multi-Company Administrator">
-  Gerneally all user will belong to some company...except one, the multicompany admin.  Put the administrators user in hear.
+  Gerneally all users will belong to some company...except one, the multicompany admin.  Put the administrator user in here.
     </item>
 
     <item pathId="default_date_format" sectionId="22" title="Default Date Format">
@@ -1661,6 +1695,10 @@ OSDial Server Trunks allows you to restrict the outgoing lines that are used on 
 
     <item pathId="default_phone_code" sectionId="29" title="Default Country Phone Code">
   The default country phone code for your area. This code will be the default for lead creation and upload.
+    </item>
+
+    <item pathId="company_name" sectionId="30" title="Company Name">
+    This name will be displayed as the title banner on reports and configuration screens.
     </item>
 
   </section>
@@ -2164,6 +2202,102 @@ user[:secret[:authuser]]@carrier_name[/extension]&lt;br/&gt;
     &lt;b&gt;ONDEMAND&lt;/b&gt; - The agent may send send an email at any time while in the record, emails are not sent automatically.&lt;br/&gt;
     &lt;b&gt;ALL&lt;/b&gt; - Emails are automatically marked to be sent, the agent has the option to deselect the email.&lt;br/&gt;
     &lt;b&gt;ALLFORCE&lt;/b&gt; - Emails are automatically marked to be sent, the agent has no control over email delivery
+    </item>
+  </section>
+
+  <section pathId="search_agents" sectionId="35" title="Search for an Agent">
+    <item pathId="summary" sectionId="1" title="Search for an Agent">
+    You may use any combination of fields here to return a list of matching Agents/Users.
+    </item>
+    <item pathId="id" sectionId="2" title="ID">
+    The ID of the user to search for.
+    </item>
+    <item pathId="full_name" sectionId="3" title="Full Name">
+    The name of the user to search for.
+    </item>
+    <item pathId="user_level" sectionId="4" title="User Level">
+    The user level to search for.
+    </item>
+    <item pathId="user_group" sectionId="5" title="User Group">
+    The user group to search for.
+    </item>
+  </section>
+
+  <section pathId="lead_exporter" sectionId="36" title="Lead Exporter">
+    <item pathId="list_id" sectionId="1" title="Select List ID">
+    Selects the list to export leads from.
+    </item>
+
+    <item pathId="statuses" sectionId="2" title="Select Statuses">
+    Select the statuses to include in the export. ALL includes leads with any status, CALLED includes only leads which have been considered to have been previously contacted.
+    </item>
+
+    <item pathId="fields" sectionId="3" title="Select Fields">
+    Select the fields to include in the export file. ALL includes all fields, AFF_ALL includes additional form fields in addition to ALL or any combination of selected fields..
+    </item>
+  </section>
+
+  <section pathId="campaign_ivr" sectionId="37" title="Inbound / Outbound IVR">
+    <item pathId="name" sectionId="1" title="Name">
+    Name of the IVR.
+    </item>
+    <item pathId="announcement" sectionId="2" title="Announcement">
+    File to play when the call is answered.
+    </item>
+    <item pathId="repeat_loops" sectionId="3" title="Repeat Loops">
+    The number of times to repeat the menu before timeout.
+    </item>
+    <item pathId="key_attempts" sectionId="4" title="Key Attempts">
+    The maximum number of keypress attempts to wait for within each loop.
+    </item>
+    <item pathId="wait_period" sectionId="5" title="Attempt Wait Period">
+    The time (in MS) to wait up-to for each key attempt.
+    </item>
+    <item pathId="answer_status" sectionId="6" title="Answer Status">
+    The initial disposition/status to give a lead answered by the IVR/menu.
+    </item>
+    <item pathId="virtual_agents" sectionId="7" title="Virtual Agents">
+    The number of virtual agents to use for the IVR. This number puts a fixed limit on the total number of calls to be given an IVR/menu at any given moment. If transferring the call to an internal or external agent, this number also refers is the maximum number of tranfers to handle at a time. In RATIO and ADPATIVE dialing methods, the number of virtual agents is multiplied by the the current dial ratio in order to calculate the number of outbound calls to make, just as would be done with live agents.
+    </item>
+    <item pathId="reserve_agents" sectionId="9" title="Reserve Agents">
+    This number adds a number of virtual agents that do not get factored into any outbound call counts. Addtional agents here can provide a buffer to handle call overflow. If the campaign is handling inbound calls, it is recommended to keep this value at 10 or greater.
+    </item>
+    <item pathId="allow_inbound" sectionId="10" title="Allow Inbound">
+    If set to Y, answer calls passed in through the campaigns designated Inbound Groups. If set to N, ignore calls from Inbound Groups.
+    </item>
+    <item pathId="status" sectionId="11" title="Status">
+    Determines if the IVR is ACTIVE or INACTIVE.
+    </item>
+    <item pathId="timeout_action" sectionId="12" title="Timeout Action">
+    The keypress/action to default to after the total number of loops exceeds the value in the Repeat Loops field.
+    </item>
+    <item pathId="allow_agent_extensions" sectionId="13" title="Allow Agent Extensions">
+    Allow agent IDs to be dialed directly as extensions.
+    </item>
+  </section>
+
+  <section pathId="aff" sectionId="38" title="Additional Form Fields">
+    <item pathId="name" sectionId="1" title="Name">
+    Name of the form. This field is used as the first component of the field identifier (FORMNAME_FIELDNAME).
+    </item>
+    <item pathId="description" sectionId="2" title="Description">
+    This is displayed in the agent window above the fields.
+    </item>
+    <item pathId="description2" sectionId="3" title="Description (Line 2)">
+    This is displayed in the agent window above the fields.
+    </item>
+    <item pathId="priority" sectionId="4" title="Priority">
+    Forms with a lower priority will be given higher placement on the agent screen.
+    </item>
+    <item pathId="campaigns" sectionId="5" title="Campaigns">
+    The campaigns to include this form in.
+    </item>
+    <item pathId="fields" sectionId="6" title="Fields">
+    &lt;b&gt;Name:&lt;/b&gt; This field is used as the second component of the field identifier (FORMNAME_FIELDNAME).&lt;br/&gt;
+    &lt;b&gt;Description:&lt;/b&gt; This is displayed as the label for the field.&lt;br/&gt;
+    &lt;b&gt;Options:&lt;/b&gt; If present, a drop-down will be displayed for this field. Options are comma-separated.&lt;br/&gt;
+    &lt;b&gt;Length:&lt;/b&gt; The width of the field.&lt;br/&gt;
+    &lt;b&gt;Priority:&lt;/b&gt; Fields with a lower priority will be given higher placement on the field list.&lt;br/&gt;
     </item>
   </section>
 

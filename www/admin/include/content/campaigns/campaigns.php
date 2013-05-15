@@ -1862,7 +1862,7 @@ if ($ADD==31) {
 				$carrier_label = "** USE SYSTEM DEFAULT **";
 			}
 			echo format_select_options($krh, 'id', 'name', $carrier_id, $carrier_label,'');
-			echo "            </select>";
+			echo "            </select>".helptag("osdial_campaigns-carrier");
 			echo "          </td>";
 			echo "        </tr>";
 			echo "<tr><td align=left>Omit Phone Code: </td><td align=left><select size=1 name=omit_phone_code><option>Y</option><option>N</option><option SELECTED>$omit_phone_code</option></select>".helptag("osdial_campaigns-omit_phone_code")."</td></tr>";

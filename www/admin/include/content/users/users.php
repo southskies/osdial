@@ -865,7 +865,7 @@ if ($ADD==3) {
 ######################
 
 if ($ADD==550) {
-    echo "<center><br><font class=top_header color=$default_text size=+1>SEARCH FOR AN AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
+    echo "<center><br><font class=top_header color=$default_text size=+1>SEARCH FOR AN AGENT</font>".helptag("search_agents-summary")."<form action=$PHP_SELF method=POST><br><br>\n";
     echo "<input type=hidden name=ADD value=660>\n";
     echo "<div style=\"width:660px;padding:5px;\">";
     echo "<TABLE class=shadedtable cellspacing=3 width=650>\n";
@@ -882,8 +882,8 @@ if ($ADD==550) {
     } elseif ($LOG['multicomp']>0) {
         echo "<input type=hidden name=company_id value=$LOG[company_id]><font color=$default_text>" . $LOG[company_prefix] . "</font>&nbsp;";
     }
-    echo "<input type=text name=user size=20 maxlength=10></td></tr>\n";
-    echo "<tr bgcolor=$oddrows><td align=center>Full Name: <input type=text name=full_name size=30 maxlength=30></td></tr>\n";
+    echo "<input type=text name=user size=20 maxlength=10>".helptag("search_agents-id")."</td></tr>\n";
+    echo "<tr bgcolor=$oddrows><td align=center>Full Name: <input type=text name=full_name size=30 maxlength=30>".helptag("search_agents-full_name")."</td></tr>\n";
     echo "<tr bgcolor=$oddrows><td align=center>User Level: <select size=1 name=user_level>";
     $h=0;
 	if ($LOG['user_level']==9) {
@@ -910,7 +910,7 @@ if ($ADD==550) {
         echo "</option>";
         $h++;
     }
-    echo "</select></td></tr>\n";
+    echo "</select>".helptag("search_agents-user_level")."</td></tr>\n";
     #echo "<tr bgcolor=$oddrows><td align=right>User Level: </td><td align=left><select size=1 name=user_level><option selected>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option></select></td></tr>\n";
     echo "<tr bgcolor=$oddrows><td align=center>User Group: <select size=1 name=user_group>\n";
 	echo "<option value=\"\">- ALL USERGROUPS -</option>\n";
@@ -925,7 +925,7 @@ if ($ADD==550) {
 		$groups_list .= "<option value=\"$rowx[0]\">" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
 		$o++;
 	}
-    echo "$groups_list</select></td></tr>\n";
+    echo "$groups_list</select>".helptag("search_agents-user_group")."</td></tr>\n";
 
     echo "<tr class=tabfooter><td align=center  class=tabbutton colspan=2><input type=submit name=search value=SEARCH></td></tr>\n";
     echo "</TABLE></div></center>\n";

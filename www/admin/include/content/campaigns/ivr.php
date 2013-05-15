@@ -776,10 +776,10 @@ if ($ADD == "3menu") {
     echo '<input type="hidden" name="oivr_id" value="' . $oivr['id'] . '">';
     echo '<input type="hidden" name="campaign_id" value="' . $campaign_id . '">';
 
-    echo "<table class=shadedtable cellspacing=1 cellpadding=5 width=550>\n";
+    echo "<table class=shadedtable cellspacing=1 cellpadding=5 width=650>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$oddrows align=right>Name:</td>\n";
-    echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="30" maxlength="50" name="oivr_name" value="' . $oivr['name'] . '"></td>';
+    echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="30" maxlength="50" name="oivr_name" value="' . $oivr['name'] . '">'.helptag("campaign_ivr-name").'</td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$oddrows align=right>Announcement File:</td>\n";
@@ -790,20 +790,20 @@ if ($ADD == "3menu") {
     #echo media_file_select_options($link,$oivr['announcement']);
     #echo "          </select><br>";
     echo "          <br>";
-    echo '          <input type="file" name="recfile">';
+    echo '          <input type="file" name="recfile">'.helptag("campaign_ivr-announcement");
     echo '      </td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$oddrows align=right>Announcement Repeat Attempt:</td>\n";
-    echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="4" maxlength="2" name="oivr_repeat_loops" value="' . $oivr['repeat_loops'] . '"></td>';
+    echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="4" maxlength="2" name="oivr_repeat_loops" value="' . $oivr['repeat_loops'] . '">'.helptag("campaign_ivr-repeat_loops").'</td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$oddrows align=right>Wait for Key Attempts:</td>\n";
-    echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="4" maxlength="2" name="oivr_wait_loops" value="' . $oivr['wait_loops'] . '"></td>';
+    echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="4" maxlength="2" name="oivr_wait_loops" value="' . $oivr['wait_loops'] . '">'.helptag("campaign_ivr-key_attempts").'</td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$oddrows align=right>Wait Period per Attempt (ms):</td>\n";
-    echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="4" maxlength="4" name="oivr_wait_timeout" value="' . $oivr['wait_timeout'] . '"></td>';
+    echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="4" maxlength="4" name="oivr_wait_timeout" value="' . $oivr['wait_timeout'] . '">'.helptag("campaign_ivr-wait_period").'</td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$oddrows align=right>Answered Status:</td>\n";
@@ -816,19 +816,19 @@ if ($ADD == "3menu") {
         }
         echo "<option value=\"" . $stat['status'] . "\"" . $sel . ">" . $stat['status'] . " : " . $stat['status_name'] . "</option>";
     }
-    echo "  </select></td>\n";
+    echo "  </select>".helptag("campaign_ivr-answer_status")."</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$oddrows align=right>Virtual Agents:</td>\n";
-    echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="4" maxlength="3" name="oivr_virtual_agents" value="' . $oivr['virtual_agents'] . '"> <font size=-1></font></td>';
+    echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="4" maxlength="3" name="oivr_virtual_agents" value="' . $oivr['virtual_agents'] . '"> <font size=-1></font>'.helptag("campaign_ivr-virtual_agents").'</td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$oddrows align=right>Reserve Agents:</td>\n";
-    echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="4" maxlength="3" name="oivr_reserve_agents" value="' . $oivr['reserve_agents'] . '"> <font size=-1> Set to 10, or higher, if Inbound.</font></td>';
+    echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="4" maxlength="3" name="oivr_reserve_agents" value="' . $oivr['reserve_agents'] . '"> <font size=-1> Set to 10, or higher, if Inbound.</font>'.helptag("campaign_ivr-reserve_agents").'</td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$oddrows align=right>Allow Inbound:</td>\n";
-    echo '      <td bgcolor="' . $oddrows . '"><select name="oivr_allow_inbound"><option>Y</option><option>N</option><option selected>' . $oivr['allow_inbound'] . '</option></select></td>';
+    echo '      <td bgcolor="' . $oddrows . '"><select name="oivr_allow_inbound"><option>Y</option><option>N</option><option selected>' . $oivr['allow_inbound'] . '</option></select>'.helptag("campaign_ivr-allow_inbound").'</td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$oddrows align=right>Status:</td>\n";
@@ -841,7 +841,7 @@ if ($ADD == "3menu") {
     }
     echo "              <option value=\"ACTIVE\"$asel>ACTIVE</option>";
     echo "              <option value=\"INACTIVE\"$isel>INACTIVE</option>";
-    echo '          </select>';
+    echo '          </select>'.helptag("campaign_ivr-status");
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$oddrows align=right>Timeout Action:</td>\n";
@@ -868,12 +868,12 @@ if ($ADD == "3menu") {
     if ( OSDpreg_match('/\#/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '#') $sel=' selected'; echo ' <option value="#"' . $sel . '> - # -</option>'; }
     if ( OSDpreg_match('/\*/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '*') $sel=' selected'; echo ' <option value="*"' . $sel . '> - * -</option>'; }
     if ( OSDpreg_match('/i/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == 'i') $sel=' selected'; echo ' <option value="i"' . $sel . '> - Invalid -</option>'; }
-    echo '         </select>';
+    echo '         </select>'.helptag("campaign_ivr-timeout_action");
     echo '      </td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$oddrows align=right>Allow Agent Extensions:</td>\n";
-    echo '      <td bgcolor="' . $oddrows . '"><select name="oivr_allow_agent_extensions"><option>Y</option><option>N</option><option selected>' . $oivr['allow_agent_extensions'] . '</option></select></td>';
+    echo '      <td bgcolor="' . $oddrows . '"><select name="oivr_allow_agent_extensions"><option>Y</option><option>N</option><option selected>' . $oivr['allow_agent_extensions'] . '</option></select>'.helptag("campaign_ivr-allow_agent_extensions").'</td>';
     echo "  </tr>\n";
     echo "  <tr class=tabfooter>\n";
     echo "      <td colspan=2 class=tabbutton align=center><input type=submit value=\"Save Form\"></td>\n";
@@ -964,8 +964,8 @@ if ($ADD == "3menu") {
     echo "        <option value=\"TVC_LOOKUP\">TVC Lookup</option>\n";
     echo "        <option value=\"HANGUP\">Disposition and Hangup</option>\n";
     echo "        <option value=\"MENU\">Sub-menu</option>\n";
-    echo "        <option value=\"MENU_REPEAT\">Repeat the Menu (no-diposition)</option>\n";
-    echo "        <option value=\"MENU_EXIT\">Exit from Menu (no-diposition)</option>\n";
+    echo "        <option value=\"MENU_REPEAT\">Repeat the Menu (no-disposition)</option>\n";
+    echo "        <option value=\"MENU_EXIT\">Exit from Menu (no-disposition)</option>\n";
     echo "      </select>\n";
     echo "    </td>\n";
     echo "    <td align=center></td>\n";
@@ -1562,8 +1562,8 @@ if ($ADD == "3keys") {
         echo "        <option value=\"TVC_LOOKUP\">TVC Lookup</option>\n";
         echo "        <option value=\"HANGUP\">Disposition and Hangup</option>\n";
         echo "        <option value=\"MENU\">Sub-menu</option>\n";
-        echo "        <option value=\"MENU_REPEAT\">Repeat the Menu (no-diposition)</option>\n";
-        echo "        <option value=\"MENU_EXIT\">Exit from Menu (no-diposition)</option>\n";
+        echo "        <option value=\"MENU_REPEAT\">Repeat the Menu (no-disposition)</option>\n";
+        echo "        <option value=\"MENU_EXIT\">Exit from Menu (no-disposition)</option>\n";
         echo "      </select>\n";
         echo "    </td>\n";
         echo "    <td align=center></td>\n";
