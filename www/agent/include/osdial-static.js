@@ -2287,7 +2287,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			document.getElementById("CloserSelectContent").innerHTML = live_CSC_HTML;
 		} else {
 			VU_agent_choose_ingroups_DV = "MGRLOCK";
-			var live_CSC_HTML = "<br><br><br><table frame=box><tr bgcolor=" + closer_bg + "><td><font color=" + closer_fc2 + ">&nbsp;Manager has selected groups for you!&nbsp;</font></td></tr></table><br>";
+			var live_CSC_HTML = "<br><br><br><table border=0><tr bgcolor=" + closer_bg + "><td><font color=" + closer_fc2 + ">&nbsp;Manager has selected groups for you!&nbsp;</font></td></tr></table><br>";
 			document.osdial_form.CloserSelectList.value = '';
 			document.getElementById("CloserSelectContent").innerHTML = live_CSC_HTML;
 		}
@@ -3333,7 +3333,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			LMAcount=0;
 		} else {
 			conf_channels_xtra_display = 0;
-			document.getElementById("busycallsdisplay").innerHTML = "<a href=\"#\"  onclick=\"conf_channels_detail('SHOW');\">Channel Information</a><BR><BR>&nbsp;";
+			document.getElementById("busycallsdisplay").innerHTML = "<a href=\"#\"  onclick=\"conf_channels_detail('SHOW');\">Channel Information</a><BR><BR><br/>&nbsp;";
 			document.getElementById("outboundcallsspan").innerHTML = '';
 			LMAe[0]=''; LMAe[1]=''; LMAe[2]=''; LMAe[3]=''; LMAe[4]=''; LMAe[5]=''; 
 			LMAcount=0;

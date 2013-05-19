@@ -1842,8 +1842,8 @@ flush();
     <?php load_status('Initializing GUI...<br>VolumeControlSpan<br>&nbsp;'); ?>
     <!-- Volume Control Links -->
     <span style="position:absolute;left:945px;top:465px;z-index:19;visibility:hidden;" id="VolumeControlSpan">
-        <span id="VolumeUpSpan" style="left:0px;top:0px;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_volume_up_off.gif" width=28 height=15 border=0></span>
-        <span id="VolumeDownSpan" style="left:0px;top:17px;float:left;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_volume_down_off.gif" width=28 height=15 border=0></span>
+        <span id="VolumeUpSpan" style="position:absolute;left:0px;top:0px;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_volume_up_off.gif" width=28 height=15 border=0></span>
+        <span id="VolumeDownSpan" style="position:absolute;left:0px;top:15px;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_volume_down_off.gif" width=28 height=15 border=0></span>
     </span>
 
     
@@ -2085,7 +2085,7 @@ flush();
     <?php load_status('Initializing GUI...<br>NoneInSessionBox<br>&nbsp;'); ?>
     <!-- Phone Is Hungup -->
     <span style="position:absolute;left:0px;top:18px;z-index:26;visibility:hidden;" id="NoneInSessionBox">
-        <table border=1 bgcolor="<?php echo $noone_bg; ?>" width=<?php echo $CAwidth; ?> height=545>
+        <table border=1 bgcolor="<?php echo $noone_bg; ?>" width=1010 height=545>
             <tr>
                 <td align=center>
                     <b><font color=<?php echo $noone_fc; ?>>Your phone has either not been answered, or was hung up! <br><br><font color=<?php echo $noone_bg; ?>>(Session ID: <span id="NoneInSessionID"></span>)</font></font></b>
@@ -2400,7 +2400,7 @@ flush();
     <?php load_status('Initializing GUI...<br>CloserSelectBox<br>&nbsp;'); ?>
     <!-- Closer Inbound Group Window -->
     <span style="position:absolute;left:0px;top:0px;z-index:36;visibility:hidden;" id="CloserSelectBox">
-        <table class=acrossagent border=0 width=<?php echo $CAwidth; ?> height=565>
+        <table class=acrossagent border=0 height=565>
             <tr>
                 <td align=center valign=top>
                     <br><font size=+1 color=<?php echo $closer_fc2; ?>><b>Closer Inbound Group Selection</b></font>
@@ -2447,7 +2447,13 @@ flush();
     
     <!-- =======================================   Here is the main OSDIAL display panel  ======================================= -->
     
-<?php $citablewidth=490;$borderwidth=0; $large_comments='1'?>
+<?php $citablewidth=490;$borderwidth=0; $large_comments='1';
+if(isset($_SERVER['HTTP_USER_AGENT'])){
+    $browser = $_SERVER['HTTP_USER_AGENT'];
+} else {
+    $browser="unknown";
+}
+?>
     
     <?php load_status('Initializing GUI...<br>MainPanel<br>&nbsp;'); ?>
     <span style="position:absolute;left:2px;top:46px;z-index:4;" id="MainPanel" border=<?php echo $borderwidth; ?>>
@@ -2797,7 +2803,7 @@ flush();
                                     </table>
                                 </div>
                             
-<br/>
+                                <font size=-3><br/><br/></font>
 
                             </td>
 
@@ -2921,7 +2927,7 @@ flush();
         <div id="AddtlFormTab" style="visibility:hidden;position:absolute;left:966px;top:36px;z-index:9;" class=sidetab onclick="AddtlFormOver();">
             FORMS
         </div>
-        <div id="AddtlFormTabExpanded" style="visibility:hidden;position:absolute;left:835px;top:22px;z-index:9;box-shadow: rgba(0,0,0,0.5) -1px -1px 18px;background:#8FB1DC;">
+        <div id="AddtlFormTabExpanded" style="visibility:hidden;position:absolute;left:835px;top:19px;z-index:9;box-shadow: rgba(0,0,0,0.5) -1px -1px 18px;background:#8FB1DC;">
                 <div id="AddtlFormTabExpandedTop" height=16 onclick="AddtlFormSelect('Cancel');" style='width:142px !important;'>
                     Select A Form
                 </div>
@@ -2946,7 +2952,7 @@ flush();
                         }
                     }
                 } ?>
-            <div id="AddtlFormTabExpandedCancel" style="position:absolute;left:<?php echo (139-10); ?>px;top:15px;z-index:9;box-shadow: rgba(0,0,0,0.5) 1px -4px 18px;background:#86A6D3;" onclick="AddtlFormSelect('Cancel')";>
+            <div id="AddtlFormTabExpandedCancel" style="position:absolute;left:127px;top:19px;z-index:9;box-shadow: rgba(0,0,0,0.5) 1px -4px 18px;background:#8FB1DC;" onclick="AddtlFormSelect('Cancel')";>
                 CANCEL
             </div>
         </div>

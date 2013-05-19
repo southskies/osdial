@@ -43,7 +43,7 @@ $pause_bg ='#9ABCC5';
 $pause_bg2='#AFCFD7';
 $pause_fc ='#1C4754';
 
-$closer_bg ='#AFCFD7';
+$closer_bg ='#93C1FF';
 $closer_fc ='#FFFFFF';
 $closer_fc2='#1C4754';
 
