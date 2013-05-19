@@ -69,7 +69,7 @@ $mandial_fc ='#1C4754';
 $mandial_bfc='#FFD000';
 
 $hotkey_bg1='#A4CCDF';
-$hotkey_bg2='#98BFD2';
+$hotkey_bg2='#759ED1';
 
 $hotkey_done_bg1='#FFDD99';
 $hotkey_done_bg2='#FFEEBB';

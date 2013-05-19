@@ -1753,7 +1753,7 @@ flush();
     
     </span>
     
-    <span style="position:absolute;left:29px;top:17px;z-index:9;" id="PanelSelection">
+    <span style="position:absolute;left:29px;top:18px;z-index:25;" id="PanelSelection">
       <div id="AgentPanelMAIN" style="padding:4px;position:relative;cursor:pointer;" class="AgentPanelSelect" onclick="ChoosePanel('MAIN');">
         FORM
       </div>
@@ -1950,7 +1950,8 @@ flush();
     <!-- Hot Key Button -->
     <?php if ($HK_statuses_camp > 0 and ($user_level >= $HKuser_level or $VU_hotkeys_active > 0)) { ?>
         <span style="position:absolute;left:720px;top:450px;z-index:16;" id="hotkeysdisplay">
-            <a href="#" onMouseOver="HotKeys('ON');"  onClick="HotKeys('ON');"><div class=hotkeysoff>HOT KEYS</div></a>
+<!--             <a href="#" onMouseOver="HotKeys('ON');" onClick="HotKeys('ONC');"><div class=hotkeysoff>HOT KEYS</div></a> -->
+            <a href="#" onmouseover="HotKeys('ON');" onmouseout="HotKeys('OFF');" onclick="HotKeysClick();"><div id=hotkeysbutton class=hotkeyoff>HOT KEYS</div></a>
         </span>
     <?php } ?>
                             
@@ -2556,13 +2557,13 @@ flush();
                                                     <tr align=center valign=top>
                                                         <td align=center>
                                                             <font class="body_text" color=<?php echo $form_fc; ?>><label for=SecondS>Call Duration:&nbsp;</label></font>
-                                                            <font class="body_input_rev"><input type=text size=4 name=SecondS id=SecondS class="display_field" value="" readonly></font>&nbsp;&nbsp;&nbsp;&nbsp;
+                                                            <font class="body_input_rev"><input type=text size=4 name=SecondS id=SecondS class="display_field_ro" value="" readonly></font>&nbsp;&nbsp;&nbsp;&nbsp;
                                                             <span id=callchannel style="font-size:5pt;overflow:hidden;visibility:hidden;"></span>
                                                         <!--</td>
                                                         <td width=10% align=center><font class="body_text" color=#ABCBD4><span id=callchannel style="font-size:5pt;overflow:hidden;"></span></font></td>
                                                         <td align=left>-->
                                                             <font class="body_text" color=<?php echo $form_fc; ?>><label for=custdatetime>Customer's Time:&nbsp;</label></font>
-                                                            <font class="body_input_rev"><input type=text size=17 maxlength=22 name=custdatetime id=custdatetime class="display_field" value="" readonly></font>
+                                                            <font class="body_input_rev"><input type=text size=17 maxlength=22 name=custdatetime id=custdatetime class="display_field_ro" value="" readonly></font>
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -2578,19 +2579,19 @@ flush();
                                                 <font class="body_text" color=<?php echo $form_fc; ?>><label for=lead_id>Lead ID:</label></font>
                                             </td>
                                             <td align=left>
-                                                <font class="body_input"><input type=text size=11 name=lead_id id=lead_id maxlength=11 class="display_field_border" value="" readonly></font>
+                                                <font class="body_input"><input type=text size=11 name=lead_id id=lead_id maxlength=11 class="display_field_ro" value="" readonly></font>
                                             </td>
                                             <td width=55>
                                                 <font class="body_text" color=<?php echo $form_fc; ?>><label for=source_id>Source ID:</label></font>
                                             </td>
                                             <td>
-                                                <font class="body_input"><input type=text size=6 name=source_id id=source_id maxlength=6 class="display_field_border" value="" readonly></font>
+                                                <font class="body_input"><input type=text size=6 name=source_id id=source_id maxlength=6 class="display_field_ro" value="" readonly></font>
                                             </td>
                                             <td align=right>
                                                 <font class="body_text" color=<?php echo $form_fc; ?>><label for=external_key>External Key:</label></font>
                                             </td>
                                             <td align=right width=70>
-                                                <font class="body_input"><input type=text size=6 name=external_key id=external_key maxlength=100 class="display_field_border" value="" readonly></font>
+                                                <font class="body_input"><input type=text size=6 name=external_key id=external_key maxlength=100 class="display_field_ro" value="" readonly></font>
                                             </td>
                                         </tr>
                                     </table>

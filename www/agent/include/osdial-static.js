@@ -2489,9 +2489,9 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
         
         // If allowed to exit to welcome page
         if (1==2) {
-            document.getElementById("LogouTBoxLink").innerHTML = "<span class=homepage><div class=loginagainBox><span class=LoginAgainHeader>Login Again?</span><br/><br/><a href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\">Yes</a>&nbsp;/&nbsp;<a href=/>No</a></div></span>";
+            document.getElementById("LogouTBoxLink").innerHTML = "<span class=homepage><div class=loginagainBox><span class=LoginAgainHeader>Log Back In?</span><br/><br/><a href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\">Yes</a>&nbsp;/&nbsp;<a href='#'>No</a></div></span>";
         } else {
-            document.getElementById("LogouTBoxLink").innerHTML = "<span class=homepage><div class=loginagainBox><span class=LoginAgainHeader>Login Again?</span><br/><br/><a href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\">Yes</a>&nbsp;/&nbsp;<a href=>No</a></div></span>";
+            document.getElementById("LogouTBoxLink").innerHTML = "<span class=homepage><div class=loginagainBox><span class=LoginAgainHeader>Login Again?</span><br/><br/><a href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\">Yes</a>&nbsp;/&nbsp;<a href=''>No</a></div></span>";
         }
 		logout_stop_timeouts = 1;
 					
@@ -2940,7 +2940,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 						//AutoDial_ReSume_PauSe("VDADready");
 					}
 					if (HKdispo_display == 1) {
-						if (hot_keys_active==1) {
+						if (hot_keys_active ==1) {
 							showDiv('HotKeyEntriesBox');
 						}
 						hideDiv('HotKeyActionBox');
@@ -3340,22 +3340,47 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		}
 	}
 
-	function HotKeys(HKstate) {
-		debug("<b>HotKeys:</b> HKstate=" + HKstate,2);
-        var az = document.getElementById('HKstate'); 
-		if ( (HKstate == 'ON') && (HKbutton_allowed == 1) ) {
-			showDiv('HotKeyEntriesBox');
-			hot_keys_active = 1;
-            az.onmouseover = az.onfocus = az.onclick = az.onkeypress 
-            document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onClick=\"HotKeys('OFF')\"><div class=hotkeyson>HOT KEYS</div></a>";
-//             document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onClick=\"HotKeys('OFF');\" onMouseOut=\"HotKeys('OFF');\"><div class=hotkeyson>HOT KEYS</div></a>";
-		} else {
-			hideDiv('HotKeyEntriesBox');
-			hot_keys_active = 0;
-            document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onClick=\"HotKeys('ON')\"><div class=hotkeysoff>HOT KEYS</div></a>";
-//             document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onClick=\"HotKeys('ON');\" onMouseOver=\"HotKeys('ON');\"><div class=hotkeysoff>HOT KEYS</div></a>";
-		}
+	function HotKeys(action) {
+        if (!hotkeys_clicked) {
+            if (action=='ON') {
+                document.getElementById('hotkeysbutton').className='hotkeyon';            
+                // Code to show HotKeys Panel here...
+                showDiv('HotKeyEntriesBox');
+            } else {
+                document.getElementById('hotkeysbutton').className='hotkeyoff';
+                // Code to hide HotKeys Panel here...
+                hideDiv('HotKeyEntriesBox');
+            }
+        }
     }
+
+    function HotKeysClick() {
+        if (hotkeys_clicked) {
+            document.getElementById('hotkeysbutton').className='hotkeyoff';
+            // Code to hide HotKeys Panel here...
+            hotkeys_clicked=0;
+            hideDiv('HotKeyEntriesBox');
+        } else {
+            document.getElementById('hotkeysbutton').className='hotkeyon';
+            // Code to show HotKeys Panel here...
+            hotkeys_clicked=1;
+            showDiv('HotKeyEntriesBox');
+        }
+    }
+/*
+	function HotKeys(HKstate) {
+        if ( (HKstate == 'ON') && (HKbutton_allowed == 1) ) {
+            showDiv('HotKeyEntriesBox');
+            hot_keys_active = 1;
+            document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onMouseOut=\"HotKeys('OFF')\"><div class=hotkeyson>HOT KEYS</div></a>";
+        } else {
+            hideDiv('HotKeyEntriesBox');
+            hot_keys_active = 0;
+            document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onMouseOver=\"HotKeys('ON')\"><div class=hotkeysoff>HOT KEYS</div></a>";
+        }
+		
+    }
+*/
 
 	function DTMFKeys(DTMFstate) {
 		debug("<b>DTMFKeys:</b> DTMFstate=" + DTMFstate,2);
