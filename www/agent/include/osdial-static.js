@@ -6407,7 +6407,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 					lead_dial_number = dialed_number;
 					var status_display_number = formatPhone(document.osdial_form.phone_code.value,dialed_number);
 
-					document.getElementById("MainStatuSSpan").style.backgroundColor = '';
+					document.getElementById("MainStatuSSpan").style.backgroundColor = panel_bg;
 					document.getElementById("MainStatuSSpan").innerHTML = "<font color=white>Called " + status_display_number + "</font>&nbsp;&nbsp;<font color=" + status_bg + "> UID: " + CIDcheck + "</font> &nbsp; " + VDIC_fronter; 
 					document.getElementById("RepullControl").innerHTML = "<a href=\"#\" onclick=\"RepullLeadData('all');\"><span class=ReloadDataButton>Reload Lead Data</span></a>";
 
@@ -6422,7 +6422,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 					}
 
 					if (VDIC_data_MCIG[1].length > 0) {
-						if (VDIC_data_MCIG[2].length > 2) document.getElementById("MainStatuSSpan").style.backgroundColor = VDIC_data_MCIG[2];
+// 						if (VDIC_data_MCIG[2].length > 2) document.getElementById("MainStatuSSpan").style.backgroundColor = VDIC_data_MCIG[2];
+                        if (VDIC_data_MCIG[2].length > 2) document.getElementById("MainStatuSSpan").style.backgroundColor = panel_bg;
 						var status_display_number = formatPhone(document.osdial_form.phone_code.value,document.osdial_form.phone_number.value);
 						document.getElementById("MainStatuSSpan").innerHTML = " Incoming: " + status_display_number + " Group- " + VDIC_data_MCIG[1] + " &nbsp; " + VDIC_fronter; 
 					}

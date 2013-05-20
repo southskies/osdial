@@ -7,8 +7,8 @@ $default_text=white; //'#000080';
 $panel_bg='#6987B1'; //'#6987B1'; #789BCA
 
 $status_fct          ='white'; //'#1C4754';
-$status_fc           ='#1C4754';
-$status_bg           =''; //$panel_bg;
+$status_fc           ='white';
+$status_bg           =$panel_bg; //$panel_bg;
 $status_alert_color  ='#FF0000';
 $status_intense_color='white';
 $status_preview_color='#1C4754';

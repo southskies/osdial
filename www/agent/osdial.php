@@ -2469,7 +2469,7 @@ if(isset($_SERVER['HTTP_USER_AGENT'])){
                             <td height=20 width=22 colspan=3 class=curve2 style="vertical-align:bottom;">&nbsp;
 <!--                                 <img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/AgentTopLeft.png" width=22 height=22 align=left> -->
                                 <font style='margin-left:180px;' class="body_text" color=<?php echo $status_fct; ?>>STATUS:&nbsp;</font>
-                                <font class="body_text" color=<?php echo $status_fc; ?>><span id="MainStatuSSpan"></span></font>
+                                <font class="body_text" color=<?php echo $status_fc; ?>><span bgcolor=#6987B1 id="MainStatuSSpan"></span></font>
                             </td>
 <!--                             <td width=22><img src="templates/<?php //echo $config['settings']['agent_template']; ?>/images/AgentTopRight.png" width=22 height=22 align=right></td> -->
                         </tr>
