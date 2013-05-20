@@ -1779,7 +1779,7 @@ flush();
     
     <!-- Manual Dial Link -->
     <!--<span style="position:absolute;left:-58px;top:430px;z-index:12;visibility:hidden;" id="ManuaLDiaLButtons">-->
-    <span style="position:relative;left:-58px;top:450px;z-index:12;visibility:hidden;" id="ManuaLDiaLButtons">
+    <span style="position:relative;left:-58px;top:448px;z-index:12;visibility:hidden;" id="ManuaLDiaLButtons">
         <font class="body_text">
             <span id="MDstatusSpan"><span id="MDHopperListLink" <?php if ($allow_md_hopperlist!='Y') echo "style=\"visibility:hidden;\""; ?>><a href="#" onclick="MDHopperListCheck();return false;">HOPPER LIST</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('NO');return false;">MANUAL DIAL</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('FAST');return false;">FAST DIAL</a><br>
         </font>
@@ -1807,7 +1807,7 @@ flush();
     
 
     <!-- Pause Code Link -->
-    <span style="position:absolute;left:650px;top:<?php echo ($CBheight-3); ?>px;z-index:14;visibility:hidden;" id="PauseCodeButtons">
+    <span style="position:absolute;left:46px;top:<?php echo ($CBheight-3); ?>px;z-index:14;visibility:hidden;" id="PauseCodeButtons">
         <font class="body_text">
             <span id="PauseCodeLinkSpan"><a href="#" onclick="PauseCodeSelectContent_create();return false;">ENTER A PAUSE CODE</a></span><br>
         </font>
@@ -2535,8 +2535,8 @@ if(isset($_SERVER['HTTP_USER_AGENT'])){
                                             <span id="SendDTMF"><a href="#" onclick="SendConfDTMF('<?php echo $session_id; ?>');return false;"><span class=SendDTMF>Send DTMF</span></a> <input type=text size=6 name=conf_dtmf class="cust_form" value="" maxlength=50></span>
                                         </div>
                                         
-                                        <span id="SpacerSpanE"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>
-                                        <span id="HangupControl"><span class=HangupButtonOff>Hangup Customer</span></span>
+                                        <span id="SpacerSpanE"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br/>
+                                        <span id="HangupControl"><span class=HangupButtonOff>Hangup Customer</span></span><br/><br/>
                                         
                                         <span id="RepullControl"></span>
                                         <span id="SpacerSpanG"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>

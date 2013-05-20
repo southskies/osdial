@@ -3344,12 +3344,16 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
         if (!hotkeys_clicked) {
             if (action=='ON') {
                 document.getElementById('hotkeysbutton').className='hotkeyon';            
+//                 document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onMouseOut=\"HotKeys('OFF')\"><div class=hotkeyon>HOT KEYS</div></a>";
                 // Code to show HotKeys Panel here...
                 showDiv('HotKeyEntriesBox');
+                hot_keys_active = 1;
             } else {
                 document.getElementById('hotkeysbutton').className='hotkeyoff';
+//                 document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onMouseOver=\"HotKeys('ON')\"><div class=hotkeyoff>HOT KEYS</div></a>";
                 // Code to hide HotKeys Panel here...
                 hideDiv('HotKeyEntriesBox');
+                hot_keys_active = 0;
             }
         }
     }
@@ -3359,11 +3363,13 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
             document.getElementById('hotkeysbutton').className='hotkeyoff';
             // Code to hide HotKeys Panel here...
             hotkeys_clicked=0;
+            hot_keys_active = 0;
             hideDiv('HotKeyEntriesBox');
         } else {
             document.getElementById('hotkeysbutton').className='hotkeyon';
             // Code to show HotKeys Panel here...
             hotkeys_clicked=1;
+            hot_keys_active = 1;
             showDiv('HotKeyEntriesBox');
         }
     }
@@ -4292,10 +4298,12 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 							/*document.getElementById("MainStatuSSpan").innerHTML = " Calling " + status_display_number + "&nbsp;&nbsp;<font color=" + status_bg + ">UID: " + CIDcheck + "</font> &nbsp; " + VDIC_fronter;*/ 
                             document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "</font>&nbsp;&nbsp;";
 
-							document.getElementById("RepullControl").innerHTML = "<a href=\"#\" onclick=\"RepullLeadData('all');\"><img src=\"templates/" + agent_template + "/images/vdc_RPLD_on.gif\" width=145 height=16 border=0 alt=\"Repull Lead Data\"></a>";
+							document.getElementById("RepullControl").innerHTML = "<a href=\"#\" onclick=\"RepullLeadData('all');\"><span class=ReloadDataButton>Reload Lead Data</span></a>";
+							
+// 							<img src=\"templates/" + agent_template + "/images/vdc_RPLD_on.gif\" width=145 height=16 border=0 alt=\"Repull Lead Data\"></a>";
 
 							if (LeaDPreVDispO == 'CALLBK') {
-								document.getElementById("CusTInfOSpaN").innerHTML = "&nbsp;<B>PREVIOUS CALLBACK</B>";
+								document.getElementById("CusTInfOSpaN").innerHTML = "&nbsp;<B>PREVIOUS CALLBACK</B>&nbsp;";
 								document.getElementById("CusTInfOSpaN").style.backgroundColor = CusTCB_bgcolor;
 								document.getElementById("CBcommentsBoxA").innerHTML = "<b>Last Call: </b>" + CBentry_time;
 								document.getElementById("CBcommentsBoxB").innerHTML = "<b>CallBack: </b>" + CBcallback_time;
@@ -4821,7 +4829,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			}
 		} else {
 			if (web_form_extwindow == 1) {
-				document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + wf_enc_address + "\" target=\"webform\" onMouseOut=\"WebFormRefresH('OUT');\"><span class=WebFormButton>Web Form 1</span>></a>";
+				document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + wf_enc_address + "\" target=\"webform\" onMouseOut=\"WebFormRefresH('OUT');\"><span class=WebFormButton>Web Form 1</span></a>";
 			} else {
 				document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + wf_enc_address + "');\"><span class=WebFormButton>Web Form 1</span></a>";
 			}
@@ -6400,7 +6408,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 					document.getElementById("MainStatuSSpan").style.backgroundColor = '';
 					document.getElementById("MainStatuSSpan").innerHTML = "<font color=white>Called " + status_display_number + "</font>&nbsp;&nbsp;<font color=" + status_bg + "> UID: " + CIDcheck + "</font> &nbsp; " + VDIC_fronter; 
-					document.getElementById("RepullControl").innerHTML = "<a href=\"#\" onclick=\"RepullLeadData('all');\"><img src=\"templates/" + agent_template + "/images/vdc_RPLD_on.gif\" width=145 height=16 border=0 alt=\"Repull Lead Data\"></a>";
+					document.getElementById("RepullControl").innerHTML = "<a href=\"#\" onclick=\"RepullLeadData('all');\"><span class=ReloadDataButton>Reload Lead Data</span></a>";
 
 					if (LeaDPreVDispO == 'CALLBK') {
 						document.getElementById("CusTInfOSpaN").innerHTML = "&nbsp;<B>PREVIOUS CALLBACK</B>";
