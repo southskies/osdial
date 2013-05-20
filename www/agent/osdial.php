@@ -1807,7 +1807,7 @@ flush();
     
 
     <!-- Pause Code Link -->
-    <span style="position:absolute;left:46px;top:<?php echo ($CBheight-3); ?>px;z-index:14;visibility:hidden;" id="PauseCodeButtons">
+    <span style="position:absolute;left:50px;top:<?php echo ($CBheight-3); ?>px;z-index:14;visibility:hidden;" id="PauseCodeButtons">
         <font class="body_text">
             <span id="PauseCodeLinkSpan"><a href="#" onclick="PauseCodeSelectContent_create();return false;">ENTER A PAUSE CODE</a></span><br>
         </font>
@@ -2235,9 +2235,9 @@ flush();
             <tr>
                 <td align=center valign=top>
                     <font color=<?php echo $dispo_fc; ?>>
-                        <br> DISPOSITION CALL: <span id="DispoSelectPhonE"></span> &nbsp; &nbsp; &nbsp; <span id="DispoSelectHAspan"><a href="#" onclick="DispoHanguPAgaiN()">Hangup Again</a></span> &nbsp; &nbsp; &nbsp; <span id="DispoSelectMaxMin"><a href="#" onclick="DispoMinimize()">minimize</a></span><br>
+                        <br> DISPOSITION CALL: <font color=white><span id="DispoSelectPhonE"></span></font> &nbsp; &nbsp; &nbsp; <span id="DispoSelectHAspan"><a href="#" onclick="DispoHanguPAgaiN()">Hangup Again</a></span> &nbsp; &nbsp; &nbsp; <span id="DispoSelectMaxMin"><a href="#" onclick="DispoMinimize()">minimize</a></span><br>
                         <br>
-                        <table frame=border cellpadding=5 cellspacing=5 width=620>
+                        <table border=0 cellpadding=5 cellspacing=5 width=620>
                             <tr>
                                 <td colspan=2 align=center>
                                     <font color=<?php echo $dispo_fc; ?>><b>Call Dispositions</b></font>
@@ -2466,12 +2466,12 @@ if(isset($_SERVER['HTTP_USER_AGENT'])){
                     <!-- Column widths 205 + 505 + 270 = 980 -->
                     <table id="MainTable" class=mainpage Xstyle="background-color:<?php //echo $panel_bg; ?>;" border=<?php echo $borderwidth; ?> cellpadding=0 cellspacing=0 border=1>
                         <tr>
-                            <td width=22 colspan=2 class=curve2 style="vertical-align:bottom;">
+                            <td height=20 width=22 colspan=3 class=curve2 style="vertical-align:bottom;">&nbsp;
 <!--                                 <img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/AgentTopLeft.png" width=22 height=22 align=left> -->
                                 <font style='margin-left:180px;' class="body_text" color=<?php echo $status_fct; ?>>STATUS:&nbsp;</font>
                                 <font class="body_text" color=<?php echo $status_fc; ?>><span id="MainStatuSSpan"></span></font>
                             </td>
-<!--                             <td width=22><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/AgentTopRight.png" width=22 height=22 align=right></td> -->
+<!--                             <td width=22><img src="templates/<?php //echo $config['settings']['agent_template']; ?>/images/AgentTopRight.png" width=22 height=22 align=right></td> -->
                         </tr>
                         <tr>
                             <td colspan=3><span id="busycallsdebug"></span></td>
@@ -2740,9 +2740,9 @@ if(isset($_SERVER['HTTP_USER_AGENT'])){
                                                 <font class="body_tiny">
                                                     <?php if ($multi_line_comments) { ?>
                                                         <?php if ($comment_size=='3') { ?>
-                                                                <textarea name=comments id=comments rows=20 cols=81 class="cust_form" style="height:250px;"></textarea>
+                                                                <textarea name=comments id=comments rows=20 cols=81 class="cust_form" style="height:250px;width:424px !important;"></textarea>
                                                             <?php } elseif ($comment_size=='2') { ?>
-                                                                <textarea name=comments id=comments rows=10 cols=81 class="cust_form" style="height:125px;"></textarea>
+                                                                <textarea name=comments id=comments rows=10 cols=81 class="cust_form" style="height:125px;width:424px !important;"></textarea>
                                                             <?php } else { ?>
                                                                 <textarea name=comments id=comments rows=3 cols=100% class="cust_form" style="height:45px;width:424px !important;"></textarea>
                                                             <?php } ?>
