@@ -34,14 +34,14 @@ $cbinfo_bg1  ='#7297A1';
 $cbinfo_bg2  ='#9ABCC5';
 $cbinfo_bfc  ='yellow';
 
-$dispo_bg ='#AFCFD7';
-$dispo_bg2='#FFFFCC';
-$dispo_fc ='#1C4754';
+$dispo_bg ='#B0C1D7';
+$dispo_bg2='#C1D6F0';
+$dispo_fc ='#25446D';
 $dispo_hide='#7297A1';
 
-$pause_bg ='#9ABCC5';
-$pause_bg2='#AFCFD7';
-$pause_fc ='#1C4754';
+$pause_bg ='#9CC9FF';
+$pause_bg2='#B0C3D7';
+$pause_fc ='#1C3B54';
 
 $closer_bg ='#93C1FF';
 $closer_fc ='#FFFFFF';
@@ -74,9 +74,9 @@ $hotkey_bg2='#759ED1';
 $hotkey_done_bg1='#FFDD99';
 $hotkey_done_bg2='#FFEEBB';
 
-$xfer_bg1='#AFCFD7';
-$xfer_bg2='#CCCCCC';
-$xfer_fc ='#1C4754';
+$xfer_bg1=$dispo_bg;
+$xfer_bg2=$dispo_bg2;
+$xfer_fc =$dispo_fc;
 
 $noone_bg =$panel_bg;
 $noone_fc ='#1C4754';

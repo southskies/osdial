@@ -504,7 +504,9 @@
 								var LMAcontent_match=0;
 								agentphonelive=0;
 								var conv_start=-1;
-								var live_conf_HTML = "<div align=center class=bottom style='position:relative;z-index:9;'><font face=\"Arial,Helvetica\"><TABLE WIDTH=" + SDwidth + "><tr height=20><td align=center colspan=5><font class=\"log_title\">Live Calls In Your Session:</font></td></tr><TR align=center><TD><font class=\"log_title\">#</TD><TD><font class=\"log_title\">Remote Channel</TD><TD><font class=\"log_title\">Hangup</TD><TD width=80><font class=\"log_title\">Volume</TD><td width=120><font class=\"log_title\">Muted/Unmuted</font></td></TR>";
+                                // Adding debug info to window
+// 								var live_conf_HTML = "<div align=center class=bottom style='position:relative;z-index:9;'><font face=\"Arial,Helvetica\"><TABLE WIDTH=" + SDwidth + "><tr height=20px><td align=center colspan=5><font color=black face=\"Arial,Helvetica\" size=1><?php echo $t1; ?> Agent version: <?php echo $version; ?>&nbsp;&nbsp;Build: <?php echo $build; ?>Server: <?php echo $server_ip; ?></font><span id=\"DebugLink\"><font color=black class=\"body_text\"><a href=\"#\" onclick=\"openDebugWindow();return false;\">.</a></font></span></td></tr><tr><td align=center colspan=5><font color=black face=\"Arial,Helvetica\" size=1>UID: " + MDnextCID  + "</font></span></td></tr><tr height=20><td align=center colspan=5><font class=\"log_title\">Live Calls In Your Session:</font></td></tr><TR align=center><TD><font class=\"log_title\">#</TD><TD><font class=\"log_title\">Remote Channel</TD><TD><font class=\"log_title\">Hangup</TD><TD width=80><font class=\"log_title\">Volume</TD><td width=120><font class=\"log_title\">Muted/Unmuted</font></td></TR>";
+                                var live_conf_HTML = "<div align=center class=bottom style='position:relative;z-index:9;'><font face=\"Arial,Helvetica\"><TABLE WIDTH=" + SDwidth + "><tr height=20><td align=center colspan=5><font class=\"log_title\">Live Calls In Your Session:</font></td></tr><TR align=center><TD><font class=\"log_title\">#</TD><TD><font class=\"log_title\">Remote Channel</TD><TD><font class=\"log_title\">Hangup</TD><TD width=80><font class=\"log_title\">Volume</TD><td width=120><font class=\"log_title\">Muted/Unmuted</font></td></TR>";
 								if ( (LMAcount > live_conf_calls)  || (LMAcount < live_conf_calls) || (LMAforce > 0)) {
 									LMAe[0]=''; LMAe[1]=''; LMAe[2]=''; LMAe[3]=''; LMAe[4]=''; LMAe[5]=''; 
 									LMAcount=0;   LMAcontent_change++;
@@ -549,7 +551,6 @@
 //                                     current
                                         live_conf_HTML += "<span id=\"CHANIMG"+loop_ct+"muted\" style=\"position:absolute;top:-5px;left:75;visibility:hidden;\"><div class=muted_on width=140 height=35 BORDER=0>MUTED</div></span></td></tr>";
                                         
-//                                         XdesiredDebugWindowSomeWhereElse +="<tr height=20px><td align=center colspan=5><font color=black face=\"Arial,Helvetica\" size=1><?php echo $t1; ?> Agent version: <?php echo $version; ?>&nbsp;&nbsp;Build: <?php echo $build; ?>Server: <?php echo $server_ip; ?></font><span id=\"DebugLink\"><font color=black class=\"body_text\"><a href=\"#\" onclick=\"openDebugWindow();return false;\">.</a></font></span></td></tr><tr><td align=center colspan=5><font color=black face=\"Arial,Helvetica\" size=1>UID: " + MDnextCID  + "</font></span></td></tr></table></div>";
                                     
 
 									}
