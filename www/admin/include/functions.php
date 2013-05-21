@@ -1512,21 +1512,21 @@ function get_status_category_ucwords($catid) {
 function jump_section ($section_level) {
 	echo "<span class=jump>Links: </span>";
 	echo "<a href=#basic class=jump>Control</a>&nbsp;"; 
-	echo "<a href=#groups class=jump>Groups</a>&nbsp;";
+    echo "<a href=#alists class=jump>ActiveLists</a>&nbsp;";
+	echo "<a href=#list class=jump>Lists</a>&nbsp;";  
 	echo "<a href=#status class=jump>Status</a>&nbsp;";  
 	echo "<a href=#method class=jump>Method</a>&nbsp;";  
 	echo "<a href=#options class=jump>Options</a>&nbsp;";  
-	echo "<a href=#list class=jump>Lists</a>&nbsp;";  
-	echo "<a href=#alists class=jump>ActiveLists</a>&nbsp;"; 
-	echo "<a href=#carrier class=jump>Carrier</a>&nbsp;";  
+	echo "<a href=#script class=jump>Script</a>&nbsp;";  
 	echo "<a href=#record class=jump>Record</a>&nbsp;";  
 	echo "<a href=#am class=jump>A-M</a>&nbsp;";  
 	echo "<a href=#drop class=jump>Drop</a>&nbsp;";  
 	echo "<a href=#transfer class=jump>Transfer</a>&nbsp;";  
-	echo "<a href=#webform class=jump>WebForm</a>&nbsp;";  
-	echo "<a href=#script class=jump>Script</a>&nbsp;";  
 	echo "<a href=#eoc class=jump>End-Of-Call</a>&nbsp;";  
 	echo "<a href=#dnc class=jump>DNC</a>&nbsp;";
+	echo "<a href=#carrier class=jump>Carrier</a>&nbsp;";  
+	echo "<a href=#groups class=jump>Groups</a>&nbsp;";
+	echo "<a href=#webform class=jump>WebForm</a>&nbsp;";  
 }    
 
 /**************************************************************/
