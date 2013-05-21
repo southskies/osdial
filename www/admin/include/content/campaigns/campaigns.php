@@ -1285,9 +1285,9 @@ if ($ADD==31) {
             
             echo "</b></center>";
             echo "</td></tr>";
-//             echo "<tr class=tabfooter2><td align=center class=no-ul colspan=2>";
-//             jump_section(1);
-//             echo "</td></tr>";
+            echo "<tr class=tabfooter2><td align=center class=no-ul colspan=2>";
+            jump_section(1);
+            echo "</td></tr>";
             echo "</table></div>&nbsp;";
             
             
