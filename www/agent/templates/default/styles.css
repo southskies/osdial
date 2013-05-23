@@ -908,6 +908,7 @@ a:visited {
 .PauseButtonOff, .ResumeButtonOff {
     background: #B5B4B4; /* Gray */
     border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
     color:#989797;
     padding:0px 17px 0px 17px;
     height:12px;
@@ -928,16 +929,17 @@ a:visited {
     background: #B5B4B4; /* Gray */
     border-radius: 5px 5px 5px 5px;
     box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
-    padding:0px 18px 0px 18px;
     color:#6F6E6E;
+    padding:0px 18px 0px 18px;
     height:12px;
     width:140px;
 }
 .DialNextButton {
     background: #BFE0B7; /* Green */
     border-radius: 5px 5px 5px 5px;
-    padding:0px 18px 0px 18px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
     color:#000;
+    padding:0px 18px 0px 18px;
     height:12px;
     width:140px;
 }
@@ -945,6 +947,7 @@ a:visited {
     background: #B5B4B4; /* Yellow */
     background: -webkit-linear-gradient(top, #E8E5C0, #FFFCD3);
     background: -moz-linear-gradient(top, #E8E5C0, #FFFCD3);
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
     border-radius: 5px 5px 5px 5px;
     color:#000;
     padding:0px 32px 0px 32px;
@@ -955,6 +958,7 @@ a:visited {
     background: #B5B4B4; /* Yellow */
     background: -webkit-linear-gradient(top, #E8E5C0, #FFFCD3);
     background: -moz-linear-gradient(top, #E8E5C0, #FFFCD3);
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
     border-radius: 5px 5px 5px 5px;
     color:#000;
 /*     padding:0px 12px 0px 12px; */
@@ -975,6 +979,7 @@ a:visited {
 .RecordingButtonStartOff {
     background: #B5B4B4; /* Gray */
     border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
     color:#000;
 /*     padding:0px 12px 0px 12px; */
     height:12px;
@@ -1002,6 +1007,7 @@ a:visited {
     background: -webkit-linear-gradient(top, #B65050, #FF7070); /* Orange */
     background: -moz-linear-gradient(top, #B65050, #FF7070);
     border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
     padding:0px 25px 0px 25px;
     color:#000;
     height:12px;
@@ -1012,6 +1018,7 @@ a:visited {
     background: -webkit-linear-gradient(top, #E8E5C0, #FFFCD3);
     background: -moz-linear-gradient(top, #E8E5C0, #FFFCD3);
     border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
     color:#000;
     padding:0px 32px 0px 32px;
     height:12px;
@@ -1020,6 +1027,7 @@ a:visited {
 .WebFormButtonOff {
     background: #B5B4B4; /* Gray */
     border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
     color:#6F6E6E;
     padding:0px 32px 0px 32px;
     height:12px;
@@ -1030,6 +1038,7 @@ a:visited {
     background: -webkit-linear-gradient(top, #E8E5C0, #FFFCD3);
     background: -moz-linear-gradient(top, #E8E5C0, #FFFCD3);
     border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
     color:#000;
     padding:0px 30px 0px 30px;
     height:12px;
@@ -1038,6 +1047,7 @@ a:visited {
 .ParkButtonOff {
     background: #B5B4B4; /* Gray */
     border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
     color:#6F6E6E;
     padding:0px 40px 0px 40px;
     height:12px;
@@ -1048,6 +1058,7 @@ a:visited {
     background: -webkit-linear-gradient(top, #E8E5C0, #FFFCD3);
     background: -moz-linear-gradient(top, #E8E5C0, #FFFCD3);
     border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
     color:#000;
     padding:0px 5px 0px 5px;
     height:12px;
@@ -1056,6 +1067,7 @@ a:visited {
 .XferButtonOff {
     background: #B5B4B4; /* Gray */
     border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
     color:#6F6E6E;
     padding:0px 8px 0px 8px;
     height:12px;
@@ -1065,6 +1077,7 @@ a:visited {
     background: -webkit-linear-gradient(top, #E8E5C0, #FFFCD3);
     background: -moz-linear-gradient(top, #E8E5C0, #FFFCD3);
     border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
     color:#000;
     padding:0px 5px 0px 5px;
     height:12px;
@@ -1074,7 +1087,7 @@ a:visited {
     background: -webkit-linear-gradient(top, #E8E5C0, #FFFCD3); /* Yellow */
     background: -moz-linear-gradient(top, #E8E5C0, #FFFCD3);
     border-radius: 5px 5px 5px 5px;
-    box-shadow: rgba(0,0,0,0.2) 1px 1px 1px 2px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
     padding:2px 5px 2px 5px;
     color:#000;
     height:12px;
@@ -1084,7 +1097,7 @@ a:visited {
     background-image:-webkit-gradient(linear, top, bottom, color-stop(0.0,#E9E9E9 ), color-stop(0.5,#C5C5C5));
     background-image:-moz-linear-gradient(top, #E9E9E9, #C5C5C5);
     border-radius: 10px 10px 10px 10px;
-    border-style: thin outset gray;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
     font-size:7pt;
     padding: 2px;
     width:20px;

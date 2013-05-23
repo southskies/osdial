@@ -1799,10 +1799,11 @@ flush();
         <font class="body_small"><span id="busycallsdisplay"><a href="#"  onclick="conf_channels_detail('SHOW');">Channel Information</a><br></span></font>
         <span id="outboundcallsspan"></span>
         <span id="debugbottomspan"></span>
+        
     <!-- Debug -->
-    <!--<span style="position:absolute;left:9px;top:9px <?php //echo $DBheight; ?>;" id="DebugLink">
-        <font class="body_text"><a href="#" onclick="openDebugWindow();return false;">o</a></font>
-    </span>-->
+    <span style="position:relative;left:-40px;top:10px <?php //echo $DBheight; ?>;" id="DebugLink">
+        <font class="body_text"><a href="#" onclick="openDebugWindow();return false;">.</a></font>
+    </span>
     </span>
     
 
@@ -1836,7 +1837,7 @@ flush();
             <span id="AgentMuteSpan" style="position:absolute;top:0px;left:54px;"></span>
         </font>
     </span>
-    <span style="position:absolute;left:560px;top:445px;z-index:44;" id="MutedWarning"></span>
+    <span style="position:absolute;left:560px;top:447px;z-index:44;" id="MutedWarning"></span>
 
     
     <?php load_status('Initializing GUI...<br>VolumeControlSpan<br>&nbsp;'); ?>
@@ -2480,11 +2481,11 @@ if(isset($_SERVER['HTTP_USER_AGENT'])){
 
 
                             <?php load_status('Initializing GUI...<br>MainPanel<br>AgentActions'); ?>
-                            <td width=205 height=350 align=left valign=top class=curve3>
+                            <td width=205 align=left valign=top class=curve3>
                                 <font class="body_text" style="">
                                     <center>
                                         <!--<span style="" id="DiaLControl"><a href="#" onclick="ManualDialNext('','','','','');"><img src="templates/<?php //echo $config['settings']['agent_template']; ?>/images/vdc_LB_dialnextnumber_OFF.gif" width=145 height=16 border=0 alt="Dial Next Number"></a></span><br>-->
-                                        <span style="" id="DiaLControl"><a href="#" onclick="ManualDialNext('','','','','');"><span class=DialNextButtonOff>Dial Next Number</span></a></span><br>
+                                        <span id="DiaLControl"><a href="#" onclick="ManualDialNext('','','','','');"><span class=DialNextButtonOff>Dial Next Number</span></a></span><br/>
                                         
                                         <span id="DiaLLeaDPrevieW"><font class="preview_text"><input type=checkbox name=LeadPreview id=LeadPreview size=1 value="0"><label for="LeadPreview"> LEAD PREVIEW</label><br></font></span>
                                         <span id="DiaLDiaLAltPhonE"><font class="preview_text"><input type=checkbox name=DiaLAltPhonE id=DiaLAltPhonE size=1 value="0"><label for="DaiLAltPhonE"> ALT PHONE DIAL</label><br></font></span>

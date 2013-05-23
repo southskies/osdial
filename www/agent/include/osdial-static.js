@@ -1589,7 +1589,7 @@
 			if (inbound_man > 0) {
 				auto_dial_level=starting_dial_level;
 // 				document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADpause','NEW_ID');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_pause.gif\" width=70 height=18 border=0 alt=\" Pause \"></a><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"></a><BR><a href=\"#\" onclick=\"ManualDialNext('','','','','','0');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\"></a>";
-                document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADpause','NEW_ID');\"><span class=PauseButton>Pause</span></a><span class=ResumeButtonOff>Resume</span></a><BR><a href=\"#\" onclick=\"ManualDialNext('','','','','','0');\"><span class=DialNextButton>Dial Next Number</span></a>";
+                document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADpause','NEW_ID');\"><span class=PauseButton>Pause</span></a><span class=ResumeButtonOff>Resume</span></a><font size=-5><br><br/></font><a href=\"#\" onclick=\"ManualDialNext('','','','','','0');\"><span class=DialNextButton>Dial Next Number</span></a>";
 			} else {
 				document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML_ready;
 			}
@@ -1602,7 +1602,7 @@
 			if (inbound_man > 0) {
 				auto_dial_level=starting_dial_level;
 // 				document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume.gif\" width=70 height=18 border=0 alt=\"Resume\"></a><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
-                document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><span class=PauseButtonOff>Pause</span><span class=ResumeButton>Resume</span></a><BR><span class=DialNextButtonOff>Dial Next Number</span>";
+                document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><span class=PauseButtonOff>Pause</span><span class=ResumeButton>Resume</span></a><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
 			} else {
 				document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML;
 			}
@@ -1901,7 +1901,7 @@
 								if (inbound_man > 0) {
 // 									document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
                                     
-                                    document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><span class=ResumeButtonOff>Resume</span><BR><span class=DialNextOff>Dial Next Number</span>";
+                                    document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><span class=ResumeButtonOff>Resume</span><font size=-5><font size=-5><br><br/></font></font><span class=DialNextOff>Dial Next Number</span>";
 								} else {
 									document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML_OFF;
 								}
@@ -1914,7 +1914,7 @@
 					document.getElementById("MainStatuSSpan").innerHTML = '';
 					if (inbound_man > 0) {
 // 						document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
-                        document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><span class=ResumeButtonOff>Resume</span><BR><span class=DialNextButtonOff>Dial Next Number</span>";
+                        document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><span class=ResumeButtonOff>Resume</span><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
 					} else {
 						document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML_OFF;
 					}
@@ -3479,7 +3479,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			} else {
 				if (inbound_man > 0) {
 // 					document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume.gif\" width=70 height=18 border=0 alt=\"Resume\"></a><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
-                    document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><span class=ResumeButton>Resume</span></a><BR><span class=DialNextButtonOff>Dial Next Number</span>";
+                    document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><span class=ResumeButton>Resume</span></a><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
 					if (manual_dial_preview == 1) {
 						buildDiv('DiaLLeaDPrevieW');
 					}
@@ -3732,7 +3732,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			AutoDial_ReSume_PauSe('VDADpause','NEW_ID');
 
 // 			document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
-            document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><span class=ResumeButtonOff>Resume</span><BR><span class=DialNextButtonOff>Dial Next Number</span>";
+            document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><span class=ResumeButtonOff>Resume</span><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
 		} else {
 // 			document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
             document.getElementById("DiaLControl").innerHTML = "<span class=DialNextButtonOff>Dial Next Number</span>";
@@ -3819,7 +3819,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 							if (inbound_man > 0) {
 								auto_dial_level=starting_dial_level;
 // 								document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume.gif\" width=70 height=18 border=0 alt=\"Resume\"></a><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
-                                document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><span class=ResumeButton>Resume</span></a><BR><span class=DialNextButtonOff>Dial Next Number</span>";
+                                document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><span class=ResumeButton>Resume</span></a><BR><br/><span class=DialNextButtonOff>Dial Next Number</span>";
 							} else {
 								document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML;
 							}
@@ -4097,7 +4097,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			if (inbound_man > 0) {
 				auto_dial_level=starting_dial_level;
 // 				document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
-                document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><span class=ResumeButtonOff>Resume</span><BR><span class=DialNextButtonOff>Dial Next Number</span>";
+                document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><span class=ResumeButtonOff>Resume</span><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
 			} else {
 // 				document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
                 document.getElementById("DiaLControl").innerHTML = "<span class=DialNextButtonOff>Dial Next Number</span>";
@@ -4355,7 +4355,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 							if (inbound_man > 0) {
 // 								document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
-                                document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause<span class=ResumeButtonOff>Resume</span><BR><span class=DialNextButtonOff>Dial Next Number</span>";
+                                document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause<span class=ResumeButtonOff>Resume</span><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
 							} else {
 								document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML_OFF;
 							}
@@ -6462,7 +6462,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 					document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML_OFF;
 // 					if (inbound_man > 0) document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
 // 					WebFormRefresH();
-                    if (inbound_man > 0) document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause<span class=ResumeButtonOff>Resume</span><BR><span class=DialNextButtonOff>Dial Next Number</span>";
+                    if (inbound_man > 0) document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause<span class=ResumeButtonOff>Resume</span><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
                     WebFormRefresH();
 					if (campaign_recording == 'ALLCALLS' || campaign_recording == 'ALLFORCE') all_record = 'YES';
 					if (view_scripts == 1 && CalL_ScripT_id.length > 0) {
