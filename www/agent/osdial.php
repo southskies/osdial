@@ -1836,7 +1836,7 @@ flush();
             <span id="AgentMuteSpan" style="position:absolute;top:0px;left:54px;"></span>
         </font>
     </span>
-    <span style="position:absolute;left:520px;top:455px;z-index:44;" id="MutedWarning"></span>
+    <span style="position:absolute;left:560px;top:445px;z-index:44;" id="MutedWarning"></span>
 
     
     <?php load_status('Initializing GUI...<br>VolumeControlSpan<br>&nbsp;'); ?>
@@ -1957,10 +1957,10 @@ flush();
                             
     <?php load_status('Initializing GUI...<br>HotKeyEntriesBox<br>&nbsp;'); ?>
     <!-- Disposition Hot Keys Window -->
-    <span style="position:absolute;left:20;top:415px;width:490px;z-index:24;visibility:hidden;" id="HotKeyEntriesBox">
+    <span style="position:absolute;left:5;top:415px;width:530px;z-index:24;visibility:hidden;" id="HotKeyEntriesBox">
         <table class=hotkeywindow frame=box bgcolor="<?php echo $hotkey_bg1; ?>" height=70 align=center>
             <tr bgcolor="<?php echo $hotkey_bg2; ?>">
-                <td colspan=7><font class="sh_text"> Disposition Hot Keys: </font><font class="body_small">Press number for automatic hangup and disposition.</font></td>
+                <td align=center colspan=7 width=530><font class="sh_text">Disposition Hot Keys: </font><font class="body_small">Press a number for automatic hangup and disposition.</font></td>
             </tr>
             <tr>
                 <td width="5">&nbsp;</td>
@@ -2483,7 +2483,7 @@ if(isset($_SERVER['HTTP_USER_AGENT'])){
                             <td width=205 height=350 align=left valign=top class=curve3>
                                 <font class="body_text" style="">
                                     <center>
-                                        <!--<span style="" id="DiaLControl"><a href="#" onclick="ManualDialNext('','','','','');"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_LB_dialnextnumber_OFF.gif" width=145 height=16 border=0 alt="Dial Next Number"></a></span><br>-->
+                                        <!--<span style="" id="DiaLControl"><a href="#" onclick="ManualDialNext('','','','','');"><img src="templates/<?php //echo $config['settings']['agent_template']; ?>/images/vdc_LB_dialnextnumber_OFF.gif" width=145 height=16 border=0 alt="Dial Next Number"></a></span><br>-->
                                         <span style="" id="DiaLControl"><a href="#" onclick="ManualDialNext('','','','','');"><span class=DialNextButtonOff>Dial Next Number</span></a></span><br>
                                         
                                         <span id="DiaLLeaDPrevieW"><font class="preview_text"><input type=checkbox name=LeadPreview id=LeadPreview size=1 value="0"><label for="LeadPreview"> LEAD PREVIEW</label><br></font></span>
