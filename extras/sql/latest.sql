@@ -962,7 +962,7 @@ CREATE TABLE `osdial_log` (
 );
 
 CREATE TABLE `osdial_manager` (
-  `man_id` int(9) unsigned NOT NULL,
+  `man_id` int(9) unsigned NOT NULL AUTO_INCREMENT,
   `uniqueid` varchar(20) NOT NULL DEFAULT '',
   `entry_date` datetime DEFAULT NULL,
   `status` enum('NEW','QUEUE','SENT','UPDATED','DEAD') DEFAULT NULL,
