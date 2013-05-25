@@ -701,6 +701,13 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
 
 
                 ##### grab the campaign-specific HotKey statuses that can be used for dispositioning by an agent
+                $stmt=sprintf("SELECT count(*) FROM osdial_campaign_hotkeys WHERE selectable='Y' AND status!='NEW' AND campaign_id='%s' ORDER BY hotkey LIMIT 9;",mres($VD_campaign));
+                $rslt=mysql_query($stmt, $link);
+                $row=mysql_fetch_row($rslt);
+                $tothotkeys=$row[0];
+                $maxHKacols=round(($tothotkeys/2),0,PHP_ROUND_HALF_UP);
+
+                if ($DB) echo "$stmt\n";
                 $stmt=sprintf("SELECT hotkey,status,status_name,xfer_exten FROM osdial_campaign_hotkeys WHERE selectable='Y' AND status!='NEW' AND campaign_id='%s' ORDER BY hotkey LIMIT 9;",mres($VD_campaign));
                 $rslt=mysql_query($stmt, $link);
                 if ($DB) echo "$stmt\n";
@@ -708,7 +715,6 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
                 $w=0;
                 $HKboxA='';
                 $HKboxB='';
-                $HKboxC='';
                 while ($w < $HK_statuses_camp) {
                     $row=mysql_fetch_row($rslt);
                     $HKhotkey[$w] = $row[0];
@@ -719,9 +725,8 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
                     $HKstatuses .= sprintf("'%s',",mres($HKstatus[$w]));
                     $HKstatusnames .= sprintf("'%s',",mres($HKstatus_name[$w]));
                     $HKxferextens .= sprintf("'%s',",mres($HKxfer_exten[$w]));
-                    if ($w < 3) $HKboxA .= " <font class=\"skb_text\">$HKhotkey[$w]</font> - $HKstatus[$w] - $HKstatus_name[$w]<br>";
-                    if ($w >= 3 and $w < 6) $HKboxB .= " <font class=\"skb_text\">$HKhotkey[$w]</font> - $HKstatus[$w] - $HKstatus_name[$w]<br>";
-                    if ($w >= 6) $HKboxC .= " <font class=\"skb_text\">$HKhotkey[$w]</font> - $HKstatus[$w] - $HKstatus_name[$w]<br>";
+                    if ($w < $maxHKacols) $HKboxA .= "&nbsp;&nbsp;<span class=hotkeyitem onclick=\"HotKeyDispo(" . $HKhotkey[$w] . ");return false;\"><span class=\"skb_text\">" . $HKhotkey[$w] . "</span><div style=\"width:55px;display:inline-block;overflow:hidden;white-space:nowrap;\">&nbsp;" . $HKstatus[$w] . "</div><span class=\"font1\" style=\"overflow:hidden;white-space:nowrap;\"> - " . $HKstatus_name[$w] . "</span></span><br/>";
+                    if ($w >= $maxHKacols) $HKboxB .= "&nbsp;&nbsp;<span class=hotkeyitem onclick=\"HotKeyDispo(" . $HKhotkey[$w] . ");return false;\"><span class=\"skb_text\">" . $HKhotkey[$w] . "</span><div style=\"width:55px;display:inline-block;overflow:hidden;white-space:nowrap;\">&nbsp;" . $HKstatus[$w] . "</div><span class=\"font1\" style=\"overflow:hidden;white-space:nowrap;\"> - " . $HKstatus_name[$w] . "</span></span><br/>";
                     $w++;
                 }
                 $HKhotkeys = rtrim($HKhotkeys, ','); 
@@ -1850,7 +1855,7 @@ flush();
     
 
     <!-- Preview Force-Dial Timout -->
-    <font id="PreviewFDTimeSpan" style="font-size:35pt; font-weight: bold; color: <?php echo $forcedial_fc; ?>; position:absolute;left:325px;top:380px;z-index:22;"></font>
+    <font id="PreviewFDTimeSpan" style="font-size:35pt; font-weight: bold; color: <?php echo $forcedial_fc; ?>; position:absolute;left:325px;top:380px;z-index:25;"></font>
     
 
     <?php load_status('Initializing GUI...<br>CallBacKsLisTBox<br>&nbsp;'); ?>
@@ -1958,31 +1963,22 @@ flush();
                             
     <?php load_status('Initializing GUI...<br>HotKeyEntriesBox<br>&nbsp;'); ?>
     <!-- Disposition Hot Keys Window -->
-    <span style="position:absolute;left:5;top:415px;width:530px;z-index:24;visibility:hidden;" id="HotKeyEntriesBox">
-        <table class=hotkeywindow frame=box bgcolor="<?php echo $hotkey_bg1; ?>" height=70 align=center>
+    <span style="position:absolute;left:190px;top:415px;width:510px;z-index:24;visibility:hidden;" id="HotKeyEntriesBox">
+        <table class=hotkeywindow frame=box bgcolor="<?php echo $hotkey_bg1; ?>" height=70 align=center cellspacing=1 cellpadding=1>
             <tr bgcolor="<?php echo $hotkey_bg2; ?>">
-                <td align=center colspan=7 width=530><font class="sh_text">Disposition Hot Keys: </font><font class="body_small">Press a number for automatic hangup and disposition.</font></td>
+                <td align=center colspan=2 width=530><font class="sh_text">Disposition Hot Keys: </font><font class="font1">Press a number for automatic hangup and disposition.</font></td>
             </tr>
             <tr>
-                <td width="5">&nbsp;</td>
-                <td>
-                    <font class="sk_text">
+                <td valign=top width=50%>
+                    <font class="sk_text" style="overflow:hidden;white-space:nowrap;">
                         <span id="HotKeyBoxA"><?php echo $HKboxA; ?></span>
                     </font>
                 </td>
-                <td width="10">&nbsp;</td>
-                <td>
-                    <font class="sk_text">
+                <td valign=top width=50%>
+                    <font class="sk_text" style="overflow:hidden;white-space:nowrap;">
                         <span id="HotKeyBoxB"><?php echo $HKboxB; ?></span>
                     </font>
                 </td>
-                <td width="10">&nbsp;</td>
-                <td>
-                    <font class="sk_text">
-                        <span id="HotKeyBoxC"><?php echo $HKboxC; ?></span>
-                    </font>
-                </td>
-                <td width="5">&nbsp;</td>
             </tr>
         </table>
     </span>
