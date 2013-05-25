@@ -11,7 +11,7 @@
 	</tr>
 	<tr>
 		<td>
-			<p>This software is protected under US and international copyright law. Copyright &copy; 2009 Call Center Service Group, LC. All rights reserved. OSDial is distributed under the Affero General Public License (AGPL).</p>
+			<p>This software is protected under US and international copyright law. Copyright &copy; 2009-2013 Call Center Service Group, LC. All rights reserved. OSDial is distributed under the Affero General Public License (AGPL).</p>
 			<p>The AGPL differs from the GPL in how it views distribution over network, and as in our case, <b>hosted service of OSDial.</b> Basically you cannot remove the 'Get OSDial here' links. 
 			If you wish to rebrand OSDial or run a hosting service you can contact <a href='http://callcentersg.com/contact.php'>Call Center Service Group, LC</a>.</p>
 			<p>The full version of the AGPL is available below.</p>
@@ -20,8 +20,8 @@
 	<tr>
 		<td>
             <p>Portions of the OSDial Software are also copyright by the following parties:</p>
-            Copyright &copy; 2009 Lott Caskey <lottcaskey@gmail.com> LICENSE: AGPLv3<br />
-            Copyright &copy; 2009 Steve Szmidt <info@callcentersg.com> LICENSE: AGPLv3<br />
+            Copyright &copy; 2009-2013 Lott Caskey <lottcaskey@gmail.com> LICENSE: AGPLv3<br />
+            Copyright &copy; 2009-2013 Steve Szmidt <info@callcentersg.com> LICENSE: AGPLv3<br />
             Copyright &copy; 2008 Matt Florell <vicidial@gmail.com> LICENSE: AGPLv2<br />
             Copyright &copy; 2008 Joe Johnson <vicidial@gmail.com> LICENSE: AGPLv2<br />
         </td>
