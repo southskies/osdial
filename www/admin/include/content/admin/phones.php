@@ -448,7 +448,7 @@ if ($ADD==10000000000) {
     $rslt=mysql_query($stmt, $link);
     $phones_to_print = mysql_num_rows($rslt);
 
-    echo "<center><br><font class=top_header color=$default_text size=+1>PHONES<br><br>\n";
+    echo "<center><br><font class=top_header color=$default_text size=+1>PHONES</font><br><br>\n";
     echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1>\n";
     echo "  <tr class=tabheader>";
     if ($LOG['multicomp_admin'] > 0) {
