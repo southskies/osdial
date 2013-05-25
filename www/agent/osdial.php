@@ -1786,7 +1786,7 @@ flush();
     <!--<span style="position:absolute;left:-58px;top:430px;z-index:12;visibility:hidden;" id="ManuaLDiaLButtons">-->
     <span style="position:relative;left:-58px;top:448px;z-index:12;visibility:hidden;" id="ManuaLDiaLButtons">
         <font class="body_text">
-            <span id="MDstatusSpan"><span id="MDHopperListLink" style="position:relative;top:-20px;left:125px;<?php if ($allow_md_hopperlist!='Y') echo "visibility:hidden;"; ?>"><a href="#" onclick="MDHopperListCheck();return false;">HOPPER LIST</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('NO');return false;">MANUAL DIAL</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('FAST');return false;">FAST DIAL</a><br>
+            <span id="MDstatusSpan"><span id="MDHopperListLink" style="position:relative;top:-19px;left:165px;<?php if ($allow_md_hopperlist!='Y') echo "visibility:hidden;"; ?>"><a href="#" onclick="MDHopperListCheck();return false;">HOPPER LIST</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('NO');return false;">MANUAL DIAL</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('FAST');return false;">FAST DIAL</a><br>
         </font>
     </span>
 
@@ -1813,9 +1813,9 @@ flush();
     
 
     <!-- Pause Code Link -->
-    <span style="position:absolute;left:50px;top:<?php echo ($CBheight-3); ?>px;z-index:14;visibility:hidden;" id="PauseCodeButtons">
+    <span style="position:absolute;left:35px;top:<?php echo ($CBheight-3); ?>px;z-index:14;visibility:hidden;" id="PauseCodeButtons">
         <font class="body_text">
-            <span id="PauseCodeLinkSpan"><a href="#" onclick="PauseCodeSelectContent_create();return false;">ENTER A PAUSE CODE</a></span><br>
+            <span id="PauseCodeLinkSpan"><a href="#" onclick="PauseCodeSelectContent_create();return false;">PAUSE CODE</a></span><br>
         </font>
     </span>
 
