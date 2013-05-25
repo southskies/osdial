@@ -288,9 +288,9 @@
 					valueLabelDiv.style.display = 'block';
 					valueLabelDiv.style.opacity = '1.0';
 					if (this.getAttribute('selectBoxForce')) {
-						this.onfocus = function() {
-							this.blur();
-						}
+						//this.onfocus = function() {
+						//	this.blur();
+						//}
 						valueLabelDiv.onclick = function() {
 							var valueLabelId = this.id.replace(/[^\d]/g,'');
 							var arrowsel = document.getElementById('arrowSelectBox' + valueLabelId);
@@ -374,6 +374,7 @@
 
 			var numId2 = this.parentNode.id.replace(/[^\d]/g,'');
 			var sboptions = document.getElementById('selectBoxOptions' + numId2);
+			var valueLabelDiv = document.getElementById('selectBoxValueLabel' + numId2);
 			if (key == 9) {
 				if (!sboptions.style.display=='inline')
 					selectBox_open(sboptions);
@@ -386,22 +387,95 @@
 					curbox.style.color='';
 					curbox.style.fontWeight='normal';
 					curbox = activeOption;
-					var optIds = curbox.id.replace(/[^\d]+/g,'|').split('|');
-					curopt = document.getElementById(optIds[0] + 'optionValue' + optIds[1]);
-					document.getElementById('selectBox' + numId2).getElementsByTagName('INPUT')[0].value=curopt.innerHTML;
+					var optIds;
+					if (typeof(curbox)!='undefined') {
+						optIds = curbox.id.replace(/[^\d]+/g,'|').split('|');
+						curopt = document.getElementById(optIds[0] + 'optionValue' + optIds[1]);
+						document.getElementById('selectBox' + numId2).getElementsByTagName('INPUT')[0].value=curopt.innerHTML;
+					}
 					evt.cancel=true;
 					evt.returnValue=false;
-					sboptions.scrollTop = curbox.offsetTop;
-					curbox.style.backgroundColor='#316AC5';
-					curbox.style.color='#FFF';
-					curbox.style.fontWeight='bold';
-					document.getElementById('selectBox' + numId2).getElementsByTagName('INPUT')[0].blur();
-					valueLabelDiv.innerHTML = curbox.innerHTML;
-					valueLabelDiv.style.width = curbox.offsetWidth - document.getElementById('arrowSelectBox' + numId2).offsetWidth - 3 + 'px';
-					valueLabelDiv.style.fontWeight = 'normal';
-					valueLabelDiv.style.display = 'block';
-					valueLabelDiv.style.opacity = '1.0';
+					if (typeof(curbox)!='undefined') {
+						sboptions.scrollTop = curbox.offsetTop;
+						curbox.style.backgroundColor='#316AC5';
+						curbox.style.color='#FFF';
+						curbox.style.fontWeight='bold';
+					}
+					if (typeof(curbox)!='undefined') {
+						valueLabelDiv.innerHTML = curbox.innerHTML;
+						valueLabelDiv.style.width = curbox.offsetWidth - document.getElementById('arrowSelectBox' + numId2).offsetWidth - 3 + 'px';
+						valueLabelDiv.style.fontWeight = 'normal';
+						valueLabelDiv.style.display = 'block';
+						valueLabelDiv.style.opacity = '1.0';
+					}
+					if (sboptions.style.display=='inline')
+						selectBox_close(sboptions);
+					var nodes = document.getElementById('selectBox' + numId2).getElementsByTagName('INPUT')[0].form.querySelectorAll('select:enabled, input:enabled:not([type="hidden"]), a[href]');
+					for (var i=0; i<nodes.length; i++) {
+						if (nodes[i].name==document.getElementById('selectBox' + numId2).getElementsByTagName('INPUT')[0].name) {
+							var newi = i + 1;
+							if (newi==nodes.length) newi=0;
+							nodes[newi].focus();
+							break;
+						}
+					}
+					break;
+				}
+				if (sboptions.style.display=='inline')
 					selectBox_close(sboptions);
+				var nodes = document.getElementById('selectBox' + numId2).getElementsByTagName('INPUT')[0].form.querySelectorAll('select:enabled, input:enabled:not([type="hidden"]), a[href]');
+				for (var i=0; i<nodes.length; i++) {
+					if (nodes[i].name==document.getElementById('selectBox' + numId2).getElementsByTagName('INPUT')[0].name) {
+						var newi = i + 1;
+						if (newi==nodes.length) newi=0;
+						nodes[newi].focus();
+						break;
+					}
+				}
+			} else if (key == 35) {
+				if (!sboptions.style.display=='inline')
+					selectBox_open(sboptions);
+				var selfound=0;
+				var curvalue = document.getElementById('selectBox' + numId2).getElementsByTagName('INPUT')[0].value;
+				for (var no=0;no<sboptions.children.length;no++) {
+					var curopt = document.getElementById(numId2 + 'optionValue' + no);
+					var curbox = document.getElementById(numId2 + 'optionBox' + no);
+					curbox.style.backgroundColor='';
+					curbox.style.color='';
+					curbox.style.fontWeight='normal';
+					curbox = activeOption;
+					var optIds;
+					if (typeof(curbox)!='undefined') {
+						optIds = curbox.id.replace(/[^\d]+/g,'|').split('|');
+						curopt = document.getElementById(optIds[0] + 'optionValue' + optIds[1]);
+						document.getElementById('selectBox' + numId2).getElementsByTagName('INPUT')[0].value=curopt.innerHTML;
+					}
+					evt.cancel=true;
+					evt.returnValue=false;
+					if (typeof(curbox)!='undefined') {
+						sboptions.scrollTop = curbox.offsetTop;
+						curbox.style.backgroundColor='#316AC5';
+						curbox.style.color='#FFF';
+						curbox.style.fontWeight='bold';
+					}
+					if (typeof(curbox)!='undefined') {
+						valueLabelDiv.innerHTML = curbox.innerHTML;
+						valueLabelDiv.style.width = curbox.offsetWidth - document.getElementById('arrowSelectBox' + numId2).offsetWidth - 3 + 'px';
+						valueLabelDiv.style.fontWeight = 'normal';
+						valueLabelDiv.style.display = 'block';
+						valueLabelDiv.style.opacity = '1.0';
+					}
+					if (sboptions.style.display=='inline')
+						selectBox_close(sboptions);
+					var nodes = document.getElementById('selectBox' + numId2).getElementsByTagName('INPUT')[0].form.querySelectorAll('select:enabled, input:enabled:not([type="hidden"]), a[href]');
+					for (var i=0; i<nodes.length; i++) {
+						if (nodes[i].name==document.getElementById('selectBox' + numId2).getElementsByTagName('INPUT')[0].name) {
+							var newi = i + 1;
+							if (newi==nodes.length) newi=0;
+							nodes[newi].focus();
+							break;
+						}
+					}
 					break;
 				}
 				if (sboptions.style.display=='inline')
@@ -420,12 +494,13 @@
 						selfound++;
 						evt.cancel=true;
 						evt.returnValue=false;
-						iput.blur();
+						//iput.blur();
 						valueLabelDiv.innerHTML = curbox.innerHTML;
 						valueLabelDiv.style.width = curbox.offsetWidth - document.getElementById('arrowSelectBox' + numId2).offsetWidth - 3 + 'px';
 						valueLabelDiv.style.fontWeight = 'normal';
 						valueLabelDiv.style.display = 'block';
 						valueLabelDiv.style.opacity = '1.0';
+						//iput.focus();
 						selectBox_close(sboptions);
 						break;
 					}
@@ -433,17 +508,33 @@
 				if (selfound==0) {
 					evt.cancel=true;
 					evt.returnValue=false;
-					iput.blur();
+					//iput.blur();
 					valueLabelDiv.innerHTML = iput.value;
 					valueLabelDiv.style.width = iput.offsetWidth - 3 + 'px';
 					valueLabelDiv.style.fontWeight = 'normal';
 					valueLabelDiv.style.display = 'block';
 					valueLabelDiv.style.opacity = '1.0';
+					//iput.focus();
 					selectBox_close(sboptions);
 				}
-				return false;
 				if (sboptions.style.display=='inline')
 					selectBox_close(sboptions);
+				return false;
+			} else {
+				if (this.getAttribute('selectBoxForce')) {
+					evt.cancel=true;
+					evt.returnValue=false;
+					if (document.getElementById('selectBox' + numId2).getElementsByTagName('INPUT')[0].value=="") {
+						if (this.getAttribute('selectBoxLabel')) {
+							valueLabelDiv.innerHTML = this.getAttribute('selectBoxLabel');
+							valueLabelDiv.style.width = document.getElementById('selectBox' + numId2).getElementsByTagName('INPUT')[0].offsetWidth - 3 + 'px';
+							valueLabelDiv.style.fontWeight = 'normal';
+							valueLabelDiv.style.display = 'block';
+							valueLabelDiv.style.opacity = '1.0';
+						}
+					}
+					return false;
+				}
 			}
 		}
 
@@ -459,7 +550,7 @@
 			var sboptions = document.getElementById('selectBoxOptions' + numId2);
 			var valueLabelDiv = document.getElementById('selectBoxValueLabel' + numId2);
 
-			if (key != 9) {
+			if (key != 9 && key != 35) {
 				selectBox_open(this);
 				var selfound=0;
 				for (var no=0;no<sboptions.children.length;no++) {
@@ -510,7 +601,7 @@
 				if (selfound==0) {
 					var curopt = document.getElementById(numId2 + 'optionValue0');
 					var curbox = document.getElementById(numId2 + 'optionBox0');
-					document.getElementById('selectBox' + numId2).getElementsByTagName('INPUT')[0].value=curopt.innerHTML;
+					//document.getElementById('selectBox' + numId2).getElementsByTagName('INPUT')[0].value=curopt.innerHTML;
 					sboptions.scrollTop = curbox.offsetTop;
 					activeOption = curbox;
 					curbox.style.backgroundColor='#316AC5';
@@ -648,9 +739,22 @@
 					}
 				}
 				if (curvalue.length==0) {
-					var curbox = document.getElementById(numId2 + 'optionBox0');
-					sboptions.scrollTop = curbox.offsetTop;
-					valueLabelDiv.style.display = 'none';
+					if (this.getAttribute('selectBoxForce')) {
+						evt.cancel=true;
+						evt.returnValue=false;
+						if (this.getAttribute('selectBoxLabel')) {
+							valueLabelDiv.innerHTML = this.getAttribute('selectBoxLabel');
+							valueLabelDiv.style.width = document.getElementById('selectBox' + numId2).getElementsByTagName('INPUT')[0].offsetWidth - 3 + 'px';
+							valueLabelDiv.style.fontWeight = 'normal';
+							valueLabelDiv.style.display = 'block';
+							valueLabelDiv.style.opacity = '1.0';
+						}
+						return false;
+					} else {
+						var curbox = document.getElementById(numId2 + 'optionBox0');
+						sboptions.scrollTop = curbox.offsetTop;
+						valueLabelDiv.style.display = 'none';
+					}
 				}
 			}
 		}
@@ -683,9 +787,9 @@
 		div.appendChild(optionDiv);
 
 		if (dest.getAttribute('selectBoxForce')) {
-			dest.onfocus = function() {
-				this.blur();
-			}
+			//dest.onfocus = function() {
+			//	this.blur();
+			//}
 			valueLabelDiv.onclick = function() {
 				var valueLabelId = this.id.replace(/[^\d]/g,'');
 				var arrowsel = document.getElementById('arrowSelectBox' + valueLabelId);
