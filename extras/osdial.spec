@@ -434,6 +434,7 @@ Requires:       perl-Unicode-Map
 Requires:       perl-Jcode
 Requires:       perl-OLE-Storage_Lite
 Requires:       perl-Proc-ProcessTable
+Requires:       perl-IO-Interface
 Requires:       perl-IO-stringy
 Requires:       perl-IO-Socket-Multicast
 Requires:       perl-Spreadsheet-ParseExcel
@@ -730,6 +731,9 @@ cd ..
 %{__cp} extras/osdial_resource_send.init %{buildroot}%{_sysconfdir}/init.d/osdial_resource_send
 %{__cp} extras/osdial_resource_listen.init %{buildroot}%{_sysconfdir}/init.d/osdial_resource_listen
 %{__cp} extras/osdial-support.pub %{buildroot}%{_sysconfdir}/pki/osdial-support
+%{__mkdir_p} %{buildroot}/root/.mc
+%{__cp} extras/mc.ini %{buildroot}/root/.mc/ini
+%{__cp} extras/mc.panels.ini %{buildroot}/root/.mc/panels.ini
 %{__mkdir_p} %{buildroot}%{_sysconfdir}/cron.daily
 %{__ln_s} %{_opt}/osdial/bin/AST_ntp_update.sh %{buildroot}%{_sysconfdir}/cron.daily
 touch %{buildroot}%{_opt}/osdial/html/admin/VMnow.txt
@@ -1232,6 +1236,8 @@ if [ "$INTY" -eq 1 ]; then
         %{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
         %{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_NOTICE \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
         %{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_STRICT$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
         echo "; OSDIAL: modified" >> %{_sysconfdir}/php.ini
     fi
     [ -f "%{_opt}/osdial/.osdial-live" ] && /sbin/service httpd stop > /dev/null 2>&1 || :
@@ -1265,6 +1271,8 @@ if [ "$INTY" -eq 2 ]; then
         %{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
         %{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_NOTICE \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
         %{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_STRICT$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
+        %{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
     fi
     [ ! -f "%{_localstatedir}/www/html/index.php" ] && %{__ln_s} %{_opt}/osdial/html/index.php %{_localstatedir}/www/html/index.php || :
     # Reset running procs.
@@ -1287,6 +1295,8 @@ if [ -f "%{_sysconfdir}/php.ini" ]; then
     %{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
     %{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_NOTICE \& ~E_DEPRECATED$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
     %{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
+    %{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_STRICT$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
+    %{__perl} -pi -e "s|^error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING$|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_NOTICE \& ~E_WARNING \& ~E_STRICT|" %{_sysconfdir}/php.ini
     /sbin/service httpd restart > /dev/null 2>&1 || :
 fi
 echo -n
@@ -2565,6 +2575,8 @@ echo -n
 %defattr(644,asterisk,asterisk,755)
 %dir %attr(0755,asterisk,asterisk) %{_localstatedir}/log/osdial
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/security/limits.d/99-osdial.conf
+%attr(0644,root,root) %config(noreplace) /root/.mc/ini
+%attr(0644,root,root) %config(noreplace) /root/.mc/panels.ini
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/httpd/conf.d/osdial-archive.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/httpd/conf.d/osdial-ari.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/httpd/conf.d/osdial-psi.conf
