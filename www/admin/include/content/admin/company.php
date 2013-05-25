@@ -253,7 +253,7 @@ if ($ADD=="31comp") {
 ######################
 if ($ADD=="10comp") {
     if ($LOG["multicomp_admin"] > 0) {
-        echo "<center><br><font class=top_header color=$default_text size=+1>COMPANIES<br><br>\n";
+        echo "<center><br><font class=top_header color=$default_text size=+1>COMPANIES</font><br><br>\n";
         echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1>\n";
         echo "  <tr class=tabheader>";
         echo "    <td width=10%>ID</td>\n";
