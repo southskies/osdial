@@ -479,3 +479,22 @@ if (janGMTtmp != julGMTtmp) {
 	if (webClientGMT != nodstgmt) webClientDST=1;
 }
 document.cookie = "webClientDST=" + webClientDST + "; expires=" + cgexp;
+
+// ################################################################################
+// Return seconds as hh:mm:sec as applicable
+function sec2time (secIn) {
+    var hours   = Math.floor(secIn / 3600);
+    var minutes = Math.floor((secIn - (hours * 3600)) / 60);
+    var seconds = secIn - (hours * 3600) - (minutes * 60);
+
+    if (hours   < 10) {hours   = hours;}
+    if (minutes < 10 && hours !=0) {minutes = "0"+minutes;}
+    if (seconds < 10 && (hours!=0 || minutes !=0)) {seconds = "0"+seconds;}
+
+    var timeOut=hours+':'+minutes+':'+seconds;
+
+    if (hours==0 && minutes >0) { timeOut=minutes+':'+seconds; }
+    if (hours==0 && minutes==0) { timeOut=seconds; }
+
+    return timeOut;
+}
