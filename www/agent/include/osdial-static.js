@@ -4299,7 +4299,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 							/*document.getElementById("MainStatuSSpan").innerHTML = " Calling " + status_display_number + "&nbsp;&nbsp;<font color=" + status_bg + ">UID: " + CIDcheck + "</font> &nbsp; " + VDIC_fronter;*/ 
                             document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "</font>&nbsp;&nbsp;";
 
-							document.getElementById("RepullControl").innerHTML = "<a href=\"#\" onclick=\"RepullLeadData('all');\"><span class=ReloadDataButton>Reload Lead Data</span></a>";
+							document.getElementById("RepullControl").innerHTML = "<a href=\"#\" onclick=\"RepullLeadData('all');\"><span class=ReloadDataButton>Reload Data Using Phone1</span></a>";
 							
 // 							<img src=\"templates/" + agent_template + "/images/vdc_RPLD_on.gif\" width=145 height=16 border=0 alt=\"Repull Lead Data\"></a>";
 
@@ -6409,7 +6409,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 					document.getElementById("MainStatuSSpan").style.backgroundColor = panel_bg;
 					document.getElementById("MainStatuSSpan").innerHTML = "<font color=white>Called " + status_display_number + "</font>&nbsp;&nbsp;<font color=" + status_bg + "> UID: " + CIDcheck + "</font> &nbsp; " + VDIC_fronter; 
-					document.getElementById("RepullControl").innerHTML = "<a href=\"#\" onclick=\"RepullLeadData('all');\"><span class=ReloadDataButton>Reload Lead Data</span></a>";
+					document.getElementById("RepullControl").innerHTML = "<a href=\"#\" onclick=\"RepullLeadData('all');\"><span class=ReloadDataButton>Reload Data Using Phone1</span></a>";
 
 					if (LeaDPreVDispO == 'CALLBK') {
 						document.getElementById("CusTInfOSpaN").innerHTML = "&nbsp;<B>PREVIOUS CALLBACK</B>";
