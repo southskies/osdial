@@ -2483,7 +2483,7 @@ if ($ADD==31) {
 
         echo "<center>\n";
         echo "<br><font class=top_header color=$default_text size=+1>LIST MIXES FOR THIS CAMPAIGN &nbsp; </font>".helptag("osdial_campaigns-list_order_mix")."</font><br><br>\n";
-        echo "<table border=1 width=$section_width cellspacing=1 cellpadding=0 bgcolor=grey class=row>\n";
+        echo "<table border=0 width=$section_width cellspacing=1 cellpadding=0 bgcolor=grey class=row>\n";
 
         $stmt=sprintf("SELECT * FROM osdial_campaigns_list_mix WHERE campaign_id='%s' ORDER BY status,vcl_id;",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
