@@ -1473,9 +1473,9 @@ if ($ADD==31) {
 			$afunc='';
 			echo "<tr><td colspan=2 align=center>";
 			echo "<a name=method></a>";
-			$mode_manual_pending="dmsm=document.getElementById('DialModeSelManual');dmsm.className='selected-button';dmsm.innerHTML='PENDING<br/>';";
-			$mode_ratio_pending="dmsr=document.getElementById('DialModeSelRatio');dmsr.className='selected-button';dmsr.innerHTML='PENDING<br/>';";
-			$mode_adapt_pending="dmsa=document.getElementById('DialModeSelAdapt');dmsa.className='selected-button';dmsa.innerHTML='PENDING<br/>';";
+			$mode_manual_pending="dmsm=document.getElementById('DialModeSelManual');dmsm.className='selected-button';dmsm.innerHTML='DISPLAYED<br/>';";
+			$mode_ratio_pending="dmsr=document.getElementById('DialModeSelRatio');dmsr.className='selected-button';dmsr.innerHTML='DISPLAYED<br/>';";
+			$mode_adapt_pending="dmsa=document.getElementById('DialModeSelAdapt');dmsa.className='selected-button';dmsa.innerHTML='DISPLAYED<br/>';";
 			$mode_ratio_inactive="dmsr=document.getElementById('DialModeSelRatio');dmsr.className='inactive-button';dmsr.innerHTML='&nbsp;<br/>';";
 			$mode_manual_inactive="dmsm=document.getElementById('DialModeSelManual');dmsm.className='inactive-button';dmsm.innerHTML='&nbsp;<br/>';";
 			$mode_adapt_inactive="dmsa=document.getElementById('DialModeSelAdapt');dmsa.className='inactive-button';dmsa.innerHTML='&nbsp;<br/>';";
@@ -1483,10 +1483,10 @@ if ($ADD==31) {
 			$active_click.="dmsc=document.getElementsByName('change_mode');for (var c=0;c<dmsc.length;c++){dmsc[c].disabled=true;dmsc[c].style.color='#8F8F8F';};";
 			$active_click.="document.getElementById('DialModeSelManual').parentElement.title='';document.getElementById('DialModeSelAdapt').parentElement.title='';document.getElementById('DialModeSelRatio').parentElement.title='';";
 			$active_click.="document.forms[0].onsubmit=null;";
-			$inactive_click="dmss=document.getElementsByName('SUBMIT');for (var s=0;s<dmss.length;s++){dmss[s].disabled=true;dmss[s].style.color='#8F8F8F';dmss[s].title='DISABLED: Pending Dial Method activation, click \'Change Mode\' to activate or reselect the current ACTIVE Dial Method to discard.';};";
+			$inactive_click="dmss=document.getElementsByName('SUBMIT');for (var s=0;s<dmss.length;s++){dmss[s].disabled=true;dmss[s].style.color='#8F8F8F';dmss[s].title='DISABLED: Displayed Dial Method activation, click \'Change Mode\' to activate or reselect the current ACTIVE Dial Method to discard.';};";
 			$inactive_click.="dmsc=document.getElementsByName('change_mode');for (var c=0;c<dmsc.length;c++){dmsc[c].disabled=false;dmsc[c].style.color='#1C4754';};";
 			$inactive_click.="document.getElementById('DialModeSelManual').parentElement.title='';document.getElementById('DialModeSelAdapt').parentElement.title='';document.getElementById('DialModeSelRatio').parentElement.title='';";
-			$inactive_click.="this.parentElement.title='This Dial Method is currently PENDING, click \'Change Mode\' to activate. You may adjust the Dial Options and/or other parameters prior to activation.';";
+			$inactive_click.="this.parentElement.title='This Dial Method is currently DISPLAYED, click \'Change Mode\' to activate. You may adjust the Dial Options and/or other parameters prior to activation.';";
 			$inactive_click.="document.forms[0].onsubmit=function(){return false;};";
 			if ((OSDpreg_match('/^ADAPT/',$dial_method))) {
 				$dial_method_a_class='active-mode';
