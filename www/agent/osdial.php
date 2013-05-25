@@ -1767,8 +1767,8 @@ flush();
     <!-- Logout Link -->
     <!--<span style="position:absolute;left:1px;top:1px;z-index:30;background-image: URL('templates/<?php echo $config['settings']['agent_template']; ?>/images/loginagain-bg.png');background-repeat:no-repeat;visibility:hidden;" id="LogouTBox">-->
     <?php $AdmVer=substr($admin_version,0,3); ?>
-    <span style="position:absolute;left:1px;top:1px;z-index:100;background:white;visibility:hidden;" id="LogouTBox">
-        <div bgcolor=white class=login_again2>
+    <span style="position:absolute;top:0px;left:0px;z-index:100;background:white;visibility:hidden;" id="LogouTBox">
+        <div bgcolor=white class=login_again2 style="left:1px;top:1px;">
             <!--<div style="position:absolute;left:417px;top:280px;" id="LogouTBoxLink"></div>-->
             <div style="position:absolute;left:345px;top:218px;width:300px;align:center;" id="LogouTBoxLink"></div>
             <div style="position:absolute;left:30px;top:495px;"><img class=homepagelogo src='templates/default/images/osdial-logo.gif' height=100></div>
@@ -1781,7 +1781,7 @@ flush();
     <!--<span style="position:absolute;left:-58px;top:430px;z-index:12;visibility:hidden;" id="ManuaLDiaLButtons">-->
     <span style="position:relative;left:-58px;top:448px;z-index:12;visibility:hidden;" id="ManuaLDiaLButtons">
         <font class="body_text">
-            <span id="MDstatusSpan"><span id="MDHopperListLink" <?php if ($allow_md_hopperlist!='Y') echo "style=\"visibility:hidden;\""; ?>><a href="#" onclick="MDHopperListCheck();return false;">HOPPER LIST</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('NO');return false;">MANUAL DIAL</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('FAST');return false;">FAST DIAL</a><br>
+            <span id="MDstatusSpan"><span id="MDHopperListLink" style="position:relative;top:-20px;left:125px;<?php if ($allow_md_hopperlist!='Y') echo "visibility:hidden;"; ?>"><a href="#" onclick="MDHopperListCheck();return false;">HOPPER LIST</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('NO');return false;">MANUAL DIAL</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('FAST');return false;">FAST DIAL</a><br>
         </font>
     </span>
 

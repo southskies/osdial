@@ -6613,20 +6613,20 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 						var loop_ct=0;
 						var conv_start=0;
 						var HL_HTML = "<table width=900><tr bgcolor=" + callback_bg2 + ">"
-							+ "<td><font class=\"font1 log_title\">#</font></td>"
-							+ "<td align=\"center\"><font class=\"font1 log_title\">PRI</font></td>"
-							+ "<td align=\"center\"><font class=\"font1 log_title\">ID</font></td>"
-							+ "<td align=\"center\"><font class=\"font1 log_title\">STATUS</font></td>"
-							+ "<td align=\"center\"><font class=\"font1 log_title\">CALLS</font></td>"
-							+ "<td align=\"center\"><font class=\"font1 log_title\">LAST UPDATE</font></td>"
-							+ "<td align=\"center\"><font class=\"font1 log_title\">PHONE</font></td>"
-							+ "<td align=\"center\"><font class=\"font1 log_title\">NAME</font></td>"
-							+ "<td align=\"center\"><font class=\"font1 log_title\">CITY</font></td>"
-							+ "<td align=\"center\"><font class=\"font1 log_title\">ST</font></td>"
-							+ "<td align=\"center\"><font class=\"font1 log_title\">ZIP</font></td>"
-							+ "<td align=\"center\"><font class=\"font1 log_title\">TZ</font></td>"
-							+ "<td align=\"center\"><font class=\"font1 log_title\">VLC</font></td>"
-							+ "<td align=\"center\"><font class=\"font1 log_title\">SRC</font></td>"
+							+ "<td><font class=\"font1 table_title\">#</font></td>"
+							+ "<td align=\"center\"><font class=\"font1 table_title\">PRIORITY</font></td>"
+							+ "<td align=\"center\"><font class=\"font1 table_title\">ID</font></td>"
+							+ "<td align=\"center\"><font class=\"font1 table_title\">STATUS</font></td>"
+							+ "<td align=\"center\"><font class=\"font1 table_title\">CALLS</font></td>"
+							+ "<td align=\"center\"><font class=\"font1 table_title\">LAST UPDATE</font></td>"
+							+ "<td align=\"center\"><font class=\"font1 table_title\">PHONE</font></td>"
+							+ "<td align=\"center\"><font class=\"font1 table_title\">NAME</font></td>"
+							+ "<td align=\"center\"><font class=\"font1 table_title\">CITY</font></td>"
+							+ "<td align=\"center\"><font class=\"font1 table_title\">ST</font></td>"
+							+ "<td align=\"center\"><font class=\"font1 table_title\">ZIP</font></td>"
+							+ "<td align=\"center\"><font class=\"font1 table_title\">TZ</font></td>"
+							+ "<td align=\"center\"><font class=\"font1 table_title\">VENDOR</font></td>"
+							+ "<td align=\"center\"><font class=\"font1 table_title\">SOURCE</font></td>"
 							+"</tr>";
 						while (loop_ct < HL_calls) {
 							loop_ct++;
@@ -6667,7 +6667,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 							var HL_source_id = call_array[20];
 							HL_HTML = HL_HTML + "<tr bgcolor=\"" + row_color + "\">"
 								+ "<td nowrap align=\"right\"><font class=\"body_text\">" + loop_ct + "</font></td>"
-								+ "<td nowrap align=\"center\"><font class=\"body_text\"><a href=\"#\" onclick=\"hopper_add_priority('" + HL_id + "','1');return false;\"><b>+</b>&nbsp;</a><font class=\"body_text\">" + HL_priority + "&nbsp;<a href=\"#\" onclick=\"hopper_add_priority('" + HL_id + "','-1');return false;\"><b>-</b></a></font></td>"
+								+ "<td nowrap align=\"center\"><font class=\"body_text\"><a href=\"#\" onclick=\"hopper_add_priority('" + HL_id + "','1');return false;\"><b><span class=font2 style=\"color:red;\">+</span></b>&nbsp;</a><font class=\"body_text\">" + HL_priority + "&nbsp;<a href=\"#\" onclick=\"hopper_add_priority('" + HL_id + "','-1');return false;\"><b><span class=font2 style=\"color:red\">-</span></b></a></font></td>"
 								+ "<td nowrap align=\"right\"><font class=\"body_text\">" + HL_lead_id + "&nbsp;</font></td>"
 								+ "<td nowrap align=\"center\"><font class=\"body_text\">" + HL_lstatus + "</font></td>"
 								+ "<td nowrap align=\"right\"><font class=\"body_text\">" + HL_called_count + "&nbsp;</font></td>"
