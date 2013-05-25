@@ -520,6 +520,8 @@ if (OSDstrlen($campaigns_hh) > 1) {
         if (OSDpreg_match('/^(10|16|61)$/',$ADD)) {
             $camp_show_color=$activemenu2_color;
             $camp_show_class='rounded-menu2select';
+            $camp_addform_color=$inactivemenu2_color;
+            $camp_addform_class='rounded-menu2';
         } else {
             $camp_show_color=$inactivemenu2_color;
             $camp_show_class='rounded-menu2';
@@ -545,26 +547,34 @@ if (OSDstrlen($campaigns_hh) > 1) {
             $camp_real_color=$inactivemenu2_color;
             $camp_real_class='rounded-menu2';
         }
-        if (OSDpreg_match('/^(71|1form|2form|4form|6form)$/',$ADD)) {
+        if ($ADD == '2form') {
             $camp_addform_color=$activemenu2_color;
             $camp_addform_class='rounded-menu2select';
+        } else {
+            $camp_addform_color=$inactivemenu2_color;
+            $camp_addform_class='rounded-menu2';
+        }
+        if (OSDpreg_match('/^(71|1form|4form|6form)$/',$ADD)) {
+            $camp_showform_color=$activemenu2_color;
+            $camp_showform_class='rounded-menu2select';
             $camp_modifyform_color=$activemenu2_color;
             $camp_modifyform_class='rounded-menu2select';
-            $camp_deleteform_color=$inactivemenu3_color;
-            $camp_deleteform_class='rounded-menu3';
+            $camp_deleteform_color=$inactivemenu2_color;
+            $camp_deleteform_class='rounded-menu2';
         } else {
             if (OSDpreg_match('/^(72|2fields|3fields|4fields|6fields)$/',$ADD)) {
+                $camp_showform_color=$activemenu2_color;
+                $camp_showform_class='rounded-menu2select';
                 $camp_modifyform_color=$activemenu2_color;
                 $camp_modifyform_class='rounded-menu2select';
-                $camp_addform_color=$activemenu2_color;
-                $camp_addform_class='rounded-menu2select';
-                $camp_deleteform_color=$inactivemenu3_color;
-                $camp_deleteform_class='rounded-menu3';
+                $camp_deleteform_color=$inactivemenu2_color;
+                $camp_deleteform_class='rounded-menu2';
             } else {
+                $camp_showform_color=$inactivemenu2_color;
+                $camp_showform_class='rounded-menu2';
                 $camp_modifyform_color=$inactivemenu2_color;
                 $camp_modifyform_class='rounded-menu2';
-                $camp_addform_color=$inactivemenu2_color;
-                $camp_addform_class='rounded-menu2';
+                
                 if (OSDpreg_match('/^(5form)$/',$ADD)) {
                     $camp_deleteform_color=$activemenu3_color;
                     $camp_deleteform_class='rounded-menu3select';
@@ -587,7 +597,8 @@ if (OSDstrlen($campaigns_hh) > 1) {
             echo "    <td class=$camp_real_class align=center bgcolor=$camp_real_color colspan=2><span class=\"font2 $fgfont_real\"><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=13\"> Real-Time Campaigns Summary </a></span></td>\n";
         }
 
-        echo "    <td class=$camp_addform_class align=center bgcolor=$camp_addform_color colspan=1><span class=\"font2 $fgfont_fc\"><a href=\"$PHP_SELF?ADD=71\"> Show Additional Forms </a></span></td>\n";
+        echo "    <td class=$camp_showform_class align=center bgcolor=$camp_showform_color colspan=1><span class=\"font2 $fgfont_fc\"><a href=\"$PHP_SELF?ADD=71\"> Show Additional Forms </a></span></td>\n";
+        echo "    <td class=$camp_addform_class align=center bgcolor=$camp_addform_color colspan=1><span class=\"font2 $fgfont_fc\"><a href=\"$PHP_SELF?ADD=2form\"> Add A New Form </a></span></td>\n";
         echo "    <td class='narrow-space' bgcolor=$bgmenu_color width=10>&nbsp;</td>";
         echo "  </tr>\n";
         if (OSDpreg_match('/^(72|2fields|3fields|4fields|6fields|71|1form|2form|4form|5form)$/',$ADD) and (OSDstrlen($id) > 0 or OSDstrlen($form_id) > 0)) {

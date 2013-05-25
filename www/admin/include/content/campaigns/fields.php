@@ -74,7 +74,7 @@ if ($ADD == "1form") {
 # Sorry, 73 already existed in campaigns.
 if ($ADD == "2form") {
     if ($LOG['modify_campaigns'] == 1) {
-        echo "<center><br><font class=top_header color=$default_text size=+1>ADD AN ADDITIONAL FORM</font><br><br>\n";
+        echo "<center><br><font class=top_header color=$default_text size=+1>ADD A NEW FORM</font><br><br>\n";
 
         $pri = 0;
         $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'",'');
@@ -372,8 +372,6 @@ if ($ADD == 71 or ($ADD == "3fields" and $SUB != '2fields')) {
     echo "</table>\n";
     echo "</center>\n";
 
-//    echo "<br /><br /><center><a href=$PHP_SELF?ADD=2form>ADD NEW FORM</a></center>";
-    echo "<br /><br /><center class=no-ul><a href=$PHP_SELF?ADD=2form>ADD NEW FORM</a></center>";
 }
 
 ######################
