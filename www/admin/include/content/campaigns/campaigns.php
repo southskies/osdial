@@ -1482,10 +1482,12 @@ if ($ADD==31) {
 			$active_click="dmss=document.getElementsByName('SUBMIT');for (var s=0;s<dmss.length;s++){dmss[s].disabled=false;dmss[s].style.color='#1C4754';dmss[s].title='';};";
 			$active_click.="dmsc=document.getElementsByName('change_mode');for (var c=0;c<dmsc.length;c++){dmsc[c].disabled=true;dmsc[c].style.color='#8F8F8F';};";
 			$active_click.="document.getElementById('DialModeSelManual').parentElement.title='';document.getElementById('DialModeSelAdapt').parentElement.title='';document.getElementById('DialModeSelRatio').parentElement.title='';";
+			$active_click.="document.forms[0].onsubmit=null;";
 			$inactive_click="dmss=document.getElementsByName('SUBMIT');for (var s=0;s<dmss.length;s++){dmss[s].disabled=true;dmss[s].style.color='#8F8F8F';dmss[s].title='DISABLED: Pending Dial Method activation, click \'Change Mode\' to activate or reselect the current ACTIVE Dial Method to discard.';};";
 			$inactive_click.="dmsc=document.getElementsByName('change_mode');for (var c=0;c<dmsc.length;c++){dmsc[c].disabled=false;dmsc[c].style.color='#1C4754';};";
 			$inactive_click.="document.getElementById('DialModeSelManual').parentElement.title='';document.getElementById('DialModeSelAdapt').parentElement.title='';document.getElementById('DialModeSelRatio').parentElement.title='';";
 			$inactive_click.="this.parentElement.title='This Dial Method is currently PENDING, click \'Change Mode\' to activate. You may adjust the Dial Options and/or other parameters prior to activation.';";
+			$inactive_click.="document.forms[0].onsubmit=function(){return false;};";
 			if ((OSDpreg_match('/^ADAPT/',$dial_method))) {
 				$dial_method_a_class='active-mode';
 				$dial_method_m_class='';
@@ -1544,25 +1546,25 @@ if ($ADD==31) {
 			} else {
 				echo "<div id=DialModeSelAdapt class=inactive-button>&nbsp;<br /></div>";
 			}
-			echo "<input type=button onclick=\"$afunc\" ondblclick=\"$afunc;dmsc=document.getElementsByName('change_mode');if (dmsc.length>0) dmsc[0].click();\" Xclass=$dial_method_a_class name=dial_method_button value=ADAPTIVE></td>";
+			echo "<input type=button onclick=\"$afunc\" ondblclick=\"$afunc;document.forms[0].onsubmit=null;dmsc=document.getElementsByName('change_mode');if (dmsc.length>0) dmsc[0].click();\" Xclass=$dial_method_a_class name=dial_method_button value=ADAPTIVE></td>";
 			echo "<td align=center>";
 			if ($dial_method=='MANUAL') {
 				echo "<div id=DialModeSelManual class=active-button>ACTIVE<br /></div>";
 			} else {
 				echo "<div id=DialModeSelManual class=inactive-button>&nbsp;<br /></div>";
 			}
-			echo "<input type=button onclick=\"$mfunc\" ondblclick=\"$mfunc;dmsc=document.getElementsByName('change_mode');if (dmsc.length>0) dmsc[0].click();\" Xclass=$dial_method_m_class name=dial_method_button value=MANUAL></td>";
+			echo "<input type=button onclick=\"$mfunc\" ondblclick=\"$mfunc;document.forms[0].onsubmit=null;dmsc=document.getElementsByName('change_mode');if (dmsc.length>0) dmsc[0].click();\" Xclass=$dial_method_m_class name=dial_method_button value=MANUAL></td>";
 			echo "<td align=center>";
 			if ($dial_method=='RATIO') {
 				echo "<div id=DialModeSelRatio class=active-button>ACTIVE<br /></div>";
 			} else {
 				echo "<div id=DialModeSelRatio class=inactive-button>&nbsp;<br /></div>";
 			}
-			echo "<input type=button onclick=\"$rfunc\" ondblclick=\"$rfunc;dmsc=document.getElementsByName('change_mode');if (dmsc.length>0) dmsc[0].click();\" Xclass=$dial_method_r_class name=dial_method_button value=RATIO></td>";
+			echo "<input type=button onclick=\"$rfunc\" ondblclick=\"$rfunc;document.forms[0].onsubmit=null;dmsc=document.getElementsByName('change_mode');if (dmsc.length>0) dmsc[0].click();\" Xclass=$dial_method_r_class name=dial_method_button value=RATIO></td>";
 			
 			echo "</tr></table></center>";
 			
-			echo "<table width=100%><tr><td align=right><input style='color:#8F8F8F' disabled=disabled type=button onclick=\"document.forms[0].dial_method.value=document.forms[0].tmp_dial_method.value;document.forms[0].submit.click();\" name=change_mode value='Change Mode'></td></tr></table>";
+			echo "<table width=100%><tr><td align=right><input style='color:#8F8F8F' disabled=disabled type=button onclick=\"document.forms[0].onsubmit=null;document.forms[0].dial_method.value=document.forms[0].tmp_dial_method.value;document.forms[0].submit.click();\" name=change_mode value='Change Mode'></td></tr></table>";
 			echo "</td></tr>";
 			
 			$manual_visible='visibility:collapse;';
