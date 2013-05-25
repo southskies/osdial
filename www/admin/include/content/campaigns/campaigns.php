@@ -1468,14 +1468,33 @@ if ($ADD==31) {
 			
 			
 			// DIAL METHOD
+			$mfunc='';
+			$rfunc='';
+			$afunc='';
 			echo "<tr><td colspan=2 align=center>";
 			echo "<a name=method></a>";
+			$mode_manual_pending="dmsm=document.getElementById('DialModeSelManual');dmsm.className='selected-button';dmsm.innerHTML='PENDING<br/>';";
+			$mode_ratio_pending="dmsr=document.getElementById('DialModeSelRatio');dmsr.className='selected-button';dmsr.innerHTML='PENDING<br/>';";
+			$mode_adapt_pending="dmsa=document.getElementById('DialModeSelAdapt');dmsa.className='selected-button';dmsa.innerHTML='PENDING<br/>';";
+			$mode_ratio_inactive="dmsr=document.getElementById('DialModeSelRatio');dmsr.className='inactive-button';dmsr.innerHTML='&nbsp;<br/>';";
+			$mode_manual_inactive="dmsm=document.getElementById('DialModeSelManual');dmsm.className='inactive-button';dmsm.innerHTML='&nbsp;<br/>';";
+			$mode_adapt_inactive="dmsa=document.getElementById('DialModeSelAdapt');dmsa.className='inactive-button';dmsa.innerHTML='&nbsp;<br/>';";
+			$active_click="dmss=document.getElementsByName('SUBMIT');for (var s=0;s<dmss.length;s++){dmss[s].disabled=false;dmss[s].style.color='#1C4754';dmss[s].title='';};";
+			$active_click.="dmsc=document.getElementsByName('change_mode');for (var c=0;c<dmsc.length;c++){dmsc[c].disabled=true;dmsc[c].style.color='#8F8F8F';};";
+			$active_click.="document.getElementById('DialModeSelManual').parentElement.title='';document.getElementById('DialModeSelAdapt').parentElement.title='';document.getElementById('DialModeSelRatio').parentElement.title='';";
+			$inactive_click="dmss=document.getElementsByName('SUBMIT');for (var s=0;s<dmss.length;s++){dmss[s].disabled=true;dmss[s].style.color='#8F8F8F';dmss[s].title='DISABLED: Pending Dial Method activation, click \'Change Mode\' to activate or reselect the current ACTIVE Dial Method to discard.';};";
+			$inactive_click.="dmsc=document.getElementsByName('change_mode');for (var c=0;c<dmsc.length;c++){dmsc[c].disabled=false;dmsc[c].style.color='#1C4754';};";
+			$inactive_click.="document.getElementById('DialModeSelManual').parentElement.title='';document.getElementById('DialModeSelAdapt').parentElement.title='';document.getElementById('DialModeSelRatio').parentElement.title='';";
+			$inactive_click.="this.parentElement.title='This Dial Method is currently PENDING, click \'Change Mode\' to activate. You may adjust the Dial Options and/or other parameters prior to activation.';";
 			if ((OSDpreg_match('/^ADAPT/',$dial_method))) {
 				$dial_method_a_class='active-mode';
 				$dial_method_m_class='';
 				$dial_method_r_class='';
 				$test='A';
 				$NotActiveAdapt='';
+				$afunc.=$mode_ratio_inactive.$mode_manual_inactive.$active_click;
+				$mfunc.=$mode_manual_pending.$mode_ratio_inactive.$inactive_click;
+				$rfunc.=$mode_ratio_pending.$mode_manual_inactive.$inactive_click;
 			} else {
 				$NotActiveAdapt='<span class=alert style="margin-left:245px;">(Not Active)</span>';
 			}
@@ -1485,6 +1504,9 @@ if ($ADD==31) {
 				$dial_method_r_class='';
 				$test='M';
 				$NotActiveManual='';
+				$mfunc.=$mode_ratio_inactive.$mode_adapt_inactive.$active_click;
+				$afunc.=$mode_adapt_pending.$mode_ratio_inactive.$inactive_click;
+				$rfunc.=$mode_ratio_pending.$mode_adapt_inactive.$inactive_click;
 			} else {
 				$NotActiveManual='<span class=alert style="margin-left:260px;">(Not Active)</span>';
 			}
@@ -1494,6 +1516,9 @@ if ($ADD==31) {
 				$dial_method_r_class='active-mode';
 				$test='R';
 				$NotActiveRatio='';
+				$rfunc.=$mode_adapt_inactive.$mode_manual_inactive.$active_click;
+				$mfunc.=$mode_manual_pending.$mode_adapt_inactive.$inactive_click;
+				$afunc.=$mode_adapt_pending.$mode_manual_inactive.$inactive_click;
 			} else {
 				$NotActiveRatio='<span class=alert style="margin-left:275px;">(Not Active)</span>';
 			}
@@ -1506,38 +1531,38 @@ if ($ADD==31) {
 			echo "<input type=hidden name=\"dial_method\" value=\"$dial_method\">";
 			echo "<input type=hidden name=\"tmp_dial_method\" value=\"$dial_method\">";
 			echo "<tr><td colspan=2><br /><center><table frame=0 border=0 cellpadding=1 cellspacing=1 width=250><tr>";
-			$mfunc="document.forms[0].tmp_dial_method.value='MANUAL';fixChromeTableExpand('dm_manual');document.getElementById('dm_manual').style.visibility='visible';document.getElementById('dm_ratio').style.visibility='collapse';document.getElementById('dm_adapt').style.visibility='collapse';fixChromeTableCollapse();";
-			$rfunc="document.forms[0].tmp_dial_method.value='RATIO';fixChromeTableExpand('dm_ratio');document.getElementById('dm_manual').style.visibility='collapse';document.getElementById('dm_ratio').style.visibility='visible';document.getElementById('dm_adapt').style.visibility='collapse';fixChromeTableCollapse();";
+			$mfunc.="document.forms[0].tmp_dial_method.value='MANUAL';fixChromeTableExpand('dm_manual');document.getElementById('dm_manual').style.visibility='visible';document.getElementById('dm_ratio').style.visibility='collapse';document.getElementById('dm_adapt').style.visibility='collapse';fixChromeTableCollapse();";
+			$rfunc.="document.forms[0].tmp_dial_method.value='RATIO';fixChromeTableExpand('dm_ratio');document.getElementById('dm_manual').style.visibility='collapse';document.getElementById('dm_ratio').style.visibility='visible';document.getElementById('dm_adapt').style.visibility='collapse';fixChromeTableCollapse();";
 			$admsel=0;
 			if ($dial_method=='ADAPT_AVERAGE') $admsel=0;
 			if ($dial_method=='ADAPT_TAPERED') $admsel=1;
 			if ($dial_method=='ADAPT_HARD_LIMIT') $admsel=2;
-			$afunc="document.forms[0].adapt_dial_method.selectedIndex=$admsel;document.forms[0].tmp_dial_method.value=document.forms[0].adapt_dial_method.options[0].value;fixChromeTableExpand('dm_adapt');document.getElementById('dm_manual').style.visibility='collapse';document.getElementById('dm_ratio').style.visibility='collapse';document.getElementById('dm_adapt').style.visibility='visible';fixChromeTableCollapse();";
+			$afunc.="document.forms[0].adapt_dial_method.selectedIndex=$admsel;document.forms[0].tmp_dial_method.value=document.forms[0].adapt_dial_method.options[0].value;fixChromeTableExpand('dm_adapt');document.getElementById('dm_manual').style.visibility='collapse';document.getElementById('dm_ratio').style.visibility='collapse';document.getElementById('dm_adapt').style.visibility='visible';fixChromeTableCollapse();";
 			echo "<td align=center>";
 			if ((OSDpreg_match('/^ADAPT/',$dial_method))) {
-				echo "<div class=active-button>ACTIVE<br /></div>";
+				echo "<div id=DialModeSelAdapt class=active-button>ACTIVE<br /></div>";
 			} else {
-				echo "<div class=inactive-button>&nbsp;<br /></div>";
+				echo "<div id=DialModeSelAdapt class=inactive-button>&nbsp;<br /></div>";
 			}
-			echo "<input type=button onclick=\"$afunc\" Xclass=$dial_method_a_class name=dial_method_button value=ADAPTIVE></td>";
+			echo "<input type=button onclick=\"$afunc\" ondblclick=\"$afunc;dmsc=document.getElementsByName('change_mode');if (dmsc.length>0) dmsc[0].click();\" Xclass=$dial_method_a_class name=dial_method_button value=ADAPTIVE></td>";
 			echo "<td align=center>";
 			if ($dial_method=='MANUAL') {
-				echo "<div class=active-button>ACTIVE<br /></div>";
+				echo "<div id=DialModeSelManual class=active-button>ACTIVE<br /></div>";
 			} else {
-				echo "<div class=inactive-button>&nbsp;<br /></div>";
+				echo "<div id=DialModeSelManual class=inactive-button>&nbsp;<br /></div>";
 			}
-			echo "<input type=button onclick=\"$mfunc\" Xclass=$dial_method_m_class name=dial_method_button value=MANUAL></td>";
+			echo "<input type=button onclick=\"$mfunc\" ondblclick=\"$mfunc;dmsc=document.getElementsByName('change_mode');if (dmsc.length>0) dmsc[0].click();\" Xclass=$dial_method_m_class name=dial_method_button value=MANUAL></td>";
 			echo "<td align=center>";
 			if ($dial_method=='RATIO') {
-				echo "<div class=active-button>ACTIVE<br /></div>";
+				echo "<div id=DialModeSelRatio class=active-button>ACTIVE<br /></div>";
 			} else {
-				echo "<div class=inactive-button>&nbsp;<br /></div>";
+				echo "<div id=DialModeSelRatio class=inactive-button>&nbsp;<br /></div>";
 			}
-			echo "<input type=button onclick=\"$rfunc\" Xclass=$dial_method_r_class name=dial_method_button value=RATIO></td>";
+			echo "<input type=button onclick=\"$rfunc\" ondblclick=\"$rfunc;dmsc=document.getElementsByName('change_mode');if (dmsc.length>0) dmsc[0].click();\" Xclass=$dial_method_r_class name=dial_method_button value=RATIO></td>";
 			
 			echo "</tr></table></center>";
 			
-			echo "<table width=100%><tr><td align=right><input style='color:#1C4754' type=button onclick=\"document.forms[0].dial_method.value=document.forms[0].tmp_dial_method.value;document.forms[0].submit.click();\" name=change_mode value='Change Mode'></td></tr></table>";
+			echo "<table width=100%><tr><td align=right><input style='color:#8F8F8F' disabled=disabled type=button onclick=\"document.forms[0].dial_method.value=document.forms[0].tmp_dial_method.value;document.forms[0].submit.click();\" name=change_mode value='Change Mode'></td></tr></table>";
 			echo "</td></tr>";
 			
 			$manual_visible='visibility:collapse;';
@@ -1827,8 +1852,8 @@ if ($ADD==31) {
 			echo "<a name=am></a>";
 			echo "<div style=\"width:".$section_width."px;padding:5px;\" class=rounded-corners>";
 			echo "<table width=100% cellpadding=0 cellspacing=3>";
-			echo "<tr><td align=left class=top_header_sect valign=top width=40%>Answering Machine Options</td></tr>";
-			echo "<tr><td align=center><br /><table border=0 cellpadding=2 cellspacing=3 width=60%>";
+			echo "<tr><td align=left class=top_header_sect valign=top width=30%>Answering Machine Options</td></tr>";
+			echo "<tr><td align=center><br /><table border=0 cellpadding=2 cellspacing=3 width=70%>";
 			echo "<tr><td align=left>Answering Message Extension: </td><td align=left>";
 			#echo "<input type=text name=am_message_exten size=10 maxlength=20 value=\"$am_message_exten\">";
 			echo extension_text_options($link, 'am_message_exten', $am_message_exten, 10, 20);
@@ -1846,8 +1871,8 @@ if ($ADD==31) {
 			echo "<a name=drop></a>";
 			echo "<div style=\"width:".$section_width."px;padding:5px;\" class=rounded-corners>";
 			echo "<table width=100% cellpadding=0 cellspacing=3>";
-			echo "<tr><td align=left class=top_header_sect valign=top width=45%>Dropped Calls Options</td></tr>";
-			echo "<tr><td align=center><br /><table border=0 cellpadding=2 cellspacing=3 width=60%>";
+			echo "<tr><td align=left class=top_header_sect valign=top width=30%>Dropped Calls Options</td></tr>";
+			echo "<tr><td align=center><br /><table border=0 cellpadding=2 cellspacing=3 width=70%>";
 			echo "<tr><td align=left>Drop Call Handling (Safe Harbor): </td><td align=left>";
 			echo "<select size=1 name=safe_harbor_message>";
 			$sel1='';

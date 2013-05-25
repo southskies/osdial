@@ -347,9 +347,10 @@
 	.alert a:active { color: #B70F03; }
 	.alert a:hover { color: #B70F03; }
 	.active-mode { background-color: #00C50D; color:#00C50D;}
-	.active-button { font-family: 'dejavu sans',verdana,sans-serif; 
-		font-size: 7pt; 
-		background-color: #9AC48B; 
+	.active-button {
+		font-family: 'dejavu sans',verdana,sans-serif;
+		font-size: 7pt;
+		background-color: #9AC48B;
 		color:#000;
 		-moz-border-radius: 6px;
 		-webkit-border-radius: 6px;
@@ -360,7 +361,23 @@
 		margin-bottom:2px;
 	}
 		
-	.inactive-button { font-family: 'dejavu sans',verdana,sans-serif; font-size: 7pt;
+	.selected-button {
+		font-family: 'dejavu sans',verdana,sans-serif;
+		font-size: 7pt;
+		background-color: #E1E488;
+		color:#000;
+		-moz-border-radius: 6px;
+		-webkit-border-radius: 6px;
+		-khtml-border-radius: 6px;
+		border-radius: 6px 6px 6px 6px;
+		border: thin solid #495D42;
+		border-style: dashed;
+		margin-bottom:2px;
+	}
+
+	.inactive-button {
+		font-family: 'dejavu sans',verdana,sans-serif;
+		font-size: 7pt;
 		margin:2px;
 	}
 
