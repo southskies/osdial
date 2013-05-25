@@ -1115,4 +1115,4 @@ a:visited {
 .font7 { font-family: 'dejavu sans',verdana,sans-serif; font-size: 35pt; }
 .table_title { font-weight: bold; color: #0D2999; }
 
-.hotkeyitem:hover { color:yellow; }
+.hotkeyitem:hover { color:yellow; cursor:pointer; }
