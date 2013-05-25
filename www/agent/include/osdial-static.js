@@ -6751,3 +6751,41 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
         }
         return timeOut;
     }
+
+// ################################################################################
+// Function to process hotkey disposition.
+	function HotKeyDispo(selhotkeyitem) {
+		if (VD_live_customer_call==1) {
+			var HKdispo = hotkeys[selhotkeyitem];
+			if (HKdispo) {
+				document.osdial_form.inert_button.focus();
+				document.osdial_form.inert_button.blur();
+				CustomerData_update();
+				var HKdispo_ary = HKdispo.split(" ----- ");
+				if ( (HKdispo_ary[0] == 'ALTPH2') || (HKdispo_ary[0] == 'ADDR3') ) {
+					if (document.osdial_form.DiaLAltPhonE.checked==true) {
+						dialedcall_send_hangup('NO', 'YES', HKdispo_ary[0]);
+					}
+				} else {
+					HKdispo_display = 4;
+					HKfinish=1;
+					document.getElementById("HotKeyDispo").innerHTML = HKdispo_ary[0] + " - " + HKdispo_ary[1] + " - " + HKdispo_ary[2];
+					showDiv('HotKeyActionBox');
+					hideDiv('HotKeyEntriesBox');
+					document.osdial_form.DispoSelection.value = HKdispo_ary[0];
+					if ( (HKdispo_ary[2] == '') ) {
+						dialedcall_send_hangup('NO', 'YES', HKdispo_ary[0]);
+					} else {
+						document.osdial_form.xfernumber.value = HKdispo_ary[2];
+						mainxfer_send_redirect('XfeRBLIND',lastcustchannel,lastcustserverip);
+						dialedcall_send_hangup('NO');
+						alt_dial_active=0;
+						alt_dial_menu=0;
+						reselect_alt_dial=0;
+						DispoSelect_submit();
+						document.osdial_form.xfernumber.value = '';
+					}
+				}
+			}
+		}
+	}
