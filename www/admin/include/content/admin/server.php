@@ -387,7 +387,9 @@ if ($ADD==311111111111) {
             echo "<tr bgcolor=$oddrows><td align=right>Balance Dialing: </td><td align=left><select size=1 name=osdial_balance_active><option>Y</option><option>N</option><option selected>$row[20]</option></select>".helptag("servers-osdial_balance_active")."</td></tr>\n";
             echo "<tr bgcolor=$oddrows><td align=right>Balance Offlimits: </td><td align=left><input type=text name=balance_trunks_offlimits size=5 maxlength=4 value=\"$row[21]\">".helptag("servers-balance_trunks_offlimits")."</td></tr>\n";
             echo "<tr bgcolor=$oddrows><td align=right>AGI Log Output: </td><td align=left><select size=1 name=agi_output><option>NONE</option><option>STDERR</option><option>FILE</option><option>BOTH</option><option selected>$row[19]</option></select>".helptag("servers-agi_output")."</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>Default Context: </td><td align=left><input type=text name=ext_context size=20 maxlength=20 value=\"$row[16]\">".helptag("servers-ext_context")."</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Default Context: </td><td align=left>";
+            echo editableSelectBox([0=>'osdial',1=>'default'], 'ext_context', $row[16], 200, 200, '');
+            echo helptag("servers-ext_context")."</td></tr>\n";
             echo "<tr bgcolor=$oddrows><td align=right>Telnet Host: </td><td align=left><input type=text name=telnet_host size=20 maxlength=20 value=\"$row[6]\">".helptag("servers-telnet_host")."</td></tr>\n";
             echo "<tr bgcolor=$oddrows><td align=right>Telnet Port: </td><td align=left><input type=text name=telnet_port size=6 maxlength=5 value=\"$row[7]\">".helptag("servers-telnet_port")."</td></tr>\n";
             echo "<tr bgcolor=$oddrows><td align=right>Manager User: </td><td align=left><input type=text name=ASTmgrUSERNAME size=20 maxlength=20 value=\"$row[8]\">".helptag("servers-ASTmgrUSERNAME")."</td></tr>\n";

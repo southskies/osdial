@@ -257,7 +257,7 @@ if ($ADD==31111111111) {
         echo "<input type=hidden name=old_extension value=\"$row[0]\">\n";
         echo "<input type=hidden name=old_server_ip value=\"$row[5]\">\n";
         echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
-        echo "<tr bgcolor=$oddrows><td align=right width=45%>Phone extension: </td><td align=left>";
+        echo "<tr bgcolor=$oddrows><td align=right width=35%>Phone extension: </td><td align=left>";
         $ext = $row[0];
         if ($LOG['multicomp'] > 0 and !OSDpreg_match('/\/|@/',$row[0]) and OSDpreg_match($LOG['companiesRE'],$row[0])) {
             echo "<font color=$default_text>" . $row[12] . "</font>";
@@ -265,7 +265,14 @@ if ($ADD==31111111111) {
         }
         echo "<input type=text name=extension size=20 maxlength=100 value=\"" . $ext . "\">";
         echo "".helptag("phones-extension")."</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Exten Context: </td><td align=left><input type=text name=ext_context size=20 maxlength=20 value=\"$row[31]\">".helptag("phones-ext_context")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Exten Context: </td><td align=left>";
+        $contexts = array();
+        $contexts['osdialBLOCK']='Block direct calling to outbound and extensions';
+        $contexts['osdialEXT']='Block direct outbound, Allow direct extensions';
+        $contexts['osdial']='Allow direct calling to outbound and extensions';
+        $contexts['default']='Same as osdial context';
+        echo editableSelectBox($contexts, 'ext_context', $row[31], 100, 100, '');
+        echo helptag("phones-ext_context")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Dial Plan Number: </td><td align=left>";
         $dpn = $row[1];
         if ($LOG['multicomp'] > 0) {

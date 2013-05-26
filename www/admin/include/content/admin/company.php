@@ -201,7 +201,7 @@ if ($ADD=="31comp") {
         echo "<input type=hidden name=ADD value=41comp>\n";
         echo "<input type=hidden name=company_id value=$comp[id]>\n";
         echo "<table class=shadedtable width=$section_width cellspacing=3>\n";
-        echo "<tr bgcolor=$oddrows><td align=right width=50%>Prefix: </td><td align=left><font color=$default_text>" . (($comp['id'] * 1) + 100) . "</font></td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right width=30%>Prefix: </td><td align=left><font color=$default_text>" . (($comp['id'] * 1) + 100) . "</font></td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Name: </td><td align=left><input type=text name=company_name size=30 maxlength=100 value=\"$comp[name]\">".helptag("companies-company_name")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Status: </td><td align=left><select name=company_status><option>INACTIVE</option><option>ACTIVE</option><option>SUSPENDED</option><option>TERMINATED</option><option selected>$comp[status]</option></select>".helptag("companies-status")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Enable Campaign IVR: </td><td align=left><select name=company_enable_campaign_ivr><option>0</option><option>1</option><option selected>$comp[enable_campaign_ivr]</option></select>".helptag("companies-enable_campaign_ivr")."</td></tr>\n";
@@ -234,7 +234,14 @@ if ($ADD=="31comp") {
         echo "  </td>\n";
         echo "</tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Default Local GMT: </td><td align=left><select size=1 name=local_gmt><option>12.75</option><option>12.00</option><option>11.00</option><option>10.00</option><option>9.50</option><option>9.00</option><option>8.00</option><option>7.00</option><option>6.50</option><option>6.00</option><option>5.75</option><option>5.50</option><option>5.00</option><option>4.50</option><option>4.00</option><option>3.50</option><option>3.00</option><option>2.00</option><option>1.00</option><option>0.00</option><option>-1.00</option><option>-2.00</option><option>-3.00</option><option>-3.50</option><option>-4.00</option><option>-5.00</option><option>-6.00</option><option>-7.00</option><option>-8.00</option><option>-9.00</option><option>-10.00</option><option>-11.00</option><option>-12.00</option><option selected>$comp[default_local_gmt]</option></select> (Do NOT Adjust for DST)".helptag("companies-default_local_gmt")."</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Default Ext Context: </td><td align=left><input type=text name=ext_context size=15 maxlength=20 value=\"$comp[default_ext_context]\">".helptag("companies-default_ext_context")." <font class=font2>(osdial/osdialEXT/osdialBLOCK)</font></td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Default Ext Context: </td><td align=left>";
+        $contexts = array();
+        $contexts['osdialBLOCK']='Block direct calling to outbound and extensions';
+        $contexts['osdialEXT']='Block direct outbound, Allow direct extensions';
+        $contexts['osdial']='Allow direct calling to outbound and extensions';
+        $contexts['default']='Same as osdial context';
+        echo editableSelectBox($contexts, 'ext_context', $comp['default_ext_context'], 100, 100, '');
+        echo helptag("companies-default_ext_context")."</td></tr>\n";
         echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
         echo "</TABLE></center>\n";
 
