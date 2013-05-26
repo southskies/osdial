@@ -31,8 +31,8 @@ if ($ADD=="1") {
         echo "<center><br><font class=top_header color=$default_text size=+1>ADD A NEW AGENT<form action=$PHP_SELF method=POST></font><br><br>\n";
         echo "<input type=hidden name=ADD value=2>\n";
         echo "<div style=\"width:660px;padding:5px;\">";
-        echo "<TABLE class=shadedtable border=0 cellspacing=3 width=650>\n";
-        echo "<tr bgcolor=$oddrows><td align=right with=45%>ID: </td><td align=left width=55%>\n";
+        echo "<TABLE class=shadedtable border=0 cellspacing=3 cellpadding=2 width=650>\n";
+        echo "<tr bgcolor=$oddrows><td align=right with=30%>ID: </td><td align=left width=70%>\n";
         
         if ($LOG['multicomp_admin'] > 0) {
             $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
@@ -47,54 +47,45 @@ if ($ADD=="1") {
         echo "<input type=text name=user size=20 maxlength=10>".helptag("osdial_users-user")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=pass size=20 maxlength=10>".helptag("osdial_users-pass")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=full_name size=20 maxlength=100>".helptag("osdial_users-full_name")."</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>User Level: </td><td align=left><select size=1 name=user_level>";
-        $h=0;
+        echo "<tr bgcolor=$oddrows><td align=right>User Level: </td><td align=left>";
+	    $h=$levelMAX;
 	    if ($LOG['user_level']==9) {
-            $levelMAX=$LOG['user_level'];
+            $h=$LOG['user_level'];
         } else {
-            $levelMAX=($LOG['user_level']-1);
+            $h=($LOG['user_level']-1);
         }
-        while ($h<=$levelMAX) {
-            echo "<option value=$h>";
+        $tuserlevel_list=array();
+	    while ($h>=0) {
+            $ullabel='';
 		    if ($h==0) {
-                echo "$h - Disabled";
-            } elseif ($h>=1 and $h <=3) {
-                echo "$h - Outbound $h";
-            } elseif ($h>=4 and $h <=7) {
-                echo "$h - Outbound / Inbound / Closer $h";
-            } elseif ($h==8) {
-                echo "$h - Manager";
-            } elseif ($h==9) {
-                echo "$h - Administrator";
-            } else {
-			    echo "$h";
-            }
-            echo "</option>";
-            $h++;
+			    $ullabel="Disabled";
+		    } elseif ($h>=1 and $h <=3) {
+			    $ullabel="Outbound $h";
+		    } elseif ($h>=4 and $h <=7) {
+			    $ullabel="Outbound/Inbound/Closer $h";
+		    } elseif ($h==8) {
+			    $ullabel="Manager";
+		    } elseif ($h==9) {
+			    $ullabel="Administrator";
+		    } else {
+			    $ullabel="($h)";
+		    }
+            $tuserlevel_list[$h]=$ullabel;
+		    $h--;
+	    }
+        echo editableSelectBox($tuserlevel_list, "user_level", '', 50, 50, 'selectBoxForce="1" selectBoxLabel=" -- SELECT LEVEL -- "');
+        echo helptag("osdial_users-user_level")."</td></tr>\n";
+
+        echo "<tr bgcolor=$oddrows><td align=right>User Group: </td><td align=left>\n";
+
+	    $krh = get_krh($link, 'osdial_user_groups', 'user_group,group_name', 'user_group', sprintf("user_group IN %s",$LOG['allowed_usergroupsSQL']), '');
+        $tusergroup_list=array();
+        foreach ($krh as $ugs) {
+            $tusergroup_list[$ugs['user_group']]=$ugs['group_name'];
         }
-        echo "</select>".helptag("osdial_users-user_level")."</td></tr>\n";
+        echo editableSelectBox($tusergroup_list, "user_group", '', 50, 50, 'selectBoxForce="1" selectBoxLabel=" -- SELECT GROUP -- "');
 
-        echo "<tr bgcolor=$oddrows><td align=right>User Group: </td><td align=left><select size=1 name=user_group>\n";
-
-        $stmt = sprintf("SELECT user_group,group_name FROM osdial_user_groups WHERE user_group IN %s ORDER BY user_group",$LOG['allowed_usergroupsSQL']);
-        $rslt=mysql_query($stmt, $link);
-        $Ugroups_to_print = mysql_num_rows($rslt);
-        $Ugroups_list='';
-
-        $o=0;
-        $gotsel=0;
-        while ($Ugroups_to_print > $o) {
-            $rowx=mysql_fetch_row($rslt);
-            $sel='';
-            if (OSDpreg_match('/AGENTS$/',$rowx[0]) and $gotsel==0) {
-                $sel='selected';
-                $gotsel++;
-            }
-            $Ugroups_list .= "<option value=\"$rowx[0]\" $sel>" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
-            $o++;
-        }
-        echo "$Ugroups_list";
-        echo "</select>".helptag("osdial_users-user_group")."</td></tr>\n";
+        echo helptag("osdial_users-user_group")."</td></tr>\n";
 
         #echo "<tr bgcolor=$oddrows><td align=right>Phone Login: </td><td align=left><input type=text name=phone_login size=20 maxlength=20>".helptag("osdial_users-phone_login")."</td></tr>\n";
         #echo "<tr bgcolor=$oddrows><td align=right>Phone Pass: </td><td align=left><input type=text name=phone_pass size=20 maxlength=20>".helptag("osdial_users-phone_pass")."</td></tr>\n";
@@ -549,7 +540,7 @@ if ($ADD==3) {
 			}
 			echo "<input type=hidden name=user value=\"$row[1]\">\n";
 			echo "<div style=\"width:900px;padding:5px;\">";
-			echo "<TABLE class=shadedtable cellspacing=3 width=90%>\n";
+			echo "<TABLE class=shadedtable cellspacing=3 cellpadding=2 width=90%>\n";
 			echo "<tr bgcolor=$oddrows><td align=right Xwidth=300>ID: </td><td align=left>\n";
 			$pcomp='';
 			if ($LOG['multicomp']>0 and OSDpreg_match($LOG['companiesRE'],$row[1])) {
@@ -562,44 +553,46 @@ if ($ADD==3) {
 			echo "".helptag("osdial_users-user")."</td></tr>\n";
 			echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=pass size=20 maxlength=10 value=\"$row[2]\">".helptag("osdial_users-pass")."</td></tr>\n";
 			echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=full_name size=30 maxlength=30 value=\"$row[3]\">".helptag("osdial_users-full_name")."</td></tr>\n";
-			echo "<tr bgcolor=$oddrows><td align=right>User Level: </td><td align=left><select style=\"font-family:monospace;\" size=1 name=user_level>";
-			$h=0;
-			while ($h<=$levelMAX) {
-				$sel='';
-				if ($h==$row[4]) $sel='selected';
-				echo "<option value=$h $sel>";
+			echo "<tr bgcolor=$oddrows><td align=right>User Level: </td><td align=left>";
+			$h=$levelMAX;
+            $tuserlevel_list=array();
+			while ($h>=0) {
+                $ullabel='';
 				if ($h==0) {
-					echo "$h - Disabled";
+					$ullabel="Disabled";
 				} elseif ($h>=1 and $h <=3) {
-					echo "$h - Outbound $h";
+					$ullabel="Outbound $h";
 				} elseif ($h>=4 and $h <=7) {
-					echo "$h - Outbound / Inbound / Closer $h";
+					$ullabel="Outbound/Inbound/Closer $h";
 				} elseif ($h==8) {
-					echo "$h - Manager";
+					$ullabel="Manager";
 				} elseif ($h==9) {
-					echo "$h - Administrator";
+					$ullabel="Administrator";
 				} else {
-					echo "$h";
+					$ullabel="($h)";
 				}
-				echo "</option>";
-				$h++;
+                $tuserlevel_list[$h]=$ullabel;
+				$h--;
 			}
-			echo "</select>".helptag("osdial_users-user_level")."</td></tr>\n";
+            echo editableSelectBox($tuserlevel_list, "user_level", $row[4], 50, 50, 'selectBoxForce="1"');
+			echo helptag("osdial_users-user_level")."</td></tr>\n";
 
-			echo "<tr bgcolor=$oddrows><td align=right><A HREF=\"$PHP_SELF?ADD=311111&user_group=$user_group\">User Group</A>: </td><td align=left><select style=\"font-family:monospace;\" size=1 name=user_group>\n";
+			echo "<tr bgcolor=$oddrows><td align=right><A HREF=\"$PHP_SELF?ADD=311111&user_group=$user_group\">User Group</A>: </td><td align=left>\n";
 			$krh = get_krh($link, 'osdial_user_groups', 'user_group,group_name', 'user_group', sprintf("user_group IN %s",$LOG['allowed_usergroupsSQL']), '');
-			echo format_select_options($krh, 'user_group', 'group_name', $user_group, '', true); 
-			echo "</select>".helptag("osdial_users-user_group")."</td></tr>\n";
+            $tusergroup_list=array();
+            foreach ($krh as $ugs) {
+                $tusergroup_list[$ugs['user_group']]=$ugs['group_name'];
+            }
+            echo editableSelectBox($tusergroup_list, "user_group", $user_group, 50, 50, 'selectBoxForce="1"');
+			echo helptag("osdial_users-user_group")."</td></tr>\n";
 
 			if ($phone_login != '') {
-				$phn = get_first_record($link,'phones','extension,server_ip',sprintf("login='%s'",$phone_login));
-				echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=31111111111&extension=$phn[extension]&server_ip=$phn[server_ip]\">Default Phone / Voicemail</a>: </td><td align=left><select style=\"font-family:monospace;\" size=1 name=phone_login>\n";
+				echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=31111111111&extension=$phn[extension]&server_ip=$phn[server_ip]\">Default Phone / Voicemail</a>: </td><td align=left>\n";
 			} else {
-				echo "<tr bgcolor=$oddrows><td align=right>Default Phone / Voicemail: </td><td align=left><select size=1 name=phone_login>\n";
+				echo "<tr bgcolor=$oddrows><td align=right>Default Phone / Voicemail: </td><td align=left>\n";
 			}
-			$krh = get_krh($link, 'phones', sprintf("login,fullname,IF((SELECT count(*) FROM osdial_users WHERE user!='%s' AND user LIKE '%s%%' AND phone_login=login)=1,'N','Y') AS active",mres($row[1]),mres($pcomp)), 'login', sprintf("login LIKE '%s%%'",mres($pcomp)), '');
-			echo format_select_options($krh, 'login', 'fullname', $phone_login, ' -- ANY -- ', true); 
-			echo "</select>".helptag("osdial_users-phone_login")."</td></tr>\n";
+            echo phone_extension_text_options($link, 'phone_login', $phone_login, 10, 20);
+			echo helptag("osdial_users-phone_login")."</td></tr>\n";
 			#echo "<tr bgcolor=$oddrows><td align=right>Phone Login: </td><td align=left><input type=text name=phone_login size=20 maxlength=20 value=\"$phone_login\">".helptag("osdial_users-phone_login")."</td></tr>\n";
 			#echo "<tr bgcolor=$oddrows><td align=right>Phone Pass: </td><td align=left><input type=text name=phone_pass size=20 maxlength=20 value=\"$phone_pass\">".helptag("osdial_users-phone_pass")."</td></tr>\n";
 
@@ -689,11 +682,15 @@ if ($ADD==3) {
 						echo "  <td align=right>Agent2Agent Timeout Extension: </td>\n";
 						echo "  <td align=left><input type=text name=xfer_agent2agent_wait_extension size=10 maxlength=15 value=\"$xfer_agent2agent_wait_extension\">".helptag("osdial_users-xfer_agent2agent_wait_extension")."</td>\n";
 						echo "</tr>\n";
+					    echo "<tr bgcolor=$oddrows>\n";
+					    echo "  <td align=right>";
 					} else {
-						echo "<input type=hidden name=xfer_agent2agent_wait_extension value=\"$xfer_agent2agent_wait_extension\">\n";
+					    echo "<tr bgcolor=$oddrows>\n";
+					    echo "  <td align=right>";
+						echo "<input type=hidden name=xfer_agent2agent_wait_extension value=\"$xfer_agent2agent_wait_extension\">";
 					}
-					echo "<tr bgcolor=$oddrows>\n";
-					echo "  <td align=right>Agent2Agent Allow Multicall: </td>\n";
+                    # tr and td for a2a multicall starts in above condition.
+					echo "Agent2Agent Allow Multicall: </td>\n";
 					echo "  <td align=left>\n";
 					echo "    <select size=1 name=xfer_agent2agent_allow_multicall>\n";
 					$wsel=''; if ($xfer_agent2agent_allow_multicall=='N') $wsel='selected';
@@ -780,7 +777,7 @@ if ($ADD==3) {
 
 				echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr></table>\n";
 			} else {
-				echo "<br/><TABLE class=shadedtable cellspacing=3 width=550>\n";
+				echo "<br/>\n";
 				echo "<input type=hidden name=view_reports value=$view_reports>\n";
 				echo "<input type=hidden name=export_leads value=$export_leads>\n";
 				echo "<input type=hidden name=alter_agent_interface_options value=$alter_agent_interface_options>\n";
@@ -868,9 +865,9 @@ if ($ADD==550) {
     echo "<center><br><font class=top_header color=$default_text size=+1>SEARCH FOR AN AGENT</font>".helptag("search_agents-summary")."<form action=$PHP_SELF method=POST><br><br>\n";
     echo "<input type=hidden name=ADD value=660>\n";
     echo "<div style=\"width:660px;padding:5px;\">";
-    echo "<TABLE class=shadedtable cellspacing=3 width=650>\n";
+    echo "<TABLE class=shadedtable cellspacing=3 cellpadding=2 width=650>\n";
     #echo "<tr bgcolor=$oddrows><td align=right>Agent ID: </td><td align=left><input type=text name=user size=20 maxlength=20></td></tr>\n";
-    echo "<tr bgcolor=$oddrows><td align=center>ID: \n";
+    echo "<tr bgcolor=$oddrows><td align=right width=30%>ID:</td><td align=left>\n";
     if ($LOG['multicomp_admin'] > 0) {
         $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
         echo "<select name=company_id>\n";
@@ -880,52 +877,49 @@ if ($ADD==550) {
         }
         echo "</select>\n";
     } elseif ($LOG['multicomp']>0) {
-        echo "<input type=hidden name=company_id value=$LOG[company_id]><font color=$default_text>" . $LOG[company_prefix] . "</font>&nbsp;";
+        echo "<input type=hidden name=company_id value=$LOG[company_id]><font color=$default_text>" . $LOG['company_prefix'] . "</font>&nbsp;";
     }
     echo "<input type=text name=user size=20 maxlength=10>".helptag("search_agents-id")."</td></tr>\n";
-    echo "<tr bgcolor=$oddrows><td align=center>Full Name: <input type=text name=full_name size=30 maxlength=30>".helptag("search_agents-full_name")."</td></tr>\n";
-    echo "<tr bgcolor=$oddrows><td align=center>User Level: <select size=1 name=user_level>";
-    $h=0;
+    echo "<tr bgcolor=$oddrows><td align=right>Full Name:</td><td align=left><input type=text name=full_name size=30 maxlength=30>".helptag("search_agents-full_name")."</td></tr>\n";
+    echo "<tr bgcolor=$oddrows><td align=right>User Level:</td><td align=left>";
+	$h=$levelMAX;
 	if ($LOG['user_level']==9) {
-        $levelMAX=$LOG['user_level'];
+        $h=$LOG['user_level'];
     } else {
-        $levelMAX=($LOG['user_level']-1);
+        $h=($LOG['user_level']-1);
     }
-    echo '<option value=""> -- ALL USER LEVELS -- </option>';
-    while ($h<=$levelMAX) {
-        echo "<option value=$h>";
+    $tuserlevel_list=array(''=>' -- ALL USER LEVELS -- ');
+	while ($h>=0) {
+        $ullabel='';
 		if ($h==0) {
-            echo "$h - Disabled";
-        } elseif ($h>=1 and $h <=3) {
-            echo "$h - Outbound $h";
-        } elseif ($h>=4 and $h <=7) {
-            echo "$h - Outbound / Inbound / Closer $h";
-        } elseif ($h==8) {
-            echo "$h - Manager";
-        } elseif ($h==9) {
-            echo "$h - Administrator";
-        } else {
-			echo "$h";
-        }
-        echo "</option>";
-        $h++;
-    }
-    echo "</select>".helptag("search_agents-user_level")."</td></tr>\n";
-    #echo "<tr bgcolor=$oddrows><td align=right>User Level: </td><td align=left><select size=1 name=user_level><option selected>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option></select></td></tr>\n";
-    echo "<tr bgcolor=$oddrows><td align=center>User Group: <select size=1 name=user_group>\n";
-	echo "<option value=\"\">- ALL USERGROUPS -</option>\n";
-
-	$stmt = sprintf("SELECT * from osdial_user_groups where user_group IN %s order by user_group",$LOG['allowed_usergroupsSQL']);
-	$rslt=mysql_query($stmt, $link);
-	$groups_to_print = mysql_num_rows($rslt);
-	$o=0;
-	$groups_list='';
-	while ($groups_to_print > $o) {
-		$rowx=mysql_fetch_row($rslt);
-		$groups_list .= "<option value=\"$rowx[0]\">" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
-		$o++;
+			$ullabel="Disabled";
+		} elseif ($h>=1 and $h <=3) {
+			$ullabel="Outbound $h";
+		} elseif ($h>=4 and $h <=7) {
+			$ullabel="Outbound/Inbound/Closer $h";
+		} elseif ($h==8) {
+			$ullabel="Manager";
+		} elseif ($h==9) {
+			$ullabel="Administrator";
+		} else {
+			$ullabel="($h)";
+		}
+        $tuserlevel_list[$h]=$ullabel;
+		$h--;
 	}
-    echo "$groups_list</select>".helptag("search_agents-user_group")."</td></tr>\n";
+    echo editableSelectBox($tuserlevel_list, "user_level", '', 50, 50, 'selectBoxForce="1" selectBoxLabel=" -- ALL USER LEVELS -- "');
+    echo helptag("search_agents-user_level")."</td></tr>\n";
+    #echo "<tr bgcolor=$oddrows><td align=right>User Level: </td><td align=left><select size=1 name=user_level><option selected>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option></select></td></tr>\n";
+    echo "<tr bgcolor=$oddrows><td align=right>User Group:</td><td align=left>\n";
+
+	$krh = get_krh($link, 'osdial_user_groups', 'user_group,group_name', 'user_group', sprintf("user_group IN %s",$LOG['allowed_usergroupsSQL']), '');
+    $tusergroup_list=array(''=>' -- ALL USER GROUPS -- ');
+    foreach ($krh as $ugs) {
+        $tusergroup_list[$ugs['user_group']]=$ugs['group_name'];
+    }
+    echo editableSelectBox($tusergroup_list, "user_group", '', 50, 50, 'selectBoxForce="1" selectBoxLabel=" -- ALL USER GROUPS -- "');
+
+    echo helptag("search_agents-user_group")."</td></tr>\n";
 
     echo "<tr class=tabfooter><td align=center  class=tabbutton colspan=2><input type=submit name=search value=SEARCH></td></tr>\n";
     echo "</TABLE></div></center>\n";
