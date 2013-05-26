@@ -253,7 +253,7 @@ a:visited {
 
 .shadedtable {
     border-radius: 6px 6px 6px 6px;
-    box-shadow: rgba(0,0,0,0.5) 0px 0px 12px;
+    box-shadow: rgba(0,0,0,0.5) 0px 0px 1px;
 }
 .shadedroundtable {
     border-radius: 6px 6px 6px 6px;
