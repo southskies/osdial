@@ -439,7 +439,13 @@ td.hover:hover {background-color: #A4DCE6; font-weight:bold;} /* #A4DCE6 */
 }
 .rounded-menu1 a:hover {
     color: #0007D4;
-    text-shadow: rgba(0,0,0,0.3) 1px 1px 4px;
+    text-shadow: rgba(0,0,0,0.5) 0px 0px 4px,
+                 -1px -1px 1px white;
+}
+.rounded-menu1 a:active {
+    color: #A0B9DA;
+    text-shadow: -1px -1px 1px white,
+		  1px 1px 1px #666;
 }
 .rounded-menu1select {
     -moz-border-radius: 8px;
@@ -575,7 +581,7 @@ td.hover:hover {background-color: #A4DCE6; font-weight:bold;} /* #A4DCE6 */
 }		
 .top_header {
     text-shadow: 1px 1px 1px #5F6E82,
-                   -1px -1px 1px #B3CFF3;
+                -1px -1px 1px #B3CFF3;
 }		
 .top_header2 {
     text-shadow: 1px 1px 1px #888;

@@ -51,7 +51,7 @@ $fest_types['voice_JuntaDeAndalucia_es_sf_diphone'] = 'Female Spanish voice "SFL
 
 if ($ADD=="11tts") {
     if ($LOG['modify_servers']>0) {
-        echo "<center><br/><font color=$default_text size=+1>ADD NEW TEXT-TO-SPEECH TEMPLATE</font><br/><br/>\n";
+        echo "<center><br/><font class=top_header color=$default_text size=+1>ADD NEW TEXT-TO-SPEECH TEMPLATE</font><br/><br/>\n";
         echo '<form action="' . $PHP_SELF . '" method="POST" name=osdial_form enctype="multipart/form-data">';
         echo "<input type=hidden name=ADD value=21tts>\n";
         echo "<input type=hidden name=last_general_extension value=\"".($config['settings']['last_general_extension']+1)."\">\n";
@@ -243,7 +243,7 @@ if ($ADD=="31tts") {
     if ($LOG['modify_servers']>0) {
         $tts = get_first_record($link, 'osdial_tts', '*', sprintf("id='%s'",mres($tts_id)) );
 
-        echo "<center><br/><font color=$default_text size=+1>MODIFY TEXT-TO-SPEECH TEMPLATE</font><form action=$PHP_SELF method=POST name=osdial_form id=osdial_form enctype=\"multipart/form-data\"><br/><br/>\n";
+        echo "<center><br/><font class=top_header color=$default_text size=+1>MODIFY TEXT-TO-SPEECH TEMPLATE</font><form action=$PHP_SELF method=POST name=osdial_form id=osdial_form enctype=\"multipart/form-data\"><br/><br/>\n";
         echo "<input type=hidden name=ADD value=41tts>\n";
         echo "<input type=hidden name=tts_id value=$tts[id]>\n";
         echo "<input type=hidden name=last_general_extension value=\"".($config['settings']['last_general_extension']+1)."\">\n";
@@ -530,7 +530,7 @@ function ttsformat() {
 if ($ADD=="10tts") {
     if ($LOG['modify_servers']>0) {
         $srv = get_first_record($link, 'servers', '*', sprintf("server_profile IN ('AIO','DIALER') AND active='Y'") );
-        echo "<center><br/><font color=$default_text size=+1>TEXT-TO-SPEECH TEMPLATES</font><br/><br/>\n";
+        echo "<center><br/><font class=top_header color=$default_text size=+1>TEXT-TO-SPEECH TEMPLATES</font><br/><br/>\n";
         echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1>\n";
         echo "  <tr class=tabheader>";
         echo "    <td>ID</td>\n";
