@@ -778,6 +778,17 @@ function mclabel($strdat) {
     return $strdat;
 }
 
+# Reverse mclabal, returning the proper value.
+function rev_mclabel($strdat) {
+    global $LOG;
+    if ($LOG['multicomp_admin'] > 0) {
+        $strdat = OSDpreg_replace('/:/','',$strdat);
+    } elseif ($LOG['multicomp_user'] > 0) {
+        $strdat = $LOG['company_prefix'] . $strdat;
+    }
+    return $strdat;
+}
+
 
 # Function to parse given seconds into hhh:mm:ss format.
 function fmt_hms($seconds) {
