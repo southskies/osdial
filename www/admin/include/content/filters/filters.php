@@ -30,7 +30,7 @@ if ($ADD==11111111)
 {
 	if ($LOG['modify_filters']==1)
 	{
-	echo "<center><br><font color=$default_text size=+1>ADD A NEW FILTER</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font class=top_header color=$default_text size=+1>ADD A NEW FILTER</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=21111111>\n";
 	echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Filter ID: </td><td align=left>";
@@ -203,7 +203,7 @@ if ($ADD==31111111)
 	$lead_filter_name =		$row[1];
 	$lead_filter_comments =	$row[2];
 	$lead_filter_sql =		$row[3];
-	echo "<center><br><font color=$default_text size=+1>MODIFY A FILTER</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY A FILTER</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=41111111>\n";
 	echo "<input type=hidden name=lead_filter_id value=\"$lead_filter_id\">\n";
 	echo "<TABLE>";
@@ -263,7 +263,7 @@ if ($ADD==10000000)
 	$rslt=mysql_query($stmt, $link);
 	$filters_to_print = mysql_num_rows($rslt);
 
-echo "<center><br><font color=$default_text size=+1>LEAD FILTERS</font><br><br>\n";
+echo "<center><br><font class=top_header color=$default_text size=+1>LEAD FILTERS</font><br><br>\n";
 echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "  <tr class=tabheader>\n";
 echo "    <td>NAME</td>\n";

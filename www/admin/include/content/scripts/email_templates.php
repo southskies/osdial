@@ -327,7 +327,7 @@ tinyMCE.init({
 <?php
 
         echo "<center><br>\n";
-        echo "<font color=$default_text size=+1>ADD NEW EMAIL TEMPLATE</font><br><br>\n";
+        echo "<font class=top_header color=$default_text size=+1>ADD NEW EMAIL TEMPLATE</font><br><br>\n";
         echo "<form name=etform action=$PHP_SELF method=post enctype=\"multipart/form-data\">\n";
         echo "<input type=hidden name=ADD value=2email>\n";
         echo "<table class=shadedtable width=$section_width cellspacing=3>\n";
@@ -897,7 +897,7 @@ tinyMCE.init({
 
 
         echo "<center>\n";
-        echo "<br><font color=$default_text size=+1>MODIFY AN EMAIL TEMPLATE</font><br>\n";
+        echo "<br><font class=top_header color=$default_text size=+1>MODIFY AN EMAIL TEMPLATE</font><br>\n";
         echo "<form name=etform action=$PHP_SELF method=post enctype=\"multipart/form-data\">\n";
         echo "<input type=hidden name=ADD value=4email>\n";
         echo "<input type=hidden name=et_id value=\"$et_id\">\n";
@@ -1028,7 +1028,7 @@ if ($ADD=="0email") {
     $rslt=mysql_query($stmt, $link);
     $people_to_print = mysql_num_rows($rslt);
 
-    echo "<center><br><font color=$default_text size=+1>EMAIL TEMPLATES</font><br><br>\n";
+    echo "<center><br><font class=top_header color=$default_text size=+1>EMAIL TEMPLATES</font><br><br>\n";
     echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1>\n";
     echo "  <tr class=tabheader>";
     echo "    <td>ID</td>\n";
