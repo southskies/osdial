@@ -33,7 +33,22 @@ if ($ADD==131 && $SUB==2) {
 echo "<html>\n";
 echo "<head>\n";
 echo "  <!-- SESSION_ID: " . session_id() . " -->\n";
+echo "  <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/".$config['settings']['admin_template']."/styles.css\" media=\"screen\">\n";
+echo "  <link rel=\"stylesheet\" type=\"text/css\" href=\"styles-print.css\" media=\"print\">\n";
+
+echo "  <title>$t1 Administrator: $title</title>\n";
+
+echo "  <script language=\"Javascript\">\n";
+require('include/admin.js');
+require('include/CalendarPopup.js');
+require('include/EditableSelect.js');
+echo "  </script>\n";
 echo "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n";
+if (!empty($_COOKIE['webClientGMT'])) $webClientGMT = $_COOKIE['webClientGMT'];
+if (!empty($_COOKIE['webClientDST'])) $webClientDST = $_COOKIE['webClientDST'];
+if ($webClientDST) $webClientAdjGMT = $webClientGMT - 1;
+echo "  <!-- webServerGMT:" . $webServerGMT. " webServerDST:" . $webServerDST . " webServerAdjGMT:" . $webServerAdjGMT . " -->\n";
+echo "  <!-- webClientGMT:" . $webClientGMT. " webClientDST:" . $webClientDST . " webClientAdjGMT:" . $webClientAdjGMT . " -->\n";
 $oacjs='';
 if ($ADD==999999 && ($SUB==11 || $SUB==12 || $SUB==13 || $SUB==14 )) {
     if (empty($RR) and !empty($useOAC)) $RR=2;
@@ -53,16 +68,6 @@ if ($ADD==999999 && ($SUB==11 || $SUB==12 || $SUB==13 || $SUB==14 )) {
         }
     }
 }
-echo "  <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/".$config['settings']['admin_template']."/styles.css\" media=\"screen\">\n";
-echo "  <link rel=\"stylesheet\" type=\"text/css\" href=\"styles-print.css\" media=\"print\">\n";
-
-echo "  <title>$t1 Administrator: $title</title>\n";
-
-echo "  <script language=\"Javascript\">\n";
-require('include/admin.js');
-require('include/CalendarPopup.js');
-require('include/EditableSelect.js');
-echo "  </script>\n";
 echo "</head>\n";
 
 echo "<body bgcolor=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0 onload=\"osdialOnLoad(); $oacjs\" onunload=\"osdialOnUnload()\">\n";
@@ -72,12 +77,6 @@ echo "document.write(getCalendarStyles());\n";
 echo "document.write(getEditableSelectStyles());\n";
 echo "setEditableSelectImagePath('templates/default/images');\n";
 echo "</script>\n";
-
-if (!empty($_COOKIE['webClientGMT'])) $webClientGMT = $_COOKIE['webClientGMT'];
-if (!empty($_COOKIE['webClientDST'])) $webClientDST = $_COOKIE['webClientDST'];
-if ($webClientDST) $webClientAdjGMT = $webClientGMT - 1;
-echo "  <!-- webServerGMT:" . $webServerGMT. " webServerDST:" . $webServerDST . " webServerAdjGMT:" . $webServerAdjGMT . " -->\n";
-echo "  <!-- webClientGMT:" . $webClientGMT. " webClientDST:" . $webClientDST . " webClientAdjGMT:" . $webClientAdjGMT . " -->\n";
 
 ######################### HTML HEADER BEGIN #######################################
 if ($hh=='users') {
