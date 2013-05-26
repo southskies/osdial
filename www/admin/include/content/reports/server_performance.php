@@ -69,7 +69,7 @@ while ($i < $servers_to_print)
 	}
 //$html .= "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8\">\n";
 //$html .= "<TITLE>OSDIAL: Server Performance</TITLE></HEAD><BODY BGCOLOR=WHITE>\n";
-$html .= "<table align=center cellpadding=0 cellspacing=0>";
+$html .= "<table align=center cellpadding=0 cellspacing=0 width=930>";
 $html .= "<tr><td align=center>";
 $html .= "<br><font class=top_header color=$default_text size=+1>SERVER PERFORMANCE</font><br><br>";
 $html .= "<FORM ACTION=\"$PHP_SELF\" METHOD=GET>\n";
@@ -89,9 +89,9 @@ $html .= "&nbsp;Server: <SELECT SIZE=1 NAME=group>\n";
 $html .= "</SELECT> \n";
 $html .= "<INPUT TYPE=SUBMIT NAME=SUBMIT VALUE=SUBMIT>\n";
 //$html .= "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a href=\"./admin.php?ADD=999999\">REPORTS</a> </FONT>\n";
-$html .= "</FORM>\n\n";
+$html .= "</FORM>\n";
 
-$html .= "<PRE><FONT SIZE=2>\n";
+#$html .= "<PRE><FONT SIZE=2>\n";
 
 
 if (!$group)
@@ -109,51 +109,65 @@ $query_date_END = dateToServer($link,'first',$query_date_END,$webClientAdjGMT,''
 $time_BEGIN = "$begin_query_time";   
 $time_END = "$end_query_time";
 
-$html .= "OSDIAL: Server Performance                             " . dateToLocal($link,'first',date('Y-m-d H:i:s'),$webClientAdjGMT,'',$webClientDST,1) . "\n";
-$html .= "Time range: $query_date_BEGIN to $query_date_END\n\n";
-$html .= "---------- TOTALS, PEAKS and AVERAGES\n";
+#$html .= "OSDIAL: Server Performance                             " . dateToLocal($link,'first',date('Y-m-d H:i:s'),$webClientAdjGMT,'',$webClientDST,1) . "\n";
+#$html .= "Time range: $query_date_BEGIN to $query_date_END\n\n";
+#$html .= "---------- TOTALS, PEAKS and AVERAGES\n";
 
-$stmt="select AVG(sysload),AVG(channels_total),MAX(sysload),MAX(channels_total),MAX(processes) from server_performance where start_time <= '" . mysql_real_escape_string($query_date_END) . "' and start_time >= '" . mysql_real_escape_string($query_date_BEGIN) . "' and server_ip='" . mysql_real_escape_string($group) . "';";
+$stmt="select AVG(sysload),AVG(channels_total),MAX(sysload),MAX(channels_total),MAX(processes),UNIX_TIMESTAMP('" . mysql_real_escape_string($query_date_END) . "'),UNIX_TIMESTAMP('" . mysql_real_escape_string($query_date_BEGIN) . "') from server_performance where start_time <= '" . mysql_real_escape_string($query_date_END) . "' and start_time >= '" . mysql_real_escape_string($query_date_BEGIN) . "' and server_ip='" . mysql_real_escape_string($group) . "';";
 $rslt=mysql_query($stmt, $link);
 if ($DB) {$html .= "$stmt\n";}
 $row=mysql_fetch_row($rslt);
-$AVGload =	sprintf("%10s", $row[0]);
-$AVGchannels =	sprintf("%10s", $row[1]);
-$HIGHload =	$row[2];
-	$HIGHmulti = intval($HIGHload / 100);
-$HIGHchannels =	$row[3];
-$HIGHprocesses =$row[4];
+$AVGload =	$row[0]+0;
+$AVGchannels = $row[1]+0;
+$HIGHload =	$row[2]+0;
+$HIGHchannels =	$row[3]+0;
+$HIGHprocesses =$row[4]+0;
 if ($row[2] > $row[3]) {$HIGHlimit = $row[2];}
 else {$HIGHlimit = $row[3];}
 if ($HIGHlimit < $row[4]) {$HIGHlimit = $row[4];}
 if ($HIGHlimit == "") {$HIGHlimit=100;}
 
+# The multiplier is to get a relativistic view of user and system proc %...we also need to factor in the incrmental graph growth.
+    if ($HIGHlimit%50 != 0) $HIGHlimit+=(50-($HIGHlimit%50));
+	$HIGHmulti = $HIGHlimit / 100;
+
+$end_epoch=$row[5];
+$begin_epoch=$row[6];
+
 $stmt="select AVG(cpu_user_percent),AVG(cpu_system_percent),AVG(cpu_idle_percent) from server_performance where start_time <= '" . mysql_real_escape_string($query_date_END) . "' and start_time >= '" . mysql_real_escape_string($query_date_BEGIN) . "' and server_ip='" . mysql_real_escape_string($group) . "';";
 $rslt=mysql_query($stmt, $link);
 if ($DB) {$html .= "$stmt\n";}
 $row=mysql_fetch_row($rslt);
-$AVGcpuUSER =	sprintf("%10s", $row[0]);
-$AVGcpuSYSTEM =	sprintf("%10s", $row[1]);
-$AVGcpuIDLE =	sprintf("%10s", $row[2]);
+$AVGcpuUSER =	sprintf("%12s%%", round($row[0],0)+0);
+$plAVGcpuUSER =	sprintf("%s%%", round($row[0],0)+0);
+$AVGcpuSYSTEM =	sprintf("%12s%%", round($row[1],0)+0);
+$plAVGcpuSYSTEM =	sprintf("%s%%", round($row[1],0)+0);
+$AVGcpuIDLE =	sprintf("%12s%%", round($row[2],0)+0);
+$plAVGcpuIDLE =	sprintf("%s%%", round($row[2],0)+0);
 
 $stmt="select count(*),SUM(length_in_min) from call_log where extension NOT IN('8365','8366','8367') and  start_time <= '" . mysql_real_escape_string($query_date_END) . "' and start_time >= '" . mysql_real_escape_string($query_date_BEGIN) . "' and server_ip='" . mysql_real_escape_string($group) . "';";
 $rslt=mysql_query($stmt, $link);
 if ($DB) {$html .= "$stmt\n";}
 $row=mysql_fetch_row($rslt);
-$TOTALcalls =	sprintf("%10s", $row[0]);
-$OFFHOOKtime =	sprintf("%10s", $row[1]);
+$TOTALcalls =	sprintf("%12s", $row[0]+0);
+$OFFHOOKtime =	sprintf("%12s", $row[1]+0);
+
+$COMBchannels =	sprintf("%12s", ceil($AVGchannels) . ' / ' . $HIGHchannels);
+$COMBload =	sprintf("%12s", round($AVGload,1) . ' / ' . round($HIGHload,1));
 
 
-$html .= "Total Calls in/out on this server:        $TOTALcalls\n";
-$html .= "Total Off-Hook time on this server (min): $OFFHOOKtime\n";
-$html .= "Average/Peak channels in use for server:  $AVGchannels / $HIGHchannels\n";
-$html .= "Average/Peak load for server:             $AVGload / $HIGHload\n";
-$html .= "Average USER process cpu percentage:      $AVGcpuUSER %\n";
-$html .= "Average SYSTEM process cpu percentage:    $AVGcpuSYSTEM %\n";
-$html .= "Average IDLE process cpu percentage:      $AVGcpuIDLE %\n";
+#$html .= "Total Calls in/out on this server:        $TOTALcalls\n";
+#$html .= "Total Off-Hook time on this server (min): $OFFHOOKtime\n";
+#$html .= "Average/Peak channels in use for server:  $COMBchannels\n";
+#$html .= "Average/Peak load for server:             $COMBload\n";
+#$html .= "Average USER process cpu percentage:      $AVGcpuUSER\n";
+#$html .= "Average SYSTEM process cpu percentage:    $AVGcpuSYSTEM\n";
+#$html .= "Average IDLE process cpu percentage:      $AVGcpuIDLE\n";
 
-$html .= "\n";
-$html .= "---------- LINE GRAPH:\n";
+#$html .= "\n";
+#$html .= "---------- LINE GRAPH:\n";
+
+$period_min = ceil(($end_epoch-$begin_epoch)/60);
 
 
 
@@ -179,7 +193,7 @@ $i=0;
 while ($i < $rows_to_print)
 	{
 	$row=mysql_fetch_row($rslt);
-	$row[5] = intval(($row[5] + $row[6]) * $HIGHmulti);
+	$row[5] = intval($row[5] * $HIGHmulti);
 	$row[6] = intval($row[6] * $HIGHmulti);
 	fwrite ($DATfp, "$row[5]\t$row[6]\t$row[0]\t$row[1]\t$row[2]\t$row[3]\n");
 	$i++;
@@ -190,97 +204,111 @@ $rows_to_max = ($rows_to_print + 100);
 
 #print "rows: $i\n";
 
-$time_scale_abb = '5 minutes';
-$time_scale_tick = '1 minute';
-if ($i > 1000) {$time_scale_abb = '10 minutes';   $time_scale_tick = '2 minutes';}
-if ($i > 2000) {$time_scale_abb = '20 minutes';   $time_scale_tick = '4 minutes';}
-if ($i > 3000) {$time_scale_abb = '30 minutes';   $time_scale_tick = '5 minutes';}
-if ($i > 4000) {$time_scale_abb = '40 minutes';   $time_scale_tick = '10 minutes';}
-if ($i > 5000) {$time_scale_abb = '60 minutes';   $time_scale_tick = '15 minutes';}
-if ($i > 6000) {$time_scale_abb = '90 minutes';   $time_scale_tick = '15 minutes';}
-if ($i > 7000) {$time_scale_abb = '120 minutes';   $time_scale_tick = '30 minutes';}
+$time_scale_abb = ($period_min/12).' minutes';
+$time_scale_tick = ($period_min/60).' minute';
 
 $HTMcontent  = '';
 $HTMcontent .= "#proc page\n";
-$HTMcontent .= "#if @DEVICE in png,gif\n";
-$HTMcontent .= "   scale: 0.6\n";
+$HTMcontent .= "pagesize: 10 7.25\n";
+$HTMcontent .= "title: OSDial Server Performance Graph\n";
+$HTMcontent .= "Server IP: $group     Date/Time: ". dateToLocal($link,'first',date('Y-m-d H:i:s'),$webClientAdjGMT,'',$webClientDST,1)."\n";
 $HTMcontent .= "\n";
+$HTMcontent .= "backgroundcolor: xDDDDDD\n";
+$HTMcontent .= "titledetails: size=16 align=C color=x000099 font=DejaVuSans-Bold\n";
+$HTMcontent .= "#if @DEVICE in png,gif\n";
+$HTMcontent .= "   scale: 1.0\n";
 $HTMcontent .= "#endif\n";
+$HTMcontent .= "\n";
 $HTMcontent .= "#proc getdata\n";
 $HTMcontent .= "file: $DOCroot/$DATfile\n";
 $HTMcontent .= "fieldnames: userproc sysproc time load processes channels\n";
 $HTMcontent .= "\n";
 $HTMcontent .= "#proc areadef\n";
-$HTMcontent .= "title: Server $group   $query_date_BEGIN to $query_date_END\n";
-$HTMcontent .= "titledetails: size=14  align=C\n";
-$HTMcontent .= "rectangle: 1 1 14 7\n";
+$HTMcontent .= "title: $query_date_BEGIN to $query_date_END\n";
+$HTMcontent .= "titledetails: size=14  align=C color=x000099 font=DejaVuSans\n";
+$HTMcontent .= "rectangle: 1 1 9 5.4\n";
 $HTMcontent .= "xscaletype: time hh:mm:ss\n";
 $HTMcontent .= "xrange: $time_BEGIN $time_END\n";
 $HTMcontent .= "yrange: 0 $HIGHlimit\n";
+$HTMcontent .= "areacolor: xEEEEEE\n";
 $HTMcontent .= "\n";
 $HTMcontent .= "#proc xaxis\n";
 $HTMcontent .= "stubs: inc $time_scale_abb\n";
 $HTMcontent .= "minorticinc: $time_scale_tick\n";
-$HTMcontent .= "stubformat: hh:mm:ssa\n";
+$HTMcontent .= "stubformat: hh:mma\n";
+$HTMcontent .= "stubdetails: font=DejaVuSans\n";
 $HTMcontent .= "\n";
 $HTMcontent .= "#proc yaxis\n";
 $HTMcontent .= "stubs: inc 50\n";
-$HTMcontent .= "grid: color=yellow\n";
+$HTMcontent .= "stubdetails: font=DejaVuSans\n";
+$HTMcontent .= "grid: color=x547E9E\n";
 $HTMcontent .= "gridskip: min\n";
 $HTMcontent .= "ticincrement: 100 1000\n";
 $HTMcontent .= "\n";
 $HTMcontent .= "#proc lineplot\n";
 $HTMcontent .= "xfield: time\n";
 $HTMcontent .= "yfield: userproc\n";
-$HTMcontent .= "linedetails: color=purple width=.5\n";
+$HTMcontent .= "linedetails: color=purple width=1\n";
 $HTMcontent .= "fill: lavender\n";
-$HTMcontent .= "legendlabel: user proc%\n";
+$HTMcontent .= "legendlabel: user_proc%\n";
 $HTMcontent .= "maxinpoints: $rows_to_max\n";
 $HTMcontent .= "\n";
 $HTMcontent .= "#proc lineplot\n";
 $HTMcontent .= "xfield: time\n";
 $HTMcontent .= "yfield: sysproc\n";
-$HTMcontent .= "linedetails: color=yelloworange width=.5\n";
+$HTMcontent .= "linedetails: color=yelloworange width=1\n";
 $HTMcontent .= "fill: dullyellow\n";
-$HTMcontent .= "legendlabel: system proc%\n";
+$HTMcontent .= "legendlabel: system_proc%\n";
 $HTMcontent .= "maxinpoints: $rows_to_max\n";
 $HTMcontent .= "\n";
 $HTMcontent .= "#proc curvefit\n";
 $HTMcontent .= "xfield: time\n";
 $HTMcontent .= "yfield: load\n";
-$HTMcontent .= "linedetails: color=blue width=.5\n";
+$HTMcontent .= "linedetails: color=blue width=1\n";
 $HTMcontent .= "legendlabel: load\n";
 $HTMcontent .= "maxinpoints: $rows_to_max\n";
 $HTMcontent .= "\n";
 $HTMcontent .= "#proc curvefit\n";
 $HTMcontent .= "xfield: time\n";
 $HTMcontent .= "yfield: processes\n";
-$HTMcontent .= "linedetails: color=red width=.5\n";
+$HTMcontent .= "linedetails: color=red width=1\n";
 $HTMcontent .= "legendlabel: processes\n";
 $HTMcontent .= "maxinpoints: $rows_to_max\n";
 $HTMcontent .= "\n";
 $HTMcontent .= "#proc curvefit\n";
 $HTMcontent .= "xfield: time\n";
 $HTMcontent .= "yfield: channels\n";
-$HTMcontent .= "linedetails: color=green width=.5\n";
+$HTMcontent .= "linedetails: color=green width=1\n";
 $HTMcontent .= "legendlabel: channels\n";
 $HTMcontent .= "maxinpoints: $rows_to_max\n";
 $HTMcontent .= "\n";
 $HTMcontent .= "#proc legend\n";
-$HTMcontent .= "location: max-2 max\n";
+$HTMcontent .= "location: max-0.8 max+1\n";
+$HTMcontent .= "textdetails: font=DejaVuSans\n";
 $HTMcontent .= "seglen: 0.2\n";
+$HTMcontent .= "backcolor: xC0C0C0\n";
+$HTMcontent .= "\n";
+$HTMcontent .= "#proc annotate\n";
+$HTMcontent .= "textdetails: size=8 color=x000099 font=DejaVuSansMono\n";
+$HTMcontent .= "text: Total Calls In/Out: $TOTALcalls   Average/Peak Channels:$COMBchannels\n";
+$HTMcontent .= "Total Off-Hook Time:$OFFHOOKtime   Average/Peak Load:    $COMBload\n";
+$HTMcontent .= "Average CPU Use:  $plAVGcpuUSER USER   $plAVGcpuSYSTEM SYSTEM   $plAVGcpuIDLE IDLE\n";
+$HTMcontent .= "\n";
+$HTMcontent .= "location: 5 6\n";
 $HTMcontent .= "\n";
 
 fwrite ($HTMfp, "$HTMcontent");
 fclose($HTMfp);
 
 
+$ENV{'GDFONTPATH'} = '/opt/osdial/html/admin/templates/default';
+
 passthru("/usr/bin/pl -png $DOCroot/$HTMfile -o $DOCroot/$PNGfile");
 
 sleep(1);
 
-$html .= "</PRE>\n";
-$html .= "\n";
+#$html .= "</PRE>\n";
+#$html .= "\n";
 $html .= "<IMG SRC=\"/$PLOTroot/$PNGfile\">\n";
 
 
