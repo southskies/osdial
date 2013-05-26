@@ -388,7 +388,7 @@
     </item>
 
     <item pathId="adapt_method" sectionId="23" title="Adapt Method">
-  This field is the way to define how dialing is to take place. AVERAGE works to maintain an average, or the dropped percentage, by not imposing hard limits as aggressively as the other two methods. This mode uses a strong formula which renders the other two out of date. While in ADAPTIVE mode you cannot change the Auto Dial Level, OSDial effectively monitors the dial level when in predictive dialing mode. Note: below a certain number of agents (usually 7) you are better off using Available Only Tally. HARD LIMIT will dial predictively up to the dropped percentage and then not allow aggressive dialing once the drop limit is reached until the percentage goes down again. TAPERED allows for running over the dropped percentage in the first half of the shift -as defined by call_time selected for campaign- and gets more strict as the shift goes on. Note: The latter two are replaced with the much improved AVERAGE and are only kept for backward compatibility.
+  This field is the way to define how dialing is to take place. AVERAGE works to maintain an average, or the dropped percentage, by not imposing hard limits as aggressively as the other two methods. This mode uses a strong formula which renders the other two out of date. While in ADAPTIVE mode you cannot change the Auto Dial Level, OSDial effectively monitors the dial level when in predictive dialing mode. Note: below a certain number of agents (usually 7) you are better off using Available Only Tally. HARD LIMIT will dial predictively up to the dropped percentage and then not allow aggressive dialing once the drop limit is reached until the percentage goes down again. TAPERED allows for running over the dropped percentage in the first half of the shift, as defined by the Latest Server Time for the campaign, and gets more strict as the shift goes on. Note: The latter two are replaced with the much improved AVERAGE and are only kept for backward compatibility.
     </item>
 	
 	<item pathId="auto_dial_assist" sectionId="24" title="Auto Assist">
@@ -687,6 +687,23 @@
 
     <item pathId="carrier" sectionId="93" title="Carrier">
   When a carrier is selected, it will use it for all outbound calls from this campaign, otherwise it will use the default carrier set in the system settings.
+    </item>
+
+    <item pathId="dial_method" sectionId="94" title="Dial Methods">
+  The dialer has 3 different primary dialing modes.&lt;br&gt;
+  &lt;br&gt;
+  &lt;b&gt;WARNING:&lt;/b&gt; When switching from MANUAL to RATIO/ADAPTIVE and vise-versa, each agent must logout for the change to become effective for them.&lt;br&gt;
+  &lt;br&gt;
+  &lt;b&gt;MANUAL:&lt;/b&gt; When in manual mode, the agent is responsible for initiating calls by clicking 'Dial Next Number', 'Manual Dial', or 'Fast Dial'. After selecting 'Dial Next Number', the next lead in queue is assinged to the agent, the lead information is displayed, and will be dialed when the agent clicks 'Dial' or after the preview dial timeout. When 'Manual Dial' or 'Fast Dial' are clicked, the system will dial an agent supplied number, these functions are also available in RATIO and ADAPTIVE, they can be disabled for the campaign or per-agent.&lt;br&gt;
+  &lt;br&gt;
+  &lt;b&gt;RATIO:&lt;/b&gt; In ratio mode, the system manages the initation of calls, it attepts to place serveral calls concurrently, using the number of active agents times the Dial Level (for the number of concurrent calls to place). In ratio, the manager is resposible for monitoring and adjusting the Dial Level as this mode does NOT factor in dropped calls.&lt;br&gt;
+  &lt;br&gt;
+  &lt;b&gt;ADAPTIVE:&lt;/b&gt; In adaptive mode, the system manages calls just like Ratio Mode by using the Dial Level to calculate the number of concurrent calls to place. However, when active, one of three adaptive profiles manages the Dial Level automatically. The profiles factor in dropped calls percentages, average answered counts, shift-times, etc. The goal of these profiles is to keep the dropped call percentage below the defined threshold (usually 3%).&lt;br&gt;
+    &amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;b&gt;PROFILES:&lt;/b&gt;&lt;br&gt;
+      &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;b&gt;AVERAGE&lt;/b&gt; works to maintain an average dropped call percentage over several different factored intervals. This mode will provide you with a more rounded calling experience and is the recommended profile to use.&lt;br&gt;
+      &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;b&gt;HARD LIMIT&lt;/b&gt; will dial until to the dropped percentage is met and then NOT allow more aggressive dialing until the percentage goes down again.&lt;br&gt;
+      &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;b&gt;TAPERED SHIFT&lt;/b&gt; allows for running over the dropped percentage in the start and gradually gets more strict and end of the shift (set in 'Latest Server Time').&lt;br&gt;
+
     </item>
     	
   </section>
@@ -1124,8 +1141,8 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
   This is the two letter code for the state that this calling time definition is for. For this to be in effect the local call time that is set in the campaign must have this state call time record in it as well as all of the leads having two letter state codes in them.
     </item>
 
-    <item pathId="use_recycle_gap" sectionId="8" title="Add No-Call Period to Recylce Delay">
-  This option when enabled will add a "gap" to the recylce delay.  This "gap" is the length of time between when the call-time started today and when it last ended.
+    <item pathId="use_recycle_gap" sectionId="8" title="Add No-Call Period to Recycle Delay">
+  This option when enabled will add a "gap" to the recycle delay.  This "gap" is the length of time between when the call-time started today and when it last ended.
     </item>
   </section>
 

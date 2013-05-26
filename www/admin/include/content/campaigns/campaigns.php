@@ -1567,6 +1567,8 @@ if ($ADD==31) {
 				echo "<div id=DialModeSelRatio class=inactive-button>&nbsp;<br /></div>";
 			}
 			echo "<input type=button onclick=\"$rfunc\" ondblclick=\"$rfunc;document.forms[0].onsubmit=null;dmsc=document.getElementsByName('change_mode');if (dmsc.length>0) dmsc[0].click();\" Xclass=$dial_method_r_class name=dial_method_button value=RATIO></td>";
+
+			echo "<td align=center>".helptag('osdial_campaigns-dial_method')."</td>";
 			
 			echo "</tr></table></center>";
 			
