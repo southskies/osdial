@@ -53,8 +53,14 @@ $NOW_TIME = date("Y-m-d H:i:s");
 $STARTtime = date("U");
 
 if ($query_date=='') {$query_date = $NOW_DATE;}
-if ($begin_query_time=='') {$begin_query_time = Date('H:i:s',strtotime(date('H:i:s'))-3600);}
-if ($end_query_time=='') {$end_query_time = date('H:i:s');}
+if ($begin_query_time=='') {$begin_query_time = Date('H:i',strtotime(date('H:i:s'))-3600).':00';}
+if ($end_query_time=='') {$end_query_time = date('H:i').':59';}
+$begin_time = OSDpreg_replace('/:\d\d$/','',$begin_query_time);
+$end_time = OSDpreg_replace('/:\d\d$/','',$end_query_time);
+list($bh,$bm) = OSDpreg_split('/:/',$begin_time);
+list($eh,$em) = OSDpreg_split('/:/',$end_time);
+$begin_time = sprintf('%02d:%02d',$bh,$bm);
+$end_time = sprintf('%02d:%02d',$eh,$em);
 
 $stmt="select server_ip from servers;";
 $rslt=mysql_query($stmt, $link);
@@ -75,9 +81,15 @@ $html .= "<br><font class=top_header color=$default_text size=+1>SERVER PERFORMA
 $html .= "<FORM ACTION=\"$PHP_SELF\" METHOD=GET>\n";
 $html .= "<input type=hidden name=ADD value=\"$ADD\">\n";
 $html .= "<input type=hidden name=SUB value=\"$SUB\">\n";
-$html .= "Date: <INPUT TYPE=TEXT NAME=query_date SIZE=12 MAXLENGTH=10 VALUE=\"$query_date\"> &nbsp; \n";
-$html .= "From: <INPUT TYPE=TEXT NAME=begin_query_time SIZE=10 MAXLENGTH=8 VALUE=\"$begin_query_time\"> \n";
-$html .= "To: <INPUT TYPE=TEXT NAME=end_query_time SIZE=10 MAXLENGTH=8 VALUE=\"$end_query_time\"> \n";
+$html .= "Date: ";
+
+$html .= "<script>\nvar cal1 = new CalendarPopup('caldiv1');\ncal1.showNavigationDropdowns();\n</script>\n";
+$html .= "<input type=text name=query_date size=11 maxlength=10 value=\"$query_date\">\n";
+$html .= "<a href=# onclick=\"cal1.addDisabledDates(formatDate(new Date().addDays(1),'yyyy-MM-dd'),null);cal1.select(document.forms[0].query_date,'acal1','yyyy-MM-dd'); return false;\" name=acal1 id=acal1>\n";
+$html .= "<img width=18 src=\"templates/default/images/calendar.png\" style=border:0px;></a>\n";
+
+$html .= "From: <INPUT TYPE=TEXT NAME=begin_query_time SIZE=10 MAXLENGTH=8 VALUE=\"$begin_time\"> \n";
+$html .= "To: <INPUT TYPE=TEXT NAME=end_query_time SIZE=10 MAXLENGTH=8 VALUE=\"$end_time\"> \n";
 $html .= "&nbsp;Server: <SELECT SIZE=1 NAME=group>\n";
 	$o=0;
 	while ($servers_to_print > $o)
@@ -90,6 +102,7 @@ $html .= "</SELECT> \n";
 $html .= "<INPUT TYPE=SUBMIT NAME=SUBMIT VALUE=SUBMIT>\n";
 //$html .= "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a href=\"./admin.php?ADD=999999\">REPORTS</a> </FONT>\n";
 $html .= "</FORM>\n";
+$html .= "<div id=\"caldiv1\" style=\"position:absolute;visibility:hidden;background-color:white;\"></div>";
 
 #$html .= "<PRE><FONT SIZE=2>\n";
 
