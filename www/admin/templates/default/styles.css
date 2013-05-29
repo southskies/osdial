@@ -582,7 +582,10 @@ td.hover:hover {background-color: #A4DCE6; font-weight:bold;} /* #A4DCE6 */
 .top_header {
     text-shadow: 1px 1px 1px #5F6E82,
                 -1px -1px 1px #B3CFF3;
-}		
+}
+.top_header_white {
+    text-shadow: 1px 1px 1px #5F6E82;
+}
 .top_header2 {
     text-shadow: 1px 1px 1px #888;
 }	
