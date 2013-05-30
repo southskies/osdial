@@ -219,7 +219,7 @@ function report_realtime_detail() {
     $html .= "<input type=hidden name=cpuinfo value=\"$cpuinfo\">\n";
 
     $html .= "<br><p class=centered>";
-    $html .= "<font class=top_header color=$default_text size=+1>CAMPAIGN DETAILS</font><br /><br />";
+    $html .= "<font class=top_header_white color=$default_text size=+1>CAMPAIGN DETAILS</font><br /><br />";
 
     //$html .= "<table frame=border><tr><td><font size=1>Credit Left:</font><font size=2 color=#060> 5 days</font></td></tr></table>";
     //$html .= "<table frame=border><tr><td><font size=1>Credit Left:</font><font size=2 color=#060> $321.17</font></td></tr></table>";
