@@ -85,6 +85,8 @@ start() {
 				if [ -z "$INET" ]; then
 					INET=`/sbin/ip ad li dev eth1 | grep 'inet ' | cut -d ' ' -f 6 | cut -d '/' -f 1`
 				fi
+				. /etc/sysconfig/network
+				hostname $HOSTNAME
 			fi
 
 			[ "${PLACTIVE}" -gt 0 ] && (clear; /usr/bin/plymouth --hide-splash pause_progress) || :
