@@ -35,19 +35,24 @@ use strict;
 use OSDial;
 use Getopt::Long;
 use IO::Interface::Simple;
+use Data::Dumper;
 $|++;
 
 # Identify myself.
 my $prog = 'osdial_astgen.pl';
 
 # Declare command-line options.
-my($DB, $CLOhelp, $CLOtest, $CLOshowip, $CLOquiet);
+my($DB, $CLOhelp, $CLOtest, $CLOshowip, $CLOquiet, $CLOexpand, $CLOrealtime, $CLOrealtime_off);
 my(%reloads);
+
+my $realtime_ext = {};
 
 my $osdial = OSDial->new('DB'=>$DB);
 
 # Auto-creation header.
 my $achead = ";\n; WARNING: AUTO-CREATED FILE.\n; Any changes you make will be overwritten!\n;\n";
+
+$CLOrealtime=1;
 
 # Read in command-line options.
 if (scalar @ARGV) {
@@ -56,6 +61,9 @@ if (scalar @ARGV) {
                 'debug!' => \$DB,
                 'test!' => \$CLOtest,
                 'quiet!' => \$CLOquiet,
+                'expand!' => \$CLOexpand,
+                'realtime!' => \$CLOrealtime,
+                'Realtime!' => \$CLOrealtime_off,
                 'showip!' => \$CLOshowip
         );
         if ($DB) {
@@ -65,6 +73,9 @@ if (scalar @ARGV) {
                 print "CLOhelp-     $CLOhelp\n";
                 print "CLOshowip-   $CLOshowip\n";
                 print "CLOquiet-    $CLOquiet\n";
+                print "CLOexpand-   $CLOexpand\n";
+                print "CLOrealtime- $CLOrealtime\n";
+                print "CLORealtimeO-$CLOrealtime_off\n";
                 print "CLOtest-     $CLOtest\n";
                 print "\n";
         }
@@ -75,12 +86,15 @@ if (scalar @ARGV) {
                 print "  [--debug]        = debug\n";
                 print "  [-t|--test]      = test only\n";
                 print "  [-q|--quiet]     = Quiet output\n";
+                print "  [-e|--expand]    = Expand Pattern Matching Extensions\n";
+                print "  [-r|--realtime]  = Utilize Asterisk Realtime Configuration (default)\n";
+                print "  [-R]             = Disable Asterisk Realtime Configuration\n";
                 print "  [-s|--showip]    = Show Interface IPs\n\n";
                 exit 0;
         }
 }
-
-
+$CLOexpand=1 if ($CLOrealtime);
+$CLOrealtime=0 if ($CLOrealtime_off);
 
 # Get all of the IPs on this machines interfaces.
 my $interfaces = get_myips();
@@ -208,11 +222,123 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 	# (osdial_extensions_phones.conf osdial_sip_phones.conf osdial_iax_phones.conf)
 	gen_phones($dcc,$dccdp);
 
+	# Generate system level extensions, custom extensions, media, tts, etc.
+	gen_osdial_extensions();
+
 
 	foreach my $reload (keys %reloads) {
 		print "    Executing " . $reload . "...\n" unless ($CLOquiet);
 		`/usr/sbin/asterisk -rx "$reload" > /dev/null 2>&1`;
 		sleep 5;
+	}
+
+	if (scalar keys %{$realtime_ext} > 0) {
+		my $sqlsect='';
+		my $sqlparams={};
+		my $sqlfile = "/etc/asterisk/res_mysql.conf";
+		my($sqldata);
+		open(SQL, $sqlfile);
+		while (my $sqlline = <SQL>) {
+			$sqlline =~ s/\n|\r\n//g;
+			if ($sqlline =~ /(^\s*\[|^\s*\w+\s*\=|^[^\;].*$)/) {
+				my $tsqlsect = $sqlline;
+				$tsqlsect =~ s/^\s*[\[](\w+)[\]]\s*.*$|^.*$/$1/;
+				$sqlsect = $tsqlsect if ($tsqlsect ne '');
+				if ($sqlsect ne '') {
+					$sqlline =~ s/^\s*(\w+)\s*(\=)\s*(.*)$|^.*$/$1$2$3/;
+					my ($sqlkey,$sqlval) = split(/\=/,$sqlline,2);
+					$sqlparams->{$sqlsect}{$sqlkey} = $sqlval if (defined($sqlkey) and $sqlkey ne '');
+				}
+			}
+		}
+		close(SQL);
+		my $rtdb='dialer';
+		$osdial->sql_connect('RT',$sqlparams->{$rtdb}{'dbname'},$sqlparams->{$rtdb}{'dbhost'},$sqlparams->{$rtdb}{'dbport'},$sqlparams->{$rtdb}{'dbuser'},$sqlparams->{$rtdb}{'dbpass'});
+
+		# Cycle through all extensions and priorities, remove non-existant entries.
+		my $rtsql = sprintf("SELECT context,exten,priority,count(*) as extcount FROM extensions GROUP BY context,exten,priority;");
+		my $rtext_del = {};
+		my $rtprio_del = {};
+		while (my $sret = $osdial->sql_query($rtsql,'RT')) {
+			if (!defined($realtime_ext->{$sret->{context}}{$sret->{exten}})) {
+				$rtext_del->{$sret->{context}.'::'.$sret->{exten}} = 1;
+			} elsif (!defined($realtime_ext->{$sret->{context}}{$sret->{exten}}{$sret->{priority}})) {
+				$rtprio_del->{$sret->{context}.'::'.$sret->{exten}.'::'.$sret->{priority}}=1;
+			}
+		}
+		foreach my $extdel (keys %{$rtext_del}) {
+			my($rtcontext,$rtexten) = split(/::/g,$extdel);
+			my $rtsql = sprintf("DELETE FROM extensions WHERE context='%s' AND exten='%s';",$osdial->mres($rtcontext),$osdial->mres($rtexten));
+			$osdial->sql_execute($rtsql,'RT');
+		}
+		foreach my $priodel (keys %{$rtprio_del}) {
+			my($rtcontext,$rtexten,$rtprio) = split(/::/g,$priodel);
+			my $rtsql = sprintf("DELETE FROM extensions WHERE context='%s' AND exten='%s' AND priority='%s';",$osdial->mres($rtcontext),$osdial->mres($rtexten),$osdial->mres($rtprio));
+			$osdial->sql_execute($rtsql,'RT');
+		}
+
+		my $rtins_cnt=0;
+		my $rtins_sql = '';
+		foreach my $rtcontext (sort {$a <=> $b} keys %{$realtime_ext}) {
+			foreach my $rtexten (sort {$a <=> $b} keys %{$realtime_ext->{$rtcontext}}) {
+				my $rtext_mod = 0;
+				my $rtprio_cnt = 0;
+				my $rtprio_last = 0;
+				foreach my $rtprio (sort {$a <=> $b} keys %{$realtime_ext->{$rtcontext}{$rtexten}}) {
+					my $rtprio_mod = 0;
+					my $rtprio_exist = 0;
+					my $rtapp = $realtime_ext->{$rtcontext}{$rtexten}{$rtprio}{'app'};
+					my $rtappdata = $realtime_ext->{$rtcontext}{$rtexten}{$rtprio}{'appdata'};
+					my $rtsql = sprintf("SELECT * FROM extensions WHERE context='%s' AND exten='%s' AND priority='%d';",$osdial->mres($rtcontext),$osdial->mres($rtexten),$osdial->mres($rtprio));
+					while (my $sret = $osdial->sql_query($rtsql,'RT')) {
+						unless ($sret->{'app'} eq $rtapp and $sret->{'appdata'} eq $rtappdata) {
+							$rtprio_mod++;
+							$rtext_mod++;
+						}
+						$rtprio_last = $sret->{'priority'};
+						$rtprio_exist++;
+					}
+					# If priority exists and is different, perform update.
+					if ($rtprio_exist>0 and $rtprio_mod>0) {
+						my $rtsql = sprintf("UPDATE extensions SET app='%s',appdata='%s' WHERE context='%s' AND exten='%s' AND priority='%d';",$osdial->mres($rtapp),$osdial->mres($rtappdata),$osdial->mres($rtcontext),$osdial->mres($rtexten),$osdial->mres($rtprio));
+						$osdial->sql_execute($rtsql,'RT');
+						$rtext_mod--;
+					}
+					$rtprio_cnt++;
+				}
+				# Delete all matching extensions if the priority count doesn't match or the exten was modified.
+				if ($rtprio_last!=0 and ($rtext_mod>0 or $rtprio_cnt!=$rtprio_last)) {
+					my $rtsql = sprintf("DELETE FROM extensions WHERE context='%s' AND exten='%s';",$osdial->mres($rtcontext),$osdial->mres($rtexten));
+					$osdial->sql_execute($rtsql,'RT');
+					$rtprio_last=0;
+				}
+				# Insert new records if extension was modified, or that db priorities are 0 and there are more than 0 priorities to add.
+				if ($rtext_mod>0 or ($rtprio_last==0 and $rtprio_cnt>0)) {
+					foreach my $rtprio (sort {$a <=> $b} keys %{$realtime_ext->{$rtcontext}{$rtexten}}) {
+						my $rtapp = $realtime_ext->{$rtcontext}{$rtexten}{$rtprio}{'app'};
+						my $rtappdata = $realtime_ext->{$rtcontext}{$rtexten}{$rtprio}{'appdata'};
+						if ($rtins_cnt++==0) {
+							$rtins_sql .= sprintf("INSERT INTO extensions (context,exten,priority,app,appdata) VALUES ('%s','%s','%d','%s','%s')",$osdial->mres($rtcontext),$osdial->mres($rtexten),$osdial->mres($rtprio),$osdial->mres($rtapp),$osdial->mres($rtappdata));
+						} else {
+							$rtins_sql .= sprintf(",('%s','%s','%d','%s','%s')",$osdial->mres($rtcontext),$osdial->mres($rtexten),$osdial->mres($rtprio),$osdial->mres($rtapp),$osdial->mres($rtappdata));
+						}
+						if ($rtins_cnt>500) {
+							$rtins_sql .= ';';
+							$rtins_cnt=0;
+							$osdial->sql_execute($rtins_sql,'RT');
+							$rtins_sql='';
+						}
+					}
+				}
+			}
+		}
+		if ($rtins_sql ne '') {
+			$rtins_sql .= ';';
+			$rtins_cnt=0;
+			$osdial->sql_execute($rtins_sql,'RT');
+			$rtins_sql='';
+		}
+
 	}
 }
 
@@ -295,12 +421,6 @@ sub gen_servers {
 	$isvr .= "requirecalltoken=no\n";
 	$isvr .= "qualify=no\n";
 
-	$esvr .= "; Local blind monitoring\n";
-	$esvr .= "exten => _0860XXXX,1,Dial(\${TRUNKblind}/6\${EXTEN:1},55,o)\n";
-	$esvr .= "exten => _0860XXXX,2,Hangup()\n";
-	$esvr .= "exten => _0X860XXXX,1,Dial(\${TRUNKblind}/\${EXTEN:1},55,o)\n";
-	$esvr .= "exten => _0X860XXXX,2,Hangup()\n";
-
 	$ireg .= "register => ASTloop:$pass\@127.0.0.1:40569\n";
 	$ireg .= "register => ASTblind:$pass\@127.0.0.1:41569\n";
 
@@ -320,15 +440,23 @@ sub gen_servers {
 		my $fsip = sprintf('%.3d*%.3d*%.3d*%.3d',@sip);
 		my $fsip2 = sprintf('%.3d%.3d%.3d%.3d',@sip);
 		$esvr .= ";\n;" . $sret->{server_id} . ' - ' . $sret->{server_ip} . "\n";
-		$esvr .= ";exten => _" . $fsip . "*.,1,Goto(osdial,\${EXTEN:16},1)\n";
-		$esvr .= ";exten => _" . $fsip . "#.,1,Goto(osdial,\${EXTEN:16},1)\n";
-		$esvr .= ";exten => _" . $fsip2 . ".,1,Goto(osdial,\${EXTEN:12},1)\n";
-		$esvr .= "exten => _" . $fsip . "*.,1,Dial(Local/\${EXTEN:16}\@osdial,,o)\n";
-		$esvr .= "exten => _" . $fsip . "*.,2,Hangup()\n";
-		$esvr .= "exten => _" . $fsip . "#.,1,Dial(Local/\${EXTEN:16}\@osdial,,o)\n";
-		$esvr .= "exten => _" . $fsip . "#.,2,Hangup()\n";
-		$esvr .= "exten => _" . $fsip2 . ".,1,Dial(Local/\${EXTEN:12}\@osdial,,o)\n";
-		$esvr .= "exten => _" . $fsip2 . ".,2,Hangup()\n";
+		#$esvr .= procexten("osdial","_".$fsip."*.","1","Goto","osdial,\${EXTEN:16},1");
+		#$esvr .= procexten("osdial","_".$fsip."#.","1","Goto","osdial,\${EXTEN:16},1");
+		#$esvr .= procexten("osdial","_".$fsip2.".","1","Goto","osdial,\${EXTEN:12},1");
+		$esvr .= procexten("osdial","_".$fsip."*.","1","Dial","Local/\${EXTEN:16}\@osdial,,o");
+		$esvr .= procexten("osdial","_".$fsip."*.","2","Hangup","");
+		$esvr .= procexten("osdial","_".$fsip."#.","1","Dial","Local/\${EXTEN:16}\@osdial,,o");
+		$esvr .= procexten("osdial","_".$fsip."#.","2","Hangup","");
+		$esvr .= procexten("osdial","_".$fsip2.".","1","Dial","Local/\${EXTEN:12}\@osdial,,o");
+		$esvr .= procexten("osdial","_".$fsip2.".","2","Hangup","");
+
+		procexten("osdialEXT","_".$fsip."*.","1","Goto","osdial,\${EXTEN:16},1");
+		procexten("osdialEXT","_".$fsip."#.","1","Goto","osdial,\${EXTEN:16},1");
+		procexten("osdialEXT","_".$fsip2.".","1","Goto","osdial,\${EXTEN:12},1");
+
+		procexten("osdialBLOCK","_".$fsip."*.","1","Goto","osdial,\${EXTEN:16},1");
+		procexten("osdialBLOCK","_".$fsip."#.","1","Goto","osdial,\${EXTEN:16},1");
+		procexten("osdialBLOCK","_".$fsip2.".","1","Goto","osdial,\${EXTEN:12},1");
 
 		$isvr .= ";\n;" . $sret->{server_id} . ' - ' . $sret->{server_ip} . "\n";
 		$isvr .= "[" . $sret->{server_id} . "]\n";
@@ -381,10 +509,15 @@ sub gen_servers {
 		my @sip = split /\./, $sret->{server_ip};
 		my $fsip = sprintf('%.3d*%.3d*%.3d*%.3d',@sip);
 		$esvr .= ";\n;" . $sret->{server_id} . ' - ' . $sret->{server_ip} . "\n";
-		$esvr .= "exten => _" . $fsip . "*.,1,Dial(SIP/" . $sret->{server_id} . "/\${EXTEN},,o)\n";
-		$esvr .= "exten => _" . $fsip . "*.,2,Hangup()\n";
-		$esvr .= "exten => _" . $fsip . "#.,1,Dial(IAX2/" . $sret->{server_id} . "/\${EXTEN},,o)\n";
-		$esvr .= "exten => _" . $fsip . "#.,2,Hangup()\n";
+		$esvr .= procexten("osdial","_" . $fsip . "*.","1","Dial","SIP/" . $sret->{server_id} . "/\${EXTEN},,o");
+		$esvr .= procexten("osdial","_" . $fsip . "*.","2","Hangup","");
+		$esvr .= procexten("osdial","_" . $fsip . "#.","1","Dial","IAX2/" . $sret->{server_id} . "/\${EXTEN},,o");
+		$esvr .= procexten("osdial","_" . $fsip . "#.","2","Hangup","");
+
+		procexten("osdialEXT","_" . $fsip . "*.","1","Goto","osdial,\${EXTEN},1");
+		procexten("osdialEXT","_" . $fsip . "#.","1","Goto","osdial,\${EXTEN},1");
+		procexten("osdialBLOCK","_" . $fsip . "*.","1","Goto","osdial,\${EXTEN},1");
+		procexten("osdialBLOCK","_" . $fsip . "#.","1","Goto","osdial,\${EXTEN},1");
 
 		$isvr .= ";\n;" . $sret->{server_id} . ' - ' . $sret->{server_ip} . "\n";
 		$isvr .= "[" . $sret->{server_id} . "]\n";
@@ -442,19 +575,28 @@ sub gen_conferences {
 	my $cnf = $achead;
 	my $mtm = $achead;
 	$mtm .= "conf => 8600\nconf => 8601,1234\n";
-	$cnf .= ";\n;Volume adjustments\n";
-	$cnf .= "exten => _X4860XXXX,1,MeetMeAdmin(\${EXTEN:2},T,\${EXTEN:0:1})\n";
-	$cnf .= "exten => _X4860XXXX,2,Hangup()\n";
-	$cnf .= "exten => _X3860XXXX,1,MeetMeAdmin(\${EXTEN:2},t,\${EXTEN:0:1})\n";
-	$cnf .= "exten => _X3860XXXX,2,Hangup()\n";
-	$cnf .= "exten => _X2860XXXX,1,MeetMeAdmin(\${EXTEN:2},m,\${EXTEN:0:1})\n";
-	$cnf .= "exten => _X2860XXXX,2,Hangup()\n";
-	$cnf .= "exten => _X1860XXXX,1,MeetMeAdmin(\${EXTEN:2},M,\${EXTEN:0:1})\n";
-	$cnf .= "exten => _X1860XXXX,2,Hangup()\n";
-	$cnf .= "exten => _5555860XXXX,1,MeetMeAdmin(\${EXTEN:4},K)\n";
-	$cnf .= "exten => _5555860XXXX,2,Hangup()\n";
-	$cnf .= "exten => _555587XXXXXX,1,MeetMeAdmin(\${EXTEN:4},K)\n";
-	$cnf .= "exten => _555587XXXXXX,2,Hangup()\n";
+	if (!$CLOexpand) {
+		$cnf .= ";\n;Volume adjustments\n";
+		$cnf .= procexten("osdial","_X4860XXXX","1","MeetMeAdmin","\${EXTEN:2},T,\${EXTEN:0:1}");
+		$cnf .= procexten("osdial","_X4860XXXX","2","Hangup","");
+		$cnf .= procexten("osdial","_X3860XXXX","1","MeetMeAdmin","\${EXTEN:2},t,\${EXTEN:0:1}");
+		$cnf .= procexten("osdial","_X3860XXXX","2","Hangup","");
+		$cnf .= procexten("osdial","_X2860XXXX","1","MeetMeAdmin","\${EXTEN:2},m,\${EXTEN:0:1}");
+		$cnf .= procexten("osdial","_X2860XXXX","2","Hangup","");
+		$cnf .= procexten("osdial","_X1860XXXX","1","MeetMeAdmin","\${EXTEN:2},M,\${EXTEN:0:1}");
+		$cnf .= procexten("osdial","_X1860XXXX","2","Hangup","");
+		$cnf .= procexten("osdial","_5555860XXXX","1","MeetMeAdmin","\${EXTEN:4},K");
+		$cnf .= procexten("osdial","_5555860XXXX","2","Hangup","");
+		$cnf .= procexten("osdial","_555587XXXXXX","1","MeetMeAdmin","\${EXTEN:4},K");
+		$cnf .= procexten("osdial","_555587XXXXXX","2","Hangup","");
+	}
+	if (!$CLOexpand) {
+		$cnf .= ";\n;Local blind monitoring\n";
+		$cnf .= procexten("osdial","_0860XXXX","1","Dial","\${TRUNKblind}/6\${EXTEN:1},55,o");
+		$cnf .= procexten("osdial","_0860XXXX","2","Hangup","");
+		$cnf .= procexten("osdial","_0X860XXXX","1","Dial","\${TRUNKblind}/\${EXTEN:1},55,o");
+		$cnf .= procexten("osdial","_0X860XXXX","2","Hangup","");
+	}
 
 	my $stmt = "SELECT conf_exten,server_ip FROM conferences WHERE";
 	foreach my $ip (@myips) {
@@ -463,12 +605,12 @@ sub gen_conferences {
 
 	#if ($asterisk_version =~ /^1\.6|^1\.8|^10\.|^11\./) {
 	#	$cnf .= ";\n; DAHDIBarge direct channel extensions\n";
-	#	$cnf .= "exten => _8612XXX,1,DAHDIBarge(\${EXTEN:4})\n";
+	#	$cnf .= procexten("osdial","_8612XXX","1","DAHDIBarge","\${EXTEN:4}");
 	#} else {
 	#	$cnf .= ";\n; ZapBarge direct channel extensions\n";
-	#	$cnf .= "exten => _8612XXX,1,ZapBarge(\${EXTEN:4})\n";
+	#	$cnf .= procexten("osdial","_8612XXX","1","ZapBarge","\${EXTEN:4}");
 	#}
-	#$cnf .= "exten => _8612XXX,2,Hangup()\n";
+	#$cnf .= procexten("osdial","_8612XXX","2","Hangup","");
 
 	chop $stmt; chop $stmt; chop $stmt;
 	print $stmt . "\n" if ($DB);
@@ -477,19 +619,47 @@ sub gen_conferences {
 	while (my $sret = $osdial->sql_query($stmt)) {
 		$cf = $sret->{conf_exten} unless ($cf);
 		$cl = $sret->{conf_exten};
-		if ($cl !~ /^8600...$/) {
+		if ($CLOexpand or $cl !~ /^8600...$/) {
 			if ($asterisk_version =~ /^1\.6|^1\.8|^10\.|^11\./) {
-				$cnf2 .= "exten => _" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN},q)\n";
-				$cnf2 .= "exten => _" . $sret->{conf_exten} . ",2,Hangup()\n";
+				if ($CLOexpand) {
+					foreach my $prenum (0..9) {
+						if ($prenum==0) {
+							foreach my $prenum2 (0..9) {
+								$cnf2 .= procexten("osdial",$prenum.$prenum2.$sret->{conf_exten},"1","Dial","\${TRUNKblind}/6\${EXTEN:1},55,o");
+								$cnf2 .= procexten("osdial",$prenum.$prenum2.$sret->{conf_exten},"2","Hangup","");
+							}
+						} else {
+							$cnf2 .= procexten("osdial",$prenum."4".$sret->{conf_exten},"1","MeetMeAdmin","\${EXTEN:2},T,\${EXTEN:0:1}");
+							$cnf2 .= procexten("osdial",$prenum."4".$sret->{conf_exten},"2","Hangup","");
+							$cnf2 .= procexten("osdial",$prenum."3".$sret->{conf_exten},"1","MeetMeAdmin","\${EXTEN:2},t,\${EXTEN:0:1}");
+							$cnf2 .= procexten("osdial",$prenum."3".$sret->{conf_exten},"2","Hangup","");
+							$cnf2 .= procexten("osdial",$prenum."2".$sret->{conf_exten},"1","MeetMeAdmin","\${EXTEN:2},m,\${EXTEN:0:1}");
+							$cnf2 .= procexten("osdial",$prenum."2".$sret->{conf_exten},"2","Hangup","");
+							$cnf2 .= procexten("osdial",$prenum."1".$sret->{conf_exten},"1","MeetMeAdmin","\${EXTEN:2},M,\${EXTEN:0:1}");
+							$cnf2 .= procexten("osdial",$prenum."1".$sret->{conf_exten},"2","Hangup","");
+						}
+					}
+					$cnf2 .= procexten("osdial","0".$sret->{conf_exten},"1","Dial","\${TRUNKblind}/6\${EXTEN:1},55,o");
+					$cnf2 .= procexten("osdial","0".$sret->{conf_exten},"2","Hangup","");
+					$cnf2 .= procexten("osdial","5555".$sret->{conf_exten},"1","MeetMeAdmin","\${EXTEN:4},K");
+					$cnf2 .= procexten("osdial","5555".$sret->{conf_exten},"2","Hangup","");
+					$cnf2 .= procexten("osdial",$sret->{conf_exten},"1","AGI","agi-OSDagent_conf.agi,genconf");
+					$cnf2 .= procexten("osdial",$sret->{conf_exten},"2","Hangup","");
+				} else {
+					$cnf2 .= procexten("osdial","_".$sret->{conf_exten},"1","Meetme","\${EXTEN},q");
+					$cnf2 .= procexten("osdial","_".$sret->{conf_exten},"2","Hangup","");
+				}
 			} else {
-				$cnf2 .= "exten => _" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN}|q\n";
-				$cnf2 .= "exten => _" . $sret->{conf_exten} . ",2,Hangup\n";
+				$cnf2 .= procexten("osdial","_".$sret->{conf_exten},"1","Meetme","\${EXTEN}|q");
+				$cnf2 .= procexten("osdial","_".$sret->{conf_exten},"2","Hangup","");
 			}
 		}
 		$mtm2 .= "conf => " . $sret->{conf_exten} . "\n";
 	}
-	$cnf2 .= "exten => _8600XXX,1,AGI(agi-OSDagent_conf.agi,genconf)\n";
-	$cnf2 .= "exten => _8600XXX,n,Hangup()\n";
+	if (!$CLOexpand) {
+		$cnf2 .= procexten("osdial","_8600XXX","1","AGI","agi-OSDagent_conf.agi,genconf");
+		$cnf2 .= procexten("osdial","_8600XXX","2","Hangup","");
+	}
 
 	$cnf .= ";\n; OSDial Conferences $cf - $cl\n";
 	$cnf .= $cnf2;
@@ -507,52 +677,84 @@ sub gen_conferences {
 	while (my $sret = $osdial->sql_query($stmt)) {
                 $cf = $sret->{conf_exten} unless ($cf);
                 $cl = $sret->{conf_exten};
-		if ($cl !~ /^8601...$/) {
+		if ($CLOexpand or $cl !~ /^8601...$/) {
 			if ($asterisk_version =~ /^1\.6|^1\.8|^10\.|^11\./) {
-				$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",1,Meetme(\${EXTEN},F)\n";
-				$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",2,Hangup()\n";
-				$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},F)\n";
-				$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",2,Hangup()\n";
-				$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",1,Set(SPYGROUP=\${EXTEN:1})\n";
-				$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",2,Meetme(\${EXTEN:1},F)\n";
-				$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",3,Hangup()\n";
-				$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Flq)\n";
-				$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",2,Hangup()\n";
-				$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Flq)\n";
-				$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",2,Hangup()\n";
-				$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
-				$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",2,Hangup()\n";
-				$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",1,Chanspy(,g(\${EXTEN:1})qwES)\n";
-				$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",2,Hangup()\n";
+				if ($CLOexpand) {
+					foreach my $prenum (0..9) {
+						if ($prenum==0) {
+							foreach my $prenum2 (0..9) {
+								$cnf2 .= procexten("osdial",$prenum.$prenum2.$sret->{conf_exten},"1","Dial","\${TRUNKblind}/6\${EXTEN:1},55,o");
+								$cnf2 .= procexten("osdial",$prenum.$prenum2.$sret->{conf_exten},"2","Hangup","");
+							}
+						} else {
+							$cnf2 .= procexten("osdial",$prenum."4".$sret->{conf_exten},"1","MeetMeAdmin","\${EXTEN:2},T,\${EXTEN:0:1}");
+							$cnf2 .= procexten("osdial",$prenum."4".$sret->{conf_exten},"2","Hangup","");
+							$cnf2 .= procexten("osdial",$prenum."3".$sret->{conf_exten},"1","MeetMeAdmin","\${EXTEN:2},t,\${EXTEN:0:1}");
+							$cnf2 .= procexten("osdial",$prenum."3".$sret->{conf_exten},"2","Hangup","");
+							$cnf2 .= procexten("osdial",$prenum."2".$sret->{conf_exten},"1","MeetMeAdmin","\${EXTEN:2},m,\${EXTEN:0:1}");
+							$cnf2 .= procexten("osdial",$prenum."2".$sret->{conf_exten},"2","Hangup","");
+							$cnf2 .= procexten("osdial",$prenum."1".$sret->{conf_exten},"1","MeetMeAdmin","\${EXTEN:2},M,\${EXTEN:0:1}");
+							$cnf2 .= procexten("osdial",$prenum."1".$sret->{conf_exten},"2","Hangup","");
+						}
+					}
+					$cnf2 .= procexten("osdial","0".$sret->{conf_exten},"1","Dial","\${TRUNKblind}/6\${EXTEN:1},55,o");
+					$cnf2 .= procexten("osdial","0".$sret->{conf_exten},"2","Hangup","");
+					$cnf2 .= procexten("osdial","5555".$sret->{conf_exten},"1","MeetMeAdmin","\${EXTEN:4},K");
+					$cnf2 .= procexten("osdial","5555".$sret->{conf_exten},"2","Hangup","");
+					$cnf2 .= procexten("osdial",$sret->{conf_exten},"1","AGI","agi-OSDagent_conf.agi,agentconf");
+					$cnf2 .= procexten("osdial",$sret->{conf_exten},"2","Hangup","");
+					foreach my $prenum (qw(1 2 3 6 7 9)) {
+						$cnf2 .= procexten("osdial",$prenum.$sret->{conf_exten},"1","AGI","agi-OSDagent_conf.agi,agentmon");
+						$cnf2 .= procexten("osdial",$prenum.$sret->{conf_exten},"2","Hangup","");
+					}
+				} else {
+					$cnf2 .= procexten("osdial","_".$sret->{conf_exten},"1","Meetme","\${EXTEN},F");
+					$cnf2 .= procexten("osdial","_".$sret->{conf_exten},"2","Hangup","");
+					$cnf2 .= procexten("osdial","_1".$sret->{conf_exten},"1","Meetme","\${EXTEN:1},F");
+					$cnf2 .= procexten("osdial","_1".$sret->{conf_exten},"2","Hangup","");
+					$cnf2 .= procexten("osdial","_2".$sret->{conf_exten},"1","Set","SPYGROUP=\${EXTEN:1}");
+					$cnf2 .= procexten("osdial","_2".$sret->{conf_exten},"2","Meetme","\${EXTEN:1},F");
+					$cnf2 .= procexten("osdial","_2".$sret->{conf_exten},"3","Hangup","");
+					$cnf2 .= procexten("osdial","_3".$sret->{conf_exten},"1","Meetme","\${EXTEN:1},Flq");
+					$cnf2 .= procexten("osdial","_3".$sret->{conf_exten},"2","Hangup","");
+					$cnf2 .= procexten("osdial","_6".$sret->{conf_exten},"1","Meetme","\${EXTEN:1},Flq");
+					$cnf2 .= procexten("osdial","_6".$sret->{conf_exten},"2","Hangup","");
+					$cnf2 .= procexten("osdial","_7".$sret->{conf_exten},"1","Meetme","\${EXTEN:1},Fq");
+					$cnf2 .= procexten("osdial","_7".$sret->{conf_exten},"2","Hangup","");
+					$cnf2 .= procexten("osdial","_9".$sret->{conf_exten},"1","Chanspy",",g(\${EXTEN:1})qwES");
+					$cnf2 .= procexten("osdial","_9".$sret->{conf_exten},"2","Hangup","");
+				}
 			} else {
-				$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",1,Meetme,\${EXTEN}|F\n";
-				$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",2,Hangup\n";
-				$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|F\n";
-				$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",2,Hangup\n";
-				$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|F\n";
-				$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",2,Hangup\n";
-				$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
-				$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",2,Hangup\n";
-				$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
-				$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",2,Hangup\n";
-				$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
-				$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",2,Hangup\n";
-				$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
-				$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",2,Hangup\n";
+				$cnf2 .= procexten("osdial","_".$sret->{conf_exten},"1","Meetme","\${EXTEN}|F");
+				$cnf2 .= procexten("osdial","_".$sret->{conf_exten},"2","Hangup","");
+				$cnf2 .= procexten("osdial","_1".$sret->{conf_exten},"1","Meetme","\${EXTEN:1}|F");
+				$cnf2 .= procexten("osdial","_1".$sret->{conf_exten},"2","Hangup","");
+				$cnf2 .= procexten("osdial","_2".$sret->{conf_exten},"1","Meetme","\${EXTEN:1}|F");
+				$cnf2 .= procexten("osdial","_2".$sret->{conf_exten},"2","Hangup","");
+				$cnf2 .= procexten("osdial","_3".$sret->{conf_exten},"1","Meetme","\${EXTEN:1}|Fmq");
+				$cnf2 .= procexten("osdial","_3".$sret->{conf_exten},"2","Hangup","");
+				$cnf2 .= procexten("osdial","_6".$sret->{conf_exten},"1","Meetme","\${EXTEN:1}|Fmq");
+				$cnf2 .= procexten("osdial","_6".$sret->{conf_exten},"2","Hangup","");
+				$cnf2 .= procexten("osdial","_7".$sret->{conf_exten},"1","Meetme","\${EXTEN:1}|Fq");
+				$cnf2 .= procexten("osdial","_7".$sret->{conf_exten},"2","Hangup","");
+				$cnf2 .= procexten("osdial","_9".$sret->{conf_exten},"1","Meetme","\${EXTEN:1}|Fmq");
+				$cnf2 .= procexten("osdial","_9".$sret->{conf_exten},"2","Hangup","");
 			}
 		}
 		$mtm2 .= "conf => " . $sret->{conf_exten} . "\n";
         }
-	$cnf2 .= "exten => _8601XXX,1,AGI(agi-OSDagent_conf.agi,agentconf)\n";
-	$cnf2 .= "exten => _8601XXX,n,Hangup()\n";
-	$cnf2 .= "exten => _68601XXX,1,AGI(agi-OSDagent_conf.agi,agentmon)\n";
-	$cnf2 .= "exten => _68601XXX,n,Hangup()\n";
-	$cnf2 .= "exten => _78601XXX,1,AGI(agi-OSDagent_conf.agi,agentmon)\n";
-	$cnf2 .= "exten => _78601XXX,n,Hangup()\n";
-	$cnf2 .= "exten => _98601XXX,1,AGI(agi-OSDagent_conf.agi,agentmon)\n";
-	$cnf2 .= "exten => _98601XXX,n,Hangup()\n";
-	$cnf2 .= "exten => _Z8601XXX,1,AGI(agi-OSDagent_conf.agi,agentmon)\n";
-	$cnf2 .= "exten => _Z8601XXX,n,Hangup()\n";
+	if (!$CLOexpand) {
+		$cnf2 .= procexten("osdial","_8601XXX","1","AGI","agi-OSDagent_conf.agi,agentconf");
+		$cnf2 .= procexten("osdial","_8601XXX","2","Hangup","");
+		$cnf2 .= procexten("osdial","_68601XXX","1","AGI","agi-OSDagent_conf.agi,agentmon");
+		$cnf2 .= procexten("osdial","_68601XXX","2","Hangup","");
+		$cnf2 .= procexten("osdial","_78601XXX","1","AGI","agi-OSDagent_conf.agi,agentmon");
+		$cnf2 .= procexten("osdial","_78601XXX","2","Hangup","");
+		$cnf2 .= procexten("osdial","_98601XXX","1","AGI","agi-OSDagent_conf.agi,agentmon");
+		$cnf2 .= procexten("osdial","_98601XXX","2","Hangup","");
+		$cnf2 .= procexten("osdial","_Z8601XXX","1","AGI","agi-OSDagent_conf.agi,agentmon");
+		$cnf2 .= procexten("osdial","_Z8601XXX","2","Hangup","");
+	}
 
 	$cnf .= ";\n; OSDIAL Agent Conferences $cf - $cl\n";
 	$cnf .= "; quiet entry and leaving conferences for OSDIAL $cf - $cl\n";
@@ -564,68 +766,83 @@ sub gen_conferences {
 	my $stmt = "SELECT conf_exten FROM osdial_remote_agents WHERE user_start LIKE 'va\%';";
         my ($cnf2,$mtm2,$cf,$cl);
 	while (my $sret = $osdial->sql_query($stmt)) {
-		if ($sret->{conf_exten} !~ /^87......$/) {
+		if ($CLOexpand or $sret->{conf_exten} !~ /^87......$/) {
 			if ($asterisk_version =~ /^1\.6|^1\.8|^10\.|^11\./) {
-				$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",1,Answer()\n";
-				$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",2,Playback(sip-silence)\n";
-				$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",3,Meetme(\${EXTEN},Fq)\n";
-				$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",4,Hangup()\n";
-				$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
-				$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",2,Hangup()\n";
-				$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
-				$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",2,Hangup()\n";
-				$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Flq)\n";
-				$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",2,Hangup()\n";
-				$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Flq)\n";
-				$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",2,Hangup()\n";
-				$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
-				$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",2,Hangup()\n";
-				$cnf2 .= "exten => _8" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
-				$cnf2 .= "exten => _8" . $sret->{conf_exten} . ",2,Hangup()\n";
-				$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",1,Chanspy(,g(\${EXTEN:1})qwES)\n";
-				$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",2,Hangup()\n";
+				if ($CLOexpand) {
+					$cnf2 .= procexten("osdial","5555".$sret->{conf_exten},"1","MeetMeAdmin","\${EXTEN:4},K");
+					$cnf2 .= procexten("osdial","5555".$sret->{conf_exten},"2","Hangup","");
+					$cnf2 .= procexten("osdial",$sret->{conf_exten},"1","Answer","");
+					$cnf2 .= procexten("osdial",$sret->{conf_exten},"2","Playback","sip-silence");
+					$cnf2 .= procexten("osdial",$sret->{conf_exten},"3","AGI","agi-OSDagent_conf.agi,vaconf");
+					$cnf2 .= procexten("osdial",$sret->{conf_exten},"4","Hangup","");
+					foreach my $prenum (qw(1 2 3 6 7 8 9)) {
+						$cnf2 .= procexten("osdial",$prenum.$sret->{conf_exten},"1","AGI","agi-OSDagent_conf.agi,vamon");
+						$cnf2 .= procexten("osdial",$prenum.$sret->{conf_exten},"2","Hangup","");
+					}
+				} else {
+					$cnf2 .= procexten("osdial","_".$sret->{conf_exten},"1","Answer","");
+					$cnf2 .= procexten("osdial","_".$sret->{conf_exten},"2","Playback","sip-silence");
+					$cnf2 .= procexten("osdial","_".$sret->{conf_exten},"3","Meetme","\${EXTEN},Fq");
+					$cnf2 .= procexten("osdial","_".$sret->{conf_exten},"4","Hangup","");
+					$cnf2 .= procexten("osdial","_1".$sret->{conf_exten},"1","Meetme","\${EXTEN:1},Fq");
+					$cnf2 .= procexten("osdial","_1".$sret->{conf_exten},"2","Hangup","");
+					$cnf2 .= procexten("osdial","_2".$sret->{conf_exten},"1","Meetme","\${EXTEN:1},Fq");
+					$cnf2 .= procexten("osdial","_2".$sret->{conf_exten},"2","Hangup","");
+					$cnf2 .= procexten("osdial","_3".$sret->{conf_exten},"1","Meetme","\${EXTEN:1},Flq");
+					$cnf2 .= procexten("osdial","_3".$sret->{conf_exten},"2","Hangup","");
+					$cnf2 .= procexten("osdial","_6".$sret->{conf_exten},"1","Meetme","\${EXTEN:1},Flq");
+					$cnf2 .= procexten("osdial","_6".$sret->{conf_exten},"2","Hangup","");
+					$cnf2 .= procexten("osdial","_7".$sret->{conf_exten},"1","Meetme","\${EXTEN:1},Fq");
+					$cnf2 .= procexten("osdial","_7".$sret->{conf_exten},"2","Hangup","");
+					$cnf2 .= procexten("osdial","_8".$sret->{conf_exten},"1","Meetme","\${EXTEN:1},Fq");
+					$cnf2 .= procexten("osdial","_8".$sret->{conf_exten},"2","Hangup","");
+					$cnf2 .= procexten("osdial","_9".$sret->{conf_exten},"1","Chanspy",",g(\${EXTEN:1})qwES");
+					$cnf2 .= procexten("osdial","_9".$sret->{conf_exten},"2","Hangup","");
+				}
 			} else {
-				$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",1,Answer()\n";
-				$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",2,Playback(sip-silence)\n";
-				$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",3,Meetme,\${EXTEN}|Fq\n";
-				$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",4,Hangup\n";
-				$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
-				$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",2,Hangup\n";
-				$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
-				$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",2,Hangup\n";
-				$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
-				$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",2,Hangup\n";
-				$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
-				$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",2,Hangup\n";
-				$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
-				$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",2,Hangup\n";
-				$cnf2 .= "exten => _8" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
-				$cnf2 .= "exten => _8" . $sret->{conf_exten} . ",2,Hangup\n";
-				$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
-				$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",2,Hangup\n";
+				$cnf2 .= procexten("osdial","_".$sret->{conf_exten},"1","Answer","");
+				$cnf2 .= procexten("osdial","_".$sret->{conf_exten},"2","Playback","sip-silence");
+				$cnf2 .= procexten("osdial","_".$sret->{conf_exten},"3","Meetme","\${EXTEN}|Fq");
+				$cnf2 .= procexten("osdial","_".$sret->{conf_exten},"4","Hangup","");
+				$cnf2 .= procexten("osdial","_1".$sret->{conf_exten},"1","Meetme","\${EXTEN:1}|Fq");
+				$cnf2 .= procexten("osdial","_1".$sret->{conf_exten},"2","Hangup","");
+				$cnf2 .= procexten("osdial","_2".$sret->{conf_exten},"1","Meetme","\${EXTEN:1}|Fq");
+				$cnf2 .= procexten("osdial","_2".$sret->{conf_exten},"2","Hangup","");
+				$cnf2 .= procexten("osdial","_3".$sret->{conf_exten},"1","Meetme","\${EXTEN:1}|Fmq");
+				$cnf2 .= procexten("osdial","_3".$sret->{conf_exten},"2","Hangup","");
+				$cnf2 .= procexten("osdial","_6".$sret->{conf_exten},"1","Meetme","\${EXTEN:1}|Fmq");
+				$cnf2 .= procexten("osdial","_6".$sret->{conf_exten},"2","Hangup","");
+				$cnf2 .= procexten("osdial","_7".$sret->{conf_exten},"1","Meetme","\${EXTEN:1}|Fq");
+				$cnf2 .= procexten("osdial","_7".$sret->{conf_exten},"2","Hangup","");
+				$cnf2 .= procexten("osdial","_8".$sret->{conf_exten},"1","Meetme","\${EXTEN:1}|Fq");
+				$cnf2 .= procexten("osdial","_8".$sret->{conf_exten},"2","Hangup","");
+				$cnf2 .= procexten("osdial","_9".$sret->{conf_exten},"1","Meetme","\${EXTEN:1}|Fmq");
+				$cnf2 .= procexten("osdial","_9".$sret->{conf_exten},"2","Hangup","");
 			}
 		}
 		$mtm2 .= "conf => " . $sret->{conf_exten} . "\n";
 	}
 
-	$cnf2 .= "exten => _87XXXXXX,1,Answer()\n";
-	$cnf2 .= "exten => _87XXXXXX,2,Playback(sip-silence)\n";
-	$cnf2 .= "exten => _87XXXXXX,3,AGI(agi-OSDagent_conf.agi,vaconf)\n";
-	$cnf2 .= "exten => _87XXXXXX,4,Hangup()\n";
-	$cnf2 .= "exten => _Z87XXXXXX,1,AGI(agi-OSDagent_conf.agi,vamon)\n";
-	$cnf2 .= "exten => _Z87XXXXXX,2,Hangup()\n";
+	if (!$CLOexpand) {
+		$cnf2 .= procexten("osdial","_87XXXXXX","1","Answer","");
+		$cnf2 .= procexten("osdial","_87XXXXXX","2","Playback","sip-silence");
+		$cnf2 .= procexten("osdial","_87XXXXXX","3","AGI","agi-OSDagent_conf.agi,vaconf");
+		$cnf2 .= procexten("osdial","_87XXXXXX","4","Hangup","");
+		$cnf2 .= procexten("osdial","_Z87XXXXXX","1","AGI","agi-OSDagent_conf.agi,vamon");
+		$cnf2 .= procexten("osdial","_Z87XXXXXX","2","Hangup","");
+	}
 
 	if (defined($osdial->{VARoldivr})) {
-		$cnf2 .= "exten => 487487,1,Playback(sip-silence)\n";
-		$cnf2 .= "exten => 487487,n,AGI(agi-OSDivr-old.agi,\${EXTEN})\n";
-		$cnf2 .= "exten => 487487,n,Hangup()\n";
+		$cnf2 .= procexten("osdial","487487","1","Playback","sip-silence");
+		$cnf2 .= procexten("osdial","487487","2","AGI","agi-OSDivr-old.agi,\${EXTEN}");
+		$cnf2 .= procexten("osdial","487487","3","Hangup","");
 	}
-	$cnf2 .= "exten => _487488,1,Answer()\n";
-	$cnf2 .= "exten => _487488,n,Playback(sip-silence)\n";
-	$cnf2 .= "exten => _487488,n,AGI(agi-OSDivr.agi,\${EXTEN})\n";
-	$cnf2 .= "exten => _487488,n,Hangup()\n";
-	$cnf2 .= "exten => _487489.,1,ChanSpy(,g(\${EXTEN:6})qES)\n";
-	$cnf2 .= "exten => _487489.,n,Hangup()\n";
+	$cnf2 .= procexten("osdial","487488","1","Answer","");
+	$cnf2 .= procexten("osdial","487488","2","Playback","sip-silence");
+	$cnf2 .= procexten("osdial","487488","3","AGI","agi-OSDivr.agi,\${EXTEN}");
+	$cnf2 .= procexten("osdial","487488","4","Hangup","");
+	$cnf2 .= procexten("osdial","_487489.","1","ChanSpy",",g(\${EXTEN:6})qES");
+	$cnf2 .= procexten("osdial","_487489.","2","Hangup","");
 	$cnf .= ";\n; OSDIAL Virtual Agent Conferences\n";
 	$cnf .= $cnf2;
 	$mtm .= ";\n; OSDIAL Virtual Agent Conferences\n";
@@ -650,38 +867,49 @@ sub gen_phones {
 	my $ephn = $achead;
 	my $vphn = $achead;
 
+	$ephn .= ";\n;Station Spying.\n";
+	$ephn .= ";   6000 = monitoring, prompted\n;   6+agent_exten = monitoring, direct\n";
+	$ephn .= ";   7000 = barge, prompted\n;   7+agent_exten = barge, direct\n";
+	$ephn .= ";   9000 = whisper, prompted\n;   9+agent_exten = whisper, direct\n";
+	$ephn .= procexten("osdial","6000","1","AGI","agi-OSDstation_spy_prompted.agi");
+	$ephn .= procexten("osdial","7000","1","AGI","agi-OSDstation_spy_prompted.agi");
+	$ephn .= procexten("osdial","9000","1","AGI","agi-OSDstation_spy_prompted.agi");
+	$ephn .= procexten("osdialEXT","6000","1","Goto","osdial,\${EXTEN},1");
+	$ephn .= procexten("osdialEXT","7000","1","Goto","osdial,\${EXTEN},1");
+	$ephn .= procexten("osdialEXT","9000","1","Goto","osdial,\${EXTEN},1");
+	if (!$CLOexpand) {
+		$ephn .= procexten("osdial","_6XXX","1","AGI","agi-OSDstation_spy.agi");
+		$ephn .= procexten("osdial","_7XXX","1","AGI","agi-OSDstation_spy.agi");
+		$ephn .= procexten("osdial","_9XXX","1","AGI","agi-OSDstation_spy.agi");
+	}
+
+	my $oeofile = "/etc/asterisk/osdial_extensions_outbound.conf";
+	$oeofile = $osdial->{PATHdocs} . "/conf_examples/osdial_extensions_outbound.conf" if (-s $oeofile < 250);
+	my($oeodata);
+	open(OEO, $oeofile);
+	while (my $oeoline = <OEO>) {
+		$oeodata .= $oeoline;
+	}
+	close(OEO);
+	my $oeodataorig = $oeodata;
 	if ($dcc) {
-		$ephn .= "\n\n; The $dcc carrier was selected as the system default.\n";
+		$ephn .= ";\n;\n; The $dcc carrier was selected as the system default.\n";
 		$ephn .= "; In order to override the extensions in osdial_extensions_outbound.conf, we must add them into this file.\n";
 		$ephn .= ";\n";
-		$ephn .= sprintf("exten => _011.,1,Goto(%s,%s\${EXTEN},1)\n",$dcc,$dccdp);
-		$ephn .= sprintf("exten => _X011.,1,Goto(%s,\${EXTEN},1)\n",$dcc);
-		$ephn .= sprintf("exten => _NXXNXXXXXX,1,Goto(%s,%s1\${EXTEN},1)\n",$dcc,$dccdp);
-		$ephn .= sprintf("exten => _1NXXNXXXXXX,1,Goto(%s,%s\${EXTEN},1)\n",$dcc,$dccdp);
-		$ephn .= sprintf("exten => _NNXXNXXXXXX,1,Goto(%s,\${EXTEN:0:1}1\${EXTEN:1},1)\n",$dcc);
-		$ephn .= sprintf("exten => _X1NXXNXXXXXX,1,Goto(%s,\${EXTEN},1)\n",$dcc);
+		$ephn .= procexten("osdial","_011XXXXXXXX.","1","Goto",$dcc.",".$dccdp."\${EXTEN},1");
+		$ephn .= procexten("osdial","_[89]011XXXXXXXX.","1","Goto",$dcc.",\${EXTEN},1");
+		$ephn .= procexten("osdial","_00XXXXXXXX.","1","Goto",$dcc.",".$dccdp."\${EXTEN},1");
+		$ephn .= procexten("osdial","_[89]00XXXXXXXX.","1","Goto",$dcc.",\${EXTEN},1");
+		$ephn .= procexten("osdial","_NXXNXXXXXX","1","Goto",$dcc.",".$dccdp."1\${EXTEN},1");
+		$ephn .= procexten("osdial","_1NXXNXXXXXX","1","Goto",$dcc.",".$dccdp."\${EXTEN},1");
+		$ephn .= procexten("osdial","_[89]NXXNXXXXXX","1","Goto",$dcc.",\${EXTEN:0:1}1\${EXTEN:1},1");
+		$ephn .= procexten("osdial","_[89]1NXXNXXXXXX","1","Goto",$dcc.",\${EXTEN},1");
 		$ephn .= ";\n";
 		$ephn .= ";\n";
-	}
 
-	# Build TTS extensions.
-	my $stmt = "SELECT * FROM osdial_tts WHERE extension!='';";
-	while (my $sret = $osdial->sql_query($stmt)) {
-		$ephn .= "; Text-to-Speech Extension\n";
-		$ephn .= sprintf("exten => %s,1,Playback(sip-silence)\n",$sret->{extension});
-		$ephn .= sprintf("exten => %s,2,AGI(agi-OSDtts.agi,\${EXTEN})\n",$sret->{extension});
-		$ephn .= sprintf("exten => %s,3,Hangup()\n",$sret->{extension});
-		$ephn .= ";\n";
-	}
-
-	# Get custom build media file extensions.
-	my $stmt = "SELECT * FROM osdial_media WHERE extension!='' AND extension NOT LIKE '8510____';";
-	while (my $sret = $osdial->sql_query($stmt)) {
-		$sret->{filename} =~ s/\..*$//;
-		$ephn .= "; Media Extension\n";
-		$ephn .= sprintf("exten => %s,1,Playback(%s)\n",$sret->{extension},$sret->{filename});
-		$ephn .= sprintf("exten => %s,2,Hangup()\n",$sret->{extension});
-		$ephn .= ";\n";
+		$oeodata =~ s/^exten/;DEFSEL;exten/gm; 
+	} else {
+		$oeodata =~ s/^;DEFSEL;exten/exten/gm; 
 	}
 
 	my $stmt = "SELECT * FROM phones WHERE protocol IN ('SIP','IAX2','Zap','DAHDI','EXTERNAL') AND active='Y' AND (";
@@ -766,13 +994,21 @@ sub gen_phones {
 
 		if ($dext ne "") {
 			if ($sret->{voicemail_id} ne "") {
-				$ephn .= "exten => _" . $sret->{dialplan_number} . ",1,Dial(" . $dext . ",30,o)\n";
-				$ephn .= "exten => _" . $sret->{dialplan_number} . ",2,GotoIf(\$[\"\${DIALSTATUS}\" = \"NOANSWER\"|\"\${DIALSTATUS}\" = \"BUSY\"|\"\${DIALSTATUS}\" = \"CONGESTION\"|\"\${DIALSTATUS}\" = \"CHANUNAVAIL\"]?3:4)\n";
-				$ephn .= "exten => _" . $sret->{dialplan_number} . ",3,Voicemail(" . $sret->{voicemail_id} . "\@osdial)\n";
-				$ephn .= "exten => _" . $sret->{dialplan_number} . ",4,Hangup()\n";
+				$ephn .= procexten("osdial",$sret->{dialplan_number},"1","Dial",$dext.",30,o");
+				$ephn .= procexten("osdial",$sret->{dialplan_number},"2","GotoIf","\$[\"\${DIALSTATUS}\" = \"NOANSWER\"|\"\${DIALSTATUS}\" = \"BUSY\"|\"\${DIALSTATUS}\" = \"CONGESTION\"|\"\${DIALSTATUS}\" = \"CHANUNAVAIL\"]?3:4");
+				$ephn .= procexten("osdial",$sret->{dialplan_number},"3","Voicemail",$sret->{voicemail_id}."\@osdial");
+				$ephn .= procexten("osdial",$sret->{dialplan_number},"4","Hangup","");
 			} else {
-				$ephn .= "exten => _" . $sret->{dialplan_number} . ",1,Dial(" . $dext . ",60,o)\n";
-				$ephn .= "exten => _" . $sret->{dialplan_number} . ",2,Hangup()\n";
+				$ephn .= procexten("osdial",$sret->{dialplan_number},"1","Dial",$dext.",60,o");
+				$ephn .= procexten("osdial",$sret->{dialplan_number},"2","Hangup","");
+			}
+			procexten("osdialEXT",$sret->{dialplan_number},"1","Goto","osdial,\${EXTEN},1");
+			procexten("osdialBLOCK",$sret->{dialplan_number},"1","Goto","osdial,\${EXTEN},1");
+		}
+		if ($CLOexpand) {
+			foreach my $prenum (qw(6 7 9)) {
+				$ephn .= procexten("osdial",$prenum.$sret->{login},"1","AGI","agi-OSDstation_spy.agi");
+				procexten("osdialEXT",$prenum.$sret->{login},"1","Goto","osdial,\${EXTEN},1");
 			}
 		}
 	}
@@ -784,7 +1020,181 @@ sub gen_phones {
 	write_reload($sphn,'osdial_sip_phones','sip reload');
 	write_reload($iphn,'osdial_iax_phones','iax2 reload');
 	write_reload($ephn,'osdial_extensions_phones',$extreload);
+	if ($oeodataorig ne $oeodata) {
+		write_reload($oeodata,'osdial_extensions_outbound',$extreload);
+	}
 	write_reload($vphn,'osdial_voicemail','voicemail reload');
+}
+
+sub gen_osdial_extensions {
+	my $ephn = $achead;
+
+	# Build ARI VM context
+	procexten("osdial_arivmcall","s","1","Answer","");
+	procexten("osdial_arivmcall","s","2","Wait","1");
+	procexten("osdial_arivmcall","s","3","Background",'${MSG}');
+	procexten("osdial_arivmcall","s","4","Background",'silence/2');
+	procexten("osdial_arivmcall","s","5","Background",'vm-repeat');
+	procexten("osdial_arivmcall","s","6","Background",'vm-starmain');
+	procexten("osdial_arivmcall","s","7","WaitExten","15");
+	procexten("osdial_arivmcall","5","1","Goto","osdial_arivmcall,s,3");
+	procexten("osdial_arivmcall","#","1","Playback","vm-goodbye");
+	procexten("osdial_arivmcall","#","2","Hangup","");
+	procexten("osdial_arivmcall","*","1","Set",'VMCONTEXT=${DB(AMPUSER/${MBOX}/voicemail)}');
+	procexten("osdial_arivmcall","*","2","VoiceMailMain",'${MBOX}@${VMCONTEXT},s');
+	procexten("osdial_arivmcall","i","1","Playback","pm-invalid-option");
+	procexten("osdial_arivmcall","i","2","Goto","osdial_arivmcall,s,3");
+	procexten("osdial_arivmcall","t","1","Playback","vm-goodbye");
+	procexten("osdial_arivmcall","t","2","Hangup","");
+	procexten("osdial_arivmcall","h","1","Hangup","");
+	procexten("osdial_arivmcall","s-ANSWER","1","Noop","Call successfully answered - Hanging up now");
+
+	# Static, non-pattern goto's for osdialEXT and osdialBLOCK
+	foreach my $pexten (qw(# t i h 9 43 *97 *98 8500998 9998 9999 487487 487488 99999999999 999999999999)) {
+		procexten("osdialEXT",$pexten,"1","Goto","osdial,\${EXTEN},1");
+		procexten("osdialBLOCK",$pexten,"1","Goto","osdial,\${EXTEN},1");
+	}
+
+	procexten("incoming","h","1","Goto","osdial,\${EXTEN},1");
+
+	# Build TTS extensions.
+	my $stmt = "SELECT * FROM osdial_tts WHERE extension!='';";
+	while (my $sret = $osdial->sql_query($stmt)) {
+		$ephn .= "; Text-to-Speech Extension\n";
+		$ephn .= procexten("osdial",$sret->{extension},"1","Playback","sip-silence");
+		$ephn .= procexten("osdial",$sret->{extension},"2","AGI","agi-OSDtts.agi,\${EXTEN}");
+		$ephn .= procexten("osdial",$sret->{extension},"3","Hangup","");
+		procexten("osdialEXT",$sret->{extension},"1","Goto","osdial,\${EXTEN},1");
+		procexten("osdialBLOCK",$sret->{extension},"1","Goto","osdial,\${EXTEN},1");
+		$ephn .= ";\n";
+	}
+
+	# Get custom build media file extensions.
+	my $stmt = "SELECT * FROM osdial_media WHERE extension!='' AND extension NOT LIKE '8510____';";
+	while (my $sret = $osdial->sql_query($stmt)) {
+		$sret->{filename} =~ s/\..*$//;
+		$ephn .= "; Media Extension\n";
+		$ephn .= procexten("osdial",$sret->{extension},"1","Playback",$sret->{filename});
+		$ephn .= procexten("osdial",$sret->{extension},"2","Hangup","");
+		procexten("osdialEXT",$sret->{extension},"1","Goto","osdial,\${EXTEN},1");
+		procexten("osdialBLOCK",$sret->{extension},"1","Goto","osdial,\${EXTEN},1");
+		$ephn .= ";\n";
+	}
+
+	# Build core osdial extensions
+	procexten("osdial","t","1","Goto","osdial,#,1");
+	procexten("osdial","i","1","Playback","invalid");
+	procexten("osdial","h","1","AGI",'agi://127.0.0.1:4577/call_log--HVcauses--PRI-----NODEBUG-----${HANGUPCAUSE}-----${DIALSTATUS}-----${DIALEDTIME}-----${ANSWEREDTIME}');
+	procexten("osdial","#","1","Playback","invalid");
+	procexten("osdial","#","2","Hangup","");
+	procexten("osdial","*97","1","Goto","osdial,8501,1");
+	procexten("osdial","*98","1","Goto","osdial,8500,1");
+	procexten("osdial","9","1","Playback","invalid");
+	procexten("osdial","43","1","Echo","");
+	# barge monitoring extension
+	procexten("osdial","8159","1","DahdiBarge","");
+	procexten("osdial","8159","2","Hangup","");
+	# prompt recording AGI script, ID is 4321
+	procexten("osdial","8167","1","Answer","");
+	procexten("osdial","8167","2","AGI",'agi-record_prompts.agi,wav,720000');
+	procexten("osdial","8167","3","Hangup","");
+	procexten("osdial","8168","1","Answer","");
+	procexten("osdial","8168","2","AGI",'agi-record_prompts.agi,gsm,720000');
+	procexten("osdial","8168","3","Hangup","");
+	procexten("osdial","8169","1","Answer","");
+	procexten("osdial","8169","2","AGI",'agi-record_prompts.agi,ulaw,720000');
+	procexten("osdial","8169","3","Hangup","");
+	procexten("osdial","8300","1","Hangup","");
+	# park channel for client GUI parking, hangup after 30 minutes
+	procexten("osdial","8301","1","Answer","");
+	procexten("osdial","8301","2","AGI",'agi-OSDpark.agi');
+	procexten("osdial","8301","3","Hangup","");
+	# park channel for client GUI conferencing, hangup after 30 minutes
+	procexten("osdial","8302","1","Answer","");
+	procexten("osdial","8302","2","Playback",'conf');
+	procexten("osdial","8302","3","Hangup","");
+	procexten("osdial","8303","1","Answer","");
+	procexten("osdial","8303","2","AGI",'agi-OSDpark.agi');
+	procexten("osdial","8303","3","Hangup","");
+	procexten("osdial","8304","1","Answer","");
+	procexten("osdial","8304","2","Playback",'ding');
+	procexten("osdial","8304","3","Hangup","");
+	# default audio for safe harbor 2-second-after-hello message then hangup
+	procexten("osdial","8307","1","Answer","");
+	procexten("osdial","8307","2","Playback",'vm-goodbye');
+	procexten("osdial","8307","3","Hangup","");
+	# this is used for recording conference calls, the client app sends the filename value as a callerID recordings go to /var/spool/asterisk/monitor (WAV)
+	procexten("osdial","8309","1","Answer","");
+	procexten("osdial","8309","2","MixMonitor",'/var/spool/asterisk/record_cache/${CALLERID(name)}-in.wav,,/bin/mv -v ^{MIXMONITOR_FILENAME} /var/spool/asterisk/VDmonitor');
+	procexten("osdial","8309","3","Wait","7200");
+	procexten("osdial","8309","4","Hangup","");
+	# this is used for recording conference calls, the client app sends the filename value as a callerID recordings go to /var/spool/asterisk/monitor (GSM)
+	procexten("osdial","8310","1","Answer","");
+	procexten("osdial","8310","2","MixMonitor",'/var/spool/asterisk/record_cache/${CALLERID(name)}-in.gsm,,/bin/mv -v ^{MIXMONITOR_FILENAME} /var/spool/asterisk/VDmonitor');
+	procexten("osdial","8310","3","Wait","7200");
+	procexten("osdial","8310","4","Hangup","");
+	# this is used for recording conference calls, the client app sends the filename value as a callerID recordings go to /var/spool/asterisk/monitor (WAV)
+	procexten("osdial","8311","1","Answer","");
+	procexten("osdial","8311","2","MixMonitor",'/var/spool/asterisk/record_cache/${CALLERID(name)}-in.wav,,/bin/mv -v ^{MIXMONITOR_FILENAME} /var/spool/asterisk/VDmonitor');
+	procexten("osdial","8311","3","Wait","7200");
+	procexten("osdial","8311","4","Hangup","");
+	# this is used for playing a message to an answering machine forwarded from AMD in OSDIAL replace conf with the message file you want to leave
+	procexten("osdial","8320","1","WaitForSilence","1000,2,20");
+	procexten("osdial","8320","2","GotoIf",'$["${AMDAUDIO}" != ""]?4');
+	procexten("osdial","8320","3","Set",'AMDAUDIO=vm-goodbye');
+	procexten("osdial","8320","4","Playback",'${AMDAUDIO}');
+	procexten("osdial","8320","5","Wait",'4');
+	procexten("osdial","8320","6","AGI",'agi-OSDamd_post.agi,${EXTEN},${AMDAUDIO}');
+	procexten("osdial","8320","7","Hangup",'');
+	procexten("osdial","8321","1","AGI",'agi_OSDamd.agi,${EXTEN}-----YES');
+	procexten("osdial","8321","2","Hangup","");
+	# use for selective CallerID hangup by area code(hard-coded)
+	procexten("osdial","8352","1","AGI",'agi-VDADselective_CID_hangup.agi,${EXTEN}');
+	procexten("osdial","8352","2","Playback","safe_harbor");
+	procexten("osdial","8352","3","Hangup","");
+
+	# 8364: no agent campaign transfer
+	# 8365: single server agent transfer
+	# 8366: old single server with initial survey
+	# 8367: multi-server agent transfer, load-balance overflow
+	# 8368: multi-server agent transfer, load-balance
+	# 8372: reminder script
+	foreach my $pexten (qw(8364 8365 8366 8367 8368 8372)) {
+		procexten("osdial",$pexten,"1","NoOp","");
+		procexten("osdial",$pexten,"2","Playback","sip-silence");
+		procexten("osdial",$pexten,"3","AGI",'agi://127.0.0.1:4577/call_log');
+		procexten("osdial",$pexten,"4","AGI",'agi-OSDoutbound.agi,${EXTEN}');
+		procexten("osdial",$pexten,"5","AGI",'agi-OSDoutbound.agi,${EXTEN}');
+		procexten("osdial",$pexten,"6","AGI",'agi-OSDoutbound.agi,${EXTEN}');
+		procexten("osdial",$pexten,"7","Hangup","");
+	}
+	# 8369: multi-server agent transfer, load-balance and plus AMD
+	# 8375: Auto-agent script.
+	foreach my $pexten (qw(8369 8375)) {
+		procexten("osdial",$pexten,"1","NoOp","");
+		procexten("osdial",$pexten,"2","Playback","sip-silence");
+		procexten("osdial",$pexten,"3","AGI",'agi://127.0.0.1:4577/call_log');
+		procexten("osdial",$pexten,"4","AGI",'agi-OSDamd.agi,${EXTEN}');
+		procexten("osdial",$pexten,"5","AGI",'agi-OSDoutbound.agi,${EXTEN}');
+		procexten("osdial",$pexten,"6","AGI",'agi-OSDoutbound.agi,${EXTEN}');
+		procexten("osdial",$pexten,"7","AGI",'agi-OSDoutbound.agi,${EXTEN}');
+		procexten("osdial",$pexten,"8","Hangup","");
+	}
+
+	# Give voicemail at extension 8500
+	procexten("osdial","8500","1","VoiceMainMain",'@osdial');
+	procexten("osdial","8500","2","Hangup","");
+	#procexten("osdial","8500","2","Goto","osdial,s,6");
+	# this is used to allow the GUI to send you directly into voicemail don't forget to set GUI variable $voicemail_exten to this extension
+	procexten("osdial","8501","1","VoiceMainMain",'s${CALLERID(number)}@osdial');
+	procexten("osdial","8501","2","Hangup","");
+	# this is used for sending DTMF signals within conference calls, the client app sends the digits to be played in the callerID field sound files must be placed in /var/lib/asterisk/sounds
+	procexten("osdial","8500998","1","Answer","");
+	procexten("osdial","8500998","2","Playback","silence");
+	procexten("osdial","8500998","3","AGI",'agi-OSDdtmf.agi');
+	procexten("osdial","8500998","4","Hangup","");
+	
+
 }
 
 
@@ -843,36 +1253,37 @@ sub gen_carriers {
 			}
 		}
 
+		# Create Outbound dialplan for the carrier.
+		$dialplan = "[OOUT" . $carriers->{$carrier}{name} . "]\n";
+		$dialplan .= "switch => Realtime/OOUT".$carriers->{$carrier}{name}."\@extensions/p\n";
+
 		# Create failover dialplan, which will attempt another carrier based on the DIALSTATUS.
 		my $failover = '';
 		if (!$carriers->{$carrier}{failover_id}>0) {
-			$failover .= "exten => _failover.,1,Hangup()\n";
+			$failover .= procexten("OOUT".$carriers->{$carrier}{name},"_failover.","1","Hangup","");
 		} else {
 			my $stmt = sprintf("SELECT * FROM osdial_carriers WHERE id='\%s';",$carriers->{$carrier}{failover_id});
 			my $failover_carrier = $osdial->sql_query($stmt);
 			if ($carriers->{$carrier}{failover_condition} eq 'CHANUNAVAIL') {
-				$failover .= "exten => _failover.,1,GotoIf(\$[\"\${DIALSTATUS}\" = \"CHANUNAVAIL\"]?2:4)\n";
+				$failover .= procexten("OOUT".$carriers->{$carrier}{name},"_failover.","1","GotoIf","\$[\"\${DIALSTATUS}\" = \"CHANUNAVAIL\"]?2:4");
 			} elsif ($carriers->{$carrier}{failover_condition} eq 'CONGESTION') {
-				$failover .= "exten => _failover.,1,GotoIf(\$[\"\${DIALSTATUS}\" = \"CONGESTION\"]?2:4)\n";
+				$failover .= procexten("OOUT".$carriers->{$carrier}{name},"_failover.","1","GotoIf","\$[\"\${DIALSTATUS}\" = \"CONGESTION\"]?2:4");
 			} elsif ($carriers->{$carrier}{failover_condition} eq 'BOTH') {
-				$failover .= "exten => _failover.,1,GotoIf(\$[\"\${DIALSTATUS}\" = \"CHANUNAVAIL\"|\"\${DIALSTATUS}\" = \"CONGESTION\"]?2:4)\n";
+				$failover .= procexten("OOUT".$carriers->{$carrier}{name},"_failover.","1","GotoIf","\$[\"\${DIALSTATUS}\" = \"CHANUNAVAIL\"|\"\${DIALSTATUS}\" = \"CONGESTION\"]?2:4");
 			}
-			$failover .= "exten => _failover.,2,AGI(agi://127.0.0.1:4577/call_log--HVcauses--PRI-----NODEBUG-----\${HANGUPCAUSE}-----\${DIALSTATUS}-----\${DIALEDTIME}-----\${ANSWEREDTIME})\n";
-			$failover .= "exten => _failover.,3,Goto(OOUT" . $failover_carrier->{name} . ",\${EXTEN:8},1)\n";
-			$failover .= "exten => _failover.,4,Hangup()\n";
+			$failover .= procexten("OOUT".$carriers->{$carrier}{name},"_failover.","2","AGI","agi://127.0.0.1:4577/call_log--HVcauses--PRI-----NODEBUG-----\${HANGUPCAUSE}-----\${DIALSTATUS}-----\${DIALEDTIME}-----\${ANSWEREDTIME}");
+			$failover .= procexten("OOUT".$carriers->{$carrier}{name},"_failover.","3","Goto","OOUT".$failover_carrier->{name}.",\${EXTEN:8},1");
+			$failover .= procexten("OOUT".$carriers->{$carrier}{name},"_failover.","4","Hangup","");
 		}
 
-		# Hangup extension (needs to be in every dialplan context.
-		my $hangup = "exten => h,1,AGI(agi://127.0.0.1:4577/call_log--HVcauses--PRI-----NODEBUG-----\${HANGUPCAUSE}-----\${DIALSTATUS}-----\${DIALEDTIME}-----\${ANSWEREDTIME})\n";
-
-		# Create Outbound dialplan for the carrier.
-		$dialplan .= "[OOUT" . $carriers->{$carrier}{name} . "]\n";
 		$dialplan .= $failover;
 		$dialplan .= $carriers->{$carrier}{dialplan} . "\n";
-		$dialplan .= $hangup . "\n\n";
+		$dialplan .= procexten("OOUT".$carriers->{$carrier}{name},"h","1","AGI","agi://127.0.0.1:4577/call_log--HVcauses--PRI-----NODEBUG-----\${HANGUPCAUSE}-----\${DIALSTATUS}-----\${DIALEDTIME}-----\${ANSWEREDTIME}");
+		$dialplan .= "\n\n";
 
 		# Create Inbound dialplan for the carrier, ie DIDs..
 		$dialplan .= "[" . $context . "]\n";
+		$dialplan .= "switch => Realtime/".$context."\@extensions/p\n";
 		my %didchk;
 		my $dids = {};
 		my $stmt = sprintf("SELECT * FROM osdial_carrier_dids WHERE carrier_id='\%s';",$carrier);
@@ -884,11 +1295,12 @@ sub gen_carriers {
 			$didmatch = '_' if ($dids->{$did}{did} =~ /X|Z|N|\[|\]|\.|\!/ and $dids->{$did}{did} !~ /^_/);
 			if (!defined $didchk{$didmatch.$dids->{$did}{did}}) {
 				$didchk{$didmatch.$dids->{$did}{did}} = 1;
-				$dialplan .= "exten => " . $didmatch . $dids->{$did}{did} . ",1,AGI(agi://127.0.0.1:4577/call_log)\n";
+				my $prio=1;
+				$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"AGI","agi://127.0.0.1:4577/call_log");
 				if ($dids->{$did}{did_action} eq 'INGROUP') {
-					$dialplan .= "exten => " . $didmatch . $dids->{$did}{did} . ",n,AGI(agi-VDAD_ALL_inbound.agi," . $dids->{$did}{lookup_method} . "-----" . $dids->{$did}{server_allocation} . "-----" . $dids->{$did}{ingroup};
-					$dialplan .= "-----\${EXTEN}-----\${CALLERID(number)}-----" . $dids->{$did}{park_file} . "-----" . $dids->{$did}{initial_status} . "-----" . $dids->{$did}{default_list_id} . "-----";
-					$dialplan .= $dids->{$did}{default_phone_code} . "-----" . $dids->{$did}{search_campaign} . ")\n";
+					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"AGI","agi-VDAD_ALL_inbound.agi,".$dids->{$did}{lookup_method}."-----".$dids->{$did}{server_allocation}
+					."-----".$dids->{$did}{ingroup}."-----\${EXTEN}-----\${CALLERID(number)}-----".$dids->{$did}{park_file}."-----".$dids->{$did}{initial_status}."-----".$dids->{$did}{default_list_id}
+					."-----".$dids->{$did}{default_phone_code}."-----".$dids->{$did}{search_campaign});
 				} elsif ($dids->{$did}{did_action} eq 'PHONE') {
 					my $stmt = sprintf("SELECT * FROM phones WHERE extension='\%s' LIMIT 1;",$dids->{$did}{phone});
 					while (my $phone = $osdial->sql_query($stmt)) {
@@ -896,24 +1308,24 @@ sub gen_carriers {
 						my $fsip = sprintf('%.3d*%.3d*%.3d*%.3d',@sip);
 						my $isp='*';
 						$isp='#' if ($osdial->{settings}{intra_server_protocol} eq 'IAX2');
-						$dialplan .= "exten => " . $didmatch . $dids->{$did}{did} . ",n,Goto(osdial," . $fsip . $isp . $phone->{dialplan_number} . ",1)\n";
+						$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Goto","osdial,".$fsip.$isp.$phone->{dialplan_number}.",1");
 					}
 				} elsif ($dids->{$did}{did_action} eq 'EXTENSION') {
-					$dialplan .= "exten => " . $didmatch . $dids->{$did}{did} . ",n,Goto(" . $dids->{$did}{extension_context} . "," . $dids->{$did}{extension} . ",1)\n";
+					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Goto",$dids->{$did}{extension_context}.",".$dids->{$did}{extension}.",1");
 				} elsif ($dids->{$did}{did_action} eq 'VOICEMAIL') {
-					$dialplan .= "exten => " . $didmatch . $dids->{$did}{did} . ",n,Voicemail(" . $dids->{$did}{voicemail} . ")\n";
+					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Voicemail",$dids->{$did}{voicemail});
 				}
-				$dialplan .= "exten => " . $didmatch . $dids->{$did}{did} . ",n,Hangup()\n";
+				$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Hangup","");
 			}
 		}
 		# Display an alert about any unhandled DIDs.
 		if (!defined $didchk{'_X.'}) {
-			#$dialplan .= "exten => _X.,1,AGI(agi://127.0.0.1:4577/call_log)\n";
-			$dialplan .= "exten => _X.,1,NoOp(***ALERT***  Unconfigured DID:\${EXTEN} from Carrier:".$carriers->{$carrier}{name}.")\n";
-			$dialplan .= "exten => _X.,n,Hangup(17)\n";
+			#$dialplan .= procexten($context,"_X.","1","AGI","agi://127.0.0.1:4577/call_log");
+			$dialplan .= procexten($context,"_X.","1","NoOp","***ALERT***  Unconfigured DID:\${EXTEN} from Carrier:".$carriers->{$carrier}{name});
+			$dialplan .= procexten($context,"_X.","2","Hangup","17");
 		}
 		if (!defined $didchk{'h'}) {
-			$dialplan .= $hangup;
+			$dialplan .= procexten($context,"h","1","AGI","agi://127.0.0.1:4577/call_log--HVcauses--PRI-----NODEBUG-----\${HANGUPCAUSE}-----\${DIALSTATUS}-----\${DIALEDTIME}-----\${ANSWEREDTIME}");
 		}
 
 	}
@@ -971,3 +1383,13 @@ sub get_myips {
         return \%IPs;
 }
 
+sub procexten {
+	my ($context,$exten,$priority,$app,$appdata) = @_;
+	my $extout = '';
+	if ($exten!~/^_/ and $CLOrealtime) {
+		$realtime_ext->{$context}{$exten}{sprintf('%d',$priority)} = {'app'=>$app, 'appdata' => $appdata};
+	} else {
+		$extout .= sprintf("exten => %s,%s,%s(%s)\n",$exten,$priority,$app,$appdata);
+	}
+	return $extout;
+}
