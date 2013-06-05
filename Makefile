@@ -220,7 +220,9 @@ install-docs: .osdial.config
 	@install -p -m 644 ./www/ari/*.txt $(DESTDIR)$(PATHweb)/ari
 	@install -p -m 644 ./www/ari/*.log $(DESTDIR)$(PATHweb)/ari
 	@install -p -m 644 ./www/ari/*.php $(DESTDIR)$(PATHweb)/ari
-	@install -p -m 4750 ./www/ari/bin/* $(DESTDIR)$(PATHweb)/ari/bin
+	@install -p -m 750 ./www/ari/bin/astdo $(DESTDIR)$(PATHweb)/ari/bin
+	@install -p -m 4750 ./www/ari/bin/*.i386 $(DESTDIR)$(PATHweb)/ari/bin
+	@install -p -m 4750 ./www/ari/bin/*.x86_64 $(DESTDIR)$(PATHweb)/ari/bin
 	#@chown asterisk:apache $(DESTDIR)$(PATHweb)/ari/bin/*
 	@install -p -m 644 ./www/ari/includes/*.php $(DESTDIR)$(PATHweb)/ari/includes
 	@install -p -m 644 ./www/ari/misc/*.php $(DESTDIR)$(PATHweb)/ari/misc

@@ -868,7 +868,7 @@ _("Play") . "></img></a>";
         while ($fn = readdir($hdl)) {
           if (preg_match("/" . $name ."/",$fn)) {
             $file = $path . $fn;
-		system("./bin/astrm ".escapeshellarg($file));
+		system("./bin/astdo astrm ".escapeshellarg($file));
           }
         }
         closedir($hdl);
@@ -900,15 +900,15 @@ _("Play") . "></img></a>";
     $paths = preg_split('/;/',$ASTERISK_VOICEMAIL_PATH);
     $path_rx = appendPath($paths[0],$context_rx);
     if (!is_dir($path_rx)) {
-	system("./bin/astmkdir ".escapeshellarg($path_rx));
+	system("./bin/astdo astmkdir ".escapeshellarg($path_rx));
     }
     $path_rx = appendPath($path_rx,$extension_rx);
     if (!is_dir($path_rx)) {
-	system("./bin/astmkdir ".escapeshellarg($path_rx));
+	system("./bin/astdo astmkdir ".escapeshellarg($path_rx));
     }
     $path_rx = appendPath($path_rx,$folder_rx);
     if (!is_dir($path_rx)) {
-	system("./bin/astmkdir ".escapeshellarg($path_rx));
+	system("./bin/astdo astmkdir ".escapeshellarg($path_rx));
     }
 
     // get recieving folder last message number
@@ -978,11 +978,11 @@ _("Play") . "></img></a>";
               $uid = fileowner($src);
               $gid = filegroup($src);
 
-		system("./bin/astcp ".escapeshellarg($src) . ' ' . escapeshellarg($dst));
+		system("./bin/astdo astcp ".escapeshellarg($src) . ' ' . escapeshellarg($dst));
 
 
               if ($delete_moved) {
-		system("./bin/astrm ".escapeshellarg($src));
+		system("./bin/astdo astrm ".escapeshellarg($src));
               }
           }
         }
