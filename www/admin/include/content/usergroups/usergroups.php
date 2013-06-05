@@ -70,7 +70,7 @@ if ($ADD==111111) {
 
 if ($ADD==211111) {
     $preuser_group = $user_group;
-    if ($LOG['multicomp'] > 0 and $compant_id>0) $preuser_group = (($company_id * 1) + 100) . $user_group;
+    if ($LOG['multicomp'] > 0 and $company_id>0) $preuser_group = (($company_id * 1) + 100) . $user_group;
     $stmt=sprintf("SELECT count(*) FROM osdial_user_groups WHERE user_group='%s';",mres($preuser_group));
     $rslt=mysql_query($stmt, $link);
     $row=mysql_fetch_row($rslt);
