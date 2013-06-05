@@ -56,11 +56,13 @@ if ($ADD==11111111111) {
         echo "<tr bgcolor=$oddrows><td align=right>Company: </td><td align=left>";
         if ($LOG['multicomp_admin'] > 0) {
             $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
-            echo "<select name=company>\n";
+            $copts = array();
             foreach ($comps as $comp) {
-                echo "<option value=" . (($comp['id'] * 1) + 100) . ">" . (($comp['id'] * 1) + 100) . ": " . $comp['name'] . "</option>\n";
+                $ckey = (($comp['id'] * 1) + 100);
+                $clabel = (($comp['id'] * 1) + 100) . ": " . $comp['name'];
+                $copts[$ckey] = $clabel;
             }
-            echo "</select>\n";
+            echo editableSelectBox($copts,'company',$LOG['company_prefix'],200,200,'');
             echo "".helptag("phones-company")."";
         } elseif ($LOG['multicomp']>0) {
             echo "<input type=hidden name=company value=$LOG[company_prefix]>";
@@ -131,7 +133,7 @@ if ($ADD==21111111111) {
             } else {
                 echo "<br><font color=$default_text>PHONE ADDED</font>\n";
     
-                if ($LOG['multicomp'] > 0) {
+                if ($LOG['multicomp'] > 0 and OSDpreg_match($LOG['companiesRE'],$company)) {
                     if (!OSDpreg_match('/\/|@/',$extension)) $extension = (($company * 1) + 0) . $extension;
                     if ((OSDpreg_match('/SIP|IAX/',$protocol) and OSDsubstr($dialplan_number,0,3) != $company)) $dialplan_number = (($company * 1) + 0) . $dialplan_number;
                     if (OSDstrlen($voicemail_id)>0) $voicemail_id = (($company * 1) + 0) . $voicemail_id;
@@ -157,7 +159,7 @@ if ($ADD==21111111111) {
 if ($ADD==41111111111) {
     if ($LOG['ast_admin_access']==1) {
         $preextension = $extension;
-        if ($LOG['multicomp'] > 0 and !OSDpreg_match('/\/|@/',$extension)) $preextension = (($company * 1) + 0) . $extension;
+        if ($LOG['multicomp'] > 0 and OSDpreg_match($LOG['companiesRE'],$company) and !OSDpreg_match('/\/|@/',$extension)) $preextension = (($company * 1) + 0) . $extension;
         $stmt=sprintf("SELECT count(*) FROM phones WHERE extension='%s' AND server_ip='%s';",mres($preextension),mres($server_ip));
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
@@ -170,12 +172,22 @@ if ($ADD==41111111111) {
                 echo "<br><font color=$default_text>PHONE MODIFIED: $extension</font>\n";
 
                 if ($LOG['multicomp'] > 0) {
-                    if (!OSDpreg_match('/\/|@/',$extension)) $extension = (($company * 1) + 0) . $extension;
-                    if ((OSDpreg_match('/SIP|IAX/',$protocol) and OSDsubstr($dialplan_number,0,3) != $company)) $dialplan_number = (($company * 1) + 0) . $dialplan_number;
-                    if (OSDstrlen($voicemail_id)>0) $voicemail_id = (($company * 1) + 0) . $voicemail_id;
-                    $login = (($company * 1) + 0) . $login;
+                    $compmod=0;
+                    if (($company * 1) != ($old_company * 1)) {
+                            if (!OSDpreg_match('/\/|@/',$extension) and OSDstrlen($extension)>5 and OSDsubstr($extension,0,3)==$old_company) $extension = OSDpreg_replace('/^'.$old_company.'/','',$extension);
+                            if (OSDpreg_match('/SIP|IAX/',$protocol) and OSDstrlen($dialplan_number)>5 and OSDsubstr($dialplan_number,0,3)==$old_company) $dialplan_number = OSDpreg_replace('/^'.$old_company.'/','',$dialplan_number);
+                            if (OSDstrlen($voicemail_id)>5 and OSDsubstr($voicemail_id,0,3)==$old_company) $voicemail_id = OSDpreg_replace('/^'.$old_company.'/','',$voicemail_id);
+                            if (OSDstrlen($login)>5 and OSDsubstr($login,0,3)==$old_company) $login = OSDpreg_replace('/^'.$old_company.'/','',$login);
+                    }
+                    if (OSDpreg_match($LOG['companiesRE'],$company)) {
+                        if (!OSDpreg_match('/\/|@/',$extension) and OSDsubstr($extension,0,3) != $company) $extension = (($company * 1) + 0) . $extension;
+                        if (OSDpreg_match('/SIP|IAX/',$protocol) and OSDsubstr($dialplan_number,0,3) != $company) $dialplan_number = (($company * 1) + 0) . $dialplan_number;
+                        if (OSDstrlen($voicemail_id)>0 and OSDsubstr($voicemail_id,0,3) != $company) $voicemail_id = (($company * 1) + 0) . $voicemail_id;
+                        if (OSDsubstr($login,0,3) != $company) $login = (($company * 1) + 0) . $login;
+                    }
                 }
-                $stmt=sprintf("UPDATE phones SET extension='%s',dialplan_number='%s',voicemail_id='%s',phone_ip='%s',computer_ip='%s',server_ip='%s',login='%s',pass='%s',status='%s',active='%s',phone_type='%s',fullname='%s',company='%s',picture='%s',protocol='%s',local_gmt='%s',ASTmgrUSERNAME='%s',ASTmgrSECRET='%s',login_user='%s',login_pass='%s',login_campaign='%s',park_on_extension='%s',conf_on_extension='%s',OSDIAL_park_on_extension='%s',OSDIAL_park_on_filename='%s',monitor_prefix='%s',recording_exten='%s',voicemail_exten='%s',voicemail_dump_exten='%s',ext_context='%s',dtmf_send_extension='%s',call_out_number_group='%s',client_browser='%s',install_directory='%s',local_web_callerID_URL='%s',OSDIAL_web_URL='%s',AGI_call_logging_enabled='%s',user_switching_enabled='%s',conferencing_enabled='%s',admin_hangup_enabled='%s',admin_hijack_enabled='%s',admin_monitor_enabled='%s',call_parking_enabled='%s',updater_check_enabled='%s',AFLogging_enabled='%s',QUEUE_ACTION_enabled='%s',CallerID_popup_enabled='%s',voicemail_button_enabled='%s',enable_fast_refresh='%s',fast_refresh_rate='%s',enable_persistant_mysql='%s',auto_dial_next_number='%s',VDstop_rec_after_each_call='%s',DBX_server='%s',DBX_database='%s',DBX_user='%s',DBX_pass='%s',DBX_port='%s',DBY_server='%s',DBY_database='%s',DBY_user='%s',DBY_pass='%s',DBY_port='%s',outbound_cid='%s',outbound_cid_name='%s',enable_sipsak_messages='%s',voicemail_password='%s',voicemail_email='%s' WHERE extension='%s' AND server_ip='%s';",mres($extension),mres($dialplan_number),mres($voicemail_id),mres($phone_ip),mres($computer_ip),mres($server_ip),mres($login),mres($pass),mres($status),mres($active),mres($phone_type),mres($fullname),mres($company),mres($picture),mres($protocol),mres($local_gmt),mres($ASTmgrUSERNAME),mres($ASTmgrSECRET),mres($login_user),mres($login_pass),mres($login_campaign),mres($park_on_extension),mres($conf_on_extension),mres($OSDIAL_park_on_extension),mres($OSDIAL_park_on_filename),mres($monitor_prefix),mres($recording_exten),mres($voicemail_exten),mres($voicemail_dump_exten),mres($ext_context),mres($dtmf_send_extension),mres($call_out_number_group),mres($client_browser),mres($install_directory),mres($local_web_callerID_URL),mres($OSDIAL_web_URL),mres($AGI_call_logging_enabled),mres($user_switching_enabled),mres($conferencing_enabled),mres($admin_hangup_enabled),mres($admin_hijack_enabled),mres($admin_monitor_enabled),mres($call_parking_enabled),mres($updater_check_enabled),mres($AFLogging_enabled),mres($QUEUE_ACTION_enabled),mres($CallerID_popup_enabled),mres($voicemail_button_enabled),mres($enable_fast_refresh),mres($fast_refresh_rate),mres($enable_persistant_mysql),mres($auto_dial_next_number),mres($VDstop_rec_after_each_call),mres($DBX_server),mres($DBX_database),mres($DBX_user),mres($DBX_pass),mres($DBX_port),mres($DBY_server),mres($DBY_database),mres($DBY_user),mres($DBY_pass),mres($DBY_port),mres($outbound_cid),mres($outbound_cid_name),mres($enable_sipsak_messages),mres($voicemail_password),mres($voicemail_email),mres($old_extension),mres($old_server_ip));
+                $stmt=sprintf("UPDATE phones SET extension='%s',dialplan_number='%s',voicemail_id='%s',phone_ip='%s',computer_ip='%s',server_ip='%s',login='%s',pass='%s',status='%s',active='%s',phone_type='%s',fullname='%s',company='%s',picture='%s',protocol='%s',local_gmt='%s',ASTmgrUSERNAME='%s',ASTmgrSECRET='%s',login_user='%s',login_pass='%s',login_campaign='%s',park_on_extension='%s',conf_on_extension='%s',OSDIAL_park_on_extension='%s',OSDIAL_park_on_filename='%s',monitor_prefix='%s',recording_exten='%s',voicemail_exten='%s',voicemail_dump_exten='%s',ext_context='%s',dtmf_send_extension='%s',call_out_number_group='%s',client_browser='%s',install_directory='%s',local_web_callerID_URL='%s',OSDIAL_web_URL='%s',AGI_call_logging_enabled='%s',user_switching_enabled='%s',conferencing_enabled='%s',admin_hangup_enabled='%s',admin_hijack_enabled='%s',admin_monitor_enabled='%s',call_parking_enabled='%s',updater_check_enabled='%s',AFLogging_enabled='%s',QUEUE_ACTION_enabled='%s',CallerID_popup_enabled='%s',voicemail_button_enabled='%s',enable_fast_refresh='%s',fast_refresh_rate='%s',enable_persistant_mysql='%s',auto_dial_next_number='%s',VDstop_rec_after_each_call='%s',DBX_server='%s',DBX_database='%s',DBX_user='%s',DBX_pass='%s',DBX_port='%s',DBY_server='%s',DBY_database='%s',DBY_user='%s',DBY_pass='%s',DBY_port='%s',outbound_cid='%s',outbound_cid_name='%s',enable_sipsak_messages='%s',voicemail_password='%s',voicemail_email='%s' WHERE extension='%s' AND server_ip='%s';",
+                    mres($extension),mres($dialplan_number),mres($voicemail_id),mres($phone_ip),mres($computer_ip),mres($server_ip),mres($login),mres($pass),mres($status),mres($active),mres($phone_type),mres($fullname),mres($company),mres($picture),mres($protocol),mres($local_gmt),mres($ASTmgrUSERNAME),mres($ASTmgrSECRET),mres($login_user),mres($login_pass),mres($login_campaign),mres($park_on_extension),mres($conf_on_extension),mres($OSDIAL_park_on_extension),mres($OSDIAL_park_on_filename),mres($monitor_prefix),mres($recording_exten),mres($voicemail_exten),mres($voicemail_dump_exten),mres($ext_context),mres($dtmf_send_extension),mres($call_out_number_group),mres($client_browser),mres($install_directory),mres($local_web_callerID_URL),mres($OSDIAL_web_URL),mres($AGI_call_logging_enabled),mres($user_switching_enabled),mres($conferencing_enabled),mres($admin_hangup_enabled),mres($admin_hijack_enabled),mres($admin_monitor_enabled),mres($call_parking_enabled),mres($updater_check_enabled),mres($AFLogging_enabled),mres($QUEUE_ACTION_enabled),mres($CallerID_popup_enabled),mres($voicemail_button_enabled),mres($enable_fast_refresh),mres($fast_refresh_rate),mres($enable_persistant_mysql),mres($auto_dial_next_number),mres($VDstop_rec_after_each_call),mres($DBX_server),mres($DBX_database),mres($DBX_user),mres($DBX_pass),mres($DBX_port),mres($DBY_server),mres($DBY_database),mres($DBY_user),mres($DBY_pass),mres($DBY_port),mres($outbound_cid),mres($outbound_cid_name),mres($enable_sipsak_messages),mres($voicemail_password),mres($voicemail_email),mres($old_extension),mres($old_server_ip));
                 $rslt=mysql_query($stmt, $link);
             }
         }
@@ -252,7 +264,11 @@ if ($ADD==31111111111) {
         $row=mysql_fetch_row($rslt);
         $servers_list = get_servers($link, $row[5], 'AIO|DIALER');
 
-        echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY A PHONE</font><form action=$PHP_SELF method=POST><br><br>\n";
+        echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY A PHONE</font><form action=$PHP_SELF method=POST><br>\n";
+        if ($row[6]==$row[7]) {
+            echo "<font color=red size=+1>WARNING: Password is very insecure, a compromised phone can result in significant loss of money.</font><br>";
+        }
+        echo "<br>";
         echo "<input type=hidden name=ADD value=41111111111>\n";
         echo "<input type=hidden name=old_extension value=\"$row[0]\">\n";
         echo "<input type=hidden name=old_server_ip value=\"$row[5]\">\n";
@@ -316,15 +332,17 @@ if ($ADD==31111111111) {
         echo "<tr bgcolor=$oddrows><td align=right>Phone Type: </td><td align=left><input type=text name=phone_type size=20 maxlength=50 value=\"$row[10]\">".helptag("phones-phone_type")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=fullname size=20 maxlength=50 value=\"$row[11]\">".helptag("phones-fullname")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Company: </td><td align=left>";
-        if ($LOG['multicomp_admin'] > 0 and OSDpreg_match($LOG['companiesRE'],$row[12])) {
+        echo "<input type=hidden name=old_company value=$row[12]>";
+        #if ($LOG['multicomp_admin'] > 0 and OSDpreg_match($LOG['companiesRE'],$row[12])) {
+        if ($LOG['multicomp_admin'] > 0) {
             $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
-            echo "<select name=company>\n";
+            $copts = array();
             foreach ($comps as $comp) {
-                $csel = '';
-                if ((($comp['id'] * 1) + 100) == ($row[12] * 1)) $csel='selected';
-                echo "<option value=" . (($comp['id'] * 1) + 100) . " $csel>" . (($comp['id'] * 1) + 100) . ": " . $comp['name'] . "</option>\n";
+                $ckey = (($comp['id'] * 1) + 100);
+                $clabel = (($comp['id'] * 1) + 100) . ": " . $comp['name'];
+                $copts[$ckey] = $clabel;
             }
-            echo "</select>\n";
+            echo editableSelectBox($copts,'company',$row[12],200,200,'');
             echo "".helptag("phones-company")."";
         } elseif ($LOG['multicomp']>0 and OSDpreg_match($LOG['companiesRE'],$row[0])) {
             echo "<input type=hidden name=company value=$row[12]>";
@@ -372,11 +390,6 @@ if ($ADD==31111111111) {
         echo "<tr bgcolor=$oddrows><td align=right>Enable SIPSAK Messages: </td><td align=left><select size=1 name=enable_sipsak_messages><option>1</option><option>0</option><option selected>$row[66]</option></select>".helptag("phones-enable_sipsak_messages")."</td></tr>\n";
         echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
         echo "</TABLE></center>\n";
-        if ($row[6]==$row[7]) {
-            echo "<script type=\"text/javascript\">\n";
-            echo "alert('WARNING: Password is very insecure, it should not be the same as the login');\n";
-            echo "</script>\n";
-        }
 
         echo "<input type=hidden name=ASTmgrUSERNAME value=\"$row[18]\">\n";
         echo "<input type=hidden name=ASTmgrSECRET value=\"$row[19]\">\n";
