@@ -81,6 +81,7 @@
 		result += ".selectBoxSpacer { position: relative; float: left; height:20px;}\n";
 		result += ".selectBox { position: absolute; z-index:1000; float: left; border:1px solid " + borderColor + "; background-color:" + bgColor + "; height:20px;}\n";
 		result += ".selectBoxOptionContainer { z-index:1001; position:absolute; border:1px solid " + borderColor + ";";
+		result +=     " border-radius: 0px 0px 6px 6px;box-shadow: rgba(0,0,1,1) 0px 0px 10px;-moz-border-radius:0px 0px 6px 6px;-webkit-border-radius:0px 0px 6px 6px;-khtml-border-radius:0px 0px 6px 6px;";
 		result +=     " height:100px; background-color:" + bgColor + "; left:-1px; top:20px; visibility:hidden; overflow:auto; white-space:nowrap;}\n";
 		result += ".selectBoxAnOption { z-index:1002; cursor:default; margin:1px; overflow:hidden; white-space:nowrap; }\n";
 		result += ".selectBoxAnOptionLeft {float: left; font-family:\"dejavu sans\"; font-size:11px; cursor:default; overflow:hidden; white-space:pre; }\n";
@@ -92,7 +93,7 @@
 	}
 
 
-	function selectBox_switchImageUrl() {
+	function selectBox_switchImageUrl(e) {
 		var numId = this.id.replace(/[^\d]/g,'');
 		if (document.getElementById('selectBox' + numId).getElementsByTagName('INPUT')[0].readOnly)
 			return;
@@ -102,10 +103,16 @@
 		} else {
 			this.src = this.src.replace(arrowImageOver,arrowImage);
 		}
+		if (!e) e = window.event;
+		if (e.stopPropagation) {
+			e.stopPropagation();
+		} else {
+			e.cancelBubble=true;
+		}
 	}
 
 
-	function selectBox_showOptions() {
+	function selectBox_showOptions(e) {
 		if (editableSelect_activeArrow && editableSelect_activeArrow!=this)
 			editableSelect_activeArrow.src = arrowImage;
 		editableSelect_activeArrow = this;
@@ -149,6 +156,12 @@
 					if (typeof(curbox.style)!="undefined") curbox.style.fontWeight='normal';
 				}
 			}
+		}
+		if (!e) e = window.event;
+		if (e.stopPropagation) {
+			e.stopPropagation();
+		} else {
+			e.cancelBubble=true;
 		}
 	}
 
@@ -889,6 +902,15 @@
 			ifld.disabled=false;
 			sfld.disable();
 		}
+
+		var selectBoxCloseAll = function(e) { selectBox_close(ifld); };
+                if (document.body.addEventListener) {
+                        document.body.addEventListener('click', selectBoxCloseAll, false);
+                } else if (document.body.attachEvent) {
+                        document.body.attachEvent("on" + 'click', selectBoxCloseAll);
+                } else {
+                        document.body["on" + 'click'] = selectBoxCloseAll;
+                }
 
 		selectBoxIds = selectBoxIds + 1;
 	}
