@@ -42,6 +42,7 @@ echo "  <script language=\"Javascript\">\n";
 require('include/admin.js');
 require('include/CalendarPopup.js');
 require('include/EditableSelect.js');
+require('include/ColorPicker.js');
 echo "  </script>\n";
 echo "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n";
 if (!empty($_COOKIE['webClientGMT'])) $webClientGMT = $_COOKIE['webClientGMT'];

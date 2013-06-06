@@ -668,3 +668,95 @@ td.chrome_collapsed_row div{
 /* 		background-image:-webkit-gradient(linear, left bottom, right bottom, color-stop(0.01, #6E2D23), color-stop(0.9, #9E5D53)); */
     background:#678;
 }
+
+
+
+
+div#picker {
+	border-radius: 6px 6px 6px 6px;
+    	box-shadow: rgba(0,0,1,1) 0px 0px 20px;
+	Xbox-shadow: rgba(0,0,0,0.5) 0px 0px 1px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	width: 265px;
+	height: 230px;
+	padding-top: 10px;
+	padding-left: 10px;
+	padding-bottom: 0;
+	padding-right: 0px;
+	position: absolute;
+	top: 22px;
+	left: 0px;
+	background-color: #ddd;
+	border: 1px solid #bbb;
+	display: none;
+	z-index: 10000;
+}
+div#picker div {
+	float: left;
+	padding: 0;
+}
+div#picker div.clear {
+	float: none;
+	clear: both;
+	border: 0;
+	overflow: hidden;
+	height: 0;
+	font-size: 0;
+}
+div#picker div#colorgrid {
+	float: left;
+	border: 0;
+	border-right: 1px solid #000;
+	border-bottom: 1px solid #000;
+	cursor: pointer;
+}
+div#colorgrid div.space {
+	border: 0;
+	background-color: #c9c9c9;
+	border-top: 1px solid #000;
+	border-left: 1px dashed #000;
+	height: 8px;
+	width: 100%;
+	overflow: hidden;
+}
+div#colorgrid div {
+	border: 0;
+	border-top: 1px solid #000;
+	border-left: 1px solid #000;
+	width: 13px;
+	height: 13px;
+	overflow: hidden;
+}
+div#picker div#colorname, div#picker div#colorsample {
+	border: 1px solid #000;
+	font-style: normal;
+	font-size: 14px;
+	font-family: monospace;
+	height: 16px;
+	margin-bottom: 4px;
+}
+div#picker div#colorname {
+	background-color: #fff;
+	width: 65px;
+	padding-left: 5px;
+	color: #000;
+	line-height: 16px;
+}
+div#picker div#colorsample {
+	width: 175px;
+	margin-left: 4px;
+	clear: right;
+}
+span.pickerMain {
+	height: 22px;
+	border: 1px solid #808080;
+	margin-left: 1px;
+	margin-bottom: 4px;
+	position: relative;
+	display: inline-block;
+	overflow: visible;
+	vertical-align: middle;
+	z-index:1;
+}

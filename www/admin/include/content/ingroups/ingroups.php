@@ -47,7 +47,7 @@ if ($ADD==1111) {
         }
         echo "<input type=text name=group_id size=20 maxlength=20> (no spaces)".helptag("osdial_inbound_groups-group_id")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Name: </td><td align=left><input type=text name=group_name size=30 maxlength=30>".helptag("osdial_inbound_groups-group_name")."</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Color: </td><td align=left id=\"group_color_td\"><input type=text name=group_color size=7 maxlength=7>".helptag("osdial_inbound_groups-group_color")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Color: </td><td align=left id=\"group_color_td\"><input type=text name=group_color size=7 maxlength=7 mode=\"colorpicker\" hideInput=\"1\" forceWidth=\"410\">".helptag("osdial_inbound_groups-group_color")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option SELECTED>Y</option><option>N</option></select>".helptag("osdial_inbound_groups-active")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Web Form 1: </td><td align=left><input type=text name=web_form_address size=50 maxlength=255 value=\"$web_form_address\">".helptag("osdial_inbound_groups-web_form_address")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Web Form 2: </td><td align=left><input type=text name=web_form_address2 size=50 maxlength=255 value=\"$web_form_address2\">".helptag("osdial_inbound_groups-web_form_address")."</td></tr>\n";
@@ -364,7 +364,7 @@ if ($ADD==3111) {
         echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
         echo "<tr bgcolor=$oddrows><td align=right>ID: </td><td align=left><b>" . mclabel($row[0]) . "</b>".helptag("osdial_inbound_groups-group_id")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Name: </td><td align=left><input type=text name=group_name size=30 maxlength=30 value=\"$row[1]\">".helptag("osdial_inbound_groups-group_name")."</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Color: </td><td align=left bgcolor=\"$row[2]\" id=\"group_color_td\"><input type=text name=group_color size=7 maxlength=7 value=\"$row[2]\" onkeyup=\"document.getElementById('group_color_td').style.backgroundColor=this.value;\" onchange=\"document.getElementById('group_color_td').style.backgroundColor=this.value;\">".helptag("osdial_inbound_groups-group_color")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Color: </td><td align=left id=\"group_color_td\"><input type=text name=group_color size=7 maxlength=7 value=\"$row[2]\" mode=\"colorpicker\" hideInput=\"1\" forceWidth=\"410\">".helptag("osdial_inbound_groups-group_color")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option SELECTED>$active</option></select>".helptag("osdial_inbound_groups-active")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Web Form 1: </td><td align=left><input type=text name=web_form_address size=50 maxlength=255 value=\"$web_form_address\">".helptag("osdial_inbound_groups-web_form_address")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Web Form in External Window: </td><td align=left><select size=1 name=web_form_extwindow><option>Y</option><option>N</option><option SELECTED>$web_form_extwindow</option></select>".helptag("osdial_inbound_groups-web_form_extwindow")."</td></tr>\n";
