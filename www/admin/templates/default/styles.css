@@ -675,10 +675,9 @@ td.chrome_collapsed_row div{
 div#picker {
 	border-radius: 6px 6px 6px 6px;
     	box-shadow: rgba(0,0,1,1) 0px 0px 20px;
-	Xbox-shadow: rgba(0,0,0,0.5) 0px 0px 1px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	-khtml-border-radius: 5px;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	-khtml-border-radius: 6px;
 	width: 265px;
 	height: 230px;
 	padding-top: 10px;
