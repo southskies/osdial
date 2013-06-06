@@ -104,10 +104,12 @@
 			this.src = this.src.replace(arrowImageOver,arrowImage);
 		}
 		if (!e) e = window.event;
-		if (e.stopPropagation) {
-			e.stopPropagation();
-		} else {
-			e.cancelBubble=true;
+		if (typeof(e)!="undefined") {
+			if (e.stopPropagation) {
+				e.stopPropagation();
+			} else {
+				e.cancelBubble=true;
+			}
 		}
 	}
 
@@ -158,10 +160,12 @@
 			}
 		}
 		if (!e) e = window.event;
-		if (e.stopPropagation) {
-			e.stopPropagation();
-		} else {
-			e.cancelBubble=true;
+		if (typeof(e)!="undefined") {
+			if (e.stopPropagation) {
+				e.stopPropagation();
+			} else {
+				e.cancelBubble=true;
+			}
 		}
 	}
 
