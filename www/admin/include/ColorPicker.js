@@ -143,6 +143,7 @@ OSDCP.ColorPicker = function () {
 						this.Span[count].count=count;
 						this.Span[count].className='pickerMain';
 						this.Span[count].style.width=inputwidth;
+						this.Span[count].onselectstart=function() {return false};
 						var span2 = document.createElement('span');
 						span2.style.padding=0;
 						span2.style.margin=0;
@@ -172,10 +173,15 @@ OSDCP.ColorPicker = function () {
 		spanClick: function(el) {
 			var me=this;
 			onEvent(el, 'click', function(b) {
-				if (me.count > -1) me.Span[me.count].style.zIndex = 1;
-				me.count = el.count;
-				el.appendChild(me.pickerdiv).style.display = "block";
-				me.Span[me.count].style.zIndex = 20000;
+				if (me.Span[me.count] && me.Span[me.count].style && me.Span[me.count].style.zIndex && me.Span[me.count].style.zIndex>1) {
+					if (me.count>-1) me.Span[me.count].style.zIndex=1;
+					me.hidePicker();
+				} else {
+					if (me.count > -1) me.Span[me.count].style.zIndex = 1;
+					me.count = el.count;
+					el.appendChild(me.pickerdiv).style.display = "block";
+					me.Span[me.count].style.zIndex = 20000;
+				}
 				me.stopEvent(b);
 				
 			});
