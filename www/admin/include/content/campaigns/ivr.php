@@ -468,7 +468,7 @@ if ($ADD == "2keys") {
         echo "      <td bgcolor=$oddrows align=right>Extension/Number to Transfer Call to:</td>";
         echo '      <td bgcolor="' . $oddrows . '">';
         #echo '<input type="text" size="12" maxlength="10" name="oi5" value="">';
-        echo phone_extension_text_options($link, 'oi5', '', 15, 30);
+        echo phone_extension_text_options($link, 'oi5', '', 15, 30, '', '');
         echo '</td>';
         echo "  </tr>\n";
     } elseif ($o == 'XFER_EXTERNAL') { 
@@ -503,7 +503,7 @@ if ($ADD == "2keys") {
         echo "      Format: 9995551212</td>\n";
         echo '      <td bgcolor="' . $oddrows . '">';
         #echo '<input type="text" size="12" maxlength="10" name="oi3" value="">';
-        echo phone_extension_text_options($link, 'oi3', '', 20, 30);
+        echo phone_extension_text_options($link, 'oi3', '', 20, 30, '', '');
         echo '</td>';
         echo "  </tr>\n";
     } elseif ($o == 'XFER_EXTERNAL_MULTI') { 
@@ -1387,7 +1387,7 @@ if ($ADD == "3keys") {
         echo "  <tr>\n";
         echo "      <td bgcolor=$oddrows align=right>Extension/Number to Transfer Call to:</td>";
         echo '      <td bgcolor="' . $oddrows . '">';
-        echo phone_extension_text_options($link, 'oi5', $ad[4], 15, 30);
+        echo phone_extension_text_options($link, 'oi5', $ad[4], 15, 30, '');
         #echo '<input type="text" size="12" maxlength="10" name="oi5" value="' . $ad[4] . '">';
         echo '</td>';
         echo "  </tr>\n";
@@ -1423,7 +1423,7 @@ if ($ADD == "3keys") {
         echo "      Format: 9995551212</td>\n";
         echo '      <td bgcolor="' . $oddrows . '">';
         #echo '<input type="text" size="12" maxlength="10" name="oi3" value="' . $ad[2] . '">';
-        echo phone_extension_text_options($link, 'oi3', $ad[2], 20, 30);
+        echo phone_extension_text_options($link, 'oi3', $ad[2], 20, 30, '');
         echo '</td>';
         echo "  </tr>\n";
     } elseif ($o == 'XFER_EXTERNAL_MULTI') { 

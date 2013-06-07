@@ -591,7 +591,7 @@ if ($ADD==3) {
 			} else {
 				echo "<tr bgcolor=$oddrows><td align=right>Default Phone / Voicemail: </td><td align=left>\n";
 			}
-            echo phone_extension_text_options($link, 'phone_login', $phone_login, 10, 20);
+            echo phone_extension_text_options($link, 'phone_login', $phone_login, 10, 20, '');
 			echo helptag("osdial_users-phone_login")."</td></tr>\n";
 			#echo "<tr bgcolor=$oddrows><td align=right>Phone Login: </td><td align=left><input type=text name=phone_login size=20 maxlength=20 value=\"$phone_login\">".helptag("osdial_users-phone_login")."</td></tr>\n";
 			#echo "<tr bgcolor=$oddrows><td align=right>Phone Pass: </td><td align=left><input type=text name=phone_pass size=20 maxlength=20 value=\"$phone_pass\">".helptag("osdial_users-phone_pass")."</td></tr>\n";
