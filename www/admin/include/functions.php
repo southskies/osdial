@@ -1018,6 +1018,15 @@ function media_file_label_list($link) {
             if (OSDpreg_match("/$om[filename]/",$tdesc)) $tdesc='';
             $mkeys[OSDpreg_replace('/.*\/|\..*/','',$om['filename'])] = array($tdesc,'MEDIA');
         }
+        $mkeys['park'] = array('Park Music','FILE')
+        $mkeys['conf'] = array('Conf Music','FILE')
+        $mkeys['ding'] = array('Ding','FILE')
+        $mkeys['buzz'] = array('Buzz','FILE')
+        $mkeys['hold_tone'] = array('Hold Tone','FILE')
+        $mkeys['invalid-room'] = array('Says Invalid Room','FILE')
+        $mkeys['invalid-extension'] = array('Says Invalid Extension','FILE')
+        $mkeys['silence'] = array('Nothing','FILE')
+        $mkeys['vm-goodbye'] = array('Says Goodbye','FILE')
         if (is_array($mkeys)) {
             foreach ($mkeys as $mk => $mv) {
                 $mlist[$mk] = $mv;
@@ -1071,6 +1080,7 @@ function media_extension_label_list($link) {
             }
         }
     }
+    ksort($mlist,SORT_NATURAL);
     return $mlist;
 }
 
@@ -1082,9 +1092,9 @@ function phone_voicemail_list($link) {
     if (is_array($pkrh)) {
         $pkeys = array();
         foreach ($pkrh as $op) {
-            $tdesc = $op['extension'];
+            $tdesc = $op['fullname'];
             if (OSDpreg_match("/^$op[voicemail_id]$/",$tdesc)) $tdesc='';
-            $pkeys[$op['voicemail_id']] = array($tdesc,'PHONE');
+            $pkeys[$op['voicemail_id']] = array($tdesc,'VM');
         }
         if (is_array($pkeys)) {
             foreach ($pkeys as $pk => $pv) {
@@ -1092,6 +1102,7 @@ function phone_voicemail_list($link) {
             }
         }
     }
+    ksort($plist,SORT_NATURAL);
     return $plist;
 }
 
@@ -1103,7 +1114,7 @@ function phone_extension_list($link) {
     if (is_array($pkrh)) {
         $pkeys = array();
         foreach ($pkrh as $op) {
-            $tdesc = $op['extension'];
+            $tdesc = $op['fullname'];
             if (OSDpreg_match("/^$op[dialplan_number]$/",$tdesc)) $tdesc='';
             $pkeys[$op['dialplan_number']] = array($tdesc,'PHONE');
         }
@@ -1113,6 +1124,7 @@ function phone_extension_list($link) {
             }
         }
     }
+    ksort($plist,SORT_NATURAL);
     return $plist;
 }
 
@@ -1144,6 +1156,7 @@ function tts_extension_list($link) {
             }
         }
     }
+    ksort($tlist,SORT_NATURAL);
     return $tlist;
 }
 function tts_file_list($link) {
@@ -1161,6 +1174,7 @@ function tts_file_list($link) {
             }
         }
     }
+    ksort($tlist,SORT_NATURAL);
     return $tlist;
 }
 
@@ -1169,7 +1183,7 @@ function ivr_file_text_options($link, $name, $val, $size, $maxsize) {
     $val = OSDpreg_replace('/.*\/|\..*|---NONE---/','',$val);
     $ext = media_file_label_list($link);
     foreach (tts_file_list($link) as $k => $v) {
-        $ext[$k] = $v;
+        if (!isset($ext[$k])) $ext[$k] = $v;
     }
     return editableSelectBox($ext, $name, $val, $size, $maxsize, '');
 }
@@ -1189,6 +1203,7 @@ function list_id_list($link) {
             }
         }
     }
+    ksort($llist,SORT_NATURAL);
     return $llist;
 }
 
@@ -1199,18 +1214,47 @@ function list_id_text_options($link, $name, $val, $size, $maxsize) {
     return editableSelectBox(list_id_list($link), $name, $val, $size, $maxsize, '');
 }
 
+function extension_label_list($link) {
+    $elist = array();
+    #$ekrh = get_krh($link, 'extensions', '*','extension ASC',"",'');
+    $ekrh = array();
+    $ekrh[] = ['extension'=>'8300','description'=>'Hangup'];
+    $ekrh[] = ['extension'=>'8304','description'=>'Play Ding'];
+    $ekrh[] = ['extension'=>'8307','description'=>'Say Goodbye'];
+    $ekrh[] = ['extension'=>'8320','description'=>'Detect VM, Say Goodbye'];
+    $ekrh[] = ['extension'=>'8500','description'=>'VoiceMail Main Menu'];
+    $ekrh[] = ['extension'=>'9998','description'=>'Echo Test'];
+    $ekrh[] = ['extension'=>'9999','description'=>'Continuous Hold Music'];
+    if (is_array($ekrh)) {
+        $ekeys = array();
+        foreach ($ekrh as $oe) {
+            $tdesc = $oe['description'];
+            if (OSDpreg_match("/^$oe[extension]$/",$tdesc)) $tdesc='';
+            $ekeys[$oe['extension']] = array($tdesc,'EXTEN');
+        }
+        if (is_array($ekeys)) {
+            foreach ($ekeys as $ek => $ev) {
+                $elist[$ek] = $ev;
+            }
+        }
+    }
+    ksort($elist,SORT_NATURAL);
+    return $elist;
+}
 
 
 function extension_text_options($link, $name, $val, $size, $maxsize) {
     if (!isset($maxsize) or $maxsize=='') $maxsize=$size;
-    $ext = media_extension_label_list($link);
+    $ext = extension_label_list($link);
+    foreach (media_extension_label_list($link) as $k => $v) {
+        if (!isset($ext[$k])) $ext[$k] = $v;
+    }
     foreach (tts_extension_list($link) as $k => $v) {
-        $ext[$k] = $v;
+        if (!isset($ext[$k])) $ext[$k] = $v;
     }
     foreach (phone_extension_list($link) as $k => $v) {
-        $ext[$k] = $v;
+        if (!isset($ext[$k])) $ext[$k] = $v;
     }
-    ksort($ext);
     return editableSelectBox($ext, $name, $val, $size, $maxsize, '');
 }
 
