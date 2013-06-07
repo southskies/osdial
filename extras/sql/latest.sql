@@ -1633,7 +1633,7 @@ CREATE TABLE `system_settings` (
   `default_phone_code` varchar(10) DEFAULT '1'
 );
 
-INSERT INTO `system_settings` VALUES ('3.0.0.097',NOW(),'0','1','0','','','','','','VIC','NONE','NOT_ACTIVE','0','/','0','Company Name Here','default','default',NOW(),NULL,'1','0','1','0','admin',0,'SIP','Y-m-d H:i:s','Y','85100000','85110000','1');
+INSERT INTO `system_settings` VALUES ('3.0.1.099',NOW(),'0','1','0','','','','','','VIC','NONE','NOT_ACTIVE','0','/','0','Company Name Here','default','default',NOW(),NULL,'1','0','1','0','admin',0,'SIP','Y-m-d H:i:s','Y','85100000','85110000','1');
 
 CREATE TABLE `web_client_sessions` (
   `extension` varchar(100) NOT NULL,
