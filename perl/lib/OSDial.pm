@@ -533,11 +533,23 @@ sub sql_connect {
 	if ($self->{_sql}{$dbh}{connected}<1) {
 		my $dsn = 'DBI:mysql:' . $dbname . ':' . $dbsrvr . ':' . $dbport;
 		$self->debug(5,'sql_connect',"Connecting to dbh %s at DSN: %s.",$dbh,$dsn);
-		$self->{_sql}{$dbh}{dbh} = DBI->connect($dsn,$dbuser,$dbpass) or die '  -- OSDial: sql_connect:  ERROR ' . $self->{_sql}{$dbh}{dbh}->errstr;
-		$self->{_sql}{$dbh}{dbh}{PrintError} = 0;
-		$self->{_sql}{$dbh}{dbh}{mysql_auto_reconnect} = 1;
-		$self->{_sql}{$dbh}{connected} = 1;
+		$self->{_sql}{$dbh}{dbh} = DBI->connect($dsn,$dbuser,$dbpass);
+		my $myerr = DBI::errstr;
+		if ($myerr) {
+			$self->{_sql}{$dbh}{dbh}{mysql_auto_reconnect} = 0;
+			$self->{_sql}{$dbh}{connected} = 0;
+			if ($dbh eq 'A') {
+				$self->sql_onfail('  -- OSDial: sql_connect:  ERROR ' . $myerr);
+			} else {
+				warn '  -- OSDial: sql_connect:  ERROR ' . $myerr;
+			}
+		} else {
+			$self->{_sql}{$dbh}{dbh}{PrintError} = 0;
+			$self->{_sql}{$dbh}{dbh}{mysql_auto_reconnect} = 1;
+			$self->{_sql}{$dbh}{connected} = 1;
+		}
 	}
+	return $self->{_sql}{$dbh}{connected};
 }
 
 
