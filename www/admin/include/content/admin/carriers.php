@@ -65,10 +65,7 @@ if ($ADD=="1carrier") {
             echo "    <td align=right>Phone:</td>\n";
             echo "    <td align=left>\n";
             echo "      <div>\n";
-            echo "      <select name=did_phone>\n";
-            $krh = get_krh($link, 'phones', '*','',"active='Y'",'');
-            echo format_select_options($krh, 'extension', 'fullname', '', "-- Select Phone --",'');
-            echo "      </select>\n";
+            echo phone_extension_text_options($link, 'did_phone', null, 20, 20, 'selectBoxForce="1" selectBoxLabel="-- Select Phone --"');
             echo "      ".helptag("carrier_dids-phone")."\n";
             echo "      </div>\n";
             echo "    </td>\n";
@@ -78,7 +75,12 @@ if ($ADD=="1carrier") {
             echo "    <td align=right>Context:</td>\n";
             echo "    <td align=left>\n";
             echo "      <div>\n";
-            echo "      <input type=text name=did_extension_context size=20 maxlength=50 value=\"osdial\">".helptag("carrier_dids-extension_context")."\n";
+            $contexts = array();
+            $contexts['osdialBLOCK']='Block direct calling to outbound and extensions';
+            $contexts['osdialEXT']='Block direct outbound, Allow direct extensions';
+            $contexts['osdial']='Allow direct calling to outbound and extensions';
+            $contexts['default']='Same as osdial context';
+            echo editableSelectBox($contexts, 'did_extension_context', 'osdial', 100, 100, '').helptag("carrier_dids-extension_context")."\n";
             echo "      </div>\n";
             echo "    </td>\n";
             echo "  </tr>\n";
