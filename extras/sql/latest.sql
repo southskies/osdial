@@ -35,7 +35,7 @@ CREATE TABLE `conferences` (
 );
 
 CREATE TABLE `configuration` (
-  `id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `fk_id` varchar(20) NOT NULL DEFAULT '',
   `name` varchar(50) NOT NULL DEFAULT '',
   `data` varchar(100) DEFAULT NULL,
@@ -122,7 +122,7 @@ CREATE TABLE `live_sip_channels` (
 );
 
 CREATE TABLE `osdial_agent_log` (
-  `agent_log_id` int(9) unsigned NOT NULL,
+  `agent_log_id` int(9) unsigned NOT NULL AUTO_INCREMENT,
   `user` varchar(20) DEFAULT NULL,
   `server_ip` varchar(15) NOT NULL,
   `event_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -151,7 +151,7 @@ CREATE TABLE `osdial_agent_log` (
 );
 
 CREATE TABLE `osdial_auto_calls` (
-  `auto_call_id` int(9) unsigned NOT NULL,
+  `auto_call_id` int(9) unsigned NOT NULL AUTO_INCREMENT,
   `server_ip` varchar(15) NOT NULL,
   `campaign_id` varchar(20) DEFAULT NULL,
   `status` enum('SENT','RINGING','LIVE','XFER','PAUSED','CLOSER','BUSY','DISCONNECT','CONGESTION','CPA') DEFAULT 'PAUSED',
@@ -164,7 +164,7 @@ CREATE TABLE `osdial_auto_calls` (
   `call_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `call_type` enum('IN','OUT','OUTBALANCE') DEFAULT 'OUT',
   `stage` varchar(20) DEFAULT 'START',
-  `last_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `last_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `alt_dial` enum('NONE','MAIN','ALT','ADDR3','AFFAP1','AFFAP2','AFFAP3','AFFAP4','AFFAP5','AFFAP6','AFFAP7','AFFAP8','AFFAP9') DEFAULT 'NONE',
   PRIMARY KEY (`auto_call_id`),
   KEY `uniqueid` (`uniqueid`),
@@ -199,14 +199,14 @@ CREATE TABLE `osdial_call_times` (
 );
 
 CREATE TABLE `osdial_callbacks` (
-  `callback_id` int(9) unsigned NOT NULL,
+  `callback_id` int(9) unsigned NOT NULL AUTO_INCREMENT,
   `lead_id` int(9) unsigned NOT NULL DEFAULT '0',
   `list_id` bigint(14) unsigned DEFAULT NULL,
   `campaign_id` varchar(20) DEFAULT NULL,
   `status` varchar(10) NOT NULL DEFAULT '',
   `entry_time` datetime DEFAULT NULL,
   `callback_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modify_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modify_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `user` varchar(20) DEFAULT NULL,
   `recipient` enum('USERONLY','ANYONE') DEFAULT NULL,
   `comments` varchar(255) DEFAULT NULL,
@@ -220,7 +220,7 @@ CREATE TABLE `osdial_callbacks` (
 CREATE TABLE `osdial_campaign_agent_stats` (
   `campaign_id` varchar(20) NOT NULL,
   `user` varchar(20) NOT NULL DEFAULT '',
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `manual_dial_new_today` int(9) unsigned DEFAULT '0',
   `calls_today` int(9) unsigned DEFAULT '0',
   `answers_today` int(9) unsigned DEFAULT '0',
@@ -271,7 +271,7 @@ CREATE TABLE `osdial_campaign_email_blacklist` (
 );
 
 CREATE TABLE `osdial_campaign_fields` (
-  `id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `form_id` int(10) unsigned NOT NULL,
   `name` varchar(15) NOT NULL,
   `description` varchar(50) NOT NULL,
@@ -299,7 +299,7 @@ INSERT INTO `osdial_campaign_fields` VALUES (14,2,'AFFAP6','Alt Phone 9','',15,6
 INSERT INTO `osdial_campaign_fields` VALUES (15,2,'AFFAP7','Alt Phone 10','',15,7,0);
 
 CREATE TABLE `osdial_campaign_forms` (
-  `id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `campaigns` varchar(255) NOT NULL,
   `name` varchar(15) NOT NULL,
   `description` varchar(50) NOT NULL,
@@ -325,7 +325,7 @@ CREATE TABLE `osdial_campaign_hotkeys` (
 CREATE TABLE `osdial_campaign_server_stats` (
   `campaign_id` varchar(20) NOT NULL,
   `server_ip` varchar(15) NOT NULL,
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `local_trunk_shortage` smallint(5) unsigned DEFAULT '0',
   `calls_onemin` int(9) unsigned NOT NULL DEFAULT '0',
   `answers_onemin` int(9) unsigned NOT NULL DEFAULT '0',
@@ -337,7 +337,7 @@ CREATE TABLE `osdial_campaign_server_stats` (
 
 CREATE TABLE `osdial_campaign_stats` (
   `campaign_id` varchar(20) NOT NULL,
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `dialable_leads` int(9) unsigned DEFAULT '0',
   `calls_today` int(9) unsigned DEFAULT '0',
   `answers_today` int(9) unsigned DEFAULT '0',
@@ -508,7 +508,7 @@ CREATE TABLE `osdial_campaigns_list_mix` (
 );
 
 CREATE TABLE `osdial_carrier_dids` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `carrier_id` int(11) NOT NULL DEFAULT '0',
   `did` char(50) NOT NULL DEFAULT '',
   `did_action` enum('INGROUP','PHONE','EXTENSION','VOICEMAIL') DEFAULT 'EXTENSION',
@@ -558,7 +558,7 @@ CREATE TABLE `osdial_carriers` (
 );
 
 CREATE TABLE `osdial_closer_log` (
-  `closecallid` int(9) unsigned NOT NULL,
+  `closecallid` int(9) unsigned NOT NULL AUTO_INCREMENT,
   `lead_id` int(9) unsigned NOT NULL,
   `list_id` bigint(14) unsigned DEFAULT NULL,
   `campaign_id` varchar(20) DEFAULT NULL,
@@ -586,7 +586,7 @@ CREATE TABLE `osdial_closer_log` (
 );
 
 CREATE TABLE `osdial_companies` (
-  `id` tinyint(3) unsigned NOT NULL,
+  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
   `creation_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `name` varchar(100) NOT NULL DEFAULT '',
   `status` enum('INACTIVE','ACTIVE','SUSPENDED','TERMINATED') NOT NULL DEFAULT 'INACTIVE',
@@ -621,7 +621,7 @@ CREATE TABLE `osdial_conferences` (
 );
 
 CREATE TABLE `osdial_cpa_log` (
-  `id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `callerid` varchar(20) NOT NULL DEFAULT '',
   `uniqueid` varchar(20) NOT NULL DEFAULT '',
   `lead_id` int(9) unsigned NOT NULL DEFAULT '0',
@@ -672,7 +672,7 @@ CREATE TABLE `osdial_email_templates` (
 );
 
 CREATE TABLE `osdial_hopper` (
-  `hopper_id` int(9) unsigned NOT NULL,
+  `hopper_id` int(9) unsigned NOT NULL AUTO_INCREMENT,
   `lead_id` int(9) unsigned NOT NULL,
   `campaign_id` varchar(20) NOT NULL,
   `status` enum('READY','QUEUE','INCALL','DONE','HOLD','API') DEFAULT 'READY',
@@ -736,7 +736,7 @@ CREATE TABLE `osdial_inbound_groups` (
 );
 
 CREATE TABLE `osdial_ivr` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `campaign_id` varchar(20) NOT NULL DEFAULT '',
   `name` varchar(50) DEFAULT NULL,
   `announcement` varchar(255) DEFAULT 'hello-world',
@@ -755,7 +755,7 @@ CREATE TABLE `osdial_ivr` (
 );
 
 CREATE TABLE `osdial_ivr_options` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `ivr_id` int(11) NOT NULL DEFAULT '0',
   `parent_id` int(11) NOT NULL DEFAULT '0',
   `keypress` char(1) DEFAULT NULL,
@@ -775,7 +775,7 @@ CREATE TABLE `osdial_lead_filters` (
 );
 
 CREATE TABLE `osdial_lead_recycle` (
-  `recycle_id` int(9) unsigned NOT NULL,
+  `recycle_id` int(9) unsigned NOT NULL AUTO_INCREMENT,
   `campaign_id` varchar(20) NOT NULL,
   `status` varchar(6) NOT NULL,
   `attempt_delay` int(11) unsigned DEFAULT '1800',
@@ -786,9 +786,9 @@ CREATE TABLE `osdial_lead_recycle` (
 );
 
 CREATE TABLE `osdial_list` (
-  `lead_id` int(9) unsigned NOT NULL,
+  `lead_id` int(9) unsigned NOT NULL AUTO_INCREMENT,
   `entry_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modify_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modify_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `status` varchar(6) NOT NULL DEFAULT '',
   `user` varchar(20) NOT NULL DEFAULT '',
   `vendor_lead_code` varchar(20) NOT NULL DEFAULT '',
@@ -842,7 +842,7 @@ CREATE TABLE `osdial_list` (
 );
 
 CREATE TABLE `osdial_list_fields` (
-  `id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `lead_id` int(10) unsigned NOT NULL,
   `field_id` int(10) unsigned NOT NULL,
   `value` varchar(255) DEFAULT NULL,
@@ -852,7 +852,7 @@ CREATE TABLE `osdial_list_fields` (
 );
 
 CREATE TABLE `osdial_list_pins` (
-  `pins_id` int(9) unsigned NOT NULL,
+  `pins_id` int(9) unsigned NOT NULL AUTO_INCREMENT,
   `entry_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `phone_number` varchar(12) NOT NULL DEFAULT '',
   `lead_id` int(9) unsigned NOT NULL DEFAULT '0',
@@ -889,7 +889,7 @@ INSERT INTO `osdial_lists` VALUES (10,'PBX-IN','PBX-IN',NULL,'PBX/External Inbou
 INSERT INTO `osdial_lists` VALUES (11,'PBX-OUT','PBX-OUT',NULL,'PBX/External Outbound',NULL,NULL,'N',NULL,'',0,'','','');
 
 CREATE TABLE `osdial_live_agents` (
-  `live_agent_id` int(9) unsigned NOT NULL,
+  `live_agent_id` int(9) unsigned NOT NULL AUTO_INCREMENT,
   `user` varchar(20) NOT NULL DEFAULT '',
   `server_ip` varchar(15) NOT NULL,
   `conf_exten` varchar(20) DEFAULT NULL,
@@ -902,7 +902,7 @@ CREATE TABLE `osdial_live_agents` (
   `channel` varchar(100) DEFAULT NULL,
   `random_id` int(8) unsigned NOT NULL DEFAULT '0',
   `last_call_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `last_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `last_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `last_call_finish` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `closer_campaigns` text,
   `call_server_ip` varchar(15) DEFAULT NULL,
@@ -992,7 +992,7 @@ CREATE TABLE `osdial_manager` (
 );
 
 CREATE TABLE `osdial_media` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `filename` varchar(100) NOT NULL,
   `mimetype` varchar(50) NOT NULL,
   `description` varchar(255) NOT NULL,
@@ -1003,7 +1003,7 @@ CREATE TABLE `osdial_media` (
 );
 
 CREATE TABLE `osdial_media_data` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `filename` varchar(255) NOT NULL,
   `filedata` mediumblob,
   PRIMARY KEY (`id`,`filename`)
@@ -1057,7 +1057,7 @@ CREATE TABLE `osdial_postal_codes` (
 );
 
 CREATE TABLE `osdial_remote_agents` (
-  `remote_agent_id` int(9) unsigned NOT NULL,
+  `remote_agent_id` int(9) unsigned NOT NULL AUTO_INCREMENT,
   `user_start` varchar(20) DEFAULT NULL,
   `number_of_lines` tinyint(3) unsigned DEFAULT '1',
   `server_ip` varchar(15) NOT NULL,
@@ -1076,7 +1076,7 @@ CREATE TABLE `osdial_report_groups` (
 );
 
 CREATE TABLE `osdial_script_button_log` (
-  `id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `lead_id` int(9) unsigned NOT NULL,
   `script_id` varchar(40) NOT NULL DEFAULT '',
   `script_button_id` varchar(10) NOT NULL,
@@ -1194,7 +1194,7 @@ INSERT INTO `osdial_statuses` VALUES ('VPU','IVR: PickUp','N','Y','IVR');
 INSERT INTO `osdial_statuses` VALUES ('VTO','IVR: Menu Time-out','N','Y','IVR');
 
 CREATE TABLE `osdial_tts` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `description` varchar(255) NOT NULL,
   `extension` varchar(20) NOT NULL,
   `phrase` mediumtext,
@@ -1247,7 +1247,7 @@ CREATE TABLE `osdial_user_groups` (
 INSERT INTO `osdial_user_groups` VALUES ('VIRTUAL','Virtual Agents',' -ALL-CAMPAIGNS- - -','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1',' -ALL-SCRIPTS- -',' -ALL-EMAIL-TEMPLATES- -',' -ALL-INGROUPS- -');
 
 CREATE TABLE `osdial_user_log` (
-  `user_log_id` int(9) unsigned NOT NULL,
+  `user_log_id` int(9) unsigned NOT NULL AUTO_INCREMENT,
   `user` varchar(20) NOT NULL DEFAULT '',
   `event` varchar(50) DEFAULT NULL,
   `campaign_id` varchar(20) NOT NULL,
@@ -1259,7 +1259,7 @@ CREATE TABLE `osdial_user_log` (
 );
 
 CREATE TABLE `osdial_users` (
-  `user_id` int(9) unsigned NOT NULL,
+  `user_id` int(9) unsigned NOT NULL AUTO_INCREMENT,
   `user` varchar(20) NOT NULL DEFAULT '',
   `pass` varchar(20) DEFAULT NULL,
   `full_name` varchar(50) DEFAULT NULL,
@@ -1323,7 +1323,7 @@ INSERT INTO `osdial_users` VALUES (1,'PBX-IN','do not delete',NULL,0,'ADMIN',NUL
 INSERT INTO `osdial_users` VALUES (2,'PBX-OUT','do not delete',NULL,0,'ADMIN',NULL,NULL,'0','0','0','0','0','0','0','0','0','0','0','0','0','0','1',NULL,'1','0','0','1','1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','DISABLED','NOT_ACTIVE',-1,'1','0','0','0','0','','0','0','0');
 
 CREATE TABLE `osdial_xfer_log` (
-  `xfercallid` int(9) unsigned NOT NULL,
+  `xfercallid` int(9) unsigned NOT NULL AUTO_INCREMENT,
   `lead_id` int(9) unsigned NOT NULL,
   `list_id` bigint(14) unsigned DEFAULT NULL,
   `campaign_id` varchar(20) DEFAULT NULL,
@@ -1444,7 +1444,7 @@ CREATE TABLE `phones` (
 );
 
 CREATE TABLE `qc_recordings` (
-  `id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `recording_id` int(10) unsigned NOT NULL,
   `lead_id` int(10) unsigned NOT NULL,
   `filename` varchar(255) NOT NULL DEFAULT '',
@@ -1459,7 +1459,7 @@ CREATE TABLE `qc_recordings` (
 );
 
 CREATE TABLE `qc_server_rules` (
-  `id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `qc_server_id` int(10) unsigned NOT NULL,
   `query` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1467,7 +1467,7 @@ CREATE TABLE `qc_server_rules` (
 );
 
 CREATE TABLE `qc_servers` (
-  `id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(50) DEFAULT NULL,
   `description` varchar(255) DEFAULT NULL,
   `transfer_method` enum('FTP','SCP','SFTP','FTPA') DEFAULT 'FTP',
@@ -1486,7 +1486,7 @@ CREATE TABLE `qc_servers` (
 );
 
 CREATE TABLE `qc_transfers` (
-  `id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `qc_server_id` int(10) unsigned NOT NULL,
   `qc_recording_id` int(10) unsigned NOT NULL,
   `status` enum('NOTFOUND','PENDING','SUCCESS','FAILURE') NOT NULL DEFAULT 'PENDING',
@@ -1499,7 +1499,7 @@ CREATE TABLE `qc_transfers` (
 );
 
 CREATE TABLE `recording_log` (
-  `recording_id` int(10) unsigned NOT NULL,
+  `recording_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `channel` varchar(100) DEFAULT NULL,
   `server_ip` varchar(15) DEFAULT NULL,
   `extension` varchar(100) DEFAULT NULL,
@@ -1559,14 +1559,14 @@ CREATE TABLE `server_stats` (
   `mem_free` varchar(20) NOT NULL,
   `mem_pct` varchar(10) NOT NULL,
   `swap_used` varchar(20) NOT NULL,
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`server_ip`)
 );
 
 CREATE TABLE `server_updater` (
   `server_ip` varchar(15) NOT NULL,
   `last_update` datetime DEFAULT NULL,
-  `sql_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `sql_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`server_ip`)
 );
 
