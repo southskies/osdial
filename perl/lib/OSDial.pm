@@ -970,6 +970,7 @@ sub media_add_files {
 
 	$self->debug(3,'media_add_files',"Adding Directory:%s  Pattern:%s  Update:%s",$dir,$pattern, $updatedata);
 	my @files;
+	return @files if (!-d $dir );
 	opendir(MAFDIR,$dir);
 	foreach my $filename (readdir(MAFDIR)) {
 		if ($filename ne '.' and $filename ne '..' and $filename =~ /$pattern/ and not -d $filename) {
