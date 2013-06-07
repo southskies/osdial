@@ -1132,12 +1132,12 @@ function phone_extension_list($link) {
 
 function phone_voicemail_text_options($link, $name, $val, $size, $maxsize) {
     if (!isset($maxsize) or $maxsize=='') $maxsize=$size;
-    return editableSelectBox(phone_voicemail_list($link), $name, $val, $size, $maxsize, '');
+    return editableSelectBox(phone_voicemail_list($link), $name, $val, $size, $maxsize, $opts);
 }
 
-function phone_extension_text_options($link, $name, $val, $size, $maxsize) {
+function phone_extension_text_options($link, $name, $val, $size, $maxsize, $ops) {
     if (!isset($maxsize) or $maxsize=='') $maxsize=$size;
-    return editableSelectBox(phone_extension_list($link), $name, $val, $size, $maxsize, '');
+    return editableSelectBox(phone_extension_list($link), $name, $val, $size, $maxsize, $opts);
 }
 
 
@@ -1243,7 +1243,7 @@ function extension_label_list($link) {
 }
 
 
-function extension_text_options($link, $name, $val, $size, $maxsize) {
+function extension_text_options($link, $name, $val, $size, $maxsize, $opts) {
     if (!isset($maxsize) or $maxsize=='') $maxsize=$size;
     $ext = extension_label_list($link);
     foreach (media_extension_label_list($link) as $k => $v) {
@@ -1255,7 +1255,7 @@ function extension_text_options($link, $name, $val, $size, $maxsize) {
     foreach (phone_extension_list($link) as $k => $v) {
         if (!isset($ext[$k])) $ext[$k] = $v;
     }
-    return editableSelectBox($ext, $name, $val, $size, $maxsize, '');
+    return editableSelectBox($ext, $name, $val, $size, $maxsize, $opts);
 }
 
 
