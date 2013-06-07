@@ -113,6 +113,30 @@ my $pass = calc_password();
 
 my $asterisk_version;
 if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
+	if ($CLOrealtime) {
+		my $sqlsect='';
+		my $sqlparams={};
+		my $sqlfile = "/etc/asterisk/res_mysql.conf";
+		my($sqldata);
+		open(SQL, $sqlfile);
+		while (my $sqlline = <SQL>) {
+			$sqlline =~ s/\n|\r\n//g;
+			if ($sqlline =~ /(^\s*\[|^\s*\w+\s*\=|^[^\;].*$)/) {
+				my $tsqlsect = $sqlline;
+				$tsqlsect =~ s/^\s*[\[](\w+)[\]]\s*.*$|^.*$/$1/;
+				$sqlsect = $tsqlsect if ($tsqlsect ne '');
+				if ($sqlsect ne '') {
+					$sqlline =~ s/^\s*(\w+)\s*(\=)\s*(.*)$|^.*$/$1$2$3/;
+					my ($sqlkey,$sqlval) = split(/\=/,$sqlline,2);
+					$sqlparams->{$sqlsect}{$sqlkey} = $sqlval if (defined($sqlkey) and $sqlkey ne '');
+				}
+			}
+		}
+		close(SQL);
+		my $rtdb='dialer';
+		$osdial->sql_connect('RT',$sqlparams->{$rtdb}{'dbname'},$sqlparams->{$rtdb}{'dbhost'},$sqlparams->{$rtdb}{'dbport'},$sqlparams->{$rtdb}{'dbuser'},$sqlparams->{$rtdb}{'dbpass'});
+	}
+
 	#Check and set Asterisk version.
 	$asterisk_version = `/usr/sbin/asterisk -V`;
 	chomp $asterisk_version;
@@ -233,28 +257,6 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 	}
 
 	if (scalar keys %{$realtime_ext} > 0) {
-		my $sqlsect='';
-		my $sqlparams={};
-		my $sqlfile = "/etc/asterisk/res_mysql.conf";
-		my($sqldata);
-		open(SQL, $sqlfile);
-		while (my $sqlline = <SQL>) {
-			$sqlline =~ s/\n|\r\n//g;
-			if ($sqlline =~ /(^\s*\[|^\s*\w+\s*\=|^[^\;].*$)/) {
-				my $tsqlsect = $sqlline;
-				$tsqlsect =~ s/^\s*[\[](\w+)[\]]\s*.*$|^.*$/$1/;
-				$sqlsect = $tsqlsect if ($tsqlsect ne '');
-				if ($sqlsect ne '') {
-					$sqlline =~ s/^\s*(\w+)\s*(\=)\s*(.*)$|^.*$/$1$2$3/;
-					my ($sqlkey,$sqlval) = split(/\=/,$sqlline,2);
-					$sqlparams->{$sqlsect}{$sqlkey} = $sqlval if (defined($sqlkey) and $sqlkey ne '');
-				}
-			}
-		}
-		close(SQL);
-		my $rtdb='dialer';
-		$osdial->sql_connect('RT',$sqlparams->{$rtdb}{'dbname'},$sqlparams->{$rtdb}{'dbhost'},$sqlparams->{$rtdb}{'dbport'},$sqlparams->{$rtdb}{'dbuser'},$sqlparams->{$rtdb}{'dbpass'});
-
 		# Cycle through all extensions and priorities, remove non-existant entries.
 		my $rtsql = sprintf("SELECT context,exten,priority,count(*) as extcount FROM extensions GROUP BY context,exten,priority;");
 		my $rtext_del = {};
@@ -574,7 +576,12 @@ sub gen_servers {
 sub gen_conferences {
 	my $cnf = $achead;
 	my $mtm = $achead;
-	$mtm .= "conf => 8600\nconf => 8601,1234\n";
+	my $rtmtm = {};
+	if ($CLOrealtime) {
+		$osdial->sql_execute("INSERT INTO meetme (confno,pin) VALUES ('8600',NULL),('8601','1234') ON DUPLICATE KEY UPDATE pin=pin;",'RT');
+	} else {
+		$mtm .= "conf => 8600\nconf => 8601,1234\n";
+	}
 	if (!$CLOexpand) {
 		$cnf .= ";\n;Volume adjustments\n";
 		$cnf .= procexten("osdial","_X4860XXXX","1","MeetMeAdmin","\${EXTEN:2},T,\${EXTEN:0:1}");
@@ -654,7 +661,11 @@ sub gen_conferences {
 				$cnf2 .= procexten("osdial","_".$sret->{conf_exten},"2","Hangup","");
 			}
 		}
-		$mtm2 .= "conf => " . $sret->{conf_exten} . "\n";
+		if ($CLOrealtime) {
+			$rtmtm->{$sret->{conf_exten}}=1;
+		} else {
+			$mtm2 .= "conf => " . $sret->{conf_exten} . "\n";
+		}
 	}
 	if (!$CLOexpand) {
 		$cnf2 .= procexten("osdial","_8600XXX","1","AGI","agi-OSDagent_conf.agi,genconf");
@@ -663,8 +674,10 @@ sub gen_conferences {
 
 	$cnf .= ";\n; OSDial Conferences $cf - $cl\n";
 	$cnf .= $cnf2;
-	$mtm .= ";\n; OSDial Conferences $cf - $cl\n";
-	$mtm .= $mtm2;
+	if (!$CLOrealtime) {
+		$mtm .= ";\n; OSDial Conferences $cf - $cl\n";
+		$mtm .= $mtm2;
+	}
 
 	my $stmt = "SELECT conf_exten,server_ip FROM osdial_conferences WHERE";
         foreach my $ip (@myips) {
@@ -741,7 +754,11 @@ sub gen_conferences {
 				$cnf2 .= procexten("osdial","_9".$sret->{conf_exten},"2","Hangup","");
 			}
 		}
-		$mtm2 .= "conf => " . $sret->{conf_exten} . "\n";
+		if ($CLOrealtime) {
+			$rtmtm->{$sret->{conf_exten}}=1;
+		} else {
+			$mtm2 .= "conf => " . $sret->{conf_exten} . "\n";
+		}
         }
 	if (!$CLOexpand) {
 		$cnf2 .= procexten("osdial","_8601XXX","1","AGI","agi-OSDagent_conf.agi,agentconf");
@@ -760,8 +777,10 @@ sub gen_conferences {
 	$cnf .= "; quiet entry and leaving conferences for OSDIAL $cf - $cl\n";
 	$cnf .= "; quiet monitor extensions for meetme rooms (for room managers)  $cf - $cl\n";
 	$cnf .= $cnf2;
-	$mtm .= ";\n; OSDIAL Agent Conferences $cf - $cl\n";
-	$mtm .= $mtm2;
+	if (!$CLOrealtime) {
+		$mtm .= ";\n; OSDIAL Agent Conferences $cf - $cl\n";
+		$mtm .= $mtm2;
+	}
 
 	my $stmt = "SELECT conf_exten FROM osdial_remote_agents WHERE user_start LIKE 'va\%';";
         my ($cnf2,$mtm2,$cf,$cl);
@@ -820,7 +839,11 @@ sub gen_conferences {
 				$cnf2 .= procexten("osdial","_9".$sret->{conf_exten},"2","Hangup","");
 			}
 		}
-		$mtm2 .= "conf => " . $sret->{conf_exten} . "\n";
+		if ($CLOrealtime) {
+			$rtmtm->{$sret->{conf_exten}}=1;
+		} else {
+			$mtm2 .= "conf => " . $sret->{conf_exten} . "\n";
+		}
 	}
 
 	if (!$CLOexpand) {
@@ -845,8 +868,10 @@ sub gen_conferences {
 	$cnf2 .= procexten("osdial","_487489.","2","Hangup","");
 	$cnf .= ";\n; OSDIAL Virtual Agent Conferences\n";
 	$cnf .= $cnf2;
-	$mtm .= ";\n; OSDIAL Virtual Agent Conferences\n";
-	$mtm .= $mtm2;
+	if (!$CLOrealtime) {
+		$mtm .= ";\n; OSDIAL Virtual Agent Conferences\n";
+		$mtm .= $mtm2;
+	}
 
 	my $extreload = "extensions reload";
 	my $mmreload = "reload app_meetme.so";
@@ -855,6 +880,28 @@ sub gen_conferences {
 		$mmreload = "config reload /etc/asterisk/meetme.conf";
 	}
 	write_reload($cnf,'osdial_extensions_conferences',$extreload);
+	if ($CLOrealtime) {
+		my $rtmmcur = {};
+		my $rtmmadd = {};
+		my $rtmmdel = {};
+		my $stmt = sprintf("SELECT confno FROM meetme WHERE confno!='8600' AND confno !='8601';");
+		while (my $sret = $osdial->sql_query($stmt,'RT')) {
+			$rtmmcur->{$sret->{'confno'}} = 1;
+		}
+		foreach my $mm (keys %{$rtmmcur}) {
+			$rtmmdel->{$mm}=1 if (!defined($rtmtm->{$mm}));
+		}
+		foreach my $mm (keys %{$rtmtm}) {
+			$rtmmadd->{$mm}=1 if (!defined($rtmmcur->{$mm}));
+		}
+		foreach my $mm (keys %{$rtmmdel}) {
+			$osdial->sql_execute(sprintf("DELETE FROM meetme WHERE confno='%s';",$mm),'RT');
+		}
+		foreach my $mm (keys %{$rtmmadd}) {
+			$osdial->sql_execute(sprintf("INSERT INTO meetme SET confno='%s';",$mm),'RT');
+		}
+		$mmreload='';
+	}
 	write_reload($mtm,'osdial_meetme',$mmreload);
 }
 
@@ -1254,8 +1301,9 @@ sub gen_carriers {
 		}
 
 		# Create Outbound dialplan for the carrier.
-		$dialplan = "[OOUT" . $carriers->{$carrier}{name} . "]\n";
-		$dialplan .= "switch => Realtime/OOUT".$carriers->{$carrier}{name}."\@extensions/p\n";
+		$dialplan = "[OOUT" . $carriers->{$carrier}{name} . "-Switch]\n";
+		$dialplan .= "switch => Realtime/OOUT".$carriers->{$carrier}{name}."\@extensions/p\n\n";
+		$dialplan .= "[OOUT" . $carriers->{$carrier}{name} . "-Patterns]\n";
 
 		# Create failover dialplan, which will attempt another carrier based on the DIALSTATUS.
 		my $failover = '';
@@ -1279,11 +1327,16 @@ sub gen_carriers {
 		$dialplan .= $failover;
 		$dialplan .= $carriers->{$carrier}{dialplan} . "\n";
 		$dialplan .= procexten("OOUT".$carriers->{$carrier}{name},"h","1","AGI","agi://127.0.0.1:4577/call_log--HVcauses--PRI-----NODEBUG-----\${HANGUPCAUSE}-----\${DIALSTATUS}-----\${DIALEDTIME}-----\${ANSWEREDTIME}");
+
+		$dialplan .= "[OOUT" . $carriers->{$carrier}{name} . "]\n";
+		$dialplan .= "include => OOUT" . $carriers->{$carrier}{name} . "-Switch\n";
+		$dialplan .= "include => OOUT" . $carriers->{$carrier}{name} . "-Patterns\n";
 		$dialplan .= "\n\n";
 
 		# Create Inbound dialplan for the carrier, ie DIDs..
-		$dialplan .= "[" . $context . "]\n";
-		$dialplan .= "switch => Realtime/".$context."\@extensions/p\n";
+		$dialplan .= "[" . $context . "-Switch]\n";
+		$dialplan .= "switch => Realtime/".$context."\@extensions/p\n\n";
+		$dialplan .= "[" . $context . "-Patterns]\n";
 		my %didchk;
 		my $dids = {};
 		my $stmt = sprintf("SELECT * FROM osdial_carrier_dids WHERE carrier_id='\%s';",$carrier);
@@ -1327,6 +1380,11 @@ sub gen_carriers {
 		if (!defined $didchk{'h'}) {
 			$dialplan .= procexten($context,"h","1","AGI","agi://127.0.0.1:4577/call_log--HVcauses--PRI-----NODEBUG-----\${HANGUPCAUSE}-----\${DIALSTATUS}-----\${DIALEDTIME}-----\${ANSWEREDTIME}");
 		}
+		$dialplan .= "\n\n";
+		$dialplan .= "[" . $context . "]\n";
+		$dialplan .= "include => ".$context."-Switch\n";
+		$dialplan .= "include => ".$context."-Patterns\n\n";
+		
 
 	}
 	my $extreload = "extensions reload";
@@ -1356,7 +1414,7 @@ sub write_reload {
 		print "    " . $file . ".conf has changed, updating...\n" unless ($CLOquiet);
 		if (!$CLOtest) {
 			`cp /tmp/$file.$$ /etc/asterisk/$file.conf > /dev/null 2>&1`;
-			$reloads{$reload} = 1;
+			$reloads{$reload} = 1 if ($reload ne '');
 		}
 		sleep 1;
 	} else {
