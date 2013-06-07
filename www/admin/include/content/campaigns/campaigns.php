@@ -999,7 +999,8 @@ if ($ADD==31) {
         $campaign_rec_filename = $row[24];
         $script_id = $row[25];
         $get_call_launch = $row[26];
-        $am_message_exten = OSDpreg_replace('/^8320/','',$row[27]);
+        $am_message_exten = $row[27];
+        if (OSDstrlen($row[27])>4) OSDpreg_replace('/^8320/','',$row[27]);
         $amd_send_to_vmx = $row[28];
         $xferconf_a_dtmf = $row[29];
         $xferconf_a_number = $row[30];
@@ -1862,8 +1863,8 @@ if ($ADD==31) {
 			echo "<a name=am></a>";
 			echo "<div style=\"width:".$section_width."px;padding:5px;\" class=rounded-corners>";
 			echo "<table width=100% cellpadding=0 cellspacing=3>";
-			echo "<tr><td align=left class=top_header_sect valign=top width=30%>Answering Machine Options</td></tr>";
-			echo "<tr><td align=center><br /><table border=0 cellpadding=2 cellspacing=3 width=70%>";
+			echo "<tr><td align=left class=top_header_sect valign=top width=20%>Answering Machine Options</td></tr>";
+			echo "<tr><td align=center><br /><table border=0 cellpadding=2 cellspacing=3 width=80%>";
 			echo "<tr><td align=left>Answering Message Extension: </td><td align=left>";
 			#echo "<input type=text name=am_message_exten size=10 maxlength=20 value=\"$am_message_exten\">";
 			echo extension_text_options($link, 'am_message_exten', $am_message_exten, 10, 20);
@@ -1881,8 +1882,8 @@ if ($ADD==31) {
 			echo "<a name=drop></a>";
 			echo "<div style=\"width:".$section_width."px;padding:5px;\" class=rounded-corners>";
 			echo "<table width=100% cellpadding=0 cellspacing=3>";
-			echo "<tr><td align=left class=top_header_sect valign=top width=30%>Dropped Calls Options</td></tr>";
-			echo "<tr><td align=center><br /><table border=0 cellpadding=2 cellspacing=3 width=70%>";
+			echo "<tr><td align=left class=top_header_sect valign=top width=20%>Dropped Calls Options</td></tr>";
+			echo "<tr><td align=center><br /><table border=0 cellpadding=2 cellspacing=3 width=80%>";
 			echo "<tr><td align=left>Drop Call Handling (Safe Harbor): </td><td align=left>";
 			echo "<select size=1 name=safe_harbor_message>";
 			$sel1='';
