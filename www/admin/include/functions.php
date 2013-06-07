@@ -1018,15 +1018,15 @@ function media_file_label_list($link) {
             if (OSDpreg_match("/$om[filename]/",$tdesc)) $tdesc='';
             $mkeys[OSDpreg_replace('/.*\/|\..*/','',$om['filename'])] = array($tdesc,'MEDIA');
         }
-        $mkeys['park'] = array('Park Music','FILE')
-        $mkeys['conf'] = array('Conf Music','FILE')
-        $mkeys['ding'] = array('Ding','FILE')
-        $mkeys['buzz'] = array('Buzz','FILE')
-        $mkeys['hold_tone'] = array('Hold Tone','FILE')
-        $mkeys['invalid-room'] = array('Says Invalid Room','FILE')
-        $mkeys['invalid-extension'] = array('Says Invalid Extension','FILE')
-        $mkeys['silence'] = array('Nothing','FILE')
-        $mkeys['vm-goodbye'] = array('Says Goodbye','FILE')
+        $mkeys['park'] = array('Park Music','FILE');
+        $mkeys['conf'] = array('Conf Music','FILE');
+        $mkeys['ding'] = array('Ding','FILE');
+        $mkeys['buzz'] = array('Buzz','FILE');
+        $mkeys['hold_tone'] = array('Hold Tone','FILE');
+        $mkeys['invalid-room'] = array('Says Invalid Room','FILE');
+        $mkeys['invalid-extension'] = array('Says Invalid Extension','FILE');
+        $mkeys['silence'] = array('Nothing','FILE');
+        $mkeys['vm-goodbye'] = array('Says Goodbye','FILE');
         if (is_array($mkeys)) {
             foreach ($mkeys as $mk => $mv) {
                 $mlist[$mk] = $mv;
