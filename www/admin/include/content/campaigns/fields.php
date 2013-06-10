@@ -227,7 +227,7 @@ if ($ADD == "4fields") {
         } else {
             echo "<br><B><font color=$default_text>FIELD MODIFIED: $field_name</font></B>\n";
             $field_name = OSDstrtoupper($field_name);
-            $stmt=sprintf("UPDATE osdial_campaign_fields SET name='%s',description='%s',options='%s',length='%s',priority='%s' WHERE id='%s';",mres($field_name),mres($field_description),mres($field_options),mres($field_lenght),mres($field_priority),mres($field_id));
+            $stmt=sprintf("UPDATE osdial_campaign_fields SET name='%s',description='%s',options='%s',length='%s',priority='%s' WHERE id='%s';",mres($field_name),mres($field_description),mres($field_options),mres($field_length),mres($field_priority),mres($field_id));
             $rslt = mysql_query($stmt, $link);
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
