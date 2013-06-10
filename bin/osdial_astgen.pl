@@ -1359,7 +1359,7 @@ sub gen_carriers {
 		}
 
 		# Create Outbound dialplan for the carrier.
-		$dialplan = '';
+		$dialplan .= '';
 		$dialplan .= "[OOUT" . $carriers->{$carrier}{name} . "-Switch]\n" if($CLOrealtime>0);
 		$dialplan .= "switch => Realtime/OOUT".$carriers->{$carrier}{name}."\@extensions/p\n\n" if($CLOrealtime>0);
 		$dialplan .= "[OOUT" . $carriers->{$carrier}{name} . "-Patterns]\n";
