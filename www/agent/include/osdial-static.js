@@ -3886,7 +3886,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 							web_form2_extwindow = 0;
 						}
 						if (MDnextResponse_array[44] != "") {
-							campaign_script = MDnextResponse_array[42];
+							campaign_script = MDnextResponse_array[44];
 						}
 
 						var pos = 45;
