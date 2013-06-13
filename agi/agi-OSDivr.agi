@@ -310,11 +310,10 @@ sub playfile_field {
 sub xfer_to_external {
 	my ($stream, $status, $number) = @_;
 
+	update_status($status);
 	$stream =~ s/\..*$//;
 	$stream = 'pls-wait-connect-call' unless ($stream);
 	stream_file_tts($stream) if ($stream);
-
-	update_status($status);
 
 	my $xepoch = time();
 	my $xdate = $osdial->get_datetime($xepoch);
@@ -398,11 +397,10 @@ sub xfer_to_agent {
 sub xfer_to_ingroup {
 	my ($stream, $status, $ingroup, $failover_method, $failover_number) = @_;
 
+	update_status($status);
 	$stream =~ s/\..*$//;
 	$stream = 'pls-wait-connect-call' unless ($stream);
 	stream_file_tts($stream) if ($stream);
-
-	update_status($status);
 
 	my $xepoch = time();
 	my $xdate = $osdial->get_datetime($xepoch);
@@ -465,9 +463,6 @@ sub xfer_to_ingroup {
 sub hangup_and_dispo {
 	my ($stream, $status) = @_;;
 
-	$stream =~ s/\..*$//;
-	stream_file_tts($stream) if ($stream);
-
 	my $tepoch = time();
 	my $tdate = $osdial->get_datetime($tepoch);
 	my $call_length = $tepoch - $cinfo->{start_epoch};
@@ -490,6 +485,8 @@ sub hangup_and_dispo {
 	}
 
 	update_status($status);
+	$stream =~ s/\..*$//;
+	stream_file_tts($stream) if ($stream);
 
 	$AGI->hangup();
 
