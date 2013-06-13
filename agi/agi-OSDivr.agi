@@ -485,7 +485,7 @@ sub hangup_and_dispo {
 	}
 
 	if ($status eq 'DNC' or $status eq 'VDNC') {
-		$affected_rows = $osdial->sql_execute("INSERT INTO osdial_dnc (phone_number) VALUES ((SELECT SQL_NO_CACHE phone_number FROM osdial_list WHERE lead_id='" . $cinfo->{CIDlead_id} ."'));");
+		$affected_rows = $osdial->sql_execute("INSERT INTO osdial_dnc (phone_number) VALUES ((SELECT phone_number FROM osdial_list WHERE lead_id='" . $cinfo->{CIDlead_id} ."'));");
 		$osdial->agi_output("--    ODOI osdial_dnc insert: |$affected_rows");
 	}
 
