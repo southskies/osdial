@@ -115,7 +115,7 @@ function report_agent_stats() {
         $query_date_END = "$end_date 23:59:59";
         $query_date_END = dateToServer($link,'first',$query_date_END,$webClientAdjGMT,'',$webClientDST,0);
 
-        $stmt=sprintf("SELECT count(*),status,sum(length_in_sec) FROM ((SELECT status,length_in_sec FROM osdial_log WHERE user='%s' AND call_date BETWEEN '%s' AND '%s' AND status IS NOT NULL) UNION (SELECT status,length_in_sec FROM osdial_closer_log WHERE user='%s' AND call_date BETWEEN '%s' AND '%s' AND status IS NOT NULL)) AS lr GROUP BY status;",mres($company_prefix.$agent),mres($query_date_BEGIN),mres($query_date_END),mres($company_prefix.$agent),mres($query_date_BEGIN),mres($query_date_END));
+        $stmt=sprintf("SELECT count(*),status,sum(length_in_sec) FROM ((SELECT uniqueid,status,length_in_sec FROM osdial_log WHERE user='%s' AND call_date BETWEEN '%s' AND '%s' AND status IS NOT NULL) UNION (SELECT uniqueid,status,length_in_sec FROM osdial_closer_log WHERE user='%s' AND call_date BETWEEN '%s' AND '%s' AND status IS NOT NULL)) AS lr GROUP BY status;",mres($company_prefix.$agent),mres($query_date_BEGIN),mres($query_date_END),mres($company_prefix.$agent),mres($query_date_BEGIN),mres($query_date_END));
         $rslt=mysql_query($stmt, $link);
         $statuses_to_print = mysql_num_rows($rslt);
         
