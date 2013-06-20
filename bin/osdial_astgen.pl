@@ -105,6 +105,9 @@ my $pass = calc_password();
 my $oext = '';
 my $oblock = '';
 
+my $trunkblind='';
+my $trunkloop='';
+
 my $asterisk_version;
 if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 	if ($CLOrealtime>0) {
@@ -186,10 +189,12 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 	close(VM);
 	my $oereload;
 	$oedata =~ s/\r\n/\n/gm;
-	$oedata =~ s/^TRUNKloop.*$/TRUNKloop = IAX2\/ASTloop:$pass\@127.0.0.1:40569/m;
-	$oedata =~ s/^TRUNKblind.*$/TRUNKblind = IAX2\/ASTblind:$pass\@127.0.0.1:41569/m;
-	$oedata = "TRUNKblind = IAX2\/ASTblind:$pass\@127.0.0.1:41569\n" . $oedata unless ($oedata =~ /^TRUNKblind.*$/m);
-	$oedata = "TRUNKloop = IAX2\/ASTloop:$pass\@127.0.0.1:40569\n"   . $oedata unless ($oedata =~ /^TRUNKloop.*$/m);
+	$trunkloop = "IAX2\/ASTloop:$pass\@127.0.0.1:40569";
+	$trunkblind = "IAX2\/ASTblind:$pass\@127.0.0.1:41569";
+	$oedata =~ s/^TRUNKloop.*$/TRUNKloop = $trunkloop/m;
+	$oedata =~ s/^TRUNKblind.*$/TRUNKblind = $trunkblind/m;
+	$oedata = "TRUNKloop = $trunkloop\n"   . $oedata unless ($oedata =~ /^TRUNKloop.*$/m);
+	$oedata = "TRUNKblind = $trunkblind\n" . $oedata unless ($oedata =~ /^TRUNKblind.*$/m);
 	if ($asterisk_version =~ /^1\.8|^10\.|^11\./) {
 		$oereload = "dialplan reload";
 		$oedata =~ s/^exten => h,1,DeadAGI/exten => h,1,AGI/gm;
@@ -590,9 +595,9 @@ sub gen_conferences {
 	}
 	if (!$CLOexpand) {
 		$cnf .= ";\n;Local blind monitoring\n";
-		$cnf .= procexten("osdial","_0860XXXX","1","Dial","\${TRUNKblind}/6\${EXTEN:1},55,o");
+		$cnf .= procexten("osdial","_0860XXXX","1","Dial",$trunkblind."/6\${EXTEN:1},55,o");
 		$cnf .= procexten("osdial","_0860XXXX","2","Hangup","");
-		$cnf .= procexten("osdial","_0X860XXXX","1","Dial","\${TRUNKblind}/\${EXTEN:1},55,o");
+		$cnf .= procexten("osdial","_0X860XXXX","1","Dial",$trunkblind."/\${EXTEN:1},55,o");
 		$cnf .= procexten("osdial","_0X860XXXX","2","Hangup","");
 	}
 
@@ -623,7 +628,7 @@ sub gen_conferences {
 					foreach my $prenum (0..9) {
 						if ($prenum==0) {
 							foreach my $prenum2 (0..9) {
-								$cnf2 .= procexten("osdial",$prenum.$prenum2.$sret->{conf_exten},"1","Dial","\${TRUNKblind}/6\${EXTEN:1},55,o");
+								$cnf2 .= procexten("osdial",$prenum.$prenum2.$sret->{conf_exten},"1","Dial",$trunkblind."/\${EXTEN:1},55,o");
 								$cnf2 .= procexten("osdial",$prenum.$prenum2.$sret->{conf_exten},"2","Hangup","");
 							}
 						} else {
@@ -637,7 +642,7 @@ sub gen_conferences {
 							$cnf2 .= procexten("osdial",$prenum."1".$sret->{conf_exten},"2","Hangup","");
 						}
 					}
-					$cnf2 .= procexten("osdial","0".$sret->{conf_exten},"1","Dial","\${TRUNKblind}/6\${EXTEN:1},55,o");
+					$cnf2 .= procexten("osdial","0".$sret->{conf_exten},"1","Dial",$trunkblind."/6\${EXTEN:1},55,o");
 					$cnf2 .= procexten("osdial","0".$sret->{conf_exten},"2","Hangup","");
 					$cnf2 .= procexten("osdial","5555".$sret->{conf_exten},"1","MeetMeAdmin","\${EXTEN:4},K");
 					$cnf2 .= procexten("osdial","5555".$sret->{conf_exten},"2","Hangup","");
@@ -687,7 +692,7 @@ sub gen_conferences {
 					foreach my $prenum (0..9) {
 						if ($prenum==0) {
 							foreach my $prenum2 (0..9) {
-								$cnf2 .= procexten("osdial",$prenum.$prenum2.$sret->{conf_exten},"1","Dial","\${TRUNKblind}/6\${EXTEN:1},55,o");
+								$cnf2 .= procexten("osdial",$prenum.$prenum2.$sret->{conf_exten},"1","Dial",$trunkblind."/\${EXTEN:1},55,o");
 								$cnf2 .= procexten("osdial",$prenum.$prenum2.$sret->{conf_exten},"2","Hangup","");
 							}
 						} else {
@@ -701,7 +706,7 @@ sub gen_conferences {
 							$cnf2 .= procexten("osdial",$prenum."1".$sret->{conf_exten},"2","Hangup","");
 						}
 					}
-					$cnf2 .= procexten("osdial","0".$sret->{conf_exten},"1","Dial","\${TRUNKblind}/6\${EXTEN:1},55,o");
+					$cnf2 .= procexten("osdial","0".$sret->{conf_exten},"1","Dial",$trunkblind."/6\${EXTEN:1},55,o");
 					$cnf2 .= procexten("osdial","0".$sret->{conf_exten},"2","Hangup","");
 					$cnf2 .= procexten("osdial","5555".$sret->{conf_exten},"1","MeetMeAdmin","\${EXTEN:4},K");
 					$cnf2 .= procexten("osdial","5555".$sret->{conf_exten},"2","Hangup","");
