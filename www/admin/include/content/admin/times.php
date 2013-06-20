@@ -33,7 +33,7 @@ if ($ADD==111111111)
 	echo "<center><br><font color=$default_text size=+1>ADD NEW CALL TIME</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=211111111>\n";
 	echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
-// 	echo "<tr bgcolor=$oddrows><td align=right width=30%>Call Time ID: </td><td align=left><input type=text name=call_time_id size=12 maxlength=10> (no spaces or punctuation)".helptag("osdial_call_times-call_time_id")."</td></tr>\n";
+ 	echo "<tr bgcolor=$oddrows><td align=right width=30%>ID: </td><td align=left><input type=text name=call_time_id size=12 maxlength=10> (no spaces or punctuation)".helptag("osdial_call_times-call_time_id")."</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Name: </td><td align=left><input type=text name=call_time_name size=30 maxlength=30> (short description of the call time)".helptag("osdial_call_times-call_time_name")."</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Comments: </td><td align=left><input type=text name=call_time_comments size=50 maxlength=255> ".helptag("osdial_call_times-call_time_comments")."</td></tr>\n";
 
