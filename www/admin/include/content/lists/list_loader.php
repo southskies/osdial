@@ -191,7 +191,7 @@ if ($ADD==122) {
 			if (OSDpreg_match("/DUPCAMP/",$dupcheck)) {$dupcheckCLI='--duplicate-campaign-check';}
 			if (OSDpreg_match("/DUPSYS/",$dupcheck)) {$dupcheckCLI='--duplicate-system-check';}
 			if (OSDpreg_match("/POSTAL/",$postalgmt)) {$postalgmtCLI='--postal-code-gmt';}
-			passthru("$WeBServeRRooT/admin/listloader_super.pl $vendor_lead_code_field,$source_id_field,$list_id_field,$phone_code_field,$phone_number_field,$title_field,$first_name_field,$middle_initial_field,$last_name_field,$address1_field,$address2_field,$address3_field,$city_field,$state_field,$province_field,$postal_code_field,$country_code_field,$gender_field,$date_of_birth_field,$alt_phone_field,$email_field,$custom1_field,$comments_field, --forcelistid=$list_id_override --forcephonecode=$phone_code_override --lead-file=$lead_file $postalgmtCLI $dupcheckCLI");
+			passthru("$WeBServeRRooT/admin/listloader_super.pl $vendor_lead_code_field,$source_id_field,$list_id_field,$phone_code_field,$phone_number_field,$title_field,$first_name_field,$middle_initial_field,$last_name_field,$address1_field,$address2_field,$address3_field,$city_field,$state_field,$province_field,$postal_code_field,$country_code_field,$gender_field,$date_of_birth_field,$alt_phone_field,$email_field,$custom1_field,$comments_field,$custom2_field,$external_key_field,$cost_field,$organization_field,$organization_title_field, --forcelistid=$list_id_override --forcephonecode=$phone_code_override --lead-file=$lead_file $postalgmtCLI $dupcheckCLI");
 
             echo "<script language='javascript'>\ndocument.getElementById('load_error').innerHTML += '<b><font size=1 color=$default_text>Start Time: $starttime</font></b><br>';\n$jslescroll</script>\n";
             $endsecs=date("U");
@@ -711,8 +711,13 @@ if ($ADD==122) {
 		    		$date_of_birth =		$row[18];
 		    		$alt_phone =			OSDpreg_replace("/[^0-9]/", "", $row[19]);
 		    		$email =				$row[20];
-		    		$custom1 =		$row[21];
+		    		$custom1 =              $row[21];
 		    		$comments =				trim($row[22]);
+		    		$custom2 =              $row[23];
+		    		$external_key =         $row[24];
+		    		$cost =                 $row[25];
+		    		$organization =         $row[26];
+		    		$organization_title =   $row[27];
 	
 		    		if (OSDstrlen($list_id_override)>0) $list_id = $list_id_override;
 		    		if (OSDstrlen($phone_code_override)>0) $phone_code = $phone_code_override;
@@ -891,7 +896,7 @@ if ($ADD==122) {
 			}
             rtrim($afjoin,',');
 				
-			$rslt=mysql_query("select phone_code, list_id, vendor_lead_code, source_id, phone_number, title, first_name, middle_initial, last_name, organization, organization_title, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, custom1, comments, custom2, external_key, cost from osdial_list limit 1", $link);
+			$rslt=mysql_query("select phone_code, list_id, vendor_lead_code, source_id, phone_number, title, first_name, middle_initial, last_name, organization, organization_title, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, custom1, comments, custom2, external_key, cost, organization, organization_title from osdial_list limit 1", $link);
 			
 	
             # Process Excel file for field selection.

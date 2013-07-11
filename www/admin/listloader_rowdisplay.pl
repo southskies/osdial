@@ -27,6 +27,8 @@
 # 60811-1329 - changed to use /etc/osdial.conf for configs
 #
 
+$|++;
+
 ### begin parsing run-time options ###
 if (length($ARGV[0])>1)
 {
@@ -132,7 +134,7 @@ foreach $oWkS (@{$oBook->{Worksheet}}) {
 @xls_row=split(/\|/, $var_str);
 
 
-$stmtA = "select vendor_lead_code, source_id, list_id, phone_code, phone_number, title, first_name, middle_initial, last_name, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, custom1, comments from osdial_list limit 1;";
+$stmtA = "select vendor_lead_code, source_id, list_id, phone_code, phone_number, title, first_name, middle_initial, last_name, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, custom1, comments, custom2, external_key, cost, organization, organization_title from osdial_list limit 1;";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;

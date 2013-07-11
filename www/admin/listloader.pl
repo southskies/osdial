@@ -39,6 +39,7 @@
 #
 # 090410-1148 - Added custom2 field.
 # 090410-1544 - Added external_key field.
+$|++;
 use Date::Pcalc qw( Nth_Weekday_of_Month_Year Mktime This_Year );
 
 ### begin parsing run-time options ###
@@ -153,7 +154,6 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
  or die "Couldn't connect to database: " . DBI->errstr;
 
 
-$|=0;
 $secX = time();
 
 ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
@@ -278,8 +278,17 @@ foreach $oWkS (@{$oBook->{Worksheet}}) {
 		$oWkC = $oWkS->{Cells}[$iR][22];
 		if ($oWkC) {$comments=$oWkC->Value; }
 		$comments=~s/^\s*(.*?)\s*$/$1/;
-        $custom2='';
-        $external_key='';
+		$oWkC = $oWkS->{Cells}[$iR][23];
+		if ($oWkC) {$custom2=$oWkC->Value; }
+		$oWkC = $oWkS->{Cells}[$iR][24];
+		if ($oWkC) {$external_key=$oWkC->Value; }
+		$oWkC = $oWkS->{Cells}[$iR][25];
+		if ($oWkC) {$cost=$oWkC->Value; }
+		$oWkC = $oWkS->{Cells}[$iR][26];
+		if ($oWkC) {$org=$oWkC->Value; }
+		$oWkC = $oWkS->{Cells}[$iR][27];
+		if ($oWkC) {$org_title=$oWkC->Value; }
+
 
 		if (length($forcelistid) > 0)
 			{
@@ -519,14 +528,14 @@ foreach $oWkS (@{$oBook->{Worksheet}}) {
 
 			if ($multi_insert_counter > 8) {
 				### insert good deal into pending_transactions table ###
-				$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00');";
+				$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00','$cost','0000-00-00 00:00:00','$org','$org_title');";
 				$affected_rows = $dbhA->do($stmtZ);
 				print STMT_FILE $stmtZ."\r\n";
 				$multistmt='';
 				$multi_insert_counter=0;
 
 			} else {
-				$multistmt .= "('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00'),";
+				$multistmt .= "('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00','$cost','0000-00-00 00:00:00','$org','$org_title'),";
 				$multi_insert_counter++;
 			}
 
