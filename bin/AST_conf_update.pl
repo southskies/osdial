@@ -188,9 +188,9 @@ if ($sec < 10) {$sec = "0$sec";}
 $now_date_epoch = time();
 $now_date = "$year-$mon-$mday $hour:$min:$sec";
 
-##### Find date-time one hour in the past
+##### Find date-time two hours in the past
 $secX = time();
-$TDtarget = ($secX - 3600);
+$TDtarget = ($secX - 7200);
 ($Tsec,$Tmin,$Thour,$Tmday,$Tmon,$Tyear,$Twday,$Tyday,$Tisdst) = localtime($TDtarget);
 $Tyear = ($Tyear + 1900);
 $Tmon++;
@@ -203,7 +203,7 @@ if ($Tsec < 10) {$Tsec = "0$Tsec";}
 	$TDnum = "$Tyear$Tmon$Tmday$Thour$Tmin$Tsec";
 
 ######################################################################
-##### CLEAR osdial_conferences ENTRIES IN LEAVE-3WAY FOR MORE THAN ONE HOUR
+##### CLEAR osdial_conferences ENTRIES IN LEAVE-3WAY FOR MORE THAN TWO HOURS
 ######################################################################
 @PTextensions=@MT; @PT_conf_extens=@MT; @PTmessages=@MT; @PTold_messages=@MT; @NEW_messages=@MT; @OLD_messages=@MT;
 $stmtA = "SELECT SQL_NO_CACHE conf_exten FROM osdial_conferences WHERE server_ip='$server_ip' AND leave_3way='1' AND leave_3way_datetime<\"$TDSQLdate\";";
