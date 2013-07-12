@@ -132,6 +132,7 @@ if ($ADD==11) {
 			echo "<br><div style='text-align:center;margin:0 100 0 0;'><font class=top_header color=$default_text size=+1>ADD A NEW CAMPAIGN</font><form action=$PHP_SELF method=POST></div><br><br>";
 			echo "<input type=hidden name=DB value=$DB>";
 			echo "<input type=hidden name=ADD value=21>";
+			echo "<input type=hidden name=campaign_id>";
 			echo "<div align=center>";
 			echo "<table bgcolor=#DDD border=0 cellspacing=3 class=shadedtable width=800>";
 			echo "<tr><td align=center width=100% colspan=2>ID: ";
@@ -146,7 +147,7 @@ if ($ADD==11) {
 				echo "<input type=hidden name=company_id value=$LOG[company_id]>";
 				#echo "<font color=$default_text>" . $LOG[company_prefix] . "</font>";
 			}
-			echo "<input type=text name=campaign_id size=10 maxlength=8><font size=-1>2-8 Characters, no spaces or symbols</font>&nbsp;&nbsp;".helptag("osdial_campaigns-campaign_id")."</td></tr>";
+			echo "<input type=text name=tmp_campaign_id size=10 maxlength=8><font size=-1>2-8 Characters, no spaces or symbols</font>&nbsp;&nbsp;".helptag("osdial_campaigns-campaign_id")."</td></tr>";
 			echo "<tr><td align=right width=45%>Name: </td><td align=left><input type=text name=campaign_name size=30 maxlength=30>".helptag("osdial_campaigns-campaign_name")."</td></tr>";
 			echo "<tr><td align=right>Description: </td><td align=left><input type=text name=campaign_description size=30 maxlength=255>".helptag("osdial_campaigns-campaign_description")."</td></tr>";
 			echo "<tr><td align=right>CallerID: </td><td align=left><input type=text name=campaign_cid size=20 maxlength=20 value=\"$campaign_cid\">".helptag("osdial_campaigns-campaign_cid")."</td></tr>";
@@ -189,7 +190,11 @@ if ($ADD==11) {
 			echo "<tr><td align=right>Get Call Launch: </td><td align=left><select size=1 name=get_call_launch><option selected>NONE</option><option>SCRIPT</option><option>WEBFORM</option><option>WEBFORM2</option></select>".helptag("osdial_campaigns-get_call_launch")."</td></tr>";
 			*/
 			echo "<tr><td colspan=2>&nbsp;</td></tr>";
-			echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=ADD></td></tr>";
+            if ($LOG['multicomp'] > 0) {
+			    echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=ADD onclick=\"document.forms[0].campaign_id.value=((document.forms[0].company_id.value*1)+100)+document.forms[0].tmp_campaign_id.value;\"></td></tr>";
+            } else {
+			    echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=ADD onclick=\"document.forms[0].campaign_id.value=document.forms[0].tmp_campaign_id.value;\"></td></tr>";
+            }
 			echo "</table></div>";
 			echo "</form>";
 
@@ -251,6 +256,7 @@ if ($ADD==12)
 		echo "<br><div style='text-align:center;margin:0 100 0 0;'><font class=top_header color=$default_text size=+1>COPY A CAMPAIGN</font><form action=$PHP_SELF method=POST></div><br><br>";
 		echo "<input type=hidden name=DB value=$DB>";
 		echo "<input type=hidden name=ADD value=20>";
+		echo "<input type=hidden name=campaign_id>";
 		echo "<div align=center>";
 		echo "<table bgcolor=#DDD class=shadedtable  width=800 oldwidth=$section_width cellspacing=3>";
 		echo "<tr><td align=right width=40%>ID: </td><td align=left width=60%>";
@@ -265,7 +271,7 @@ if ($ADD==12)
 			echo "<input type=hidden name=company_id value=$LOG[company_id]>";
 			#echo "<font color=$default_text>" . $LOG[company_prefix] . "</font>";
 		}
-		echo "<input type=text name=campaign_id size=10 maxlength=8>".helptag("osdial_campaigns-campaign_id")."</td></tr>";
+		echo "<input type=text name=tmp_campaign_id size=10 maxlength=8>".helptag("osdial_campaigns-campaign_id")."</td></tr>";
 		echo "<tr><td align=right>Name: </td><td align=left><input type=text name=campaign_name size=30 maxlength=30>".helptag("osdial_campaigns-campaign_name")."</td></tr>";
 
 		echo "<tr><td align=right>Source Campaign: </td><td align=left><select size=1 name=source_campaign_id>";
@@ -284,7 +290,11 @@ if ($ADD==12)
 		echo "$campaigns_list";
 		echo "</select>".helptag("osdial_campaigns-campaign_id")."</td></tr>";
 		echo "<tr><td colspan=2>&nbsp;</td></tr>";
-		echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=COPY></td></tr>";
+        if ($LOG['multicomp'] > 0) {
+		    echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=COPY onclick=\"document.forms[0].campaign_id.value=((document.forms[0].company_id.value*1)+100)+document.forms[0].tmp_campaign_id.value;\"></td></tr>";
+        } else {
+		    echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=COPY onclick=\"document.forms[0].campaign_id.value=document.forms[0].tmp_campaign_id.value;\"></td></tr>";
+        }
 		echo "</table></div></center>";
 		echo "</div>";
 	} else {
@@ -300,6 +310,7 @@ if ($ADD==12)
 
 if ($ADD==21)
 {
+    if ($LOG['multicomp'] > 0) $campaign_id = OSDpreg_replace('/^\d\d\d/','',$campaign_id);
     $precampaign_id = $campaign_id;
     if ($LOG['multicomp'] > 0) $precampaign_id = (($company_id * 1) + 100) . $campaign_id;
     $stmt=sprintf("SELECT count(*) FROM osdial_campaigns WHERE campaign_id='%s';",mres($precampaign_id));
@@ -387,6 +398,7 @@ $ADD=31;
 
 if ($ADD==20)
 {
+    if ($LOG['multicomp'] > 0) $campaign_id = OSDpreg_replace('/^\d\d\d/','',$campaign_id);
     $precampaign_id = $campaign_id;
     if ($LOG['multicomp'] > 0) $precampaign_id = (($company_id * 1) + 100) . $campaign_id;
     $stmt=sprintf("SELECT count(*) FROM osdial_campaigns WHERE campaign_id='%s';",mres($precampaign_id));
