@@ -978,6 +978,7 @@ function CalendarPopup() {
 	c.monthAbbreviations = new Array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec");
 	c.dayHeaders = new Array("S","M","T","W","T","F","S");
 	c.returnFunction = "CP_tmpReturnFunction";
+	c.returnClear = "CP_tmpReturnClear";
 	c.returnMonthFunction = "CP_tmpReturnMonthFunction";
 	c.returnQuarterFunction = "CP_tmpReturnQuarterFunction";
 	c.returnYearFunction = "CP_tmpReturnYearFunction";
@@ -989,6 +990,8 @@ function CalendarPopup() {
 	c.yearSelectStartOffset = 2;
 	c.currentDate = null;
 	c.todayText="Today";
+	c.clearDateOption=0;
+	c.clearDateValue='';
 	c.cssPrefix="";
 	c.isShowNavigationDropdowns=false;
 	c.isShowYearNavigationInput=false;
@@ -1010,6 +1013,7 @@ function CalendarPopup() {
 	c.addDisabledDates = CP_addDisabledDates;
 	c.setYearSelectStartOffset = CP_setYearSelectStartOffset;
 	c.setTodayText = CP_setTodayText;
+	c.enableClearDate = CP_enableClearDate;
 	c.showYearNavigation = CP_showYearNavigation;
 	c.showCalendar = CP_showCalendar;
 	c.hideCalendar = CP_hideCalendar;
@@ -1056,6 +1060,11 @@ function CP_tmpReturnQuarterFunction(y,q) {
 function CP_tmpReturnYearFunction(y) { 
 	alert('Use setReturnYearFunction() to define which function will get the clicked results!\nYou clicked: year='+y); 
 	}
+function CP_tmpReturnClear(v) { 
+	if (window.CP_targetInput!=null) {
+		window.CP_targetInput.value = v;
+	}
+}
 
 // Set the name of the functions to call to get the clicked item
 function CP_setReturnFunction(name) { this.returnFunction = name; }
@@ -1120,6 +1129,12 @@ function CP_addDisabledDates(start, end) {
 function CP_setTodayText(text) {
 	this.todayText = text;
 	}
+
+function CP_enableClearDate(text) {
+	this.clearDateOption = 1;
+	if (text==null) text='';
+	this.clearDateValue = text;
+}
 
 // Set the prefix to be added to all CSS classes when writing output
 function CP_setCssPrefix(val) { 
@@ -1386,6 +1401,9 @@ function CP_getCalendar() {
 			}
 		else {
 			result += '		<A CLASS="'+this.cssPrefix+'cpTodayText" HREF="javascript:'+windowref+this.returnFunction+'(\''+now.getFullYear()+'\',\''+(now.getMonth()+1)+'\',\''+now.getDate()+'\');'+windowref+'CP_hideCalendar(\''+this.index+'\');">'+this.todayText+'</A>\n';
+			if (this.clearDateOption>0) {
+				result += '&nbsp;&nbsp;&nbsp;&nbsp;<A CLASS="'+this.cssPrefix+'cpTodayText" HREF="javascript:'+windowref+this.returnClear+'(\''+this.clearDateValue+'\');'+windowref+'CP_hideCalendar(\''+this.index+'\');">Clear</A>\n';
+			}
 			}
 		result += '		<BR>\n';
 		result += '	</TD></TR></TABLE></CENTER></TD></TR></TABLE>\n';
