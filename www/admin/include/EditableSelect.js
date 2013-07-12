@@ -56,6 +56,10 @@ var currentlyOpenedOptionBox = false;
 var editableSelect_activeArrow = false;
 var activeOption;
 
+var selectBoxCloseAll = function(e) {
+	if(currentlyOpenedOptionBox) selectBox_close(currentlyOpenedOptionBox);
+};
+
 function setEditableSelectImagePath(imgpath) {
 	arrowImage = imgpath + '/select_arrow.gif';
 	arrowImageOver = imgpath + '/select_arrow_over.gif';
@@ -155,6 +159,11 @@ function selectBox_showOptions(e) {
 			e.cancelBubble = true;
 		}
 	}
+	if (document.body.addEventListener) {
+		document.body.addEventListener('click', selectBoxCloseAll, false);
+	} else if (document.body.attachEvent) {
+		document.body.attachEvent("on" + 'click', selectBoxCloseAll);
+	}
 }
 
 function selectOptionValue() {
@@ -207,6 +216,11 @@ function selectBox_open(sbobj) {
 function selectBox_close(sbobj) {
 	var numId = sbobj.parentNode.id.replace(/[^\d]/g, '');
 	var sbopt = document.getElementById('selectBoxOptions' + numId);
+	if (document.body.removeEventListener) {
+		document.body.removeEventListener('click', selectBoxCloseAll, false);
+	} else if (document.body.detachEvent) {
+		document.body.detachEvent("on" + 'click', selectBoxCloseAll);
+	}
 	if (sbopt && sbopt.style && sbopt.style.display && sbopt.style.display == 'inline') document.getElementById('arrowSelectBox' + numId)['onclick']();
 }
 
@@ -244,23 +258,36 @@ function createEditableSelect(dest) {
 	// Turn off broweser textbox autocompletion
 	if (!dest.getAttribute('autocomplete')) dest.setAttribute('autocomplete', 'off');
 
-	var spacer = document.createElement('DIV');
-	spacer.style.styleFloat = 'left';
-	spacer.style.width = dest.offsetWidth + 28 + 'px';
-	spacer.id = 'selectBoxSpacer' + selectBoxIds;
-	spacer.className = 'selectBoxSpacer';
+	var topdiv = document.createElement('DIV');
+	topdiv.style.styleFloat = 'left';
+	topdiv.id = 'selectBoxTop' + selectBoxIds;
 
 	var div = document.createElement('DIV');
 	div.style.styleFloat = 'left';
 	div.style.width = dest.offsetWidth + 16 + 'px';
 	div.id = 'selectBox' + selectBoxIds;
 
+	var spacer = document.createElement('DIV');
+	spacer.style.styleFloat = 'left';
+	spacer.style.width = dest.offsetWidth + 28 + 'px';
+	spacer.id = 'selectBoxSpacer' + selectBoxIds;
+	spacer.className = 'selectBoxSpacer';
+
+
 	var parent = dest.parentNode;
-	parent.insertBefore(div, dest);
-	parent.insertBefore(spacer, div);
-	div.appendChild(dest);
+	var destsib = dest.nextSibling;
+	parent.removeChild(dest);
+	//parent.insertBefore(div, dest);
+	//parent.insertBefore(spacer, div);
+	//parent.insertBefore(topdiv, spacer);
 	div.className = 'selectBox';
 	div.style.zIndex = 10000 - selectBoxIds;
+	topdiv.appendChild(spacer);
+	topdiv.appendChild(div);
+	div.appendChild(dest);
+	//parent.appendChild(topdiv);
+	//parent.insertBefore(topdiv, destsib);
+	destsib.parentNode.insertBefore(topdiv, destsib);
 
 	var img = document.createElement('IMG');
 	img.src = arrowImage;
@@ -289,16 +316,32 @@ function createEditableSelect(dest) {
 					//this.onfocus = function() {
 					//	this.blur();
 					//}
-					valueLabelDiv.onclick = function() {
+					valueLabelDiv.onclick = function(e) {
 						var valueLabelId = this.id.replace(/[^\d]/g, '');
 						var arrowsel = document.getElementById('arrowSelectBox' + valueLabelId);
+						if (!e) e = window.event;
+						if (typeof(e) != "undefined") {
+							if (e.stopPropagation) {
+								e.stopPropagation();
+							} else {
+								e.cancelBubble = true;
+							}
+						}
 						arrowsel.click();
 					}
 				} else {
-					valueLabelDiv.onclick = function() {
+					valueLabelDiv.onclick = function(e) {
 						var valueLabelId = this.id.replace(/[^\d]/g, '');
 						var minput = document.getElementById('selectBox' + valueLabelId).getElementsByTagName('INPUT')[0];
 						var sboptions = document.getElementById('selectBoxOptions' + valueLabelId);
+						if (!e) e = window.event;
+						if (typeof(e) != "undefined") {
+							if (e.stopPropagation) {
+								e.stopPropagation();
+							} else {
+								e.cancelBubble = true;
+							}
+						}
 						if (sboptions.style.display == 'inline') {
 							selectBox_close(minput);
 						} else {
@@ -345,9 +388,17 @@ function createEditableSelect(dest) {
 	}
 
 	//Fix to close the selectBoxOptions if the text field is clicked again
-	dest.onclick = function() {
+	dest.onclick = function(e) {
 		var numId2 = this.parentNode.id.replace(/[^\d]/g, '');
 		var sboptions = document.getElementById('selectBoxOptions' + numId2);
+		if (!e) e = window.event;
+		if (typeof(e) != "undefined") {
+			if (e.stopPropagation) {
+				e.stopPropagation();
+			} else {
+				e.cancelBubble = true;
+			}
+		}
 		if (sboptions.style.display == 'inline' || this.getAttribute('selectBoxForce')) selectBox_close(this);
 	}
 
@@ -759,6 +810,8 @@ function createEditableSelect(dest) {
 	optionDiv.id = 'selectBoxOptions' + selectBoxIds;
 	optionDiv.className = 'selectBoxOptionContainer';
 	optionDiv.style.width = div.offsetWidth - 2 + 'px';
+	//dest.parentNode.appendChild(optionDiv);
+	div.appendChild(optionDiv);
 
 	if (navigator.userAgent.indexOf('MSIE') >= 0) {
 		var iframe = document.createElement('IFRAME');
@@ -774,24 +827,40 @@ function createEditableSelect(dest) {
 	var valueLabelDiv = document.createElement('DIV');
 	valueLabelDiv.id = 'selectBoxValueLabel' + selectBoxIds;
 	valueLabelDiv.className = 'selectBoxValueLabel';
+	//dest.parentNode.appendChild(valueLabelDiv);
 	div.appendChild(valueLabelDiv);
 
-	div.appendChild(optionDiv);
 
 	if (dest.getAttribute('selectBoxForce')) {
 		//dest.onfocus = function() {
 		//	this.blur();
 		//}
-		valueLabelDiv.onclick = function() {
+		valueLabelDiv.onclick = function(e) {
 			var valueLabelId = this.id.replace(/[^\d]/g, '');
 			var arrowsel = document.getElementById('arrowSelectBox' + valueLabelId);
+			if (!e) e = window.event;
+			if (typeof(e) != "undefined") {
+				if (e.stopPropagation) {
+					e.stopPropagation();
+				} else {
+					e.cancelBubble = true;
+				}
+			}
 			arrowsel.click();
 		}
 	} else {
-		valueLabelDiv.onclick = function() {
+		valueLabelDiv.onclick = function(e) {
 			var valueLabelId = this.id.replace(/[^\d]/g, '');
 			var minput = document.getElementById('selectBox' + valueLabelId).getElementsByTagName('INPUT')[0];
 			var sboptions = document.getElementById('selectBoxOptions' + valueLabelId);
+			if (!e) e = window.event;
+			if (typeof(e) != "undefined") {
+				if (e.stopPropagation) {
+					e.stopPropagation();
+				} else {
+					e.cancelBubble = true;
+				}
+			}
 			if (sboptions.style.display == 'inline') {
 				selectBox_close(minput);
 			} else {
@@ -881,17 +950,6 @@ function createEditableSelect(dest) {
 		sfld.disable();
 	}
 
-	var selectBoxCloseAll = function(e) {
-		selectBox_close(ifld);
-	};
-	if (document.body.addEventListener) {
-		document.body.addEventListener('click', selectBoxCloseAll, false);
-	} else if (document.body.attachEvent) {
-		document.body.attachEvent("on" + 'click', selectBoxCloseAll);
-	} else {
-		document.body["on" + 'click'] = selectBoxCloseAll;
-	}
 
 	selectBoxIds = selectBoxIds + 1;
 }
-
