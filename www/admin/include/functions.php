@@ -1286,7 +1286,7 @@ function editableSelectBox($options, $name, $val, $size, $maxsize, $attribs) {
         }
         $esboptsO = rtrim($esboptsO,';') . "\"";
     }
-    $esbopts = "<input type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$maxsize\" value=\"$val\" $attribs ";
+    $esbopts = "<input type=\"text\" name=\"$name\" id=\"$name\" size=\"$size\" maxlength=\"$maxsize\" value=\"$val\" $attribs ";
     $esbopts .= $esboptsO . $esboptsL . $esboptsT;
     $esbopts .= ">\n";
     $esbopts .= "<script type=\"text/javascript\">\n";
