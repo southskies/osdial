@@ -199,5 +199,5 @@ function selaction(sb) {
 }
 
 function updateingroup(sb) {
-	document.osdial_form.did_ingroup.options[0].text = ' [ CREATE NEW INGROUP: IN_' + sb.value + ' ] ';
+	document.osdial_form.did_ingroup.options[0].text = ' [ CREATE NEW INGROUP: '+document.osdial_form.company.value+'IN_' + sb.value + ' ] ';
 }

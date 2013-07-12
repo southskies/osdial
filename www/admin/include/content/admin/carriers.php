@@ -42,9 +42,28 @@ if ($ADD=="1carrier") {
             echo "    <td align=right width=30%>Carrier Name:</td>\n";
             echo "    <td align=left><span style=\"color:$default_text;\">$carrier_name</span></td>\n";
             echo "  </tr>\n";
+
             echo "  <tr bgcolor=$oddrows>\n";
             echo "    <td align=right>DID:</td>\n";
-            echo "    <td align=left><div><input type=text name=did size=13 maxlength=100 value=\"\" onkeyup=\"updateingroup(this);return false;\">".helptag("carrier_dids-did")."</div></td>\n";
+            echo "    <td align=left>\n";
+
+            if ($LOG['multicomp_admin'] > 0) {
+                $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
+                $copts = array();
+                foreach ($comps as $comp) {
+                    $ckey = (($comp['id'] * 1) + 100);
+                    $clabel = (($comp['id'] * 1) + 100) . ": " . $comp['name'];
+                    $copts[$ckey] = $clabel;
+                }
+                echo editableSelectBox($copts,'company',$LOG['company_prefix'],100,100,'selectBoxForce="1" selectBoxLabel=" - Select Company - "');
+            } elseif ($LOG['multicomp']>0) {
+                echo "<input type=hidden name=company value=$LOG[company_prefix]>";
+                echo "<font color=$default_text>" . $LOG[company_prefix] . "</font>";
+            } else {
+                echo "<input type=hidden name=company value=\"\">";
+            }
+
+            echo "      <input type=text name=did size=13 maxlength=100 value=\"\" onblur=\"updateingroup(this);return false;\" onfocus=\"updateingroup(this);return false;\" onkeyup=\"updateingroup(this);return false;\">".helptag("carrier_dids-did")."</td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows>\n";
             echo "    <td align=right>DID Action:</td>\n";
@@ -280,7 +299,7 @@ if ($ADD=="2carrier") {
                     echo "<br><font color=red>DID NOT ADDED - you must enter a voicemail box or select a different action.</font><br>\n";
                 } else {
                     if ($did_action=='INGROUP' and $did_ingroup=='') {
-                        $did_ingroup='IN_'.$did;
+                        $did_ingroup=$company.'IN_'.$did;
                         $stmt=sprintf("SELECT count(*) FROM osdial_inbound_groups WHERE group_id='%s';",mres($did_ingroup));
                         $rslt=mysql_query($stmt, $link);
                         $row=mysql_fetch_row($rslt);
