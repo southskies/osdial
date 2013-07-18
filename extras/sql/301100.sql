@@ -96,6 +96,36 @@ CREATE TABLE osdial_acct_packages (
 ) Engine=InnoDB;##|##
   ## ;
 
+INSERT INTO `osdial_acct_packages` VALUES (1,'NEWCOMPANY','OTHER','Create New Company',1,'Y','CREATE_NEW_COMPANY','',60,200.00,'',0,'Y',NOW(),NOW());##|##
+  ## ;
+
+INSERT INTO `osdial_acct_packages` VALUES (2,'ADD1MIN','MINUTES','Adds 1 Minute',1,'Y','','',0,1.00,'',0,'Y',NOW(),NOW());##|##
+  ## ;
+
+INSERT INTO `osdial_acct_packages` VALUES (3,'ADD5MIN','MINUTES','Adds 5 Minutes',5,'Y','','',0,2.50,'',0,'Y',NOW(),NOW());##|##
+  ## ;
+
+INSERT INTO `osdial_acct_packages` VALUES (4,'ADD15MIN','MINUTES','Adds 15 Minutes',15,'Y','','',0,4.00,'',0,'Y',NOW(),NOW());##|##
+  ## ;
+
+INSERT INTO `osdial_acct_packages` VALUES (5,'ADD30MIN','MINUTES','Adds 30 Minutes',30,'Y','','',0,6.00,'',0,'Y',NOW(),NOW());##|##
+  ## ;
+
+INSERT INTO `osdial_acct_packages` VALUES (6,'ADD60MIN','MINUTES','Adds 60 Minutes',60,'Y','','',0,10.00,'',0,'Y',NOW(),NOW());##|##
+  ## ;
+
+INSERT INTO `osdial_acct_packages` VALUES (7,'ADD1DAY','DAYS','Adds 1 Day',1,'Y','','',0,100.00,'',0,'Y',NOW(),NOW());##|##
+  ## ;
+
+INSERT INTO `osdial_acct_packages` VALUES (8,'ADD5DAY','DAYS','Adds 5 Days',5,'Y','','',0,450.00,'',0,'Y',NOW(),NOW());##|##
+  ## ;
+
+INSERT INTO `osdial_acct_packages` VALUES (9,'ADD15DAY','DAYS','Adds 15 Days',15,'Y','','',0,1250.00,'',0,'Y',NOW(),NOW());##|##
+  ## ;
+
+INSERT INTO `osdial_acct_packages` VALUES (10,'ADD30DAY','DAYS','Adds 30 Days',30,'Y','','',0,2250.00,'',0,'Y',NOW(),NOW());##|##
+  ## ;
+
 ALTER TABLE osdial_companies ADD COLUMN acct_method enum('NONE','RANGE','TOTAL','AVAILABLE','TALK','TALK_ROUNDUP') DEFAULT 'NONE';##|##
  ## acct_method;
 
