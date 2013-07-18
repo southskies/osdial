@@ -91,6 +91,9 @@ if ($LOG['view_reports']==1) {
         if ($LOG['view_list_cost_entry']) echo "<li style=\"$margins\"><a href=\"$PHP_SELF?ADD=999999&SUB=16\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>List Cost by Entry Date</a></font>";
         echo "</ul>";
         echo "<ul>";
+        if (file_exists($WeBServeRRooT . '/admin/include/content/reports/acct_detail.php')) {
+            if ($LOG['multicomp']>0) echo "<li style=\"$margins\"><a href=\"$PHP_SELF?ADD=999999&SUB=32\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Accounting Detail</a></font>";
+        }
         if ($LOG['multicomp_user'] == 0 and $LOG['modify_servers']) echo "<li style=\"$margins\"><a href=\"$PHP_SELF?ADD=999999&SUB=30\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>View Webserver Admin Log</a></font>";
         if ($LOG['multicomp_user'] == 0 and $LOG['view_server_performance']) echo "<li style=\"$margins\"><a href=\"$PHP_SELF?ADD=999999&SUB=29\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Server Performance</a></font>";
 
@@ -203,6 +206,11 @@ if ($LOG['view_reports']==1) {
             } elseif ($SUB==31 and $LOG['view_agent_stats']) {
                 require($WeBServeRRooT . '/admin/include/content/reports/phone_stats.php');
                 echo report_phone_stats();
+            } elseif ($SUB==32) {
+                if (file_exists($WeBServeRRooT . '/admin/include/content/reports/acct_detail.php')) {
+                    require($WeBServeRRooT . '/admin/include/content/reports/acct_detail.php');
+                    echo report_acct_detail();
+                }
             } else {
                 echo "<font color=red>You do not have permission to view this page</font>\n";
             }

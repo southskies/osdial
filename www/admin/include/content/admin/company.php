@@ -19,6 +19,9 @@
 #
 
 
+if (file_exists($WeBServeRRooT . '/admin/include/content/admin/acct_company.php')) {
+    include_once($WeBServeRRooT . '/admin/include/content/admin/acct_company.php');
+}
 
 ######################
 # ADD=10comp display the ADD NEW COMPANY SCREEN
@@ -31,6 +34,17 @@ if ($ADD=="11comp") {
 
         echo "<table class=shadedtable width=$section_width cellspacing=3>\n";
         echo "<tr bgcolor=$oddrows><td align=right width=50%>Company Name: </td><td align=left><input type=text name=company_name size=30 maxlength=100 value=\"\">".helptag("companies-company_name")."</td></tr>\n";
+        echo "<tr class=tabheader><td colspan=2>Contact Information</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Email: </td><td align=left><input type=text name=email size=30 maxlength=255 value=\"\">".helptag("companies-email")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Contact Name: </td><td align=left><input type=text name=contact_name size=30 maxlength=255 value=\"\">".helptag("companies-contact_name")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Contact Phone Number: </td><td align=left><input type=text name=contact_phone_number size=30 maxlength=100 value=\"\">".helptag("companies-contact_phone_number")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Contact Address: </td><td align=left><input type=text name=contact_address size=40 maxlength=255 value=\"\">".helptag("companies-contact_address")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Contact Address2: </td><td align=left><input type=text name=contact_address2 size=40 maxlength=255 value=\"\">".helptag("companies-contact_address2")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Contact City: </td><td align=left><input type=text name=contact_city size=30 maxlength=255 value=\"\">".helptag("companies-contact_city")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Contact State: </td><td align=left><input type=text name=contact_state size=3 maxlength=255 value=\"\">".helptag("companies-contact_state")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Contact Postal Code: </td><td align=left><input type=text name=contact_postal_code size=11 maxlength=255 value=\"\">".helptag("companies-contact_postal_code")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Contact Country: </td><td align=left><input type=text name=contact_country size=6 maxlength=255 value=\"\">".helptag("companies-contact_country")."</td></tr>\n";
+        echo "<tr class=tabheader><td colspan=2>Settings</td></tr>\n";
         echo "<tr bgcolor=$oddrows>\n";
         echo "  <td align=right>Default Server IP: </td>\n";
         echo "  <td align=left>\n";
@@ -65,7 +79,7 @@ if ($ADD=="21comp") {
         } else {
             echo "<br><font color=$default_text>COMPANY ADDED</font>\n";
 
-            $stmt=sprintf("INSERT INTO osdial_companies SET name='%s';",mres($company_name));
+            $stmt=sprintf("INSERT INTO osdial_companies SET name='%s',acct_method='%s',acct_cutoff='%s',acct_expire_days='%s',email='%s',contact_name='%s',contact_phone_number='%s',contact_address='%s',contact_address2='%s',contact_city='%s',contact_state='%s',contact_postal_code='%s',contact_country='%s';",mres($company_name),mres($config['settings']['default_acct_method']),mres($config['settings']['default_acct_cutoff']),mres($config['settings']['default_acct_expire_days']),mres($email),mres($contact_name),mres($contact_phone_number),mres($contact_address),mres($contact_address2),mres($contact_city),mres($contact_state),mres($contact_postal_code),mres($contact_country));
             $rslt=mysql_query($stmt, $link);
             $company_id =  mysql_insert_id($link);
 
@@ -134,13 +148,28 @@ if ($ADD=="21comp") {
 ######################
 if ($ADD=="41comp") {
     if ($LOG['multicomp_admin']>0) {
-        if (OSDstrlen($company_name) < 3) {
-            echo "<br><font color=$default_text>COMPANY NOT MODIFIED - Please go back and look at the data you entered</font>\n";
+        if (!empty($SUB)) {
+            if (file_exists($WeBServeRRooT . '/admin/include/content/admin/acct_company.php')) {
+                echo AddUpdateCompanyPurchases();
+            }
         } else {
-            echo "<br><font color=$default_text>COMPANY MODIFIED: $company_id : $company_name</font>\n";
+            if (OSDstrlen($company_name) < 3) {
+                echo "<br><font color=$default_text>COMPANY NOT MODIFIED - Please go back and look at the data you entered</font>\n";
+            } else {
+                echo "<br><font color=$default_text>COMPANY MODIFIED: $company_id : $company_name</font>\n";
 
-            $stmt=sprintf("UPDATE osdial_companies SET name='%s',status='%s',enable_campaign_ivr='%s',enable_campaign_listmix='%s',export_leads='%s',enable_scripts='%s',enable_filters='%s',enable_ingroups='%s',enable_external_agents='%s',enable_system_calltimes='%s',enable_system_phones='%s',enable_system_conferences='%s',enable_system_servers='%s',enable_system_statuses='%s',api_access='%s',dnc_method='%s',default_server_ip='%s',default_local_gmt='%s',default_ext_context='%s',enable_system_carriers='%s' WHERE id='%s';",mres($company_name),mres($company_status),mres($company_enable_campaign_ivr),mres($company_enable_campaign_listmix),mres($company_export_leads),mres($company_enable_scripts),mres($company_enable_filters),mres($company_enable_ingroups),mres($company_enable_external_agents),mres($company_enable_system_calltimes),mres($company_enable_system_phones),mres($company_enable_system_conferences),mres($company_enable_system_servers),mres($company_enable_system_statuses),mres($company_api_access),mres($company_dnc_method),mres($server_ip),mres($local_gmt),mres($ext_context),mres($company_enable_system_carriers),mres($company_id));
-            $rslt=mysql_query($stmt, $link);
+                if ($acct_startdate=='' or $acct_startdate=='0') $acct_startdate='0000-00-00';
+                if ($acct_enddate=='' or $acct_enddate=='0') $acct_enddate='0000-00-00';
+                $acct_startdate .= ' 00:00:00';
+                if ($acct_enddate=='0000-00-00') {
+                    $acct_enddate .= ' 00:00:00';
+                } else {
+                    $acct_enddate .= ' 23:59:59';
+                }
+
+                $stmt=sprintf("UPDATE osdial_companies SET name='%s',status='%s',enable_campaign_ivr='%s',enable_campaign_listmix='%s',export_leads='%s',enable_scripts='%s',enable_filters='%s',enable_ingroups='%s',enable_external_agents='%s',enable_system_calltimes='%s',enable_system_phones='%s',enable_system_conferences='%s',enable_system_servers='%s',enable_system_statuses='%s',api_access='%s',dnc_method='%s',default_server_ip='%s',default_local_gmt='%s',default_ext_context='%s',enable_system_carriers='%s',acct_method='%s',acct_startdate='%s',acct_enddate='%s',acct_cutoff='%s',acct_expire_days='%s',email='%s',contact_name='%s',contact_phone_number='%s',contact_address='%s',contact_address2='%s',contact_city='%s',contact_state='%s',contact_postal_code='%s',contact_country='%s' WHERE id='%s';",mres($company_name),mres($company_status),mres($company_enable_campaign_ivr),mres($company_enable_campaign_listmix),mres($company_export_leads),mres($company_enable_scripts),mres($company_enable_filters),mres($company_enable_ingroups),mres($company_enable_external_agents),mres($company_enable_system_calltimes),mres($company_enable_system_phones),mres($company_enable_system_conferences),mres($company_enable_system_servers),mres($company_enable_system_statuses),mres($company_api_access),mres($company_dnc_method),mres($server_ip),mres($local_gmt),mres($ext_context),mres($company_enable_system_carriers),mres($acct_method),mres($acct_startdate),mres($acct_enddate),mres($acct_cutoff),mres($acct_expire_days),mres($email),mres($contact_name),mres($contact_phone_number),mres($contact_address),mres($contact_address2),mres($contact_city),mres($contact_state),mres($contact_postal_code),mres($contact_country),mres($company_id));
+                $rslt=mysql_query($stmt, $link);
+            }
         }
         $ADD="31comp";	# go to company modification form below
     } else {
@@ -200,10 +229,22 @@ if ($ADD=="31comp") {
         echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY A COMPANY</font><form action=$PHP_SELF method=POST><br><br>\n";
         echo "<input type=hidden name=ADD value=41comp>\n";
         echo "<input type=hidden name=company_id value=$comp[id]>\n";
+        echo "<script>\nvar cal1 = new CalendarPopup('caldiv1');\ncal1.showNavigationDropdowns();\n</script>\n";
         echo "<table class=shadedtable width=$section_width cellspacing=3>\n";
         echo "<tr bgcolor=$oddrows><td align=right width=30%>Prefix: </td><td align=left><font color=$default_text>" . (($comp['id'] * 1) + 100) . "</font></td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Name: </td><td align=left><input type=text name=company_name size=30 maxlength=100 value=\"$comp[name]\">".helptag("companies-company_name")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Status: </td><td align=left><select name=company_status><option>INACTIVE</option><option>ACTIVE</option><option>SUSPENDED</option><option>TERMINATED</option><option selected>$comp[status]</option></select>".helptag("companies-status")."</td></tr>\n";
+        echo "<tr class=tabheader><td colspan=2>Contact Information</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Email: </td><td align=left><input type=text name=email size=30 maxlength=255 value=\"$comp[email]\">".helptag("companies-email")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Contact Name: </td><td align=left><input type=text name=contact_name size=30 maxlength=255 value=\"$comp[contact_name]\">".helptag("companies-contact_name")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Contact Phone Number: </td><td align=left><input type=text name=contact_phone_number size=30 maxlength=100 value=\"$comp[contact_phone_number]\">".helptag("companies-contact_phone_number")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Contact Address: </td><td align=left><input type=text name=contact_address size=40 maxlength=255 value=\"$comp[contact_address]\">".helptag("companies-contact_address")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Contact Address2: </td><td align=left><input type=text name=contact_address2 size=40 maxlength=255 value=\"$comp[contact_address2]\">".helptag("companies-contact_address2")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Contact City: </td><td align=left><input type=text name=contact_city size=30 maxlength=255 value=\"$comp[contact_city]\">".helptag("companies-contact_city")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Contact State: </td><td align=left><input type=text name=contact_state size=3 maxlength=255 value=\"$comp[contact_state]\">".helptag("companies-contact_state")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Contact Postal Code: </td><td align=left><input type=text name=contact_postal_code size=11 maxlength=255 value=\"$comp[contact_postal_code]\">".helptag("companies-contact_postal_code")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Contact Country: </td><td align=left><input type=text name=contact_country size=6 maxlength=255 value=\"$comp[contact_country]\">".helptag("companies-contact_country")."</td></tr>\n";
+        echo "<tr class=tabheader><td colspan=2>Settings</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Enable Campaign IVR: </td><td align=left><select name=company_enable_campaign_ivr><option>0</option><option>1</option><option selected>$comp[enable_campaign_ivr]</option></select>".helptag("companies-enable_campaign_ivr")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Enable Campaign ListMix: </td><td align=left><select name=company_enable_campaign_listmix><option>0</option><option>1</option><option selected>$comp[enable_campaign_listmix]</option></select>".helptag("companies-enable_campaign_listmix")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Export Leads: </td><td align=left><select name=company_export_leads><option>0</option><option>1</option><option selected>$comp[export_leads]</option></select>".helptag("companies-export_leads")."</td></tr>\n";
@@ -242,10 +283,16 @@ if ($ADD=="31comp") {
         $contexts['default']='Same as osdial context';
         echo editableSelectBox($contexts, 'ext_context', $comp['default_ext_context'], 100, 100, '');
         echo helptag("companies-default_ext_context")."</td></tr>\n";
-        echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
-        echo "</TABLE></center>\n";
 
-        echo "<br><br>\n";
+
+        if (file_exists($WeBServeRRooT . '/admin/include/content/admin/acct_company.php')) {
+            echo ShowCompanyPurchases();
+        } else {
+            echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
+            echo "</table></form>\n";
+        }
+
+        echo "</center>\n";
 
 //         echo "<br><br><a href=\"$PHP_SELF?ADD=51comp&company_id=$comp[id]\">DELETE THIS COMPANY</a>\n";
     } else {

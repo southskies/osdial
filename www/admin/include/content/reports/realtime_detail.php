@@ -423,6 +423,33 @@ function report_realtime_detail() {
         } else {
             $html .="<font color='red'>&nbsp;&nbsp;(In-Active)</font>";
         }
+
+        if ($LOG['multicomp']>0) {
+            $tcnt=0;
+            $tgroup = (OSDsubstr($group,0,3)*1)-100;
+            if (OSDpreg_match("/^XXXX/",$group)) $tgroup=$LOG['company']['id'];
+            $comp = get_first_record($link, 'osdial_companies', "*,IF(acct_enddate!='0000-00-00 00:00:00',DATEDIFF(acct_enddate,NOW()),0) AS daystillend", sprintf("id='%s'",mres($tgroup)) );
+            $thtml = "<table frame=border><tr><td>";
+            if ($comp['acct_method'] != 'NONE' and $comp['acct_method'] != '' and $comp['acct_method'] != 'RANGE') {
+                if (($comp['acct_cutoff']*60)>=$comp['acct_remaining_time'] || ($config['settings']['acct_email_warning_time']*60)>=$comp['acct_remaining_time']) {
+                    $thtml .= "<font size=1>Credit Left:</font><font size=1 color=#600> <b>".$comp['acct_remaining_time']." min</b>&nbsp;&nbsp;&nbsp;&nbsp;</font>";
+                } else {
+                    $thtml .= "<font size=1>Credit Left:</font><font size=1 color=#060> ".$comp['acct_remaining_time']." min&nbsp;&nbsp;&nbsp;&nbsp;</font>";
+                }
+                $tcnt++;
+            }
+            if ($comp['acct_enddate'] != '0000-00-00 00:00:00' and $comp['acct_enddate'] != '') {
+                if ($config['settings']['acct_email_warning_expire']>=$comp['daystillend']) {
+                    $thtml .= "<font size=1>Days Left:</font><font size=1 color=#600> <b>".$comp['daystillend']."</b></font>";
+                } else {
+                    $thtml .= "<font size=1>Days Left:</font><font size=1 color=#060> ".$comp['daystillend']."</font>";
+                }
+                $tcnt++;
+            }
+            $thtml .= "</td></tr></table>";
+            if ($tcnt>0) $html.=$thtml;
+        }
+
         $html .= "</td></tr><tr><td align=center>";
         $html .= "<table class=indents cellpadding=0 cellspacing=3>";
 

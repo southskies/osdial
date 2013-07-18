@@ -19,32 +19,47 @@
 #
 
 
+if (file_exists($WeBServeRRooT . '/admin/include/content/admin/company_settings.php')) {
+    include_once($WeBServeRRooT . '/admin/include/content/admin/company_settings.php');
+}
+
+if (file_exists($WeBServeRRooT . '/admin/include/content/admin/acct_settings.php')) {
+    include_once($WeBServeRRooT . '/admin/include/content/admin/acct_settings.php');
+}
+
 # Modify Section
 if ($ADD==411111111111111) {
     if ($LOG['modify_servers']==1) {
         # Header
         echo "  <font color=$default_text>SYSTEM SETTINGS MODIFIED</font>\n";
 
-        # Prepare with sprintf and filer ALL values wih mres as seen.
-        $stmt = sprintf("UPDATE system_settings SET use_non_latin='%s',webroot_writable='%s',enable_queuemetrics_logging='%s',queuemetrics_server_ip='%s',queuemetrics_dbname='%s'," .
-            "queuemetrics_login='%s',queuemetrics_pass='%s',queuemetrics_url='%s',queuemetrics_log_id='%s',queuemetrics_eq_prepend='%s',osdial_agent_disable='%s',allow_sipsak_messages='%s'," .
-            "admin_home_url='%s',enable_agc_xfer_log='%s',company_name='%s',admin_template='%s',agent_template='%s',enable_lead_allocation='%s',enable_external_agents='%s',enable_filters='%s'," .
-            "enable_multicompany='%s',multicompany_admin='%s',default_carrier_id='%s',intra_server_protocol='%s',default_date_format='%s',use_browser_timezone_offset='%s',last_recording_extension='%s',last_general_extension='%s',default_phone_code='%s';",
-            mres($use_non_latin),mres($webroot_writable),mres($enable_queuemetrics_logging),mres($queuemetrics_server_ip),mres($queuemetrics_dbname),
-            mres($queuemetrics_login),mres($queuemetrics_pass),mres($queuemetrics_url),mres($queuemetrics_log_id),mres($queuemetrics_eq_prepend),mres($osdial_agent_disable),mres($allow_sipsak_messages),
-            mres($admin_home_url),mres($enable_agc_xfer_log),mres($company_name),mres($admin_template),mres($agent_template),mres($enable_lead_allocation),mres($enable_external_agents),mres($enable_filters),
-            mres($enable_multicompany),mres($multicompany_admin),mres($carrier_id),mres($intra_server_protocol),mres($default_date_format),mres($use_browser_timezone_offset),mres($last_recording_extension),
-            mres($last_general_extension),mres($default_phone_code));
-        $rslt=mysql_query($stmt, $link);
+        if (file_exists($WeBServeRRooT . '/admin/include/content/admin/acct_settings.php')) {
+            AddUpdateAcctPackages();
+        }
 
-        ### LOG CHANGES TO LOG FILE ###
-        if ($WeBRooTWritablE > 0) {
-            $fp = fopen ("./admin_changes_log.txt", "a");
-            fwrite ($fp, "$date|MODIFY SYSTEM SETTINGS|$PHP_AUTH_USER|$ip|$stmt|\n");
-            fclose($fp);
+        if ($SUB=='') {
+            # Prepare with sprintf and filer ALL values wih mres as seen.
+            $stmt = sprintf("UPDATE system_settings SET use_non_latin='%s',webroot_writable='%s',enable_queuemetrics_logging='%s',queuemetrics_server_ip='%s',queuemetrics_dbname='%s'," .
+                "queuemetrics_login='%s',queuemetrics_pass='%s',queuemetrics_url='%s',queuemetrics_log_id='%s',queuemetrics_eq_prepend='%s',osdial_agent_disable='%s',allow_sipsak_messages='%s'," .
+                "admin_home_url='%s',enable_agc_xfer_log='%s',company_name='%s',admin_template='%s',agent_template='%s',enable_lead_allocation='%s',enable_external_agents='%s',enable_filters='%s'," .
+                "enable_multicompany='%s',multicompany_admin='%s',default_carrier_id='%s',intra_server_protocol='%s',default_date_format='%s',use_browser_timezone_offset='%s',last_recording_extension='%s',last_general_extension='%s',default_phone_code='%s',default_acct_method='%s',default_acct_cutoff='%s',default_acct_expire_days='%s',acct_email_warning_time='%s',acct_email_warning_expire='%s',acct_email_warning_message='%s',acct_email_warning_from='%s',acct_email_warning_subject='%s';",
+                mres($use_non_latin),mres($webroot_writable),mres($enable_queuemetrics_logging),mres($queuemetrics_server_ip),mres($queuemetrics_dbname),
+                mres($queuemetrics_login),mres($queuemetrics_pass),mres($queuemetrics_url),mres($queuemetrics_log_id),mres($queuemetrics_eq_prepend),mres($osdial_agent_disable),mres($allow_sipsak_messages),
+                mres($admin_home_url),mres($enable_agc_xfer_log),mres($company_name),mres($admin_template),mres($agent_template),mres($enable_lead_allocation),mres($enable_external_agents),mres($enable_filters),
+                mres($enable_multicompany),mres($multicompany_admin),mres($carrier_id),mres($intra_server_protocol),mres($default_date_format),mres($use_browser_timezone_offset),mres($last_recording_extension),
+                mres($last_general_extension),mres($default_phone_code),mres($default_acct_method),mres($default_acct_cutoff),mres($default_acct_expire_days),mres($acct_email_warning_time),mres($acct_email_warning_expire),mres($acct_email_warning_message),mres($acct_email_warning_from),mres($acct_email_warning_subject));
+            $rslt=mysql_query($stmt, $link);
+
+            ### LOG CHANGES TO LOG FILE ###
+            if ($WeBRooTWritablE > 0) {
+                $fp = fopen ("./admin_changes_log.txt", "a");
+                fwrite ($fp, "$date|MODIFY SYSTEM SETTINGS|$PHP_AUTH_USER|$ip|$stmt|\n");
+                fclose($fp);
+            }
         }
         # go to osdial system settings form below
         $ADD=311111111111111;
+        $SUB='';
 
     } else {
         echo "<center><font color=red>You do not have permission to view this page</font></center>\n";
@@ -291,26 +306,6 @@ if ($ADD==311111111111111) {
         echo "          </td>\n";
         echo "        </tr>\n";
 
-        if (file_exists($WeBServeRRooT . '/admin/include/content/admin/company.php')) {
-            echo "        <tr class=tabheader><td colspan=2>Multi-Company</td></tr>\n";
-
-            echo "        <tr bgcolor=$oddrows>\n";
-            echo "          <td align=right>Enable Multi-Company Support:</td>\n";
-            echo "          <td align=left>\n";
-            echo "            <select size=1 name=enable_multicompany>\n";
-            echo "              <option>1</option>\n";
-            echo "              <option>0</option>\n";
-            echo "              <option selected>$system_settings[enable_multicompany]</option>\n";
-            echo "            </select>\n";
-            echo "            ".helptag("system_settings-enable_multicompany")."\n";
-            echo "          </td>\n";
-            echo "        </tr>\n";
-            echo "        <tr bgcolor=$oddrows>\n";
-            echo "          <td align=right>Multi-Company Administator:</td>\n";
-            echo "          <td align=left><input type=text name=multicompany_admin size=10 maxlength=15 value=\"$system_settings[multicompany_admin]\">".helptag("system_settings-multicompany_admin")."</td>\n";
-            echo "        </tr>\n";
-        }
-
         echo "        <tr class=tabheader><td colspan=2>Queuemetrics</td></tr>\n";
 
         $qstyle = 'visibility:collapse;';
@@ -355,7 +350,7 @@ if ($ADD==311111111111111) {
         echo "        <tr bgcolor=$oddrows style=\"$qstyle\">\n";
         echo "          <td align=right>QueueMetrics EnterQueue Prepend:</td>\n";
         echo "          <td align=left>\n";
-	echo "            <div>\n";
+        echo "            <div>\n";
         echo "            <select size=1 name=queuemetrics_eq_prepend>\n";
         echo "              <option>NONE</option>\n";
         echo "              <option>lead_id</option>\n";
@@ -369,15 +364,30 @@ if ($ADD==311111111111111) {
         echo "              <option selected>$system_settings[queuemetrics_eq_prepend]</option>\n";
         echo "            </select>";
 		echo "            ".helptag("system_settings-queuemetrics_eq_prepend")."\n";
-	echo "            </div>\n";
+        echo "            </div>\n";
         echo "          </td>\n";
         echo "        </tr>\n";
+
+        if (file_exists($WeBServeRRooT . '/admin/include/content/admin/company_settings.php')) {
+            echo ShowCompanySettings();
+            include_once($WeBServeRRooT . '/admin/include/content/admin/company_settings.php');
+        }
+
+        if (file_exists($WeBServeRRooT . '/admin/include/content/admin/acct_settings.php')) {
+            echo ShowAcctSettings();
+            include_once($WeBServeRRooT . '/admin/include/content/admin/acct_settings.php');
+        }
 
         echo "        <tr class=tabfooter>\n";
         echo "          <td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td>\n";
         echo "        </tr>\n";
         echo "      </table>\n";
         echo "      </form>\n";
+
+        if (file_exists($WeBServeRRooT . '/admin/include/content/admin/acct_settings.php')) {
+            echo ShowAcctPackages();
+        }
+
         echo "      </center>\n";
 
     } else {

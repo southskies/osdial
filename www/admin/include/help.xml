@@ -1718,6 +1718,120 @@ OSDial Server Trunks allows you to restrict the outgoing lines that are used on 
     This name will be displayed as the title banner on reports and configuration screens.
     </item>
 
+    <item pathId="default_acct_method" sectionId="31" title="Default Accounting Method">
+    The accounting method to use for all new companies.&lt;br&gt;
+    NONE- Do not use any accounting.&lt;br&gt;
+    RANGE- Use the start/end date range specified in the company, do not track time.&lt;br&gt;
+    TOTAL- Account for total agent login time.&lt;br&gt;
+    AVAILABLE- Account for time agent is not paused.&lt;br&gt;
+    TIME- Account for time agent is talking.&lt;br&gt;
+    TIME_ROUNDUP- Account for time agent is talking, rounded up to the next minute.&lt;br&gt;
+    </item>
+
+    <item pathId="default_acct_cutoff" sectionId="32" title="Default Accounting Cutoff Time">
+    The default cutoff time to assign to new companies. When there is less time remaining then what is specified by the cutoff, agents will be logged-off after their current calls and will not be able to log back in until more time is added to the account.
+    </item>
+
+    <item pathId="default_acct_expire_days" sectionId="33" title="Default Accounting Expire Days">
+    The default number of days after a time purchase in which that purchase expires, assigned to new companies.
+    </item>
+
+    <item pathId="acct_email_warning_time" sectionId="34" title="Accounting Email Warning Time">
+    The minute threshold to use for sending email warnings.
+    </item>
+
+    <item pathId="acct_email_warning_expire" sectionId="35" title="Accounting Email Warning Expire Days">
+    The day threshold to use for sending email warnings.
+    </item>
+
+    <item pathId="acct_email_warning_from" sectionId="36" title="Accounting Email Warning From">
+    The from address for warning emails.
+    </item>
+
+    <item pathId="acct_email_warning_subject" sectionId="37" title="Accounting Email Warning Subject">
+    The subject for warning emails.
+    </item>
+
+    <item pathId="acct_email_warning_message" sectionId="38" title="Accounting Email Warning Message">
+    The message for warning emails.
+    </item>
+
+    <item pathId="acct_package_type" sectionId="39" title="Accounting Package - Type">
+    The type of transaction this package will create, MINTUES, DAYS, or OTHER.
+    </item>
+
+    <item pathId="acct_package_code" sectionId="40" title="Accounting Package - Code">
+    The item code that a third-part payment gateway (like Paypal) can reference.
+    </item>
+
+    <item pathId="acct_package_name" sectionId="41" title="Accounting Package - Name">
+    A brief description of the package.
+    </item>
+
+    <item pathId="acct_package_units" sectionId="42" title="Accounting Package - Units">
+    How many of the 'type' to include in this package.
+    </item>
+
+    <item pathId="acct_package_use_default_expire" sectionId="43" title="Accounting Package - Use Default Expire">
+    When using the 'MINUTES' type, expire the transaction using the default expiration days.
+    </item>
+
+    <item pathId="acct_package_other_action" sectionId="44" title="Accounting Package - Other Action">
+    Used to specify the action to take when the type 'OTHER' is selected.
+    </item>
+
+    <item pathId="acct_package_newcomp_method" sectionId="45" title="Accounting Package - Other New Comp Acct Method">
+    The Acct Method to use when the type OTHER is selected and Creating a New Company is the action.
+    </item>
+
+    <item pathId="acct_package_newcomp_initial_units" sectionId="46" title="Accounting Package - Other New Comp Initial Units">
+    The Initial Units to supply when the type OTHER is selected and Creating a New Company is the action.
+    </item>
+
+    <item pathId="acct_package_base_cost" sectionId="47" title="Accounting Package - Base Cost">
+    The cost of this package.
+    </item>
+
+    <item pathId="acct_package_recurring" sectionId="48" title="Accounting Package - Recurring">
+    When set this will setup recurring charges.
+    </item>
+
+    <item pathId="acct_package_recurring_days" sectionId="49" title="Accounting Package - Recurring Days">
+    How many days to wait before charging again.
+    </item>
+
+    <item pathId="acct_package" sectionId="50" title="Accounting Package">
+    Packages allow you to link defined item-codes to third-party payment gateways like Paypal.&lt;br&gt;
+    &lt;br&gt;
+    Instructions for Paypal:&lt;br&gt;
+    &amp;nbsp;&amp;nbsp;Login to your business Paypal account.&lt;br&gt;
+    &amp;nbsp;&amp;nbsp;Click on Merchent Services.&lt;br&gt;
+    &amp;nbsp;&amp;nbsp;Click on "My Saved Buttons".&lt;br&gt;
+    &amp;nbsp;&amp;nbsp;Create a button for each defined Package code.&lt;br&gt;
+    &lt;br&gt;
+    Paypal Buttons:&lt;br&gt;
+    &amp;nbsp;&amp;nbsp;Item Name = Package Name&lt;br&gt;
+    &amp;nbsp;&amp;nbsp;Item ID = Package Code&lt;br&gt;
+    &amp;nbsp;&amp;nbsp;Price = Package Base Price&lt;br&gt;
+    &amp;nbsp;&amp;nbsp;On Packge Type OTHER, with the Action set to Create Company:&lt;br&gt;
+    &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Click "Add Text Field": Enter "Company Name" for the text. Click Done.&lt;br&gt;
+    &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Click "Add another text field": Enter "Contact Phone Number" for the text. Click Done.&lt;br&gt;
+    &amp;nbsp;&amp;nbsp;Expand "Customize text or appearance": Expand "Select button text": Select "Pay Now".&lt;br&gt;
+    &amp;nbsp;&amp;nbsp;Shipping = 0.00&lt;br&gt;
+    &amp;nbsp;&amp;nbsp;Use tax rate = 0.000&lt;br&gt;
+    &amp;nbsp;&amp;nbsp;Expand "Step 3"&lt;br&gt;
+    &amp;nbsp;&amp;nbsp;Do you want to let your customer change order quantities?&lt;br&gt;
+    &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Set to "Yes" on Package Types MINUTES and DAYS, on Package Type OTHER set to "No".&lt;br&gt;
+    &amp;nbsp;&amp;nbsp;Can your customer add special instructions in a message to you?  &lt;br&gt;
+    &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Set to "No".&lt;br&gt;
+    &amp;nbsp;&amp;nbsp;Do you need your customer's shipping address? &lt;br&gt;
+    &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Set to "No" on Package Types MINUTES and DAYS, on Package Type OTHER set to "Yes".&lt;br&gt;
+    &amp;nbsp;&amp;nbsp;Add advanced variables: (Replace the text YOUR_REMOTE_IP with your Web-server's WAN IP address.)&lt;br&gt;
+    &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;notify_url=http://YOUR_REMOTE_IP/admin/osdial_acct.php&lt;br&gt;
+    &amp;nbsp;&amp;nbsp;Save Button&lt;br&gt;
+    &lt;br&gt;
+    </item>
+
   </section>
 
   <section pathId="companies" sectionId="23" title="Multi-Company Configuration">
@@ -1799,6 +1913,36 @@ OSDial Server Trunks allows you to restrict the outgoing lines that are used on 
 
     <item pathId="enable_system_conferences" sectionId="20" title="Enable System Conferences">
     This enables admin menu access to the Global System Conferences configuration. (Default: OFF)
+    </item>
+
+    <item pathId="acct_method" sectionId="21" title="Accounting Method">
+    The accounting method to use.&lt;br&gt;
+    NONE- Do not use any accounting.&lt;br&gt;
+    RANGE- Use the start/end date range specified in the company, do not track time.&lt;br&gt;
+    TOTAL- Account for total agent login time.&lt;br&gt;
+    AVAILABLE- Account for time agent is not paused.&lt;br&gt;
+    TIME- Account for time agent is talking.&lt;br&gt;
+    TIME_ROUNDUP- Account for time agent is talking, rounded up to the next minute.&lt;br&gt;
+    </item>
+
+    <item pathId="acct_startdate" sectionId="22" title="Accounting Start Date">
+    The start date of the accouting, company will be disabled for any date prior. yyyy-mm-dd format. When set to 0000-00-00, bypass.
+    </item>
+
+    <item pathId="acct_enddate" sectionId="23" title="Accounting End Date">
+    The end date of the accouting, company will be disabled for any date after. yyyy-mm-dd format. When set to 0000-00-00, bypass.
+    </item>
+
+    <item pathId="acct_cutoff" sectionId="24" title="Accounting Cutoff Time">
+    When there is less time remaining then what is specified by the cutoff, agents will be logged-off after their current calls and will not be able to log back in until more time is added to the account.
+    </item>
+
+    <item pathId="acct_expire_days" sectionId="25" title="Accounting Expire Days">
+    The number of days after a time purchase in which that purchase expires.
+    </item>
+
+    <item pathId="email" sectionId="26" title="Email">
+    An email address where alerts and warnings for this company can be sent.
     </item>
 
   </section>
