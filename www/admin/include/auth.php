@@ -128,6 +128,14 @@ function osdial_authenticate($user, $password) {
                 if ($LOG['company']['status'] != 'ACTIVE') {
                     $LOG['error']=1;
                     $LOG['error_type']='COMPANY_NOT_ACTIVE';
+                    if ($LOG['multicomp']>0) {
+                        if ($LOG['company']['acct_method'] != 'NONE' and $LOG['company']['acct_method'] != '') {
+                            if ($LOG['company']['status'] == 'SUSPENDED') {
+                                $LOG['error']=0;
+                                $LOG['error_type']='';
+                            }
+                        }
+                    }
                 }
             }
             $LOG['companies'] = get_krh($link, 'osdial_companies', '*','','','');
