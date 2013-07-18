@@ -15,7 +15,7 @@ ALTER TABLE system_settings ADD COLUMN acct_email_warning_time smallint(3) DEFAU
 ALTER TABLE system_settings ADD COLUMN acct_email_warning_expire smallint(3) DEFAULT '3';##|##
  ## acct_email_warning_expire;
 
-ALTER TABLE system_settings ADD COLUMN acct_email_warning_message text DEFAULT 'You are nearly out of credit.';##|##
+ALTER TABLE system_settings ADD COLUMN acct_email_warning_message text;##|##
  ## acct_email_warning_message;
 
 ALTER TABLE system_settings ADD COLUMN acct_email_warning_from varchar(255) DEFAULT 'system@osdial.org';##|##
