@@ -43,6 +43,9 @@
 #2 0 * * 0 /opt/osdial/bin/AST_agent_week.pl > /dev/null 2>&1
 #22 0 * * * /opt/osdial/bin/AST_agent_day.pl > /dev/null 2>&1
 
+### (sql) Reconcile acct tables.
+* * * * * /opt/osdial/bin/osdial_acct_reconcile.pl > /dev/null 2>&1
+
 ### (dialer) Generate asterisk config files and reload modules
 * * * * * /opt/osdial/bin/osdial_astgen.pl -q > /dev/null 2>&1
 
