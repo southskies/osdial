@@ -871,6 +871,19 @@ sub process_request {
 						&agi_output;
 					}
 				} else {
+					my $OLstart_epoch=0;
+					my $OLend_epoch=0;
+					$stmtA = "SELECT start_epoch,end_epoch FROM osdial_log WHERE uniqueid='$uniqueid' LIMIT 1;";
+					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+					$sthArows=$sthA->rows;
+					if ($sthArows > 0) {
+						@aryA = $sthA->fetchrow_array;
+						$OLstart_epoch = $aryA[0] if (length($aryA[0])>5);
+						$OLend_epoch = $aryA[1] if (length($aryA[1])>5);
+					}
+					$sthA->finish();
+
 					$stmtA = "SELECT SQL_NO_CACHE live_agent_id,user,extension,uniqueid,last_call_time,server_ip,conf_exten FROM osdial_live_agents WHERE uniqueid='$uniqueid' AND (extension LIKE 'R/va\%' OR extension LIKE 'R/tmp\%') LIMIT 1;";
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -884,7 +897,15 @@ sub process_request {
 						$OLAlct = $aryA[4];
 						$OLAserver = $aryA[5];
 						$OLAconf = $aryA[6];
-						$talksec = ($now_date_epoch - $VD_start_epoch);
+
+						my $pauseepoch = $VD_start_epoch;
+						my $waitepoch = $VD_start_epoch;
+						my $talkepoch = $VD_start_epoch;
+						$talkepoch=$OLstart_epoch if ($OLstart_epoch>0);
+						my $dispoepoch = $now_date_epoch;
+						$dispoepoch=$OLend_epoch if ($OLend_epoch>0);
+						my $waitsec = ($talkepoch - $waitepoch);
+						my $talksec = ($dispoepoch - $talkepoch);
 						if ( ($OLAext =~ /^R\/tmp/) && ($OLAuser =~ /^tmp/) ) {
 							$stmtA = "DELETE FROM osdial_users WHERE user='" . $osdial->mres($OLAuser) . "' LIMIT 1;";
 							my $affected_rows = $dbhA->do($stmtA);
@@ -909,6 +930,24 @@ sub process_request {
 							$stmtA = "UPDATE osdial_live_agents SET status='READY',lead_id='0',uniqueid='',callerid='',channel='',calls_today='$OLAcalls',last_call_finish=NOW() WHERE live_agent_id='$OLAid';";
 							my $affected_rows = $dbhA->do($stmtA);
 						}
+
+						my $company_id='';
+						if ($VD_campaign_id =~ /^\d\d\d..../) {
+							$company_id = $VD_campaign_id;
+							$company_id =~ s/^(\d\d\d).*/\1/;
+							$company_id = ($company_id * 1) - 100;
+						}
+						my $acct_method='NONE';
+						$stmtA = "SELECT acct_method FROM osdial_companies WHERE id='$company_id';";
+						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+						$sthArows=$sthA->rows;
+						if ($sthArows > 0) {
+							@aryA = $sthA->fetchrow_array;
+							$acct_method=$aryA[0];
+						}
+						$sthA->finish();
+
 						$stmtA = "SELECT status,comments FROM osdial_list WHERE lead_id='$VD_lead_id';";
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -917,8 +956,46 @@ sub process_request {
 							@aryA = $sthA->fetchrow_array;
 							$lstat = $aryA[0];
 							$lcomm = $aryA[1];
-							$stmtA = "INSERT INTO osdial_agent_log SET user='" . $osdial->mres($OLAuser) . "',server_ip='$VARserver_ip',event_time='$OLAlct',uniqueid='$OLAuniqueid',lead_id='$VD_lead_id',campaign_id='" . $osdial->mres($VD_campaign_id) . "',talk_epoch='$VD_start_epoch',talk_sec='$talksec',status='" . $osdial->mres($lstat) . "',user_group='VIRTUAL',comments='" . $osdial->mres($lcomm) . "';";
+							$stmtA = "INSERT INTO osdial_agent_log SET user='" . $osdial->mres($OLAuser) . "',server_ip='$VARserver_ip',event_time='$OLAlct',uniqueid='$OLAuniqueid',lead_id='$VD_lead_id',campaign_id='" . $osdial->mres($VD_campaign_id) . "',pause_epoch='$pauseepoch',wait_epoch='$waitepoch',wait_sec='$waitsec',talk_epoch='$talkepoch',talk_sec='$talksec',dispo_epoch='$dispoepoch',status='" . $osdial->mres($lstat) . "',user_group='VIRTUAL',comments='" . $osdial->mres($lcomm) . "';";
 							my $affected_rows = $dbhA->do($stmtA);
+
+							$stmtA = "SELECT LAST_INSERT_ID();";
+							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+							@aryA = $sthA->fetchrow_array;
+							$logid=$aryA[0];
+
+							if ($acct_method !~ /^$|^NONE$|^RANGE$/) {
+								if ($acct_method eq 'TALK_ROUNDUP') {
+									if ($talksec%60>0) {
+										$talksec -= ($talksec%60);
+										$talksec += 60;
+									}
+								}
+								$secs = $talksec;
+								if ($acct_method =~ /^AVAILABLE$|^TOTAL$/) {
+									$secs += $waitsec;
+								}
+
+								if ($secs>0) {
+									$secs = $secs * -1;
+									$stmtA = "INSERT INTO osdial_acct_trans SET company_id='$company_id',agent_log_id='$logid',trans_type='DEBIT',trans_sec='$secs',created=NOW();";
+									my $affected_rows = $dbhA->do($stmtA);
+								}
+
+								if ($acct_method =~ /^AVAILABLE$|^TOTAL$/) {
+									if ($waitsec>0) {
+										my $wsec = $waitsec * -1;
+										$stmtA = "INSERT INTO osdial_acct_trans_daily SET company_id='$company_id',agent_log_id='$logid',trans_type='WAIT',trans_sec='$wsec',created=NOW();";
+										my $affected_rows = $dbhA->do($stmtA);
+									}
+								}
+								if ($talksec>0) {
+									my $tsec = $talksec * -1;
+									$stmtA = "INSERT INTO osdial_acct_trans_daily SET company_id='$company_id',agent_log_id='$logid',trans_type='TALK',trans_sec='$tsec',created=NOW();";
+									my $affected_rows = $dbhA->do($stmtA);
+								}
+							}
 						}
 					}
 
@@ -1032,7 +1109,7 @@ sub process_request {
 						$Rsec = '0'.$Rsec if ($Rsec < 10);
 						$RSQLdate = $Ryear.'-'.$Rmon.'-'.$Rmday.' '.$Rhour.':'.$Rmin.':'.$Rsec;
 
-						$stmtA = "SELECT SQL_NO_CACHE start_epoch,status,closecallid,user,term_reason,length_in_sec,queue_seconds,comments FROM osdial_closer_log WHERE lead_id='$VD_lead_id' AND call_date>'$RSQLdate' AND end_epoch IS NULL ORDER BY call_date ASC LIMIT 1;";
+						$stmtA = "SELECT SQL_NO_CACHE start_epoch,status,closecallid,user,term_reason,length_in_sec,queue_seconds,comments,call_date,uniqueid,lead_id,campaign_id FROM osdial_closer_log WHERE lead_id='$VD_lead_id' AND call_date>'$RSQLdate' AND end_epoch IS NULL ORDER BY call_date ASC LIMIT 1;";
 
 						if ($AGILOG) {
 							$agi_string = "|$stmtA|";
@@ -1053,6 +1130,10 @@ sub process_request {
 							$VD_length_in_sec = $aryA[5];
 							$VD_queue_seconds = $aryA[6];
 							$VD_comments = $aryA[7];
+							$VD_calldate = $aryA[8];
+							$VD_uniqueid = $aryA[9];
+							$VD_lead_id = $aryA[10];
+							$VD_campaign_id = $aryA[11];
 							$epc_countCUSTDATA++;
 						}
 						$sthA->finish();
@@ -1133,7 +1214,7 @@ sub process_request {
 									$VDCLSQL_status = "status='DROP',";
 									$VDCLSQL_queue_seconds = "queue_seconds='$VD_seconds',";
 								} else {
-									$VDCLSQL_status = '';
+									$VDCLSQL_status = "status='$VD_status',";
 									$VDCLSQL_queue_seconds = '';
 								}
 
@@ -1142,12 +1223,79 @@ sub process_request {
 
 
 							$VD_seconds = ($now_date_epoch - $VD_start_epoch);
-							$stmtA = "UPDATE osdial_closer_log SET $VDCLSQL_update end_epoch='$now_date_epoch',length_in_sec='$VD_seconds' WHERE closecallid='$VD_closecallid';";
+							my $stmtAA = "UPDATE osdial_closer_log SET $VDCLSQL_update end_epoch='$now_date_epoch',length_in_sec='$VD_seconds' WHERE closecallid='$VD_closecallid';";
 							if ($AGILOG) {
 								$agi_string = "|$VDCLSQL_update|$VD_status|$VD_length_in_sec|$VD_term_reason|$VD_queue_seconds|\n|$stmtA|";
 								&agi_output;
 							}
-							$affected_rows = $dbhA->do($stmtA);
+
+							if ($VD_user == 'VDCL') {
+								my $pauseepoch = $VD_start_epoch;
+								my $waitepoch = $VD_start_epoch;
+								my $talkepoch = $VD_start_epoch;
+								my $dispoepoch = $now_date_epoch;
+								my $waitsec = ($talkepoch - $waitepoch);
+								my $talksec = ($dispoepoch - $talkepoch);
+								my $stmtB = "INSERT INTO osdial_agent_log SET user='VDCL',user_group='VDCL',server_ip='$VARserver_ip',event_time='$VD_calldate',uniqueid='$VD_uniqueid',lead_id='$VD_lead_id',campaign_id='" . $osdial->mres($VD_campaign_id) . "',pause_epoch='$pauseepoch',wait_epoch='$waitepoch',wait_sec='$waitsec',talk_epoch='$talkepoch',talk_sec='$talksec',dispo_epoch='$dispoepoch',".$VDCLSQL_status."comments='" . $osdial->mres($VD_comments) . "';";
+								$affected_rows = $dbhA->do($stmtB);
+
+								$stmtA = "SELECT LAST_INSERT_ID();";
+								$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+								$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+								@aryA = $sthA->fetchrow_array;
+								$logid=$aryA[0];
+
+								my $company_id='';
+								if ($VD_campaign_id =~ /^\d\d\d..../) {
+									$company_id = $VD_campaign_id;
+									$company_id =~ s/^(\d\d\d).*/\1/;
+									$company_id = ($company_id * 1) - 100;
+								}
+								my $acct_method='NONE';
+								$stmtA = "SELECT acct_method FROM osdial_companies WHERE id='$company_id';";
+								$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+								$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+								$sthArows=$sthA->rows;
+								if ($sthArows > 0) {
+									@aryA = $sthA->fetchrow_array;
+									$acct_method=$aryA[0];
+								}
+								$sthA->finish();
+
+								if ($acct_method !~ /^$|^NONE$|^RANGE$/) {
+									if ($acct_method eq 'TALK_ROUNDUP') {
+										if ($talksec%60>0) {
+											$talksec -= ($talksec%60);
+											$talksec += 60;
+										}
+									}
+									$secs = $talksec;
+									if ($acct_method =~ /^AVAILABLE$|^TOTAL$/) {
+										$secs += $waitsec;
+									}
+
+									if ($secs>0) {
+										$secs = $secs * -1;
+										$stmtA = "INSERT INTO osdial_acct_trans SET company_id='$company_id',agent_log_id='$logid',trans_type='DEBIT',trans_sec='$secs',created=NOW();";
+										my $affected_rows = $dbhA->do($stmtA);
+									}
+
+									if ($acct_method =~ /^AVAILABLE$|^TOTAL$/) {
+										if ($waitsec>0) {
+											my $wsec = $waitsec * -1;
+											$stmtA = "INSERT INTO osdial_acct_trans_daily SET company_id='$company_id',agent_log_id='$logid',trans_type='WAIT',trans_sec='$wsec',created=NOW();";
+											my $affected_rows = $dbhA->do($stmtA);
+										}
+									}
+									if ($talksec>0) {
+										my $tsec = $talksec * -1;
+										$stmtA = "INSERT INTO osdial_acct_trans_daily SET company_id='$company_id',agent_log_id='$logid',trans_type='TALK',trans_sec='$tsec',created=NOW();";
+										my $affected_rows = $dbhA->do($stmtA);
+									}
+								}
+
+								$affected_rows = $dbhA->do($stmtAA);
+							}
 							if ($AGILOG) {
 								$agi_string = "--   VDCL update: |$affected_rows|$uniqueid|$VD_closecallid|";
 								&agi_output;

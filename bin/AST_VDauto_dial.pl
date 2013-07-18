@@ -1389,6 +1389,7 @@ while($one_day_interval > 0)
                                                                 $OL_status = $orig_status if ($orig_status =~ /^CRF$|^CRR$|^CRO$|^CRC$/);
                                                                 $OL_status = $orig_status if ($orig_status =~ /^CPRATB$|^CPRCR$|^CPRLR$|^CPRSNC$|^CPRSRO$|^CPRUNK$|^CPRNA$|^CPSUNK$/);
                                                                 $OL_status = $orig_status if ($orig_status =~ /^CPRSIC$|^CPRSIO$|^CPRSVC$|^CPRB$|^CPSFAX$|^CPSAA$/);
+								$CLuser = 'VDAD';
 								$insertVLuser = 'VDAD';
 								$insertVLcount=0;
 								if ($KLcallerid[$kill_vac] =~ /^M\d\d\d\d\d\d\d\d\d\d/) {
@@ -1419,6 +1420,77 @@ while($one_day_interval > 0)
 									$affected_rows = $dbhA->do($stmtA);
 									$event_string = "|     dead NA call updated to log $CLuniqueid|$CLlead_id|$CLphone_number|$CLstatus|$OL_status|$CLnew_status|$affected_rows|";
 							 		&event_logger;
+								}
+
+								$dispo_epoch=$end_epoch;
+								if ($orig_status =~ /^CPSFAX$|^CPSAA$|^CPSUNK$|^AA$|^AM$|^AL$/) {
+									$talk_epoch=$start_epoch;
+								} else {
+									$talk_epoch=$end_epoch;
+									$wait_epoch=$start_epoch;
+								}
+								$pause_epoch=$start_epoch;
+								$pause_sec=$wait_epoch-$pause_epoch;
+								$wait_sec=$talk_epoch-$wait_epoch;
+								$talk_sec=$dispo_epoch-$talk_epoch;
+								$stmtA=sprintf("INSERT INTO osdial_agent_log (user,user_group,server_ip,event_time,lead_id,campaign_id,pause_epoch,pause_sec,wait_epoch,wait_sec,talk_epoch,talk_sec,dispo_epoch,status,uniqueid,prev_status) VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')",$osdial->mres($CLuser),$osdial->mres($CLuser),$osdial->mres($VARserver_ip),$osdial->mres($SQLdate),$osdial->mres($CLlead_id),$osdial->mres($CLcampaign_id),$osdial->mres($pause_epoch),$osdial->mres($pause_sec),$osdial->mres($wait_epoch),$osdial->mres($wait_sec),$osdial->mres($talk_epoch),$osdial->mres($talk_sec),$osdial->mres($dispo_epoch),$osdial->mres($OL_status),$osdial->mres($CLuniqueid),$osdial->mres($orig_status));
+								if($M){print STDERR "\n|$stmtA|\n";}
+								$affected_rows = $dbhA->do($stmtA);
+
+								$stmtA = "SELECT LAST_INSERT_ID();";
+								$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+								$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+								@aryA = $sthA->fetchrow_array;
+								$logid=$aryA[0];
+
+								my $company_id='';
+								if ($CLcampaign_id =~ /^\d\d\d..../) {
+									$company_id = $CLcampaign_id;
+									$company_id =~ s/^(\d\d\d).*/\1/;
+									$company_id = ($company_id * 1) - 100;
+								}
+								my $acct_method='NONE';
+								$stmtA = "SELECT acct_method FROM osdial_companies WHERE id='$company_id';";
+								$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+								$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+								$sthArows=$sthA->rows;
+								if ($sthArows > 0) {
+									@aryA = $sthA->fetchrow_array;
+									$acct_method=$aryA[0];
+								}
+								$sthA->finish();
+
+								if ($acct_method !~ /^$|^NONE$|^RANGE$/) {
+									if ($acct_method eq 'TALK_ROUNDUP') {
+										if ($talksec%60>0) {
+											$talksec -= ($talksec%60);
+											$talksec += 60;
+										}
+									}
+									$secs = $talksec;
+									$secs += $waitsec if ($acct_method =~ /^AVAILABLE$|^TOTAL$/);
+									$secs += $pausesec if ($acct_method =~ /^TOTAL$/);
+
+									if ($secs>0) {
+										$secs = $secs * -1;
+										$stmtA = "INSERT INTO osdial_acct_trans SET company_id='$company_id',agent_log_id='$logid',trans_type='DEBIT',trans_sec='$secs',created=NOW();";
+										my $affected_rows = $dbhA->do($stmtA);
+									}
+
+									if ($acct_method =~ /^AVAILABLE$|^TOTAL$/) {
+										if ($waitsec>0) {
+											my $wsec = $waitsec;
+											$wsec+=$pausesec if ($acct_method =~ /^TOTAL$/);
+											$wsec = $wsec * -1;
+											$stmtA = "INSERT INTO osdial_acct_trans_daily SET company_id='$company_id',agent_log_id='$logid',trans_type='WAIT',trans_sec='$wsec',created=NOW();";
+											my $affected_rows = $dbhA->do($stmtA);
+										}
+									}
+									if ($talksec>0) {
+										my $tsec = $talksec * -1;
+										$stmtA = "INSERT INTO osdial_acct_trans_daily SET company_id='$company_id',agent_log_id='$logid',trans_type='TALK',trans_sec='$tsec',created=NOW();";
+										my $affected_rows = $dbhA->do($stmtA);
+									}
 								}
 	
 							}
@@ -1818,6 +1890,80 @@ while($one_day_interval > 0)
 
 				$event_string = "|     dead NA call added to log $CLuniqueid|$CLlead_id|$CLphone_number|$CLstatus|DROP|$affected_rows|";
 				 &event_logger;
+
+                                $stmtA = "SELECT status FROM osdial_list WHERE lead_id='$CLlead_id';";
+                                $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+                                $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+                                @aryA = $sthA->fetchrow_array;
+                                $orig_status = $aryA[0];
+				$sthA->finish();
+
+				$dispo_epoch=$end_epoch;
+				$talk_epoch=$end_epoch-$CLstage;
+				$wait_epoch=$start_epoch;
+				$pause_epoch=$start_epoch;
+				$pause_sec=$wait_epoch-$pause_epoch;
+				$wait_sec=$talk_epoch-$wait_epoch;
+				$talk_sec=$dispo_epoch-$talk_epoch;
+				$stmtA=sprintf("INSERT INTO osdial_agent_log (user,user_group,server_ip,event_time,lead_id,campaign_id,pause_epoch,pause_sec,wait_epoch,wait_sec,talk_epoch,talk_sec,dispo_epoch,status,uniqueid,prev_status) VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')",'VDAD','VDAD',$osdial->mres($VARserver_ip),$osdial->mres($SQLdate),$osdial->mres($CLlead_id),$osdial->mres($CLcampaign_id),$osdial->mres($pause_epoch),$osdial->mres($pause_sec),$osdial->mres($wait_epoch),$osdial->mres($wait_sec),$osdial->mres($talk_epoch),$osdial->mres($talk_sec),$osdial->mres($dispo_epoch),$osdial->mres('DROP'),$osdial->mres($CLuniqueid),$osdial->mres($orig_status));
+				if($M){print STDERR "\n|$stmtA|\n";}
+				$affected_rows = $dbhA->do($stmtA);
+
+				$stmtA = "SELECT LAST_INSERT_ID();";
+				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+				@aryA = $sthA->fetchrow_array;
+				$logid=$aryA[0];
+
+				my $company_id='';
+				if ($CLcampaign_id =~ /^\d\d\d..../) {
+					$company_id = $CLcampaign_id;
+					$company_id =~ s/^(\d\d\d).*/\1/;
+					$company_id = ($company_id * 1) - 100;
+				}
+				my $acct_method='NONE';
+				$stmtA = "SELECT acct_method FROM osdial_companies WHERE id='$company_id';";
+				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+				$sthArows=$sthA->rows;
+				if ($sthArows > 0) {
+					@aryA = $sthA->fetchrow_array;
+					$acct_method=$aryA[0];
+				}
+				$sthA->finish();
+
+				if ($acct_method !~ /^$|^NONE$|^RANGE$/) {
+					if ($acct_method eq 'TALK_ROUNDUP') {
+						if ($talksec%60>0) {
+							$talksec -= ($talksec%60);
+							$talksec += 60;
+						}
+					}
+					$secs = $talksec;
+					$secs += $waitsec if ($acct_method =~ /^AVAILABLE$|^TOTAL$/);
+					$secs += $pausesec if ($acct_method =~ /^TOTAL$/);
+
+					if ($secs>0) {
+						$secs = $secs * -1;
+						$stmtA = "INSERT INTO osdial_acct_trans SET company_id='$company_id',agent_log_id='$logid',trans_type='DEBIT',trans_sec='$secs',created=NOW();";
+						my $affected_rows = $dbhA->do($stmtA);
+					}
+
+					if ($acct_method =~ /^AVAILABLE$|^TOTAL$/) {
+						if ($waitsec>0) {
+							my $wsec = $waitsec;
+							$wsec+=$pausesec if ($acct_method =~ /^TOTAL$/);
+							$wsec = $wsec * -1;
+							$stmtA = "INSERT INTO osdial_acct_trans_daily SET company_id='$company_id',agent_log_id='$logid',trans_type='WAIT',trans_sec='$wsec',created=NOW();";
+							my $affected_rows = $dbhA->do($stmtA);
+						}
+					}
+					if ($talksec>0) {
+						my $tsec = $talksec * -1;
+						$stmtA = "INSERT INTO osdial_acct_trans_daily SET company_id='$company_id',agent_log_id='$logid',trans_type='TALK',trans_sec='$tsec',created=NOW();";
+						my $affected_rows = $dbhA->do($stmtA);
+					}
+				}
 
 				if ($enable_queuemetrics_logging > 0)
 					{

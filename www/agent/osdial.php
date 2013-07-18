@@ -245,9 +245,11 @@ $wsc .= "</table>";
 $wsc .= "</span>";
 
 
+$company_id=0;
 $company_prefix='';
 if ($config['settings']['enable_multicompany'] > 0) {
     $company_prefix = OSDsubstr($phone_login,0,3);
+    $company_id = ($company_prefix * 1) - 100;
     if (!empty($VD_login) and !empty($phone_login)) {
         if (OSDsubstr($VD_login,0,3) != OSDsubstr($phone_login,0,3)) {
             $phone_login='';
@@ -565,14 +567,50 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
 } else {
     $VDloginDISPLAY=0;
 
+    $company_name='';
+    $company_status='';
+    $company_acct_cutoff=0;
+    if ($config['settings']['enable_multicompany'] > 0) {
+        if ($company_id > 0) {
+            $stmt=sprintf("SELECT name,status,acct_cutoff FROM osdial_companies WHERE id='%s';",mres($company_id));
+            if ($DB) echo "|$stmt|\n";
+            $rslt=mysql_query($stmt, $link);
+            $row=mysql_fetch_row($rslt);
+            $company_name=$row[0];
+            $company_status=$row[1];
+            $company_acct_cutoff=$row[2];
+         }
+    }
+
     if (OSDstrlen($VD_login)<2 or OSDstrlen($VD_pass)<2 or OSDstrlen($VD_campaign)<2) {
         $VDloginDISPLAY=1;
+        if ($config['settings']['enable_multicompany'] > 0) {
+            if ($company_status=='ACTIVE') {
+                $VDdisplayMESSAGE = "&nbsp;";
+            } elseif ($company_status=='INACTIVE') {
+                $VDdisplayMESSAGE = "Your company profile is not yet active, please contact the system administrator.";
+            } elseif ($company_status=='SUSPENDED') {
+                $VDdisplayMESSAGE = "Your company profile has been suspended for insufficient funds,<br/>please add funds or contact the system administrator.";
+            } elseif ($company_status=='TERMINATED') {
+                $VDdisplayMESSAGE = "Yout company profile has been removed, please contact the system administrator.";
+            }
+        }
     } else {
         $stmt=sprintf("SELECT count(*) FROM osdial_users WHERE user='%s' AND pass='%s' AND user_level>0;",mres($VD_login),mres($VD_pass));
         if ($DB) echo "|$stmt|\n";
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
         $auth=$row[0];
+
+        if($auth>0) {
+            if ($config['settings']['enable_multicompany'] > 0) {
+                if ($company_id > 0) {
+                    if ($company_status!='ACTIVE') $auth=0;
+                } else {
+                    $auth=0;
+                }
+            }
+        }
 
         if($auth>0) {
             $myscripts = Array();
@@ -967,7 +1005,19 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
         } else {
             debugLog('osdial_auth_entries',"vdweb|FAIL|$date|$VD_login|$VD_pass|$ip|$browser|");
             $VDloginDISPLAY=1;
-            $VDdisplayMESSAGE = "Login incorrect, please try again<br>";
+            if ($config['settings']['enable_multicompany'] > 0) {
+                if ($company_status=='ACTIVE') {
+                    $VDdisplayMESSAGE = "Login incorrect, please try again";
+                } elseif ($company_status=='INACTIVE') {
+                    $VDdisplayMESSAGE = "Your company profile is not yet active, please contact the system administrator.";
+                } elseif ($company_status=='SUSPENDED') {
+                    $VDdisplayMESSAGE = "Your company profile has been suspended for insufficient funds,<br/>please add funds or contact the system administrator.";
+                } elseif ($company_status=='TERMINATED') {
+                    $VDdisplayMESSAGE = "Yout company profile has been removed, please contact the system administrator.";
+                }
+            } else {
+                $VDdisplayMESSAGE = "Login incorrect, please try again.";
+            }
         }
     }
 
@@ -1021,7 +1071,7 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
         echo "    <td align=left><span id=\"LogiNCamPaigns\">$camp_form_code</span></td>\n";
         echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
         echo "  </tr>\n";
-        echo "  <tr><td colspan=4>&nbsp;</td></tr>\n";
+        echo "  <tr><td colspan=4><center><font size=1 color=red>$VDdisplayMESSAGE</font></center></td></tr>\n";
         echo "  <tr>\n";
         echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
         echo "    <td align=center colspan=2><input class=submit type=button onclick=\"login_submit(); return false;\" name=SUBMIT value=Submit>&nbsp;<span id=\"LogiNReseT\"></span></td>\n";
@@ -1082,7 +1132,7 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
         echo "    <td align=left><input type=password name=phone_pass size=10 maxlength=20 value=\"\"></td>\n";
         echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
         echo "  </tr>\n";
-        echo "  <tr><td colspan=4>&nbsp;</td></tr>\n";
+        echo "  <tr><td colspan=4><center><font size=1 color=red>$VDdisplayMESSAGE</font></center></td></tr>\n";
         echo "  <tr>\n";
         echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
         echo "    <td align=center colspan=2><input class=submit type=submit name=SUBMIT value=Submit> &nbsp; <span id=\"LogiNReseT\"></span></td>\n";
@@ -1708,7 +1758,8 @@ flush();
                 <td colspan=3 valign=top align=center>
                     <input type=hidden name=extension>
                     <font class="body_text">
-                    <?php echo "<font color=#698DBB>Logged in as user <font color=navy><b> " . mclabel($VD_login) . "</font> </b> on phone <font color=navy><b> " . mclabel($phone_login) . "</font> </b> to campaign <font color=navy><b> " . mclabel($VD_campaign) . "</b>&nbsp;</font>\n"; ?>
+                    <?php echo "<font color=#698DBB>Logged in as user <font color=navy><b> " . mclabel($VD_login) . "</font> </b> on phone <font color=navy><b> " . mclabel($phone_login) . "</font> </b> to campaign <font color=navy><b> " . mclabel($VD_campaign) . "</b></font>\n"; ?>
+                    <span id="DebugLink"><font color=black class="body_text"><a href="#" style="cursor:default;" onclick="openDebugWindow();return false;">.</a></font></span>
                     </font>
                 </td>
                 <td colspan=3 valign=top align=right></td>
@@ -1784,15 +1835,15 @@ flush();
     
     <!-- Manual Dial Link -->
     <!--<span style="position:absolute;left:-58px;top:430px;z-index:12;visibility:hidden;" id="ManuaLDiaLButtons">-->
-    <span style="position:relative;left:-58px;top:448px;z-index:12;visibility:hidden;" id="ManuaLDiaLButtons">
+    <span style="position:relative;left:-60px;top:453px;z-index:12;visibility:hidden;" id="ManuaLDiaLButtons">
         <font class="body_text">
-            <span id="MDstatusSpan"><span id="MDHopperListLink" style="position:relative;top:-19px;left:165px;<?php if ($allow_md_hopperlist!='Y') echo "visibility:hidden;"; ?>"><a href="#" onclick="MDHopperListCheck();return false;">HOPPER LIST</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('NO');return false;">MANUAL DIAL</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('FAST');return false;">FAST DIAL</a><br>
+            <span id="MDstatusSpan"><span id="MDHopperListLink" style="position:relative;top:-17px;left:171px;<?php if ($allow_md_hopperlist!='Y') echo "visibility:hidden;"; ?>"><a href="#" onclick="MDHopperListCheck();return false;">HOPPER LIST</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('NO');return false;">MANUAL DIAL</a></span> &nbsp; &nbsp;<a style="letter-spacing:1px;" href="#" onclick="NeWManuaLDiaLCalL('FAST');return false;">FAST DIAL</a><br>
         </font>
     </span>
 
     <!-- Call Back Link -->
     <!--<span style="position:absolute;left:40px;top:458px;z-index:13;visibility:hidden;" id="CallbacksButtons">-->
-    <span style="position:relative;left:40px;top:455px;z-index:13;visibility:hidden;" id="CallbacksButtons">
+    <span style="position:relative;left:40px;top:458px;z-index:13;visibility:hidden;" id="CallbacksButtons">
         <font class="body_text">
             <span id="CBstatusSpan">&nbsp;&nbsp;&nbsp;Checking Callbacks...</span><br>
         </font>
@@ -1800,7 +1851,7 @@ flush();
                                         
     <!-- Footer Links -->
     <?php load_status('Initializing GUI...<br>MaiNfooterspan<br>&nbsp;'); ?>
-    <span style="position:relative;left:46px;top:460px;z-index:9;" id="MaiNfooterspan">
+    <span style="position:relative;left:46px;top:463px;z-index:9;" id="MaiNfooterspan">
         <font class="body_small"><span id="busycallsdisplay"><a href="#"  onclick="conf_channels_detail('SHOW');">Channel Information</a><br></span></font>
         <span id="outboundcallsspan"></span>
         <span id="debugbottomspan"></span>
@@ -1813,7 +1864,7 @@ flush();
     
 
     <!-- Pause Code Link -->
-    <span style="position:absolute;left:35px;top:<?php echo ($CBheight-3); ?>px;z-index:14;visibility:hidden;" id="PauseCodeButtons">
+    <span style="position:absolute;left:36px;top:<?php echo ($CBheight+4); ?>px;z-index:14;visibility:hidden;" id="PauseCodeButtons">
         <font class="body_text">
             <span id="PauseCodeLinkSpan"><a href="#" onclick="PauseCodeSelectContent_create();return false;">PAUSE CODE</a></span><br>
         </font>
@@ -2480,8 +2531,8 @@ if(isset($_SERVER['HTTP_USER_AGENT'])){
                             <td width=205 align=left valign=top class=curve3>
                                 <font class="body_text" style="">
                                     <center>
-                                        <!--<span style="" id="DiaLControl"><a href="#" onclick="ManualDialNext('','','','','');"><img src="templates/<?php //echo $config['settings']['agent_template']; ?>/images/vdc_LB_dialnextnumber_OFF.gif" width=145 height=16 border=0 alt="Dial Next Number"></a></span><br>-->
-                                        <span id="DiaLControl"><a href="#" onclick="ManualDialNext('','','','','');"><span class=DialNextButtonOff>Dial Next Number</span></a></span><br/>
+                                        <!--<span style="" id="DiaLControl"><a href="#" onclick="ManualDialNext('','','','','','');"><img src="templates/<?php //echo $config['settings']['agent_template']; ?>/images/vdc_LB_dialnextnumber_OFF.gif" width=145 height=16 border=0 alt="Dial Next Number"></a></span><br>-->
+                                        <span id="DiaLControl"><a href="#" onclick="ManualDialNext('','','','','','');"><span class=DialNextButtonOff>Dial Next Number</span></a></span><br/>
                                         
                                         <span id="DiaLLeaDPrevieW"><font class="preview_text"><input type=checkbox name=LeadPreview id=LeadPreview size=1 value="0"><label for="LeadPreview"> LEAD PREVIEW</label><br></font></span>
                                         <span id="DiaLDiaLAltPhonE"><font class="preview_text"><input type=checkbox name=DiaLAltPhonE id=DiaLAltPhonE size=1 value="0"><label for="DaiLAltPhonE"> ALT PHONE DIAL</label><br></font></span>
