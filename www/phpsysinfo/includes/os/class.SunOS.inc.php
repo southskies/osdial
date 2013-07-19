@@ -1,15 +1,15 @@
-<?php 
+<?php
 /**
  * SunOS System Class
  *
  * PHP version 5
  *
  * @category  PHP
- * @package   PSI_OS
+ * @package   PSI SunOS OS class
  * @author    Michael Cramer <BigMichi1@users.sourceforge.net>
  * @copyright 2009 phpSysInfo
  * @license   http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @version   SVN: $Id: class.SunOS.inc.php 287 2009-06-26 12:11:59Z bigmichi1 $
+ * @version   SVN: $Id: class.SunOS.inc.php 687 2012-09-06 20:54:49Z namiltd $
  * @link      http://phpsysinfo.sourceforge.net
  */
  /**
@@ -17,7 +17,7 @@
  * get all the required information from SunOS systems
  *
  * @category  PHP
- * @package   PSI_OS
+ * @package   PSI SunOS OS class
  * @author    Michael Cramer <BigMichi1@users.sourceforge.net>
  * @copyright 2009 phpSysInfo
  * @license   http://opensource.org/licenses/gpl-2.0.php GNU General Public License
@@ -31,9 +31,8 @@ class SunOS extends OS
      */
     public function __construct()
     {
-        $this->error->addError("WARN", "The SunOS version of phpSysInfo is work in progress, some things currently don't work");
     }
-    
+
     /**
      * Extract kernel values via kstat() interface
      *
@@ -45,12 +44,13 @@ class SunOS extends OS
     {
         if (CommonFunctions::executeProgram('kstat', '-p d '.$key, $m, PSI_DEBUG)) {
             list($key, $value) = preg_split("/\t/", trim($m), 2);
+
             return $value;
         } else {
             return '';
         }
     }
-    
+
     /**
      * Virtual Host Name
      *
@@ -69,7 +69,7 @@ class SunOS extends OS
             }
         }
     }
-    
+
     /**
      * IP of the Virtual Host Name
      *
@@ -78,16 +78,16 @@ class SunOS extends OS
     private function _ip()
     {
         if (PSI_USE_VHOST === true) {
-            $this->sys->setIp(gethostbyname($this->_hostname()));
+            $this->sys->setIp(gethostbyname($this->sys->getHostname()));
         } else {
             if (!($result = getenv('SERVER_ADDR'))) {
-                $this->sys->setIp(gethostbyname($this->_hostname()));
+                $this->sys->setIp(gethostbyname($this->sys->getHostname()));
             } else {
                 $this->sys->setIp($result);
             }
         }
     }
-    
+
     /**
      * Kernel Version
      *
@@ -103,7 +103,7 @@ class SunOS extends OS
             }
         }
     }
-    
+
     /**
      * UpTime
      * time the system is running
@@ -114,7 +114,7 @@ class SunOS extends OS
     {
         $this->sys->setUptime(time() - $this->_kstat('unix:0:system_misc:boot_time'));
     }
-    
+
     /**
      * Number of Users
      *
@@ -127,7 +127,7 @@ class SunOS extends OS
             $this->sys->setUsers($who[1]);
         }
     }
-    
+
     /**
      * Processor Load
      * optionally create a loadbar
@@ -141,7 +141,7 @@ class SunOS extends OS
         $load15 = $this->_kstat('unix:0:system_misc:avenrun_15min');
         $this->sys->setLoad(round($load1 / 256, 2).' '.round($load5 / 256, 2).' '.round($load15 / 256, 2));
     }
-    
+
     /**
      * CPU information
      *
@@ -157,7 +157,7 @@ class SunOS extends OS
         $dev->setCache($this->_kstat('cpu_info:0:cpu_info0:cpu_type') * 1024);
         $this->sys->setCpus($dev);
     }
-    
+
     /**
      * Network devices
      *
@@ -192,7 +192,7 @@ class SunOS extends OS
             }
         }
     }
-    
+
     /**
      * Physical memory information and Swap Space information
      *
@@ -212,7 +212,7 @@ class SunOS extends OS
         $dev->setFree($this->_kstat('unix:0:vminfo:swap_free') / 1024);
         $this->sys->setSwapDevices($dev);
     }
-    
+
     /**
      * filesystem information
      *
@@ -244,7 +244,7 @@ class SunOS extends OS
             }
         }
     }
-    
+
     /**
      * Distribution Icon
      *
@@ -255,7 +255,7 @@ class SunOS extends OS
         $this->sys->setDistribution('SunOS');
         $this->sys->setDistributionIcon('SunOS.png');
     }
-    
+
     /**
      * get the information
      *
@@ -263,10 +263,11 @@ class SunOS extends OS
      *
      * @return Void
      */
-    function build()
+    public function build()
     {
-        $this->_ip();
+        $this->error->addError("WARN", "The SunOS version of phpSysInfo is a work in progress, some things currently don't work");
         $this->_hostname();
+        $this->_ip();
         $this->_distro();
         $this->_kernel();
         $this->_uptime();
@@ -278,4 +279,3 @@ class SunOS extends OS
         $this->_filesystems();
     }
 }
-?>

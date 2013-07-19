@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * SensorDevice TO class
  *
@@ -9,7 +9,7 @@
  * @author    Michael Cramer <BigMichi1@users.sourceforge.net>
  * @copyright 2009 phpSysInfo
  * @license   http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @version   SVN: $Id: class.SensorDevice.inc.php 252 2009-06-17 13:06:44Z bigmichi1 $
+ * @version   SVN: $Id: class.SensorDevice.inc.php 592 2012-07-03 10:55:51Z namiltd $
  * @link      http://phpsysinfo.sourceforge.net
  */
  /**
@@ -31,29 +31,28 @@ class SensorDevice
      * @var String
      */
     private $_name = "";
-    
+
     /**
      * current value of the sensor
      *
      * @var Integer
      */
     private $_value = 0;
-    
+
     /**
      * maximum value of the sensor
      *
      * @var Integer
      */
-    private $_max = 0;
-    
+    private $_max = 'NaN';
+
     /**
      * minimum value of the sensor
      *
      * @var Integer
      */
-    private $_min = 0;
+    private $_min = 'NaN';
 
-    
     /**
      * Returns $_max.
      *
@@ -65,7 +64,7 @@ class SensorDevice
     {
         return $this->_max;
     }
-    
+
     /**
      * Sets $_max.
      *
@@ -79,7 +78,7 @@ class SensorDevice
     {
         $this->_max = $max;
     }
-    
+
     /**
      * Returns $_min.
      *
@@ -91,7 +90,7 @@ class SensorDevice
     {
         return $this->_min;
     }
-    
+
     /**
      * Sets $_min.
      *
@@ -105,7 +104,7 @@ class SensorDevice
     {
         $this->_min = $min;
     }
-    
+
     /**
      * Returns $_name.
      *
@@ -117,7 +116,7 @@ class SensorDevice
     {
         return $this->_name;
     }
-    
+
     /**
      * Sets $_name.
      *
@@ -131,7 +130,7 @@ class SensorDevice
     {
         $this->_name = $name;
     }
-    
+
     /**
      * Returns $_value.
      *
@@ -143,7 +142,7 @@ class SensorDevice
     {
         return $this->_value;
     }
-    
+
     /**
      * Sets $_value.
      *
@@ -158,4 +157,3 @@ class SensorDevice
         $this->_value = $value;
     }
 }
-?>

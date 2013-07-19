@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: fr.xml 440 2011-02-19 16:56:29Z jacky672 $ -->
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id: fr.xml 699 2012-09-15 11:57:13Z namiltd $ -->
 <!--
 phpSysInfo language file Language: French Created by: Cyril Servant
 -->
@@ -290,5 +290,23 @@ phpSysInfo language file Language: French Created by: Cyril Servant
   </expression>
   <expression id="095" name="lastboot">
     <exp>Dernier démarrage</exp>
+  </expression>
+  <expression id="096" name="bytes">
+    <exp>B</exp>
+  </expression>
+  <expression id="097" name="syslang">
+    <exp>Langue du système</exp>
+  </expression>
+  <expression id="098" name="codepage">
+    <exp>Codage de la page</exp>
+  </expression>
+  <expression id="099" name="details">
+    <exp>Détails</exp>
+  </expression>
+  <expression id="100" name="cpuspeedMax">
+    <exp>CPU Speed Max</exp>
+  </expression>
+  <expression id="101" name="cpuspeedMin">
+    <exp>CPU Speed Min</exp>
   </expression>
 </tns:translation>
