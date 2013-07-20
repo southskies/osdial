@@ -80,6 +80,7 @@ $conf_exten = get_variable("conf_exten");
 $exten = get_variable("exten");
 $auto_dial_level = get_variable("auto_dial_level");
 $campagentstdisp = get_variable("campagentstdisp");
+$user_contact_url = get_variable("user_contact_url");
 
 #if ($non_latin < 1) {
 #    $user=OSDpreg_replace("/[^0-9a-zA-Z]/","",$user);
@@ -174,118 +175,133 @@ if ($ACTION == 'refresh') {
             $row=mysql_fetch_row($rslt);
             $Acount=$row[0];
 
-            if ($Acount > 0) {
-                $stmt=sprintf("SELECT status FROM osdial_live_agents WHERE user='%s' AND server_ip='%s';",mres($user),mres($server_ip));
+            if ($Acount==0) {
+                $RingCalls='N';
+                $DiaLCalls='N';
+                $Alogin='DEAD_OLA';
+
+                ### Check if conference records have been removed as well...No OLA and no conference means emergency logout.
+                $stmt=sprintf("SELECT count(*) FROM osdial_conferences WHERE extension='%s' AND server_ip='%s';",mres($user_contact_url),mres($server_ip));
                 if ($format=='debug') echo "<!-- |$stmt| -->\n";
                 $rslt=mysql_query($stmt, $link);
                 $row=mysql_fetch_row($rslt);
-                $Astatus=$row[0];
-            }
-            #### find out if external table shows agent should be disabled
-            #$stmt="SELECT count(*) FROM another_table WHERE user='$user' AND status='DEAD';";
-            #if ($format=='debug') {echo "<!-- |$stmt| -->\n";}
-            #$rslt=mysql_query($stmt, $link);
-            #$row=mysql_fetch_row($rslt);
-            #$AexternalDEAD=$row[0];
+                $conf_count=$row[0];
 
-            ### update the osdial_live_agents every second with a new random number so it is shown to be alive
-            $stmt=sprintf("UPDATE osdial_live_agents SET random_id='%s' WHERE user='%s' AND server_ip='%s';",mres($random),mres($user),mres($server_ip));
-            if ($format=='debug') echo "\n<!-- $stmt -->";
-            $rslt=mysql_query($stmt, $link);
+                if ($conf_count==0) $Alogin='EMERGENCY_LOGOUT';
 
-            $time_diff = 0;
-            $sql_diff = 0;
-            $dialer_diff = 0;
-
-            if ($auto_dial_level > 0) {
-                if ($campagentstdisp == 'YES') {
-                    ### grab the status of this agent to display
-                    $stmt=sprintf("SELECT status,campaign_id,closer_campaigns FROM osdial_live_agents WHERE user='%s' AND server_ip='%s';",mres($user),mres($server_ip));
+                #### find out if external table shows agent should be disabled
+                #$stmt="SELECT count(*) FROM another_table WHERE user='$user' AND status='DEAD';";
+                #if ($format=='debug') {echo "<!-- |$stmt| -->\n";}
+                #$rslt=mysql_query($stmt, $link);
+                #$row=mysql_fetch_row($rslt);
+                #$AexternalDEAD=$row[0];
+                if ($AexternalDEAD > 0) $Alogin='DEAD_EXTERNAL';
+            } else {
+                if ($Acount > 0) {
+                    $stmt=sprintf("SELECT status FROM osdial_live_agents WHERE user='%s' AND server_ip='%s';",mres($user),mres($server_ip));
                     if ($format=='debug') echo "<!-- |$stmt| -->\n";
                     $rslt=mysql_query($stmt, $link);
                     $row=mysql_fetch_row($rslt);
-                    $Alogin=$row[0];
-                    $Acampaign=$row[1];
-                    $AccampSQL=$row[2];
-                    $AccampSQL = mres(OSDpreg_replace('/ -/','', $AccampSQL));
-                    $AccampSQL = OSDpreg_replace('/ /',"','", $AccampSQL);
+                    $Astatus=$row[0];
+                }
 
-                    ### grab the number of calls being placed from this campaign
-                    $stmt=sprintf("SELECT count(*) FROM osdial_auto_calls WHERE status IN('LIVE') AND campaign_id='%s';",mres($Acampaign));
-                    if ($format=='debug') echo "<!-- |$stmt| -->\n";
-                    $rslt=mysql_query($stmt, $link);
-                    $row=mysql_fetch_row($rslt);
-                    $RingCallsout=$row[0];
+                ### update the osdial_live_agents every second with a new random number so it is shown to be alive
+                $stmt=sprintf("UPDATE osdial_live_agents SET random_id='%s' WHERE user='%s' AND server_ip='%s';",mres($random),mres($user),mres($server_ip));
+                if ($format=='debug') echo "\n<!-- $stmt -->";
+                $rslt=mysql_query($stmt, $link);
 
-                    ### grab the number of calls being placed into this agents ingroups
-                    $stmt=sprintf("SELECT count(*) FROM osdial_auto_calls WHERE status IN('LIVE') AND campaign_id IN('%s');",$AccampSQL);
-                    if ($format=='debug') echo "<!-- |$stmt| -->\n";
-                    $rslt=mysql_query($stmt, $link);
-                    $row=mysql_fetch_row($rslt);
-                    $RingCallsin=$row[0];
+                $time_diff = 0;
+                $sql_diff = 0;
+                $dialer_diff = 0;
 
-                    ### grab the number of calls being placed into this agents ingroups which have multicall turned on.
-                    $stmt=sprintf("SELECT count(*) FROM osdial_auto_calls JOIN osdial_inbound_groups ON (campaign_id=group_id) WHERE status IN('LIVE') AND campaign_id IN('%s') AND allow_multicall='Y';",$AccampSQL);
-                    if ($format=='debug') echo "<!-- |$stmt| -->\n";
-                    $rslt=mysql_query($stmt, $link);
-                    $row=mysql_fetch_row($rslt);
-                    $RingCallsinMC=$row[0];
+                if ($auto_dial_level > 0) {
+                    if ($campagentstdisp == 'YES') {
+                        ### grab the status of this agent to display
+                        $stmt=sprintf("SELECT status,campaign_id,closer_campaigns FROM osdial_live_agents WHERE user='%s' AND server_ip='%s';",mres($user),mres($server_ip));
+                        if ($format=='debug') echo "<!-- |$stmt| -->\n";
+                        $rslt=mysql_query($stmt, $link);
+                        $row=mysql_fetch_row($rslt);
+                        $Alogin=$row[0];
+                        $Acampaign=$row[1];
+                        $AccampSQL=$row[2];
+                        $AccampSQL = mres(OSDpreg_replace('/ -/','', $AccampSQL));
+                        $AccampSQL = OSDpreg_replace('/ /',"','", $AccampSQL);
 
-                    $RingCalls=($RingCallsout+$RingCallsin);
-                    if ($RingCalls > 0) {
-                        $RingCalls = "<font class=\"queue_text_red\">Call Queue: In-$RingCallsin Out-$RingCallsout</font>";
+                        ### grab the number of calls being placed from this campaign
+                        $stmt=sprintf("SELECT count(*) FROM osdial_auto_calls WHERE status IN('LIVE') AND campaign_id='%s';",mres($Acampaign));
+                        if ($format=='debug') echo "<!-- |$stmt| -->\n";
+                        $rslt=mysql_query($stmt, $link);
+                        $row=mysql_fetch_row($rslt);
+                        $RingCallsout=$row[0];
+
+                        ### grab the number of calls being placed into this agents ingroups
+                        $stmt=sprintf("SELECT count(*) FROM osdial_auto_calls WHERE status IN('LIVE') AND campaign_id IN('%s');",$AccampSQL);
+                        if ($format=='debug') echo "<!-- |$stmt| -->\n";
+                        $rslt=mysql_query($stmt, $link);
+                        $row=mysql_fetch_row($rslt);
+                        $RingCallsin=$row[0];
+
+                        ### grab the number of calls being placed into this agents ingroups which have multicall turned on.
+                        $stmt=sprintf("SELECT count(*) FROM osdial_auto_calls JOIN osdial_inbound_groups ON (campaign_id=group_id) WHERE status IN('LIVE') AND campaign_id IN('%s') AND allow_multicall='Y';",$AccampSQL);
+                        if ($format=='debug') echo "<!-- |$stmt| -->\n";
+                        $rslt=mysql_query($stmt, $link);
+                        $row=mysql_fetch_row($rslt);
+                        $RingCallsinMC=$row[0];
+
+                        $RingCalls=($RingCallsout+$RingCallsin);
+                        if ($RingCalls > 0) {
+                            $RingCalls = "<font class=\"queue_text_red\">Call Queue: In-$RingCallsin Out-$RingCallsout</font>";
+                        } else {
+                            $RingCalls = "<span style='margin-left:25px;'><font class=\"queue_text\">Call Queue: $RingCalls</font></span>";
+                        }
+
+                        ### grab the number of calls being placed from this server and campaign
+                        $stmt=sprintf("SELECT count(*) FROM osdial_auto_calls WHERE status NOT IN('XFER') AND (campaign_id='%s' OR campaign_id IN('%s'));",mres($Acampaign),$AccampSQL);
+                        if ($format=='debug') echo "<!-- |$stmt| -->\n";
+                        $rslt=mysql_query($stmt, $link);
+                        $row=mysql_fetch_row($rslt);
+                        $DiaLCalls=$row[0];
+
+                        ### grab the extension used by the agent.
+                        $stmt=sprintf("SELECT extension FROM osdial_conferences WHERE server_ip='%s' AND conf_exten='%s';",mres($server_ip),mres($conf_exten));
+                        if ($format=='debug') echo "<!-- |$stmt| -->\n";
+                        $rslt=mysql_query($stmt, $link);
+                        $row=mysql_fetch_row($rslt);
+                        $phone_exten=$row[0];
+
+                        ### grab the count of parked_channels.
+                        $stmt=sprintf("SELECT count(*) FROM parked_channels WHERE parked_by='%s';",mres($phone_exten));
+                        if ($format=='debug') echo "<!-- |$stmt| -->\n";
+                        $rslt=mysql_query($stmt, $link);
+                        $row=mysql_fetch_row($rslt);
+                        $ParkCalls=$row[0];
+
+                        ### calculate if server is properly synchronized.
+                        $web_epoch = date("U");
+                        $stmt=sprintf("SELECT SQL_NO_CACHE UNIX_TIMESTAMP(last_update),UNIX_TIMESTAMP(sql_time) FROM server_updater WHERE server_ip='%s';",mres($server_ip));
+                        if ($format=='debug') echo "<!-- |$stmt| -->\n";
+                        $rslt=mysql_query($stmt, $link);
+                        $row=mysql_fetch_row($rslt);
+                        $dialer_epoch = $row[0];
+                        $sql_epoch = $row[1];
+                        $time_diff = ($dialer_epoch - $sql_epoch);
+                        $sql_diff = ($web_epoch - $sql_epoch);
+                        $dialer_diff = ($web_epoch - $dialer_epoch);
+                        if ($time_diff > 8 or $time_diff < -8) $Alogin='TIME_SYNC';
+
+
                     } else {
-                        $RingCalls = "<span style='margin-left:25px;'><font class=\"queue_text\">Call Queue: $RingCalls</font></span>";
+                        $Alogin='N';
+                        $RingCalls='N';
+                        $DiaLCalls='N';
                     }
-
-                    ### grab the number of calls being placed from this server and campaign
-                    $stmt=sprintf("SELECT count(*) FROM osdial_auto_calls WHERE status NOT IN('XFER') AND (campaign_id='%s' OR campaign_id IN('%s'));",mres($Acampaign),$AccampSQL);
-                    if ($format=='debug') echo "<!-- |$stmt| -->\n";
-                    $rslt=mysql_query($stmt, $link);
-                    $row=mysql_fetch_row($rslt);
-                    $DiaLCalls=$row[0];
-
-                    ### grab the extension used by the agent.
-                    $stmt=sprintf("SELECT extension FROM osdial_conferences WHERE server_ip='%s' AND conf_exten='%s';",mres($server_ip),mres($conf_exten));
-                    if ($format=='debug') echo "<!-- |$stmt| -->\n";
-                    $rslt=mysql_query($stmt, $link);
-                    $row=mysql_fetch_row($rslt);
-                    $phone_exten=$row[0];
-
-                    ### grab the count of parked_channels.
-                    $stmt=sprintf("SELECT count(*) FROM parked_channels WHERE parked_by='%s';",mres($phone_exten));
-                    if ($format=='debug') echo "<!-- |$stmt| -->\n";
-                    $rslt=mysql_query($stmt, $link);
-                    $row=mysql_fetch_row($rslt);
-                    $ParkCalls=$row[0];
-
-                    ### calculate if server is properly synchronized.
-                    $web_epoch = date("U");
-                    $stmt=sprintf("SELECT SQL_NO_CACHE UNIX_TIMESTAMP(last_update),UNIX_TIMESTAMP(sql_time) FROM server_updater WHERE server_ip='%s';",mres($server_ip));
-                    if ($format=='debug') echo "<!-- |$stmt| -->\n";
-                    $rslt=mysql_query($stmt, $link);
-                    $row=mysql_fetch_row($rslt);
-                    $dialer_epoch = $row[0];
-                    $sql_epoch = $row[1];
-                    $time_diff = ($dialer_epoch - $sql_epoch);
-                    $sql_diff = ($web_epoch - $sql_epoch);
-                    $dialer_diff = ($web_epoch - $dialer_epoch);
-                    if ($time_diff > 8 or $time_diff < -8) $Alogin='TIME_SYNC';
-
                 } else {
                     $Alogin='N';
                     $RingCalls='N';
                     $DiaLCalls='N';
                 }
-            } else {
-                $Alogin='N';
-                $RingCalls='N';
-                $DiaLCalls='N';
             }
 
-
-            if ($Acount < 1) $Alogin='DEAD_VLA';
-            if ($AexternalDEAD > 0) $Alogin='DEAD_EXTERNAL';
 
             echo 'DateTime: ' . $NOW_TIME . '|UnixTime: ' . $StarTtime . '|Logged-in: ' . $Alogin . '|CampCalls: ' . $RingCalls . '|CallQueueIn: ' . $RingCallsin . '|CallQueueOut: ' . $RingCallsout . '|CallQueueInMC: ' . $RingCallsinMC . '|ParkCalls: ' . $ParkCalls . '|Status: ' . $Astatus . '|DiaLCalls: ' . $DiaLCalls . "|TimeSync: Diff=$time_diff Dialer=$dialer_diff SQL=$sql_diff|\n";
 
