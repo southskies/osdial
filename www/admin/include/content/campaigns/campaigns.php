@@ -2829,7 +2829,7 @@ if ($ADD==10) {
     $o=0;
     while ($people_to_print > $o) {
         $row=mysql_fetch_row($rslt);
-        echo "  <tr class=\"row font1\" " . bgcolor($o) ." ondblclick=\"window.location='$PHP_SELF?ADD=34&campaign_id=$row[0]';\">";
+        echo "  <tr class=\"row font1\" " . bgcolor($o) ." ondblclick=\"window.location='$PHP_SELF?ADD=31&campaign_id=$row[0]';\">";
         echo "    <td><a href=\"$PHP_SELF?ADD=31&campaign_id=$row[0]\">" . mclabel($row[0]) . "</a></td>";
         echo "    <td>$row[1]</td>";
         echo "    <td align=center><font size=1>$row[2]</td>";
