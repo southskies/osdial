@@ -75,7 +75,9 @@ body {
 }
 
 .header {
-
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
 }
 .container {
     width: 980px;
@@ -95,6 +97,9 @@ body {
 .content {
     border:1px  #A2C0C8; /* #A2C0C8 */ 
     border-style:none solid none solid;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
 }
 
 .across-top {
@@ -231,6 +236,9 @@ a:visited {
 .footer {
     border:1px  #A2C0C8; /* #A2C0C8 */
     border-style:none solid none solid;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
 }
 .footer table {
     white-space: nowrap;
@@ -292,7 +300,7 @@ td.hover:hover {background-color: #A4DCE6; font-weight:bold;} /* #A4DCE6 */
 .tabheader a:active { text-transform: uppercase; color: #FFFFFF; text-decoration: none; }
 .tabheader a:hover { text-transform: uppercase; color: #FFFFFF; text-decoration: none; }
 .tabheader a:visited { text-transform: uppercase; color: #FFFFFF; text-decoration: none; }
-.tabheader { text-align: center; text-transform: uppercase; color: #FFFFFF; font-family: 'dejavu sans',verdana,sans-serif; font-weight: bold; font-size: 8pt; background-color: #547e9e; }
+.tabheader { text-align: center; text-transform: uppercase; color: #FFFFFF; font-family: 'dejavu sans',verdana,sans-serif; font-weight: bold; font-size: 8pt; background-color: #547e9e;}
 
 .tabfooter a { color: #FFFFFF; text-decoration: none; }
 .tabfooter a:link { color: #FFFFFF; text-decoration: none; } 
@@ -300,12 +308,12 @@ td.hover:hover {background-color: #A4DCE6; font-weight:bold;} /* #A4DCE6 */
 .tabfooter a:hover { color: #FFFFFF; text-decoration: none; }
 .tabfooter a:visited { color: #FFFFFF; text-decoration: none; }
 .tabfooter td { height: 8px; }
-.tabfooter { color: #FFFFFF; font-family: 'dejavu sans',verdana,sans-serif; font-weight: bold; font-size: 8pt; background-color: #547e9e; }
+.tabfooter { color: #FFFFFF; font-family: 'dejavu sans',verdana,sans-serif; font-weight: bold; font-size: 8pt; background-color: #547e9e;}
 
 .tabinput input { font-family: 'dejavu sans',verdana,sans-serif; font-size: 7pt; }
 .tabinput select { font-family: 'dejavu sans',verdana,sans-serif; font-size: 7pt; }
-.tabbutton1 input { text-transform:uppercase; font-family: 'dejavu sans',verdana,sans-serif; font-size: 7pt; width: 100%; }
-.tabbutton input { text-transform:uppercase; font-family: 'dejavu sans',verdana,sans-serif; font-size: 10pt; width: 100%; }
+.tabbutton1 input { text-transform:uppercase; font-family: 'dejavu sans',verdana,sans-serif; font-size: 7pt; width: 100%;}
+.tabbutton input { text-transform:uppercase; font-family: 'dejavu sans',verdana,sans-serif; font-size: 10pt; width: 100%;}
 
 .font1 { font-family: 'dejavu sans',verdana,sans-serif; font-size: 7pt; }
 .font2 { font-family: 'dejavu sans',verdana,sans-serif; font-size: 9pt; }

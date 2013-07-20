@@ -10,6 +10,9 @@
 body {
 	font-family: 'dejavu sans',verdana,sans-serif;
     text-decoration: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
 }
 
 input:not([type="checkbox"]), textarea {
@@ -100,6 +103,9 @@ div.scroll_script {
     border:1px outset #8AB9F5;
     border-radius: 12px 12px 12px 12px;
     box-shadow: rgba(0,0,0,0.6) 1px 1px 18px;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
 }
 
 .curve2 {
