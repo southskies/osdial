@@ -199,6 +199,7 @@ var use_internal_dnc='<?php echo $use_internal_dnc; ?>';
 var user_abb='<?php echo $user_abb; ?>';
 var user_level='<?php echo $user_level; ?>';
 var user='<?php echo $VD_login; ?>';
+var user_contact_url='<?php echo $SIP_user; ?>';
 var VARcid_areacode_names=new Array(<?php echo $VARcid_areacode_names; ?>);
 var VARcid_areacode_numbers=new Array(<?php echo $VARcid_areacode_numbers; ?>);
 var VARcid_areacodes=new Array(<?php echo $VARcid_areacodes; ?>);
