@@ -2180,6 +2180,27 @@ flush();
     </span>
 
     
+    <?php load_status('Initializing GUI...<br>EmergencYLogouTBoX<br>&nbsp;'); ?>
+    <!-- Agent Disabled -->
+    <span style="position:absolute;left:0px;top:0px;z-index:29;visibility:hidden;" id="EmergencYLogouTBoX">
+        <table class=acrossagent border=0 width=<?php echo $CAwidth; ?> height=564>
+            <tr>
+                <td align=center  bgcolor="<?php echo $system_alert_bg2; ?>">
+                    <font color=<?php echo $login_fc; ?>>
+                        <font color=red size="+1"><b>EMERGENCY LOGOUT</b></font>
+                        <br><br>
+                        A manager has used an Emergency Logout to terminate your agent session.<br>There may be serious issues with your account or the system,<br>please check with your supervisor before attempting to re-login.
+                        <br><br>
+                        <br><br>
+                        <br><br>
+                        <br><br>
+                        <a href="#" onclick="LogouT('DISABLED');return false;"><font style="font-size:36px;font-weight:bold;">OK</font></a>
+                    </font>
+                </td>
+            </tr>
+        </table>
+    </span>
+
     <?php load_status('Initializing GUI...<br>AgenTDisablEBoX<br>&nbsp;'); ?>
     <!-- Agent Disabled -->
     <span style="position:absolute;left:0px;top:0px;z-index:29;visibility:hidden;" id="AgenTDisablEBoX">
@@ -2187,11 +2208,14 @@ flush();
             <tr>
                 <td align=center>
                     <font color=<?php echo $login_fc; ?>>
-                        Your login session has been disabled, you need to logout.
+                        <font color=red size="+1"><b>AGENT SESSION DISABLED</b></font>
                         <br><br>
-                        <a href="#" onclick="LogouT('DISABLED');return false;"><font style="text-decoration:blink;">LOGOUT</font></a>
+                        You have been logged-out because your session record contained old, invalid, or missing data.<br>Logging in again will recreate you session and you can continue where you left off.<br>Please contact your supervisor if the problem persists.
                         <br><br>
-                        <a href="#" onclick="hideDiv('AgenTDisablEBoX');return false;"><font color=grey>Go Back</font></a>
+                        <br><br>
+                        <br><br>
+                        <br><br>
+                        <a href="#" onclick="LogouT('DISABLED');return false;"><font style="font-size:36px;font-weight:bold;">OK</font></a>
                     </font>
                 </td>
             </tr>
@@ -2302,12 +2326,12 @@ flush();
                         <input type=hidden name=DispoSelection><br>
                         <input type=checkbox name=DispoSelectStop size=1 value="0">
                         PAUSE <?php echo (($inbound_man>0)?"INBOUND CALLS":"AGENT DIALING") ?> <br>
-                        <a href="#" onclick="DispoSelectContent_create('','ReSET');return false;">CLEAR FORM</a>
+                        <a href="#" onclick="DispoMaximize();DispoSelectContent_create('','ReSET');return false;">CLEAR FORM</a>
                         &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; 
-                        <a href="#" onclick="DispoSelect_submit();return false;"><b>SUBMIT</b></a>
+                        <a href="#" onclick="DispoMaximize();DispoSelect_submit();return false;"><b>SUBMIT</b></a>
                         <?php if ($submit_method < 1) {
                             echo "<br><br>\n";
-                            echo "<a href=\"#\" onclick=\"WeBForMDispoSelect_submit();return false;\">WEB FORM SUBMIT</a>\n";
+                            echo "<a href=\"#\" onclick=\"DispoMaximize();WeBForMDispoSelect_submit();return false;\">WEB FORM SUBMIT</a>\n";
                         } ?>
                         <br> &nbsp;
                     </font>
@@ -2316,26 +2340,26 @@ flush();
         </table>
     </span>
     <!-- Hide Disposition Button A -->
-    <span style="position:absolute;left:2px;top:70px;z-index:31;visibility:hidden;" id="DispoButtonHideA">
-        <table border=0 bgcolor="<?php echo $dispo_hide; ?>" width=165 height=22>
+    <span style="position:absolute;left:4px;top:50px;z-index:31;opacity:0.7;visibility:hidden;" id="DispoButtonHideA">
+        <table border=0 bgcolor="<?php echo $dispo_hide; ?>" width=200 height=30 id="DispoButtonHideATable">
             <tr>
                 <td align=center valign=top></td>
             </tr>
         </table>
     </span>
     <!-- Hide Disposition Button B -->
-    <span style="position:absolute;left:2px;top:138px;z-index:32;visibility:hidden;" id="DispoButtonHideB">
-        <table border=0 bgcolor="<?php echo $dispo_hide; ?>" width=165 height=250>
+    <span style="position:absolute;left:4px;top:118px;z-index:32;opacity:0.7;visibility:hidden;" id="DispoButtonHideB">
+        <table border=0 bgcolor="<?php echo $dispo_hide; ?>" width=200 height=370 id="DispoButtonHideBTable">
             <tr>
                 <td align=center valign=top>&nbsp;</td>
             </tr>
         </table>
     </span>
     <!-- Hide Disposition Button C -->
-    <span style="position:absolute;left:2px;top:18px;z-index:33;visibility:hidden;" id="DispoButtonHideC">
-        <table border=0 bgcolor="<?php echo $dispo_hide; ?>" width=<?php echo $CAwidth; ?> height=47>
-            <tr>
-                <td align=center valign=top>Any changes made to the customer information below at this time will not be comitted, You must change customer information before you Hangup the call.</td>
+    <span style="position:absolute;left:3px;top:15px;z-index:33;opacity:0.8;visibility:hidden;" id="DispoButtonHideC">
+        <table border=0 bgcolor="<?php echo $dispo_hide; ?>" width=<?php echo ($CAwidth+1); ?> height=53>
+            <tr valign=bottom>
+                <td align=center><font size=2 color="#D9DD73"><b>WARNING: All customer information modifications will be saved after disposition.</b></font></td>
             </tr>
         </table>
     </span>
@@ -2529,31 +2553,33 @@ if(isset($_SERVER['HTTP_USER_AGENT'])){
 
                             <?php load_status('Initializing GUI...<br>MainPanel<br>AgentActions'); ?>
                             <td width=205 align=left valign=top class=curve3>
-                                <font class="body_text" style="">
+                                <div class="body_text" style="overflow:hidden;width:205px;height:372px;">
                                     <center>
-                                        <!--<span style="" id="DiaLControl"><a href="#" onclick="ManualDialNext('','','','','','');"><img src="templates/<?php //echo $config['settings']['agent_template']; ?>/images/vdc_LB_dialnextnumber_OFF.gif" width=145 height=16 border=0 alt="Dial Next Number"></a></span><br>-->
-                                        <span id="DiaLControl"><a href="#" onclick="ManualDialNext('','','','','','');"><span class=DialNextButtonOff>Dial Next Number</span></a></span><br/>
-                                        
-                                        <span id="DiaLLeaDPrevieW"><font class="preview_text"><input type=checkbox name=LeadPreview id=LeadPreview size=1 value="0"><label for="LeadPreview"> LEAD PREVIEW</label><br></font></span>
-                                        <span id="DiaLDiaLAltPhonE"><font class="preview_text"><input type=checkbox name=DiaLAltPhonE id=DiaLAltPhonE size=1 value="0"><label for="DaiLAltPhonE"> ALT PHONE DIAL</label><br></font></span>
-                            
-                                        <font color=<?php echo $form_fc; ?>>Recording File</font><br>
-                                        <font class="body_tiny">&nbsp;<span id="RecorDingFilename"></span></font><br>
-                                        <font color=<?php echo $form_fc; ?>>Recording ID:&nbsp;</font><font class="body_small">&nbsp;<span id="RecorDID"></span></font><br/>
-                                        <!--<span id="RecorDControl"><a href="#" onclick="conf_send_recording('MonitorConf','<?php echo $session_id; ?>','');return false;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_LB_startrecording.gif" width=145 height=16 border=0 alt="Start Recording"></a></span>-->
-                                        <span id="RecorDControl"><a href="#" onclick="conf_send_recording('MonitorConf','<?php echo $session_id; ?>','');return false;"><span class=RecordingButton>Start Recording</span></a></span>
-                                        
-                                        <span id="SpacerSpanA"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>
-                                        <span id="WebFormSpan"><span class=WebFormButtonOff>Web Form 1</span></span>
-                                        <span id="SpacerSpanB"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:4px;border:0px;"></span><br>
-                                        <span id="WebFormSpan2"><span class=WebFormButtonOff>Web Form 2</span></span>
-                                        <span id="SpacerSpanC"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>
-                                        <span id="ParkControl"><span class=ParkButtonOff>Park Call</span></span>
-                                        <span id="SpacerSpanD"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:4px;border:0px;"></span><br>
-                                        <span id="XferControl"><span class=XferButtonOff>Transfer / Conference</span></span>
-                                        
-                                        <span id="SpacerSpanF"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:10px;border:0px;"></span><br>
-            
+                                        <!--<div style="" id="DiaLControl"><a href="#" onclick="ManualDialNext('','','','','','');"><img src="templates/<?php //echo $config['settings']['agent_template']; ?>/images/vdc_LB_dialnextnumber_OFF.gif" width=145 height=16 border=0 alt="Dial Next Number"></a></div>-->
+                                        <div id="DiaLControl"><a href="#" onclick="ManualDialNext('','','','','','');"><span class=DialNextButtonOff>Dial Next Number</span></a></div>
+                                        <div id="DiaLLeaDPrevieW"><div id="SpacerPreview" style="width:145px;height:4px;border:0px;"></div><span class="CBOptions"><label for="LeadPreview" style="position:relative;top:-1px;"><input type=checkbox style="margin:0 10 0 16;position:relative;top:3px;" name=LeadPreview id=LeadPreview size=1 value="0"> Lead Preview</span></label></div>
+
+                                        <div id="DiaLDiaLAltPhonE"><div id="SpacerAltPhone" style="width:145px;height:4px;border:0px;"></div><span class="CBOptions"><label for="DaiLAltPhonE" style="position:relative;top:-1px;"><input type=checkbox style="margin:0 10 0 16;position:relative;top:3px;" name=DiaLAltPhonE id=DiaLAltPhonE size=1 value="0"> Alt Phone Dial</span></label></div>
+                                        <!-- <div id="DiaLLeaDPrevieW"><font class="body_tiny"><input type=checkbox name=LeadPreview id=LeadPreview size=1 value="0"><label for="LeadPreview"> LEAD PREVIEW</label><br></font></div>
+                                        <div id="DiaLDiaLAltPhonE"><font class="body_tiny"><input type=checkbox name=DiaLAltPhonE id=DiaLAltPhonE size=1 value="0"><label for="DaiLAltPhonE"> ALT PHONE DIAL</label><br></font></div> -->
+                                        <div id="SpacerSpanRSTop" style="width:145px;height:2px;border:0px;"></div>
+                                        <div id="RecordStatusControl" style="width:205px:height:35px;overflow:hidden;">
+                                            <font color=<?php echo $form_fc; ?>>Recording File</font><br>
+                                            <font class="body_tiny">&nbsp;<span id="RecorDingFilename"></span></font><br>
+                                            <font color=<?php echo $form_fc; ?>>Recording ID:&nbsp;</font><font class="body_small">&nbsp;<span id="RecorDID"></span></font>
+                                        </div>
+                                        <div id="SpacerSpanRSBottom" style="width:145px;height:2px;border:0px;"></div>
+                                        <!--<div id="RecorDControl"><a href="#" onclick="conf_send_recording('MonitorConf','<?php echo $session_id; ?>','');return false;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_LB_startrecording.gif" width=145 height=16 border=0 alt="Start Recording"></a></div>-->
+                                        <div id="RecorDControl"><a href="#" onclick="conf_send_recording('MonitorConf','<?php echo $session_id; ?>','');return false;"><span class=RecordingButton>Start Recording</span></a></div>
+                                        <div id="SpacerSpanA" style="width:145px;height:16px;border:0px;"></div>
+                                        <div id="WebFormSpan"><span class=WebFormButtonOff>Web Form 1</span></div>
+                                        <div id="SpacerSpanB" style="width:145px;height:4px;border:0px;"></div>
+                                        <div id="WebFormSpan2"><span class=WebFormButtonOff>Web Form 2</span></div>
+                                        <div id="SpacerSpanC" style="width:145px;height:16px;border:0px;"></div>
+                                        <div id="ParkControl"><span class=ParkButtonOff>Park Call</span></div>
+                                        <div id="SpacerSpanD" style="width:145px;height:4px;border:0px;"></div>
+                                        <div id="XferControl"><span class=XferButtonOff>Transfer / Conference</span></div>
+                                        <div id="SpacerSpanE" style="width:145px;height:10px;border:0px;"></div>
                                         <div class="text_input" id="DTMFDialPad" onMouseOver="DTMFKeys('ON');">
                                             <table cellspacing=1 cellpadding=1 border=0>
                                                 <tr>
@@ -2578,18 +2604,16 @@ if(isset($_SERVER['HTTP_USER_AGENT'])){
                                                 </tr>
                                             </table>
                                         </div>
-                                        
                                         <div class="text_input" id="SendDTMFdiv" style='margin-top:5px'>
                                             <span id="SendDTMF"><a href="#" onclick="SendConfDTMF('<?php echo $session_id; ?>');return false;"><span class=SendDTMF>Send DTMF</span></a> <input type=text size=6 name=conf_dtmf class="cust_form" value="" maxlength=50></span>
                                         </div>
-                                        
-                                        <span id="SpacerSpanE"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br/>
-                                        <span id="HangupControl"><span class=HangupButtonOff>Hangup Customer</span></span><br/><br/>
-                                        
-                                        <span id="RepullControl"></span>
-                                        <span id="SpacerSpanG"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>
+                                        <div id="SpacerSpanF" style="width:145px;height:16px;border:0px;"></div>
+                                        <div id="HangupControl"><span class=HangupButtonOff>Hangup Customer</span></div>
+                                        <div id="SpacerSpanG" style="width:145px;height:16px;border:0px;"></div>
+                                        <div id="RepullControl"></div>
+                                        <div id="SpacerSpanH" style="width:145px;height:16px;border:0px;"></div>
                                     </center>
-                                </font>
+                                </div>
                             </td>
 
 

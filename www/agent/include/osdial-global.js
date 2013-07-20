@@ -100,6 +100,7 @@ var fronter='';
 var HKbutton_allowed=1;
 var HKdispo_display=0;
 var HKfinish=0;
+var hideHKduringDispo=0;
 var hot_keys_active=0;
 var hot_keys_active_click=0;
 var hotkeys_clicked=0;

@@ -887,7 +887,7 @@ queuemetrics_pass VARCHAR(50),
 queuemetrics_url VARCHAR(255),
 queuemetrics_log_id VARCHAR(10) default 'VIC',
 queuemetrics_eq_prepend VARCHAR(255) default 'NONE',
-osdial_agent_disable ENUM('NOT_ACTIVE','LIVE_AGENT','EXTERNAL','ALL') default 'NOT_ACTIVE',
+osdial_agent_disable ENUM('NOT_ACTIVE','LIVE_AGENT','EXTERNAL','ALL') default 'LIVE_AGENT',
 allow_sipsak_messages ENUM('0','1') default '0',
 admin_home_url VARCHAR(255) default '/'
 );

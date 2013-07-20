@@ -1610,7 +1610,7 @@ CREATE TABLE `system_settings` (
   `queuemetrics_url` varchar(255) DEFAULT NULL,
   `queuemetrics_log_id` varchar(10) DEFAULT 'VIC',
   `queuemetrics_eq_prepend` varchar(255) DEFAULT 'NONE',
-  `osdial_agent_disable` enum('NOT_ACTIVE','LIVE_AGENT','EXTERNAL','ALL') DEFAULT 'NOT_ACTIVE',
+  `osdial_agent_disable` enum('NOT_ACTIVE','LIVE_AGENT','EXTERNAL','ALL') DEFAULT 'LIVE_AGENT',
   `allow_sipsak_messages` enum('0','1') DEFAULT '0',
   `admin_home_url` varchar(255) DEFAULT '/',
   `enable_agc_xfer_log` enum('0','1') DEFAULT '0',

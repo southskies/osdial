@@ -143,11 +143,11 @@
 			if (taskdirection=='MUTING') {
 				document.getElementById("AgentMuteSpan").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('UNMUTE','" + agentchannel + "','AgenT');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_UNMUTE.gif\" width=28 height=29 BORDER=0></a>";
 // 				document.getElementById("MutedWarning").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('UNMUTE','" + agentchannel + "','AgenT');return false;\"><img src=\"templates/" + agent_template + "/images/muted.gif\" width=148 height=35 BORDER=0></a>";
-                document.getElementById("MutedWarning").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('UNMUTE','" + agentchannel + "','AgenT');return false;\"><div class=muted_on width=140 height=35 BORDER=0>MUTED</div></a>";
+				document.getElementById("MutedWarning").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('UNMUTE','" + agentchannel + "','AgenT');return false;\"><div class=muted_on width=140 height=35 BORDER=0>MUTED</div></a>";
 			} else {
 				document.getElementById("AgentMuteSpan").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('MUTING','" + agentchannel + "','AgenT');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_MUTE.gif\" width=28 height=29 BORDER=0></a>";
 // 				document.getElementById("MutedWarning").innerHTML = "<img src=\"templates/" + agent_template + "/images/mutedoff.gif\" width=148 height=35 border=0></a>";
-                document.getElementById("MutedWarning").innerHTML = "<div class=muted_off width=140 height=35 border=0></div></a>";
+				document.getElementById("MutedWarning").innerHTML = "<div class=muted_off width=140 height=35 border=0></div></a>";
 			}
 		}
 	}
@@ -413,7 +413,7 @@
 
 			xmlhttprequestcheckconf=getXHR();
 			if (xmlhttprequestcheckconf) { 
-				checkconf_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&client=vdc&conf_exten=" + taskconfnum + "&auto_dial_level=" + auto_dial_level + "&campagentstdisp=" + campagentstdisp + "&exten=" + extension;
+				checkconf_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&client=vdc&conf_exten=" + taskconfnum + "&auto_dial_level=" + auto_dial_level + "&campagentstdisp=" + campagentstdisp + "&exten=" + extension + "&user_contact_url=" + encodeURIComponent2(user_contact_url);
 				xmlhttprequestcheckconf.open('POST', 'conf_exten_check.php');
 				xmlhttprequestcheckconf.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 				xmlhttprequestcheckconf.send(checkconf_query); 
@@ -425,6 +425,7 @@
 						debug("<b>check_for_conf_calls:</b> checkconf_query=" + checkconf_query,3);
 						//osdalert(checkconf_query,30);
 						//osdalert(xmlhttprequestcheckconf.responseText,30);
+						debug("<b>check_for_conf_calls:</b> checkconf_reponse=" + check_conf,4);
 						var check_ALL_array=check_conf.split("\n");
 						var check_time_array=check_ALL_array[0].split("|");
 						var Time_array = check_time_array[1].split("UnixTime: ");
@@ -458,22 +459,33 @@
 							if (DiaLCalLs != 'N') {
 								document.getElementById("AgentStatusDiaLs").innerHTML = DiaLCalLs;
 							}
-							if ( (AGLogiN == 'DEAD_VLA') && ( (osdial_agent_disable == 'LIVE_AGENT') || (osdial_agent_disable == 'ALL') ) ) {
+							if (AGLogiN=='EMERGENCY_LOGOUT' && (osdial_agent_disable=='LIVE_AGENT' || osdial_agent_disable=='ALL')) {
 								if (manual_dial_menu==1 || alt_dial_menu==1 || MD_channel_look==1 || VD_live_customer_call==1) {
 									MD_channel_look=0;
 									document.osdial_form.DispoSelection.value = 'NA';
 									dialedcall_send_hangup('NO','YES');
 								}
+								LogouT('CLOSE');
+								showDiv('EmergencYLogouTBoX');
+							}
+							if (AGLogiN=='DEAD_OLA' && (osdial_agent_disable=='LIVE_AGENT' || osdial_agent_disable=='ALL')) {
+								if (manual_dial_menu==1 || alt_dial_menu==1 || MD_channel_look==1 || VD_live_customer_call==1) {
+									MD_channel_look=0;
+									document.osdial_form.DispoSelection.value = 'NA';
+									dialedcall_send_hangup('NO','YES');
+								}
+								LogouT('CLOSE');
 								showDiv('AgenTDisablEBoX');
 							}
-							if ( (AGLogiN == 'DEAD_EXTERNAL') && ( (osdial_agent_disable == 'EXTERNAL') || (osdial_agent_disable == 'ALL') ) ) {
+							if (AGLogiN=='DEAD_EXTERNAL' && (osdial_agent_disable=='EXTERNAL' || osdial_agent_disable=='ALL')) {
 								if (manual_dial_menu==1 || alt_dial_menu==1 || MD_channel_look==1 || VD_live_customer_call==1) {
 									document.osdial_form.DispoSelection.value = 'NA';
 									dialedcall_send_hangup('NO','YES');
 								}
+								LogouT('CLOSE');
 								showDiv('AgenTDisablEBoX');
 							}
-							if ( (AGLogiN == 'TIME_SYNC') && (osdial_agent_disable == 'ALL') ) {
+							if (AGLogiN=='TIME_SYNC' && osdial_agent_disable=='ALL') {
 								document.getElementById("SysteMDisablEInfo").innerHTML = TimeSyncInfo;
 								showDiv('SysteMDisablEBoX');
 							}
@@ -504,9 +516,9 @@
 								var LMAcontent_match=0;
 								agentphonelive=0;
 								var conv_start=-1;
-                                // Adding debug info to window
-// 								var live_conf_HTML = "<div align=center class=bottom style='position:relative;z-index:9;'><font face=\"Arial,Helvetica\"><TABLE WIDTH=" + SDwidth + "><tr height=20px><td align=center colspan=5><font color=black face=\"Arial,Helvetica\" size=1><?php echo $t1; ?> Agent version: <?php echo $version; ?>&nbsp;&nbsp;Build: <?php echo $build; ?>Server: <?php echo $server_ip; ?></font><span id=\"DebugLink\"><font color=black class=\"body_text\"><a href=\"#\" onclick=\"openDebugWindow();return false;\">.</a></font></span></td></tr><tr><td align=center colspan=5><font color=black face=\"Arial,Helvetica\" size=1>UID: " + MDnextCID  + "</font></span></td></tr><tr height=20><td align=center colspan=5><font class=\"log_title\">Live Calls In Your Session:</font></td></tr><TR align=center><TD><font class=\"log_title\">#</TD><TD><font class=\"log_title\">Remote Channel</TD><TD><font class=\"log_title\">Hangup</TD><TD width=80><font class=\"log_title\">Volume</TD><td width=120><font class=\"log_title\">Muted/Unmuted</font></td></TR>";
-                                var live_conf_HTML = "<div align=center class=bottom style='position:relative;z-index:9;'><font face=\"Arial,Helvetica\"><TABLE WIDTH=" + SDwidth + "><tr height=20><td align=center colspan=5><font class=\"log_title\">Live Calls In Your Session:</font></td></tr><TR align=center><TD><font class=\"log_title\">#</TD><TD><font class=\"log_title\">Remote Channel</TD><TD><font class=\"log_title\">Hangup</TD><TD width=80><font class=\"log_title\">Volume</TD><td width=120><font class=\"log_title\">Muted/Unmuted</font></td></TR>";
+								// Adding debug info to window
+								// var live_conf_HTML = "<div align=center class=bottom style='position:relative;z-index:9;'><font face=\"Arial,Helvetica\"><TABLE WIDTH=" + SDwidth + "><tr height=20px><td align=center colspan=5><font color=black face=\"Arial,Helvetica\" size=1><?php echo $t1; ?> Agent version: <?php echo $version; ?>&nbsp;&nbsp;Build: <?php echo $build; ?>Server: <?php echo $server_ip; ?></font><span id=\"DebugLink\"><font color=black class=\"body_text\"><a href=\"#\" onclick=\"openDebugWindow();return false;\">.</a></font></span></td></tr><tr><td align=center colspan=5><font color=black face=\"Arial,Helvetica\" size=1>UID: " + MDnextCID  + "</font></span></td></tr><tr height=20><td align=center colspan=5><font class=\"log_title\">Live Calls In Your Session:</font></td></tr><TR align=center><TD><font class=\"log_title\">#</TD><TD><font class=\"log_title\">Remote Channel</TD><TD><font class=\"log_title\">Hangup</TD><TD width=80><font class=\"log_title\">Volume</TD><td width=120><font class=\"log_title\">Muted/Unmuted</font></td></TR>";
+								var live_conf_HTML = "<div align=center class=bottom style='position:relative;z-index:9;'><font face=\"Arial,Helvetica\"><TABLE WIDTH=" + SDwidth + "><tr height=20><td align=center colspan=5><font class=\"log_title\">Live Calls In Your Session:</font></td></tr><TR align=center><TD><font class=\"log_title\">#</TD><TD><font class=\"log_title\">Remote Channel</TD><TD><font class=\"log_title\">Hangup</TD><TD width=80><font class=\"log_title\">Volume</TD><td width=120><font class=\"log_title\">Muted/Unmuted</font></td></TR>";
 								if ( (LMAcount > live_conf_calls)  || (LMAcount < live_conf_calls) || (LMAforce > 0)) {
 									LMAe[0]=''; LMAe[1]=''; LMAe[2]=''; LMAe[3]=''; LMAe[4]=''; LMAe[5]=''; 
 									LMAcount=0;   LMAcontent_change++;
@@ -546,10 +558,10 @@
                                         
 										live_conf_HTML += "<span id=\"CHAN"+loop_ct+"unmute\" style=\"position:absolute;top:0px;left:33px;visibility:hidden;\"><a href=\"#\" onclick=\"volume_control('UNMUTE','" + channelfieldA + "','');document.getElementById('CHAN"+loop_ct+"unmute').style.visibility='hidden';document.getElementById('CHAN"+loop_ct+"mute').style.visibility='visible';document.getElementById('CHANIMG"+loop_ct+"muted').style.visibility='hidden';return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_UNMUTE.gif\" onclick=\"document.getElementById('CHANIMG"+loop_ct+"muted').style.visibility='hidden';\" width=28 height=28 BORDER=0></a></span>";
                                         
-                                        live_conf_HTML += "<span id=\"CHAN"+loop_ct+"unmute\" style=\"position:absolute;top:0px;left:33px;visibility:hidden;\"><a href=\"#\" onclick=\"volume_control('UNMUTE','" + channelfieldA + "','');document.getElementById('CHAN"+loop_ct+"unmute').style.visibility='hidden';document.getElementById('CHAN"+loop_ct+"mute').style.visibility='visible';document.getElementById('CHANIMG"+loop_ct+"muted').style.visibility='hidden';return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_UNMUTE.gif\" onclick=\"document.getElementById('CHANIMG"+loop_ct+"muted').style.visibility='hidden';\" width=28 height=28 BORDER=0></a></span>";
+										live_conf_HTML += "<span id=\"CHAN"+loop_ct+"unmute\" style=\"position:absolute;top:0px;left:33px;visibility:hidden;\"><a href=\"#\" onclick=\"volume_control('UNMUTE','" + channelfieldA + "','');document.getElementById('CHAN"+loop_ct+"unmute').style.visibility='hidden';document.getElementById('CHAN"+loop_ct+"mute').style.visibility='visible';document.getElementById('CHANIMG"+loop_ct+"muted').style.visibility='hidden';return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_UNMUTE.gif\" onclick=\"document.getElementById('CHANIMG"+loop_ct+"muted').style.visibility='hidden';\" width=28 height=28 BORDER=0></a></span>";
                                     
-//                                     current
-                                        live_conf_HTML += "<span id=\"CHANIMG"+loop_ct+"muted\" style=\"position:absolute;top:-5px;left:75;visibility:hidden;\"><div class=muted_on width=140 height=35 BORDER=0>MUTED</div></span></td></tr>";
+										// current
+										live_conf_HTML += "<span id=\"CHANIMG"+loop_ct+"muted\" style=\"position:absolute;top:-5px;left:75;visibility:hidden;\"><div class=muted_on width=140 height=35 BORDER=0>MUTED</div></span></td></tr>";
                                         
                                     
 
@@ -700,8 +712,8 @@
 				var conf_rec_start_html = "<a href=\"#\" onclick=\"conf_send_recording('StopMonitorConf','" + taskconfrec + "','" + filename + "');return false;\"><div class=RecordingButtonStop>Stop Recording</div></a>";
 
 				if (campaign_recording == 'ALLFORCE') {
-// 					document.getElementById("RecorDControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_startrecording_OFF.gif\" width=145 height=16 border=0 alt=\"Start Recording\">";
-                    document.getElementById("RecorDControl").innerHTML = "<div class=RecordingButtonStart>Start Recording</div>";
+					//document.getElementById("RecorDControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_startrecording_OFF.gif\" width=145 height=16 border=0 alt=\"Start Recording\">";
+					document.getElementById("RecorDControl").innerHTML = "<div class=RecordingButtonStart>Start Recording</div>";
 				} else {
 					document.getElementById("RecorDControl").innerHTML = conf_rec_start_html;
 				}
@@ -711,8 +723,8 @@
 				var query_recording_exten = session_id;
 				//var channelrec = "Local/" + conf_silent_prefix + '' + taskconfrec + "@" + ext_context;
 				var channelrec = "Local/3" + taskconfrec + "@" + ext_context;
-// 				var conf_rec_start_html = "<a href=\"#\" onclick=\"conf_send_recording('MonitorConf','" + taskconfrec + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_LB_startrecording.gif\" width=145 height=16 border=0 alt=\"Start Recording\"></a>";
-                var conf_rec_start_html = "<a href=\"#\" onclick=\"conf_send_recording('MonitorConf','" + taskconfrec + "','');return false;\"><div class=RecordingButtonStart>Start Recording</div></a>";
+				// var conf_rec_start_html = "<a href=\"#\" onclick=\"conf_send_recording('MonitorConf','" + taskconfrec + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_LB_startrecording.gif\" width=145 height=16 border=0 alt=\"Start Recording\"></a>";
+				var conf_rec_start_html = "<a href=\"#\" onclick=\"conf_send_recording('MonitorConf','" + taskconfrec + "','');return false;\"><div class=RecordingButtonStart>Start Recording</div></a>";
 				if (campaign_recording == 'ALLFORCE') {
 					document.getElementById("RecorDControl").innerHTML = "<div class=RecordingButtonStart>Start Recording</div>";
 				} else {
@@ -1043,8 +1055,8 @@
 						MDlogEPOCH = MDlogResponse_array[1];
 						//osdalert("OSDIAL Call log entered:\n" + document.osdial_form.uniqueid.value,30);
 						if ( (taskMDstage != "start") && (VDstop_rec_after_each_call == 1) ) {
-// 							var conf_rec_start_html = "<a href=\"#\" onclick=\"conf_send_recording('MonitorConf','" + session_id + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_LB_startrecording.gif\" width=145 height=16 border=0 alt=\"Start Recording\"></a>";
-                            var conf_rec_start_html = "<a href=\"#\" onclick=\"conf_send_recording('MonitorConf','" + session_id + "','');return false;\"><div class=RecordingButtonStart>Start Recording</div></a>";
+							//var conf_rec_start_html = "<a href=\"#\" onclick=\"conf_send_recording('MonitorConf','" + session_id + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_LB_startrecording.gif\" width=145 height=16 border=0 alt=\"Start Recording\"></a>";
+							var conf_rec_start_html = "<a href=\"#\" onclick=\"conf_send_recording('MonitorConf','" + session_id + "','');return false;\"><div class=RecordingButtonStart>Start Recording</div></a>";
 							if ( (campaign_recording == 'NEVER') || (campaign_recording == 'ALLFORCE') ) {
 								document.getElementById("RecorDControl").innerHTML = "<div class=RecordingButtonStart>Start Recording</div>";
 							} else {
@@ -1313,8 +1325,8 @@
 							var status_display_number = formatPhone(document.osdial_form.phone_code.value,dialed_number);
 
 							document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
-// 							document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "&nbsp;&nbsp;</font><font color=" + panel_bg + ">UID: " + CIDcheck + "</font><font color=" + status_intense_color + " style='text-decoration:blink;'></font>1<font style='margin-left:40px;' color=white><b>Waiting for Ring... " + MD_ring_secondS + " seconds<b></font>";
-                            document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "&nbsp;&nbsp;</font><font color=" + status_intense_color + " style='text-decoration:blink;'></font><font style='margin-left:40px;' color=white><b>Waiting for Ring... " + MD_ring_secondS + " seconds<b></font>";
+							//document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "&nbsp;&nbsp;</font><font color=" + panel_bg + ">UID: " + CIDcheck + "</font><font color=" + status_intense_color + " style='text-decoration:blink;'></font>1<font style='margin-left:40px;' color=white><b>Waiting for Ring... " + MD_ring_secondS + " seconds<b></font>";
+							document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "&nbsp;&nbsp;</font><font color=" + status_intense_color + " style='text-decoration:blink;'></font><font style='margin-left:40px;' color=white><b>Waiting for Ring... " + MD_ring_secondS + " seconds<b></font>";
 							//osdalert("channel not found yet:\n" + campaign,30);
 						}
 					} else {
@@ -1326,7 +1338,7 @@
 								// bad grab of Local channel, try again
 								MD_ring_secondS++;
 								var status_display_number = formatPhone(document.osdial_form.phone_code.value,dialed_number);
-// 								document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
+								//document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
 								document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "&nbsp;&nbsp;</font><font color=" + status_intense_color + " style='text-decoration:blink;'></font><font style='margin-left:40px;' color=white><b>Waiting for Ring... " + MD_ring_secondS + " seconds<b></font>";
 							} else {
 								document.osdial_form.xferuniqueid.value	= MDlookResponse_array[0];
@@ -1368,7 +1380,7 @@
 								MD_ring_secondS++;
 								var status_display_number = formatPhone(document.osdial_form.phone_code.value,dialed_number);
 
-// 								document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
+								//document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
 								document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "&nbsp;&nbsp;</font><font color=" + status_intense_color + " style='text-decoration:blink;'></font><font style='margin-left:40px;' color=white><b>Waiting for Ring... " + MD_ring_secondS + " seconds<b></font>";
 							} else {
 								custchannellive=1;
@@ -1539,9 +1551,9 @@
 
 						var status_display_number = formatPhone(document.osdial_form.phone_code.value,dialed_number);
 
-// 						document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
-// 						document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "&nbsp;&nbsp;</font><font color=" + panel_bg + ">UID: " + MDnextCID + "</font><span style='margin-left:35px;'>4</span> Waiting for Ring...";
-                        document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "&nbsp;&nbsp;</font><span style='margin-left:40px;'></span> Waiting for Ring...";
+						//document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
+						//document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "&nbsp;&nbsp;</font><font color=" + panel_bg + ">UID: " + MDnextCID + "</font><span style='margin-left:35px;'>4</span> Waiting for Ring...";
+						document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "&nbsp;&nbsp;</font><span style='margin-left:40px;'></span> Waiting for Ring...";
 
 						document.getElementById("HangupControl").innerHTML = "<a href=\"#\" onclick=\"dialedcall_send_hangup();\"><span class=HangupButton>Hangup Customer</span></a>";
 
@@ -1611,8 +1623,8 @@
 			PCSpause=0;
 			if (inbound_man > 0) {
 				auto_dial_level=starting_dial_level;
-// 				document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADpause','NEW_ID');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_pause.gif\" width=70 height=18 border=0 alt=\" Pause \"></a><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"></a><BR><a href=\"#\" onclick=\"ManualDialNext('','','','','','0');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\"></a>";
-                document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADpause','NEW_ID');\"><span class=PauseButton>Pause</span></a><span class=ResumeButtonOff>Resume</span></a><font size=-5><br><br/></font><a href=\"#\" onclick=\"ManualDialNext('','','','','','0');\"><span class=DialNextButton>Dial Next Number</span></a>";
+				//document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADpause','NEW_ID');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_pause.gif\" width=70 height=18 border=0 alt=\" Pause \"></a><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"></a><BR><a href=\"#\" onclick=\"ManualDialNext('','','','','','0');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\"></a>";
+				document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADpause','NEW_ID');\"><span class=PauseButton>Pause</span></a><span class=ResumeButtonOff>Resume</span></a><font size=-5><br><br/></font><a href=\"#\" onclick=\"ManualDialNext('','','','','','0');\"><span class=DialNextButton>Dial Next Number</span></a>";
 			} else {
 				document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML_ready;
 			}
@@ -1624,8 +1636,8 @@
 			alt_dial_menu=0;
 			if (inbound_man > 0) {
 				auto_dial_level=starting_dial_level;
-// 				document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume.gif\" width=70 height=18 border=0 alt=\"Resume\"></a><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
-                document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready','NEW_ID');\"><span class=PauseButtonOff>Pause</span><span class=ResumeButton>Resume</span></a><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
+				//document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume.gif\" width=70 height=18 border=0 alt=\"Resume\"></a><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
+				document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready','NEW_ID');\"><span class=PauseButtonOff>Pause</span><span class=ResumeButton>Resume</span></a><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
 			} else {
 				document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML;
 			}
@@ -1797,8 +1809,8 @@
 				var queryCID = "HLvdcW" + epoch_sec + user_abb;
 				var hangupvalue = customer_channel;
 				//osdalert(auto_dial_level + "|" + CalLCID + "|" + customer_server_ip + "|" + hangupvalue + "|" + VD_live_call_secondS,30);
-// 				custhangup_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=Hangup&format=text&user=" + user + "&pass=" + pass + "&channel=" + hangupvalue + "&call_server_ip=" + customer_server_ip + "&queryCID=" + queryCID + "&auto_dial_level=" + auto_dial_level + "&CalLCID=" + CalLCID + "&secondS=" + VD_live_call_secondS + "&exten=" + session_id + "&campaign=" + group + "&stage=CALLHANGUP&nodeletevdac=" + nodeletevdac + "&log_campaign=" + campaign;
-                custhangup_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=Hangup&format=text&user=" + user + "&pass=" + pass + "&channel=" + hangupvalue + "&call_server_ip=" + customer_server_ip + "&queryCID=" + queryCID + "&auto_dial_level=" + auto_dial_level + "&CalLCID=" + CalLCID + "&secondS=" + sec2time(VD_live_call_secondS,0) + "&exten=" + session_id + "&campaign=" + group + "&stage=CALLHANGUP&nodeletevdac=" + nodeletevdac + "&log_campaign=" + campaign;
+				//custhangup_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=Hangup&format=text&user=" + user + "&pass=" + pass + "&channel=" + hangupvalue + "&call_server_ip=" + customer_server_ip + "&queryCID=" + queryCID + "&auto_dial_level=" + auto_dial_level + "&CalLCID=" + CalLCID + "&secondS=" + VD_live_call_secondS + "&exten=" + session_id + "&campaign=" + group + "&stage=CALLHANGUP&nodeletevdac=" + nodeletevdac + "&log_campaign=" + campaign;
+				custhangup_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=Hangup&format=text&user=" + user + "&pass=" + pass + "&channel=" + hangupvalue + "&call_server_ip=" + customer_server_ip + "&queryCID=" + queryCID + "&auto_dial_level=" + auto_dial_level + "&CalLCID=" + CalLCID + "&secondS=" + sec2time(VD_live_call_secondS,0) + "&exten=" + session_id + "&campaign=" + group + "&stage=CALLHANGUP&nodeletevdac=" + nodeletevdac + "&log_campaign=" + campaign;
 				xmlhttp.open('POST', 'manager_send.php'); 
 				xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 				xmlhttp.send(custhangup_query); 
@@ -1826,7 +1838,7 @@
 			MD_ring_secondS = 0;
 			CalLCID = '';
 
-		//	UPDATE OSDIAL_LOG ENTRY FOR THIS CALL PROCESS
+			// UPDATE OSDIAL_LOG ENTRY FOR THIS CALL PROCESS
 			DialLog("end",nodeletevdac);
 			conf_dialed=0;
 			if (dispowindow == 'NO') {
@@ -1858,7 +1870,7 @@
 			agent_log_type="DISPO";
 			agent_log_time=0;
 			agent_log_epoch_start=agent_log_epoch;
-		//  DEACTIVATE CHANNEL-DEPENDANT BUTTONS AND VARIABLES
+			// DEACTIVATE CHANNEL-DEPENDANT BUTTONS AND VARIABLES
 			//document.osdial_form.callchannel.value = '';
 			document.getElementById("callchannel").innerHTML = '';
 			document.osdial_form.callserverip.value = '';
@@ -1918,8 +1930,8 @@
 						alt_dial_active = 0;
 						alt_dial_menu = 0;
 					} else {
-// 						document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"ManualDialNext('','','','','','');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\"></a>";
-                        document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"ManualDialNext('','','','','','');\"><span class=DialNextButton>Dial Next Number</span></a>";
+						//document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"ManualDialNext('','','','','','');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\"></a>";
+						document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"ManualDialNext('','','','','','');\"><span class=DialNextButton>Dial Next Number</span></a>";
 					}
 					reselect_alt_dial = 0;
 				}
@@ -1939,9 +1951,8 @@
 								document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
 								document.getElementById("MainStatuSSpan").innerHTML = '';
 								if (inbound_man > 0) {
-// 									document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
-                                    
-                                    document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><span class=ResumeButtonOff>Resume</span><font size=-5><font size=-5><br><br/></font></font><span class=DialNextOff>Dial Next Number</span>";
+									//document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
+									document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><span class=ResumeButtonOff>Resume</span><font size=-5><font size=-5><br><br/></font></font><span class=DialNextOff>Dial Next Number</span>";
 								} else {
 									document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML_OFF;
 								}
@@ -1953,8 +1964,8 @@
 					document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
 					document.getElementById("MainStatuSSpan").innerHTML = '';
 					if (inbound_man > 0) {
-// 						document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
-                        document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><span class=ResumeButtonOff>Resume</span><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
+						//document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
+						document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><span class=ResumeButtonOff>Resume</span><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
 					} else {
 						document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML_OFF;
 					}
@@ -2008,7 +2019,7 @@
 			XDcheck = '';
 			xferchannellive=0;
 
-		//  DEACTIVATE CHANNEL-DEPENDANT BUTTONS AND VARIABLES
+			// DEACTIVATE CHANNEL-DEPENDANT BUTTONS AND VARIABLES
 			document.osdial_form.xferchannel.value = "";
 			lastxferchannel='';
 
@@ -2065,9 +2076,9 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 	var loop_ct = 0;
 	while (loop_ct < VD_statuses_ct) {
 		if (taskDSgrp == VARstatuses[loop_ct]) {
-			dispo_HTML = dispo_HTML + "<font size=3 style=\"BACKGROUND-COLOR: " + dispo_bg2 + "\"><b><a href=\"#\" onclick=\"DispoSelect_submit();return false;\">" + VARstatuses[loop_ct] + " - " + VARstatusnames[loop_ct] + "</a></b></font><BR><BR>";
+			dispo_HTML = dispo_HTML + "<font size=3 style=\"BACKGROUND-COLOR: " + dispo_bg2 + "\"><b><a href=\"#\" onclick=\"DispoMaximize(); DispoSelect_submit();return false;\">" + VARstatuses[loop_ct] + " - " + VARstatusnames[loop_ct] + "</a></b></font><BR><BR>";
 		} else {
-			dispo_HTML = dispo_HTML + "<a href=\"#\" onclick=\"DispoSelectContent_create('" + VARstatuses[loop_ct] + "','ADD');return false;\">" + VARstatuses[loop_ct] + " - " + VARstatusnames[loop_ct] + "</a><font size=-2><BR><BR></font>";
+			dispo_HTML = dispo_HTML + "<a href=\"#\" onclick=\"DispoMaximize(); DispoSelectContent_create('" + VARstatuses[loop_ct] + "','ADD');return false;\">" + VARstatuses[loop_ct] + " - " + VARstatusnames[loop_ct] + "</a><font size=-2><BR><BR></font>";
 		}
 		if (loop_ct == VD_statuses_ct_half) {
 			dispo_HTML = dispo_HTML + "</div></font></td><td bgcolor=\"" + dispo_bg + "\" height=320 width=300 valign=top><font class=\"log_text\"><div id=DispoSelectB>";
@@ -2526,18 +2537,16 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		hideDiv('SysteMAlerTBoX');
 		showDiv('LogouTBox');
 
-			//document.getElementById("LogouTBoxLink").innerHTML = "<a href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\"><img src='images/LoginAgainUp.png' width='128' height='28' align=center border='0'></a>";
-				
-// 		document.getElementById("LogouTBoxLink").innerHTML = "<map=Loginmap><a OnMouseOver=\"lagain.src='templates/" + agent_template + "/images/LoginAgainDn.png'\" OnMouseOut=\"lagain.src='templates/" + agent_template + "/images/LoginAgainUp.png'\" usemap=Loginmap href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\"><img src='templates/" + agent_template + "/images/LoginAgainUp.png' width='128' height='28' align=center border='0' name=lagain></a>";
+		//document.getElementById("LogouTBoxLink").innerHTML = "<a href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\"><img src='images/LoginAgainUp.png' width='128' height='28' align=center border='0'></a>";
+		//document.getElementById("LogouTBoxLink").innerHTML = "<map=Loginmap><a OnMouseOver=\"lagain.src='templates/" + agent_template + "/images/LoginAgainDn.png'\" OnMouseOut=\"lagain.src='templates/" + agent_template + "/images/LoginAgainUp.png'\" usemap=Loginmap href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\"><img src='templates/" + agent_template + "/images/LoginAgainUp.png' width='128' height='28' align=center border='0' name=lagain></a>";
+		//document.getElementById("LogouTBoxLink").innerHTML = "<map=Loginmap><a OnMouseOver=\"lagain.src='templates/" + agent_template + "/images/LoginAgainDn.png'\" OnMouseOut=\"lagain.src='templates/" + agent_template + "/images/LoginAgainUp.png'\" usemap=Loginmap href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\"><img src='templates/" + agent_template + "/images/LoginAgainUp.png' width='128' height='28' align=center border='0' name=lagain></a>";
         
-//         document.getElementById("LogouTBoxLink").innerHTML = "<map=Loginmap><a OnMouseOver=\"lagain.src='templates/" + agent_template + "/images/LoginAgainDn.png'\" OnMouseOut=\"lagain.src='templates/" + agent_template + "/images/LoginAgainUp.png'\" usemap=Loginmap href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\"><img src='templates/" + agent_template + "/images/LoginAgainUp.png' width='128' height='28' align=center border='0' name=lagain></a>";
-        
-        // If allowed to exit to welcome page
-        if (1==2) {
-            document.getElementById("LogouTBoxLink").innerHTML = "<span class=homepage><div class=loginagainBox><span class=LoginAgainHeader>Log Back In?</span><br/><br/><a href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\">Yes</a>&nbsp;/&nbsp;<a href='#'>No</a></div></span>";
-        } else {
-            document.getElementById("LogouTBoxLink").innerHTML = "<span class=homepage><div class=loginagainBox><span class=LoginAgainHeader>Login Again?</span><br/><br/><a href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\">Yes</a>&nbsp;/&nbsp;<a href=''>No</a></div></span>";
-        }
+		// If allowed to exit to welcome page
+		if (1==2) {
+			document.getElementById("LogouTBoxLink").innerHTML = "<span class=homepage><div class=loginagainBox><span class=LoginAgainHeader>Log Back In?</span><br/><br/><a href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\">Yes</a>&nbsp;/&nbsp;<a href='#'>No</a></div></span>";
+		} else {
+			document.getElementById("LogouTBoxLink").innerHTML = "<span class=homepage><div class=loginagainBox><span class=LoginAgainHeader>Login Again?</span><br/><br/><a href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\">Yes</a>&nbsp;/&nbsp;<a href=''>No</a></div></span>";
+		}
 		logout_stop_timeouts = 1;
 					
 		//window.location= agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass;
@@ -2624,7 +2633,28 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		showDiv('DispoButtonHideA');
 		showDiv('DispoButtonHideB');
 		showDiv('DispoButtonHideC');
-		document.getElementById("DispoSelectBox").style.top = '340px';
+		document.getElementById('AddtlFormTab').style.visibility='visible';
+		document.getElementById('AddtlFormTabExpanded').style.cursor='pointer';
+		document.getElementById('AddtlFormTabExpanded').style.visibility='hidden';
+		var dispoHideAsize=30;
+		if (typeof(document.getElementById("DiaLLeaDPrevieW"))!='undefined' && document.getElementById("DiaLLeaDPrevieW").innerHTML.length>0) dispoHideAsize+=19;
+		if (typeof(document.getElementById("DiaLDiaLAltPhonE"))!='undefined' && document.getElementById("DiaLDiaLAltPhonE").innerHTML.length>0) dispoHideAsize+=19;
+		document.getElementById("DispoButtonHideATable").style.height = dispoHideAsize+'px';
+		var dispoHideBtop=118;
+		var dispoHideBheight=370;
+		var dispoHideBheightNew=0;
+		var hideBdiff=0;
+		dispoHideBtopNew=50+dispoHideAsize+(document.getElementById("RecordStatusControl").offsetHeight*1)-2;
+		if (dispoHideBtopNew>dispoHideBtop) {
+			hideBdiff=dispoHideBtopNew-dispoHideBtop;
+			dispoHideBheightNew=dispoHideBheight-hideBdiff;
+		} else if (dispoHideBtopNew<dispoHideBtop) {
+			hideBdiff=dispoHideBtop-dispoHideBtopNew;
+			dispoHideBheightNew=dispoHideBheight+hideBdiff;
+		}
+		document.getElementById("DispoButtonHideB").style.top = dispoHideBtopNew+'px';
+		document.getElementById("DispoButtonHideBTable").style.height = dispoHideBheightNew+'px';
+		document.getElementById("DispoSelectBox").style.top = '430px';
 		document.getElementById("DispoSelectMaxMin").innerHTML = "<a href=\"#\" onclick=\"DispoMaximize()\">maximize</a>";
 	}
 
@@ -2633,12 +2663,27 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 // Move the Dispo frame to the top and change the link to minimize
 	function DispoMaximize() {
 		debug("<b>DispoMaximize:</b>",2);
-		document.getElementById("DispoSelectBox").style.top = '0px';
-		document.getElementById("DispoSelectMaxMin").innerHTML = "<a href=\"#\" onclick=\"DispoMinimize()\">minimize</a>";
-		hideDiv('DispoButtonHideA');
-		hideDiv('DispoButtonHideB');
-		hideDiv('DispoButtonHideC');
+		if( typeof(document.getElementById('DispoSelectBox'))!='undefined'
+		  && typeof(document.getElementById('DispoSelectBox').style)!='undefined'
+		  && typeof(document.getElementById('DispoSelectBox').style.top)!='undefined') {
+
+			if (document.getElementById('DispoSelectBox').style.top!='0px') {
+				document.getElementById('AddtlFormTab').style.visibility='hidden';
+				document.getElementById('AddtlFormTabExpanded').style.cursor='pointer';
+				document.getElementById('AddtlFormTabExpanded').style.visibility='hidden';
+				document.getElementById("DispoButtonHideATable").style.height = '30px';
+				document.getElementById("DispoButtonHideB").style.top = '118px';
+				document.getElementById("DispoButtonHideBTable").style.height = '370px';
+				document.getElementById("DispoSelectBox").style.top = '0px';
+				document.getElementById("DispoSelectMaxMin").innerHTML = "<a href=\"#\" onclick=\"DispoMinimize()\">minimize</a>";
+				hideDiv('DispoButtonHideA');
+				hideDiv('DispoButtonHideB');
+				hideDiv('DispoButtonHideC');
+			}
+		}
 	}
+
+
 
 
 // ################################################################################
@@ -2741,6 +2786,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			hideDiv('ScriptPanel');
 			hideDiv('DispoSelectBox');
 			hideDiv('LogouTBox');
+			hideDiv('EmergencYLogouTBoX');
 			hideDiv('AgenTDisablEBoX');
 			hideDiv('SysteMDisablEBoX');
 			document.getElementById('SysteMAlerTBoX').style.zIndex='41';
@@ -2817,8 +2863,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 			document.getElementById("sessionIDspan").innerHTML = session_id;
 			if ( (campaign_recording == 'NEVER') || (campaign_recording == 'ALLFORCE') ) {
-// 				document.getElementById("RecorDControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_startrecording_OFF.gif\" width=145 height=16 border=0 alt=\"Start Recording\">";
-                document.getElementById("RecorDControl").innerHTML = "<div class=RecordingButtonStart>Start Recording</div>";
+				//document.getElementById("RecorDControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_startrecording_OFF.gif\" width=145 height=16 border=0 alt=\"Start Recording\">";
+				document.getElementById("RecorDControl").innerHTML = "<div class=RecordingButtonStart>Start Recording</div>";
 			}
 			if (INgroupCOUNT > 0 && (dial_method != "MANUAL" || inbound_man > 0)) {
 			    hideDiv('WelcomeBoxA');
@@ -2841,7 +2887,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			}
 			hideDiv('WelcomeBoxA');
 			document.getElementById('AddtlFormTab').style.visibility='visible';
-            document.getElementById('AddtlFormTab').style.cursor='pointer';
+			document.getElementById('AddtlFormTab').style.cursor='pointer';
 			OSDiaL_closer_login_checked = 1;
 
 			agent_log_time=0;
@@ -2856,9 +2902,13 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				WaitingForNextStep=1;
 			}
 			if (open_dispo_screen==1) {
+				if (hotkeys_clicked) {
+					hideHKduringDispo=1;
+					HotKeysClick();
+				}
 				document.getElementById('AddtlFormTab').style.visibility='hidden';
 				document.getElementById('AddtlFormTabExpanded').style.visibility='hidden';
-                document.getElementById('AddtlFormTabExpanded').style.cursor='pointer';
+				document.getElementById('AddtlFormTabExpanded').style.cursor='pointer';
 				wrapup_counter=0;
 				if (wrapup_seconds > 0)	{
 					showDiv('WrapupBox');
@@ -2875,8 +2925,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				if (auto_dial_level == 0) {
 					if (document.osdial_form.DiaLAltPhonE.checked==true) {
 						reselect_alt_dial = 1;
-// 						document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"ManualDialNext('','','','','','');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\"></a>";
-                        document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"ManualDialNext('','','','','','');\"><span class=DialNextButton>Dial Next Number</span></a>";
+						//document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"ManualDialNext('','','','','','');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\"></a>";
+						document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"ManualDialNext('','','','','','');\"><span class=DialNextButton>Dial Next Number</span></a>";
 
 						document.getElementById("MainStatuSSpan").innerHTML = "Dial Next Call";
 					} else {
@@ -3043,7 +3093,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 						wrapup_waiting=0;
 						hideDiv('WrapupBox');
 						document.getElementById('AddtlFormTab').style.visibility='visible';
-                        document.getElementById('AddtlFormTabExpanded').style.cursor='pointer';
+						document.getElementById('AddtlFormTabExpanded').style.cursor='pointer';
 						document.getElementById('AddtlFormTabExpanded').style.visibility='hidden';
 						if (document.osdial_form.DispoSelectStop.checked==true) {
 							if (auto_dial_level != '0') {
@@ -3071,7 +3121,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 	}
 
 	function logTimeTrans() {
-		console.log("TimeTrans: "+agent_log_id+" "+agent_log_type+"  "+agent_log_epoch_start+"  "+agent_log_epoch+"  "+agent_log_time_total+"  "+agent_log_time);
+		debug("TimeTrans: "+agent_log_id+" "+agent_log_type+"  "+agent_log_epoch_start+"  "+agent_log_epoch+"  "+agent_log_time_total+"  "+agent_log_time,1);
 		if (company_id>0) {
 			var xmlhttp=getXHR();
 			logtime_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=logTimeTrans&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&campaign=" + campaign + "&agent_log_id=" + agent_log_id + "&agent_log_type=" + agent_log_type + "&agent_log_time=" + agent_log_time + "&company_id=" + company_id;
@@ -3097,7 +3147,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 					var ressplit=response.split("\n");
 					company_status=ressplit[0];
 					acct_remaining=ressplit[1];
-					console.log('Status: '+company_status+'  AcctRemaining: '+acct_remaining);
+					debug('Status: '+company_status+'  AcctRemaining: '+acct_remaining,1);
 					if (company_status!='ACTIVE') {
 						LogouT();
 						document.getElementById('SysteMAlerTBoX').style.zIndex='101';
@@ -3260,21 +3310,21 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		start_all_refresh();
 	}
 
-// Pauses the refreshing of the lists
+	// Pauses the refreshing of the lists
 	function pause() {
 		debug("<b>pause:</b>",2);
 		active_display=2;
 		display_message="  - ACTIVE DISPLAY PAUSED - ";
 	}
 
-// resumes the refreshing of the lists
+	// resumes the refreshing of the lists
 	function start() {
 		debug("<b>start:</b>",2);
 		active_display=1;
 		display_message='';
 	}
 
-// lowers by 1000 milliseconds the time until the next refresh
+	// lowers by 1000 milliseconds the time until the next refresh
 	function faster() {
 		debug("<b>faster:</b>",2);
 		if (refresh_interval>1001) {
@@ -3283,7 +3333,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 	}
 
 
-// raises by 1000 milliseconds the time until the next refresh
+	// raises by 1000 milliseconds the time until the next refresh
 	function slower() {
 		debug("<b>slower:</b>",2);
 		refresh_interval=(refresh_interval + 1000);
@@ -3291,16 +3341,16 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 
 
-// activeext-specific functions
+	// activeext-specific functions
 
 
-// forces immediate refresh of list content
+	// forces immediate refresh of list content
 	function activeext_force_refresh() {
 		debug("<b>activeext_force_refresh:</b>",2);
 		getactiveext();
 	}
 
-// changes order of activeext list to ascending
+	// changes order of activeext list to ascending
 	function activeext_order_asc() {
 		debug("<b>activeext_order_asc:</b>",2);
 		activeext_order="asc";
@@ -3309,7 +3359,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		document.getElementById("activeext_order").innerHTML = desc_order_HTML;
 	}
 
-// changes order of activeext list to descending
+	// changes order of activeext list to descending
 	function activeext_order_desc() {
 		debug("<b>activeext_order_desc:</b>",2);
 		activeext_order="desc";   getactiveext();
@@ -3319,16 +3369,16 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 
 
-// busytrunk-specific functions
+	// busytrunk-specific functions
 
 
-// forces immediate refresh of list content
+	// forces immediate refresh of list content
 	function busytrunk_force_refresh() {
 		debug("<b>busytrunk_force_refresh:</b>",2);
 		getbusytrunk();
 	}
 
-// changes order of busytrunk list to ascending
+	// changes order of busytrunk list to ascending
 	function busytrunk_order_asc() {
 		debug("<b>busytrunk_order_asc:</b>",2);
 		busytrunk_order="asc";
@@ -3337,7 +3387,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		document.getElementById("busytrunk_order").innerHTML = desc_order_HTML;
 	}
 
-// changes order of busytrunk list to descending
+	// changes order of busytrunk list to descending
 	function busytrunk_order_desc() {
 		debug("<b>busytrunk_order_desc:</b>",2);
 		busytrunk_order="desc";
@@ -3346,7 +3396,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		document.getElementById("busytrunk_order").innerHTML = asc_order_HTML;
 	}
 
-// forces immediate refresh of list content
+	// forces immediate refresh of list content
 	function busytrunkhangup_force_refresh() {
 		debug("<b>busytrunkhangup_force_refresh:</b>",2);
 		busytrunkhangup();
@@ -3354,15 +3404,15 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 	
 
-// busyext-specific functions
+	// busyext-specific functions
 
-// forces immediate refresh of list content
+	// forces immediate refresh of list content
 	function busyext_force_refresh() {
 		debug("<b>busyext_force_refresh:</b>",2);
 		getbusyext();
 	}
 
-// changes order of busyext list to ascending
+	// changes order of busyext list to ascending
 	function busyext_order_asc() {
 		debug("<b>busyext_order_asc:</b>",2);
 		busyext_order="asc";
@@ -3371,7 +3421,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		document.getElementById("busyext_order").innerHTML = desc_order_HTML;
 	}
 
-// changes order of busyext list to descending
+	// changes order of busyext list to descending
 	function busyext_order_desc() {
 		debug("<b>busyext_order_desc:</b>",2);
 		busyext_order="desc";
@@ -3380,14 +3430,14 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		document.getElementById("busyext_order").innerHTML = asc_order_HTML;
 	}
 
-// forces immediate refresh of list content
+	// forces immediate refresh of list content
 	function busylocalhangup_force_refresh() {
 		debug("<b>busylocalhangup_force_refresh:</b>",2);
 		busylocalhangup();
 	}
 
 
-// functions to hide and show different DIVs
+	// functions to hide and show different DIVs
 	function showDiv(divvar) {
 		debug("<b>showDiv:</b> divvar=" + divvar,4);
 		if (document.getElementById(divvar)) {
@@ -3409,11 +3459,13 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		if (document.getElementById(divvar)) {
 			document.getElementById(divvar).innerHTML = '';
 			if (divvar == 'DiaLLeaDPrevieW') {
-				var buildDivHTML = "<font class=\"preview_text\"><input type=checkbox name=LeadPreview id=LeadPreview size=1 value=\"0\"><label for=\"LeadPreview\"> LEAD PREVIEW</label><br></font>";
+				//var buildDivHTML = "<font class=\"body_tiny\"><input type=checkbox name=LeadPreview id=LeadPreview size=1 value=\"0\"><label for=\"LeadPreview\"> LEAD PREVIEW</label></font>";
+				var buildDivHTML = "<div id=\"SpacerPreview\" style=\"width:145px;height:4px;border:0px;\"></div><span class=\"CBOptions\"><label for=\"LeadPreview\" style=\"position:relative;top:-2px;\"><input type=checkbox style=\"margin:0 10 0 16;position:relative;top:3px;\" name=LeadPreview id=LeadPreview size=1 value=\"0\"> Lead Preview</span></label>";
 				document.getElementById("DiaLLeaDPrevieWHide").innerHTML = buildDivHTML;
 			}
 			if (divvar == 'DiaLDiaLAltPhonE') {
-				var buildDivHTML = "<font class=\"preview_text\"><input type=checkbox name=DiaLAltPhonE id=DiaLAltPhonE size=1 value=\"0\"><label for=\"DiaLAltPhonE\"> ALT PHONE DIAL</label><br></font>";
+				//var buildDivHTML = "<font class=\"body_tiny\"><input type=checkbox name=DiaLAltPhonE id=DiaLAltPhonE size=1 value=\"0\"><label for=\"DiaLAltPhonE\"> ALT PHONE DIAL</label></font>";
+				var buildDivHTML = "<div id=\"SpacerPreview\" style=\"width:145px;height:4px;border:0px;\"></div><span class=\"CBOptions\"><label for=\"DiaLAltPhonE\" style=\"position:relative;top:-2px;\"><input type=checkbox style=\"margin:0 10 0 16;position:relative;top:3px;\" name=DiaLAltPhonE id=DiaLAltPhonE size=1 value=\"0\"> Alt Phone Dial</span></label>";
 				document.getElementById("DiaLDiaLAltPhonEHide").innerHTML = buildDivHTML;
 			}
 		}
@@ -3425,7 +3477,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			var buildDivHTML = "";
 			if (divvar == 'DiaLLeaDPrevieW') {
 				document.getElementById("DiaLLeaDPrevieWHide").innerHTML = '';
-				var buildDivHTML = "<font class=\"preview_text\"><input type=checkbox name=LeadPreview id=LeadPreview size=1 value=\"0\"><label for=\"LeadPreview\"> LEAD PREVIEW</label><br></font>";
+				//var buildDivHTML = "<font class=\"body_tiny\"><input type=checkbox name=LeadPreview id=LeadPreview size=1 value=\"0\"><label for=\"LeadPreview\"> LEAD PREVIEW</label></font>";
+				var buildDivHTML = "<div id=\"SpacerPreview\" style=\"width:145px;height:4px;border:0px;\"></div><span class=\"CBOptions\"><label for=\"LeadPreview\" style=\"position:relative;top:-2px;\"><input type=checkbox style=\"margin:0 10 0 16;position:relative;top:3px;\" name=LeadPreview id=LeadPreview size=1 value=\"0\"> Lead Preview</span></label>";
 				document.getElementById(divvar).innerHTML = buildDivHTML;
 				if (reselect_preview_dial==1) {
 					document.osdial_form.LeadPreview.checked=true;
@@ -3433,7 +3486,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			}
 			if (divvar == 'DiaLDiaLAltPhonE') {
 				document.getElementById("DiaLDiaLAltPhonEHide").innerHTML = '';
-				var buildDivHTML = "<font class=\"preview_text\"><input type=checkbox name=DiaLAltPhonE id=DiaLAltPhonE size=1 value=\"0\"><label for=\"DiaLAltPhonE\"> ALT PHONE DIAL</label><br></font>";
+				//var buildDivHTML = "<font class=\"body_tiny\"><input type=checkbox name=DiaLAltPhonE id=DiaLAltPhonE size=1 value=\"0\"><label for=\"DiaLAltPhonE\"> ALT PHONE DIAL</label></font>";
+				var buildDivHTML = "<div id=\"SpacerPreview\" style=\"width:145px;height:4px;border:0px;\"></div><span class=\"CBOptions\"><label for=\"DiaLAltPhonE\" style=\"position:relative;top:-2px;\"><input type=checkbox style=\"margin:0 10 0 16;position:relative;top:3px;\" name=DiaLAltPhonE id=DiaLAltPhonE size=1 value=\"0\"> Alt Phone Dial</span></label>";
 				document.getElementById(divvar).innerHTML = buildDivHTML;
 				if (reselect_alt_dial==1) {
 					document.osdial_form.DiaLAltPhonE.checked=true;
@@ -3462,13 +3516,13 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
         if (!hotkeys_clicked) {
             if (action=='ON') {
                 document.getElementById('hotkeysbutton').className='hotkeyon';            
-//                 document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onMouseOut=\"HotKeys('OFF')\"><div class=hotkeyon>HOT KEYS</div></a>";
+		//document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onMouseOut=\"HotKeys('OFF')\"><div class=hotkeyon>HOT KEYS</div></a>";
                 // Code to show HotKeys Panel here...
                 showDiv('HotKeyEntriesBox');
                 hot_keys_active = 1;
             } else {
                 document.getElementById('hotkeysbutton').className='hotkeyoff';
-//                 document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onMouseOver=\"HotKeys('ON')\"><div class=hotkeyoff>HOT KEYS</div></a>";
+		//document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onMouseOver=\"HotKeys('ON')\"><div class=hotkeyoff>HOT KEYS</div></a>";
                 // Code to hide HotKeys Panel here...
                 hideDiv('HotKeyEntriesBox');
                 hot_keys_active = 0;
@@ -3491,20 +3545,6 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
             showDiv('HotKeyEntriesBox');
         }
     }
-/*
-	function HotKeys(HKstate) {
-        if ( (HKstate == 'ON') && (HKbutton_allowed == 1) ) {
-            showDiv('HotKeyEntriesBox');
-            hot_keys_active = 1;
-            document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onMouseOut=\"HotKeys('OFF')\"><div class=hotkeyson>HOT KEYS</div></a>";
-        } else {
-            hideDiv('HotKeyEntriesBox');
-            hot_keys_active = 0;
-            document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onMouseOver=\"HotKeys('ON')\"><div class=hotkeysoff>HOT KEYS</div></a>";
-        }
-		
-    }
-*/
 
 	function DTMFKeys(DTMFstate) {
 		debug("<b>DTMFKeys:</b> DTMFstate=" + DTMFstate,2);
@@ -3595,8 +3635,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				}
 			} else {
 				if (inbound_man > 0) {
-// 					document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume.gif\" width=70 height=18 border=0 alt=\"Resume\"></a><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
-                    document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready','NEW_ID');\"><span class=ResumeButton>Resume</span></a><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
+					//document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume.gif\" width=70 height=18 border=0 alt=\"Resume\"></a><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
+					document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready','NEW_ID');\"><span class=ResumeButton>Resume</span></a><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
 					if (manual_dial_preview == 1) {
 						buildDiv('DiaLLeaDPrevieW');
 					}
@@ -3848,11 +3888,11 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 			AutoDial_ReSume_PauSe('VDADpause','NEW_ID');
 
-// 			document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
-            document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><span class=ResumeButtonOff>Resume</span><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
+			//document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
+			document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><span class=ResumeButtonOff>Resume</span><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
 		} else {
-// 			document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
-            document.getElementById("DiaLControl").innerHTML = "<span class=DialNextButtonOff>Dial Next Number</span>";
+			//document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
+			document.getElementById("DiaLControl").innerHTML = "<span class=DialNextButtonOff>Dial Next Number</span>";
 		}
 		if (document.osdial_form.LeadPreview.checked==true) {
 			reselect_preview_dial = 1;
@@ -3930,13 +3970,13 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 						}
 
 						if (starting_dial_level == 0) {
-// 							document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"ManualDialNext('','','','','','0');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\"></a>";
-                            document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"ManualDialNext('','','','','','0');\"><span class=DialNextButton>Dial Next Number</span></a>";
+							//document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"ManualDialNext('','','','','','0');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\"></a>";
+							document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"ManualDialNext('','','','','','0');\"><span class=DialNextButton>Dial Next Number</span></a>";
 						} else {
 							if (inbound_man > 0) {
 								auto_dial_level=starting_dial_level;
-// 								document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume.gif\" width=70 height=18 border=0 alt=\"Resume\"></a><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
-                                document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready','NEW_ID');\"><span class=ResumeButton>Resume</span></a><BR><br/><span class=DialNextButtonOff>Dial Next Number</span>";
+								//document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume.gif\" width=70 height=18 border=0 alt=\"Resume\"></a><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
+								document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready','NEW_ID');\"><span class=ResumeButton>Resume</span></a><BR><br/><span class=DialNextButtonOff>Dial Next Number</span>";
 							} else {
 								document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML;
 							}
@@ -4028,8 +4068,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 						var status_display_number = formatPhone(document.osdial_form.phone_code.value,dialed_number);
 
 						document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
-// 						document.getElementById("MainStatuSSpan").innerHTML = " Calling " + status_display_number + "&nbsp;&nbsp;<font color=" + status_bg+ ">UID: " + MDnextCID + "</font> &nbsp; " + man_status;
-                        document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "</font>&nbsp;&nbsp;";
+						//document.getElementById("MainStatuSSpan").innerHTML = " Calling " + status_display_number + "&nbsp;&nbsp;<font color=" + status_bg+ ">UID: " + MDnextCID + "</font> &nbsp; " + man_status;
+						document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "</font>&nbsp;&nbsp;";
 						if ( (dialed_label.length < 3) || (dialed_label=='NONE') ) {
 							dialed_label='MAIN';
 						}
@@ -4202,7 +4242,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 							}
 						} else {
 						    reselect_preview_dial = 1;
-                        }
+						}
 					}
 				}
 			}
@@ -4226,11 +4266,11 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 			if (inbound_man > 0) {
 				auto_dial_level=starting_dial_level;
-// 				document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
-                document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><span class=ResumeButtonOff>Resume</span><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
+				//document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
+				document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><span class=ResumeButtonOff>Resume</span><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
 			} else {
-// 				document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
-                document.getElementById("DiaLControl").innerHTML = "<span class=DialNextButtonOff>Dial Next Number</span>";
+				//document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
+				document.getElementById("DiaLControl").innerHTML = "<span class=DialNextButtonOff>Dial Next Number</span>";
 			}
 
 			var xmlhttp=getXHR();
@@ -4434,11 +4474,11 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 							document.getElementById("MainStatuSSpan").style.backgroundColor = '';
 							/*document.getElementById("MainStatuSSpan").innerHTML = " Calling " + status_display_number + "&nbsp;&nbsp;<font color=" + status_bg + ">UID: " + CIDcheck + "</font> &nbsp; " + VDIC_fronter;*/ 
-                            document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "</font>&nbsp;&nbsp;";
+							document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "</font>&nbsp;&nbsp;";
 
 							document.getElementById("RepullControl").innerHTML = "<a href=\"#\" onclick=\"RepullLeadData('all');\"><span class=ReloadDataButton>Reload Data Using Phone1</span></a>";
 							
-// 							<img src=\"templates/" + agent_template + "/images/vdc_RPLD_on.gif\" width=145 height=16 border=0 alt=\"Repull Lead Data\"></a>";
+							//<img src=\"templates/" + agent_template + "/images/vdc_RPLD_on.gif\" width=145 height=16 border=0 alt=\"Repull Lead Data\"></a>";
 
 							if (LeaDPreVDispO == 'CALLBK') {
 								document.getElementById("CusTInfOSpaN").innerHTML = "&nbsp;<B>PREVIOUS CALLBACK</B>&nbsp;";
@@ -4491,8 +4531,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 							}
 
 							if (inbound_man > 0) {
-// 								document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
-                                document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause<span class=ResumeButtonOff>Resume</span><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
+								//document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
+								document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause<span class=ResumeButtonOff>Resume</span><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
 							} else {
 								document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML_OFF;
 							}
@@ -5084,6 +5124,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			} else if ( (DispoChoice == 'PD' && PostDatETimE == '' && (document.osdial_form.post_date.value == '0000-00-00' || document.osdial_form.post_date.value == '0000-00-00 00:00:00') ) ) {
 				showDiv('PostDateSelectBox');
 			} else {
+				CustomerData_update();
+
 				emailTemplatesSend();
 
 				var xmlhttp=getXHR();
@@ -5142,6 +5184,11 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 				AgentDispoing = 0;
 
+				if (hideHKduringDispo) {
+					hideHKduringDispo=0;
+					HotKeysClick();
+				}
+
 				// We just hungup the active multicall, so clear its associated variabled.
 				if (multicall_active>0) {
 					multicall_lastchannel = multicall_lastserverip = multicall_lastcallerid = multicall_lastingroup = "";
@@ -5154,7 +5201,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				if (multicall_active>0) {
 					multicall_queue_swap();
 					document.getElementById('AddtlFormTab').style.visibility='visible';
-                    document.getElementById('AddtlFormTabExpanded').style.cursor='pointer';
+					document.getElementById('AddtlFormTabExpanded').style.cursor='pointer';
 					document.getElementById('AddtlFormTabExpanded').style.visibility='hidden';
 				} else {
 					if (wrapup_waiting == 0) {
@@ -5171,7 +5218,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 						multicall_vmdrop_timer = -1;
 
 						document.getElementById('AddtlFormTab').style.visibility='visible';
-                        document.getElementById('AddtlFormTabExpanded').style.cursor='pointer';
+						document.getElementById('AddtlFormTabExpanded').style.cursor='pointer';
 						document.getElementById('AddtlFormTabExpanded').style.visibility='hidden';
 						if (document.osdial_form.DispoSelectStop.checked==true) {
 							if (auto_dial_level != '0') {
@@ -5934,7 +5981,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 	function AddtlFormOver() {
 		debug("<b>AddtlFormOver:</b>",2);
 		document.getElementById('AddtlFormTab').style.visibility='hidden';
-        document.getElementById('AddtlFormTabExpanded').style.cursor='pointer';
+		document.getElementById('AddtlFormTabExpanded').style.cursor='pointer';
 		document.getElementById('AddtlFormTabExpanded').style.visibility='visible';
 	}
 
@@ -5977,7 +6024,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		}
 		document.getElementById('AddtlFormTabExpanded').style.visibility='hidden';
 		document.getElementById('AddtlFormTab').style.visibility='visible';
-        document.getElementById('AddtlFormTab').style.cursor='pointer';
+		document.getElementById('AddtlFormTab').style.cursor='pointer';
 	}
 
 
@@ -6566,7 +6613,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 					CIDcheck 						= CalLCID 		= VDIC_data_MCAC[2];
 					document.getElementById("callchannel").innerHTML	= lastcustchannel 	= VDIC_data_MCAC[3];
 					document.osdial_form.callserverip.value 		= lastcustserverip 	= VDIC_data_MCAC[4];
-                    VD_live_call_secondS    = (VDIC_data_MCAC[5]*1).toFixed(0);
+					VD_live_call_secondS    = (VDIC_data_MCAC[5]*1).toFixed(0);
 					document.osdial_form.SecondS.value 			= sec2time(VD_live_customer_call,1);
 
 					logTimeTrans();
@@ -6644,8 +6691,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 					}
 
 					if (VDIC_data_MCIG[1].length > 0) {
-// 						if (VDIC_data_MCIG[2].length > 2) document.getElementById("MainStatuSSpan").style.backgroundColor = VDIC_data_MCIG[2];
-                        if (VDIC_data_MCIG[2].length > 2) document.getElementById("MainStatuSSpan").style.backgroundColor = panel_bg;
+						//if (VDIC_data_MCIG[2].length > 2) document.getElementById("MainStatuSSpan").style.backgroundColor = VDIC_data_MCIG[2];
+						if (VDIC_data_MCIG[2].length > 2) document.getElementById("MainStatuSSpan").style.backgroundColor = panel_bg;
 						var status_display_number = formatPhone(document.osdial_form.phone_code.value,document.osdial_form.phone_number.value);
 						document.getElementById("MainStatuSSpan").innerHTML = " Incoming: " + status_display_number + " Group- " + VDIC_data_MCIG[1] + " &nbsp; " + VDIC_fronter; 
 					}
@@ -6682,10 +6729,10 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 					}
 
 					document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML_OFF;
-// 					if (inbound_man > 0) document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
-// 					WebFormRefresH();
-                    if (inbound_man > 0) document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause<span class=ResumeButtonOff>Resume</span><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
-                    WebFormRefresH();
+					//if (inbound_man > 0) document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
+					//WebFormRefresH();
+                    			if (inbound_man > 0) document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause<span class=ResumeButtonOff>Resume</span><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
+                    			WebFormRefresH();
 					if (campaign_recording == 'ALLCALLS' || campaign_recording == 'ALLFORCE') all_record = 'YES';
 					if (view_scripts == 1 && CalL_ScripT_id.length > 0) {
 						// test code for scripts output

@@ -37,7 +37,7 @@ $cbinfo_bfc  ='yellow';
 $dispo_bg ='#B0C1D7';
 $dispo_bg2='#C1D6F0';
 $dispo_fc ='#25446D';
-$dispo_hide='#7297A1';
+$dispo_hide='#698DBB';
 
 $pause_bg ='#9CC9FF';
 $pause_bg2='#B0C3D7';
