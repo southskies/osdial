@@ -218,7 +218,7 @@ function report_agent_status() {
                 $stmt=sprintf("DELETE FROM osdial_live_agents WHERE user='%s';",mres($company_prefix.$agent));
                 $rslt=mysql_query($stmt, $link);
 
-                $stmt=sprintf("UPDATE osdial_conferences SET extension='' WHERE extension='%s' AND server_ip='%s';",mres($ELOext),mres($ELOserver));
+                $stmt=sprintf("UPDATE osdial_conferences SET extension='' WHERE extension='%s' AND server_ip='%s';",mres($extension),mres($server_ip));
                 $rslt=mysql_query($stmt, $link);
 
                 $table .= "<center>Agent has been emergency logged out.<br>Please, make sure they close their web browser</center><br>\n";
