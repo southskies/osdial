@@ -1050,6 +1050,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 
 			if($DBX) {print "*|EMPTY CHANNELS: $no_channels_12_counter|$#list_channels|$list_channels[1]";}
 
+			$endless_loop--;
 			### sleep for 40 hundredths of a second
 			usleep(1*400*1000);
 			if ($no_channels_12_counter == 3)
