@@ -20,6 +20,7 @@
 #
 #
 #
+session_start();
 
 # Includes
 require_once("include/includes.php");

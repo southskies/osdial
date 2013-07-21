@@ -94,8 +94,17 @@ $past_week_date = date("Y-m-d H:i:s",$week_old);
 
 $PHP_AUTH_USER='';
 $PHP_AUTH_PW='';
-if (isset($_SERVER['PHP_AUTH_USER'])) $PHP_AUTH_USER=$_SERVER['PHP_AUTH_USER'];
-if (isset($_SERVER['PHP_AUTH_PW'])) $PHP_AUTH_PW=$_SERVER['PHP_AUTH_PW'];
+if ($config['settings']['use_old_admin_auth']) {
+    if (isset($_SERVER['PHP_AUTH_USER'])) $PHP_AUTH_USER=$_SERVER['PHP_AUTH_USER'];
+    if (isset($_SERVER['PHP_AUTH_PW'])) $PHP_AUTH_PW=$_SERVER['PHP_AUTH_PW'];
+} else {
+    if (isset($_SESSION[KEY]['valid'])) {
+        if (isset($_SESSION[KEY]['PHP_AUTH_USER'])) $PHP_AUTH_USER=$_SESSION[KEY]['PHP_AUTH_USER'];
+        if (isset($_SESSION[KEY]['PHP_AUTH_PW'])) $PHP_AUTH_PW=$_SESSION[KEY]['PHP_AUTH_PW'];
+    }
+    if (empty($PHP_AUTH_USER)) $PHP_AUTH_USER=get_variable('PHP_AUTH_USER');
+    if (empty($PHP_AUTH_PW)) $PHP_AUTH_PW=get_variable('PHP_AUTH_PW');
+}
 $PHP_SELF=$_SERVER['PHP_SELF'];
 
 $t1="OSDial"; if (preg_match("/^Sli/",$config['settings']['admin_template'])) $t1=$config['settings']['admin_template'];
@@ -857,6 +866,7 @@ $use_cid_areacode_map = get_variable("use_cid_areacode_map");
 $use_recycle_gap = get_variable("use_recycle_gap");
 $units = get_variable("units");
 $use_default_expire = get_variable("use_default_expire");
+$use_old_admin_auth = get_variable("use_old_admin_auth");
 $updated = get_variable("updated");
 
 $VAdisplay = get_variable("VAdisplay");

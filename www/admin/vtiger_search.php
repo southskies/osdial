@@ -40,6 +40,7 @@
 #vtiger Server(TEST1)
 #Internal : 10.10.10.16
 #External : 55.55.55.56
+session_start();
 
 
 ### alter to connect to your vtiger database
@@ -49,6 +50,20 @@ echo 'Connected successfully';
 mysql_select_db("vtigercrm4_2");
 
 
+$PHP_AUTH_USER='';
+$PHP_AUTH_PW='';
+if ($config['settings']['use_old_admin_auth']) {
+    if (isset($_SERVER['PHP_AUTH_USER'])) $PHP_AUTH_USER=$_SERVER['PHP_AUTH_USER'];
+    if (isset($_SERVER['PHP_AUTH_PW'])) $PHP_AUTH_PW=$_SERVER['PHP_AUTH_PW'];
+} else {
+    if (isset($_SESSION[KEY]['valid'])) {
+        $_SESSION[KEY]['last_update'] = time();
+        if (isset($_SESSION[KEY]['PHP_AUTH_USER'])) $PHP_AUTH_USER=$_SESSION[KEY]['PHP_AUTH_USER'];
+        if (isset($_SESSION[KEY]['PHP_AUTH_PW'])) $PHP_AUTH_PW=$_SESSION[KEY]['PHP_AUTH_PW'];
+    }
+    if (empty($PHP_AUTH_USER)) $PHP_AUTH_USER=get_variable('PHP_AUTH_USER');
+    if (empty($PHP_AUTH_PW)) $PHP_AUTH_PW=get_variable('PHP_AUTH_PW');
+}
 $PHP_SELF=$_SERVER['PHP_SELF'];
 if (isset($_GET["address1"]))				{$address1=$_GET["address1"];}
 	elseif (isset($_POST["address1"]))		{$address1=$_POST["address1"];}
@@ -130,9 +145,6 @@ if (isset($_GET["submit"]))				{$submit=$_GET["submit"];}
 	elseif (isset($_POST["submit"]))		{$submit=$_POST["submit"];}
 if (isset($_GET["SUBMIT"]))				{$SUBMIT=$_GET["SUBMIT"];}
 	elseif (isset($_POST["SUBMIT"]))		{$SUBMIT=$_POST["SUBMIT"];}
-
-#$PHP_AUTH_USER = preg_replace("/[^0-9a-zA-Z]/","",$PHP_AUTH_USER);
-#$PHP_AUTH_PW = preg_replace("/[^0-9a-zA-Z]/","",$PHP_AUTH_PW);
 
 #$DB = '1';	# DEBUG override
 $US = '_';

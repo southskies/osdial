@@ -21,7 +21,6 @@
 #
 # 090410-1118 - Rename of Remote/Off-Hook Agent to External Agent.
 
-
 if ($ADD==131 && $SUB==2) {
     header ("Content-type: text/csv; charset=utf-8");
     header ("Content-Disposition: inline; filename=export-" . $list_id . '_' . date("Ymd-His") . ".csv");
@@ -32,7 +31,7 @@ if ($ADD==131 && $SUB==2) {
 #header ("Content-type: text/html; charset=utf-8");
 echo "<html>\n";
 echo "<head>\n";
-echo "  <!-- SESSION_ID: " . session_id() . " -->\n";
+#echo "  <!-- SESSION_ID: " . session_id() . " -->\n";
 echo "  <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/".$config['settings']['admin_template']."/styles.css\" media=\"screen\">\n";
 echo "  <link rel=\"stylesheet\" type=\"text/css\" href=\"styles-print.css\" media=\"print\">\n";
 

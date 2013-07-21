@@ -1832,6 +1832,12 @@ OSDial Server Trunks allows you to restrict the outgoing lines that are used on 
     &lt;br&gt;
     </item>
 
+    <item pathId="use_old_admin_auth" sectionId="51" title="Use Old Admin Authentication">
+    When set to '1', the system will use the old authentication method, also known as Basic Auth.&lt;br&gt;
+    When set to '0', the system will use Session based authentication in the admin sections.&lt;br&gt;
+    After changing this option, any previously cached authentication can cause issues, so you should restart both your desktop and server.
+    </item>
+
   </section>
 
   <section pathId="companies" sectionId="23" title="Multi-Company Configuration">

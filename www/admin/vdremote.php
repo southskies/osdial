@@ -29,14 +29,27 @@
 # 60619-1603 - Added variable filtering to eliminate SQL injection attack threat
 #
 # make sure you have added a user to the osdial_users MySQL table with at least user_level 4 to access this page the first time
+session_start();
 
 $version = '1.1.12';
 $build = '60619-1603';
 
 require("dbconnect.php");
 
-$PHP_AUTH_USER=$_SERVER['PHP_AUTH_USER'];
-$PHP_AUTH_PW=$_SERVER['PHP_AUTH_PW'];
+$PHP_AUTH_USER='';
+$PHP_AUTH_PW='';
+if ($config['settings']['use_old_admin_auth']) {
+    if (isset($_SERVER['PHP_AUTH_USER'])) $PHP_AUTH_USER=$_SERVER['PHP_AUTH_USER'];
+    if (isset($_SERVER['PHP_AUTH_PW'])) $PHP_AUTH_PW=$_SERVER['PHP_AUTH_PW'];
+} else {
+    if (isset($_SESSION[KEY]['valid'])) {
+        $_SESSION[KEY]['last_update'] = time();
+        if (isset($_SESSION[KEY]['PHP_AUTH_USER'])) $PHP_AUTH_USER=$_SESSION[KEY]['PHP_AUTH_USER'];
+        if (isset($_SESSION[KEY]['PHP_AUTH_PW'])) $PHP_AUTH_PW=$_SESSION[KEY]['PHP_AUTH_PW'];
+    }
+    if (empty($PHP_AUTH_USER)) $PHP_AUTH_USER=get_variable('PHP_AUTH_USER');
+    if (empty($PHP_AUTH_PW)) $PHP_AUTH_PW=get_variable('PHP_AUTH_PW');
+}
 $PHP_SELF=$_SERVER['PHP_SELF'];
 if (isset($_GET["ADD"]))				{$ADD=$_GET["ADD"];}
 	elseif (isset($_POST["ADD"]))		{$ADD=$_POST["ADD"];}
@@ -75,16 +88,14 @@ if ($force_logout)
 {
   if( (strlen($PHP_AUTH_USER)>0) or (strlen($PHP_AUTH_PW)>0) )
 	{
-    Header("WWW-Authenticate: Basic realm=\"OSIDAL-PROJECTS\"");
-    Header("HTTP/1.0 401 Unauthorized");
+    if ($config['settings']['use_old_admin_auth']) {
+        Header("WWW-Authenticate: Basic realm=\"OSIDAL-PROJECTS\"");
+        Header("HTTP/1.0 401 Unauthorized");
+    }
 	}
     echo "You have now logged out. Thank you\n";
     exit;
 }
-
-$PHP_AUTH_USER = preg_replace("/[^0-9a-zA-Z]/","",$PHP_AUTH_USER);
-$PHP_AUTH_PW = preg_replace("/[^0-9a-zA-Z]/","",$PHP_AUTH_PW);
-
 
 $popup_page = './closer_popup.php';
 $STARTtime = date("U");
@@ -92,7 +103,7 @@ $NOW_DATE = date("Y-m-d");
 $NOW_TIME = date("Y-m-d H:i:s");
 if (!isset($query_date)) {$query_date = $NOW_DATE;}
 
-	$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 3;";
+	$stmt="SELECT count(*) from osdial_users where user='".mysql_real_escape_string($PHP_AUTH_USER)."' and pass='".mysql_real_escape_string($PHP_AUTH_PW)."' and user_level > 3;";
 	if ($DB) {echo "|$stmt|\n";}
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -105,8 +116,10 @@ $browser = getenv("HTTP_USER_AGENT");
 
   if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth))
 	{
-    Header("WWW-Authenticate: Basic realm=\"OSIDAL-PROJECTS\"");
-    Header("HTTP/1.0 401 Unauthorized");
+        if ($config['settings']['use_old_admin_auth']) {
+            Header("WWW-Authenticate: Basic realm=\"OSIDAL-PROJECTS\"");
+            Header("HTTP/1.0 401 Unauthorized");
+        }
     echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
     exit;
 	}
@@ -118,12 +131,12 @@ $browser = getenv("HTTP_USER_AGENT");
 		{
 		$office_no=strtoupper($PHP_AUTH_USER);
 		$password=strtoupper($PHP_AUTH_PW);
-		$stmt="SELECT full_name from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW'";
+		$stmt="SELECT full_name from osdial_users where user='".mysql_real_escape_string($PHP_AUTH_USER)."' and pass='".mysql_real_escape_string($PHP_AUTH_PW)."'";
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		$LOGfullname=$row[0];
 
-		$stmt="SELECT count(*) from osdial_remote_agents where user_start='$PHP_AUTH_USER';";
+		$stmt="SELECT count(*) from osdial_remote_agents where user_start='".mysql_real_escape_string($PHP_AUTH_USER)."';";
 		if ($DB) {echo "|$stmt|\n";}
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
@@ -131,7 +144,7 @@ $browser = getenv("HTTP_USER_AGENT");
 
 		if($authx>0)
 			{
-			$stmt="SELECT remote_agent_id,server_ip,number_of_lines from osdial_remote_agents where user_start='$PHP_AUTH_USER';";
+			$stmt="SELECT remote_agent_id,server_ip,number_of_lines from osdial_remote_agents where user_start='".mysql_real_escape_string($PHP_AUTH_USER)."';";
 			if ($DB) {echo "|$stmt|\n";}
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);

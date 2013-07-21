@@ -22,6 +22,10 @@
 #
 require_once('functions.php');
 
+define( "SECRET", "OSDIAL:15375a154eeb" );
+define( "HASH", md5("/opt/osdial/html/admin" . SECRET) );
+define( "KEY", "sess_" . HASH );
+
 $config = array();
 
 $conffile = "/etc/osdial.conf";

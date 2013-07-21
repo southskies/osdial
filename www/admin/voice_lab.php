@@ -30,11 +30,24 @@
 # 61220-1050 - First Build
 # 70115-1246 - Added ability to define an exten to play
 #
+session_start();
 
 require("dbconnect.php");
 
-$PHP_AUTH_USER=$_SERVER['PHP_AUTH_USER'];
-$PHP_AUTH_PW=$_SERVER['PHP_AUTH_PW'];
+$PHP_AUTH_USER='';
+$PHP_AUTH_PW='';
+if ($config['settings']['use_old_admin_auth']) {
+    if (isset($_SERVER['PHP_AUTH_USER'])) $PHP_AUTH_USER=$_SERVER['PHP_AUTH_USER'];
+    if (isset($_SERVER['PHP_AUTH_PW'])) $PHP_AUTH_PW=$_SERVER['PHP_AUTH_PW'];
+} else {
+    if (isset($_SESSION[KEY]['valid'])) {
+        $_SESSION[KEY]['last_update'] = time();
+        if (isset($_SESSION[KEY]['PHP_AUTH_USER'])) $PHP_AUTH_USER=$_SESSION[KEY]['PHP_AUTH_USER'];
+        if (isset($_SESSION[KEY]['PHP_AUTH_PW'])) $PHP_AUTH_PW=$_SESSION[KEY]['PHP_AUTH_PW'];
+    }
+    if (empty($PHP_AUTH_USER)) $PHP_AUTH_USER=get_variable('PHP_AUTH_USER');
+    if (empty($PHP_AUTH_PW)) $PHP_AUTH_PW=get_variable('PHP_AUTH_PW');
+}
 $PHP_SELF=$_SERVER['PHP_SELF'];
 if (isset($_GET["server_ip"]))				{$server_ip=$_GET["server_ip"];}
 	elseif (isset($_POST["server_ip"]))		{$server_ip=$_POST["server_ip"];}
@@ -55,9 +68,6 @@ if (isset($_GET["submit"]))				{$submit=$_GET["submit"];}
 if (isset($_GET["SUBMIT"]))				{$SUBMIT=$_GET["SUBMIT"];}
 	elseif (isset($_POST["SUBMIT"]))	{$SUBMIT=$_POST["SUBMIT"];}
 
-$PHP_AUTH_USER = preg_replace("/[^0-9a-zA-Z]/","",$PHP_AUTH_USER);
-$PHP_AUTH_PW = preg_replace("/[^0-9a-zA-Z]/","",$PHP_AUTH_PW);
-
 $STARTtime = date("U");
 $TODAY = date("Y-m-d");
 $MYSQL_datetime = date("Y-m-d H:i:s");
@@ -68,7 +78,7 @@ $local_DEF = 'Local/';
 $local_AMP = '@';
 $ext_context = 'demo';
 
-	$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 7;";
+	$stmt="SELECT count(*) from osdial_users where user='".mysql_real_escape_string($PHP_AUTH_USER)."' and pass='".mysql_real_escape_string($PHP_AUTH_PW)."' and user_level > 7;";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$auth=$row[0];
@@ -80,8 +90,10 @@ $browser = getenv("HTTP_USER_AGENT");
 
   if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth))
 	{
-    Header("WWW-Authenticate: Basic realm=\"OSIDAL-PROJECTS\"");
-    Header("HTTP/1.0 401 Unauthorized");
+    if ($config['settings']['use_old_admin_auth']) {
+        Header("WWW-Authenticate: Basic realm=\"OSIDAL-PROJECTS\"");
+        Header("HTTP/1.0 401 Unauthorized");
+    }
     echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
     exit;
 	}
@@ -92,7 +104,7 @@ $browser = getenv("HTTP_USER_AGENT");
 		{
 		$office_no=strtoupper($PHP_AUTH_USER);
 		$password=strtoupper($PHP_AUTH_PW);
-			$stmt="SELECT full_name from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW'";
+			$stmt="SELECT full_name from osdial_users where user='".mysql_real_escape_string($PHP_AUTH_USER)."' and pass='".mysql_real_escape_string($PHP_AUTH_PW)."'";
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 			$LOGfullname=$row[0];
