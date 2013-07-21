@@ -48,34 +48,32 @@ while (1) {
 	my $error = 0;
 	foreach my $int (keys %{$interfaces}) {
 		# Get loadavg info;
-		my $load1 = 0;
-		my $load5 = 0;
-		my $load10 = 0;
-		my $loadprocs = '';
-		my $loadlastpid = '';
-		open(CPU,"/proc/loadavg");
-		while (my $inp = <CPU>) {
-			chomp($inp);
-			($load1,$load5,$load10,$loadprocs,$loadlastpid) = split(/ /,$inp);
-		}
-		close(CPU);
+		my $loadstr = `sar -q 1 1 | grep Average | awk '{ print (\$2)"/"(\$3)" "(\$4)" "(\$5)" "(\$6) }'`;
+		chomp($loadstr);
+		my($loadprocs,$load1,$load5,$load10) = split(/ /, $loadstr);
 
 		#Get memory info
 		my %meminfo;
-		open(MEM,"/proc/meminfo");
-		while (my $inp = <MEM>) {
-			chomp($inp);
-			$inp =~ s/ kB$//;
-			my($k,$v) = split(/:\s*/,$inp);
-			$meminfo{$k} = $v;
-		}
-		close(MEM);
+		my @mem = split(/\n|\s+/,`free | grep -E 'Mem|Swap'`);
+		$meminfo{MemTotal} = $mem[1];
+		$meminfo{MemFree} = $mem[3];
+		$meminfo{Cached} = $mem[6];
+		$meminfo{SwapTotal} = $mem[8];
+		$meminfo{SwapFree} = $mem[10];
+		$meminfo{SwapCached} = 0;
 		my $mempct = sprintf('%3.2f%%',((($meminfo{MemTotal} - ($meminfo{MemFree} + $meminfo{Cached})) / $meminfo{MemTotal}) * 100));
 		my $swpused = ($meminfo{SwapTotal} - ($meminfo{SwapFree} + $meminfo{SwapCached}));
 
-		my $cpupct = `sar -u 1 5 | grep Average | awk '{ print 100 - \$8 }'`;
+		my $cpupcts = `sar -u 1 2 | grep Average | awk '{ print (\$3)" "(\$5)" "(\$8)" "(100 - \$8) }'`;
+		chomp($cpupcts);
+		my($ucpupct,$scpupct,$icpupct,$cpupct) = split(/ /, $cpupcts);
+		my $ucpupct = $ucpupct + 0;
+		my $scpupct = $scpupct + 0;
+		my $icpupct = $icpupct + 0;
 		my $cpupct = $cpupct + 0;
-		chomp($cpupct);
+		my $ucpupct = sprintf('%3.2f%%',$ucpupct);
+		my $scpupct = sprintf('%3.2f%%',$scpupct);
+		my $icpupct = sprintf('%3.2f%%',$icpupct);
 		my $cpupct = sprintf('%3.2f%%',$cpupct);
 
 		my $timestamp = `date +\%Y\%m\%d\%H\%M\%S`;
@@ -97,6 +95,7 @@ while (1) {
 		$kvh{mem_free} = ($meminfo{MemFree} + $meminfo{Cached});
 		$kvh{mem_pct} = $mempct;
 		$kvh{swap_used} = $swpused;
+		my($t,$procs) = split(/\//, $loadprocs);
 		my @kvary;
 		foreach my $k (sort keys %kvh) {
 			if ($use_multicast) {
@@ -113,6 +112,12 @@ while (1) {
 		} else {
 			my $sql = 'UPDATE server_stats SET ' . join(',',@kvary) . " WHERE server_ip='" . $IPs->{$int} . "';";
 			$interfaces->{$int}->sql_execute($sql);
+			my $sret = $interfaces->{$int}->sql_query("SELECT server_profile,sys_perf_log FROM servers WHERE server_ip='" . $IPs->{$int} . "';");
+			# AIO and DIALER servers run AST_update, which already updates the server performance table.
+			if ($sret->{sys_perf_log} eq 'Y' and $sret->{server_profile} ne 'AIO' and $sret->{server_profile} ne 'DIALER') {
+				$sql = sprintf("INSERT INTO server_performance SET start_time=NOW(),server_ip='%s',sysload='%s',freeram='%s',usedram='%s',processes='%s',cpu_user_percent='%s',cpu_system_percent='%s',cpu_idle_percent='%s' ON DUPLICATE KEY UPDATE start_time=addtime(start_time,1);",$IPs->{$int},int($kvh{load_one}),int($kvh{mem_free}/1024),int(($kvh{mem_total}-$kvh{mem_free})/1024),$procs,int($ucpupct),int($scpupct),int($icpupct));
+				$interfaces->{$int}->sql_execute($sql);
+			}
 		}
 	}
 	if ($use_multicast) {
