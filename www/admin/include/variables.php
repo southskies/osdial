@@ -440,6 +440,7 @@ $dedicated_trunks = get_variable("dedicated_trunks");
 $default_acct_method = get_variable("default_acct_method");
 $default_acct_cutoff = get_variable("default_acct_cutoff");
 $default_acct_expire_days = get_variable("default_acct_expire_days");
+$default_ext_context = get_variable("default_ext_context");
 $default_phone_code = get_variable("default_phone_code");
 $default_date_format = get_variable("default_date_format");
 $default_xfer_group = get_variable("default_xfer_group");

@@ -40,6 +40,14 @@ function ShowCompanySettings() {
     $html .= "          <td align=right>Multi-Company Administator:</td>\n";
     $html .= "          <td align=left><input type=text name=multicompany_admin size=10 maxlength=15 value=\"$system_settings[multicompany_admin]\">".helptag("system_settings-multicompany_admin")."</td>\n";
     $html .= "        </tr>\n";
+    $html .= "<tr bgcolor=$oddrows><td align=right>Default Ext Context: </td><td align=left>";
+    $contexts = array();
+    $contexts['osdialBLOCK']='Block direct calling to outbound and extensions';
+    $contexts['osdialEXT']='Block direct outbound, Allow direct extensions';
+    $contexts['osdial']='Allow direct calling to outbound and extensions';
+    $contexts['default']='Same as osdial context';
+    $html .= editableSelectBox($contexts, 'default_ext_context', $system_settings['default_ext_context'], 100, 100, '');
+    $html .= helptag("system_settings-default_ext_context")."</td></tr>\n";
 
     return $html;
 }
