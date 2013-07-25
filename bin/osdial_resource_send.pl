@@ -30,7 +30,6 @@ chomp($hostname);
 my $domain = `hostname -d`;
 chomp($domain);
 my $label = $ARGV[0];
-$label = $hostname if ($label eq "");
 
 # Get CPU info;
 my $cpucnt = 0;
@@ -79,6 +78,12 @@ while (1) {
 		my $timestamp = `date +\%Y\%m\%d\%H\%M\%S`;
 		chomp $timestamp;
 
+		my $sret = $interfaces->{$int}->sql_query("SELECT server_ip,server_description,server_profile,sys_perf_log FROM servers WHERE server_ip='" . $IPs->{$int} . "';");
+		if (defined($sret->{server_ip}) and $sret->{server_ip} ne '') {
+			$label = $sret->{server_description} if ($label eq "");
+		}
+		$label = $hostname if ($label eq "");
+
 		my %kvh;
 		$kvh{ip} = $IPs->{$int};
 		$kvh{timestamp} = $timestamp;
@@ -112,7 +117,6 @@ while (1) {
 		} else {
 			my $sql = 'UPDATE server_stats SET ' . join(',',@kvary) . " WHERE server_ip='" . $IPs->{$int} . "';";
 			$interfaces->{$int}->sql_execute($sql);
-			my $sret = $interfaces->{$int}->sql_query("SELECT server_profile,sys_perf_log FROM servers WHERE server_ip='" . $IPs->{$int} . "';");
 			# AIO and DIALER servers run AST_update, which already updates the server performance table.
 			if ($sret->{sys_perf_log} eq 'Y' and $sret->{server_profile} ne 'AIO' and $sret->{server_profile} ne 'DIALER') {
 				$sql = sprintf("INSERT INTO server_performance SET start_time=NOW(),server_ip='%s',sysload='%s',freeram='%s',usedram='%s',processes='%s',cpu_user_percent='%s',cpu_system_percent='%s',cpu_idle_percent='%s' ON DUPLICATE KEY UPDATE start_time=addtime(start_time,1);",$IPs->{$int},int($kvh{load_one}),int($kvh{mem_free}/1024),int(($kvh{mem_total}-$kvh{mem_free})/1024),$procs,int($ucpupct),int($scpupct),int($icpupct));
