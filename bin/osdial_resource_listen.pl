@@ -27,6 +27,11 @@ my %hosts;
 my $osdial;
 $osdial = OSDial->new('DB'=>$DB) if ($use_multicast);
 
+my $dosort='';
+#$dosort = "host";
+$dosort = "label";
+#$dosort = "ip";
+
 while (1) {
 	my $count=0;
 	while ($interface = initinterfaces($interface)) {
@@ -112,13 +117,25 @@ sub output_html {
 	$html .= "  </tr>\n";
 	my $col = '$oddrows';
 	my %uhost;
+	my %hsort;
+	my %lsort;
+	my %isort;
+	my %ssort;
 	foreach my $host (sort keys %hosts) {
-		if ($hosts{$host}->{host} and $uhost{$hosts{$host}->{host}} < 1) {
+		$hsort{$hosts{$host}->{host}} = $host;
+		$lsort{$hosts{$host}->{label}} = $host;
+		$isort{$host} = $host;
+	}
+	%ssort = %hsort if ($dosort eq 'host');
+	%ssort = %lsort if ($dosort eq 'label');
+	%ssort = %isort if ($dosort eq 'ip');
+	foreach my $host (sort keys %ssort) {
+		if ($hosts{$ssort{$host}}->{host} and $uhost{$hosts{$ssort{$host}}->{host}} < 1) {
 			$html .= "  <tr bgcolor=$col class=row>\n";
 			$html .= "    ";
-			$html .= "<td><font size=1 color=$default_text>" . $hosts{$host}->{label} . "</font></td>";
-			$html .= "<td align=right><font size=1 color=$default_text>" . $hosts{$host}->{cpu_pct} . "</font></td>";
-			$html .= "<td align=right><font size=1 color=$default_text>" . $hosts{$host}->{mem_pct} . "</font></td>";
+			$html .= "<td><font size=1 color=$default_text>" . $hosts{$ssort{$host}}->{label} . "</font></td>";
+			$html .= "<td align=right><font size=1 color=$default_text>" . $hosts{$ssort{$host}}->{cpu_pct} . "</font></td>";
+			$html .= "<td align=right><font size=1 color=$default_text>" . $hosts{$ssort{$host}}->{mem_pct} . "</font></td>";
 			$html .= "\n";
 			$html .= "  </tr>\n";
 			if ($col eq '$oddrows') {
@@ -127,7 +144,7 @@ sub output_html {
 				$col = '$oddrows';
 			}
 		}
-		$uhost{$hosts{$host}->{host}}++;
+		$uhost{$hosts{$ssort{$host}}->{host}}++;
 	}
 	$html .= "  <tr bgcolor=$info_back><td colspan=3><font size=1></font></td></tr>\n";
 	$html .= "</table>\n";
@@ -175,25 +192,37 @@ sub output_html_extended {
 	$html .= "</tr>\n";
 	my $col = '$oddrows';
 	my %uhost;
+	my %hsort;
+	my %lsort;
+	my %isort;
+	my %ssort;
 	foreach my $host (sort keys %hosts) {
-		if ($hosts{$host}->{host} and $uhost{$hosts{$host}->{host}} < 1) {
+		$hsort{$hosts{$host}->{host}} = $host;
+		$lsort{$hosts{$host}->{label}} = $host;
+		$isort{$host} = $host;
+	}
+	%ssort = %hsort if ($dosort eq 'host');
+	%ssort = %lsort if ($dosort eq 'label');
+	%ssort = %isort if ($dosort eq 'ip');
+	foreach my $host (sort keys %ssort) {
+		if ($hosts{$ssort{$host}}->{host} and $uhost{$hosts{$ssort{$host}}->{host}} < 1) {
 			$html .= "  <tr bgcolor=$col class=row>\n";
 			$html .= "    ";
-			$html .= "<td><font size=1 color=$default_text>" . $hosts{$host}->{label} . "</font></td>";
-			$html .= "<td><font size=1 color=$default_text>" . $hosts{$host}->{ip} . "</font></td>";
-			$html .= "<td><font size=1 color=$default_text>" . $hosts{$host}->{host} . "</font></td>";
-			$html .= "<td><font size=1 color=$default_text>" . $hosts{$host}->{domain} . "</font></td>";
-			$html .= "<td><font size=1 color=$default_text>" . $hosts{$host}->{timestamp} . "</font></td>";
-			$html .= "<td align=right><font size=1 color=$default_text>" . $hosts{$host}->{load_one} . "</font></td>";
-			$html .= "<td align=right><font size=1 color=$default_text>" . $hosts{$host}->{load_five} . "</font></td>";
-			$html .= "<td align=right><font size=1 color=$default_text>" . $hosts{$host}->{load_ten} . "</font></td>";
-			$html .= "<td align=right><font size=1 color=$default_text>" . $hosts{$host}->{load_procs} . "</font></td>";
-			$html .= "<td align=right><font size=1 color=$default_text>" . $hosts{$host}->{cpu_count} . "</font></td>";
-			$html .= "<td align=right><font size=1 color=$default_text>" . $hosts{$host}->{cpu_pct} . "</font></td>";
-			$html .= "<td align=right><font size=1 color=$default_text>" . $nf->format_number($hosts{$host}->{mem_total}) . "k</font></td>";
-			$html .= "<td align=right><font size=1 color=$default_text>" . $nf->format_number($hosts{$host}->{mem_free}) . "k</font></td>";
-			$html .= "<td align=right><font size=1 color=$default_text>" . $hosts{$host}->{mem_pct} . "</font></td>";
-			$html .= "<td align=right><font size=1 color=$default_text>" . $nf->format_number($hosts{$host}->{swap_used}) . "k</font></td>";
+			$html .= "<td><font size=1 color=$default_text>" . $hosts{$ssort{$host}}->{label} . "</font></td>";
+			$html .= "<td><font size=1 color=$default_text>" . $hosts{$ssort{$host}}->{ip} . "</font></td>";
+			$html .= "<td><font size=1 color=$default_text>" . $hosts{$ssort{$host}}->{host} . "</font></td>";
+			$html .= "<td><font size=1 color=$default_text>" . $hosts{$ssort{$host}}->{domain} . "</font></td>";
+			$html .= "<td><font size=1 color=$default_text>" . $hosts{$ssort{$host}}->{timestamp} . "</font></td>";
+			$html .= "<td align=right><font size=1 color=$default_text>" . $hosts{$ssort{$host}}->{load_one} . "</font></td>";
+			$html .= "<td align=right><font size=1 color=$default_text>" . $hosts{$ssort{$host}}->{load_five} . "</font></td>";
+			$html .= "<td align=right><font size=1 color=$default_text>" . $hosts{$ssort{$host}}->{load_ten} . "</font></td>";
+			$html .= "<td align=right><font size=1 color=$default_text>" . $hosts{$ssort{$host}}->{load_procs} . "</font></td>";
+			$html .= "<td align=right><font size=1 color=$default_text>" . $hosts{$ssort{$host}}->{cpu_count} . "</font></td>";
+			$html .= "<td align=right><font size=1 color=$default_text>" . $hosts{$ssort{$host}}->{cpu_pct} . "</font></td>";
+			$html .= "<td align=right><font size=1 color=$default_text>" . $nf->format_number($hosts{$ssort{$host}}->{mem_total}) . "k</font></td>";
+			$html .= "<td align=right><font size=1 color=$default_text>" . $nf->format_number($hosts{$ssort{$host}}->{mem_free}) . "k</font></td>";
+			$html .= "<td align=right><font size=1 color=$default_text>" . $hosts{$ssort{$host}}->{mem_pct} . "</font></td>";
+			$html .= "<td align=right><font size=1 color=$default_text>" . $nf->format_number($hosts{$ssort{$host}}->{swap_used}) . "k</font></td>";
 			$html .= "\n";
 			$html .= "  </tr>\n";
 			if ($col eq '$oddrows') {
@@ -202,7 +231,7 @@ sub output_html_extended {
 				$col = '$oddrows';
 			}
 		}
-		$uhost{$hosts{$host}->{host}}++;
+		$uhost{$hosts{$ssort{$host}}->{host}}++;
 	}
 	$html .= "<tr>\n";
 	$html .= "  <td bgcolor=$info_back colspan=15 align=center><font color=white size=1><b></b></font></td>\n";
