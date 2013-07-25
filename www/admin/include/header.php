@@ -412,7 +412,7 @@ if (OSDstrlen($users_hh) > 1) {
     echo "    <table border=0 cellpadding=0 cellspacing=0 width=100%>";
     echo "      <tr class='no-ul' height=22>\n";
     echo "        <td bgcolor=$bgmenu_color width=5>&nbsp;</td>";
-    echo "        <td class=$agent_show_class align=center bgcolor=$agent_show_color><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF\"> Show Agents </a></span></td>";
+    echo "        <td class=$agent_show_class align=center bgcolor=$agent_show_color><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=0\"> Show Agents </a></span></td>";
     echo "        <td class=$agent_add_class align=center bgcolor=$agent_add_color><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=1\"> Add A New Agent </a></span></td>";
     echo "        <td class=$agent_copy_class align=center bgcolor=$agent_copy_color><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=1A\"> Copy Agent </a></span></td>";
     echo "        <td class=$agent_search_class align=center bgcolor=$agent_search_color><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=550\"> Search For An Agent </a></span></td>";
