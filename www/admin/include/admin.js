@@ -22,6 +22,7 @@
 */
 
 // Globals
+var sess_timer = null;
 var oac_timer = null;
 var oac_last_script = '';
 var oac_last_params = '';
@@ -408,6 +409,39 @@ function refreshOAC(script, params, delay) {
 			}
 		}
 		xmlhttp.send(unescape(params));
+		if (async) {
+			xmlhttp.onreadystatechange = handleresponse;
+		} else {
+			handleresponse();
+		}
+		delete xmlhttp;
+	}
+}
+
+function sessionCheck() {
+	var xmlhttp = getXHR();
+	if (xmlhttp) {
+		async = true;
+		xmlhttp.open('POST', window.location.pathname, async);
+		xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+		handleresponse = function() {
+			if (!async || xmlhttp.readyState == 4) {
+				if (xmlhttp.status == 200) {
+					htmlcontent = xmlhttp.responseText;
+					if (htmlcontent=='EXPIRED') window.location=window.location.pathname+'?sess_timeout=1';
+					if (htmlcontent=='AUTH_FAILED') window.location=window.location.pathname+'?sess_login=1';
+				}
+				if (sess_timer != null) {
+					clearTimeout(sess_timer);
+					sess_timer = null;
+				}
+				sess_timer = setTimeout(function() {
+					sessionCheck();
+				},
+				60000);
+			}
+		}
+		xmlhttp.send("sess_check=1");
 		if (async) {
 			xmlhttp.onreadystatechange = handleresponse;
 		} else {

@@ -49,6 +49,7 @@ if (!empty($_COOKIE['webClientDST'])) $webClientDST = $_COOKIE['webClientDST'];
 if ($webClientDST) $webClientAdjGMT = $webClientGMT - 1;
 echo "  <!-- webServerGMT:" . $webServerGMT. " webServerDST:" . $webServerDST . " webServerAdjGMT:" . $webServerAdjGMT . " -->\n";
 echo "  <!-- webClientGMT:" . $webClientGMT. " webClientDST:" . $webClientDST . " webClientAdjGMT:" . $webClientAdjGMT . " -->\n";
+$sessjs='';
 $oacjs='';
 if ($ADD==999999 && ($SUB==11 || $SUB==12 || $SUB==13 || $SUB==14 )) {
     if (empty($RR) and !empty($useOAC)) $RR=2;
@@ -61,16 +62,19 @@ if ($ADD==999999 && ($SUB==11 || $SUB==12 || $SUB==13 || $SUB==14 )) {
         $metadetail .= "&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo";
     }
     if (empty($OAC)) {
+        $sessjs = "sess_timer=setTimeout(function() { sessionCheck(); },60000);";
         if (!empty($useOAC)) {
             $oacjs="setTimeout(function() { refreshOAC('$PHP_SELF','".urlencode("useOAC=$useOAC&OAC=$useOAC&ADD=$ADD&SUB=$SUB&RR=$RR&DB=$DB&adastats=$adastats&active_only=$active_only$metadetail")."',".($RR*1000)."); }, ".($RR*1000).");";
         } else {
             echo "  <meta http-equiv=Refresh content=\"$RR; URL=$PHP_SELF?ADD=$ADD&SUB=$SUB&RR=$RR&DB=$DB&adastats=$adastats&active_only=$active_only$metadetail\">\n";
         }
     }
+} else {
+    $sessjs = "sess_timer=setTimeout(function() { sessionCheck(); },60000);";
 }
 echo "</head>\n";
 
-echo "<body bgcolor=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0 onload=\"osdialOnLoad(); $oacjs\" onunload=\"osdialOnUnload()\">\n";
+echo "<body bgcolor=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0 onload=\"osdialOnLoad(); $sessjs$oacjs\" onunload=\"osdialOnUnload()\">\n";
 
 echo "<script language=\"JavaScript\">\n";
 echo "document.write(getCalendarStyles());\n";

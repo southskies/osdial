@@ -24,6 +24,9 @@ require_once("variables.php");
 
 $use_basic_auth=($config['settings']['use_old_admin_auth']*1);
 $sess_login=get_variable('sess_login');
+$sess_check=get_variable('sess_check');
+$sess_timeout=get_variable('sess_timeout');
+$session_expiry=60*30;
 
 # If $osdial_skip_auth is not set, this script will attempt to use Basic authentication.
 # If $osdial_skip_auth is set, it is assumed that the autorization is occuring elsewhere...like the API.
@@ -54,6 +57,36 @@ if (!isset($osdial_skip_auth)) {
             header( "location: ".$config['settings']['admin_home_url'] );
 	    }
         $fps = "OSDIAL|FORCELOGOUT|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|||\n";
+        $failexit=1;
+
+
+    } elseif ($sess_check) {
+        if ($use_base_auth==0) {
+            if (isset($_SESSION[KEY]['valid'])) {
+                if (time()>$_SESSION[KEY]['last_update']+$session_expiry) {
+                    echo "EXPIRED";
+                } else {
+                    if (time()>$_SESSION[KEY]['LOG_time']+60) {
+                        $tmpLOG = osdial_authenticate($_SESSION[KEY]['PHP_AUTH_USER'], $_SESSION[KEY]['PHP_AUTH_PW']);
+                        if ($tmpLOG['error']>0) {
+                            $_SESSION = array();
+                            $_SESSION[KEY]['message'] = "Session Reauthorization Failed!";
+                            echo "AUTH_FAILED";
+                        } else {
+                            $_SESSION[KEY]['LOG'] = $tmpLOG;
+                            $_SESSION[KEY]['LOG_time'] = time();
+                            echo "OK";
+                        }
+                    } else {
+                        echo "OK";
+                    }
+                }
+            } else {
+                echo "INVALID";
+            }
+        } else {
+            echo "OK";
+        }
         $failexit=1;
 
 
@@ -96,67 +129,72 @@ if (!isset($osdial_skip_auth)) {
                 $message = $_SESSION[KEY]['message'];
                 unset($_SESSION[KEY]['message']);
 
-                $jskf = "var jskf = function(evt) { var key; if (evt.keyCode) { key = evt.keyCode; } else if (typeof(e.which) != 'undefined') { key = evt.which; } if (key == 13) {document.getElementById('PHP_AUTH_PW').focus(); return false;}};";
-                $jskd = "var jskd = function(evt) { var key; if (evt.keyCode) { key = evt.keyCode; } else if (typeof(e.which) != 'undefined') { key = evt.which; } if (key == 13) {document.osdial_login.submit(); return false;}};";
-                # Session Based Login Form, The form must go to PHP_SELF and have a destination ADD.
-                echo "<html>\n";
-                echo "  <head>\n";
-                echo "    <meta name=\"Copyright\" content=\"&copy; 2013 Lott Caskey\">\n";
-                echo "    <meta name=\"Robots\" content=\"none\">\n";
-                echo "    <meta name=\"Version\" content=\"SVN_Version/SVN_Build\">\n";
-                echo "    <!-- VERSION: SVN_Version     BUILD: SVN_Build -->\n";
-                echo "    <title>OSDial: Agent & Campaign Management - System Administration - Login</title>\n";
-                echo "    <link rel=\"stylesheet\" type=\"text/css\" href=\"../agent/templates/default/styles.css\" media=\"screen\">\n";
-                echo "  </head>\n";
-                echo "  <body bgcolor=white name=osdial>\n";
-                echo "    <form name=osdial_login id=osdial_login action=\"$PHP_SELF\" method=post autocomplete=off>\n";
-                echo "      <input type=hidden name=ADD value=\"10\">\n";
-                echo "      <input type=hidden name=SUB value=\"\">\n";
-                echo "      <input type=hidden name=DB value=\"\">\n";
-                echo "      <div class=containera>\n";
-                echo "        <div class=acrosslogin2>\n";
-                echo "          <table align=center width=500 cellpadding=0 cellspacing=0 border=0>\n";
-                echo "            <tr><td align=center colspan=4>&nbsp;</td></tr>\n";
-                echo "            <tr>\n";
-                echo "              <td align=left>&nbsp;&nbsp;</td>\n";
-                echo "              <td align=center colspan=2><font color=#1C4754><b>OSDial</b><br><br>- Agent & Campaign Management -<br>- System Administration -</font></td>\n";
-                echo "              <td align=left><font size=1>&nbsp;</font></td>\n";
-                echo "            </tr>\n";
-                echo "            <tr height='30px'><td align=left colspan=4><font size=1>&nbsp;</font></td></tr>\n";
-                echo "            <tr>\n";
-                echo "              <td align=left><font size=1>&nbsp;</font></td>\n";
-                echo "              <td align=right><font color=#1C4754>Username:&nbsp;</font></td>\n";
-                echo "              <td align=left><input type=text id=PHP_AUTH_USER name=PHP_AUTH_USER size=20 maxlength=30></td>\n";
-                echo "              <td align=left><font size=1>&nbsp;</font></td>\n";
-                echo "            </tr>\n";
-                echo "            <rt>\n";
-                echo "              <td align=left><font size=1>&nbsp;</font></td>\n";
-                echo "              <td align=right><font color=#1C4754>Password:&nbsp;</font></td>\n";
-                echo "              <td align=left><input type=password id=PHP_AUTH_PW name=PHP_AUTH_PW size=20 maxlength=30></td>\n";
-                echo "              <td align=left><font size=1>&nbsp;</font></td>\n";
-                echo "            </tr>\n";
-                echo "            <tr height='60px'><td colspan=4><center><font size=2 color=red><b>$message</b></font></center></td></tr>\n";
-                echo "            <tr>\n";
-                echo "              <td align=left><font size=1>&nbsp;</font></td>\n";
-                echo "              <td align=center colspan=2><input class=submit type=button onclick=\"document.osdial_login.submit(); return false;\" name=SUBMIT value=Submit></td>\n";
-                echo "              <td align=left><font size=1>&nbsp;</font></td>\n";
-                echo "            </tr>\n";
-                echo "            <tr>\n";
-                echo "              <td align=right colspan=4 class=rbborder><font size=1><br>&nbsp;Version: SVN_Version</font>&nbsp;</td>\n";
-                echo "            </tr>\n";
-                echo "          </table>\n";
-                echo "        </div>\n";
-                echo "      </div>\n";
-                echo "    </form>\n";
-                echo "    <script type=\"text/javascript\">\n";
-                echo "      $jskf\n";
-                echo "      $jskd\n";
-                echo "      document.getElementById('PHP_AUTH_USER').onkeydown=jskf;\n";
-                echo "      document.getElementById('PHP_AUTH_PW').onkeydown=jskd;\n";
-                echo "    </script>\n";
-                echo "  </body>\n";
-                echo "</html>\n";
-                exit;
+                if (($_SESSION[KEY]['attempt']*1)>3) {
+                    header( "location: $PHP_SELF?force_logout=1" );
+                } else {
+
+                    $jskf = "var jskf = function(evt) { var key; if (evt.keyCode) { key = evt.keyCode; } else if (typeof(e.which) != 'undefined') { key = evt.which; } if (key == 13) {document.getElementById('PHP_AUTH_PW').focus(); return false;}};";
+                    $jskd = "var jskd = function(evt) { var key; if (evt.keyCode) { key = evt.keyCode; } else if (typeof(e.which) != 'undefined') { key = evt.which; } if (key == 13) {document.osdial_login.submit(); return false;}};";
+                    # Session Based Login Form, The form must go to PHP_SELF and have a destination ADD.
+                    echo "<html>\n";
+                    echo "  <head>\n";
+                    echo "    <meta name=\"Copyright\" content=\"&copy; 2013 Lott Caskey\">\n";
+                    echo "    <meta name=\"Robots\" content=\"none\">\n";
+                    echo "    <meta name=\"Version\" content=\"SVN_Version/SVN_Build\">\n";
+                    echo "    <!-- VERSION: SVN_Version     BUILD: SVN_Build -->\n";
+                    echo "    <title>OSDial: Agent & Campaign Management - System Administration - Login</title>\n";
+                    echo "    <link rel=\"stylesheet\" type=\"text/css\" href=\"../agent/templates/default/styles.css\" media=\"screen\">\n";
+                    echo "  </head>\n";
+                    echo "  <body bgcolor=white name=osdial>\n";
+                    echo "    <form name=osdial_login id=osdial_login action=\"$PHP_SELF\" method=post autocomplete=off>\n";
+                    echo "      <input type=hidden name=ADD value=\"10\">\n";
+                    echo "      <input type=hidden name=SUB value=\"\">\n";
+                    echo "      <input type=hidden name=DB value=\"\">\n";
+                    echo "      <div class=containera>\n";
+                    echo "        <div class=acrosslogin2>\n";
+                    echo "          <table align=center width=500 cellpadding=0 cellspacing=0 border=0>\n";
+                    echo "            <tr><td align=center colspan=4>&nbsp;</td></tr>\n";
+                    echo "            <tr>\n";
+                    echo "              <td align=left>&nbsp;&nbsp;</td>\n";
+                    echo "              <td align=center colspan=2><font color=#1C4754><b>OSDial</b><br><br>- Agent & Campaign Management -<br>- System Administration -</font></td>\n";
+                    echo "              <td align=left><font size=1>&nbsp;</font></td>\n";
+                    echo "            </tr>\n";
+                    echo "            <tr height='30px'><td align=left colspan=4><font size=1>&nbsp;</font></td></tr>\n";
+                    echo "            <tr>\n";
+                    echo "              <td align=left><font size=1>&nbsp;</font></td>\n";
+                    echo "              <td align=right><font color=#1C4754>Username:&nbsp;</font></td>\n";
+                    echo "              <td align=left><input type=text id=PHP_AUTH_USER name=PHP_AUTH_USER size=20 maxlength=30></td>\n";
+                    echo "              <td align=left><font size=1>&nbsp;</font></td>\n";
+                    echo "            </tr>\n";
+                    echo "            <rt>\n";
+                    echo "              <td align=left><font size=1>&nbsp;</font></td>\n";
+                    echo "              <td align=right><font color=#1C4754>Password:&nbsp;</font></td>\n";
+                    echo "              <td align=left><input type=password id=PHP_AUTH_PW name=PHP_AUTH_PW size=20 maxlength=30></td>\n";
+                    echo "              <td align=left><font size=1>&nbsp;</font></td>\n";
+                    echo "            </tr>\n";
+                    echo "            <tr height='60px'><td colspan=4><center><font size=2 color=red><b>$message</b></font></center></td></tr>\n";
+                    echo "            <tr>\n";
+                    echo "              <td align=left><font size=1>&nbsp;</font></td>\n";
+                    echo "              <td align=center colspan=2><input class=submit type=button onclick=\"document.osdial_login.submit(); return false;\" name=SUBMIT value=Submit></td>\n";
+                    echo "              <td align=left><font size=1>&nbsp;</font></td>\n";
+                    echo "            </tr>\n";
+                    echo "            <tr>\n";
+                    echo "              <td align=right colspan=4 class=rbborder><font size=1><br>&nbsp;Version: SVN_Version</font>&nbsp;</td>\n";
+                    echo "            </tr>\n";
+                    echo "          </table>\n";
+                    echo "        </div>\n";
+                    echo "      </div>\n";
+                    echo "    </form>\n";
+                    echo "    <script type=\"text/javascript\">\n";
+                    echo "      $jskf\n";
+                    echo "      $jskd\n";
+                    echo "      document.getElementById('PHP_AUTH_USER').onkeydown=jskf;\n";
+                    echo "      document.getElementById('PHP_AUTH_PW').onkeydown=jskd;\n";
+                    echo "    </script>\n";
+                    echo "  </body>\n";
+                    echo "</html>\n";
+                }
+                $failexit=1;
             }
 
         } else {
@@ -166,21 +204,24 @@ if (!isset($osdial_skip_auth)) {
                 $tmpLOG = osdial_authenticate($PHP_AUTH_USER, $PHP_AUTH_PW);
 
                 if(OSDstrlen($PHP_AUTH_USER) < 2 or OSDstrlen($PHP_AUTH_PW) < 2 or $tmpLOG['error'] or $tmpLOG['user_level'] < 8) {
-                    if ($tmpLOG['error']) {
-                        # Indicate an auth engine error has occurred.
-                        $_SESSION[KEY]['message'] = 'Auth Engine Reported: '.$tmpLOG['error'];
-                    } elseif ($tmpLOG['user_level']<8) {
-                        # They need higher permissions if they want in.
-                        $_SESSION[KEY]['message'] = "We're sorry, users with a permissions level below 8 are not allowing in the management application.";
-                    } else {
+                    $_SESSION[KEY]['attempt'] = ($_SESSION[KEY]['attempt']*1)+1; 
+                    if ($tmpLOG['error']>0) {
                         # Auth failed, reload login page,
-                        $_SESSION[KEY]['message'] = "Authentication Failed!";
+                        $_SESSION[KEY]['message'] = "Authentication Failed! (Attempt #".$_SESSION[KEY]['attempt'].")";
+                    } elseif ($tmpLOG['error']==0 and $tmpLOG['user_level']<8) {
+                        # They need higher permissions if they want in.
+                        $_SESSION[KEY]['message'] = "We're sorry, users with a permissions level below 8 are not allowing in the management application. <a href=\"$PHP_SELF?force_logout=1\">HOME</a>";
+                    } else {
+                        $_SESSION[KEY]['message'] = 'Unknown authentication failure.';
                     }
                     # This header line immediately causes the browser to loop back over to the login form.
                     header( "location: $PHP_SELF?sess_login=1" );
+                    $failexit=1;
 
                 } else {
                     # Login Success, WOOOO, now save some session data in the browser.
+                    if (isset($_SESSION[KEY]['message'])) unset($_SESSION[KEY]['message']);
+                    if (isset($_SESSION[KEY]['attempt'])) unset($_SESSION[KEY]['attempt']);
                     $_SESSION[KEY]['valid'] = 1;
                     $_SESSION[KEY]['last_update'] = time();
                     $_SESSION[KEY]['PHP_AUTH_USER'] = $PHP_AUTH_USER;
@@ -188,28 +229,85 @@ if (!isset($osdial_skip_auth)) {
                     $_SESSION[KEY]['LOG'] = $tmpLOG;
                     $_SESSION[KEY]['LOG_time'] = time();
                     $LOG =& $_SESSION[KEY]['LOG'];
+
+                    if (isset($_SESSION[KEY]['resume_url'])) {
+                        $resume_url=$_SESSION[KEY]['resume_url'];
+                        $resume_user=$_SESSION[KEY]['resume_user'];
+                        unset($_SESSION[KEY]['resume_url']);
+                        unset($_SESSION[KEY]['resume_user']);
+                        if (!empty($resume_url) and $resume_user==$PHP_AUTH_USER) {
+                            header( "location: ".$PHP_SELF.$resume_url );
+                            $failexit=1;
+                        }
+                    }
                 }
 
             } else {
 
-                if (time()>$_SESSION[KEY]['last_update']+600) {
+                if (time()>$_SESSION[KEY]['last_update']+$session_expiry) {
                     # Expires session after 10 minutes of inactivity.
+                    $resume_user = $_SESSION[KEY]['PHP_AUTH_USER'];
+                    $resume_prev_url = $_SESSION[KEY]['resume_prev_url'];
                     $_SESSION = array();
                     $_SESSION[KEY]['message'] = "Session Expired!";
+
+                    $resume_url="?resume_session=2";
+                    foreach ($_GET as $k => $v) {
+                        if (!OSDpreg_match('/^submit$/i',$k)) {
+                            $tmpv = OSDpreg_replace('/ /','+',htmlentities($v));
+                            $resume_url .= "&".$k."=".$tmpv;
+                        }
+                    }
+                    foreach ($_POST as $k => $v) {
+                        if (OSDpreg_match('/^ADD$/',$k)) $v = OSDpreg_replace('/^4(.*)/','3\\1',$v);
+                        if (!OSDpreg_match('/^submit$/i',$k)) {
+                            $tmpv = OSDpreg_replace('/ /','+',htmlentities($v));
+                            $resume_url .= "&".$k."=".$tmpv;
+                        }
+                    }
+                    if ($sess_timeout==1) $resume_url=$resume_prev_url;
+                    $_SESSION[KEY]['resume_url'] = $resume_url;
+                    $_SESSION[KEY]['resume_user'] = $resume_user;
                     # User is immediately redirected to the login page.
                     header( "location: $PHP_SELF?sess_login=1" );
+                    $failexit=1;
 
                 } else {
 
                     # This is the Success zone!!!  The account has auth, and it is not expired. Time for maintenance!
                     # Step1, Update the contents of LOG with a fresh auth if older than 60 seconds.
                     if (time()>$_SESSION[KEY]['LOG_time']+60) {
-                        $_SESSION[KEY]['LOG'] = osdial_authenticate($_SESSION[KEY]['PHP_AUTH_USER'], $_SESSION[KEY]['PHP_AUTH_PW']);
-                        $_SESSION[KEY]['LOG_time'] = time();
+                        $tmpLOG = osdial_authenticate($_SESSION[KEY]['PHP_AUTH_USER'], $_SESSION[KEY]['PHP_AUTH_PW']);
+                        if ($tmpLOG['error']>0) {
+                            $_SESSION = array();
+                            $_SESSION[KEY]['message'] = "Session Reauthorization Failed!";
+                            $failexit=1;
+                        } else {
+                            $_SESSION[KEY]['LOG'] = $tmpLOG;
+                            $_SESSION[KEY]['LOG_time'] = time();
+                        }
                     }
-                    # Adjust our update times and make $LOG available to the program.
-                    $LOG =& $_SESSION[KEY]['LOG'];
-                    $_SESSION[KEY]['last_update'] = time();
+                    if ($failexit==0) {
+                        # Adjust our update times and make $LOG available to the program.
+                        $LOG =& $_SESSION[KEY]['LOG'];
+                        $_SESSION[KEY]['last_update'] = time();
+
+                        $resume_prev_url="?resume_session=1";
+                        foreach ($_GET as $k => $v) {
+                            if (!OSDpreg_match('/^submit$/i',$k)) {
+                                $tmpv = OSDpreg_replace('/ /','+',htmlentities($v));
+                                $resume_prev_url .= "&".$k."=".$tmpv;
+                            }
+                        }
+                        foreach ($_POST as $k => $v) {
+                            if (OSDpreg_match('/^ADD$/',$k)) $v = OSDpreg_replace('/^4(.*)/','3\\1',$v);
+                            if (!OSDpreg_match('/^submit$/i',$k)) {
+                                $tmpv = OSDpreg_replace('/ /','+',htmlentities($v));
+                                $resume_prev_url .= "&".$k."=".$tmpv;
+                            }
+                        }
+                        $_SESSION[KEY]['resume_prev_url'] = $resume_prev_url;
+                    }
                 }
 
             }
@@ -233,9 +331,8 @@ function osdial_authenticate($user, $password) {
     global $link;
     global $config;
     $LOG = get_first_record($link, 'osdial_users', '*', sprintf("user='%s' AND pass='%s'",mres($user),mres($password)) );
-    $auth=count($LOG);
     $LOG['error'] = 0;
-    if ($auth > 0) {
+    if (!empty($LOG['user'])) {
         # And array of the allowed campagins
         $LOGacA = Array();
         $LOGagA = Array();
