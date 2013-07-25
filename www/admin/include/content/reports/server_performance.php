@@ -42,6 +42,8 @@ $end_query_time=get_variable('end_query_time');
 $group=get_variable('group');
 $submit=get_variable('submit');
 $SUBMIT=get_variable('SUBMIT');
+$getmap=get_variable('map');
+if (empty($getmap)) $getmap=0;
 
 
 # path from root to where ploticus files will be stored
@@ -83,6 +85,7 @@ $html .= "<br><font class=top_header color=$default_text size=+1>SERVER PERFORMA
 $html .= "<FORM ACTION=\"$PHP_SELF\" METHOD=GET>\n";
 $html .= "<input type=hidden name=ADD value=\"$ADD\">\n";
 $html .= "<input type=hidden name=SUB value=\"$SUB\">\n";
+$html .= "<input type=hidden name=map value=\"$getmap\">\n";
 $html .= "Date: ";
 
 $html .= "<script>\nvar cal1 = new CalendarPopup('caldiv1');\ncal1.showNavigationDropdowns();\n</script>\n";
@@ -247,14 +250,14 @@ $HTMcontent .= "xscaletype: time hh:mm:ss\n";
 $HTMcontent .= "xrange: $time_BEGIN $time_END\n";
 $HTMcontent .= "yrange: 0 $HIGHlimit\n";
 $HTMcontent .= "areacolor: xEEEEEE\n";
-#$HTMcontent .= "clickmapurl: javascript:console.log('Xval: @@XVAL, Yval: @@YVAL, userproc%: @@1, sysproc%: @@2, load: @@3, processes: @@4, channels: @@5');false;\n";
+if ($getmap>0) $HTMcontent .= "clickmapurl: javascript:console.log('Xval: @@XVAL, Yval: @@YVAL, userproc%: @@1, sysproc%: @@2, load: @@3, processes: @@4, channels: @@5');false;\n";
 $HTMcontent .= "\n";
 $HTMcontent .= "#proc xaxis\n";
 $HTMcontent .= "stubs: inc $time_scale_abb\n";
 $HTMcontent .= "minorticinc: $time_scale_tick\n";
 $HTMcontent .= "stubformat: hh:mma\n";
 $HTMcontent .= "stubdetails: font=DejaVuSans\n";
-#$HTMcontent .= "clickmap: xygrid\n";
+if ($getmap>0) $HTMcontent .= "clickmap: xygrid\n";
 $HTMcontent .= "\n";
 $HTMcontent .= "#proc yaxis\n";
 $HTMcontent .= "stubs: inc 50\n";
@@ -262,7 +265,7 @@ $HTMcontent .= "stubdetails: font=DejaVuSans\n";
 $HTMcontent .= "grid: color=x547E9E\n";
 $HTMcontent .= "gridskip: min\n";
 $HTMcontent .= "ticincrement: 100 1000\n";
-#$HTMcontent .= "clickmap: xygrid\n";
+if ($getmap>0) $HTMcontent .= "clickmap: xygrid\n";
 $HTMcontent .= "\n";
 $HTMcontent .= "#proc lineplot\n";
 $HTMcontent .= "xfield: time\n";
@@ -270,7 +273,7 @@ $HTMcontent .= "yfield: userproc\n";
 $HTMcontent .= "linedetails: color=purple width=1\n";
 $HTMcontent .= "fill: lavender\n";
 $HTMcontent .= "legendlabel: userproc%\n";
-$HTMcontent .= "maxinpoints: $rows_to_max\n";
+#$HTMcontent .= "maxinpoints: $rows_to_max\n";
 $HTMcontent .= "\n";
 $HTMcontent .= "#proc lineplot\n";
 $HTMcontent .= "xfield: time\n";
@@ -278,7 +281,7 @@ $HTMcontent .= "yfield: sysproc\n";
 $HTMcontent .= "linedetails: color=yelloworange width=1\n";
 $HTMcontent .= "fill: dullyellow\n";
 $HTMcontent .= "legendlabel: sysproc%\n";
-$HTMcontent .= "maxinpoints: $rows_to_max\n";
+#$HTMcontent .= "maxinpoints: $rows_to_max\n";
 $HTMcontent .= "\n";
 $HTMcontent .= "#proc curvefit\n";
 $HTMcontent .= "xfield: time\n";
@@ -324,7 +327,11 @@ $ENV{'GDFONTPATH'} = '/opt/osdial/html/admin/templates/default';
 
 $html .= "<map name=\"perfmap\">\n";
 $mapdata = array();
-exec("/usr/bin/pl -csmap -mapfile stdout -png $DOCroot/$HTMfile -o $DOCroot/$PNGfile",$mapdata);
+if ($getmap>0) {
+    exec("/usr/bin/pl -csmap -mapfile stdout -png $DOCroot/$HTMfile -o $DOCroot/$PNGfile",$mapdata);
+} else {
+    exec("/usr/bin/pl -png $DOCroot/$HTMfile -o $DOCroot/$PNGfile",$mapdata);
+}
 foreach ($mapdata as $line) {
     $html .= $line;
 }
