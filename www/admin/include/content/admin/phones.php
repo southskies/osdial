@@ -114,7 +114,7 @@ if ($ADD==11111111111) {
 if ($ADD==21111111111) {
     if ($LOG['ast_admin_access']==1) {
         $preextension = $extension;
-        $ext_context='osdial';
+        $ext_context=$config['settings']['default_ext_context'];
         if ($LOG['multicomp'] > 0) {
             $preextension = (($company * 1) + 0) . $extension;
             $stmt=sprintf("SELECT default_ext_context FROM osdial_companies WHERE id='%s';",mres($preextension));

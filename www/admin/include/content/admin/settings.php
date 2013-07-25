@@ -83,7 +83,7 @@ if ($ADD==311111111111111) {
             echo "      <input type=hidden name=multicompany_admin value=admin>\n";
             echo "      <input type=hidden name=enable_multicompany value=0>\n";
         }
-        echo "      <table class=shadedtable cellspacing=3>\n";
+        echo "      <table class=shadedtable cellspacing=3 width=800>\n";
         echo "        <tr class=tabheader><td colspan=2></td></tr>\n";
         echo "        <tr bgcolor=$oddrows>\n";
         echo "          <td align=right>Version:</td>\n";
@@ -280,6 +280,14 @@ if ($ADD==311111111111111) {
         echo "          <td align=right>Default Country Phone Code:</td>\n";
         echo "          <td align=left><input type=text name=default_phone_code size=10 maxlength=10 value=\"$system_settings[default_phone_code]\">".helptag("system_settings-default_phone_code")."</td>\n";
         echo "        </tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Default Ext Context: </td><td align=left>";
+        $contexts = array();
+        $contexts['osdialBLOCK']='Block direct calling to outbound and extensions';
+        $contexts['osdialEXT']='Block direct outbound, Allow direct extensions';
+        $contexts['osdial']='Allow direct calling to outbound and extensions';
+        $contexts['default']='Same as osdial context';
+        echo editableSelectBox($contexts, 'default_ext_context', $system_settings['default_ext_context'], 100, 100, '');
+        echo helptag("system_settings-default_ext_context")."</td></tr>\n";
 
         echo "        <tr class=tabheader><td colspan=2>Admin GUI</td></tr>\n";
 

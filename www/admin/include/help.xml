@@ -1838,6 +1838,10 @@ OSDial Server Trunks allows you to restrict the outgoing lines that are used on 
     After changing this option, any previously cached authentication can cause issues, so you should restart both your desktop and server.
     </item>
 
+    <item pathId="default_ext_context" sectionId="52" title="Default Ext Context">
+    The default Extension Context that is used when creating phones.  Some defaults are:  osdial- Access to OSDial extensions and outbound dialing.  osdialEXT- Access to OSDial extensions, no outbound dialing.  osdialBLOCK- No access to OSDial extensions or outbound dialing.
+    </item>
+
   </section>
 
   <section pathId="companies" sectionId="23" title="Multi-Company Configuration">
