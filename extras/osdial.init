@@ -233,7 +233,7 @@ start() {
 	fi
 
 	if [ -f /etc/openvpn/osdial.up ]; then
-		HST=`/bin/hostname -s`
+		[ -n "${OSDIAL_OPENVPN_NAME}" ] && HST=${OSDIAL_OPENVPN_NAME} || HST=`/bin/hostname -s`
 		if [ "$HST" = "localhost" -o "$HST" = "osdial" -o "$HST" = "osdial-live" -o "$HST" = "osdial-ccsg" -o "$HST" = "osd" -o -z "$HST" ]; then
 			OVHST=`/usr/bin/head -1 /etc/openvpn/osdial.up`
 			if [ "$HST" = "localhost" -o "$OVHST" = "osdial" -o "$OVHST" = "osdial-live" -o "$OVHST" = "osdial-ccsg" -o "$OVHST" = "osd" -o -z "$OVHST" ]; then
