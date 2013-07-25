@@ -134,7 +134,7 @@ if (!isset($osdial_skip_auth)) {
                 } else {
 
                     $jskf = "var jskf = function(evt) { var key; if (evt.keyCode) { key = evt.keyCode; } else if (typeof(e.which) != 'undefined') { key = evt.which; } if (key == 13) {document.getElementById('PHP_AUTH_PW').focus(); return false;}};";
-                    $jskd = "var jskd = function(evt) { var key; if (evt.keyCode) { key = evt.keyCode; } else if (typeof(e.which) != 'undefined') { key = evt.which; } if (key == 13) {document.osdial_login.submit(); return false;}};";
+                    $jskd = "var jskd = function(evt) { var key; if (evt.keyCode) { key = evt.keyCode; } else if (typeof(e.which) != 'undefined') { key = evt.which; } if (key == 13) {document.osdial_login.submit();}};";
                     # Session Based Login Form, The form must go to PHP_SELF and have a destination ADD.
                     echo "<html>\n";
                     echo "  <head>\n";
@@ -146,7 +146,7 @@ if (!isset($osdial_skip_auth)) {
                     echo "    <link rel=\"stylesheet\" type=\"text/css\" href=\"../agent/templates/default/styles.css\" media=\"screen\">\n";
                     echo "  </head>\n";
                     echo "  <body bgcolor=white name=osdial>\n";
-                    echo "    <form name=osdial_login id=osdial_login action=\"$PHP_SELF\" method=post autocomplete=off>\n";
+                    echo "    <form name=osdial_login id=osdial_login action=\"$PHP_SELF\" method=post>\n";
                     echo "      <input type=hidden name=ADD value=\"10\">\n";
                     echo "      <input type=hidden name=SUB value=\"\">\n";
                     echo "      <input type=hidden name=DB value=\"\">\n";
@@ -175,7 +175,7 @@ if (!isset($osdial_skip_auth)) {
                     echo "            <tr height='60px'><td colspan=4><center><font size=2 color=red><b>$message</b></font></center></td></tr>\n";
                     echo "            <tr>\n";
                     echo "              <td align=left><font size=1>&nbsp;</font></td>\n";
-                    echo "              <td align=center colspan=2><input class=submit type=button onclick=\"document.osdial_login.submit(); return false;\" name=SUBMIT value=Submit></td>\n";
+                    echo "              <td align=center colspan=2><input class=submit type=button onclick=\"document.osdial_login.submit();\" name=SUBMIT value=Submit></td>\n";
                     echo "              <td align=left><font size=1>&nbsp;</font></td>\n";
                     echo "            </tr>\n";
                     echo "            <tr>\n";
