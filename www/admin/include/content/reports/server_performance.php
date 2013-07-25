@@ -62,7 +62,7 @@ list($eh,$em) = OSDpreg_split('/:/',$end_time);
 $begin_time = sprintf('%02d:%02d',$bh,$bm);
 $end_time = sprintf('%02d:%02d',$eh,$em);
 
-$stmt="select server_ip from servers;";
+$stmt="select server_ip,server_id,server_description from servers;";
 $rslt=mysql_query($stmt, $link);
 if ($DB) {$html .= "$stmt\n";}
 $servers_to_print = mysql_num_rows($rslt);
@@ -71,6 +71,8 @@ while ($i < $servers_to_print)
 	{
 	$row=mysql_fetch_row($rslt);
 	$groups[$i] =$row[0];
+	$groupsID[$i] =$row[1];
+	$groupsDESC[$i] =$row[2];
 	$i++;
 	}
 //$html .= "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8\">\n";
@@ -90,12 +92,13 @@ $html .= "<img width=18 src=\"templates/default/images/calendar.png\" style=bord
 
 $html .= "From: <INPUT TYPE=TEXT NAME=begin_query_time SIZE=10 MAXLENGTH=8 VALUE=\"$begin_time\"> \n";
 $html .= "To: <INPUT TYPE=TEXT NAME=end_query_time SIZE=10 MAXLENGTH=8 VALUE=\"$end_time\"> \n";
-$html .= "&nbsp;Server: <SELECT SIZE=1 NAME=group>\n";
+$html .= "<br>&nbsp;Server: <SELECT SIZE=1 NAME=group>\n";
 	$o=0;
 	while ($servers_to_print > $o)
 	{
-		if ($groups[$o] == $group) {$html .= "<option selected value=\"$groups[$o]\">$groups[$o]</option>\n";}
-		  else {$html .= "<option value=\"$groups[$o]\">$groups[$o]</option>\n";}
+        $gsel='';
+		if ($groups[$o] == $group) $gsel = 'selected';
+		$html .= "<option value=\"$groups[$o]\" $gsel>$groups[$o] - $groupsID[$o]: $groupsDESC[$o]</option>\n";
 		$o++;
 	}
 $html .= "</SELECT> \n";
