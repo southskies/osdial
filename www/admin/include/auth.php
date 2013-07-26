@@ -35,8 +35,13 @@ if (!isset($osdial_skip_auth)) {
     $failexit=0;
     $fps = "";
     $date = date("r");
-    $ip = getenv("REMOTE_ADDR");
-    $browser = getenv("HTTP_USER_AGENT");
+    $ip = $_SERVER["REMOTE_ADDR"];
+    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+        $ip = $_SERVER['HTTP_CLIENT_IP'];
+    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    $browser = $_SERVER["HTTP_USER_AGENT"];
 
 
     if ($force_logout) {

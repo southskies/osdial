@@ -26,7 +26,13 @@ require_once("include/functions.php");
 
 $output = date('Y-m-d H:i:s') . "\n";
 
-$remote_name = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+$ip = $_SERVER['REMOTE_ADDR'];
+if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+    $ip = $_SERVER['HTTP_CLIENT_IP'];
+} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+}
+$remote_name = gethostbyaddr($ip);
 $output.="Remote Name:$remote_name\n";
 
 if (OSDpreg_match('/paypal/',$remote_name)) {

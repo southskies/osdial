@@ -62,8 +62,13 @@ $auth=$row[0];
 
 if ($WeBRooTWritablE > 0) {$fp = fopen ("./project_auth_entries.txt", "a");}
 $date = date("r");
-$ip = getenv("REMOTE_ADDR");
-$browser = getenv("HTTP_USER_AGENT");
+$ip = $_SERVER["REMOTE_ADDR"];
+if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+    $ip = $_SERVER['HTTP_CLIENT_IP'];
+} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+}
+$browser = $_SERVER["HTTP_USER_AGENT"];
 
   if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth))
 	{
