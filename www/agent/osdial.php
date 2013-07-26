@@ -50,6 +50,7 @@ $VD_login=get_variable("VD_login");
 $VD_pass=get_variable("VD_pass");
 $VD_campaign=get_variable("VD_campaign");
 $relogin=get_variable("relogin");
+$logout=get_variable("logout");
 $admin_version=$config['settings']['version'];
 
 if (empty($phone_login)) $phone_login=get_variable("pl");
@@ -75,6 +76,14 @@ $forever_stop=0;
 if (isset($force_logout)) {
     echo "You have now logged out. Thank you\n";
     exit;
+}
+
+if ($logout>0 or $relogin=='YES') {
+    if (ini_get("session.use_cookies")) {
+        $params = session_get_cookie_params();
+        setcookie('ARI', '', time() - 60, $params["path"], $_SERVER["SERVER_NAME"], $params["secure"], $params["httponly"]);
+        if (!empty($_COOKIE["BALANCEID"])) setcookie('BALANCEID', 'balancer.', 0, $params["path"], $_SERVER["SERVER_NAME"], $params["secure"], $params["httponly"]);
+    }
 }
 
 $isdst = date("I");
@@ -169,7 +178,7 @@ if (OSDpreg_match('/443/',$server_port)) {
 } else {
     $HTTPprotocol = 'http://';
 }
-if ($server_port == '80' or $server_port == '443') {
+if ($server_port == '80' or $server_port == '443' or !empty($_COOKIE["BALANCEID"])) {
     $server_port='';
 } else {
     $server_port = ":" . $server_port;

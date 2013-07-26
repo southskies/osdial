@@ -2529,6 +2529,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			delete xmlhttp;
 		}
 
+		document.cookie='ARI=; path=/; expires='+new Date().toUTCString();
+		if (document.cookie.match('BALANCEID')!=null) document.cookie='BALANCEID=balancer.; path=/; domain='+document.domain;
 
 		if (tempreason=='CLOSE') return;
 
@@ -2543,9 +2545,9 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
         
 		// If allowed to exit to welcome page
 		if (1==2) {
-			document.getElementById("LogouTBoxLink").innerHTML = "<span class=homepage><div class=loginagainBox><span class=LoginAgainHeader>Log Back In?</span><br/><br/><a href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\">Yes</a>&nbsp;/&nbsp;<a href='#'>No</a></div></span>";
+			document.getElementById("LogouTBoxLink").innerHTML = "<span class=homepage><div class=loginagainBox><span class=LoginAgainHeader>Log Back In?</span><br/><br/><a href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\">Yes</a>&nbsp;/&nbsp;<a href=\""+agcPAGE+"?logout=1\">No</a></div></span>";
 		} else {
-			document.getElementById("LogouTBoxLink").innerHTML = "<span class=homepage><div class=loginagainBox><span class=LoginAgainHeader>Login Again?</span><br/><br/><a href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\">Yes</a>&nbsp;/&nbsp;<a href=''>No</a></div></span>";
+			document.getElementById("LogouTBoxLink").innerHTML = "<span class=homepage><div class=loginagainBox><span class=LoginAgainHeader>Login Again?</span><br/><br/><a href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\">Yes</a>&nbsp;/&nbsp;<a href=\""+agcPAGE+"?logout=1\">No</a></div></span>";
 		}
 		logout_stop_timeouts = 1;
 					
