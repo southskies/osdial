@@ -78,11 +78,16 @@ if (isset($force_logout)) {
     exit;
 }
 
+$timeout2mainJS='';
 if ($logout>0 or $relogin=='YES') {
     if (ini_get("session.use_cookies")) {
         $params = session_get_cookie_params();
         setcookie('ARI', '', time() - 60, $params["path"], $_SERVER["SERVER_NAME"], $params["secure"], $params["httponly"]);
         if (!empty($_COOKIE["BALANCEID"])) setcookie('BALANCEID', 'balancer.', 0, $params["path"], $_SERVER["SERVER_NAME"], $params["secure"], $params["httponly"]);
+    }
+    if ($logout>0) {
+        # Return to home screen after waiting on return login screen for 5 minutes.
+        $timeout2mainJS = "setTimeout(function() { window.location='".$config['settings']['admin_home_url']."'; },300000);";
     }
 }
 
@@ -106,6 +111,7 @@ include("templates/" . $config['settings']['agent_template'] . "/display.php");
 
 if (empty($config['settings']['default_phone_code'])) $config['settings']['default_phone_code']='1';
 $default_phone_code = $config['settings']['default_phone_code'];
+$use_php_self           = '1';  # Use relative script positioning instead of uri deconstruction.
 $conf_silent_prefix     = '7';  # osdial_conferences prefix to enter silently
 $HKuser_level           = '5';  # minimum osdial user_level for HotKeys
 $campaign_login_list    = '1';  # show drop-down list of campaigns at login	
@@ -168,23 +174,34 @@ $CL=':';
 $AT='@';
 $DS='-';
 $date = date("r");
-$ip = getenv("REMOTE_ADDR");
-$browser = getenv("HTTP_USER_AGENT");
-$script_name = getenv("SCRIPT_NAME");
-$server_name = getenv("SERVER_NAME");
-$server_port = getenv("SERVER_PORT");
-if (OSDpreg_match('/443/',$server_port)) {
-    $HTTPprotocol = 'https://';
-} else {
-    $HTTPprotocol = 'http://';
+$PHP_SELF=$_SERVER['PHP_SELF'];
+$ip = $_SERVER["REMOTE_ADDR"];
+if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+    $ip = $_SERVER['HTTP_CLIENT_IP'];
+} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
 }
-if ($server_port == '80' or $server_port == '443' or !empty($_COOKIE["BALANCEID"])) {
-    $server_port='';
+$browser = $_SERVER["HTTP_USER_AGENT"];
+if ($use_php_self>0) {
+    $agcPAGE=$PHP_SELF;
 } else {
-    $server_port = ":" . $server_port;
+    $script_name = getenv("SCRIPT_NAME");
+    $server_name = getenv("SERVER_NAME");
+    $server_port = getenv("SERVER_PORT");
+    if (OSDpreg_match('/443/',$server_port)) {
+        $HTTPprotocol = 'https://';
+    } else {
+        $HTTPprotocol = 'http://';
+    }
+    if ($server_port == '80' or $server_port == '443' or !empty($_COOKIE["BALANCEID"])) {
+        $server_port='';
+    } else {
+        $server_port = ":" . $server_port;
+    }
+    $agcPAGE = $HTTPprotocol . $server_name . $server_port .$script_name;
 }
+
 $t1="OSDial"; if (OSDpreg_match('/^Sli/',$config['settings']['agent_template'])) $t1=$config['settings']['agent_template'];
-$agcPAGE = $HTTPprotocol . $server_name . $server_port .$script_name;
 $agcDIR = OSDpreg_replace('/osdial.php/','',$agcPAGE);
 
 $VD_pause_codes_ct=0;
@@ -323,6 +340,7 @@ if ($relogin == 'YES') {
     echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $config['settings']['agent_template'] . "/styles.css\" media=\"screen\">\n";
     #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
     echo "<script type=\"text/javascript\">\n";
+    echo "\n".$timeout2mainJS."\n";
     require('include/osdial-login.js');
     echo "</script>\n";
     echo "</head>\n";
@@ -400,6 +418,7 @@ if ($user_login_first == 1) {
         echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $config['settings']['agent_template'] . "/styles.css\" media=\"screen\">\n";
         #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
         echo "<script type=\"text/javascript\">\n";
+        echo "\n".$timeout2mainJS."\n";
         require('include/osdial-login.js');
         echo "</script>\n";
         echo "</head>\n";
@@ -466,6 +485,7 @@ if ($user_login_first == 1) {
             echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $config['settings']['agent_template'] . "/styles.css\" media=\"screen\">\n";
             #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
             echo "<script type=\"text/javascript\">\n";
+            echo "\n".$timeout2mainJS."\n";
             require('include/osdial-login.js');
             echo "</script>\n";
             echo "</head>\n";
@@ -522,6 +542,7 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
     echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $config['settings']['agent_template'] . "/styles.css\" media=\"screen\">\n";
     #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
     echo "<script type=\"text/javascript\">\n";
+    echo "\n".$timeout2mainJS."\n";
     require('include/osdial-login.js');
     echo "</script>\n";
     echo "</head>\n";
@@ -665,6 +686,7 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
                 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $config['settings']['agent_template'] . "/styles.css\" media=\"screen\">\n";
                 #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
                 echo "<script type=\"text/javascript\">\n";
+                echo "\n".$timeout2mainJS."\n";
                 require('include/osdial-login.js');
                 echo "</script>\n";
                 echo "</head>\n";
@@ -1036,6 +1058,7 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
         echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $config['settings']['agent_template'] . "/styles.css\" media=\"screen\">\n";
         #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
         echo "<script type=\"text/javascript\">\n";
+        echo "\n".$timeout2mainJS."\n";
         require('include/osdial-login.js');
         echo "</script>\n";
         echo "</head>\n";
@@ -1108,6 +1131,7 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
         echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $config['settings']['agent_template'] . "/styles.css\" media=\"screen\">\n";
         #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
         echo "<script type=\"text/javascript\">\n";
+        echo "\n".$timeout2mainJS."\n";
         require('include/osdial-login.js');
         echo "</script>\n";
         echo "</head>\n";
@@ -1365,6 +1389,7 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
                 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $config['settings']['agent_template'] . "/styles.css\" media=\"screen\">\n";
                 #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
                 echo "<script type=\"text/javascript\">\n";
+                echo "\n".$timeout2mainJS."\n";
                 require('include/osdial-login.js');
                 echo "</script>\n";
                 echo "</head>\n";
@@ -1521,6 +1546,7 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
             echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $config['settings']['agent_template'] . "/styles.css\" media=\"screen\">\n";
             #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
             echo "<script type=\"text/javascript\">\n";
+            echo "\n".$timeout2mainJS."\n";
             require('include/osdial-login.js');
             echo "</script>\n";
             echo "</head>\n";
@@ -1547,6 +1573,7 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
             echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $config['settings']['agent_template'] . "/styles.css\" media=\"screen\">\n";
             #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
             echo "<script type=\"text/javascript\">\n";
+            echo "\n".$timeout2mainJS."\n";
             require('include/osdial-login.js');
             echo "</script>\n";
             echo "</head>\n";

@@ -37,6 +37,7 @@ var agentonly_callbacks='<?php echo $agentonly_callbacks; ?>';
 var agent_pause_codes_active='<?php echo $agent_pause_codes_active; ?>';
 var agc_dial_prefix='<?php echo $dial_prefix; ?>';
 var agent_template='<?php echo $config['settings']['agent_template']; ?>';
+var admin_home_url='<?php echo $config['settings']['admin_home_url']; ?>';
 var allcalls_delay='<?php echo $allcalls_delay; ?>';
 var allow_sipsak_messages='<?php echo $config['settings']['allow_sipsak_messages']; ?>';
 var allow_tab_switch='<?php echo $allow_tab_switch; ?>';
