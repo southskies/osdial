@@ -26,8 +26,9 @@ $use_basic_auth=($config['settings']['use_old_admin_auth']*1);
 $sess_login=get_variable('sess_login');
 $sess_check=get_variable('sess_check');
 $sess_timeout=get_variable('sess_timeout');
-$session_expiry=60*30;
-$session_inactive=$session_expiry+(60*30);
+$session_expiry=$config['settings']['admin_session_expiration'];
+$session_inactive=0;
+if ($session_expiry>0 and $config['settings']['admin_session_lockout']>0) $session_inactive=$session_expiry+$config['settings']['admin_session_lockout'];
 
 # If $osdial_skip_auth is not set, this script will attempt to use Basic authentication.
 # If $osdial_skip_auth is set, it is assumed that the autorization is occuring elsewhere...like the API.
@@ -69,7 +70,7 @@ if (!isset($osdial_skip_auth)) {
     } elseif ($sess_check) {
         if ($use_base_auth==0) {
             if (isset($_SESSION[KEY]['valid'])) {
-                if (time()>$_SESSION[KEY]['last_update']+$session_expiry) {
+                if ($session_expiry>0 and time()>$_SESSION[KEY]['last_update']+$session_expiry) {
                     echo "EXPIRED";
                 } else {
                     if (time()>$_SESSION[KEY]['LOG_time']+60) {
@@ -147,7 +148,7 @@ if (!isset($osdial_skip_auth)) {
                     if (isset($_SESSION[KEY]['resume_prev_url'])) unset($_SESSION[KEY]['resume_prev_url']);
                     if (isset($_SESSION[KEY]['resume_last_update'])) unset($_SESSION[KEY]['resume_last_update']);
                 } else {
-                    if (time()>$_SESSION[KEY]['resume_last_update']+$session_inactive) {
+                    if ($session_inactive>0 and time()>$_SESSION[KEY]['resume_last_update']+$session_inactive) {
                         if (isset($_SESSION[KEY]['resume_url'])) unset($_SESSION[KEY]['resume_url']);
                         if (isset($_SESSION[KEY]['resume_user'])) unset($_SESSION[KEY]['resume_user']);
                         if (isset($_SESSION[KEY]['resume_prev_url'])) unset($_SESSION[KEY]['resume_prev_url']);
@@ -271,13 +272,13 @@ if (!isset($osdial_skip_auth)) {
 
             } else {
 
-                if (time()>$_SESSION[KEY]['last_update']+$session_expiry) {
+                if ($session_expiry>0 and time()>$_SESSION[KEY]['last_update']+$session_expiry) {
                     # Expires session after 10 minutes of inactivity.
                     $last_update = $_SESSION[KEY]['last_update'];
                     $resume_user = $_SESSION[KEY]['PHP_AUTH_USER'];
                     $resume_prev_url = $_SESSION[KEY]['resume_prev_url'];
                     $_SESSION = array();
-                    if (time()>$last_update+$session_inactive) {
+                    if ($session_inactive>0 and time()>$last_update+$session_inactive) {
                         $_SESSION[KEY]['message'] = "Inactivity Timeout!";
                     } else {
                         $_SESSION[KEY]['message'] = "Session Expired!";
