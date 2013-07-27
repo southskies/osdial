@@ -63,7 +63,7 @@ if ($ADD=="1carrier") {
                 echo "<input type=hidden name=company value=\"\">";
             }
 
-            echo "      <input type=text name=did size=13 maxlength=100 value=\"\" onblur=\"updateingroup(this);return false;\" onfocus=\"updateingroup(this);return false;\" onkeyup=\"updateingroup(this);return false;\">".helptag("carrier_dids-did")."</td>\n";
+            echo "      <input type=text name=did size=13 maxlength=100 value=\"\" onblur=\"updateingroup(this);return false;\" onfocus=\"updateingroup(this);return false;\" onkeyup=\"updateingroup(this);return false;\" onkeypress=\"keynumonly();\">".helptag("carrier_dids-did")."</td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows>\n";
             echo "    <td align=right>DID Action:</td>\n";
