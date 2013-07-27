@@ -2513,6 +2513,36 @@ user[:secret[:authuser]]@carrier_name[/extension]&lt;br/&gt;
     </item>
   </section>
 
+  <section pathId="extension_ivr" sectionId="40" title="Extension IVR">
+    <item pathId="name" sectionId="1" title="Name">
+    Name of the IVR.
+    </item>
+    <item pathId="announcement" sectionId="2" title="Announcement">
+    File to play when the call is answered.
+    </item>
+    <item pathId="repeat_loops" sectionId="3" title="Repeat Loops">
+    The number of times to repeat the menu before timeout.
+    </item>
+    <item pathId="key_attempts" sectionId="4" title="Key Attempts">
+    The maximum number of keypress attempts to wait for within each loop.
+    </item>
+    <item pathId="wait_period" sectionId="5" title="Attempt Wait Period">
+    The time (in MS) to wait up-to for each key attempt.
+    </item>
+    <item pathId="allow_inbound" sectionId="6" title="Allow Inbound">
+    If set to Y, answer calls passed in through the campaigns designated Inbound Groups. If set to N, ignore calls from Inbound Groups.
+    </item>
+    <item pathId="status" sectionId="7" title="Status">
+    Determines if the IVR is ACTIVE or INACTIVE.
+    </item>
+    <item pathId="timeout_action" sectionId="8" title="Timeout Action">
+    The keypress/action to default to after the total number of loops exceeds the value in the Repeat Loops field.
+    </item>
+    <item pathId="allow_agent_extensions" sectionId="9" title="Allow Agent Extensions">
+    Allow agent IDs to be dialed directly as extensions.
+    </item>
+  </section>
+
   </chapter>
  </topic>
  <topic pathId="advanced" sectionId="5" title="Advanced Topics">
