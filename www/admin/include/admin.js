@@ -475,6 +475,35 @@ Date.prototype.addDays = function(days) {
 	return this;
 }
 
+function keyextonly(evt) {
+	var e = evt? evt : window.event;
+	if(!e) return;
+	var key = 0;
+	if (e.keyCode) {
+		key = e.keyCode;
+	} else if (typeof(e.which)!= 'undefined') {
+		key = e.which;
+	}
+	if (!((key>=48 && key<=57)||key==8||key==9||key==13||key==37||key==39||key==88||key==90||key==78||key==46||key==91||key==93||key==45||key==95||key==116||key==104||key==105||key==42||key==35)) {
+		e.cancel=true;
+		e.returnValue=false;
+	}
+}
+function keynumonly(evt) {
+	var e = evt? evt : window.event;
+	if(!e) return;
+	var key = 0;
+	if (e.keyCode) {
+		key = e.keyCode;
+	} else if (typeof(e.which)!= 'undefined') {
+		key = e.which;
+	}
+	if (!((key>=48 && key<=57)||key==8||key==9||key==13||key==37||key==39)) {
+		e.cancel=true;
+		e.returnValue=false;
+	}
+}
+
 // The following functions get the GMT and DST of the client browser and store as a cookie.
 var cgexp = new Date();
 cgexp.setTime(cgexp.getTime() + 24 * 60 * 60 * 1000);
