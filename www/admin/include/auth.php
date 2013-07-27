@@ -184,7 +184,7 @@ if (!isset($osdial_skip_auth)) {
                     echo "            <tr><td align=center colspan=4>&nbsp;</td></tr>\n";
                     echo "            <tr>\n";
                     echo "              <td align=left>&nbsp;&nbsp;</td>\n";
-                    echo "              <td align=center colspan=2><font color=#1C4754><b>OSDial</b><br><br>- Agent & Campaign Management -<br>- System Administration -</font></td>\n";
+                    echo "              <td align=center colspan=2><font color=#1C4754><b>OSDial</b><br><br>Agent & Campaign Management<br>System Administration</font></td>\n";
                     echo "              <td align=left><font size=1>&nbsp;</font></td>\n";
                     echo "            </tr>\n";
                     echo "            <tr height='30px'><td align=left colspan=4><font size=1>&nbsp;</font></td></tr>\n";
