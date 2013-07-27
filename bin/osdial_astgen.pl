@@ -193,8 +193,8 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 	$trunkblind = "IAX2\/ASTblind:$pass\@127.0.0.1:41569";
 	$oedata =~ s/^TRUNKloop.*$/TRUNKloop = $trunkloop/m;
 	$oedata =~ s/^TRUNKblind.*$/TRUNKblind = $trunkblind/m;
-	$oedata = "TRUNKloop = $trunkloop\n"   . $oedata unless ($oedata =~ /^TRUNKloop.*$/m);
-	$oedata = "TRUNKblind = $trunkblind\n" . $oedata unless ($oedata =~ /^TRUNKblind.*$/m);
+	#$oedata = "TRUNKloop = $trunkloop\n"   . $oedata unless ($oedata =~ /^TRUNKloop.*$/m);
+	#$oedata = "TRUNKblind = $trunkblind\n" . $oedata unless ($oedata =~ /^TRUNKblind.*$/m);
 	if ($asterisk_version =~ /^1\.8|^10\.|^11\./) {
 		$oereload = "dialplan reload";
 		$oedata =~ s/^exten => h,1,DeadAGI/exten => h,1,AGI/gm;
@@ -913,12 +913,6 @@ sub gen_phones {
 	$ephn .= ";   6000 = monitoring, prompted\n;   6+agent_exten = monitoring, direct\n";
 	$ephn .= ";   7000 = barge, prompted\n;   7+agent_exten = barge, direct\n";
 	$ephn .= ";   9000 = whisper, prompted\n;   9+agent_exten = whisper, direct\n";
-	$ephn .= procexten("osdial","6000","1","AGI","agi-OSDstation_spy_prompted.agi");
-	$ephn .= procexten("osdial","7000","1","AGI","agi-OSDstation_spy_prompted.agi");
-	$ephn .= procexten("osdial","9000","1","AGI","agi-OSDstation_spy_prompted.agi");
-	$oext .= procexten("osdialEXT","6000","1","Goto","osdial,\${EXTEN},1");
-	$oext .= procexten("osdialEXT","7000","1","Goto","osdial,\${EXTEN},1");
-	$oext .= procexten("osdialEXT","9000","1","Goto","osdial,\${EXTEN},1");
 	if (!$CLOexpand) {
 		$ephn .= procexten("osdial","_6XXX","1","AGI","agi-OSDstation_spy.agi");
 		$ephn .= procexten("osdial","_7XXX","1","AGI","agi-OSDstation_spy.agi");
@@ -1072,32 +1066,23 @@ sub gen_osdial_extensions {
 
 	# Build ARI VM context
 	my $ari='';
-	$ari .= procexten("osdial_arivmcall","s","1","Answer","");
-	$ari .= procexten("osdial_arivmcall","s","2","Wait","1");
-	$ari .= procexten("osdial_arivmcall","s","3","Background",'${MSG}');
-	$ari .= procexten("osdial_arivmcall","s","4","Background",'silence/2');
-	$ari .= procexten("osdial_arivmcall","s","5","Background",'vm-repeat');
-	$ari .= procexten("osdial_arivmcall","s","6","Background",'vm-starmain');
-	$ari .= procexten("osdial_arivmcall","s","7","WaitExten","15");
-	$ari .= procexten("osdial_arivmcall","5","1","Goto","osdial_arivmcall,s,3");
-	$ari .= procexten("osdial_arivmcall","#","1","Playback","vm-goodbye");
-	$ari .= procexten("osdial_arivmcall","#","2","Hangup","");
-	$ari .= procexten("osdial_arivmcall","*","1","Set",'VMCONTEXT=${DB(AMPUSER/${MBOX}/voicemail)}');
-	$ari .= procexten("osdial_arivmcall","*","2","VoiceMailMain",'${MBOX}@${VMCONTEXT},s');
-	$ari .= procexten("osdial_arivmcall","i","1","Playback","pm-invalid-option");
-	$ari .= procexten("osdial_arivmcall","i","2","Goto","osdial_arivmcall,s,3");
-	$ari .= procexten("osdial_arivmcall","t","1","Playback","vm-goodbye");
-	$ari .= procexten("osdial_arivmcall","t","2","Hangup","");
-	$ari .= procexten("osdial_arivmcall","h","1","Hangup","");
-	$ari .= procexten("osdial_arivmcall","s-ANSWER","1","Noop","Call successfully answered - Hanging up now");
-
-	my $incoming = procexten("incoming","h","1","Goto","osdial,\${EXTEN},1");
-
+	my $incoming='';
 	my $ocore='';
-	# Static, non-pattern goto's for osdialEXT and osdialBLOCK
-	foreach my $pexten (qw(# t i h 9 43 *97 *98 8500998 9998 9999 487487 487488 99999999999 999999999999)) {
-		$oblock .= procexten("osdialBLOCK",$pexten,"1","Goto","osdial,\${EXTEN},1");
+	my $oblock='';
+	my $ctx={};
+	my $stmt = "SELECT oe.ext_context,oe.exten,oed.ext_priority,oed.ext_app,oed.ext_appdata,ext_type,ivr_id FROM osdial_extensions AS oe LEFT JOIN osdial_extensions_data AS oed ON oed.exten_id=oe.id ORDER BY oe.ext_context ASC, (LPAD(oe.exten,20,' ')) ASC, oed.ext_priority ASC;";
+	while (my $sret = $osdial->sql_query($stmt)) {
+		if ($sret->{ext_type} eq 'DIALPLAN') {
+			$ctx->{$sret->{ext_context}} .= procexten($sret->{ext_context}, $sret->{exten}, $sret->{ext_priority}, $sret->{ext_app}, $sret->{ext_appdata});
+		} elsif ($sret->{ext_type} eq 'IVR') {
+			$ctx->{$sret->{ext_context}} .= procexten($sret->{ext_context}, $sret->{exten}, '1', 'AGI', 'agi-OSDivr.agi,${EXTEN},'.$sret->{ivr_id});
+		}
 	}
+	$ari = $ctx->{'osdial_arivmcall'};
+	$incoming = $ctx->{'incoming'};
+	$oblock = $ctx->{'osdialBLOCK'};
+	$ocore = $ctx->{'osdial'};
+	$oext = $ctx->{'osdialEXT'};
 
 	# Build TTS extensions.
 	my $stmt = "SELECT * FROM osdial_tts WHERE extension!='';";
@@ -1120,126 +1105,6 @@ sub gen_osdial_extensions {
 		$oblock .= procexten("osdialBLOCK",$sret->{extension},"1","Goto","osdial,\${EXTEN},1");
 		$ocore .= ";\n";
 	}
-
-	# Build core osdial extensions
-	$ocore .= procexten("osdial","t","1","Goto","osdial,#,1");
-	$ocore .= procexten("osdial","i","1","Playback","invalid");
-	$ocore .= procexten("osdial","h","1","AGI",'agi://127.0.0.1:4577/call_log--HVcauses--PRI-----NODEBUG-----${HANGUPCAUSE}-----${DIALSTATUS}-----${DIALEDTIME}-----${ANSWEREDTIME}');
-	$ocore .= procexten("osdial","#","1","Playback","invalid");
-	$ocore .= procexten("osdial","#","2","Hangup","");
-	$ocore .= procexten("osdial","*97","1","Goto","osdial,8501,1");
-	$ocore .= procexten("osdial","*98","1","Goto","osdial,8500,1");
-	$ocore .= procexten("osdial","9","1","Playback","invalid");
-	$ocore .= procexten("osdial","43","1","Echo","");
-	$ocore .= "; barge monitoring extension\n";
-	$ocore .= procexten("osdial","8159","1","DahdiBarge","");
-	$ocore .= procexten("osdial","8159","2","Hangup","");
-	$ocore .= "; prompt recording AGI script, ID is 4321\n";
-	$ocore .= procexten("osdial","8167","1","Answer","");
-	$ocore .= procexten("osdial","8167","2","AGI",'agi-record_prompts.agi,wav,720000');
-	$ocore .= procexten("osdial","8167","3","Hangup","");
-	$ocore .= procexten("osdial","8168","1","Answer","");
-	$ocore .= procexten("osdial","8168","2","AGI",'agi-record_prompts.agi,gsm,720000');
-	$ocore .= procexten("osdial","8168","3","Hangup","");
-	$ocore .= procexten("osdial","8169","1","Answer","");
-	$ocore .= procexten("osdial","8169","2","AGI",'agi-record_prompts.agi,ulaw,720000');
-	$ocore .= procexten("osdial","8169","3","Hangup","");
-	$ocore .= procexten("osdial","8300","1","Hangup","");
-	$ocore .= "; park channel for client GUI parking, hangup after 30 minutes\n";
-	$ocore .= procexten("osdial","8301","1","Answer","");
-	$ocore .= procexten("osdial","8301","2","AGI",'agi-OSDpark.agi');
-	$ocore .= procexten("osdial","8301","3","Hangup","");
-	$ocore .= "; park channel for client GUI conferencing, hangup after 30 minutes\n";
-	$ocore .= procexten("osdial","8302","1","Answer","");
-	$ocore .= procexten("osdial","8302","2","Playback",'conf');
-	$ocore .= procexten("osdial","8302","3","Hangup","");
-	$ocore .= procexten("osdial","8303","1","Answer","");
-	$ocore .= procexten("osdial","8303","2","AGI",'agi-OSDpark.agi');
-	$ocore .= procexten("osdial","8303","3","Hangup","");
-	$ocore .= procexten("osdial","8304","1","Answer","");
-	$ocore .= procexten("osdial","8304","2","Playback",'ding');
-	$ocore .= procexten("osdial","8304","3","Hangup","");
-	$ocore .= "; default audio for safe harbor 2-second-after-hello message then hangup\n";
-	$ocore .= procexten("osdial","8307","1","Answer","");
-	$ocore .= procexten("osdial","8307","2","Playback",'vm-goodbye');
-	$ocore .= procexten("osdial","8307","3","Hangup","");
-	$ocore .= "; this is used for recording conference calls, the client app sends the filename value as a callerID recordings go to /var/spool/asterisk/monitor (WAV)\n";
-	$ocore .= procexten("osdial","8309","1","Answer","");
-	$ocore .= procexten("osdial","8309","2","MixMonitor",'/var/spool/asterisk/record_cache/${CALLERID(name)}-in.wav,,/bin/mv -v ^{MIXMONITOR_FILENAME} /var/spool/asterisk/VDmonitor');
-	$ocore .= procexten("osdial","8309","3","Playback","sip-silence");
-	$ocore .= procexten("osdial","8309","4","Wait","900");
-	$ocore .= procexten("osdial","8309","5","Goto","osdial,8309,3");
-	$ocore .= procexten("osdial","8309","6","Hangup","");
-	$ocore .= "; this is used for recording conference calls, the client app sends the filename value as a callerID recordings go to /var/spool/asterisk/monitor (GSM)\n";
-	$ocore .= procexten("osdial","8310","1","Answer","");
-	$ocore .= procexten("osdial","8310","2","MixMonitor",'/var/spool/asterisk/record_cache/${CALLERID(name)}-in.gsm,,/bin/mv -v ^{MIXMONITOR_FILENAME} /var/spool/asterisk/VDmonitor');
-	$ocore .= procexten("osdial","8310","3","Playback","sip-silence");
-	$ocore .= procexten("osdial","8310","4","Wait","900");
-	$ocore .= procexten("osdial","8310","5","Goto","osdial,8310,3");
-	$ocore .= procexten("osdial","8310","6","Hangup","");
-	$ocore .= "; this is used for recording conference calls, the client app sends the filename value as a callerID recordings go to /var/spool/asterisk/monitor (WAV)\n";
-	$ocore .= procexten("osdial","8311","1","Answer","");
-	$ocore .= procexten("osdial","8311","2","MixMonitor",'/var/spool/asterisk/record_cache/${CALLERID(name)}-in.wav,,/bin/mv -v ^{MIXMONITOR_FILENAME} /var/spool/asterisk/VDmonitor');
-	$ocore .= procexten("osdial","8311","3","Playback","sip-silence");
-	$ocore .= procexten("osdial","8311","4","Wait","900");
-	$ocore .= procexten("osdial","8311","5","Goto","osdial,8311,3");
-	$ocore .= procexten("osdial","8311","6","Hangup","");
-	$ocore .= "; this is used for playing a message to an answering machine forwarded from AMD in OSDIAL replace conf with the message file you want to leave\n";
-	$ocore .= procexten("osdial","8320","1","WaitForSilence","1000,2,20");
-	$ocore .= procexten("osdial","8320","2","GotoIf",'$["${AMDAUDIO}" != ""]?4');
-	$ocore .= procexten("osdial","8320","3","Set",'AMDAUDIO=vm-goodbye');
-	$ocore .= procexten("osdial","8320","4","Playback",'${AMDAUDIO}');
-	$ocore .= procexten("osdial","8320","5","Wait",'4');
-	$ocore .= procexten("osdial","8320","6","AGI",'agi-OSDamd_post.agi,${EXTEN},${AMDAUDIO}');
-	$ocore .= procexten("osdial","8320","7","Hangup",'');
-	$ocore .= procexten("osdial","8321","1","AGI",'agi_OSDamd.agi,${EXTEN}-----YES');
-	$ocore .= procexten("osdial","8321","2","Hangup","");
-	$ocore .= "; use for selective CallerID hangup by area code(hard-coded)\n";
-	$ocore .= procexten("osdial","8352","1","AGI",'agi-VDADselective_CID_hangup.agi,${EXTEN}');
-	$ocore .= procexten("osdial","8352","2","Playback","safe_harbor");
-	$ocore .= procexten("osdial","8352","3","Hangup","");
-
-	$ocore .= "; 8364: no agent campaign transfer\n";
-	$ocore .= "; 8365: single server agent transfer\n";
-	$ocore .= "; 8366: old single server with initial survey\n";
-	$ocore .= "; 8367: multi-server agent transfer, load-balance overflow\n";
-	$ocore .= "; 8368: multi-server agent transfer, load-balance\n";
-	$ocore .= "; 8372: reminder script\n";
-	foreach my $pexten (qw(8364 8365 8366 8367 8368 8372)) {
-		$ocore .= procexten("osdial",$pexten,"1","NoOp","");
-		$ocore .= procexten("osdial",$pexten,"2","Playback","sip-silence");
-		$ocore .= procexten("osdial",$pexten,"3","AGI",'agi://127.0.0.1:4577/call_log');
-		$ocore .= procexten("osdial",$pexten,"4","AGI",'agi-OSDoutbound.agi,${EXTEN}');
-		$ocore .= procexten("osdial",$pexten,"5","AGI",'agi-OSDoutbound.agi,${EXTEN}');
-		$ocore .= procexten("osdial",$pexten,"6","AGI",'agi-OSDoutbound.agi,${EXTEN}');
-		$ocore .= procexten("osdial",$pexten,"7","Hangup","");
-	}
-	$ocore .= "; 8369: multi-server agent transfer, load-balance and plus AMD\n";
-	$ocore .= "; 8375: Auto-agent script.\n";
-	foreach my $pexten (qw(8369 8375)) {
-		$ocore .= procexten("osdial",$pexten,"1","NoOp","");
-		$ocore .= procexten("osdial",$pexten,"2","Playback","sip-silence");
-		$ocore .= procexten("osdial",$pexten,"3","AGI",'agi://127.0.0.1:4577/call_log');
-		$ocore .= procexten("osdial",$pexten,"4","AGI",'agi-OSDamd.agi,${EXTEN}');
-		$ocore .= procexten("osdial",$pexten,"5","AGI",'agi-OSDoutbound.agi,${EXTEN}');
-		$ocore .= procexten("osdial",$pexten,"6","AGI",'agi-OSDoutbound.agi,${EXTEN}');
-		$ocore .= procexten("osdial",$pexten,"7","AGI",'agi-OSDoutbound.agi,${EXTEN}');
-		$ocore .= procexten("osdial",$pexten,"8","Hangup","");
-	}
-
-	$ocore .= "; Give voicemail at extension 8500\n";
-	$ocore .= procexten("osdial","8500","1","VoiceMainMain",'@osdial');
-	$ocore .= procexten("osdial","8500","2","Hangup","");
-	#procexten("osdial","8500","2","Goto","osdial,s,6");
-	$ocore .= "; this is used to allow the GUI to send you directly into voicemail don't forget to set GUI variable \$voicemail_exten to this extension\n";
-	$ocore .= procexten("osdial","8501","1","VoiceMainMain",'s${CALLERID(number)}@osdial');
-	$ocore .= procexten("osdial","8501","2","Hangup","");
-	$ocore .= "; this is used for sending DTMF signals within conference calls, the client app sends the digits to be played in the callerID field sound files must be placed in /var/lib/asterisk/sounds\n";
-	$ocore .= procexten("osdial","8500998","1","Answer","");
-	$ocore .= procexten("osdial","8500998","2","Playback","silence");
-	$ocore .= procexten("osdial","8500998","3","AGI",'agi-OSDdtmf.agi');
-	$ocore .= procexten("osdial","8500998","4","Hangup","");
-	
 
 	$oeout .= "#include osdial_extensions_carriers.conf\n\n";
 	$oeout .= "[incoming]\n";

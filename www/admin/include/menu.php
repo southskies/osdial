@@ -292,6 +292,15 @@ if ($ADD==51111111111)		{$hh='admin';	$sh='phones';	$title = "DELETE PHONE";}
 if ($ADD==61111111111)		{$hh='admin';	$sh='phones';	$title = "DELETE PHONE";}
 if ($ADD==31111111111)		{$hh='admin';	$sh='phones';	$title = "MODIFY PHONE";}
 
+# Admin - extensions
+if ($ADD=="10exten")		{$hh='admin';	$sh='extensions';	$title = "EXTENSION LIST";}
+if ($ADD=="11exten")		{$hh='admin';	$sh='extensions';	$title = "ADD NEW EXTENSION";}
+if ($ADD=="21exten")		{$hh='admin';	$sh='extensions';	$title = "ADDING NEW EXTENSION";}
+if ($ADD=="41exten")		{$hh='admin';	$sh='extensions';	$title = "MODIFY EXTENSION";}
+if ($ADD=="51exten")		{$hh='admin';	$sh='extensions';	$title = "DELETE EXTENSION";}
+if ($ADD=="61exten")		{$hh='admin';	$sh='extensions';	$title = "DELETE EXTENSION";}
+if ($ADD=="31exten")		{$hh='admin';	$sh='extensions';	$title = "MODIFY EXTENSION";}
+
 # Admin - companies
 if ($ADD=="10comp")		{$hh='admin';	$sh='company';	$title = "COMPANY LIST";}
 if ($ADD=="11comp")		{$hh='admin';	$sh='company';	$title = "ADD NEW COMPANY";}

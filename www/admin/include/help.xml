@@ -2480,6 +2480,39 @@ user[:secret[:authuser]]@carrier_name[/extension]&lt;br/&gt;
     </item>
   </section>
 
+  <section pathId="extensions" sectionId="39" title="Extensions">
+    <item pathId="ext_type" sectionId="1" title="Extension Type">
+    CUSTOM- Indicates that the extension is either reserved or has been manually defined somewhere, like /etc/asterisk/osdial_extensions_custom.conf.&lt;br/&gt;
+    DIALPLAN- An Asterisk-styled extension definition.&lt;br/&gt;
+    IVR- A simplified version of the Virtual Agent based IVR found in Campaigns. This version is only for simple call routing, ie routing inbound calls to a Sales InGroup or a Customer Service InGroup. If you are wanting an IVR to assist with sales, agent to agent transfers, or third-party transfers, please use the Virtualized Agent IVR under Campaigns.&lt;br/&gt;
+    </item>
+    <item pathId="name" sectionId="2" title="Name">
+    The Name/Description that will appear in selection boxes alongside this extesion.
+    </item>
+    <item pathId="description" sectionId="3" title="Description">
+    A short summary of what the extension does.
+    </item>
+    <item pathId="ext_context" sectionId="4" title="Extension Context">
+    The Asterisk dialplan context to which this extension will be assigned. Default is 'osdial'.
+    </item>
+    <item pathId="exten" sectionId="5" title="Extension">
+    The extension that will serve this destination. (Asterisk-based pattern matching accepted.)
+    </item>
+    <item pathId="dialplan" sectionId="6" title="Dialplan">
+    An Asterisk-styled extension definition. Excluding the initial "exten =&gt;" and its first field (extension).&lt;br/&gt;
+    Example (extension 9998):&lt;br/&gt;
+    1,Answer
+    2,Playback(beep)
+    3,Echo()
+    </item>
+    <item pathId="selectable" sectionId="7" title="Selectable">
+    If set to 'Y', the extension shows up as a selectable item for all 'Extension' fields.
+    </item>
+    <item pathId="readonly" sectionId="8" title="Readonly">
+    Extensions marked as "Readonly" cannot be removed. They are likely very critical to the operation of the system.
+    </item>
+  </section>
+
   </chapter>
  </topic>
  <topic pathId="advanced" sectionId="5" title="Advanced Topics">

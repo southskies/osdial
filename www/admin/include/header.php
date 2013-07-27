@@ -1381,6 +1381,15 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
         $phones_class='rounded-menu2';
         $phones_sh=0;
     }
+    if (OSDpreg_match('/^(10exten|11exten|21exten|31exten|41exten|51exten|61exten)$/', $ADD)) {
+        $extensions_color=$activemenu2_color;
+        $extensions_class='rounded-menu2select';
+        $extensions_sh=1;
+    } else {
+        $extensions_color=$inactivemenu2_color;
+        $extensions_class='rounded-menu2';
+        $extensions_sh=0;
+    }
     if (OSDpreg_match('/^(10000|11111|21111|31111|41111|51111|61111|1000000000000|1111111111111|2111111111111|3111111111111|4111111111111|5111111111111|6111111111111|10000000000000|11111111111111|21111111111111|31111111111111|41111111111111|5111111111111|61111111111111)$/', $ADD)) {
         $conference_color=$activemenu2_color;
         $conference_class='rounded-menu2select';
@@ -1449,6 +1458,11 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
     }
     if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_system_phones'] == 1) {
         $amenu .= "    <td height=20 align=center bgcolor=$phones_color class=$phones_class colspan=1><span class=\"font2 $phones_fc\"><a href=\"$PHP_SELF?ADD=10000000000\"> Phones </a></span></td>\n";
+    } else {
+        $acnt += 1;
+    }
+    if ($LOG['multicomp_user'] == 0) {
+        $amenu .= "    <td height=20 align=center bgcolor=$extensions_color class=$extensions_class colspan=1><span class=\"font2 $extensions_fc\"><a href=\"$PHP_SELF?ADD=10exten\"> Extensions </a></span></td>\n";
     } else {
         $acnt += 1;
     }
@@ -1823,6 +1837,66 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
                 echo "              <td align=center bgcolor=$phones_delete_color class=$phones_delete_class width=175><span class=\"font2 alert\"><a href=\"$PHP_SELF?ADD=51111111111&extension=$extension&server_ip=$server_ip\"> Delete Phone </a></span></td>\n";
             }
             echo "              <td align=center bgcolor=$phones_stats_color class=$phones_stats_class width=175><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=999999&SUB=31&phone_extension=$row[0]&phone_server_ip=$row[5]'\">Phone Stats</a></span>";
+            echo "              <td bgcolor=$inactivemenu4_color class='rounded-menu3' colspan=4>&nbsp;</td>";
+            echo "            </tr>";
+            echo "          </table>";
+            echo "        </td>";
+            echo "      </tr>";
+        }
+        echo "      </table>\n";
+        echo "    </td>\n";
+        echo "  </tr>\n";
+    }
+
+### Extensions Sub-Menu.
+    if ($extensions_sh > 0) { 
+        if (OSDpreg_match('/^(10exten|61exten)$/',$ADD)) {
+            $extensions_show_color=$activemenu3_color;
+            $extensions_show_class='rounded-menu3select';
+        } else {
+            $extensions_show_color=$inactivemenu3_color;
+            $extensions_show_class='rounded-menu3';
+        }
+        if ($ADD=='11exten') {
+            $extensions_add_color=$activemenu3_color;
+            $extensions_add_class='rounded-menu3select';
+        } else {
+            $extensions_add_color=$inactivemenu3_color;
+            $extensions_add_class='rounded-menu3';
+        }
+        if (OSDpreg_match('/^(21exten|31exten|41exten)$/',$ADD) and OSDstrlen($exten_id) > 0) {
+            $extensions_modify_color=$activemenu4_color;
+            $extensions_modify_class='rounded-menu4select';
+        } else {
+            $extensions_modify_color=$inactivemenu4_color;
+            $extensions_modify_class='rounded-menu4';
+        }
+        if ($ADD=='51exten' and OSDstrlen($exten_id) > 0) {
+            $extensions_delete_color=$activemenu4_color;
+            $extensions_delete_class='rounded-menu4select';
+        } else {
+            $extensions_delete_color=$inactivemenu4_color;
+            $extensions_delete_class='rounded-menu4';
+        }
+        echo "  <tr class='no-ul'>\n";
+        echo "    <td height=18 align=left colspan=$settings_menucols2>\n";
+        echo "      <table width=100% cellpadding=0 cellspacing=0 border=0>\n";
+        echo "        <tr align=center class='no-ul' height=25>\n";
+        echo "          <td width=6></td>\n";
+        echo "          <td class=$extensions_show_class align=center bgcolor=$extensions_show_color width=175><span class=\"font2 fgdefault\"><a href=\"$PHP_SELF?ADD=10exten\"> Show Extensions </a></span></td>\n";
+        echo "          <td class=$extensions_add_class align=center bgcolor=$extensions_add_color width=175><span class=\"font2 fgdefault\"><a href=\"$PHP_SELF?ADD=11exten\"> Add Extensions </a></span></td>\n";
+        echo "          <td bgcolor=$inactivemenu3_color class='rounded-menu2' colspan=2 width=400>&nbsp;</td>";
+        echo "          <td width=6></td>\n";
+        echo "        </tr>\n";
+        if (OSDpreg_match('/^(21exten|31exten|41exten|51exten)$/',$ADD) and OSDstrlen($exten_id) > 0) {
+            echo "      <tr>";
+            echo "        <td colspan=$settings_menucols2>";
+            echo "          <table cellpadding=0 cellspacing=0 width=100% border=0>";
+            echo "            <tr class=no-ul height=25>";
+            echo "              <td align=center bgcolor=$extensions_modify_color class=$extensions_modify_class width=175><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=31exten&exten_id=$exten_id\"> Modify Extension </a></span></td>\n";
+            if ($LOG['ast_delete_phones'] > 0) {
+                echo "              <td align=center bgcolor=$extensions_delete_color class=$extensions_delete_class width=175><span class=\"font2 alert\"><a href=\"$PHP_SELF?ADD=51exten&exten_id=$exten_id\"> Delete Extension </a></span></td>\n";
+            }
             echo "              <td bgcolor=$inactivemenu4_color class='rounded-menu3' colspan=4>&nbsp;</td>";
             echo "            </tr>";
             echo "          </table>";

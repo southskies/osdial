@@ -1216,21 +1216,24 @@ function list_id_text_options($link, $name, $val, $size, $maxsize) {
 
 function extension_label_list($link) {
     $elist = array();
-    #$ekrh = get_krh($link, 'extensions', '*','extension ASC',"",'');
-    $ekrh = array();
-    $ekrh[] = ['extension'=>'8300','description'=>'Hangup'];
-    $ekrh[] = ['extension'=>'8304','description'=>'Play Ding'];
-    $ekrh[] = ['extension'=>'8307','description'=>'Say Goodbye'];
-    $ekrh[] = ['extension'=>'8320','description'=>'Detect VM, Say Goodbye'];
-    $ekrh[] = ['extension'=>'8500','description'=>'VoiceMail Main Menu'];
-    $ekrh[] = ['extension'=>'9998','description'=>'Echo Test'];
-    $ekrh[] = ['extension'=>'9999','description'=>'Continuous Hold Music'];
+    $ekrh = get_krh($link, 'osdial_extensions', '*',"ext_context ASC, ext_type ASC, LPAD(exten,20,' ') ASC","ext_context='osdial' AND selectable='1'",'');
+    #$ekrh = array();
+    #$ekrh[] = ['exten'=>'8300','name'=>'Hangup'];
+    #$ekrh[] = ['exten'=>'8304','name'=>'Play Ding'];
+    #$ekrh[] = ['exten'=>'8307','name'=>'Say Goodbye'];
+    #$ekrh[] = ['exten'=>'8320','name'=>'Detect VM, Say Goodbye'];
+    #$ekrh[] = ['exten'=>'8500','name'=>'VoiceMail Main Menu'];
+    #$ekrh[] = ['exten'=>'9998','name'=>'Echo Test'];
+    #$ekrh[] = ['exten'=>'9999','name'=>'Continuous Hold Music'];
     if (is_array($ekrh)) {
         $ekeys = array();
         foreach ($ekrh as $oe) {
-            $tdesc = $oe['description'];
-            if (OSDpreg_match("/^$oe[extension]$/",$tdesc)) $tdesc='';
-            $ekeys[$oe['extension']] = array($tdesc,'EXTEN');
+            $ttype='EXTEN';
+            if ($oe['ext_type']=='IVR') $ttype='IVR';
+            if ($oe['ext_type']=='CUSTOM') $ttype='CUST';
+            $tdesc = $oe['name'];
+            if (OSDpreg_match("/^$oe[exten]$/",$tdesc)) $tdesc='';
+            $ekeys[$oe['exten']] = array($tdesc,$ttype);
         }
         if (is_array($ekeys)) {
             foreach ($ekeys as $ek => $ev) {
@@ -1286,11 +1289,16 @@ function editableSelectBox($options, $name, $val, $size, $maxsize, $attribs) {
         }
         $esboptsO = rtrim($esboptsO,';') . "\"";
     }
+    $jform = 'forms[0]';
+    if (OSDpreg_match('/^.*\..*/',$name)) {
+        $jform = OSDpreg_replace('/^(.*)\..*/','\\1',$name);
+        $name = OSDpreg_replace('/^.*\.(.*)/','\\1',$name);
+    }
     $esbopts = "<input type=\"text\" name=\"$name\" id=\"$name\" size=\"$size\" maxlength=\"$maxsize\" value=\"$val\" $attribs ";
     $esbopts .= $esboptsO . $esboptsL . $esboptsT;
     $esbopts .= ">\n";
     $esbopts .= "<script type=\"text/javascript\">\n";
-    $esbopts .= "createEditableSelect(document.forms[0].$name);\n";
+    $esbopts .= "createEditableSelect(document.$jform.$name);\n";
     $esbopts .= "</script>\n";
     return $esbopts;
 }

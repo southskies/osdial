@@ -431,7 +431,7 @@ if ($ADD==20)
             $stmt .= "available_only_ratio_tally,adaptive_dropped_percentage,adaptive_maximum_level,adaptive_latest_server_time,adaptive_intensity,adaptive_dl_diff_target,concurrent_transfers,auto_alt_dial,";
             $stmt .= "auto_alt_dial_statuses,agent_pause_codes_active,campaign_description,campaign_changedate,campaign_stats_refresh,campaign_logindate,dial_statuses,disable_alter_custdata,no_hopper_leads_logins,";
             $stmt .= "list_order_mix,campaign_allow_inbound,manual_dial_list_id,default_xfer_group,web_form_address2,allow_tab_switch,answers_per_hour_limit,campaign_call_time,preview_force_dial_time,";
-            $stmt .= "manual_preview_default,web_form_extwindow,web_form2_extwindow,submit_method,use_custom2_callerid,campaign_cid_name,xfer_cid_mode,use_cid_areacode_map,carrier_id,email_templates,disable_manual_dial) ";
+            $stmt .= "manual_preview_default,web_form_extwindow,web_form2_extwindow,submit_method,use_custom2_callerid,campaign_cid_name,xfer_cid_mode,use_cid_areacode_map,carrier_id,email_templates,disable_manual_dial,ivr_id) ";
 
             $stmt .= sprintf("SELECT '%s','%s',",mres($campaign_name),mres($campaign_id));
             $stmt .= "'N',dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,";
@@ -441,7 +441,7 @@ if ($ADD==20)
             $stmt .= "available_only_ratio_tally,adaptive_dropped_percentage,adaptive_maximum_level,adaptive_latest_server_time,adaptive_intensity,adaptive_dl_diff_target,concurrent_transfers,auto_alt_dial,";
             $stmt .= "auto_alt_dial_statuses,agent_pause_codes_active,campaign_description,campaign_changedate,campaign_stats_refresh,campaign_logindate,dial_statuses,disable_alter_custdata,no_hopper_leads_logins,";
             $stmt .= "'DISABLED',campaign_allow_inbound,manual_dial_list_id,default_xfer_group,web_form_address2,allow_tab_switch,answers_per_hour_limit,campaign_call_time,preview_force_dial_time,";
-            $stmt .= "manual_preview_default,web_form_extwindow,web_form2_extwindow,submit_method,use_custom2_callerid,campaign_cid_name,xfer_cid_mode,use_cid_areacode_map,carrier_id,email_templates,disable_manual_dial ";
+            $stmt .= "manual_preview_default,web_form_extwindow,web_form2_extwindow,submit_method,use_custom2_callerid,campaign_cid_name,xfer_cid_mode,use_cid_areacode_map,carrier_id,email_templates,disable_manual_dial,ivr_id ";
 
             $stmt .= sprintf("FROM osdial_campaigns WHERE campaign_id='%s';",mres($source_campaign_id));
             $rslt=mysql_query($stmt, $link);
@@ -461,9 +461,10 @@ if ($ADD==20)
             $stmtA=sprintf("INSERT INTO osdial_pause_codes (pause_code,pause_code_name,billable,campaign_id) SELECT pause_code,pause_code_name,billable,'%s' FROM osdial_pause_codes WHERE campaign_id='%s';",mres($campaign_id),mres($source_campaign_id));
             $rslt=mysql_query($stmtA, $link);
 
-            $ccivr = get_first_record($link, 'osdial_ivr', '*', sprintf("campaign_id LIKE '%s'",mres($source_campaign_id)));
+            $screc = get_first_record($link, 'osdial_campaigns', '*', sprintf("campaign_id LIKE '%s'",mres($source_campaign_id)));
+            $ccivr = get_first_record($link, 'osdial_ivr', '*', sprintf("id LIKE '%s'",mres($screc['ivr_id'])));
             if (is_array($ccivr)) {
-                $stmtA=sprintf("INSERT INTO osdial_ivr (campaign_id,name,announcement,repeat_loops,wait_loops,wait_timeout,answered_status,virtual_agents,status,timeout_action,reserve_agents,allow_inbound) VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');",mres($campaign_id),mres($ccivr['name']),mres($ccivr['announcement']),mres($ccivr['repeat_loops']),mres($ccivr['wait_loops']),mres($ccivr['wait_timeout']),mres($ccivr['answered_status']),mres($ccivr['virtual_agents']),mres($ccivr['status']),mres($ccivr['timeout_action']),mres($ccivr['reserve_agents']),mres($ccivr['allow_inbound']));
+                $stmtA=sprintf("INSERT INTO osdial_ivr (name,announcement,repeat_loops,wait_loops,wait_timeout,answered_status,virtual_agents,status,timeout_action,reserve_agents,allow_inbound) VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');",mres($ccivr['name']),mres($ccivr['announcement']),mres($ccivr['repeat_loops']),mres($ccivr['wait_loops']),mres($ccivr['wait_timeout']),mres($ccivr['answered_status']),mres($ccivr['virtual_agents']),mres($ccivr['status']),mres($ccivr['timeout_action']),mres($ccivr['reserve_agents']),mres($ccivr['allow_inbound']));
                 $rslt=mysql_query($stmtA, $link);
                 $new_ivr_id =  mysql_insert_id($link);
 
@@ -582,7 +583,7 @@ if ($ADD==41)
             ."preview_force_dial_time='%s',manual_preview_default='%s',web_form_extwindow='%s',web_form2_extwindow='%s',submit_method='%s',use_custom2_callerid='%s',"
             ."campaign_cid_name='%s',xfer_cid_mode='%s',use_cid_areacode_map='%s',carrier_id='%s',email_templates='%s',disable_manual_dial='%s',"
             ."hide_xfer_local_closer='%s',hide_xfer_dial_override='%s',hide_xfer_hangup_xfer='%s',hide_xfer_leave_3way='%s',hide_xfer_dial_with='%s',"
-            ."hide_xfer_hangup_both='%s',hide_xfer_blind_xfer='%s',hide_xfer_park_dial='%s',hide_xfer_blind_vmail='%s',allow_md_hopperlist='%s' "
+            ."hide_xfer_hangup_both='%s',hide_xfer_blind_xfer='%s',hide_xfer_park_dial='%s',hide_xfer_blind_vmail='%s',allow_md_hopperlist='%s',ivr_id='%s' "
             ."WHERE campaign_id='%s';",
             $adlSQL,mres($campaign_name),mres($active),mres($dial_status_a),mres($dial_status_b),mres($dial_status_c),mres($dial_status_d),
             mres($dial_status_e),mres($lead_order),mres($allow_closers),mres($hopper_level),mres($next_agent_call),mres($local_call_time),mres($voicemail_ext),
@@ -598,7 +599,7 @@ if ($ADD==41)
             mres($preview_force_dial_time),mres($manual_preview_default),mres($web_form_extwindow),mres($web_form2_extwindow),mres($submit_method),mres($use_custom2_callerid),
             mres($campaign_cid_name),mres($xfer_cid_mode),mres($use_cid_areacode_map),mres($carrier_id),mres($ets),mres($disable_manual_dial),
             mres($hide_xfer_local_closer),mres($hide_xfer_dial_override),mres($hide_xfer_hangup_xfer),mres($hide_xfer_leave_3way),mres($hide_xfer_dial_with),
-            mres($hide_xfer_hangup_both),mres($hide_xfer_blind_xfer),mres($hide_xfer_park_dial),mres($hide_xfer_blind_vmail),mres($allow_md_hopperlist),
+            mres($hide_xfer_hangup_both),mres($hide_xfer_blind_xfer),mres($hide_xfer_park_dial),mres($hide_xfer_blind_vmail),mres($allow_md_hopperlist),mres($ivr_id),
             mres($campaign_id));
         if ($DB) echo $stmtA;
         $rslt=mysql_query($stmtA, $link);
@@ -844,7 +845,8 @@ if ($ADD==61)
         $stmt=sprintf("DELETE FROM osdial_campaigns_list_mix WHERE campaign_id='%s';",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
 
-        $ccivr = get_first_record($link, 'osdial_ivr', '*', sprintf("campaign_id LIKE '%s'",mres($campaign_id)));
+        $crec = get_first_record($link, 'osdial_campaigns', '*', sprintf("campaign_id LIKE '%s'",mres($campaign_id)));
+        $ccivr = get_first_record($link, 'osdial_ivr', '*', sprintf("id LIKE '%s'",mres($crec['ivr_id'])));
         if (is_array($ccivr)) {
             $stmt=sprintf("DELETE FROM osdial_ivr WHERE id='%s';",mres($ccivr['id']));
             $rslt=mysql_query($stmt, $link);
@@ -1082,6 +1084,7 @@ if ($ADD==31) {
         $hide_xfer_park_dial = $row[93];
         $hide_xfer_blind_vmail = $row[94];
         $allow_md_hopperlist = $row[95];
+        $ivr_id = $row[95];
 
         if (OSDpreg_match("/DISABLED/",$list_order_mix)) {
             $DEFlistDISABLE = '';
@@ -1188,6 +1191,7 @@ if ($ADD==31) {
 			echo "<input type=hidden name=DB value=$DB>";
 			echo "<input type=hidden name=ADD value=41>";
 			echo "<input type=hidden name=campaign_id value=\"$campaign_id\">";
+			echo "<input type=hidden name=ivr_id value=\"$ivr_id\">";
 			echo "<input type=hidden name=park_ext value=\"$row[9]\">\n";
 			echo "<input type=hidden name=park_file value=\"$row[10]\">\n";        
 			
