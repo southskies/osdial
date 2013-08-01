@@ -2515,7 +2515,7 @@ flush();
                     <br><br>
                     <span id="CloserSelectContent"> Closer Inbound Group Selection </span>
                     <input type=hidden name=CloserSelectList><br>
-                    <input type=checkbox name=CloserSelectBlended size=1 value="0">&nbsp;<font color=<?php echo $closer_fc2; ?>>BLENDED CALLING (outbound activated)</font>
+                    <input type=checkbox name=CloserSelectBlended id=CloserSelectBlended size=1 value="0">&nbsp;<font color=<?php echo $closer_fc2; ?>><label for=CloserSelectBlended>BLENDED CALLING (outbound activated)</label></font>
                     <br><br>
                     <a href="#" onclick="CloserSelectContent_create();return false;">RESET</a>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
