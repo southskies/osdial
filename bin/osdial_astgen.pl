@@ -1160,11 +1160,44 @@ sub gen_osdial_extensions {
 	$oeout .= procexten("osdial-Patterns","_7860XXXX*.","1","AGI","agi-OSDfixCXFER.agi");
 	$oeout .= ";\n; inbound OSDIAL transfer calls\n";
 	$oeout .= procexten("osdial-Patterns","_90009.","1","Answer","");
-	$oeout .= procexten("osdial-Patterns","_90009.","2","AGI","agi-VDAD_ALL_inbound.agi,CLOSER-----LO-----CL_TESTCAMP-----7275551212-----Closer-----park----------999-----1");
-	$oeout .= procexten("osdial-Patterns","_90009.","3","Hangup","");
+	$oeout .= procexten("osdial-Patterns","_90009.","2","Playback","sip-silence");
+	$oeout .= procexten("osdial-Patterns","_90009.","3","Set",'IVR_UNIQUEID=${UNIQUEID}');
+	$oeout .= procexten("osdial-Patterns","_90009.","4","Set",'IVR_CHANNEL=${CHANNEL}');
+	$oeout .= procexten("osdial-Patterns","_90009.","5","Set",'IVR_CONTEXT=${CONTEXT}');
+	$oeout .= procexten("osdial-Patterns","_90009.","6","Set",'IVR_ACCOUNTCODE=${CDR(accountcode)}');
+	$oeout .= procexten("osdial-Patterns","_90009.","7","Set",'IVR_PRIORITY=${PRIORITY}');
+	$oeout .= procexten("osdial-Patterns","_90009.","8","Set",'IVR_EXTENSION=${EXTEN}');
+	$oeout .= procexten("osdial-Patterns","_90009.","9","Set",'IVR_CALLERIDNAME=${CALLERID(name)}');
+	$oeout .= procexten("osdial-Patterns","_90009.","10","Set",'IVR_CALLERID=${CALLERID(num)}');
+	$oeout .= procexten("osdial-Patterns","_90009.","11","Set",'IVR_ARGS=CLOSER-----LO-----CL_TESTCAMP-----7275551212-----Closer-----park----------999-----1');
+	$oeout .= procexten("osdial-Patterns","_90009.","12","AGI",'agi://127.0.0.1:4577/call_log');
+	$oeout .= procexten("osdial-Patterns","_90009.","13","ExternalIVR","/var/lib/asterisk/agi-bin/ivr-OSDinbound.pl(1)");
+	$oeout .= procexten("osdial-Patterns","_90009.","14","GotoIf",'$["${IVR_GOTO}" = "1"]?15:16');
+	$oeout .= procexten("osdial-Patterns","_90009.","15","Goto",'${IVR_CONTEXT},${IVR_EXTEN},${IVR_PRIORITY}');
+	$oeout .= procexten("osdial-Patterns","_90009.","16","Hangup","");
 	$oeout .= procexten("osdial-Patterns","_990009.","1","Answer","");
-	$oeout .= procexten("osdial-Patterns","_990009.","2","AGI","agi-VDAD_ALL_inbound.agi,CLOSER-----LO-----CL_TESTCAMP-----7275551212-----Closer-----park----------999-----1");
-	$oeout .= procexten("osdial-Patterns","_990009.","3","Hangup","");
+	$oeout .= procexten("osdial-Patterns","_990009.","2","Playback","sip-silence");
+	$oeout .= procexten("osdial-Patterns","_990009.","3","Set",'IVR_UNIQUEID=${UNIQUEID}');
+	$oeout .= procexten("osdial-Patterns","_990009.","4","Set",'IVR_CHANNEL=${CHANNEL}');
+	$oeout .= procexten("osdial-Patterns","_990009.","5","Set",'IVR_CONTEXT=${CONTEXT}');
+	$oeout .= procexten("osdial-Patterns","_990009.","6","Set",'IVR_ACCOUNTCODE=${CDR(accountcode)}');
+	$oeout .= procexten("osdial-Patterns","_990009.","7","Set",'IVR_PRIORITY=${PRIORITY}');
+	$oeout .= procexten("osdial-Patterns","_990009.","8","Set",'IVR_EXTENSION=${EXTEN}');
+	$oeout .= procexten("osdial-Patterns","_990009.","9","Set",'IVR_CALLERIDNAME=${CALLERID(name)}');
+	$oeout .= procexten("osdial-Patterns","_990009.","10","Set",'IVR_CALLERID=${CALLERID(num)}');
+	$oeout .= procexten("osdial-Patterns","_990009.","11","Set",'IVR_ARGS=CLOSER-----LO-----CL_TESTCAMP-----7275551212-----Closer-----park----------999-----1');
+	$oeout .= procexten("osdial-Patterns","_990009.","12","AGI",'agi://127.0.0.1:4577/call_log');
+	$oeout .= procexten("osdial-Patterns","_990009.","13","ExternalIVR","/var/lib/asterisk/agi-bin/ivr-OSDinbound.pl(1)");
+	$oeout .= procexten("osdial-Patterns","_990009.","14","GotoIf",'$["${IVR_GOTO}" = "1"]?15:16');
+	$oeout .= procexten("osdial-Patterns","_990009.","15","Goto",'${IVR_CONTEXT},${IVR_EXTEN},${IVR_PRIORITY}');
+	$oeout .= procexten("osdial-Patterns","_990009.","16","Hangup","");
+
+	#$oeout .= procexten("osdial-Patterns","_90009.","1","Answer","");
+	#$oeout .= procexten("osdial-Patterns","_90009.","2","AGI","agi-VDAD_ALL_inbound.agi,CLOSER-----LO-----CL_TESTCAMP-----7275551212-----Closer-----park----------999-----1");
+	#$oeout .= procexten("osdial-Patterns","_90009.","3","Hangup","");
+	#$oeout .= procexten("osdial-Patterns","_990009.","1","Answer","");
+	#$oeout .= procexten("osdial-Patterns","_990009.","2","AGI","agi-VDAD_ALL_inbound.agi,CLOSER-----LO-----CL_TESTCAMP-----7275551212-----Closer-----park----------999-----1");
+	#$oeout .= procexten("osdial-Patterns","_990009.","3","Hangup","");
 	$oeout .= "\n";
 	$oeout .= "[osdial]\n";
 	$oeout .= "include => osdial-Switch\n" if($CLOrealtime>0);
@@ -1286,9 +1319,26 @@ sub gen_carriers {
 				my $prio=1;
 				$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"AGI","agi://127.0.0.1:4577/call_log");
 				if ($dids->{$did}{did_action} eq 'INGROUP') {
-					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"AGI","agi-VDAD_ALL_inbound.agi,".$dids->{$did}{lookup_method}."-----".$dids->{$did}{server_allocation}
+					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Answer","");
+					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Playback","sip-silence");
+					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Set",'IVR_UNIQUEID=${UNIQUEID}');
+					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Set",'IVR_CHANNEL=${CHANNEL}');
+					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Set",'IVR_CONTEXT=${CONTEXT}');
+					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Set",'IVR_ACCOUNTCODE=${CDR(accountcode)}');
+					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Set",'IVR_PRIORITY=${PRIORITY}');
+					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Set",'IVR_EXTENSION=${EXTEN}');
+					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Set",'IVR_CALLERIDNAME=${CALLERID(name)}');
+					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Set",'IVR_CALLERID=${CALLERID(num)}');
+					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Set",'IVR_ARGS='.$dids->{$did}{lookup_method}."-----".$dids->{$did}{server_allocation}
 					."-----".$dids->{$did}{ingroup}."-----\${EXTEN}-----\${CALLERID(number)}-----".$dids->{$did}{park_file}."-----".$dids->{$did}{initial_status}."-----".$dids->{$did}{default_list_id}
 					."-----".$dids->{$did}{default_phone_code}."-----".$dids->{$did}{search_campaign});
+					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"ExternalIVR","/var/lib/asterisk/agi-bin/ivr-OSDinbound.pl(1)");
+					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"GotoIf",'$["${IVR_GOTO}" = "1"]?15:16');
+					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Goto",'${IVR_CONTEXT},${IVR_EXTEN},${IVR_PRIORITY}');
+					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Hangup","");
+					#$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"AGI","agi-VDAD_ALL_inbound.agi,".$dids->{$did}{lookup_method}."-----".$dids->{$did}{server_allocation}
+					#."-----".$dids->{$did}{ingroup}."-----\${EXTEN}-----\${CALLERID(number)}-----".$dids->{$did}{park_file}."-----".$dids->{$did}{initial_status}."-----".$dids->{$did}{default_list_id}
+					#."-----".$dids->{$did}{default_phone_code}."-----".$dids->{$did}{search_campaign});
 				} elsif ($dids->{$did}{did_action} eq 'PHONE') {
 					my $stmt = sprintf("SELECT * FROM phones WHERE extension='\%s' LIMIT 1;",$dids->{$did}{phone});
 					while (my $phone = $osdial->sql_query($stmt)) {
