@@ -842,7 +842,7 @@
   The number of seconds from the time the customer line is picked up until the call is considered a DROP, only applies to outbound calls.
     </item>
 
-    <item pathId="drop_message" sectionId="16" title="Drop Action">
+    <item pathId="drop_action" sectionId="16" title="Drop Action">
   If the Drop Trigger event occurs, EXTENSION (Y) will transfer to the Drop Extension, VOICEMAIL (N) will transfer to the Drop Voicemail box.
     </item>
 

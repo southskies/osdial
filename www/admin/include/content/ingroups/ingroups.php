@@ -190,7 +190,7 @@ if ($ADD==2011) {
 			 echo "<br>Group name and group color must be at least 2 characters in length</font><br>\n";
         } else {
             if ($LOG['multicomp'] > 0) $group_id = (($company_id * 1) + 100) . $group_id;
-			$stmt=sprintf("INSERT INTO osdial_inbound_groups (group_id,group_name,group_color,active,web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,drop_call_seconds,drop_message,drop_exten,call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,default_xfer_group,web_form_address2,allow_tab_switch,web_form_extwindow,web_form2_extwindow,drop_trigger,allow_multicall) SELECT '%s','%s',group_color,'N',web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,drop_call_seconds,drop_message,drop_exten,call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,default_xfer_group,web_form_address2,allow_tab_switch,web_form_extwindow,web_form2_extwindow,drop_trigger,allow_multicall FROM osdial_inbound_groups WHERE group_id='%s';",mres($group_id),mres($group_name),mres($source_group_id));
+			$stmt=sprintf("INSERT INTO osdial_inbound_groups (group_id,group_name,group_color,active,web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,drop_call_seconds,drop_action,drop_exten,call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,default_xfer_group,web_form_address2,allow_tab_switch,web_form_extwindow,web_form2_extwindow,drop_trigger,allow_multicall,placement_interval,placement_max_repeat,queuetime_interval,queuetime_max_repeat,background_music_filename,drop_message_filename) SELECT '%s','%s',group_color,'N',web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,drop_call_seconds,drop_action,drop_exten,call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,default_xfer_group,web_form_address2,allow_tab_switch,web_form_extwindow,web_form2_extwindow,drop_trigger,allow_multicall,placement_interval,placement_max_repeat,queuetime_interval,queuetime_max_repeat,background_music_filename,drop_message_filename FROM osdial_inbound_groups WHERE group_id='%s';",mres($group_id),mres($group_name),mres($source_group_id));
 			$rslt=mysql_query($stmt, $link);
 
 			echo "<br><B><font color=$default_text>GROUP ADDED: $group_id</font></B>\n";
@@ -226,7 +226,7 @@ if ($ADD==4111) {
         } else {
             echo "<br><B><font color=$default_text>GROUP MODIFIED: $group_id</font></B>\n";
 
-            $stmt=sprintf("UPDATE osdial_inbound_groups SET group_name='%s',group_color='%s',active='%s',web_form_address='%s',voicemail_ext='%s',next_agent_call='%s',fronter_display='%s',ingroup_script='%s',get_call_launch='%s',xferconf_a_dtmf='%s',xferconf_a_number='%s',xferconf_b_dtmf='%s',xferconf_b_number='%s',drop_message='%s',drop_call_seconds='%s',drop_exten='%s',call_time_id='%s',after_hours_action='%s',after_hours_message_filename='%s',after_hours_exten='%s',after_hours_voicemail='%s',welcome_message_filename='%s',moh_context='%s',onhold_prompt_filename='%s',prompt_interval='%s',agent_alert_exten='%s',agent_alert_delay='%s',default_xfer_group='%s',web_form_address2='%s',allow_tab_switch='%s',web_form_extwindow='%s',web_form2_extwindow='%s',drop_trigger='%s',allow_multicall='%s' WHERE group_id='%s';",mres($group_name),mres($group_color),mres($active),mres($web_form_address),mres($voicemail_ext),mres($next_agent_call),mres($fronter_display),mres($script_id),mres($get_call_launch),mres($xferconf_a_dtmf),mres($xferconf_a_number),mres($xferconf_b_dtmf),mres($xferconf_b_number),mres($drop_message),mres($drop_call_seconds),mres($drop_exten),mres($call_time_id),mres($after_hours_action),mres($after_hours_message_filename),mres($after_hours_exten),mres($after_hours_voicemail),mres($welcome_message_filename),mres($moh_context),mres($onhold_prompt_filename),mres($prompt_interval),mres($agent_alert_exten),mres($agent_alert_delay),mres($default_xfer_group),mres($web_form_address2),mres($allow_tab_switch),mres($web_form_extwindow),mres($web_form2_extwindow),mres($drop_trigger),mres($allow_multicall),mres($group_id));
+            $stmt=sprintf("UPDATE osdial_inbound_groups SET group_name='%s',group_color='%s',active='%s',web_form_address='%s',voicemail_ext='%s',next_agent_call='%s',fronter_display='%s',ingroup_script='%s',get_call_launch='%s',xferconf_a_dtmf='%s',xferconf_a_number='%s',xferconf_b_dtmf='%s',xferconf_b_number='%s',drop_action='%s',drop_call_seconds='%s',drop_exten='%s',call_time_id='%s',after_hours_action='%s',after_hours_message_filename='%s',after_hours_exten='%s',after_hours_voicemail='%s',welcome_message_filename='%s',moh_context='%s',onhold_prompt_filename='%s',prompt_interval='%s',agent_alert_exten='%s',agent_alert_delay='%s',default_xfer_group='%s',web_form_address2='%s',allow_tab_switch='%s',web_form_extwindow='%s',web_form2_extwindow='%s',drop_trigger='%s',allow_multicall='%s',placement_interval='%s',placement_max_repeat='%s',queuetime_interval='%s',queuetime_max_repeat='%s',background_music_filename='%s',drop_message_filename='%s' WHERE group_id='%s';",mres($group_name),mres($group_color),mres($active),mres($web_form_address),mres($voicemail_ext),mres($next_agent_call),mres($fronter_display),mres($script_id),mres($get_call_launch),mres($xferconf_a_dtmf),mres($xferconf_a_number),mres($xferconf_b_dtmf),mres($xferconf_b_number),mres($drop_action),mres($drop_call_seconds),mres($drop_exten),mres($call_time_id),mres($after_hours_action),mres($after_hours_message_filename),mres($after_hours_exten),mres($after_hours_voicemail),mres($welcome_message_filename),mres($moh_context),mres($onhold_prompt_filename),mres($prompt_interval),mres($agent_alert_exten),mres($agent_alert_delay),mres($default_xfer_group),mres($web_form_address2),mres($allow_tab_switch),mres($web_form_extwindow),mres($web_form2_extwindow),mres($drop_trigger),mres($allow_multicall),mres($placement_interval),mres($placement_max_repeat),mres($queuetime_interval),mres($queuetime_max_repeat),mres($background_music_filename),mres($drop_message_filename),mres($group_id));
             $rslt=mysql_query($stmt, $link);
 
             ### LOG CHANGES TO LOG FILE ###
@@ -313,7 +313,7 @@ if ($ADD==3111) {
         $xferconf_b_dtmf =			$row[12];
         $xferconf_b_number =		$row[13];
         $drop_call_seconds =		$row[14];
-        $drop_message =				$row[15];
+        $drop_action =				$row[15];
         $drop_exten =				$row[16];
         $call_time_id =				$row[17];
         $after_hours_action =		$row[18];
@@ -333,6 +333,12 @@ if ($ADD==3111) {
         $web_form2_extwindow =		$row[32];
         $drop_trigger =		        $row[33];
         $allow_multicall =	        $row[34];
+        $placement_interval =	    $row[35];
+        $placement_max_repeat =	    $row[36];
+        $queuetime_interval =	    $row[37];
+        $queuetime_max_repeat =	    $row[38];
+        $background_music_filename =$row[39];
+        $drop_message_filename =	$row[40];
 
         ##### get in-groups listings for dynamic pulldown
         $stmt="SELECT group_id,group_name FROM osdial_inbound_groups ORDER BY group_id;";
@@ -390,6 +396,60 @@ if ($ADD==3111) {
 
         echo "<tr bgcolor=$oddrows><td align=right>Transfer-Conf Number 2: </td><td align=left><input type=text name=xferconf_b_number size=20 maxlength=50 value=\"$xferconf_b_number\">".helptag("osdial_inbound_groups-xferconf_a_dtmf")."</td></tr>\n";
 
+        echo "<tr bgcolor=$oddrows><td align=right>Default Transfer Group: </td><td align=left><select size=1 name=default_xfer_group>";
+        echo "$Xgroups_menu";
+        echo "</select>".helptag("osdial_inbound_groups-default_xfer_group")."</td></tr>\n";
+
+        echo "<tr bgcolor=$oddrows><td align=right>Allow Multicall: </td><td align=left><select size=1 name=allow_multicall><option>Y</option><option>N</option><option selected>$allow_multicall</option></select>".helptag("osdial_inbound_groups-allow_multicall")."</td></tr>\n";
+
+        echo "<tr bgcolor=$oddrows><td align=right>Agent Alert Delay: </td><td align=left><input type=text name=agent_alert_delay size=6 maxlength=6 value=\"$agent_alert_delay\">".helptag("osdial_inbound_groups-agent_alert_delay")."</td></tr>\n";
+
+        echo "<tr bgcolor=$oddrows><td align=right>Agent Alert Extension: </td><td align=left>\n";
+        #echo "<input type=text name=agent_alert_exten size=10 maxlength=20 value=\"$agent_alert_exten\">\n";
+        echo extension_text_options($link, 'agent_alert_exten', $agent_alert_exten, 15, 50);
+        echo "".helptag("osdial_inbound_groups-agent_alert_exten")."</td></tr>\n";
+
+        echo "<tr class=tabheader><td colspan=2></td></tr>\n";
+
+        echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=311111111&call_time_id=$call_time_id\">Call Time: </a></td><td align=left><select size=1 name=call_time_id>\n";
+        echo get_calltimes($link, $call_time_id);
+        #echo "$call_times_list";
+        #echo "<option selected value=\"$call_time_id\">$call_time_id - $call_timename_list[$call_time_id]</option>\n";
+        echo "</select>".helptag("osdial_inbound_groups-call_time_id")."</td></tr>\n";
+
+        echo "<tr bgcolor=$oddrows><td align=right>Welcome Message Filename: </td>\n";
+        echo "  <td align=left>\n";
+        #echo "    <select name=welcome_message_filename>\n";
+        #echo media_file_select_options($link, $welcome_message_filename);
+        #echo "    </select>\n";
+        echo media_file_text_options($link, 'welcome_message_filename', $welcome_message_filename, 15, 50);
+        echo "".helptag("osdial_inbound_groups-welcome_message_filename")."</td></tr>\n";
+
+        echo "<tr bgcolor=$oddrows><td align=right>Music On Hold Context: </td><td align=left><input type=text name=moh_context size=10 maxlength=20 value=\"$moh_context\">".helptag("osdial_inbound_groups-moh_context")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Background Music Filename: </td>\n";
+        echo "  <td align=left>\n";
+        echo media_file_text_options($link, 'background_music_filename', $background_music_filename, 30, 100);
+        echo "".helptag("osdial_inbound_groups-background_music_filename")."</td></tr>\n";
+
+        echo "<tr class=tabheader><td colspan=2></td></tr>\n";
+
+        echo "<tr bgcolor=$oddrows><td align=right>On Hold Prompt Filename: </td>\n";
+        echo "  <td align=left>\n";
+        #echo "    <select name=onhold_prompt_filename>\n";
+        #echo media_file_select_options($link, $onhold_prompt_filename);
+        #echo "    </select>\n";
+        echo media_file_text_options($link, 'onhold_prompt_filename', $onhold_prompt_filename, 30, 50);
+        echo "".helptag("osdial_inbound_groups-onhold_prompt_filename")."</td></tr>\n";
+
+        echo "<tr bgcolor=$oddrows><td align=right>On Hold Prompt Interval: </td><td align=left><input type=text name=prompt_interval size=5 maxlength=10 value=\"$prompt_interval\">".helptag("osdial_inbound_groups-prompt_interval")."</td></tr>\n";
+
+        echo "<tr bgcolor=$oddrows><td align=right>Placement Prompt Interval: </td><td align=left><input type=text name=placement_interval size=5 maxlength=10 value=\"$placement_interval\">".helptag("osdial_inbound_groups-placement_interval")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Placement Prompt Repeat: </td><td align=left><input type=text name=placement_max_repeat size=5 maxlength=5 value=\"$placement_max_repeat\">".helptag("osdial_inbound_groups-placement_max_repeat")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Est Queuetime Prompt Interval: </td><td align=left><input type=text name=queuetime_interval size=5 maxlength=10 value=\"$queuetime_interval\">".helptag("osdial_inbound_groups-queuetime_interval")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Est Queuetime Prompt Repeat: </td><td align=left><input type=text name=queuetime_max_repeat size=5 maxlength=5 value=\"$queuetime_max_repeat\">".helptag("osdial_inbound_groups-queuetime_max_repeat")."</td></tr>\n";
+
+        echo "<tr class=tabheader><td colspan=2></td></tr>\n";
+
         echo "<tr bgcolor=$oddrows><td align=right>Drop Trigger: </td>\n";
         echo "  <td align=left>\n";
         echo "    <select size=1 name=drop_trigger>\n";
@@ -406,17 +466,12 @@ if ($ADD==3111) {
 
         echo "<tr bgcolor=$oddrows><td align=right>Drop Call Seconds: </td><td align=left><input type=text name=drop_call_seconds size=5 maxlength=4 value=\"$drop_call_seconds\">".helptag("osdial_inbound_groups-drop_call_seconds")."</td></tr>\n";
 
-        echo "<tr bgcolor=$oddrows><td align=right>Drop Action: </td>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Drop Action: </td><td align=left><select size=1 name=drop_action><option>HANGUP</option><option>MESSAGE</option><option>EXTENSION</option><option>VOICEMAIL</option><option>CALLBACK</option><option SELECTED>$drop_action</option></select>".helptag("osdial_inbound_groups-drop_action")."</td></tr>\n";
+
+        echo "<tr bgcolor=$oddrows><td align=right>Drop Message Filename: </td>\n";
         echo "  <td align=left>\n";
-        echo "    <select size=1 name=drop_message>\n";
-        $dmsm=''; if ($drop_message=='Y') $dmsm = "selected";
-        echo "      <option value=Y $dmsm>EXTENSION</option>\n";
-        $dmsv=''; if ($drop_message=='N') $dmsv = "selected";
-        echo "      <option value=N $dmsv>VOICEMAIL</option>\n";
-        echo "    </select>\n";
-        echo "    ".helptag("osdial_inbound_groups-drop_message")."\n";
-        echo "  </td>\n";
-        echo "</tr>\n";
+        echo media_file_text_options($link, 'drop_message_filename', $drop_message_filename, 15, 50);
+        echo "".helptag("osdial_inbound_groups-drop_message_filename")."</td></tr>\n";
 
         echo "<tr bgcolor=$oddrows><td align=right>Drop Extension: </td><td align=left>\n";
         #echo "<input type=text name=drop_exten size=10 maxlength=20 value=\"$drop_exten\">\n";
@@ -428,19 +483,12 @@ if ($ADD==3111) {
         echo phone_voicemail_text_options($link, 'voicemail_ext', $voicemail_ext, 10, 10);
         echo "".helptag("osdial_inbound_groups-voicemail_ext")."</td></tr>\n";
 
-        echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=311111111&call_time_id=$call_time_id\">Call Time: </a></td><td align=left><select size=1 name=call_time_id>\n";
-        echo get_calltimes($link, $call_time_id);
-        #echo "$call_times_list";
-        #echo "<option selected value=\"$call_time_id\">$call_time_id - $call_timename_list[$call_time_id]</option>\n";
-        echo "</select>".helptag("osdial_inbound_groups-call_time_id")."</td></tr>\n";
+        echo "<tr class=tabheader><td colspan=2></td></tr>\n";
 
-        echo "<tr bgcolor=$oddrows><td align=right>After Hours Action: </td><td align=left><select size=1 name=after_hours_action><option>HANGUP</option><option>MESSAGE</option><option>EXTENSION</option><option>VOICEMAIL</option><option SELECTED>$after_hours_action</option></select>".helptag("osdial_inbound_groups-after_hours_action")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>After Hours Action: </td><td align=left><select size=1 name=after_hours_action><option>HANGUP</option><option>MESSAGE</option><option>EXTENSION</option><option>VOICEMAIL</option><option>CALLBACK</option><option SELECTED>$after_hours_action</option></select>".helptag("osdial_inbound_groups-after_hours_action")."</td></tr>\n";
 
         echo "<tr bgcolor=$oddrows><td align=right>After Hours Message Filename: </td>\n";
         echo "  <td align=left>\n";
-        #echo "    <select name=after_hours_message_filename>\n";
-        #echo media_file_select_options($link, $after_hours_message_filename);
-        #echo "    </select>\n";
         echo media_file_text_options($link, 'after_hours_message_filename', $after_hours_message_filename, 15, 50);
         echo "".helptag("osdial_inbound_groups-after_hours_message_filename")."</td></tr>\n";
 
@@ -454,38 +502,6 @@ if ($ADD==3111) {
         echo phone_voicemail_text_options($link, 'after_hours_voicemail', $after_hours_voicemail, 10, 20);
         echo "".helptag("osdial_inbound_groups-after_hours_voicemail")."</td></tr>\n";
 
-        echo "<tr bgcolor=$oddrows><td align=right>Welcome Message Filename: </td>\n";
-        echo "  <td align=left>\n";
-        #echo "    <select name=welcome_message_filename>\n";
-        #echo media_file_select_options($link, $welcome_message_filename);
-        #echo "    </select>\n";
-        echo media_file_text_options($link, 'welcome_message_filename', $welcome_message_filename, 15, 50);
-        echo "".helptag("osdial_inbound_groups-welcome_message_filename")."</td></tr>\n";
-
-        echo "<tr bgcolor=$oddrows><td align=right>Music On Hold Context: </td><td align=left><input type=text name=moh_context size=10 maxlength=20 value=\"$moh_context\">".helptag("osdial_inbound_groups-moh_context")."</td></tr>\n";
-
-        echo "<tr bgcolor=$oddrows><td align=right>On Hold Prompt Filename: </td>\n";
-        echo "  <td align=left>\n";
-        #echo "    <select name=onhold_prompt_filename>\n";
-        #echo media_file_select_options($link, $onhold_prompt_filename);
-        #echo "    </select>\n";
-        echo media_file_text_options($link, 'onhold_prompt_filename', $onhold_prompt_filename, 30, 50);
-        echo "".helptag("osdial_inbound_groups-onhold_prompt_filename")."</td></tr>\n";
-
-        echo "<tr bgcolor=$oddrows><td align=right>On Hold Prompt Interval: </td><td align=left><input type=text name=prompt_interval size=5 maxlength=5 value=\"$prompt_interval\">".helptag("osdial_inbound_groups-prompt_interval")."</td></tr>\n";
-
-        echo "<tr bgcolor=$oddrows><td align=right>Agent Alert Extension: </td><td align=left>\n";
-        #echo "<input type=text name=agent_alert_exten size=10 maxlength=20 value=\"$agent_alert_exten\">\n";
-        echo extension_text_options($link, 'agent_alert_exten', $agent_alert_exten, 15, 50);
-        echo "".helptag("osdial_inbound_groups-agent_alert_exten")."</td></tr>\n";
-
-        echo "<tr bgcolor=$oddrows><td align=right>Agent Alert Delay: </td><td align=left><input type=text name=agent_alert_delay size=6 maxlength=6 value=\"$agent_alert_delay\">".helptag("osdial_inbound_groups-agent_alert_delay")."</td></tr>\n";
-
-        echo "<tr bgcolor=$oddrows><td align=right>Allow Multicall: </td><td align=left><select size=1 name=allow_multicall><option>Y</option><option>N</option><option selected>$allow_multicall</option></select>".helptag("osdial_inbound_groups-allow_multicall")."</td></tr>\n";
-
-        echo "<tr bgcolor=$oddrows><td align=right>Default Transfer Group: </td><td align=left><select size=1 name=default_xfer_group>";
-        echo "$Xgroups_menu";
-        echo "</select>".helptag("osdial_inbound_groups-default_xfer_group")."</td></tr>\n";
 
         echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
         echo "</TABLE></center>\n";

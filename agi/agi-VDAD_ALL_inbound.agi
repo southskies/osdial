@@ -382,7 +382,7 @@ $sthA->finish();
 $cbc=0;
 $groupidSQL = "group_id='" . $osdial->mres($channel_group) . "'";
 $groupidSQL = "group_id LIKE '___" . $osdial->mres(substr($channel_group,3)) . "'" if ($multicomp and $channel_group =~ /^...IN_/);
-$stmtA = "SELECT call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,drop_call_seconds,drop_message,drop_exten,next_agent_call,voicemail_ext,group_id,active,drop_trigger FROM osdial_inbound_groups WHERE $groupidSQL;";
+$stmtA = "SELECT call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,drop_call_seconds,drop_action,drop_exten,next_agent_call,voicemail_ext,group_id,active,drop_trigger,drop_message_filename FROM osdial_inbound_groups WHERE $groupidSQL;";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -402,7 +402,7 @@ while ($sthArows > $cbc) {
 	$agent_alert_delay	=			"$aryA[10]";
 	$drop_call_seconds	=			"$aryA[11]";
 	$DROP_TIME = $drop_call_seconds;
-	$drop_message =					"$aryA[12]";
+	$drop_action =					"$aryA[12]";
 	$drop_exten	=					"$aryA[13]";
 	$CAMP_callorder	=				"$aryA[14]";
 	$VDADvoicemail_ext =			"$aryA[15]";
@@ -410,6 +410,7 @@ while ($sthArows > $cbc) {
 	$channel_group =			"$aryA[16]";
 	$group_active =			"$aryA[17]";
 	$drop_trigger =			"$aryA[18]";
+	$drop_message_filename =			"$aryA[19]";
 	$cbc++;
 }
 $sthA->finish();
@@ -1394,11 +1395,16 @@ if ($drop_timer > $DROP_TIME) {
 	}
 
 
-	$DROPexten = '';
-	if ($drop_message =~ /Y/) {
-		$DROPexten = "$drop_exten";
-	} else {
-		$DROPexten = "$voicemail_dump_exten$VDADvoicemail_ext" if (length($VDADvoicemail_ext)>0);
+	$DROPexten = '8307';
+	if ($drop_action =~ /EXTENSION/) {
+		$DROPexten = $drop_exten;
+	} elsif ($drop_action =~ /MESSAGE/) {
+		$osd->AGI->stream_file($drop_message_filename);
+		$DROPexten = '8307';
+	} elsif ($drop_action =~ /HANGUP/) {
+		$DROPexten = '8307';
+	} elsif ($drop_action =~ /VOICEMAIL/) {
+		$DROPexten = $voicemail_dump_exten.$VDADvoicemail_ext if (length($VDADvoicemail_ext)>0);
 	}
 
 

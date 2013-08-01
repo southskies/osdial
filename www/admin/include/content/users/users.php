@@ -298,9 +298,9 @@ if ($ADD=="4A") {
 	            $row=mysql_fetch_row($rslt);
 
                 if ($row[0]==0) {
-                    $stmt=sprintf("INSERT INTO osdial_inbound_groups (group_id,group_name,group_color,active,drop_message,voicemail_ext,drop_exten,next_agent_call,fronter_display,drop_call_seconds,agent_alert_exten,allow_multicall) VALUES('A2A_%s','Agent2Agent %s','pink','Y','%s','%s','%s','oldest_call_finish','Y','600','X','Y');",mres($user),mres($user),mres($use_exten),mres($voicemail_id),mres($dialplan_number));
+                    $stmt=sprintf("INSERT INTO osdial_inbound_groups (group_id,group_name,group_color,active,drop_action,voicemail_ext,drop_exten,next_agent_call,fronter_display,drop_call_seconds,agent_alert_exten,allow_multicall) VALUES('A2A_%s','Agent2Agent %s','pink','Y','%s','%s','%s','oldest_call_finish','Y','600','X','Y');",mres($user),mres($user),mres($use_exten),mres($voicemail_id),mres($dialplan_number));
                 } else {
-                    $stmt=sprintf("UPDATE osdial_inbound_groups SET drop_message='%s',drop_exten='%s',drop_trigger='%s',drop_call_seconds='%s',voicemail_ext='%s',allow_multicall='%s' WHERE group_id='A2A_%s';",mres($xfer_agent2agent_wait_action),mres($xfer_agent2agent_wait_extension),mres($xfer_agent2agent_wait),mres($xfer_agent2agent_wait_seconds),mres($voicemail_id),mres($xfer_agent2agent_allow_multicall),mres($user));
+                    $stmt=sprintf("UPDATE osdial_inbound_groups SET drop_action='%s',drop_exten='%s',drop_trigger='%s',drop_call_seconds='%s',voicemail_ext='%s',allow_multicall='%s' WHERE group_id='A2A_%s';",mres($xfer_agent2agent_wait_action),mres($xfer_agent2agent_wait_extension),mres($xfer_agent2agent_wait),mres($xfer_agent2agent_wait_seconds),mres($voicemail_id),mres($xfer_agent2agent_allow_multicall),mres($user));
                 }
 
             } else {
@@ -642,7 +642,7 @@ if ($ADD==3) {
 				echo "  ".helptag("osdial_users-xfer_agent2agent")."</td>\n";
 				echo "</tr>\n";
 				if ($xfer_agent2agent > 0) {
-					$stmt = sprintf("SELECT drop_trigger,drop_call_seconds,drop_message,drop_exten,allow_multicall FROM osdial_inbound_groups WHERE group_id='A2A_%s';",mres($user));
+					$stmt = sprintf("SELECT drop_trigger,drop_call_seconds,drop_action,drop_exten,allow_multicall FROM osdial_inbound_groups WHERE group_id='A2A_%s';",mres($user));
 					$rslt=mysql_query($stmt, $link);
 					$rowx=mysql_fetch_row($rslt);
 					$xfer_agent2agent_wait = $rowx[0];

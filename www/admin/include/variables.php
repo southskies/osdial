@@ -285,6 +285,7 @@ $alf_val = get_variable("alf_val");
 $balance_trunks_offlimits = get_variable("balance_trunks_offlimits");
 $billable = get_variable("billable");
 $base_cost = get_variable("base_cost");
+$background_music_filename = get_variable("background_music_filename");
 
 $CALLSdisplay = get_variable("CALLSdisplay");
 $call_out_number_group = get_variable("call_out_number_group");
@@ -476,7 +477,8 @@ $dnc_add_phone = get_variable("dnc_add_phone");
 $dnc_delete_phone = get_variable("dnc_delete_phone");
 $drop_call_seconds = get_variable("drop_call_seconds");
 $drop_exten = get_variable("drop_exten");
-$drop_message = get_variable("drop_message");
+$drop_action = get_variable("drop_action");
+$drop_message_filename = get_variable("drop_message_filename");
 $drop_trigger = get_variable("drop_trigger");
 $dtmf_send_extension = get_variable("dtmf_send_extension");
 $dupcheck = get_variable("dupcheck");
@@ -770,6 +772,8 @@ $prompt_interval = get_variable("prompt_interval");
 $protocol = get_variable("protocol");
 $province_field = get_variable("province_field");
 $ptype = get_variable("ptype");
+$placement_interval = get_variable("placement_interval");
+$placement_max_repeat = get_variable("placement_max_repeat");
 
 $parked_time = get_variable("parked_time");
 $phone_code = get_variable("phone_code");
@@ -800,6 +804,8 @@ $queuemetrics_login = get_variable("queuemetrics_login");
 $queuemetrics_pass = get_variable("queuemetrics_pass");
 $queuemetrics_server_ip = get_variable("queuemetrics_server_ip");
 $queuemetrics_url = get_variable("queuemetrics_url");
+$queuetime_interval = get_variable("queuetime_interval");
+$queuetime_max_repeat = get_variable("queuetime_max_repeat");
 
 $recording_exten = get_variable("recording_exten");
 $remote_agent_id = get_variable("remote_agent_id");
