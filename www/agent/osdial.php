@@ -974,6 +974,20 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
                     $VARpause_code_names = rtrim($VARpause_code_names, ',');
                 }
 
+                ##### grab all scripts for inbound groups.
+                if (!empty($company_prefix)) $inSQL = sprintf("AND group_id LIKE '%s%%'",mres($company_prefix));
+                $stmt=sprintf("SELECT group_id,ingroup_script FROM osdial_inbound_groups WHERE active='Y' %s ORDER BY group_id LIMIT 60;",$inSQL);
+                $rslt=mysql_query($stmt, $link);
+                if ($DB) echo "$stmt\n";
+                $closer_ct = mysql_num_rows($rslt);
+                $INgrpCT=0;
+                while ($INgrpCT < $closer_ct) {
+                    $row=mysql_fetch_row($rslt);
+                    $ingroup_script = $row[1];
+                    if (!empty($ingroup_script)) $myscripts[$ingroup_script] = 1;
+                    $INgrpCT++;
+                }
+
                 ##### grab the inbound groups to choose from if campaign contains CLOSER
                 $VARingroups="''";
                 if ($campaign_allow_inbound > 0) {
