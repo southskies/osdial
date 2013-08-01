@@ -422,7 +422,17 @@ while($one_day_interval > 0)
 			my $ivr_active = 0;
 			my $ivr_reserve_agents = 0;
 			my $ivr_virtual_agents = 0;
-			$stmtA = "SELECT status,reserve_agents,virtual_agents FROM osdial_ivr where campaign_id='" . $osdial->mres($DBIPcampaign[$user_CIPct]) . "' LIMIT 1;";
+			my $ivr_id='';
+			$stmtA = "SELECT ivr_id FROM osdial_campaigns WHERE campaign_id='" . $osdial->mres($DBIPcampaign[$user_CIPct]) . "' LIMIT 1;";
+			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+			$sthArows=$sthA->rows;
+			if ($sthArows > 0) {
+				@aryA = $sthA->fetchrow_array;
+				$ivr_id=$aryA[0];
+			}
+			$sthA->finish();
+			$stmtA = "SELECT status,reserve_agents,virtual_agents FROM osdial_ivr WHERE id='" . $osdial->mres($ivr_id) . "' LIMIT 1;";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -1331,11 +1341,13 @@ while($one_day_interval > 0)
 							$CLstage =~ s/LIVE|-//gi;
 							if ($CLstage < 0.25) {$CLstage=1;}
 
-                                                        $stmtA = "SELECT status FROM osdial_list WHERE lead_id='$CLlead_id';";
+                                                        $stmtA = "SELECT status,list_id,called_count FROM osdial_list WHERE lead_id='$CLlead_id';";
                                                         $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
                                                         $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
                                                         @aryA = $sthA->fetchrow_array;
                                                         $orig_status = $aryA[0];
+                                                        $orig_list = $aryA[1];
+                                                        $orig_cc = $aryA[2];
 							$sthA->finish();
 	
 							if ($CLstatus =~ /BUSY/) {
@@ -1378,6 +1390,27 @@ while($one_day_interval > 0)
 
 							if (($dialtime_log >= $call_timeout or $dialtime_catch >= $call_timeout) and $CLstatus =~ /SENT/) {
 								$CLnew_status='NA';
+							}
+
+							if ($CLnew_status =~ /^B$|^DC$|^NA$|^AA$/ and $orig_status eq 'CALLBK') {
+								$stmtA=sprintf("SELECT attempt_delay,attempt_maximum FROM osdial_lead_recycle WHERE campaign_id='%s' AND status='CALLBK' AND active='Y';",$osdial->mres($CLcampaign_id));
+								if ($DB) {$event_string = "|$stmtA|";   &event_logger;}
+								$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+								$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+								$sthArows=$sthA->rows;
+								if ($sthArows > 0) {
+									@aryA = $sthA->fetchrow_array;
+									$attempt_delay = $aryA[0];
+									$attempt_maximum = $aryA[1];
+								}
+								$sthA->finish();
+								if ($orig_cc<$attempt_maximum) {
+									my $cbtime = $osdial->get_datetime(time()+$attempt_delay);
+									$CLnew_status='CBHOLD';
+									$stmtA = sprintf("INSERT INTO osdial_callbacks SET lead_id='%s',list_id='%s',campaign_id='%s',status='ACTIVE',entry_time=NOW(),callback_time='%s',user='VDCL',recipient='ANYONE',comments='';",$osdial->mres($CLlead_id),$osdial->mres($orig_list),$osdial->mres($CLcampaign_id),$osdial->mres($cbtime));
+									if($M){print STDERR "\n|$stmtA|\n";}
+									$affected_rows = $dbhA->do($stmtA);
+								}
 							}
 
 							if ($CLstatus =~ /LIVE/) {
