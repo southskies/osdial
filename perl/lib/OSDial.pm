@@ -829,6 +829,57 @@ sub sql_onfail {
 
 =over 4
 
+=item B<sql_dbh( $dbh )> - returns the dbh handle.
+
+Returns the maximum allowed packet size that the SQL server will except.
+
+   $dbhandle = $osdial->sql_dbh($dbh);
+
+=back
+
+=cut
+
+sub sql_dbh {
+	my ($self, $dbh) = @_;
+	$dbh = 'A' unless ($dbh);
+	# If dbh has not been defined, connect to DB.
+	$self->sql_connect($dbh) if (!defined $self->{_sql}{$dbh} or $self->{_sql}{$dbh}{connected}<1);
+	return $self->{_sql}{$dbh}{dbh};
+}
+
+
+=over 4
+
+=item B<sql_last_insert_id( $dbh )> - returns the last insert id.
+=item B<sql_last_insertid( $dbh )> - returns the last insert id.
+=item B<sql_last_id( $dbh )> - returns the last insert id.
+=item B<sql_insert_id( $dbh )> - returns the last insert id.
+
+Returns the last insert ID.
+
+   $insertid = $osdial->sql_last_insert_id($dbh);
+   $insertid = $osdial->sql_last_insertid($dbh);
+   $insertid = $osdial->sql_last_id($dbh);
+   $insertid = $osdial->sql_insert_id($dbh);
+
+=back
+
+=cut
+
+sub sql_last_insert_id {
+	my ($self, $dbh) = @_;
+	$dbh = 'A' unless ($dbh);
+	# If dbh has not been defined, connect to DB.
+	$self->sql_connect($dbh) if (!defined $self->{_sql}{$dbh} or $self->{_sql}{$dbh}{connected}<1);
+	return $self->sql_dbh($dbh)->{'mysql_insertid'};
+}
+sub sql_last_insertid { return sql_last_insert_id(@_); }
+sub sql_last_id { return sql_last_insert_id(@_); }
+sub sql_insert_id { return sql_last_insert_id(@_); }
+
+
+=over 4
+
 =item B<sql_max_packet( )> - returns maximum packet allowed.
 
 Returns the maximum allowed packet size that the SQL server will except.
