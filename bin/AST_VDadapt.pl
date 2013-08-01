@@ -179,7 +179,7 @@ my (@stat_ready_agents,@stat_waiting_calls,@stat_total_agents);
 ### Start master loop ###
 while ( $master_loop < $CLOloops ) {
 	my (@campaign_id,@auto_dial_level,@dial_method,@available_only_ratio_tally,@adaptive_dropped_percentage,$swhere);
-	my (@adaptive_maximum_level,@adaptive_latest_server_time,@adaptive_intensity,@adaptive_dl_diff_target,@campaign_allow_inbound);
+	my (@adaptive_maximum_level,@adaptive_latest_server_time,@adaptive_intensity,@adaptive_dl_diff_target,@campaign_allow_inbound,@ivr_id);
 
 	#Get times
 	my $secX = time();
@@ -204,7 +204,7 @@ while ( $master_loop < $CLOloops ) {
 	} else {
 		$swhere = "(active='Y' OR campaign_stats_refresh='Y')";
 	}
-	$stmtA = "SELECT campaign_id,auto_dial_level,dial_method,available_only_ratio_tally,adaptive_dropped_percentage,adaptive_maximum_level,adaptive_latest_server_time,adaptive_intensity,adaptive_dl_diff_target,campaign_allow_inbound FROM osdial_campaigns WHERE " . $swhere;
+	$stmtA = "SELECT campaign_id,auto_dial_level,dial_method,available_only_ratio_tally,adaptive_dropped_percentage,adaptive_maximum_level,adaptive_latest_server_time,adaptive_intensity,adaptive_dl_diff_target,campaign_allow_inbound,ivr_id FROM osdial_campaigns WHERE " . $swhere;
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows  = $sthA->rows;
@@ -222,6 +222,7 @@ while ( $master_loop < $CLOloops ) {
 		$adaptive_intensity[$rec_count]          = $aryA[7];
 		$adaptive_dl_diff_target[$rec_count]     = $aryA[8];
 		$campaign_allow_inbound[$rec_count]      = $aryA[9];
+		$ivr_id[$rec_count]                      = $aryA[10];
 		$rec_count++;
 	}
 	$sthA->finish();
@@ -287,7 +288,7 @@ while ( $master_loop < $CLOloops ) {
 			my $ivr_adjust = 0;
 			my $ivr_reserve_agents = 0;
 			my $ivr_virtual_agents = 0;
-			$stmtA = "SELECT status,reserve_agents,virtual_agents FROM osdial_ivr WHERE campaign_id='" . $osdial->mres($campaign_id[$i]) . "' LIMIT 1;";
+			$stmtA = "SELECT status,reserve_agents,virtual_agents FROM osdial_ivr WHERE id='" . $osdial->mres($ivr_id[$i]) . "' LIMIT 1;";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			my $sthArows  = $sthA->rows;

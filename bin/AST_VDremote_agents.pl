@@ -389,10 +389,10 @@ while($one_day_interval > 0)
 		@closerlogfinished=@MT;
 
 		# Update closer campaigns if ivr is set to allow inbound.
-		$stmtA = "UPDATE osdial_remote_agents AS ra,osdial_campaigns AS c,osdial_ivr AS i SET ra.closer_campaigns=c.closer_campaigns WHERE ra.campaign_id=c.campaign_id AND c.campaign_id=i.campaign_id AND i.allow_inbound='Y' AND ra.user_start LIKE 'va%';";
+		$stmtA = "UPDATE osdial_remote_agents AS ra,osdial_campaigns AS c,osdial_ivr AS i SET ra.closer_campaigns=c.closer_campaigns WHERE ra.campaign_id=c.campaign_id AND c.ivr_id=i.id AND i.allow_inbound='Y' AND ra.user_start LIKE 'va%';";
 		$affected_rows = $dbhA->do($stmtA);
 		print "|$affected_rows|$stmtA\n" if ($DBX);
-		$stmtA = "UPDATE osdial_remote_agents AS ra,osdial_campaigns AS c,osdial_ivr AS i SET ra.closer_campaigns='' WHERE ra.campaign_id=c.campaign_id AND c.campaign_id=i.campaign_id AND i.allow_inbound='N' AND ra.user_start LIKE 'va%';";
+		$stmtA = "UPDATE osdial_remote_agents AS ra,osdial_campaigns AS c,osdial_ivr AS i SET ra.closer_campaigns='' WHERE ra.campaign_id=c.campaign_id AND c.ivr_id=i.id AND i.allow_inbound='N' AND ra.user_start LIKE 'va%';";
 		$affected_rows = $dbhA->do($stmtA);
 		print "|$affected_rows|$stmtA\n" if ($DBX);
 
