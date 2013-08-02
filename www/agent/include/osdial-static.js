@@ -2758,6 +2758,60 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		}
 	}
 
+	function ExtendedStatus_populate(dispo,selected,clicks) {
+		showDiv('ExtendedStatusSelectBox');
+		if (selected=='' && (typeof(VARstatCUR)=="undefined"||VARstatCUR==null||VARstatCUR==false) && clicks==0) {
+			VARstatCUR = VARstatusesEXTJSON[dispo];
+			document.osdial_form.ExtendedStatusParents.value = dispo;
+			document.getElementById("DispoStatus").innerHTML = dispo;
+		}
+		if (clicks==2) {
+			clicks==0;
+			VARstatCUR = VARstatCUR[selected];
+			if (typeof(VARstatCUR)!="undefined" && typeof(VARstatCUR.keys)!="undefined" && VARstatCUR.keys!=null && VARstatCUR.keys.length>0) {
+				document.osdial_form.ExtendedStatusParents.value = document.osdial_form.ExtendedStatusParents.value + ':' + selected;
+			} else {
+				document.osdial_form.ExtendedStatusStatus.value = selected;
+				ExtendedStatus_submit();
+			}
+			selected='';
+		}
+
+		if (typeof(VARstatCUR)!="undefined" && typeof(VARstatCUR.keys)!="undefined" && VARstatCUR.keys!=null && VARstatCUR.keys.length>0) {
+			var extstat='';
+			var extstat = "<table cellpadding=5 cellspacing=5><tr><td bgcolor=\"" + dispo_bg + "\" height=320 width=300 valign=top><font class=\"log_text\"><div id=DispoSelectA>";
+			VARstatCUR.keys.forEach(function(inkey) {
+				if (selected==inkey) {
+					extstat += "<font size=3 style=\"background-color:" + dispo_bg2 + "\"><b><a href=\"#\" onclick=\"ExtendedStatus_populate('"+dispo+"','"+inkey+"',2); return false;\">" + inkey + " - " + VARstatCUR[inkey].name + " - " + "</a></b></font><br><br>";
+				} else {
+					extstat += "<a href=\"#\" onclick=\"ExtendedStatus_populate('"+dispo+"','"+inkey+"',1);return false;\">" + inkey + " - " + VARstatCUR[inkey].name + "</a><font size=-2><br><br></font>";
+				}
+			});
+			extstat+='</div></font></td></tr></table>';
+			document.getElementById("ExtendedStatusList").innerHTML = extstat;
+		}
+	}
+// ################################################################################
+// Submitting the extended status data to the system
+	function ExtendedStatus_submit() {
+		debug("<b>ExtendedStatus_submit:</b>",2);
+		ExtendedStatusParents = document.osdial_form.ExtendedStatusParents.value;
+		ExtendedStatusStatus = document.osdial_form.ExtendedStatusStatus.value;
+		if (ExtendedStatusStatus.length < 1) {
+			osdalert("You must choose an extended status.",5);
+		} else {
+			document.osdial_form.DispoSelection.value = document.getElementById("DispoStatus").innerHTML;
+			document.osdial_form.status_extended.value = document.osdial_form.ExtendedStatusParents.value + ':' + document.osdial_form.ExtendedStatusStatus.value;
+			document.osdial_form.ExtendedStatusParents.value = '';
+			document.osdial_form.ExtendedStatusStatus.value = '';
+			document.getElementById("DispoStatus").innerHTML = '';
+			VARstatCUR=undefined;
+
+			hideDiv('ExtendedStatusSelectBox');
+			DispoSelect_submit();
+		}
+	}
+
 
 // ################################################################################
 // Finish the wrapup timer early
@@ -2801,6 +2855,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			hideDiv('TransferMain');
 			hideDiv('CallBackSelectBox');
 			hideDiv('PostDateSelectBox');
+			hideDiv('ExtendedStatusSelectBox');
 			hideDiv('DispoButtonHideA');
 			hideDiv('DispoButtonHideB');
 			hideDiv('DispoButtonHideC');
@@ -2901,6 +2956,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			agentlogtime_timeout_id = setTimeout("timeTransCounter()", 1000);
 
 			if (agent_message!='') {
+				var tmpdecode = unescape(agent_message);
+                		agent_message=utf8_decode(tmpdecode);
 				osdalert("<b>Message Sent to Group from Manager:</b><br><br>"+agent_message,60);
 			}
 		} else {
@@ -5069,9 +5126,10 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				"&email=" + encodeURIComponent2(document.osdial_form.email.value) + 
 				"&custom1=" + encodeURIComponent2(document.osdial_form.custom1.value) + 
 				"&custom2=" + encodeURIComponent2(document.osdial_form.custom2.value) + 
-				"&post_date=" + encodeURIComponent2(document.osdial_form.post_date.value);
-				"&organization=" + encodeURIComponent2(document.osdial_form.organization.value);
-				"&organization_title=" + encodeURIComponent2(document.osdial_form.organization_title.value);
+				"&post_date=" + encodeURIComponent2(document.osdial_form.post_date.value) +
+				"&organization=" + encodeURIComponent2(document.osdial_form.organization.value) +
+				"&organization_title=" + encodeURIComponent2(document.osdial_form.organization_title.value) +
+				"&status_extended=" + encodeURIComponent2(document.osdial_form.status_extended.value);
 
 			for (var i=0; i<AFids.length; i++) {
 				VLupdate_query += '&' + AFids[i] + '=' + encodeURIComponent2(document.getElementById(AFids[i]).value);
@@ -5128,10 +5186,20 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			}
 			submit_method = submit_method_tmp;
 
+			var checkIfSelectionIsExtended = function(dispo) {
+				var found=false;
+				VARstatusesEXTJSON.keys.forEach(function(ekey) { if (ekey==dispo) found=true; });
+				return found;
+			};
+
 			if ( (DispoChoice == 'CALLBK') && (scheduled_callbacks > 0) ) {
 				showDiv('CallBackSelectBox');
 			} else if ( (DispoChoice == 'PD' && PostDatETimE == '' && (document.osdial_form.post_date.value == '0000-00-00' || document.osdial_form.post_date.value == '0000-00-00 00:00:00') ) ) {
 				showDiv('PostDateSelectBox');
+			} else if (extendedStatusesBypass==0 && checkIfSelectionIsExtended(DispoChoice)) {
+				extendedStatusesBypass=1;
+				ExtendedStatus_populate(DispoChoice,'',0);
+
 			} else {
 				CustomerData_update();
 
@@ -5190,6 +5258,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				CloseWebFormPanels();
 
 				CBcommentsBoxhide();
+
+				extendedStatusesBypass=0;
 
 				AgentDispoing = 0;
 
@@ -6266,6 +6336,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		document.osdial_form.organization_title.value='';
 		document.osdial_form.source_id.value='';
 		document.osdial_form.external_key.value='';
+		document.osdial_form.status_extended.value='';
 
 		for (var i=0; i<AFids.length; i++) {
 			//alert(document.getElementById(AFids[i]).type);

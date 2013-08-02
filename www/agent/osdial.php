@@ -222,6 +222,9 @@ $HKstatuses='';
 $HKhotkeys='';
 $VARstatuses='';
 $VARstatusnames='';
+$VARstatusesEXT='';
+$VARstatusesEXTJSON='';
+$VARstatusnamesEXT='';
 $VU_user_group='';
 $agent_message='';
 
@@ -682,7 +685,7 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
             $rslt=mysql_query($stmt, $link);
             $row=mysql_fetch_row($rslt);
             $LOGallowed_campaigns = $row[0];
-            $agent_message=$row[1];
+            $agent_message=urlencode($row[1]);
 
             if (!OSDpreg_match("/ $VD_campaign /i",$LOGallowed_campaigns) and !OSDpreg_match("/ALL-CAMPAIGNS/",$LOGallowed_campaigns)) {
                 echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
@@ -728,6 +731,7 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
                 $statuses = Array();
                 $status_names = Array();
                 $statremove = "'NEW',";
+                $TMPstatuses = Array();
                 ##### grab the campaign-specific statuses that can be used for dispositioning by an agent
                 $stmt=sprintf("SELECT status,status_name,IF(selectable='Y',1,0) FROM osdial_campaign_statuses WHERE %s status NOT IN(%s) AND campaign_id='%s' ORDER BY status;",$selectableSQL,rtrim($statremove,','),mres($VD_campaign));
                 $rslt=mysql_query($stmt, $link);
@@ -738,6 +742,7 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
                     $row=mysql_fetch_row($rslt);
                     $DISPstatus[$row[0]] = $row[2];
                     if ($row[2] > 0) {
+                        $TMPstatuses[$row[0]] = $row[1];
                         $PSstatuses[$row[0]] = $row[1];
                         $statremove .= sprintf("'%s',",mres($row[0]));
                     }
@@ -745,6 +750,25 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
                 }
                 $statremove = rtrim($statremove, ',');
 
+                $TEstatuses = Array();
+                $CEstatuses = Array();
+                foreach ($TMPstatuses as $k=>$v) {
+                    $stmt=sprintf("SELECT status,status_name,IF(selectable='Y',1,0),parents FROM osdial_campaign_statuses_extended WHERE campaign_id='%s' AND (parents='%s' OR parents LIKE '%s:%%') ORDER BY status;",mres($VD_campaign),mres($k),mres($k));
+                    $rslt=mysql_query($stmt, $link);
+                    if ($DB) echo "$stmt\n";
+                    $VD_statuses_camp_ext = mysql_num_rows($rslt);
+                    $j=0;
+                    while ($j < $VD_statuses_camp_ext) {
+                        $row=mysql_fetch_row($rslt);
+                        if ($row[2] > 0) {
+                            $CEstatuses[$row[3].':'.$row[0]] = $row[1];
+                            $TEstatuses[$row[3].':'.$row[0]] = $row[1];
+                        }
+                        $j++;
+                    }
+                }
+
+                $TMPstatuses = Array();
                 ##### grab the statuses that can be used for dispositioning by an agent
                 $stmt=sprintf("SELECT status,status_name,IF(selectable='Y',1,0) FROM osdial_statuses WHERE %s status NOT IN(%s) ORDER BY status;",$selectableSQL,$statremove);
                 $rslt=mysql_query($stmt, $link);
@@ -755,8 +779,26 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
                     $row=mysql_fetch_row($rslt);
                     if ($row[2] > 0 and (!isset($DISPstatus[$row[0]]) or OSDpreg_match('/^$|^1$/',$DISPstatus[$row[0]]))) {
                         $PSstatuses[$row[0]] = $row[1];
+                        $TMPstatuses[$row[0]] = $row[1];
                     }
                     $j++;
+                }
+
+                $SEstatuses = Array();
+                foreach ($TMPstatuses as $k=>$v) {
+                    $stmt=sprintf("SELECT status,status_name,IF(selectable='Y',1,0),parents FROM osdial_statuses_extended WHERE parents='%s' OR parents LIKE '%s:%%' ORDER BY status;",mres($k),mres($k));
+                    $rslt=mysql_query($stmt, $link);
+                    if ($DB) echo "$stmt\n";
+                    $VD_statuses_ext = mysql_num_rows($rslt);
+                    $j=0;
+                    while ($j < $VD_statuses_ext) {
+                        $row=mysql_fetch_row($rslt);
+                        if ($row[2] > 0) {
+                            $SEstatuses[$row[3].':'.$row[0]] = $row[1];
+                            $TEstatuses[$row[3].':'.$row[0]] = $row[1];
+                        }
+                        $j++;
+                    }
                 }
 
                 ksort($PSstatuses);
@@ -771,6 +813,36 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
                 $VARstatuses = rtrim($VARstatuses, ','); 
                 $VARstatusnames = rtrim($VARstatusnames, ','); 
 
+                ksort($TEstatuses);
+                foreach ($TEstatuses as $sk=>$nv) {
+                        $VARstatusesEXT .= sprintf("'%s',",mres($sk));
+                        $VARstatusnamesEXT .= sprintf("'%s',",mres($nv));
+                }
+                $VARstatusesEXT = rtrim($VARstatusesEXT, ','); 
+                $VARstatusnamesEXT = rtrim($VARstatusnamesEXT, ','); 
+
+
+                $thash = array();
+                foreach ($TEstatuses as $sk=>$nv) {
+                    $tmp = &$thash;
+                    $ary = preg_split('/\:/',$sk);
+                    $endary = end($ary);
+                    foreach ($ary as $aa) {
+                        if (array_key_exists($aa,$tmp)) {
+                        } else {
+                            if ($aa===$endary) {
+                                $tmp[$aa] = array("name"=>$nv, "path"=>$sk);
+                                $tmp['keys'][] = $aa;
+                            } else {
+                                $tmp[$aa] = array();
+                            }
+                        }
+                        $tmp = &$tmp[$aa];
+                    }
+                    unset($tmp);
+                }
+                $thash['keys'] = array_keys($thash);
+                $VARstatusesEXTJSON = json_encode($thash); 
 
                 ##### grab the campaign-specific HotKey statuses that can be used for dispositioning by an agent
                 $stmt=sprintf("SELECT count(*) FROM osdial_campaign_hotkeys WHERE selectable='Y' AND status!='NEW' AND campaign_id='%s' ORDER BY hotkey LIMIT 9;",mres($VD_campaign));
@@ -2436,6 +2508,39 @@ flush();
         </table>
     </span>
 
+    <?php load_status('Initializing GUI...<br>ExtendedStatusSelectBox<br>&nbsp;'); ?>
+    <!-- ExtendedStatus Window -->
+    <span style="position:absolute;left:0px;top:0px;z-index:35;visibility:hidden;" id="ExtendedStatusSelectBox">
+        <table border=1 bgcolor="<?php echo $dispo_bg; ?>"  width=<?php echo ($CAwidth+15); ?> height=550 class=acrossagent>
+            <tr>
+                <td align=center valign=top>
+                    <font color=<?php echo $dispo_fc; ?>>
+                        Extended Status Selection: <b><span id="DispoStatus"></span></b><br>
+                        <input type=hidden name=ExtendedStatusParents id="ExtendedStatusParents">
+                        <input type=hidden name=ExtendedStatusStatus id="ExtendedStatusStatus">
+                        <br>
+                        <table border=0 cellpadding=5 cellspacing=5 width=620>
+                            <tr>
+                                <td colspan=2 align=center>
+                                    <font color=<?php echo $dispo_fc; ?>><b>Extended Statuses</b></font>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan=2 align=center>
+                                    <div style="height:320px;overflow-y:auto;">
+                                        <span id="ExtendedStatusList"> End-of-call Extended Status Selection </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        Click the extended status item once to select it, click it a second time to submit.<br>
+                        You may be prompted with several levels of selections.
+                        <br><br> &nbsp; 
+                    </font>
+                </td>
+            </tr>
+        </table>
+    </span>
     
     <?php load_status('Initializing GUI...<br>CallBackSelectBox<br>&nbsp;'); ?>
     <!-- Callback Window -->
@@ -2678,6 +2783,7 @@ if(isset($_SERVER['HTTP_USER_AGENT'])){
                                 <input type=hidden name=country_code value="">
                                 <input type=hidden name=uniqueid value="">
                                 <input type=hidden name=callserverip value="">
+                                <input type=hidden name=status_extended value="">
 
                                 <!-- Customer Information -->
                                 <div class="text_input" style="white-space:nowrap;overflow:hidden;" id="MainPanelCustInfo">

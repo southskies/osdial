@@ -277,6 +277,7 @@ $recipient = get_variable("recipient");
 $script_id = get_variable("script_id");
 $script_button_id = get_variable("script_button_id");
 $server_ip = get_variable("server_ip");
+$status_extended = get_variable("status_extended");
 $session_name = get_variable("session_name");
 $stage = get_variable("stage");
 $start_epoch = get_variable("start_epoch");
@@ -3600,7 +3601,10 @@ if ($ACTION == 'updateLEAD') {
             $comments = OSDpreg_replace("/--QUES--/",'?',$comments);
             $comments = OSDpreg_replace("/--POUND--/",'#',$comments);
 
-            $stmt=sprintf("UPDATE osdial_list SET vendor_lead_code='%s',title='%s',first_name='%s',middle_initial='%s',last_name='%s',address1='%s',address2='%s',address3='%s',city='%s',state='%s',province='%s',postal_code='%s',country_code='%s',gender='%s',date_of_birth='%s',alt_phone='%s',email='%s',custom1='%s',custom2='%s',comments='%s',phone_number='%s',phone_code='%s',organization='%s',organization_title='%s' WHERE lead_id='%s';",mres($vendor_lead_code),mres($title),mres($first_name),mres($middle_initial),mres($last_name),mres($address1),mres($address2),mres($address3),mres($city),mres($state),mres($province),mres($postal_code),mres($country_code),mres($gender),mres($date_of_birth),mres($alt_phone),mres($email),mres($custom1),mres($custom2),mres($comments),mres($phone_number),mres($phone_code),mres($organization),mres($organization_title),mres($lead_id));
+            $status_exteneddSQL='';
+            if (!empty($status_extended)) $status_extendedSQL=sprintf(",status_extended='%s'",mres($status_extended));
+
+            $stmt=sprintf("UPDATE osdial_list SET vendor_lead_code='%s',title='%s',first_name='%s',middle_initial='%s',last_name='%s',address1='%s',address2='%s',address3='%s',city='%s',state='%s',province='%s',postal_code='%s',country_code='%s',gender='%s',date_of_birth='%s',alt_phone='%s',email='%s',custom1='%s',custom2='%s',comments='%s',phone_number='%s',phone_code='%s',organization='%s',organization_title='%s'%s WHERE lead_id='%s';",mres($vendor_lead_code),mres($title),mres($first_name),mres($middle_initial),mres($last_name),mres($address1),mres($address2),mres($address3),mres($city),mres($state),mres($province),mres($postal_code),mres($country_code),mres($gender),mres($date_of_birth),mres($alt_phone),mres($email),mres($custom1),mres($custom2),mres($comments),mres($phone_number),mres($phone_code),mres($organization),mres($organization_title),$status_extendedSQL,mres($lead_id));
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
         }
