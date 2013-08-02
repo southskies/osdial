@@ -542,11 +542,13 @@ $osdial->agi_output($agi_string);
 
 my $drop_timer=0;
 my $drop_seconds=0;
-my $hold_message_counter=($ingroup->{prompt_interval} - 10);
-my $hold_tone_counter=0;
+my $hold_message_counter=0;
+$hold_message_counter=$ingroup->{prompt_interval}-$ingroup->{onhold_startdelay} if ($ingroup->{prompt_interval}>0 and $ingroup->{onhold_startdelay}>0);
 my $placement_counter=0;
-my $placement_playcount=0;
+$placement_counter=$ingroup->{placement_interval}-$ingroup->{placement_startdelay} if ($ingroup->{placement_interval}>0 and $ingroup->{placement_startdelay}>0);
 my $queuetime_counter=0;
+$queuetime_counter=$ingroup->{queuetime_interval}-$ingroup->{queuetime_startdelay} if ($ingroup->{queuetime_interval}>0 and $ingroup->{queuetime_startdelay}>0);
+my $placement_playcount=0;
 my $queuetime_playcount=0;
 my $term_reason = 'QUEUETIMEOUT';
 

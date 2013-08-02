@@ -382,6 +382,7 @@ $cpuinfo = get_variable("cpuinfo");
 $created = get_variable("created");
 
 $call_began = get_variable("call_began");
+$callback_startdelay = get_variable("callback_startdelay");
 $callback_interval = get_variable("callback_interval");
 $callback_interrupt_key = get_variable("callback_interrupt_key");
 $callback_id = get_variable("callback_id");
@@ -678,6 +679,7 @@ $old_server_ip = get_variable("old_server_ip");
 $OLDuser_group = get_variable("OLDuser_group");
 $omit_phone_code = get_variable("omit_phone_code");
 $onhold_prompt_filename = get_variable("onhold_prompt_filename");
+$onhold_startdelay = get_variable("onhold_startdelay");
 $orderby = get_variable("orderby");
 $orddir = get_variable("orddir");
 $organization = get_variable("organization");
@@ -776,6 +778,7 @@ $prompt_interval = get_variable("prompt_interval");
 $protocol = get_variable("protocol");
 $province_field = get_variable("province_field");
 $ptype = get_variable("ptype");
+$placement_startdelay = get_variable("placement_startdelay");
 $placement_interval = get_variable("placement_interval");
 $placement_max_repeat = get_variable("placement_max_repeat");
 
@@ -808,6 +811,7 @@ $queuemetrics_login = get_variable("queuemetrics_login");
 $queuemetrics_pass = get_variable("queuemetrics_pass");
 $queuemetrics_server_ip = get_variable("queuemetrics_server_ip");
 $queuemetrics_url = get_variable("queuemetrics_url");
+$queuetime_startdelay = get_variable("queuetime_startdelay");
 $queuetime_interval = get_variable("queuetime_interval");
 $queuetime_max_repeat = get_variable("queuetime_max_repeat");
 

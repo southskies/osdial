@@ -663,11 +663,17 @@ $osdial->agi_output($agi_string);
 my $drop_timer=0;
 my $drop_seconds=0;
 my $hold_message_counter=0;
+$hold_message_counter=$ingroup->{prompt_interval}-$ingroup->{onhold_startdelay} if ($ingroup->{prompt_interval}>0 and $ingroup->{onhold_startdelay}>0);
 my $callback_message_counter=0;
+$callback_message_counter=$ingroup->{callback_interval}-$ingroup->{callback_startdelay} if ($ingroup->{callback_interval}>0 and $ingroup->{callback_startdelay}>0);
 my $placement_counter=0;
-my $placement_playcount=0;
+$placement_counter=$ingroup->{placement_interval}-$ingroup->{placement_startdelay} if ($ingroup->{placement_interval}>0 and $ingroup->{placement_startdelay}>0);
 my $queuetime_counter=0;
+$queuetime_counter=$ingroup->{queuetime_interval}-$ingroup->{queuetime_startdelay} if ($ingroup->{queuetime_interval}>0 and $ingroup->{queuetime_startdelay}>0);
+my $placement_playcount=0;
 my $queuetime_playcount=0;
+my $last_played=12;
+my $prompt_buffer=15;
 my $term_reason = 'QUEUETIMEOUT';
 
 if ($ingroup->{drop_trigger} eq 'NO_AGENTS_AVAILABLE') {
@@ -973,13 +979,14 @@ while ($drop_timer <= $DROP_TIME) {
 	}
 
 	if ($inprompt==0) {
-		if ($hold_message_counter > $ingroup->{prompt_interval}) {
+		if ($last_played>$prompt_buffer and $hold_message_counter > $ingroup->{prompt_interval}) {
 			$inprompt=1;
 			stop_stream();
 			stream_file($ingroup->{onhold_prompt_filename});
 			stream_file('sip-silence');
 			$hold_message_counter = 0;
-		} elsif ($callback_message_counter > $ingroup->{callback_interval}) {
+			$last_played=0;
+		} elsif ($last_played>$prompt_buffer and $callback_message_counter > $ingroup->{callback_interval}) {
 			$inprompt=1;
 			stop_stream();
 			stream_file('to-be-called-back');
@@ -989,7 +996,8 @@ while ($drop_timer <= $DROP_TIME) {
 			stream_file('digits/'.$cbkey);
 			stream_file('sip-silence');
 			$callback_message_counter = 0;
-		} elsif (($ingroup->{placement_max_repeat}==0 or $placement_playcount<$ingroup->{placement_max_repeat}) and $ingroup->{placement_interval} != 0 and $placement_counter > $ingroup->{placement_interval}) {
+			$last_played=0;
+		} elsif ($last_played>$prompt_buffer and ($ingroup->{placement_max_repeat}==0 or $placement_playcount<$ingroup->{placement_max_repeat}) and $ingroup->{placement_interval} != 0 and $placement_counter > $ingroup->{placement_interval}) {
 			$inprompt=1;
 			$stmtA = sprintf("SELECT * FROM osdial_auto_calls WHERE lead_id='%s' LIMIT 1;",$osdial->mres($insert_lead_id));
 			my $curac = $osdial->sql_query($stmtA);
@@ -1021,7 +1029,8 @@ while ($drop_timer <= $DROP_TIME) {
 			stream_file('sip-silence');
 			$placement_counter = 0;
 			$placement_playcount++;
-		} elsif (($ingroup->{queuetime_max_repeat}==0 or $queuetime_playcount<$ingroup->{queuetime_max_repeat}) and $ingroup->{queuetime_interval} != 0 and $queuetime_counter > $ingroup->{queuetime_interval}) {
+			$last_played=0;
+		} elsif ($last_played>$prompt_buffer and ($ingroup->{queuetime_max_repeat}==0 or $queuetime_playcount<$ingroup->{queuetime_max_repeat}) and $ingroup->{queuetime_interval} != 0 and $queuetime_counter > $ingroup->{queuetime_interval}) {
 			$inprompt=1;
 			my $qstartdate = $osdial->get_datetime(time()-1800);
 			my $qenddate = $osdial->get_datetime();
@@ -1057,13 +1066,17 @@ while ($drop_timer <= $DROP_TIME) {
 			stream_file('sip-silence');
 			$queuetime_counter = 0;
 			$queuetime_playcount++;
+			$last_played=0;
 		}
 	
 		if ($inhold>0) {
-			$hold_message_counter++;
-			$callback_message_counter++;
-			$placement_counter++;
-			$queuetime_counter++;
+			if ($last_played>$prompt_buffer) {
+				$hold_message_counter++;
+				$callback_message_counter++;
+				$placement_counter++;
+				$queuetime_counter++;
+			}
+			$last_played++;
 		} elsif ($start_moh>1) {
 			$start_moh=0;
 			stream_file($hold);

@@ -941,6 +941,23 @@
     <item pathId="drop_message_filename" sectionId="40" title="Drop Message Filename">
     The audio file located on the server to be played if the Action is set to MESSAGE. Default is vm-goodbye
     </item>
+
+    <item pathId="onhold_startdelay" sectionId="41" title="Onhold Prompt Start Delay">
+    How long to wait after joining the queue before playing the prompt. Set to "1" to play immediately. Set to "0" to wait for the normal prompt interval time. A value greater than the prompt interval will have no effect. Default is "0".
+    </item>
+
+    <item pathId="callback_startdelay" sectionId="42" title="Callback Prompt Start Delay">
+    How long to wait after joining the queue before playing the prompt. Set to "1" to play immediately. Set to "0" to wait for the normal prompt interval time. A value greater than the prompt interval will have no effect. Default is "0".
+    </item>
+
+    <item pathId="placement_startdelay" sectionId="43" title="Placement Prompt Start Delay">
+    How long to wait after joining the queue before playing the prompt. Set to "1" to play immediately. Set to "0" to wait for the normal prompt interval time. A value greater than the prompt interval will have no effect. Default is "0".
+    </item>
+
+    <item pathId="queuetime_startdelay" sectionId="44" title="Queuetime Prompt Start Delay">
+    How long to wait after joining the queue before playing the prompt. Set to "1" to play immediately. Set to "0" to wait for the normal prompt interval time. A value greater than the prompt interval will have no effect. Default is "0".
+    </item>
+
   </section>
 
 
