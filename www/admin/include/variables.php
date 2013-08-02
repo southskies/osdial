@@ -230,6 +230,7 @@ $agent_alert_exten = get_variable("agent_alert_exten");
 $agent_api_access = get_variable("agent_api_access");
 $agent_choose_ingroups = get_variable("agent_choose_ingroups");
 $agent_template = get_variable("agent_template");
+$agent_message = get_variable("agent_message");
 $agentcall_manual = get_variable("agentcall_manual");
 $agentonly_callbacks = get_variable("agentonly_callbacks");
 $agent_pause_codes_active = get_variable("agent_pause_codes_active");

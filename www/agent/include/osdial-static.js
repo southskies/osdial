@@ -2899,6 +2899,10 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 			agent_log_type="PAUSE";
 			agentlogtime_timeout_id = setTimeout("timeTransCounter()", 1000);
+
+			if (agent_message!='') {
+				osdalert("<b>Message Sent to Group from Manager:</b><br><br>"+agent_message,60);
+			}
 		} else {
 
 			var WaitingForNextStep=0;
@@ -2983,6 +2987,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			if (WaitingForNextStep==0) {
 				// check for live channels in conference room and get current datetime
 				check_for_conf_calls(session_id, '0');
+				GetAgentMessage();
 				if (agentonly_callbacks == '1') {
 					CB_count_check++;
 				}
@@ -7060,5 +7065,30 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 					}
 				}
 			}
+		}
+	}
+
+// ################################################################################
+// Get AgentMessage
+	function GetAgentMessage() {
+		debug("<b>GetAgentMessage:</b>",4);
+		var xmlhttp=getXHR();
+		if (xmlhttp) { 
+			AMquery = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=AgentMessage&user_group=" + VU_user_group + "&format=text";
+			xmlhttp.open('POST', 'vdc_db_query.php'); 
+			xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
+			xmlhttp.send(AMquery); 
+			xmlhttp.onreadystatechange = function() { 
+				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+					var amsg = xmlhttp.responseText;
+					if (amsg != agent_message) {
+						agent_message = amsg;
+						if (amsg != "") {
+							osdalert("<b>Message Sent to Group from Manager:</b><br><br>"+agent_message,60);
+						}
+					}
+				}
+			}
+			delete xmlhttp;
 		}
 	}

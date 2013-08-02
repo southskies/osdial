@@ -143,7 +143,7 @@ if ($ADD==411111) {
             $stmt .= "view_campaign_recent_outbound_sales='%s',export_campaign_recent_outbound_sales='%s',view_ingroup_call_report='%s',export_ingroup_call_report='%s',";
             $stmt .= "view_lead_performance_campaign='%s',export_lead_performance_campaign='%s',view_lead_performance_list='%s',export_lead_performance_list='%s',";
             $stmt .= "view_lead_search='%s',view_lead_search_advanced='%s',export_lead_search_advanced='%s',view_list_cost_entry='%s',export_list_cost_entry='%s',";
-            $stmt .= "view_server_performance='%s',view_server_times='%s',view_usergroup_hourly_stats='%s' ";
+            $stmt .= "view_server_performance='%s',view_server_times='%s',view_usergroup_hourly_stats='%s',agent_message='%s' ";
             $stmt .= "WHERE user_group='%s';";
 
             $campaigns_value = ' ' . implode(' ', $campaigns_values) . ' -';
@@ -163,7 +163,7 @@ if ($ADD==411111) {
                 mres($view_campaign_recent_outbound_sales),mres($export_campaign_recent_outbound_sales),mres($view_ingroup_call_report),mres($export_ingroup_call_report),
                 mres($view_lead_performance_campaign),mres($export_lead_performance_campaign),mres($view_lead_performance_list),mres($export_lead_performance_list),
                 mres($view_lead_search),mres($view_lead_search_advanced),mres($export_lead_search_advanced),mres($view_list_cost_entry),
-                mres($export_list_cost_entry),mres($view_server_performance),mres($view_server_times),mres($view_usergroup_hourly_stats),
+                mres($export_list_cost_entry),mres($view_server_performance),mres($view_server_times),mres($view_usergroup_hourly_stats),mres($agent_message),
                 mres($OLDuser_group));
             $rslt=mysql_query($stmt, $link);
 
@@ -283,6 +283,7 @@ if ($ADD==311111) {
         $allowed_scripts = $row[35];
         $allowed_email_templates = $row[36];
         $allowed_ingroups = $row[37];
+        $agent_message = $row[38];
 
         echo "<center>\n";
         echo "  <br><font class=top_header color=$default_text size=+1>MODIFY A USER GROUP</font><br><br>\n";
@@ -293,7 +294,7 @@ if ($ADD==311111) {
 
         echo "  <table class=shadedtable width=$section_width cellspacing=3>\n";
         echo "    <tr bgcolor=$oddrows>\n";
-        echo "      <td width=40% align=right>Group: </td>\n";
+        echo "      <td width=30% align=right>Group: </td>\n";
         echo "      <td align=left>\n";
 	$compfield='';
         if ($LOG['multicomp_admin'] > 0) {
@@ -324,6 +325,11 @@ if ($ADD==311111) {
         echo "    <tr bgcolor=$oddrows>\n";
         echo "      <td align=right>Description: </td>\n";
         echo "      <td align=left><input type=text name=group_name size=40 maxlength=40 value=\"$group_name\"> ".helptag("osdial_user_groups-group_description")."</td>\n";
+        echo "    </tr>\n";
+        echo "    <tr class=tabheader><td colspan=2></td></tr>\n";
+        echo "    <tr bgcolor=$oddrows>\n";
+        echo "      <td align=right>Agent Message: </td>\n";
+        echo "      <td align=left><textarea cols=60 rows=10 name=agent_message>$agent_message</textarea> ".helptag("osdial_user_groups-agent_message")."</td>\n";
         echo "    </tr>\n";
         echo "    <tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
         echo "  </table>\n";

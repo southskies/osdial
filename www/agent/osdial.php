@@ -222,6 +222,8 @@ $HKstatuses='';
 $HKhotkeys='';
 $VARstatuses='';
 $VARstatusnames='';
+$VU_user_group='';
+$agent_message='';
 
 echo "<html>\n";
 echo "<head>\n";
@@ -676,10 +678,11 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
                 $forever_stop++;
             }
 
-            $stmt=sprintf("SELECT allowed_campaigns FROM osdial_user_groups WHERE user_group='%s';",mres($VU_user_group));
+            $stmt=sprintf("SELECT allowed_campaigns,agent_message FROM osdial_user_groups WHERE user_group='%s';",mres($VU_user_group));
             $rslt=mysql_query($stmt, $link);
             $row=mysql_fetch_row($rslt);
             $LOGallowed_campaigns = $row[0];
+            $agent_message=$row[1];
 
             if (!OSDpreg_match("/ $VD_campaign /i",$LOGallowed_campaigns) and !OSDpreg_match("/ALL-CAMPAIGNS/",$LOGallowed_campaigns)) {
                 echo "<title>$t1 web client: $t1 Campaign Login</title>\n";

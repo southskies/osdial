@@ -25,6 +25,7 @@
 var active_display=1;
 var activeext_order='asc';
 var activeext_query;
+var old_agent_message='';
 var AgaiNCalLCID='';
 var AgainCalLSecondS='';
 var AgaiNHanguPChanneL='';

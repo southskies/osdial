@@ -286,6 +286,7 @@ $title = get_variable("title");
 $uniqueid = get_variable("uniqueid");
 $use_internal_dnc = get_variable("use_internal_dnc");
 $user = get_variable("user");
+$user_group = get_variable("user_group");
 $user_abb = get_variable("user_abb");
 $VDstop_rec_after_each_call = get_variable("VDstop_rec_after_each_call");
 $vendor_lead_code = get_variable("vendor_lead_code");
@@ -4155,7 +4156,6 @@ if ($ACTION == 'Email') {
 }
 
 
-
 ################################################################################
 ### Check if email is in blacklist.
 ################################################################################
@@ -4270,6 +4270,16 @@ if ($ACTION == 'MulticallGetChannel') {
     echo $MCagentlogid . "\n";
     echo $MCagentlogtype . "\n";
     echo $MCagentlogtime . "\n";
+}
+
+
+
+################################################################################
+### Get agent_message from user_groups.
+################################################################################
+if ($ACTION == 'AgentMessage') {
+    $group = get_first_record($link, 'osdial_user_groups', '*', sprintf("user_group='%s'",mres($user_group)));
+    echo $group['agent_message'];
 }
 
 
