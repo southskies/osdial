@@ -1091,6 +1091,10 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
     <item pathId="server_reports" sectionId="9" title="Server Report Permissions">
     This section allows you to give access for specific reports to all members of the specific usergroup, with a user level of 7 or higher. VIEW and/or EXPORT access may be assigned for the listed report.
     </item>
+
+    <item pathId="agent_message" sectionId="10" title="Agent Message">
+    The contents of this field are displayed in an alert window on the screens of the agents that belong to this group.
+    </item>
   </section>
 
 

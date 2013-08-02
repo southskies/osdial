@@ -742,6 +742,7 @@ $oivr_opt_action_data = get_variable("oivr_opt_action_data");
 $oivr_opt_last_state = get_variable("oivr_opt_last_state");
 $old_phone = get_variable("old_phone");
 
+$parents = get_variable("parents");
 $park_ext = get_variable("park_ext");
 $park_file_name = get_variable("park_file_name");
 $park_on_extension = get_variable("park_on_extension");

@@ -2180,75 +2180,137 @@ if ($ADD==31) {
         ##### CAMPAIGN CUSTOM STATUSES #####
         if ($SUB==22) {
 
-            ##### get status category listings for dynamic pulldown
-            $stmt="SELECT vsc_id,vsc_name FROM osdial_status_categories ORDER BY vsc_id DESC;";
-            $rslt=mysql_query($stmt, $link);
-            $cats_to_print = mysql_num_rows($rslt);
-            $cats_list="";
+            if ($stage=='extended') {
+                ##### get status category listings for dynamic pulldown
+                $cats_list='';
+                $catsname_list=array();
+                $sckrh = get_krh($link,'osdial_status_categories','*','vsc_id DESC','','');
+                foreach ($sckrh as $sc) {
+                    $cats_list .= "<option value=\"$sc[vsc_id]\">$sc[vsc_id] - " . OSDsubstr($sc['vsc_name'],0,20) . "</option>\n";
+                    $catsname_list[$sc['vsc_id']] = OSDsubstr($sc['vsc_name'],0,20);
+                }
 
-            $o=0;
-            while ($cats_to_print > $o) {
-                $rowx=mysql_fetch_row($rslt);
-                $cats_list .= "<option value=\"$rowx[0]\">$rowx[0] - " . OSDsubstr($rowx[1],0,20) . "</option>";
-                $catsname_list["$rowx[0]"] = OSDsubstr($rowx[1],0,20);
-                $o++;
-            }
+                $tparents = OSDpreg_replace('/^(.*):\S+$/','\\1',$parents);
+                $oparents = OSDpreg_replace('/^.*:(\S+)$/','\\1',$parents);
+                echo "<center><br>\n";
+                echo "<font class=top_header_sect color=$default_text size=+1>CUSTOM EXTENDED STATUSES WITHIN THIS CAMPAIGN &nbsp; </font>".helptag("osdial_campaign_statuses-osdial_campaign_statuses")."<br>";
+                echo "<font class=top_header_sect color=$default_text size=+1>\n";
+                if (OSDpreg_match('/\:/',$parents)) {
+                    echo "<a title=\"Go Up One Level\" href=\"$PHP_SELF?ADD=31&SUB=22&campaign_id=$campaign_id&parents=$tparents&stage=extended\">$tparents</a>\n";
+                } else {
+                    echo "<a title=\"Go Up One Level\" href=\"$PHP_SELF?ADD=31&SUB=22&campaign_id=$campaign_id\">[Back]</a>\n";
+                }
+                echo ":<a title=\"Refresh View\" href=\"$PHP_SELF?ADD=31&SUB=22&campaign_id=$campaign_id&parents=$parents&stage=extended\">$oparents</a>\n";
+                echo "</font><br><br>";
+                echo "  <table bgcolor=grey class=shadedtable width=700 cellspacing=1 align=center>";
+                echo "    <tr class=tabheader>";
+                echo "      <td align=center>STATUS</td>";
+                echo "      <td align=center>DESCRIPTION</td>";
+                echo "      <td align=center>SELECTABLE</td>";
+                echo "      <td colspan=2 align=center>ACTIONS</td>";
+                echo "    </tr>";
 
+                $o=0;
+                $oceskrh = get_krh($link,'osdial_campaign_statuses_extended','*','status DESC',sprintf("campaign_id='%s' AND parents='%s'",mres($campaign_id),mres($parents)),'');
+                foreach ($oceskrh as $ocse) {
+                    $o++;
+                    echo "    <form action=$PHP_SELF method=POST>";
+                    echo "    <input type=hidden name=DB value=$DB>";
+                    echo "    <input type=hidden name=ADD value=42>";
+                    echo "    <input type=hidden name=stage value=extended_modify>";
+                    echo "    <input type=hidden name=parents value=\"$parents\">";
+                    echo "    <input type=hidden name=status value=\"$ocse[status]\">";
+                    echo "    <input type=hidden name=campaign_id value=\"$campaign_id\">";
+                    echo "    <tr " . bgcolor($o) . " class=\"row font1\">";
+                    echo "      <td nowrap>\n";
+                    echo "        <b>$ocse[status]\n";
+                    echo "        &nbsp;<a title=\"Create an Extended Sub-Status\" href=\"$PHP_SELF?ADD=31&SUB=22&campaign_id=$campaign_id&parents=$parents:$ocse[status]&stage=extended\">+</a></b>\n";
+                    echo "      </td>";
+                    echo "      <td align=center class=tabinput nowrap><input type=text name=status_name size=30 maxlength=30 value=\"$ocse[status_name]\"></td>";
+                    echo "      <td align=center class=tabinput nowrap><select size=1 name=selectable><option>Y</option><option>N</option><option selected>$ocse[selectable]</option></select></td>";
+                    echo "      <td align=center><a href=\"$PHP_SELF?ADD=42&campaign_id=$campaign_id&parents=$parents&status=$ocse[status]&stage=extended_delete\">DELETE</a></td>";
+                    echo "      <td align=center class=tabinput class=tabbutton1 nowrap><input type=submit name=submit value=MODIFY></td>";
+                    echo "    </tr>";
+                    echo "    </form>";
+                }
 
-            echo "<center><br><font class=top_header_sect color=$default_text size=+1>CUSTOM STATUSES WITHIN THIS CAMPAIGN &nbsp; </font>".helptag("osdial_campaign_statuses-osdial_campaign_statuses")."</font><br><br>";
-            echo "  <table bgcolor=grey class=shadedtable width=$section_width cellspacing=1 align=center>";
-            echo "    <tr class=tabheader>";
-            echo "      <td align=center>STATUS</td>";
-            echo "      <td align=center>DESCRIPTION</td>";
-            echo "      <td align=center>SELECTABLE</td>";
-            echo "      <td align=center>HUMAN&nbsp;ANSWER</td>";
-            echo "      <td align=center>CATEGORY</td>";
-            echo "      <td colspan=2 align=center>ACTIONS</td>";
-            echo "    </tr>";
-
-            $stmt=sprintf("SELECT * FROM osdial_campaign_statuses WHERE campaign_id='%s';",mres($campaign_id));
-            $rslt=mysql_query($stmt, $link);
-            $statuses_to_print = mysql_num_rows($rslt);
-            $AScategory='';
-            $o=0;
-            while ($statuses_to_print > $o) {
-                $rowx=mysql_fetch_row($rslt);
-                $AScategory = $rowx[5];
-                $o++;
-
-                echo "    <form action=$PHP_SELF method=POST>";
+                echo "    <form action=$PHP_SELF method=POST><br>";
                 echo "    <input type=hidden name=DB value=$DB>";
-                echo "    <input type=hidden name=ADD value=42>";
-                echo "    <input type=hidden name=stage value=modify>";
-                echo "    <input type=hidden name=status value=\"$rowx[0]\">";
+                echo "    <input type=hidden name=ADD value=22>";
+                echo "    <input type=hidden name=stage value=extended>";
+                echo "    <input type=hidden name=parents value=\"$parents\">";
                 echo "    <input type=hidden name=campaign_id value=\"$campaign_id\">";
-                echo "    <tr " . bgcolor($o) . " class=\"row font1\">";
-                echo "      <td nowrap><font size=1>$rowx[0]</font></td>";
-                echo "      <td align=center class=tabinput nowrap><input type=text name=status_name size=20 maxlength=30 value=\"$rowx[1]\"></td>";
-                echo "      <td align=center class=tabinput nowrap><select size=1 name=selectable><option>Y</option><option>N</option><option selected>$rowx[2]</option></select></td>";
-                echo "      <td align=center class=tabinput nowrap><select size=1 name=human_answered><option>Y</option><option>N</option><option selected>$rowx[4]</option></select></td>";
-                echo "      <td align=center class=tabinput nowrap><select size=1 name=category>$cats_list<option selected value=\"$AScategory\">$AScategory - $catsname_list[$AScategory]</option></select></td>";
-                echo "      <td align=center><a href=\"$PHP_SELF?ADD=42&campaign_id=$campaign_id&status=$rowx[0]&stage=delete\">DELETE</a></td>";
-                echo "      <td align=center class=tabinput class=tabbutton1 nowrap><input type=submit name=submit value=MODIFY></td>";
+                echo "    <tr class=tabfooter>";
+                echo "      <td class=tabinput align=center><input type=text name=status size=11 maxlength=10></td>";
+                echo "      <td class=tabinput align=center><input type=text name=status_name size=30 maxlength=30></td>";
+                echo "      <td class=tabinput align=center><select size=1 name=selectable><option>Y</option><option>N</option></select></td>";
+                echo "      <td class=tabbutton1 colspan=2 align=center><input type=submit name=submit value=ADD></td>";
                 echo "    </tr>";
                 echo "    </form>";
-            }
+                echo "  </table>";
+                echo "</center>";
+            } else {
+                ##### get status category listings for dynamic pulldown
+                $cats_list='';
+                $catsname_list=array();
+                $sckrh = get_krh($link,'osdial_status_categories','*','vsc_id DESC','','');
+                foreach ($sckrh as $sc) {
+                    $cats_list .= "<option value=\"$sc[vsc_id]\">$sc[vsc_id] - " . OSDsubstr($sc['vsc_name'],0,20) . "</option>\n";
+                    $catsname_list[$sc['vsc_id']] = OSDsubstr($sc['vsc_name'],0,20);
+                }
 
-            echo "    <form action=$PHP_SELF method=POST><br>";
-            echo "    <input type=hidden name=DB value=$DB>";
-            echo "    <input type=hidden name=ADD value=22>";
-            echo "    <input type=hidden name=campaign_id value=\"$campaign_id\">";
-            echo "    <tr class=tabfooter>";
-            echo "      <td class=tabinput align=center><input type=text name=status size=10 maxlength=8></td>";
-            echo "      <td class=tabinput align=center><input type=text name=status_name size=20 maxlength=30></td>";
-            echo "      <td class=tabinput align=center><select size=1 name=selectable><option>Y</option><option>N</option></select></td>";
-            echo "      <td class=tabinput align=center><select size=1 name=human_answered><option>Y</option><option>N</option></select></td>";
-            echo "      <td class=tabinput align=center><select size=1 name=category>$cats_list<option selected value=\"$AScategory\">$AScategory - $catsname_list[$AScategory]</option></select></td>";
-            echo "      <td class=tabbutton1 colspan=2 align=center><input type=submit name=submit value=ADD></td>";
-            echo "    </tr>";
-            echo "    </form>";
-            echo "  </table>";
-            echo "</center>";
+                echo "<center><br><font class=top_header_sect color=$default_text size=+1>CUSTOM STATUSES WITHIN THIS CAMPAIGN &nbsp; </font>".helptag("osdial_campaign_statuses-osdial_campaign_statuses")."</font><br><br>";
+                echo "  <table bgcolor=grey class=shadedtable width=$section_width cellspacing=1 align=center>";
+                echo "    <tr class=tabheader>";
+                echo "      <td align=center>STATUS</td>";
+                echo "      <td align=center>DESCRIPTION</td>";
+                echo "      <td align=center>SELECTABLE</td>";
+                echo "      <td align=center>HUMAN&nbsp;ANSWER</td>";
+                echo "      <td align=center>CATEGORY</td>";
+                echo "      <td colspan=2 align=center>ACTIONS</td>";
+                echo "    </tr>";
+
+                $o=0;
+                $ocskrh = get_krh($link,'osdial_campaign_statuses','*','status DESC',sprintf("campaign_id='%s'",mres($campaign_id)),'');
+                foreach ($ocskrh as $ocs) {
+                    $o++;
+                    echo "    <form action=$PHP_SELF method=POST>";
+                    echo "    <input type=hidden name=DB value=$DB>";
+                    echo "    <input type=hidden name=ADD value=42>";
+                    echo "    <input type=hidden name=stage value=modify>";
+                    echo "    <input type=hidden name=status value=\"$ocs[status]\">";
+                    echo "    <input type=hidden name=campaign_id value=\"$campaign_id\">";
+                    echo "    <tr " . bgcolor($o) . " class=\"row font1\">";
+                    echo "      <td nowrap>\n";
+                    echo "        <b>$ocs[status]\n";
+                    echo "        &nbsp;<a title=\"Create an Extended Sub-Status\" href=\"$PHP_SELF?ADD=31&SUB=22&campaign_id=$campaign_id&parents=$ocs[status]&stage=extended\">+</a></b>\n";
+                    echo "      </td>";
+                    echo "      <td align=center class=tabinput nowrap><input type=text name=status_name size=30 maxlength=30 value=\"$ocs[status_name]\"></td>";
+                    echo "      <td align=center class=tabinput nowrap><select size=1 name=selectable><option>Y</option><option>N</option><option selected>$ocs[selectable]</option></select></td>";
+                    echo "      <td align=center class=tabinput nowrap><select size=1 name=human_answered><option>Y</option><option>N</option><option selected>$ocs[human_answered]</option></select></td>";
+                    echo "      <td align=center class=tabinput nowrap><select size=1 name=category>$cats_list<option selected value=\"$ocs[category]\">$ocs[category] - ".$catsname_list[$ocs['category']]."</option></select></td>";
+                    echo "      <td align=center><a href=\"$PHP_SELF?ADD=42&campaign_id=$campaign_id&status=$ocs[status]&stage=delete\">DELETE</a></td>";
+                    echo "      <td align=center class=tabinput class=tabbutton1 nowrap><input type=submit name=submit value=MODIFY></td>";
+                    echo "    </tr>";
+                    echo "    </form>";
+                }
+
+                echo "    <form action=$PHP_SELF method=POST><br>";
+                echo "    <input type=hidden name=DB value=$DB>";
+                echo "    <input type=hidden name=ADD value=22>";
+                echo "    <input type=hidden name=campaign_id value=\"$campaign_id\">";
+                echo "    <tr class=tabfooter>";
+                echo "      <td class=tabinput align=center><input type=text name=status size=7 maxlength=6></td>";
+                echo "      <td class=tabinput align=center><input type=text name=status_name size=30 maxlength=30></td>";
+                echo "      <td class=tabinput align=center><select size=1 name=selectable><option>Y</option><option>N</option></select></td>";
+                echo "      <td class=tabinput align=center><select size=1 name=human_answered><option>Y</option><option>N</option></select></td>";
+                echo "      <td class=tabinput align=center><select size=1 name=category>$cats_list</select></td>";
+                echo "      <td class=tabbutton1 colspan=2 align=center><input type=submit name=submit value=ADD></td>";
+                echo "    </tr>";
+                echo "    </form>";
+                echo "  </table>";
+                echo "</center>";
+            }
         }
 
         

@@ -25,47 +25,55 @@
 # ADD=22 adds the new campaign status to the system
 ######################
 
-if ($ADD==22)
-{
-	$stmt=sprintf("SELECT count(*) FROM osdial_campaign_statuses WHERE campaign_id='%s' AND status='%s';",mres($campaign_id),mres($status));
-	$rslt=mysql_query($stmt, $link);
-	$row=mysql_fetch_row($rslt);
-	if ($row[0] > 0)
-		{echo "<br><font color=red> CAMPAIGN STATUS NOT ADDED - there is already a campaign-status in the system with this name</font>\n";}
-	else
-		{
-		#$stmt="SELECT count(*) from osdial_statuses where status='$status';";
-		#$rslt=mysql_query($stmt, $link);
-		#$row=mysql_fetch_row($rslt);
-		#if ($row[0] > 0)
-		#	{echo "<br><font color=$default_text> CAMPAIGN STATUS NOT ADDED - there is already a global-status in the system with this name</font>\n";}
-		#else
-		#	{
-			 if ( (OSDstrlen($campaign_id) < 2) or (OSDstrlen($status) < 1) or (OSDstrlen($status_name) < 2) )
-				{
-				 echo "<br><font color=red> CAMPAIGN STATUS NOT ADDED - Please go back and look at the data you entered\n";
-				 echo "<br>status must be between 1 and 8 characters in length\n";
-				 echo "<br>status name must be between 2 and 30 characters in length</font><br>\n";
-				}
-			 else
-				{
-				echo "<br><B><font color=$default_text> CAMPAIGN STATUS ADDED: $campaign_id - $status</font></B>\n";
+if ($ADD==22) {
+    if ($stage=='extended') {
+        $ocse = get_first_record($link,'osdial_campaign_statuses_extended','count(*) AS cnt',sprintf("campaign_id='%s' AND parents='%s' AND status='%s'",mres($campaign_id),mres($parents),mres($status)));
+        if ($ocse['cnt'] > 0) {
+            echo "<br><font color=red> CAMPAIGN EXTENDED STATUS NOT ADDED - there is already a campaign-extended-status in the system with this name</font>\n";
+        } else {
+            if (OSDstrlen($campaign_id)<2 or OSDstrlen($status)<1 or OSDstrlen($status_name)<2) {
+                echo "<br><font color=red> CAMPAIGN EXTENDED STATUS NOT ADDED - Please go back and look at the data you entered\n";
+                echo "<br>status must be between 1 and 8 characters in length\n";
+                echo "<br>status name must be between 2 and 30 characters in length</font><br>\n";
+            } else {
+                echo "<br><b><font color=$default_text> CAMPAIGN EXTENDED STATUS ADDED: $campaign_id - $parents:$status</font></b>\n";
+                $stmt=sprintf("INSERT INTO osdial_campaign_statuses_extended (parents,status,status_name,selectable,campaign_id) VALUES('%s','%s','%s','%s','%s');",mres($parents),mres($status),mres($status_name),mres($selectable),mres($campaign_id));
+                $rslt=mysql_query($stmt, $link);
 
-				$stmt="INSERT INTO osdial_campaign_statuses (status,status_name,selectable,campaign_id,human_answered,category) values('$status','$status_name','$selectable','$campaign_id','$human_answered','$category');";
-				$rslt=mysql_query($stmt, $link);
+                ### LOG CHANGES TO LOG FILE ###
+                if ($WeBRooTWritablE > 0) {
+                    $fp = fopen ("./admin_changes_log.txt", "a");
+                    fwrite ($fp, "$date|ADD A NEW CAMPAIGN EXTENDED STATUS |$PHP_AUTH_USER|$ip|$stmt|\n");
+                    fclose($fp);
+                }
+            }
+        }
 
-				### LOG CHANGES TO LOG FILE ###
-				if ($WeBRooTWritablE > 0)
-					{
-					$fp = fopen ("./admin_changes_log.txt", "a");
-					fwrite ($fp, "$date|ADD A NEW CAMPAIGN STATUS |$PHP_AUTH_USER|$ip|$stmt|\n");
-					fclose($fp);
-					}
-				}
-		#	}
-		}
-$SUB=22;
-$ADD=31;
+    } else {
+        $ocs = get_first_record($link,'osdial_campaign_statuses','count(*) AS cnt',sprintf("campaign_id='%s' AND status='%s'",mres($campaign_id),mres($status)));
+        if ($ocs['cnt'] > 0) {
+            echo "<br><font color=red> CAMPAIGN STATUS NOT ADDED - there is already a campaign-status in the system with this name</font>\n";
+        } else {
+            if (OSDstrlen($campaign_id)<2 or OSDstrlen($status)<1 or OSDstrlen($status_name)<2) {
+                echo "<br><font color=red> CAMPAIGN STATUS NOT ADDED - Please go back and look at the data you entered\n";
+                echo "<br>status must be between 1 and 8 characters in length\n";
+                echo "<br>status name must be between 2 and 30 characters in length</font><br>\n";
+            } else {
+                echo "<br><b><font color=$default_text> CAMPAIGN STATUS ADDED: $campaign_id - $status</font></b>\n";
+                $stmt=sprintf("INSERT INTO osdial_campaign_statuses (status,status_name,selectable,campaign_id,human_answered,category) VALUES('%s','%s','%s','%s','%s','%s');",mres($status),mres($status_name),mres($selectable),mres($campaign_id),mres($human_answered),mres($category));
+                $rslt=mysql_query($stmt, $link);
+
+                ### LOG CHANGES TO LOG FILE ###
+                if ($WeBRooTWritablE > 0) {
+                    $fp = fopen ("./admin_changes_log.txt", "a");
+                    fwrite ($fp, "$date|ADD A NEW CAMPAIGN STATUS |$PHP_AUTH_USER|$ip|$stmt|\n");
+                    fclose($fp);
+                }
+            }
+        }
+    }
+    $SUB=22;
+    $ADD=31;
 }
 
 
@@ -73,119 +81,133 @@ $ADD=31;
 # ADD=42 modify/delete campaign status in the system
 ######################
 
-if ($ADD==42)
-{
-	if ($LOG['modify_campaigns']==1)
-	{
-	 if ( (OSDstrlen($campaign_id) < 2) or (OSDstrlen($status) < 1) )
-		{
-		 echo "<br><font color=red>CAMPAIGN STATUS NOT MODIFIED - Please go back and look at the data you entered\n";
-		 echo "<br>the campaign id needs to be at least 2 characters in length\n";
-		 echo "<br>the campaign status needs to be at least 1 characters in length</font><br>\n";
-		}
-	 else
-		{
-		if (OSDpreg_match('/delete/',$stage))
-			{
-			echo "<br><B><font color=$default_text>CUSTOM CAMPAIGN STATUS DELETED: $campaign_id - $status</font></B>\n";
+if ($ADD==42) {
+    if ($LOG['modify_campaigns']==1) {
+        if (OSDpreg_match('/extended/',$stage)) {
+            if (OSDstrlen($campaign_id)<2 or OSDstrlen($parents)<1 or OSDstrlen($status)<1) {
+                echo "<br><font color=red>CAMPAIGN EXTENDED STATUS NOT MODIFIED - Please go back and look at the data you entered\n";
+                echo "<br>the campaign id needs to be at least 2 characters in length\n";
+                echo "<br>the status parents needs to be at least 1 characters in length\n";
+                echo "<br>the campaign status needs to be at least 1 characters in length</font><br>\n";
+            } else {
+                if (OSDpreg_match('/delete/',$stage)) {
+                    $ocse = get_first_record($link,'osdial_campaign_statuses_extended','count(*) AS cnt',sprintf("campaign_id='%s' AND parents='%s'",mres($campaign_id),mres($parents.':'.$status)));
+                    if ($ocse['cnt']>0) {
+                        echo "<br><center><b><font color=red>CAMPAIGN EXTENDED STATUS NOT DELETED - This status has $ocse[cnt] sub-statuses, please remove them first.</font></b></center><br>\n";
+                    } else {
+                        echo "<br><b><font color=$default_text>CUSTOM CAMPAIGN EXTENDED STATUS DELETED: $campaign_id - $parents:$status</font></b>\n";
+                        $stmt=sprintf("DELETE FROM osdial_campaign_statuses_extended WHERE campaign_id='%s' AND parents='%s' AND status='%s';",mres($campaign_id),mres($parents),mres($status));
+                        $rslt=mysql_query($stmt, $link);
 
-			$stmt="DELETE FROM osdial_campaign_statuses where campaign_id='$campaign_id' and status='$status';";
-			$rslt=mysql_query($stmt, $link);
+                        ### LOG CHANGES TO LOG FILE ###
+                        if ($WeBRooTWritablE > 0) {
+                            $fp = fopen ("./admin_changes_log.txt", "a");
+                            fwrite ($fp, "$date|DELETE CAMPAIGN EXTENDED STATUS|$PHP_AUTH_USER|$ip|$stmt|$stmtA|\n");
+                            fclose($fp);
+                        }
+                    }
+                }
+                if (OSDpreg_match('/modify/',$stage)) {
+                    echo "<br><b><font color=$default_text>CUSTOM CAMPAIGN EXTENDED STATUS MODIFIED: $campaign_id - $parents:$status</font></b>\n";
+                    $stmt=sprintf("UPDATE osdial_campaign_statuses_extended SET status_name='%s',selectable='%s' WHERE campaign_id='%s' AND parents='%s' AND status='%s';",mres($status_name),mres($selectable),mres($campaign_id),mres($parents),mres($status));
+                    $rslt=mysql_query($stmt, $link);
 
-			$stmtA="DELETE FROM osdial_campaign_hotkeys where campaign_id='$campaign_id' and status='$status';";
-			$rslt=mysql_query($stmtA, $link);
+                    ### LOG CHANGES TO LOG FILE ###
+                    if ($WeBRooTWritablE > 0) {
+                        $fp = fopen ("./admin_changes_log.txt", "a");
+                        fwrite ($fp, "$date|MODIFY CAMPAIGN EXTENDED STATUS|$PHP_AUTH_USER|$ip|$stmt|\n");
+                        fclose($fp);
+                    }
+                }
+            }
+            $stage='extended';
 
+        } else {
+            if (OSDstrlen($campaign_id)<2 or OSDstrlen($status)<1) {
+                echo "<br><font color=red>CAMPAIGN STATUS NOT MODIFIED - Please go back and look at the data you entered\n";
+                echo "<br>the campaign id needs to be at least 2 characters in length\n";
+                echo "<br>the campaign status needs to be at least 1 characters in length</font><br>\n";
+            } else {
+                if (OSDpreg_match('/delete/',$stage)) {
+                    $ocse = get_first_record($link,'osdial_campaign_statuses_extended','count(*) AS cnt',sprintf("campaign_id='%s' AND parents='%s'",mres($campaign_id),mres($status)));
+                    if ($ocse['cnt']>0) {
+                        echo "<br><center><b><font color=red>CAMPAIGN STATUS NOT DELETED - This status has $ocse[cnt] sub-statuses, please remove them first.</font></b></center><br>\n";
+                    } else {
+                        echo "<br><b><font color=$default_text>CUSTOM CAMPAIGN STATUS DELETED: $campaign_id - $status</font></b>\n";
+                        $stmt=sprintf("DELETE FROM osdial_campaign_statuses WHERE campaign_id='%s' AND status='%s';",mres($campaign_id),mres($status));
+                        $rslt=mysql_query($stmt, $link);
+                        $stmtA=sprintf("DELETE FROM osdial_campaign_hotkeys WHERE campaign_id='%s' AND status='%s';",mres($campaign_id),mres($status));
+                        $rslt=mysql_query($stmtA, $link);
 
-			### LOG CHANGES TO LOG FILE ###
-			if ($WeBRooTWritablE > 0)
-				{
-				$fp = fopen ("./admin_changes_log.txt", "a");
-				fwrite ($fp, "$date|DELETE CAMPAIGN STATUS|$PHP_AUTH_USER|$ip|$stmt|$stmtA|\n");
-				fclose($fp);
-				}
-			}
-		if (OSDpreg_match('/modify/',$stage))
-			{
-			echo "<br><B><font color=$default_text>CUSTOM CAMPAIGN STATUS MODIFIED: $campaign_id - $status</font></B>\n";
+                        ### LOG CHANGES TO LOG FILE ###
+                        if ($WeBRooTWritablE > 0) {
+                            $fp = fopen ("./admin_changes_log.txt", "a");
+                            fwrite ($fp, "$date|DELETE CAMPAIGN STATUS|$PHP_AUTH_USER|$ip|$stmt|$stmtA|\n");
+                            fclose($fp);
+                        }
+                    }
+                }
+                if (OSDpreg_match('/modify/',$stage)) {
+                    echo "<br><b><font color=$default_text>CUSTOM CAMPAIGN STATUS MODIFIED: $campaign_id - $status</font></b>\n";
+                    $stmt=sprintf("UPDATE osdial_campaign_statuses SET status_name='%s',selectable='%s',human_answered='%s',category='%s' WHERE campaign_id='%s' AND status='%s';",mres($status_name),mres($selectable),mres($human_answered),mres($category),mres($campaign_id),mres($status));
+                    $rslt=mysql_query($stmt, $link);
 
-			$stmt="UPDATE osdial_campaign_statuses SET status_name='$status_name',selectable='$selectable',human_answered='$human_answered',category='$category' where campaign_id='$campaign_id' and status='$status';";
-			$rslt=mysql_query($stmt, $link);
-
-			### LOG CHANGES TO LOG FILE ###
-			if ($WeBRooTWritablE > 0)
-				{
-				$fp = fopen ("./admin_changes_log.txt", "a");
-				fwrite ($fp, "$date|MODIFY CAMPAIGN STATUS|$PHP_AUTH_USER|$ip|$stmt|\n");
-				fclose($fp);
-				}
-			}
-		}
-    $SUB=22;
-    $ADD=31;	# go to campaign modification form below
-	}
-	else
-	{
-	echo "<font color=red>You do not have permission to view this page</font>\n";
-	}
+                    ### LOG CHANGES TO LOG FILE ###
+                    if ($WeBRooTWritablE > 0) {
+                        $fp = fopen ("./admin_changes_log.txt", "a");
+                        fwrite ($fp, "$date|MODIFY CAMPAIGN STATUS|$PHP_AUTH_USER|$ip|$stmt|\n");
+                        fclose($fp);
+                    }
+                }
+            }
+        }
+        $SUB=22;
+        $ADD=31;	# go to campaign modification form below
+    } else {
+        echo "<font color=red>You do not have permission to view this page</font>\n";
+    }
 }
 
 ######################
 # ADD=32 display all campaign statuses
 ######################
-if ($ADD==32)
-{
-echo "<center><br><font color=$default_text size=+1>CUSTOM CAMPAIGN STATUSES</font><br><br>\n";
-echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
-echo "<tr class=tabheader>\n";
-echo "<td>CAMPAIGN</td>\n";
-echo "<td>NAME</td>\n";
-echo "<td align=center>STATUSES</td>\n";
-echo "<td align=center>LINKS</td>\n";
-echo "</tr>\n";
+if ($ADD==32) {
+    echo "<center><br><font color=$default_text size=+1>CUSTOM CAMPAIGN STATUSES</font><br><br>\n";
+    echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
+    echo "<tr class=tabheader>\n";
+    echo "<td>CAMPAIGN</td>\n";
+    echo "<td>NAME</td>\n";
+    echo "<td align=center>STATUSES</td>\n";
+    echo "<td align=center>LINKS</td>\n";
+    echo "</tr>\n";
 
-	$stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE campaign_id IN %s ORDER BY campaign_id;", $LOG['allowed_campaignsSQL']);
-	$rslt=mysql_query($stmt, $link);
-	$campaigns_to_print = mysql_num_rows($rslt);
+    $o=0;
+    $ockrh = get_krh($link,'osdial_campaigns','campaign_id,campaign_name','campaign_id DESC',sprintf("campaign_id IN %s",$LOG['allowed_campaignsSQL']),'');
+    foreach ($ockrh as $oc) {
+        echo "  <tr class=\"row font1\" " . bgcolor($o) . " ondblclick=\"window.location='$PHP_SELF?ADD=31&SUB=22&campaign_id=$oc[campaign_id]';\">\n";
+        echo "    <td><a href=\"$PHP_SELF?ADD=31&SUB=22&campaign_id=$oc[campaign_id]\">" . mclabel($oc['campaign_id']) . "</a></td>";
+        echo "    <td>$oc[campaign_name]</td>";
+        echo "    <td align=center>";
 
-	$o=0;
-	while ($campaigns_to_print > $o) 
-		{
-		$row=mysql_fetch_row($rslt);
-		$campaigns_id_list[$o] = $row[0];
-		$campaigns_name_list[$o] = $row[1];
-		$o++;
-		}
-
-	$o=0;
-	while ($campaigns_to_print > $o) 
-		{
-		echo "  <tr class=\"row font1\" " . bgcolor($o) . " ondblclick=\"window.location='$PHP_SELF?ADD=31&SUB=22&campaign_id=$campaigns_id_list[$o]';\">\n";
-        echo "    <td><a href=\"$PHP_SELF?ADD=31&SUB=22&campaign_id=$campaigns_id_list[$o]\">" . mclabel($campaigns_id_list[$o]) . "</a></td>";
-		echo "    <td>$campaigns_name_list[$o]</td>";
-		echo "    <td align=center>";
-
-		$stmt=sprintf("SELECT status FROM osdial_campaign_statuses WHERE campaign_id='%s' ORDER BY status;",mres($campaigns_id_list[$o]));
-		$rslt=mysql_query($stmt, $link);
-		$campstatus_to_print = mysql_num_rows($rslt);
-		$p=0;
-		while ( ($campstatus_to_print > $p) and ($p < 10) )
-			{
-			$row=mysql_fetch_row($rslt);
-			echo "$row[0] ";
-			$p++;
-			}
-		if ($p<1) 
-			{echo "<font color=grey><DEL>NONE</DEL></font>";}
-		echo "    </td>";
-		echo "    <td align=center><a href=\"$PHP_SELF?ADD=31&SUB=22&campaign_id=$campaigns_id_list[$o]\">MODIFY STATUSES</a></td>\n";
+        $p=0;
+        $ocskrh = get_krh($link,'osdial_campaign_statuses','status','status DESC',sprintf("campaign_id='%s'",mres($os['campaign_id'])),'');
+        foreach ($ocskrh as $ocs) {
+            echo $ocs['status']." ";
+            $p++;
+        }
+        if ($p<1) {
+            echo "      <font color=grey><del>NONE</del></font>\n";
+        }
+        echo "    </td>";
+        echo "    <td align=center><a href=\"$PHP_SELF?ADD=31&SUB=22&campaign_id=$oc[campaign_id]\">MODIFY STATUSES</a></td>\n";
         echo "  </tr>\n";
-		$o++;
-		}
+        $o++;
+    }
 
-echo "<tr class=tabfooter>";
-echo "  <td colspan=4></td>";
-echo "</tr>";
-echo "</table></center>\n";
+    echo "<tr class=tabfooter>";
+    echo "  <td colspan=4></td>";
+    echo "</tr>";
+    echo "</table></center>\n";
 }
 
 
