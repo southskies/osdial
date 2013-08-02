@@ -843,7 +843,7 @@
     </item>
 
     <item pathId="drop_action" sectionId="16" title="Drop Action">
-  If the Drop Trigger event occurs, EXTENSION (Y) will transfer to the Drop Extension, VOICEMAIL (N) will transfer to the Drop Voicemail box.
+  The action to perform if the Drop Trigger event occurs for this inbound group. HANGUP will immediately hangup the call, MESSAGE will play the file in the Drop Message Filename field, EXTENSION will send the call to the Drop Extension in the dialplan and VOICEMAIL will send the call to the voicemail box listed in the Drop Voicemail field. CALLBACK prompts the caller to create a callback entry. Default is HANGUP.
     </item>
 
     <item pathId="voicemail_ext" sectionId="17" title="Voicemail">
@@ -859,7 +859,7 @@
     </item>
 
     <item pathId="after_hours_action" sectionId="20" title="After Hours Action">
-  The action to perform if it is after hours as defined in the call time for this inbound group. HANGUP will immediately hangup the call, MESSAGE will play the file in the After Hours Message Filename field, EXTENSION will send the call to the After Hours Extension in the dialplan and VOICEMAIL will send the call to the voicemail box listed in the After Hours Voicemail field. Default is MESSAGE.
+  The action to perform if it is after hours as defined in the call time for this inbound group. HANGUP will immediately hangup the call, MESSAGE will play the file in the After Hours Message Filename field, EXTENSION will send the call to the After Hours Extension in the dialplan and VOICEMAIL will send the call to the voicemail box listed in the After Hours Voicemail field. CALLBACK prompts the caller to create a callback entry. Default is MESSAGE.
     </item>
 
     <item pathId="after_hours_message_filename" sectionId="21" title="After Hours Message Filename">
@@ -908,6 +908,38 @@
 
     <item pathId="web_form2_extwindow" sectionId="32" title="Web Form External 2">
   "Y" will display the WebForm in an external window, "N" will display in an OSDial frame on the agent screen.
+    </item>
+
+    <item pathId="background_music_filename" sectionId="33" title="Background Music Filename">
+    The name of a media file to play in the backgroud while waiting in queue.
+    </item>
+
+    <item pathId="callback_interval" sectionId="34" title="Callback Prompt Interval">
+    The number of seconds to wait between prompting the caller for agent callback options. 0 disables.
+    </item>
+
+    <item pathId="callback_interrupt_key" sectionId="35" title="Callback Interrupt Key">
+    The key used to interrupt the queue and present the callback menu.
+    </item>
+
+    <item pathId="placement_interval" sectionId="36" title="Placement Prompt Interval">
+    The number of seconds to wait between alerting the caller to their place in queue. 0 disables.
+    </item>
+
+    <item pathId="placement_max_repeat" sectionId="37" title="Placement Prompt Repeat">
+    The maximum number of times to present the placement prompt to the caller.
+    </item>
+
+    <item pathId="queuetime_interval" sectionId="38" title="Est Queuetime Prompt Interval">
+    The number of seconds to wait between alerting the caller to their estimated wait time. 0 disables.
+    </item>
+
+    <item pathId="queuetime_max_repeat" sectionId="39" title="Est Queuetime Prompt Repeat">
+    The maximum number of times to present the queuetime prompt to the caller.
+    </item>
+
+    <item pathId="drop_message_filename" sectionId="40" title="Drop Message Filename">
+    The audio file located on the server to be played if the Action is set to MESSAGE. Default is vm-goodbye
     </item>
   </section>
 

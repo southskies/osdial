@@ -573,11 +573,13 @@ if ($hm<$ct_default_start or $hm>$ct_default_stop) {
 		$stmtA = sprintf("INSERT INTO osdial_manager VALUES ('','','%s','NEW','N','%s','%s','Hangup','%s','Channel: %s','','','','','','','','','');",$osdial->mres($SQLdate),$osdial->mres($osdial->{'VARserver_ip'}),$osdial->mres($vars->{channel}),$osdial->mres($VHqueryCID),$osdial->mres($vars->{channel}));
 		$affected_rows = $osdial->sql_execute($stmtA);
 		$osdial->agi_output("--    OSDCL call_hungup after hours: |$VHqueryCID||".$vars->{channel}."|insert to osdial_manager");
-		while ($inafterhours==1) {
-			my $innew = infunc();
-			$docallback=1 if ($innew eq '*');
+		if ($ingroup->{callback_interval}>0) {
+			while ($inafterhours==1) {
+				my $innew = infunc();
+				$docallback=1 if ($innew eq $ingroup->{callback_interrupt_key});
+			}
+			callback_prompt() if ($docallback);
 		}
-		callback_prompt() if ($docallback);
 	}
 	$osdial->sql_disconnect();
 	exit_ivr();
@@ -588,12 +590,8 @@ if ($hm<$ct_default_start or $hm>$ct_default_stop) {
 
 ##### PLAY WELCOME MESSAGE #####
 $inwelcome=1;
+stream_file('silence/1');
 stream_file($ingroup->{welcome_message_filename}) unless ($ingroup->{welcome_message_filename} =~ /---NONE---/ or $ingroup->{welcome_message_filename} eq '');
-stream_file('sip-silence');
-while ($inwelcome==1) {
-	my $innew = infunc();
-	$docallback=1 if ($innew eq '*');
-}
 
 
 my $INBOUNDcampsSQL='';
@@ -664,13 +662,12 @@ $osdial->agi_output($agi_string);
 my $drop_timer=0;
 my $drop_seconds=0;
 my $hold_message_counter=0;
+my $callback_message_counter=0;
 my $placement_counter=0;
 my $placement_playcount=0;
 my $queuetime_counter=0;
 my $queuetime_playcount=0;
 my $term_reason = 'QUEUETIMEOUT';
-
-callback_prompt() if ($docallback);
 
 if ($ingroup->{drop_trigger} eq 'NO_AGENTS_AVAILABLE') {
 	my $soSQL='';
@@ -683,6 +680,13 @@ if ($ingroup->{drop_trigger} eq 'NO_AGENTS_AVAILABLE') {
 	if ($res->{cnt}==0) {
 		$drop_timer = $DROP_TIME + 1;
 		$term_reason = 'NOAGENTSAVAILABLE';
+		if ($ingroup->{callback_interval}>0) {
+			stream_file('sip-silence');
+			while ($inwelcome==1) {
+				my $innew = infunc();
+				$docallback=1 if ($innew eq $ingroup->{callback_interrupt_key});
+			}
+		}
 	}
 
 } elsif ($ingroup->{drop_trigger} eq 'NO_AGENTS_CONNECTED') {
@@ -696,8 +700,17 @@ if ($ingroup->{drop_trigger} eq 'NO_AGENTS_AVAILABLE') {
 	if ($res->{cnt}==0) {
 		$drop_timer = $DROP_TIME + 1;
 		$term_reason = 'NOAGENTS';
+		if ($ingroup->{callback_interval}>0) {
+			stream_file('sip-silence');
+			while ($inwelcome==1) {
+				my $innew = infunc();
+				$docallback=1 if ($innew eq $ingroup->{callback_interrupt_key});
+			}
+		}
 	}
 }
+
+callback_prompt() if ($docallback);
 
 $inloop=1;
 my $aco_sub=0;
@@ -950,6 +963,14 @@ while ($drop_timer <= $DROP_TIME) {
 		$ASattempt++;
 	}
 
+	if ($inwelcome==1) {
+		stream_file('sip-silence');
+		while ($inwelcome==1) {
+			my $innew = infunc();
+			$docallback=1 if ($innew eq '*');
+		}
+	}
+
 	if ($inprompt==0) {
 		if ($hold_message_counter > $ingroup->{prompt_interval}) {
 			$inprompt=1;
@@ -957,6 +978,16 @@ while ($drop_timer <= $DROP_TIME) {
 			stream_file($ingroup->{onhold_prompt_filename});
 			stream_file('sip-silence');
 			$hold_message_counter = 0;
+		} elsif ($callback_message_counter > $ingroup->{callback_interval}) {
+			$inprompt=1;
+			stop_stream();
+			stream_file('to-be-called-back');
+			my $cbkey = $ingroup->{callback_interrupt_key};
+			$cbkey = 'star' if ($cbkey eq '*');
+			$cbkey = 'pound' if ($cbkey eq '#');
+			stream_file('digits/'.$cbkey);
+			stream_file('sip-silence');
+			$callback_message_counter = 0;
 		} elsif (($ingroup->{placement_max_repeat}==0 or $placement_playcount<$ingroup->{placement_max_repeat}) and $ingroup->{placement_interval} != 0 and $placement_counter > $ingroup->{placement_interval}) {
 			$inprompt=1;
 			$stmtA = sprintf("SELECT * FROM osdial_auto_calls WHERE lead_id='%s' LIMIT 1;",$osdial->mres($insert_lead_id));
@@ -1002,6 +1033,7 @@ while ($drop_timer <= $DROP_TIME) {
  			$qmin = $qsec/60;
 			print STDERR "hold:".$qsec."\n" if ($DB);
 			my $dcnt=$qmin;
+			$dcnt=1 if ($dcnt<1);
 			stop_stream();
 			stream_file('queue-holdtime');
 			if ($qmin<6) {
@@ -1026,8 +1058,9 @@ while ($drop_timer <= $DROP_TIME) {
 			$queuetime_playcount++;
 		}
 	
-		if ($inhold>0 ) {
+		if ($inhold>0) {
 			$hold_message_counter++;
+			$callback_message_counter++;
 			$placement_counter++;
 			$queuetime_counter++;
 		} elsif ($start_moh>1) {
@@ -1038,10 +1071,12 @@ while ($drop_timer <= $DROP_TIME) {
 	}
 
 	my $newin = infunc();
-	$docallback=1 if ($newin eq '*');
-	if ($docallback) {
-		my $cbret = callback_prompt();
-		$start_moh=2 if ($cbret);
+	if ($ingroup->{callback_interval}>0) {
+		$docallback=1 if ($newin eq $ingroup->{callback_interrupt_key});
+		if ($docallback) {
+			my $cbret = callback_prompt();
+			$start_moh=2 if ($cbret);
+		}
 	}
 	$drop_timer = time() - $start_epoch;
 
@@ -1225,27 +1260,31 @@ sub callback_prompt {
 	}
 	stop_stream();
 	if ($cbnext==1) {
-		stream_start_file('to-call-this-number');
-		stream_file('press-1');
-		stream_file('to-enter-a-number');
-		stream_file('press-2');
-		$cbnext=0;
-		$cbtime=0;
-		while ($incallback==1 and $cbnext==0) {
-			my $newin = infunc();
-			if ($newin eq '1') {
-				$cbnext=1;
-				$cbnumber=$vars->{callerid};
-			} elsif ($newin eq '2') {
-				$cbnext=2;
-			} elsif ($newin =~ /[03-9\*#]/) {
-				$cbnext=3;
-			} elsif ($cbtime>10) {
-				$cbnext=3;
+		if ($vars->{callerid} eq '') {
+			$cbnext=2;
+		} else {
+			stream_start_file('to-call-this-number');
+			stream_file('press-1');
+			stream_file('to-enter-a-number');
+			stream_file('press-2');
+			$cbnext=0;
+			$cbtime=0;
+			while ($incallback==1 and $cbnext==0) {
+				my $newin = infunc();
+				if ($newin eq '1') {
+					$cbnext=1;
+					$cbnumber=$vars->{callerid};
+				} elsif ($newin eq '2') {
+					$cbnext=2;
+				} elsif ($newin =~ /[03-9\*#]/) {
+					$cbnext=3;
+				} elsif ($cbtime>10) {
+					$cbnext=3;
+				}
+				$cbtime++ if (!defined($newin));
 			}
-			$cbtime++ if (!defined($newin));
+			stop_stream();
 		}
-		stop_stream();
 		if ($cbnext==3) {
 			$incallback=0;
 			return 1;

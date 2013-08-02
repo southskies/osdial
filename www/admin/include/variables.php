@@ -381,6 +381,8 @@ $cpuinfo = get_variable("cpuinfo");
 $created = get_variable("created");
 
 $call_began = get_variable("call_began");
+$callback_interval = get_variable("callback_interval");
+$callback_interrupt_key = get_variable("callback_interrupt_key");
 $callback_id = get_variable("callback_id");
 $carrier_id = get_variable("carrier_id");
 $carrier_name = get_variable("carrier_name");

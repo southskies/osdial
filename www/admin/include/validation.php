@@ -226,7 +226,6 @@
 	$selectable = OSDpreg_replace("/[^NY]/","",$selectable);
 	$reset_list = OSDpreg_replace("/[^NY]/","",$reset_list);
 	$fronter_display = OSDpreg_replace("/[^NY]/","",$fronter_display);
-	$drop_action = OSDpreg_replace("/[^NY]/","",$drop_action);
 	$use_internal_dnc = OSDpreg_replace("/[^NY]/","",$use_internal_dnc);
 	$use_browser_timezone_offset = OSDpreg_replace("/[^NY]/","",$use_browser_timezone_offset);
 	$omit_phone_code = OSDpreg_replace("/[^NY]/","",$omit_phone_code);
