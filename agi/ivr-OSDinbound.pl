@@ -311,8 +311,9 @@ if ($call_handle_method =~ /^ANI/) {
 	}
 }
 
-$phone_code = $osdial->{settings}{default_phone_code} if ($phone_code eq '');;
+$phone_code = $osdial->{settings}{default_phone_code} if ($phone_code eq '');
 $phone_number =~ s/^\+1//;
+$phone_number = $inbound_number if ($phone_number eq '');
 $pin=$inbound_number if (length($pin) < 1);
 my $fronter = $pin;
 
