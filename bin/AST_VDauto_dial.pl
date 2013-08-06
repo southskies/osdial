@@ -1147,7 +1147,7 @@ while($one_day_interval > 0)
 
 								### whether to omit phone_code or not
 								if ($DBIPomitcode[$user_CIPct] > 0) 
-									{$Ndialstrin = "$Local_out_prefix$phone_number";}
+									{$Ndialstring = "$Local_out_prefix$phone_number";}
 								else
 									{$Ndialstring = "$Local_out_prefix$phone_code$phone_number";}
 
