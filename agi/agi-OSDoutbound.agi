@@ -267,7 +267,7 @@ while ($drop_timer <= $campaign->{drop_call_seconds}) {
 	$osd->agi_output("|$stmt|") if ($DB);
 
 	my $ivr_active=0;
-	$stmt = sprintf("SELECT (IFNULL(virtual_agents,0)) AS active FROM osdial_ivr WHERE campaign_id='%s' AND status='ACTIVE';",$osd->mres($oac->{campaign_id}));
+	$stmt = sprintf("SELECT (IFNULL(virtual_agents,0)) AS active FROM osdial_ivr WHERE id='%s' AND status='ACTIVE';",$osd->mres($campaign->{ivr_id}));
 	my $oires = $osd->sql_query($stmt);
 	$ivr_active = $oires->{active};
 	if ($ivr_active>0) {

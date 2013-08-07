@@ -106,8 +106,8 @@ if ($virtivr) {
 	$campaign = $osdial->sql_query("SELECT * FROM osdial_campaigns WHERE campaign_id='" . $osdial->mres($cinfo->{campaign_id}) . "';");
 
 	# Pull the auto-agent ivr config.
-	$ivr = $osdial->sql_query("SELECT * FROM osdial_ivr WHERE campaign_id='" . $osdial->mres($campaign->{campaign_id}) . "';");
-	#$ivr = $osdial->sql_query("SELECT * FROM osdial_ivr WHERE id='" . $osdial->mres($campaign->{ivr_id}) . "';");
+	#$ivr = $osdial->sql_query("SELECT * FROM osdial_ivr WHERE campaign_id='" . $osdial->mres($campaign->{campaign_id}) . "';");
+	$ivr = $osdial->sql_query("SELECT * FROM osdial_ivr WHERE id='" . $osdial->mres($campaign->{ivr_id}) . "';");
 
 } else {
 
