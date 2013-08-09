@@ -4598,7 +4598,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 							if (inbound_man > 0) {
 								//document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
-								document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause<span class=ResumeButtonOff>Resume</span><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
+								document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><span class=ResumeButtonOff>Resume</span><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
 							} else {
 								document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML_OFF;
 							}
@@ -6811,7 +6811,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 					document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML_OFF;
 					//if (inbound_man > 0) document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
 					//WebFormRefresH();
-                    			if (inbound_man > 0) document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause<span class=ResumeButtonOff>Resume</span><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
+					if (inbound_man > 0) document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><span class=ResumeButtonOff>Resume</span><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
                     			WebFormRefresH();
 					if (campaign_recording == 'ALLCALLS' || campaign_recording == 'ALLFORCE') all_record = 'YES';
 					if (view_scripts == 1 && CalL_ScripT_id.length > 0) {
