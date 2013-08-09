@@ -2765,9 +2765,9 @@ if(isset($_SERVER['HTTP_USER_AGENT'])){
                                         <div class="text_input" id="SendDTMFdiv" style='margin-top:5px'>
                                             <span id="SendDTMF"><a href="#" onclick="SendConfDTMF('<?php echo $session_id; ?>');return false;"><span class=SendDTMF>Send DTMF</span></a> <input type=text size=6 name=conf_dtmf class="cust_form" value="" maxlength=50></span>
                                         </div>
-                                        <div id="SpacerSpanF" style="width:145px;height:16px;border:0px;"></div>
+                                        <div id="SpacerSpanF" style="width:145px;height:12px;border:0px;"></div>
                                         <div id="HangupControl"><span class=HangupButtonOff>Hangup Customer</span></div>
-                                        <div id="SpacerSpanG" style="width:145px;height:16px;border:0px;"></div>
+                                        <div id="SpacerSpanG" style="width:145px;height:12px;border:0px;"></div>
                                         <div id="RepullControl"></div>
                                         <div id="SpacerSpanH" style="width:145px;height:16px;border:0px;"></div>
                                     </center>
