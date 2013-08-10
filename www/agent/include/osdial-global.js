@@ -44,6 +44,7 @@ var all_record='NO';
 var alt_dial_active=0;
 var alt_dial_menu=0;
 var acct_remaining=0;
+var acct_method='NONE';
 var auto_dial_alt_dial=0;
 var AutoDialReady=0;
 var AutoDialWaiting=0;

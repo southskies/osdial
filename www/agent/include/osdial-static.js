@@ -3213,6 +3213,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 					var ressplit=response.split("\n");
 					company_status=ressplit[0];
 					acct_remaining=ressplit[1];
+					acct_method=ressplit[2];
 					debug('Status: '+company_status+'  AcctRemaining: '+acct_remaining,1);
 					if (company_status!='ACTIVE') {
 						LogouT();
@@ -3225,10 +3226,12 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 							osdalert("Logged-out user!<br>Company profile is no longer active!!!<br>Please tell your manager or system administrator.", 180);
 						}
 					}
-					if ((company_acct_cutoff*60) >= acct_remaining || acct_remaining <= 0) {
-						LogouT();
-						document.getElementById('SysteMAlerTBoX').style.zIndex='101';
-						osdalert("Logged-out user!<br>Available time remaining in company account is less then the allowed amount for agent activity!!!<br>Please tell your manager or system administrator.", 180);
+					if (acct_method!='NONE' && acct_method!='RANGE') {
+						if ((company_acct_cutoff*60) >= acct_remaining || acct_remaining <= 0) {
+							LogouT();
+							document.getElementById('SysteMAlerTBoX').style.zIndex='101';
+							osdalert("Logged-out user!<br>Available time remaining in company account is less then the allowed amount for agent activity!!!<br>Please tell your manager or system administrator.", 180);
+						}
 					}
 				}
 			}

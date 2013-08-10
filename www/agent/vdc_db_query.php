@@ -4123,6 +4123,7 @@ if ($ACTION == 'getTimeTransStats') {
     }
     echo $comp['status'] . "\n";
     echo $secremain . "\n";
+    echo $comp['acct_method'] . "\n";
     echo "DONE.";
 }
 
