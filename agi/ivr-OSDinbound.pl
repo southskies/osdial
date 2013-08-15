@@ -979,14 +979,14 @@ while ($drop_timer <= $DROP_TIME) {
 	}
 
 	if ($inprompt==0) {
-		if ($last_played>$prompt_buffer and $hold_message_counter > $ingroup->{prompt_interval}) {
+		if ($last_played>$prompt_buffer and $hold_message_counter > $ingroup->{prompt_interval} and $ingroup->{prompt_interval} != 0) {
 			$inprompt=1;
 			stop_stream();
 			stream_file($ingroup->{onhold_prompt_filename});
 			stream_file('sip-silence');
 			$hold_message_counter = 0;
 			$last_played=0;
-		} elsif ($last_played>$prompt_buffer and $callback_message_counter > $ingroup->{callback_interval}) {
+		} elsif ($last_played>$prompt_buffer and $callback_message_counter > $ingroup->{callback_interval} and $ingroup->{callback_interval} != 0) {
 			$inprompt=1;
 			stop_stream();
 			stream_file('to-be-called-back');
