@@ -79,7 +79,7 @@ if ($ADD=="21comp") {
         } else {
             echo "<br><font color=$default_text>COMPANY ADDED</font>\n";
 
-            $stmt=sprintf("INSERT INTO osdial_companies SET name='%s',acct_method='%s',acct_cutoff='%s',acct_expire_days='%s',email='%s',contact_name='%s',contact_phone_number='%s',contact_address='%s',contact_address2='%s',contact_city='%s',contact_state='%s',contact_postal_code='%s',contact_country='%s',ext_context='%s';",mres($company_name),mres($config['settings']['default_acct_method']),mres($config['settings']['default_acct_cutoff']),mres($config['settings']['default_acct_expire_days']),mres($email),mres($contact_name),mres($contact_phone_number),mres($contact_address),mres($contact_address2),mres($contact_city),mres($contact_state),mres($contact_postal_code),mres($contact_country),mres($config['settings']['default_ext_context']));
+            $stmt=sprintf("INSERT INTO osdial_companies SET name='%s',acct_method='%s',acct_cutoff='%s',acct_expire_days='%s',email='%s',contact_name='%s',contact_phone_number='%s',contact_address='%s',contact_address2='%s',contact_city='%s',contact_state='%s',contact_postal_code='%s',contact_country='%s',default_ext_context='%s';",mres($company_name),mres($config['settings']['default_acct_method']),mres($config['settings']['default_acct_cutoff']),mres($config['settings']['default_acct_expire_days']),mres($email),mres($contact_name),mres($contact_phone_number),mres($contact_address),mres($contact_address2),mres($contact_city),mres($contact_state),mres($contact_postal_code),mres($contact_country),mres($config['settings']['default_ext_context']));
             $rslt=mysql_query($stmt, $link);
             $company_id =  mysql_insert_id($link);
 
