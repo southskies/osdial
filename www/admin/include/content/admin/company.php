@@ -114,14 +114,12 @@ if ($ADD=="21comp") {
             $olins = "INSERT INTO osdial_lists VALUES ";
             $olins .= sprintf("(%s998,'Default inbound list','%sTEST','N',NULL,NULL,NULL,'N',NULL,'',0,'','',''),",$cmp,$cmp);
             $olins .= sprintf("(%s999,'Default manual list','%sTEST','N',NULL,NULL,NULL,'N',NULL,'',0,'','','');",$cmp,$cmp);
-echo $olins;
             $rslt=mysql_query($olins, $link);
             echo "<font size=1 color=$default_text>SAMPLE LISTS ADDED - ".mysql_affected_rows()."</font><br>\n";
 
 
             $ocins = "INSERT INTO osdial_campaigns VALUES ";
             $ocins .= sprintf("('%sTEST','Test Campaign %s','Y','','','','','','DOWN','8301','park','/osdial/agent/webform_redirect.php','Y',200,'0','oldest_call_finish','24hours','',28,'9','0000000000','8368','8309','ONDEMAND','CAMPAIGN_AGENT_FULLDATE_CUSTPHONE','','NONE','8320','Y','','','','','N','Y','NONE',8,'Y','8307','Y',0,'Wrapup Call','','Y',0,'N','MANUAL','N',3,'3.0','2100','0',0,'AUTO','NONE',' A AA B N NA DC -','N','Test Campaign','2010-03-08 00:19:25','N',NULL,' A AA AL AM B CALLBK DROP NEW N NA -','N','Y','DISABLED','Y',%s999,'---NONE---','','/osdial/agent/webform_redirect.php','Y',0,'',10,'Y','Y','Y','NORMAL','N','2008-01-01 00:00:00','','CAMPAIGN','N','%s','','N','N','N','N','N','N','N','N','N','N','N',0);",$cmp,$cmp,$cmp,$config['settings']['default_carrier_id']);
-echo $ocins;
             $rslt=mysql_query($ocins, $link);
             echo "<font size=1 color=$default_text>SAMPLE CAMPAIGN ADDED - ".mysql_affected_rows()."</font><br>\n";
 
