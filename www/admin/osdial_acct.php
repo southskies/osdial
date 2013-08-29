@@ -148,6 +148,8 @@ if (OSDpreg_match('/paypal/',$remote_name)) {
 				$rslt=mysql_query($ochkins, $link);
 
 				$comp = get_first_record($link, 'osdial_companies', '*', sprintf("id='%s'",mres($company_id)) );
+				$acct_minutes_remaining=0;
+				$acct_days_remaining=0;
 
 				if ($comp['acct_method']=='NONE') {
 					if ($comp['acct_expire_days'] != '0') {
@@ -207,6 +209,7 @@ if (OSDpreg_match('/paypal/',$remote_name)) {
 					}
 
 					$purchase_val=($pck['other_newcomp_initial_units'] * 1);
+					$acct_minutes_remaining=$purchase_val;
 					$trans_sec=$purchase_val * 60;
 	
 					$stmt=sprintf("INSERT INTO osdial_acct_trans SET company_id='%s',trans_type='%s',trans_sec='%s',expire_date='%s',created=NOW();",mres($comp['id']),mres('CREDIT'),mres($trans_sec),mres($purchase_expire_date));
@@ -216,6 +219,106 @@ if (OSDpreg_match('/paypal/',$remote_name)) {
 					$stmt=sprintf("INSERT INTO osdial_acct_trans_daily SET company_id='%s',trans_type='%s',trans_sec='%s',created=NOW();",mres($comp['id']),mres('CREDIT'),mres($trans_sec));
 					$rslt=mysql_query($stmt, $link);
 				}
+
+				$comp = get_first_record($link, 'osdial_companies', '*,DATEDIFF(acct_enddate,NOW()) AS ddend', sprintf("id='%s'",mres($company_id)) );
+				if ($comp['ddend']>0) $acct_days_remaining = $comp['ddend'];
+
+
+				if (!empty($email)) {
+					$et = get_first_record($link, 'osdial_email_templates', '*', sprintf("et_id='MCABNEWCOMP'") );
+					$et_subject = $et['et_subject'];
+					$et_body_html = $et['et_body_html'];
+					$et_body_text = $et['et_body_text'];
+
+					$wusvr = get_first_record($link, 'servers', '*', sprintf("active='Y' AND server_profile IN ('AIO','CONTROL','WEB') ORDER BY web_url DESC, RAND()"));
+					$system_web_url = $wusvr['web_url'];
+					if (empty($system_web_url)) {
+						if (empty($wusvr['server_id']) or empty($wusvr['server_domainname'])) {
+							$system_web_url='http://'.$wusvr['server_ip'].'/';
+						} else {
+							$system_web_url='http://'.$wusvr['server_id'].'.'.$wusvr['server_domainname'].'/';
+						}
+					}
+
+					$et_subject   = OSDpreg_replace('/\[\:system_company_name\:\]/',          $config['settings']['company_name'], $et_subject);
+					$et_subject   = OSDpreg_replace('/\[\:system_email\:\]/',                 $config['settings']['system_email'], $et_subject);
+					$et_subject   = OSDpreg_replace('/\[\:system_web_url\:\]/',               $system_web_url,                     $et_subject);
+					$et_subject   = OSDpreg_replace('/\[\:company_prefix\:\]/',               $cmp,                                $et_subject);
+					$et_subject   = OSDpreg_replace('/\[\:company_password_prefix\:\]/',      $passprefix,                         $et_subject);
+					$et_subject   = OSDpreg_replace('/\[\:company_name\:\]/',                 $comp['name'],                       $et_subject);
+					$et_subject   = OSDpreg_replace('/\[\:company_status\:\]/',               'ACTIVE',                            $et_subject);
+					$et_subject   = OSDpreg_replace('/\[\:company_email\:\]/',                $comp['email'],                      $et_subject);
+					$et_subject   = OSDpreg_replace('/\[\:company_contact_name\:\]/',         $comp['contact_name'],               $et_subject);
+					$et_subject   = OSDpreg_replace('/\[\:company_contact_phone_number\:\]/', $comp['contact_phone_number'],       $et_subject);
+					$et_subject   = OSDpreg_replace('/\[\:company_contact_address\:\]/',      $comp['contact_address'],            $et_subject);
+					$et_subject   = OSDpreg_replace('/\[\:company_contact_address2\:\]/',     $comp['contact_address2'],           $et_subject);
+					$et_subject   = OSDpreg_replace('/\[\:company_contact_city\:\]/',         $comp['contact_city'],               $et_subject);
+					$et_subject   = OSDpreg_replace('/\[\:company_contact_state\:\]/',        $comp['contact_state'],              $et_subject);
+					$et_subject   = OSDpreg_replace('/\[\:company_contact_postal_code\:\]/',  $comp['contact_postal_code'],        $et_subject);
+					$et_subject   = OSDpreg_replace('/\[\:company_contact_country\:\]/',      $comp['contact_country'],            $et_subject);
+					$et_subject   = OSDpreg_replace('/\[\:acct_method\:\]/',                  $comp['acct_method'],                $et_subject);
+					$et_subject   = OSDpreg_replace('/\[\:acct_start_date\:\]/',              $comp['acct_startdate'],             $et_subject);
+					$et_subject   = OSDpreg_replace('/\[\:acct_end_date\:\]/',                $comp['acct_enddate'],               $et_subject);
+					$et_subject   = OSDpreg_replace('/\[\:acct_minutes_remaining\:\]/',       $acct_minutes_remaining,             $et_subject);
+					$et_subject   = OSDpreg_replace('/\[\:acct_days_remaining\:\]/',          $acct_days_remaining,                $et_subject);
+					$et_subject   = OSDpreg_replace('/\[\:acct_credit_total\:\]/',            $acct_minutes_remaining,             $et_subject);
+					$et_subject   = OSDpreg_replace('/\[\:acct_credit_used\:\]/',             '0',                                 $et_subject);
+					$et_subject   = OSDpreg_replace('/\[\:acct_credit_expired\:\]/',          '0',                                 $et_subject);
+
+					$et_body_html = OSDpreg_replace('/\[\:system_company_name\:\]/',          $config['settings']['company_name'], $et_body_html);
+					$et_body_html = OSDpreg_replace('/\[\:system_email\:\]/',                 $config['settings']['system_email'], $et_body_html);
+					$et_body_html = OSDpreg_replace('/\[\:system_web_url\:\]/',               $system_web_url,                     $et_body_html);
+					$et_body_html = OSDpreg_replace('/\[\:company_prefix\:\]/',               $cmp,                                $et_body_html);
+					$et_body_html = OSDpreg_replace('/\[\:company_password_prefix\:\]/',      $passprefix,                         $et_body_html);
+					$et_body_html = OSDpreg_replace('/\[\:company_name\:\]/',                 $comp['name'],                       $et_body_html);
+					$et_body_html = OSDpreg_replace('/\[\:company_status\:\]/',               'ACTIVE',                            $et_body_html);
+					$et_body_html = OSDpreg_replace('/\[\:company_email\:\]/',                $comp['email'],                      $et_body_html);
+					$et_body_html = OSDpreg_replace('/\[\:company_contact_name\:\]/',         $comp['contact_name'],               $et_body_html);
+					$et_body_html = OSDpreg_replace('/\[\:company_contact_phone_number\:\]/', $comp['contact_phone_number'],       $et_body_html);
+					$et_body_html = OSDpreg_replace('/\[\:company_contact_address\:\]/',      $comp['contact_address'],            $et_body_html);
+					$et_body_html = OSDpreg_replace('/\[\:company_contact_address2\:\]/',     $comp['contact_address2'],           $et_body_html);
+					$et_body_html = OSDpreg_replace('/\[\:company_contact_city\:\]/',         $comp['contact_city'],               $et_body_html);
+					$et_body_html = OSDpreg_replace('/\[\:company_contact_state\:\]/',        $comp['contact_state'],              $et_body_html);
+					$et_body_html = OSDpreg_replace('/\[\:company_contact_postal_code\:\]/',  $comp['contact_postal_code'],        $et_body_html);
+					$et_body_html = OSDpreg_replace('/\[\:company_contact_country\:\]/',      $comp['contact_country'],            $et_body_html);
+					$et_body_html = OSDpreg_replace('/\[\:acct_method\:\]/',                  $comp['acct_method'],                $et_body_html);
+					$et_body_html = OSDpreg_replace('/\[\:acct_start_date\:\]/',              $comp['acct_startdate'],             $et_body_html);
+					$et_body_html = OSDpreg_replace('/\[\:acct_end_date\:\]/',                $comp['acct_enddate'],               $et_body_html);
+					$et_body_html = OSDpreg_replace('/\[\:acct_minutes_remaining\:\]/',       $acct_minutes_remaining,             $et_body_html);
+					$et_body_html = OSDpreg_replace('/\[\:acct_days_remaining\:\]/',          $acct_days_remaining,                $et_body_html);
+					$et_body_html = OSDpreg_replace('/\[\:acct_credit_total\:\]/',            $acct_minutes_remaining,             $et_body_html);
+					$et_body_html = OSDpreg_replace('/\[\:acct_credit_used\:\]/',             '0',                                 $et_body_html);
+					$et_body_html = OSDpreg_replace('/\[\:acct_credit_expired\:\]/',          '0',                                 $et_body_html);
+
+					$et_body_text = OSDpreg_replace('/\[\:system_company_name\:\]/',          $config['settings']['company_name'], $et_body_text);
+					$et_body_text = OSDpreg_replace('/\[\:system_email\:\]/',                 $config['settings']['system_email'], $et_body_text);
+					$et_body_text = OSDpreg_replace('/\[\:system_web_url\:\]/',               $system_web_url,                     $et_body_text);
+					$et_body_text = OSDpreg_replace('/\[\:company_prefix\:\]/',               $cmp,                                $et_body_text);
+					$et_body_text = OSDpreg_replace('/\[\:company_password_prefix\:\]/',      $passprefix,                         $et_body_text);
+					$et_body_text = OSDpreg_replace('/\[\:company_name\:\]/',                 $comp['name'],                       $et_body_text);
+					$et_body_text = OSDpreg_replace('/\[\:company_status\:\]/',               'ACTIVE',                            $et_body_text);
+					$et_body_text = OSDpreg_replace('/\[\:company_email\:\]/',                $comp['email'],                      $et_body_text);
+					$et_body_text = OSDpreg_replace('/\[\:company_contact_name\:\]/',         $comp['contact_name'],               $et_body_text);
+					$et_body_text = OSDpreg_replace('/\[\:company_contact_phone_number\:\]/', $comp['contact_phone_number'],       $et_body_text);
+					$et_body_text = OSDpreg_replace('/\[\:company_contact_address\:\]/',      $comp['contact_address'],            $et_body_text);
+					$et_body_text = OSDpreg_replace('/\[\:company_contact_address2\:\]/',     $comp['contact_address2'],           $et_body_text);
+					$et_body_text = OSDpreg_replace('/\[\:company_contact_city\:\]/',         $comp['contact_city'],               $et_body_text);
+					$et_body_text = OSDpreg_replace('/\[\:company_contact_state\:\]/',        $comp['contact_state'],              $et_body_text);
+					$et_body_text = OSDpreg_replace('/\[\:company_contact_postal_code\:\]/',  $comp['contact_postal_code'],        $et_body_text);
+					$et_body_text = OSDpreg_replace('/\[\:company_contact_country\:\]/',      $comp['contact_country'],            $et_body_text);
+					$et_body_text = OSDpreg_replace('/\[\:acct_method\:\]/',                  $comp['acct_method'],                $et_body_text);
+					$et_body_text = OSDpreg_replace('/\[\:acct_start_date\:\]/',              $comp['acct_startdate'],             $et_body_text);
+					$et_body_text = OSDpreg_replace('/\[\:acct_end_date\:\]/',                $comp['acct_enddate'],               $et_body_text);
+					$et_body_text = OSDpreg_replace('/\[\:acct_minutes_remaining\:\]/',       $acct_minutes_remaining,             $et_body_text);
+					$et_body_text = OSDpreg_replace('/\[\:acct_days_remaining\:\]/',          $acct_days_remaining,                $et_body_text);
+					$et_body_text = OSDpreg_replace('/\[\:acct_credit_total\:\]/',            $acct_minutes_remaining,             $et_body_text);
+					$et_body_text = OSDpreg_replace('/\[\:acct_credit_used\:\]/',             '0',                                 $et_body_text);
+					$et_body_text = OSDpreg_replace('/\[\:acct_credit_expired\:\]/',          '0',                                 $et_body_text);
+
+					send_email($et['et_host'], $et['et_port'], $et['et_user'], $et['et_pass'], $comp['email'], $config['settings']['system_email'], $et_subject, $et_body_html, $et_body_text);
+				}
+
+
 			} else {
 				$error = 'Email address already assigned to company!';
 			}
