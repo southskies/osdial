@@ -1616,6 +1616,12 @@ function genhelpdata($indata) {
     return $hdata;
 }
 
-
+/**************************************************************/
+// This function will generate a random alpha-numeric string.
+function randomString($rslength = 64) {
+    $retstr='';
+    while (OSDstrlen($retstr)<$rslength) $retstr .= OSDsubstr( OSDpreg_replace('/[^A-Za-z0-9]/','', base64_encode(openssl_random_pseudo_bytes($rslength)) ),0,$rslength );
+    return $retstr;
+}
 
 ?>
