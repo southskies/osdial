@@ -28,6 +28,8 @@ use warnings;
 use DBI;
 use Asterisk::AGI;
 use Digest::MD5 qw(md5_hex); 
+use Email::Stuffer;
+use Email::Sender::Transport::SMTP;
 
 our $VERSION = 'SVN_Version';
 
@@ -1252,6 +1254,55 @@ sub media_save_files {
 	return @files;
 }
 
+
+
+sub send_email {
+	my ($self, $opt1, $port, $user, $pass, $to, $from, $subject, $html, $text) = @_;
+
+	my $host='';
+
+	if (ref($opt1) =~ /HASH/) {
+		$host = $opt1->{'host'} if (exists($opt1->{'host'}));
+		$port = $opt1->{'port'} if (exists($opt1->{'port'}));
+		$user = $opt1->{'user'} if (exists($opt1->{'user'}));
+		$pass = $opt1->{'pass'} if (exists($opt1->{'pass'}));
+		$to = $opt1->{'to'} if (exists($opt1->{'to'}));
+		$from = $opt1->{'from'} if (exists($opt1->{'from'}));
+		$subject = $opt1->{'subject'} if (exists($opt1->{'subject'}));
+		if (exists($opt1->{'message'})) {
+			$text=$opt1->{'message'};
+			$html="<pre style=\"font-family:'DejaVu Sans mono','Lucida Console',monospace;\">".$text.'</pre>';
+		} else {
+			$html = $opt1->{'html'} if (exists($opt1->{'html'}));
+			$text = $opt1->{'text'} if (exists($opt1->{'text'}));
+		}
+	} else {
+		$host = $opt1;
+	}
+
+	$host='localhost' if (!defined($host) or $host eq '');
+	$port='25' if (!defined($port) or $port eq '');
+
+	my $transparams = { 'host' => $host, 'port' => $port };
+	if (defined($user) and $user ne '') {
+		$transparams->{'sasl_username'} = $user;
+		$transparams->{'sasl_password'} = $pass;
+	}
+
+	my $transport = Email::Sender::Transport::SMTP->new($transparams);
+
+	my $email = Email::Stuffer->to($to)
+		->from($from)
+		->subject($subject)
+		->text_body($text)
+		->html_body($html)
+		->transport($transport);
+
+	my $eres = $email->send();
+
+	return 1 if (ref($eres) =~ /^Email::Sender::Success/);
+	return 0;
+}
 
 
 
