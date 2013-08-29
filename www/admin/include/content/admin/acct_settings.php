@@ -67,17 +67,16 @@ function ShowAcctSettings() {
     $html .= "          <td align=right>Email Warning Expire Days:</td>\n";
     $html .= "          <td align=left><input type=text name=acct_email_warning_expire size=10 maxlength=15 value=\"$system_settings[acct_email_warning_expire]\">".helptag("system_settings-acct_email_warning_expire")."</td>\n";
     $html .= "        </tr>\n";
-    $html .= "        <tr bgcolor=$oddrows>\n";
-    $html .= "          <td align=right>Email Warning From:</td>\n";
-    $html .= "          <td align=left><input type=text name=acct_email_warning_from size=30 maxlength=255 value=\"$system_settings[acct_email_warning_from]\">".helptag("system_settings-acct_email_warning_from")."</td>\n";
-    $html .= "        </tr>\n";
-    $html .= "        <tr bgcolor=$oddrows>\n";
-    $html .= "          <td align=right>Email Warning Subject:</td>\n";
-    $html .= "          <td align=left><input type=text name=acct_email_warning_subject size=30 maxlength=255 value=\"$system_settings[acct_email_warning_subject]\">".helptag("system_settings-acct_email_warning_subject")."</td>\n";
-    $html .= "        </tr>\n";
-    $html .= "        <tr bgcolor=$oddrows>\n";
-    $html .= "          <td align=right>Email Warning Message:</td>\n";
-    $html .= "          <td align=left><textarea name=acct_email_warning_message rows=20 cols=50>$system_settings[acct_email_warning_message]</textarea>".helptag("system_settings-acct_email_warning_message")."</td>\n";
+    $html .= "        <tr bgcolor=$oddrows valign=top>\n";
+    $html .= "          <td align=right>Email Templates:</td>\n";
+    $html .= "          <td align=left>\n";
+    $html .= "            <input type=button onclick=\"openNewWindow('$PHP_SELF?ADD=3email&et_id=MCABNEWCOMP');\" name=\"MCABNEWCOMP\" value=\"New Company\" style=\"width:130px;\"><br/>";
+    $html .= "            <input type=button onclick=\"openNewWindow('$PHP_SELF?ADD=3email&et_id=MCABCREDWARN');\" name=\"MCABCREDWARN\" value=\"Credit Warning\" style=\"width:130px;\">&nbsp;&nbsp;";
+    $html .= "            <input type=button onclick=\"openNewWindow('$PHP_SELF?ADD=3email&et_id=MCABACCTWARN');\" name=\"MCABACCTWARN\" value=\"Expire Warning\" style=\"width:130px;\"><br/>";
+    $html .= "            <input type=button onclick=\"openNewWindow('$PHP_SELF?ADD=3email&et_id=MCABCREDEXP');\" name=\"MCABCREDEXP\" value=\"Credit Expired\" style=\"width:130px;\">&nbsp;&nbsp;";
+    $html .= "            <input type=button onclick=\"openNewWindow('$PHP_SELF?ADD=3email&et_id=MCABACCTEXP');\" name=\"MCABACCTEXP\" value=\"Account Expired\" style=\"width:130px;\">";
+    $html .= helptag("system_settings-acct_email_template");
+    $html .= "          </td>\n";
     $html .= "        </tr>\n";
 
     return $html;

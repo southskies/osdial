@@ -72,6 +72,39 @@ if ($ADD=="7email") {
     $custom1 = 'custom1';
     $custom2 = 'custom2';
 
+    $wusvr = get_first_record($link, 'servers', '*', sprintf("active='Y' AND server_profile IN ('AIO','CONTROL','WEB') ORDER BY web_url DESC, RAND()"));
+    $system_web_url = $wusvr['web_url'];
+    if (empty($system_web_url)) {
+        if (empty($wusvr['server_id']) or empty($wusvr['server_domainname'])) {
+            $system_web_url='http://'.$wusvr['server_ip'].'/';
+        } else {
+            $system_web_url='http://'.$wusvr['server_id'].'.'.$wusvr['server_domainname'].'/';
+        }
+    }
+    $system_company_name = $config['settings']['company_name'];
+    $system_email = $config['settings']['system_email'];
+    $company_prefix = '101';
+    $company_password_prefix = '8wTx235i';
+    $company_name = 'ACME Sprockets';
+    $company_status = 'ACTIVE';
+    $company_email = 'test@test.com';
+    $company_contact_name = 'Jane Doe';
+    $company_contact_phone_number = '3215551212';
+    $company_contact_address = '1234 Main St.';
+    $company_contact_address2 = 'Suite 402';
+    $company_contact_city = 'ORLANDO';
+    $company_contact_state = 'FL';
+    $company_contact_postal_code = '32801';
+    $company_contact_country = 'US';
+    $acct_method = 'TIME';
+    $acct_start_date = '2013-08-01';
+    $acct_end_date = '2013-08-30';
+    $acct_minutes_remaining = '400';
+    $acct_days_remaining = '5';
+    $acct_credit_total = '3600';
+    $acct_credit_used = '3200';
+    $acct_credit_expired = '400';
+
     $et = get_first_record($link, 'osdial_email_templates', '*', sprintf("et_id='%s'",mres($et_id)) );
     $et_text = $et['et_body_html'] . "<br /><br /><hr /><br /><br />" . $et['et_body_html'];
 
@@ -117,6 +150,31 @@ if ($ADD=="7email") {
         $session_id = OSDpreg_replace('/ /','+',$session_id);
         $organziation = OSDpreg_replace('/ /','+',$organziation);
         $organziation_title = OSDpreg_replace('/ /','+',$organziation_title);
+
+        $system_company_name = OSDpreg_replace('/ /','+',$system_company_name);
+        $system_email = OSDpreg_replace('/ /','+',$system_email);
+        $system_web_url = OSDpreg_replace('/ /','+',$system_web_url);
+        $company_prefix = OSDpreg_replace('/ /','+',$company_prefix);
+        $company_password_prefix = OSDpreg_replace('/ /','+',$company_password_prefix);
+        $company_name = OSDpreg_replace('/ /','+',$company_name);
+        $company_status = OSDpreg_replace('/ /','+',$company_status);
+        $company_email = OSDpreg_replace('/ /','+',$company_email);
+        $company_contact_name = OSDpreg_replace('/ /','+',$company_contact_name);
+        $company_contact_phone_number = OSDpreg_replace('/ /','+',$company_contact_phone_number);
+        $company_contact_address = OSDpreg_replace('/ /','+',$company_contact_address);
+        $company_contact_address2 = OSDpreg_replace('/ /','+',$company_contact_address2);
+        $company_contact_city = OSDpreg_replace('/ /','+',$company_contact_city);
+        $company_contact_state = OSDpreg_replace('/ /','+',$company_contact_state);
+        $company_contact_postal_code = OSDpreg_replace('/ /','+',$company_contact_postal_code);
+        $company_contact_country = OSDpreg_replace('/ /','+',$company_contact_country);
+        $acct_method = OSDpreg_replace('/ /','+',$acct_method);
+        $acct_start_date = OSDpreg_replace('/ /','+',$acct_start_date);
+        $acct_end_date = OSDpreg_replace('/ /','+',$acct_end_date);
+        $acct_minutes_remaining = OSDpreg_replace('/ /','+',$acct_minutes_remaining);
+        $acct_days_remaining = OSDpreg_replace('/ /','+',$acct_days_remaining);
+        $acct_credit_total = OSDpreg_replace('/ /','+',$acct_credit_total);
+        $acct_credit_used = OSDpreg_replace('/ /','+',$acct_credit_used);
+        $acct_credit_expired = OSDpreg_replace('/ /','+',$acct_credit_expired);
     }
 
     $et_text = OSDpreg_replace('/\[\[list_id\]\]/',             $list_id,             $et_text);
@@ -163,6 +221,31 @@ if ($ADD=="7email") {
     $et_text = OSDpreg_replace('/\[\[custom2\]\]/',             $custom2,             $et_text);
     $et_text = OSDpreg_replace('/\[\[organization\]\]/',        $organization,        $et_text);
     $et_text = OSDpreg_replace('/\[\[organization_title\]\]/',  $organization_title,  $et_text);
+
+    $et_text = OSDpreg_replace('/\[\:system_company_name\:\]/',          $system_company_name,          $et_text);
+    $et_text = OSDpreg_replace('/\[\:system_email\:\]/',                 $system_email,                 $et_text);
+    $et_text = OSDpreg_replace('/\[\:system_web_url\:\]/',               $system_web_url,               $et_text);
+    $et_text = OSDpreg_replace('/\[\:company_prefix\:\]/',               $company_prefix,               $et_text);
+    $et_text = OSDpreg_replace('/\[\:company_password_prefix\:\]/',      $company_password_prefix,      $et_text);
+    $et_text = OSDpreg_replace('/\[\:company_name\:\]/',                 $company_name,                 $et_text);
+    $et_text = OSDpreg_replace('/\[\:company_status\:\]/',               $company_status,               $et_text);
+    $et_text = OSDpreg_replace('/\[\:company_email\:\]/',                $company_email,                $et_text);
+    $et_text = OSDpreg_replace('/\[\:company_contact_name\:\]/',         $company_contact_name,         $et_text);
+    $et_text = OSDpreg_replace('/\[\:company_contact_phone_number\:\]/', $company_contact_phone_number, $et_text);
+    $et_text = OSDpreg_replace('/\[\:company_contact_address\:\]/',      $company_contact_address,      $et_text);
+    $et_text = OSDpreg_replace('/\[\:company_contact_address2\:\]/',     $company_contact_address2,     $et_text);
+    $et_text = OSDpreg_replace('/\[\:company_contact_city\:\]/',         $company_contact_city,         $et_text);
+    $et_text = OSDpreg_replace('/\[\:company_contact_state\:\]/',        $company_contact_state,        $et_text);
+    $et_text = OSDpreg_replace('/\[\:company_contact_postal_code\:\]/',  $company_contact_postal_code,  $et_text);
+    $et_text = OSDpreg_replace('/\[\:company_contact_country\:\]/',      $company_contact_country,      $et_text);
+    $et_text = OSDpreg_replace('/\[\:acct_method\:\]/',                  $acct_method,                  $et_text);
+    $et_text = OSDpreg_replace('/\[\:acct_start_date\:\]/',              $acct_start_date,              $et_text);
+    $et_text = OSDpreg_replace('/\[\:acct_end_date\:\]/',                $acct_end_date,                $et_text);
+    $et_text = OSDpreg_replace('/\[\:acct_minutes_remaining\:\]/',       $acct_minutes_remaining,       $et_text);
+    $et_text = OSDpreg_replace('/\[\:acct_days_remaining\:\]/',          $acct_days_remaining,          $et_text);
+    $et_text = OSDpreg_replace('/\[\:acct_credit_total\:\]/',            $acct_credit_total,            $et_text);
+    $et_text = OSDpreg_replace('/\[\:acct_credit_used\:\]/',             $acct_credit_used,             $et_text);
+    $et_text = OSDpreg_replace('/\[\:acct_credit_expired\:\]/',          $acct_credit_expired,          $et_text);
 
     $et_text = OSDpreg_replace("/\n/","",$et_text);
 
@@ -493,6 +576,16 @@ if ($ADD=="4email") {
             echo "<br><font color=red>TEMPLATE NOT MODIFIED - Please go back and look at the data you entered\n";
             echo "<br>Template name (".OSDstrlen($et_name).") and HTML body (".OSDstrlen($et_body_html).") must be at least 2 characters in length</font><br>\n";
         } else {
+            $mcab=0;
+            if (OSDsubstr($et['et_id'],0,4) == 'MCAB') $mcab=1;
+            if ($mcab) {
+                $et_from=$config['settings']['system_email'];
+                $et_name=$et_subject;
+                $et_comments=$et_subject;
+                $et_send_action='ALL';
+                $active='Y';
+            }
+
             if ($et_port=='') $et_port='25';
             $stmt=sprintf("UPDATE osdial_email_templates SET et_name='%s',et_comments='%s',et_host='%s',et_port='%s',et_user='%s',et_pass='%s',et_from='%s',et_subject='%s',et_body_html='%s',et_body_text='%s',active='%s',et_send_action='%s' WHERE et_id='%s';",mres($et_name),mres($et_comments),mres($et_host),mres($et_port),mres($et_user),mres($et_pass),mres($et_from),mres($et_subject),mres($et_body_html),mres($et_body_text),mres($active),mres($et_send_action),mres($et_id));
             $rslt=mysql_query($stmt, $link);
@@ -546,6 +639,39 @@ if ($ADD=="4email") {
                 $custom1 = 'custom1';
                 $custom2 = 'custom2';
 
+                $wusvr = get_first_record($link, 'servers', '*', sprintf("active='Y' AND server_profile IN ('AIO','CONTROL','WEB') ORDER BY web_url DESC, RAND()"));
+                $system_web_url = $wusvr['web_url'];
+                if (empty($system_web_url)) {
+                    if (empty($wusvr['server_id']) or empty($wusvr['server_domainname'])) {
+                        $system_web_url='http://'.$wusvr['server_ip'].'/';
+                    } else {
+                        $system_web_url='http://'.$wusvr['server_id'].'.'.$wusvr['server_domainname'].'/';
+                    }
+                }
+                $system_company_name = $config['settings']['company_name'];
+                $system_email = $config['settings']['system_email'];
+                $company_prefix = '101';
+                $company_password_prefix = '8wTx235i';
+                $company_name = 'ACME Sprockets';
+                $company_status = 'ACTIVE';
+                $company_email = 'test@test.com';
+                $company_contact_name = 'Jane Doe';
+                $company_contact_phone_number = '3215551212';
+                $company_contact_address = '1234 Main St.';
+                $company_contact_address2 = 'Suite 402';
+                $company_contact_city = 'ORLANDO';
+                $company_contact_state = 'FL';
+                $company_contact_postal_code = '32801';
+                $company_contact_country = 'US';
+                $acct_method = 'TIME';
+                $acct_start_date = '2013-08-01';
+                $acct_end_date = '2013-08-30';
+                $acct_minutes_remaining = '400';
+                $acct_days_remaining = '5';
+                $acct_credit_total = '3600';
+                $acct_credit_used = '3200';
+                $acct_credit_expired = '400';
+
                 $et_subject   = OSDpreg_replace('/\[\[list_id\]\]/',             $list_id,             $et_subject);
                 $et_subject   = OSDpreg_replace('/\[\[gmt_offset_now\]\]/',      $gmt_offset_now,      $et_subject);
                 $et_subject   = OSDpreg_replace('/\[\[fullname\]\]/',            $fullname,            $et_subject);
@@ -589,6 +715,30 @@ if ($ADD=="4email") {
                 $et_subject   = OSDpreg_replace('/\[\[custom2\]\]/',             $custom2,             $et_subject);
                 $et_subject   = OSDpreg_replace('/\[\[organization\]\]/',        $organization,        $et_subject);
                 $et_subject   = OSDpreg_replace('/\[\[organization_title\]\]/',  $organization_title,  $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\:system_company_name\:\]/',          $system_company_name,          $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\:system_email\:\]/',                 $system_email,                 $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\:system_web_url\:\]/',               $system_web_url,               $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\:company_prefix\:\]/',               $company_prefix,               $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\:company_password_prefix\:\]/',      $company_password_prefix,      $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\:company_name\:\]/',                 $company_name,                 $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\:company_status\:\]/',               $company_status,               $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\:company_email\:\]/',                $company_email,                $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\:company_contact_name\:\]/',         $company_contact_name,         $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\:company_contact_phone_number\:\]/', $company_contact_phone_number, $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\:company_contact_address\:\]/',      $company_contact_address,      $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\:company_contact_address2\:\]/',     $company_contact_address2,     $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\:company_contact_city\:\]/',         $company_contact_city,         $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\:company_contact_state\:\]/',        $company_contact_state,        $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\:company_contact_postal_code\:\]/',  $company_contact_postal_code,  $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\:company_contact_country\:\]/',      $company_contact_country,      $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\:acct_method\:\]/',                  $acct_method,                  $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\:acct_start_date\:\]/',              $acct_start_date,              $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\:acct_end_date\:\]/',                $acct_end_date,                $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\:acct_minutes_remaining\:\]/',       $acct_minutes_remaining,       $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\:acct_days_remaining\:\]/',          $acct_days_remaining,          $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\:acct_credit_total\:\]/',            $acct_credit_total,            $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\:acct_credit_used\:\]/',             $acct_credit_used,             $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\:acct_credit_expired\:\]/',          $acct_credit_expired,          $et_subject);
 
                 $et_body_html = OSDpreg_replace('/\[\[list_id\]\]/',             $list_id,             $et_body_html);
                 $et_body_html = OSDpreg_replace('/\[\[gmt_offset_now\]\]/',      $gmt_offset_now,      $et_body_html);
@@ -633,6 +783,30 @@ if ($ADD=="4email") {
                 $et_body_html = OSDpreg_replace('/\[\[custom2\]\]/',             $custom2,             $et_body_html);
                 $et_body_html = OSDpreg_replace('/\[\[organization\]\]/',        $organization,        $et_body_html);
                 $et_body_html = OSDpreg_replace('/\[\[organization_title\]\]/',  $organization_title,  $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\:system_company_name\:\]/',          $system_company_name,          $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\:system_email\:\]/',                 $system_email,                 $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\:system_web_url\:\]/',               $system_web_url,               $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\:company_prefix\:\]/',               $company_prefix,               $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\:company_password_prefix\:\]/',      $company_password_prefix,      $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\:company_name\:\]/',                 $company_name,                 $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\:company_status\:\]/',               $company_status,               $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\:company_email\:\]/',                $company_email,                $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\:company_contact_name\:\]/',         $company_contact_name,         $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\:company_contact_phone_number\:\]/', $company_contact_phone_number, $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\:company_contact_address\:\]/',      $company_contact_address,      $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\:company_contact_address2\:\]/',     $company_contact_address2,     $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\:company_contact_city\:\]/',         $company_contact_city,         $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\:company_contact_state\:\]/',        $company_contact_state,        $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\:company_contact_postal_code\:\]/',  $company_contact_postal_code,  $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\:company_contact_country\:\]/',      $company_contact_country,      $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\:acct_method\:\]/',                  $acct_method,                  $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\:acct_start_date\:\]/',              $acct_start_date,              $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\:acct_end_date\:\]/',                $acct_end_date,                $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\:acct_minutes_remaining\:\]/',       $acct_minutes_remaining,       $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\:acct_days_remaining\:\]/',          $acct_days_remaining,          $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\:acct_credit_total\:\]/',            $acct_credit_total,            $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\:acct_credit_used\:\]/',             $acct_credit_used,             $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\:acct_credit_expired\:\]/',          $acct_credit_expired,          $et_body_html);
 
                 $et_body_text = OSDpreg_replace('/\[\[list_id\]\]/',             $list_id,             $et_body_text);
                 $et_body_text = OSDpreg_replace('/\[\[gmt_offset_now\]\]/',      $gmt_offset_now,      $et_body_text);
@@ -677,6 +851,30 @@ if ($ADD=="4email") {
                 $et_body_text = OSDpreg_replace('/\[\[custom2\]\]/',             $custom2,             $et_body_text);
                 $et_body_text = OSDpreg_replace('/\[\[organization\]\]/',        $organization,        $et_body_text);
                 $et_body_text = OSDpreg_replace('/\[\[organization_title\]\]/',  $organization_title,  $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\:system_company_name\:\]/',          $system_company_name,          $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\:system_email\:\]/',                 $system_email,                 $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\:system_web_url\:\]/',               $system_web_url,               $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\:company_prefix\:\]/',               $company_prefix,               $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\:company_password_prefix\:\]/',      $company_password_prefix,      $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\:company_name\:\]/',                 $company_name,                 $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\:company_status\:\]/',               $company_status,               $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\:company_email\:\]/',                $company_email,                $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\:company_contact_name\:\]/',         $company_contact_name,         $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\:company_contact_phone_number\:\]/', $company_contact_phone_number, $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\:company_contact_address\:\]/',      $company_contact_address,      $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\:company_contact_address2\:\]/',     $company_contact_address2,     $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\:company_contact_city\:\]/',         $company_contact_city,         $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\:company_contact_state\:\]/',        $company_contact_state,        $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\:company_contact_postal_code\:\]/',  $company_contact_postal_code,  $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\:company_contact_country\:\]/',      $company_contact_country,      $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\:acct_method\:\]/',                  $acct_method,                  $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\:acct_start_date\:\]/',              $acct_start_date,              $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\:acct_end_date\:\]/',                $acct_end_date,                $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\:acct_minutes_remaining\:\]/',       $acct_minutes_remaining,       $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\:acct_days_remaining\:\]/',          $acct_days_remaining,          $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\:acct_credit_total\:\]/',            $acct_credit_total,            $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\:acct_credit_used\:\]/',             $acct_credit_used,             $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\:acct_credit_expired\:\]/',          $acct_credit_expired,          $et_body_text);
 
                 send_email($et_host, $et_port, $et_user, $et_pass, $email, $et_from, $et_subject, $et_body_html, $et_body_text);
                 echo "<br><b><font color=$default_text>TEST EMAIL TEMPLATE SENT</font></b>\n";
@@ -791,6 +989,41 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                 return s;
 
 
+            case 'myscafields':
+                var mlbscaf = cm.createListBox('myscafields', {
+                     title : 'Sys Comp Acct Fields',
+                     onselect : function(v) {
+                        tinyMCE.activeEditor.focus();
+                        tinyMCE.activeEditor.selection.setContent('<b>[:' + v + ':]</b>');
+                        tinyMCE.activeEditor.controlManager.get('myscafields').set(-1);
+                     }
+                });
+                mlbscaf.add('system_company_name', 'system_company_name');
+                mlbscaf.add('system_email', 'system_email');
+                mlbscaf.add('system_web_url', 'system_web_url');
+                mlbscaf.add('company_prefix', 'company_prefix');
+                mlbscaf.add('company_password_prefix', 'company_password_prefix');
+                mlbscaf.add('company_name', 'company_name');
+                mlbscaf.add('company_status', 'company_status');
+                mlbscaf.add('company_email', 'company_email');
+                mlbscaf.add('company_contact_name', 'company_contact_name');
+                mlbscaf.add('company_contact_phone_number', 'company_contact_phone_number');
+                mlbscaf.add('company_contact_address', 'company_contact_address');
+                mlbscaf.add('company_contact_address2', 'company_contact_address2');
+                mlbscaf.add('company_contact_city', 'company_contact_city');
+                mlbscaf.add('company_contact_state', 'company_contact_state');
+                mlbscaf.add('company_contact_postal_code', 'company_contact_postal_code');
+                mlbscaf.add('company_contact_country','company_contact_country');
+                mlbscaf.add('acct_method', 'acct_method');
+                mlbscaf.add('acct_start_date', 'acct_start_date');
+                mlbscaf.add('acct_end_date', 'acct_end_date');
+                mlbscaf.add('acct_minutes_remaining', 'acct_minutes_remaining');
+                mlbscaf.add('acct_days_remaining', 'acct_days_remaining');
+                mlbscaf.add('acct_credit_total', 'acct_credit_total');
+                mlbscaf.add('acct_credit_used', 'acct_credit_used');
+                mlbscaf.add('acct_credit_expired', 'acct_credit_expired');
+                return mlbscaf;
+
             case 'myfields':
                 var mlbf = cm.createListBox('myfields', {
                      title : 'Form Fields',
@@ -874,6 +1107,15 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
 // Register plugin with a short name
 tinymce.PluginManager.add('example', tinymce.plugins.ExamplePlugin);
 
+<?php
+        $et = get_first_record($link, 'osdial_email_templates', '*', sprintf("et_id='%s'",mres($et_id)) );
+        $rslt=mysql_query($stmt, $link);
+        $mcab=0;
+        if (OSDsubstr($et['et_id'],0,4) == 'MCAB') $mcab=1;
+        $theme_advanced_buttons2='separator,myfields,separator,separator,separator,myaddtlfields,separator,s0,separator,separator,s1,separator,previewb,separator,separator,helpb,separator';
+        if ($mcab) $theme_advanced_buttons2='separator,myscafields,separator,separator,separator,s0,separator,separator,s1,separator,previewb,separator,separator,helpb,separator';
+?>
+
 // Initialize TinyMCE with the new plugin and listbox
 tinyMCE.init({
     plugins : '-example', // - tells TinyMCE to skip the loading of the plugin
@@ -881,7 +1123,7 @@ tinyMCE.init({
     editor_deselector : "NoEditor",
     theme : "advanced",
     theme_advanced_buttons1 : "separator,fontselect,fontsizeselect,forecolor,backcolor,separator,bold,italic,underline,strikethrough,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,separator,hr,sub,sup,separator,cut,copy,paste,separator,undo,redo,separator,code,separator",
-    theme_advanced_buttons2 : "separator,myfields,separator,separator,separator,myaddtlfields,separator,s0,separator,separator,s1,separator,previewb,separator,separator,helpb,separator",
+    theme_advanced_buttons2 : "<?php echo $theme_advanced_buttons2; ?>",
     theme_advanced_buttons3 : "",
     theme_advanced_toolbar_location : "top",
     theme_advanced_toolbar_align : "center",
@@ -890,60 +1132,68 @@ tinyMCE.init({
 </script>
 
 <?php
-        $et = get_first_record($link, 'osdial_email_templates', '*', sprintf("et_id='%s'",mres($et_id)) );
-        $rslt=mysql_query($stmt, $link);
 
         $et['et_body_html'] = OSDpreg_replace("/\n/","",$et['et_body_html']);
-
 
         echo "<center>\n";
         echo "<br><font class=top_header color=$default_text size=+1>MODIFY AN EMAIL TEMPLATE</font><br>\n";
         echo "<form name=etform action=$PHP_SELF method=post enctype=\"multipart/form-data\">\n";
         echo "<input type=hidden name=ADD value=4email>\n";
         echo "<input type=hidden name=et_id value=\"$et_id\">\n";
+        if ($mcab) {
+            echo "<input type=hidden name=et_name value=\"$et[et_name]\">\n";
+            echo "<input type=hidden name=et_comments value=\"$et[et_comments]\">\n";
+            echo "<input type=hidden name=active value=\"$et[active]\">\n";
+            echo "<input type=hidden name=et_send_action value=\"$et[et_send_action]\">\n";
+            $et['et_from'] = $config['settings']['system_email'];
+            $et['et_from'] = OSDpreg_replace("/'/",'&#39;',$et['et_from']);
+            echo "<input type=hidden name=et_from value=\"$et[et_from]\">\n";
+        }
         echo "<table width=$section_width onkeypress=\"tinyMCE.triggerSave();\">\n";
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right>Template ID:</td>\n";
         echo "    <td align=left><b>" . mclabel($et_id) . "</b>".helptag("osdial_email_templates-et_id")."</td>\n";
         echo "  </tr>\n";
 
-        echo "  <tr bgcolor=$oddrows>\n";
-        echo "    <td align=right>Name:</td>\n";
-        echo "    <td align=left>\n";
-        echo "      <input type=text name=et_name size=40 maxlength=50 value=\"$et[et_name]\"> (title of the template)\n";
-        echo "      ".helptag("osdial_email_templates-et_name")."\n";
-        echo "    </td>\n";
-        echo "  </tr>\n";
-        echo "  <tr bgcolor=$oddrows>\n";
-        echo "    <td align=right>Comments:</td>\n";
-        echo "    <td align=left>\n";
-        echo "      <input type=text name=et_comments size=50 maxlength=255 value=\"$et[et_comments]\">\n";
-        echo "      ".helptag("osdial_email_templates-et_comments")."\n";
-        echo "    </td>\n";
-        echo "  </tr>\n";
-        echo "  <tr bgcolor=$oddrows>\n";
-        echo "    <td align=right>Active:</td>\n";
-        echo "    <td align=left>\n";
-        echo "      <select size=1 name=active>\n";
-        echo "        <option>Y</option>\n";
-        echo "        <option>N</option>\n";
-        echo "        <option selected>$et[active]</option>\n";
-        echo "      </select>\n";
-        echo "      ".helptag("osdial_email_templates-active")."\n";
-        echo "    </td>\n";
-        echo "  </tr>\n";
-        echo "  <tr bgcolor=$oddrows>\n";
-        echo "    <td align=right>Send Action:</td>\n";
-        echo "    <td align=left>\n";
-        echo "      <select size=1 name=et_send_action>\n";
-        echo "        <option>ONDEMAND</option>\n";
-        echo "        <option>ALL</option>\n";
-        echo "        <option>ALLFORCE</option>\n";
-        echo "        <option selected>$et[et_send_action]</option>\n";
-        echo "      </select>\n";
-        echo "      ".helptag("osdial_email_templates-et_send_action")."\n";
-        echo "    </td>\n";
-        echo "  </tr>\n";
+        if (!$mcab) {
+            echo "  <tr bgcolor=$oddrows>\n";
+            echo "    <td align=right>Name:</td>\n";
+            echo "    <td align=left>\n";
+            echo "      <input type=text name=et_name size=40 maxlength=50 value=\"$et[et_name]\"> (title of the template)\n";
+            echo "      ".helptag("osdial_email_templates-et_name")."\n";
+            echo "    </td>\n";
+            echo "  </tr>\n";
+            echo "  <tr bgcolor=$oddrows>\n";
+            echo "    <td align=right>Comments:</td>\n";
+            echo "    <td align=left>\n";
+            echo "      <input type=text name=et_comments size=50 maxlength=255 value=\"$et[et_comments]\">\n";
+            echo "      ".helptag("osdial_email_templates-et_comments")."\n";
+            echo "    </td>\n";
+            echo "  </tr>\n";
+            echo "  <tr bgcolor=$oddrows>\n";
+            echo "    <td align=right>Active:</td>\n";
+            echo "    <td align=left>\n";
+            echo "      <select size=1 name=active>\n";
+            echo "        <option>Y</option>\n";
+            echo "        <option>N</option>\n";
+            echo "        <option selected>$et[active]</option>\n";
+            echo "      </select>\n";
+            echo "      ".helptag("osdial_email_templates-active")."\n";
+            echo "    </td>\n";
+            echo "  </tr>\n";
+            echo "  <tr bgcolor=$oddrows>\n";
+            echo "    <td align=right>Send Action:</td>\n";
+            echo "    <td align=left>\n";
+            echo "      <select size=1 name=et_send_action>\n";
+            echo "        <option>ONDEMAND</option>\n";
+            echo "        <option>ALL</option>\n";
+            echo "        <option>ALLFORCE</option>\n";
+            echo "        <option selected>$et[et_send_action]</option>\n";
+            echo "      </select>\n";
+            echo "      ".helptag("osdial_email_templates-et_send_action")."\n";
+            echo "    </td>\n";
+            echo "  </tr>\n";
+        }
 
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right>SMTP Host / Port:</td>\n";
@@ -968,8 +1218,12 @@ tinyMCE.init({
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right>From:</td>\n";
         echo "    <td align=left>\n";
-        $et['et_from'] = OSDpreg_replace("/'/",'&#39;',$et['et_from']);
-        echo "      <input type=text name=et_from size=50 maxlength=255 value='$et[et_from]'>\n";
+        if ($mcab) {
+            echo "      <b>$et[et_from]</b>";
+        } else {
+            $et['et_from'] = OSDpreg_replace("/'/",'&#39;',$et['et_from']);
+            echo "      <input type=text name=et_from size=50 maxlength=255 value='$et[et_from]'>\n";
+        }
         echo "      ".helptag("osdial_email_templates-et_from")."\n";
         echo "    </td>\n";
         echo "  </tr>\n";
@@ -1024,7 +1278,7 @@ tinyMCE.init({
 # ADD=0email display all email templates
 ######################
 if ($ADD=="0email") {
-    $stmt=sprintf("SELECT * FROM osdial_email_templates WHERE et_id LIKE '%s__%%' AND (et_id IN %s OR et_id='%s') ORDER BY et_id;",mres($LOG['company_prefix']),$LOG['allowed_email_templatesSQL'],mres($et_id));
+    $stmt=sprintf("SELECT * FROM osdial_email_templates WHERE et_id LIKE '%s__%%' AND (et_id IN %s OR et_id='%s') AND et_id NOT LIKE 'MCAB%%' ORDER BY et_id;",mres($LOG['company_prefix']),$LOG['allowed_email_templatesSQL'],mres($et_id));
     $rslt=mysql_query($stmt, $link);
     $people_to_print = mysql_num_rows($rslt);
 

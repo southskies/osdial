@@ -303,6 +303,11 @@ if ($ADD==311111111111111) {
         echo editableSelectBox($contexts, 'default_ext_context', $system_settings['default_ext_context'], 100, 100, '');
         echo helptag("system_settings-default_ext_context")."</td></tr>\n";
 
+        echo "        <tr bgcolor=$oddrows>\n";
+        echo "          <td align=right>System Email:</td>\n";
+        echo "          <td align=left><input type=text name=system_email size=30 maxlength=255 value=\"$system_settings[system_email]\">".helptag("system_settings-system_email")."</td>\n";
+        echo "        </tr>\n";
+
         echo "        <tr class=tabheader><td colspan=2>Admin GUI</td></tr>\n";
 
         echo "        <tr bgcolor=$oddrows>\n";

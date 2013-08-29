@@ -164,11 +164,11 @@ if ($ADD==411111111111) {
                     $stmt = sprintf("UPDATE servers SET server_id='%s',server_description='%s',server_ip='%s',active='%s',asterisk_version='%s',max_osdial_trunks='%s',telnet_host='%s',".
                         "telnet_port='%s',ASTmgrUSERNAME='%s',ASTmgrSECRET='%s',ASTmgrUSERNAMEupdate='%s',ASTmgrUSERNAMElisten='%s',ASTmgrUSERNAMEsend='%s',local_gmt='%s',".
                         "voicemail_dump_exten='%s',answer_transfer_agent='%s',ext_context='%s',sys_perf_log='%s',vd_server_logs='%s',agi_output='%s',osdial_balance_active='%s',".
-                        "balance_trunks_offlimits='%s',server_profile='%s' WHERE server_id='%s';",
+                        "balance_trunks_offlimits='%s',server_profile='%s',server_domainname='%s',server_public_ip='%s',web_url='%s' WHERE server_id='%s';",
                         mres($server_id),mres($server_description),mres($server_ip),mres($active),mres($asterisk_version),mres($max_osdial_trunks),mres($telnet_host),
                         mres($telnet_port),mres($ASTmgrUSERNAME),mres($ASTmgrSECRET),mres($ASTmgrUSERNAMEupdate),mres($ASTmgrUSERNAMElisten),mres($ASTmgrUSERNAMEsend),mres($local_gmt),
                         mres($voicemail_dump_exten),mres($answer_transfer_agent),mres($ext_context),mres($sys_perf_log),mres($vd_server_logs),mres($agi_output),mres($osdial_balance_active),
-                        mres($balance_trunks_offlimits),mres($server_profile),mres($old_server_id));
+                        mres($balance_trunks_offlimits),mres($server_profile),mres($server_domainname),mres($server_public_ip),mres($web_url),mres($old_server_id));
 
                     $rslt=mysql_query($stmt, $link);
 
@@ -358,13 +358,28 @@ if ($ADD==311111111111) {
         echo "<input type=hidden name=old_server_ip value=\"$row[2]\">\n";
         echo "<TABLE class=shadedtable width=$section_width cellspacing=3>\n";
         echo "<tr bgcolor=$oddrows><td align=right>ID: </td><td align=left><input type=text name=server_id size=10 maxlength=10 value=\"$row[0]\">".helptag("servers-server_id")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Domain: </td><td align=left><input type=text name=server_domainname size=20 maxlength=255 value=\"$row[23]\">".helptag("servers-server_domainname")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Description: </td><td align=left><input type=text name=server_description size=30 maxlength=255 value=\"$row[1]\">".helptag("servers-server_description")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>IP Address: </td><td align=left><input type=text name=server_ip size=20 maxlength=15 value=\"$row[2]\">".helptag("servers-server_ip")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Public IP Address: </td><td align=left><input type=text name=server_public_ip size=20 maxlength=15 value=\"$row[24]\">".helptag("servers-server_public_ip")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Profile: </td><td align=left><select size=1 name=server_profile><option>AIO</option><option>CONTROL</option><option>SQL</option><option>WEB</option><option>DIALER</option><option>ARCHIVE</option><option>OTHER</option><option selected>$row[22]</option></select>".helptag("servers-server_profile")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option selected>$row[3]</option></select>".helptag("servers-active")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Local GMT: </td><td align=left><select size=1 name=local_gmt><option>12.75</option><option>12.00</option><option>11.00</option><option>10.00</option><option>9.50</option><option>9.00</option><option>8.00</option><option>7.00</option><option>6.50</option><option>6.00</option><option>5.75</option><option>5.50</option><option>5.00</option><option>4.50</option><option>4.00</option><option>3.50</option><option>3.00</option><option>2.00</option><option>1.00</option><option>0.00</option><option>-1.00</option><option>-2.00</option><option>-3.00</option><option>-3.50</option><option>-4.00</option><option>-5.00</option><option>-6.00</option><option>-7.00</option><option>-8.00</option><option>-9.00</option><option>-10.00</option><option>-11.00</option><option>-12.00</option><option selected>$row[13]</option></select> (Do NOT Adjust for DST)".helptag("servers-local_gmt")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>System Performance: </td><td align=left><select size=1 name=sys_perf_log><option>Y</option><option>N</option><option selected>$row[17]</option></select>".helptag("servers-sys_perf_log")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Logs: </td><td align=left><select size=1 name=vd_server_logs><option>Y</option><option>N</option><option selected>$row[18]</option></select>".helptag("servers-vd_server_logs")."</td></tr>\n";
+        if (OSDpreg_match('/CONTROL|WEB|AIO/',$row[22])) {
+            $compurl='';
+            if (!empty($row[0]) and !empty($row[23])) {
+                $compurl='http://'.$row[0].'.'.$row[23].'/';
+            } else {
+                $compurl='http://'.$row[2].'/';
+            }
+            echo "<tr bgcolor=$oddrows><td align=right>Computed Web URL: </td><td align=left><b>$compurl</b></td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Web URL: </td><td align=left><input type=text name=web_url size=30 maxlength=255 value=\"$row[25]\">".helptag("servers-web_url")."</td></tr>\n";
+        } else {
+            echo "<input type=hidden name=web_url value=\"$row[25]\">\n";
+        }
+
         if (OSDpreg_match('/CONTROL|SQL|WEB|ARCHIVE|OTHER/',$row[22])) {
             echo "<input type=hidden name=asterisk_version value=\"$row[4]\">\n";
             echo "<input type=hidden name=max_osdial_trunks value=\"$row[5]\">\n";
