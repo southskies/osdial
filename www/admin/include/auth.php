@@ -388,8 +388,11 @@ function osdial_authenticate($user, $password) {
         $LOG['company_id'] = 0;
         if ($config['settings']['enable_multicompany'] == 1 and file_exists($config['PATHweb'] . convert_uudecode("H+V%D;6EN+VEN8VQU9&4O8V]N=&5N=\"]A9&UI;B]C;VUP86YY+G!H<```\n`"))) {
             $LOG['multicomp'] = 1;
-            if ($config['settings']['multicompany_admin'] == $LOG['user']) {
-                $LOG['multicomp_admin'] = 1;
+            if (!empty($config['settings']['multicompany_admin'])) {
+                $mcadms = OSDpreg_split('/\|/',$config['settings']['multicompany_admin']);
+                foreach ($mcadms as $mcadm) {
+                    if ($mcadm == $LOG['user']) $LOG['multicomp_admin'] = 1;
+                }
             } elseif (OSDstrlen($LOG['user']) > 5) {
                 $LOG['company_prefix'] = OSDsubstr($LOG['user'],0,3);
                 $LOG['company_id'] = ((OSDsubstr($LOG['user'],0,3) * 1) - 100);

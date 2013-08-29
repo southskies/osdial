@@ -38,7 +38,20 @@ function ShowCompanySettings() {
     $html .= "        </tr>\n";
     $html .= "        <tr bgcolor=$oddrows>\n";
     $html .= "          <td align=right>Multi-Company Administator:</td>\n";
-    $html .= "          <td align=left><input type=text name=multicompany_admin size=10 maxlength=15 value=\"$system_settings[multicompany_admin]\">".helptag("system_settings-multicompany_admin")."</td>\n";
+    $html .= "          <td align=left>\n";
+    $seladm = OSDpreg_split('/\|/',$system_settings['multicompany_admin']);
+    $admusers = get_krh($link, 'osdial_users', '*','',"user_level>8 AND (LENGTH(user)<7 OR NOT SUBSTRING(user,1,3) BETWEEN '100' AND '999')",'');
+    $html .= "            <select name=multicompany_admin[] size=5 multiple=\"multiple\">\n";
+    foreach ($admusers as $admu) {
+        $asel='';
+        foreach ($seladm as $sadm) {
+            if ($sadm == $admu['user']) $asel='selected';
+        }
+        $html .= "              <option value=\"".$admu['user']."\" $asel>".$admu['user']." - ".$admu['full_name']."</option>\n";
+    }
+    $html .= "            </select>\n";
+    $html .= helptag("system_settings-multicompany_admin");
+    $html .= "          </td>\n";
     $html .= "        </tr>\n";
 
     return $html;

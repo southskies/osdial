@@ -41,6 +41,7 @@ if ($ADD==411111111111111) {
             if (empty($admin_session_expiration)) $admin_session_expiration='0';
             if (empty($admin_session_lockout)) $admin_session_lockout='0';
             if ($admin_session_expiration=='0') $admin_session_lockout='0';
+            $multicompany_admin = join('|',$multicompany_admin);
             # Prepare with sprintf and filer ALL values wih mres as seen.
             $stmt = sprintf("UPDATE system_settings SET use_non_latin='%s',webroot_writable='%s',enable_queuemetrics_logging='%s',queuemetrics_server_ip='%s',queuemetrics_dbname='%s'," .
                 "queuemetrics_login='%s',queuemetrics_pass='%s',queuemetrics_url='%s',queuemetrics_log_id='%s',queuemetrics_eq_prepend='%s',osdial_agent_disable='%s',allow_sipsak_messages='%s'," .
