@@ -81,6 +81,10 @@ while (1) {
 		my $sret = $interfaces->{$int}->sql_query("SELECT server_ip,server_description,server_profile,sys_perf_log FROM servers WHERE server_ip='" . $IPs->{$int} . "';");
 		if (defined($sret->{server_ip}) and $sret->{server_ip} ne '') {
 			$label = $sret->{server_description} if ($label eq "");
+			if ($sret->{server_domainname} eq '') {
+				my $sql = sprintf("UPDATE servers SET server_domainname='%s' WHERE server_ip='%s';",$interfaces->{$int}->mres($domain), $interfaces->{$int}->mres($IPs->{$int}));
+				$interfaces->{$int}->sql_execute($sql);
+			}
 		}
 		$label = $hostname if ($label eq "");
 
@@ -146,6 +150,7 @@ sub initinterfaces {
 	my %interfaces;
 	my $sql_int='';
 	my $private_int='';
+	my $public_int='';
 	my $first_int='';
 	foreach my $int (sort keys %IPs) {
 		if ($use_multicast) {
@@ -155,6 +160,7 @@ sub initinterfaces {
 			my $tmposdial = OSDial->new('DB'=>$DB);
 			$sql_int = $int if ($sql_int eq '' and Net::Address::IP::Local->connected_to($tmposdial->{VARDB_server}) eq $IPs{$int});
 			$private_int = $int if ($private_int eq '' and is_private_ipv4($IPs{$int}));
+			$public_int = $int if ($public_int eq '' and is_public_ipv4($IPs{$int}));
 			$first_int = $int if ($first_int eq '');
 		}
 	}
@@ -167,6 +173,10 @@ sub initinterfaces {
 		$interfaces{$use_int}->sql_execute("INSERT INTO server_stats SET server_ip='" . $IPs{$use_int} . "';") if ($sret->{fndsvr} == 0);
 		$interfaces{$use_int}->sql_execute("DELETE FROM server_stats WHERE server_ip='" . $IPs{$first_int} . "';") if ($use_int eq $private_int and $first_int ne '' and $first_int ne $private_int);
 		$interfaces{$use_int}->sql_execute("DELETE FROM server_stats WHERE server_ip='" . $IPs{$private_int} . "';") if ($use_int eq $sql_int and $private_int ne '' and $private_int ne $sql_int);
+		if ($public_int ne '') {
+			my $sql = sprintf("UPDATE servers SET server_public_ip='%s' WHERE server_ip='%s' AND server_public_ip='';",$interfaces->{$use_int}->mres($IPs{$public_int}), $interfaces->{$use_int}->mres($IPs{$use_int}));
+			$interfaces->{$use_int}->sql_execute($sql);
+		}
 	}
 
 	print STDERR "osdial_resource_send: (Re)Init called...SUCCESS.\n" if ($use_multicast);
