@@ -53,6 +53,17 @@ function ShowCompanySettings() {
     $html .= helptag("system_settings-multicompany_admin");
     $html .= "          </td>\n";
     $html .= "        </tr>\n";
+    $html .= "        <tr bgcolor=$oddrows>\n";
+    $html .= "          <td align=right>Default System Phones Setting:</td>\n";
+    $html .= "          <td align=left>\n";
+    $html .= "            <select size=1 name=mc_default_enable_system_phones>\n";
+    $html .= "              <option>1</option>\n";
+    $html .= "              <option>0</option>\n";
+    $html .= "              <option selected>$system_settings[mc_default_enable_system_phones]</option>\n";
+    $html .= "            </select>\n";
+    $html .= "            ".helptag("system_settings-mc_default_enable_system_phones")."\n";
+    $html .= "          </td>\n";
+    $html .= "        </tr>\n";
 
     return $html;
 }

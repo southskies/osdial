@@ -658,6 +658,7 @@ $modify_logs = get_variable("modify_logs");
 $modify_closer_logs = get_variable("modify_closer_logs");
 $modify_agent_logs = get_variable("modify_agent_logs");
 $multicompany_admin = get_variable("multicompany_admin");
+$mc_default_enable_system_phones = get_variable("mc_default_enable_system_phones");
 
 $name = get_variable("name");
 $next_agent_call = get_variable("next_agent_call");

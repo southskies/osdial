@@ -42,5 +42,8 @@ ALTER TABLE servers ADD COLUMN server_public_ip VARCHAR(15) default '';##|##
 ALTER TABLE servers ADD COLUMN web_url VARCHAR(255) default '';##|##
  ## A modifiable URL that will override the computed 'http://server_id.server_domainname/';
 
+ALTER TABLE system_settings ADD COLUMN mc_default_enable_system_phones ENUM('0','1') default '1';##|##
+ ## Default enable_system_phones setting for new companies.;
+
 UPDATE system_settings SET version='3.0.1.112',last_update_check=DATE_SUB(NOW(), INTERVAL 1 DAY);##|##
  ##    Updating database to version 3.0.1.112 and clearing last_update_check flag.;
