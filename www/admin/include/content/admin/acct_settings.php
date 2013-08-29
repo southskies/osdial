@@ -70,11 +70,12 @@ function ShowAcctSettings() {
     $html .= "        <tr bgcolor=$oddrows valign=top>\n";
     $html .= "          <td align=right>Email Templates:</td>\n";
     $html .= "          <td align=left>\n";
-    $html .= "            <input type=button onclick=\"openNewWindow('$PHP_SELF?ADD=3email&et_id=MCABNEWCOMP');\" name=\"MCABNEWCOMP\" value=\"New Company\" style=\"width:130px;\"><br/>";
-    $html .= "            <input type=button onclick=\"openNewWindow('$PHP_SELF?ADD=3email&et_id=MCABCREDWARN');\" name=\"MCABCREDWARN\" value=\"Credit Warning\" style=\"width:130px;\">&nbsp;&nbsp;";
-    $html .= "            <input type=button onclick=\"openNewWindow('$PHP_SELF?ADD=3email&et_id=MCABACCTWARN');\" name=\"MCABACCTWARN\" value=\"Expire Warning\" style=\"width:130px;\"><br/>";
-    $html .= "            <input type=button onclick=\"openNewWindow('$PHP_SELF?ADD=3email&et_id=MCABCREDEXP');\" name=\"MCABCREDEXP\" value=\"Credit Expired\" style=\"width:130px;\">&nbsp;&nbsp;";
-    $html .= "            <input type=button onclick=\"openNewWindow('$PHP_SELF?ADD=3email&et_id=MCABACCTEXP');\" name=\"MCABACCTEXP\" value=\"Account Expired\" style=\"width:130px;\">";
+    $html .= "            <input type=button onclick=\"openNewWindow('$PHP_SELF?ADD=3email&et_id=MCABNEWCOMP');\" name=\"MCABNEWCOMP\" value=\"New Company\" style=\"width:140px;\"><br/>";
+    $html .= "            <input type=button onclick=\"openNewWindow('$PHP_SELF?ADD=3email&et_id=MCABCREDWARN');\" name=\"MCABCREDWARN\" value=\"Credit Warning\" style=\"width:140px;\">&nbsp;&nbsp;";
+    $html .= "            <input type=button onclick=\"openNewWindow('$PHP_SELF?ADD=3email&et_id=MCABCREDEXP');\" name=\"MCABCREDEXP\" value=\"Credit Expired\" style=\"width:140px;\">&nbsp;&nbsp;";
+    $html .= "            <input type=button onclick=\"openNewWindow('$PHP_SELF?ADD=3email&et_id=MCABCREDNO');\" name=\"MCABCREDNO\" value=\"No Credit Remaining\" style=\"width:140px;\"></br>";
+    $html .= "            <input type=button onclick=\"openNewWindow('$PHP_SELF?ADD=3email&et_id=MCABACCTWARN');\" name=\"MCABACCTWARN\" value=\"Expire Warning\" style=\"width:140px;\">&nbsp;&nbsp;";
+    $html .= "            <input type=button onclick=\"openNewWindow('$PHP_SELF?ADD=3email&et_id=MCABACCTEXP');\" name=\"MCABACCTEXP\" value=\"Account Expired\" style=\"width:140px;\">";
     $html .= helptag("system_settings-acct_email_template");
     $html .= "          </td>\n";
     $html .= "        </tr>\n";
