@@ -77,6 +77,7 @@ while (my $comp = $osdial->sql_query(sprintf("SELECT *,IF(NOW()>=acct_startdate 
 		$initcnt=$sr_oat->{'cnt'};
 	}
 
+	my $expired_email={};
 	# Run reconcile if no INIT or forced.
 	if ($comp->{'acct_method'} ne 'RANGE' and ($initcnt==0 or $CLOforce)) {
 		my $compsec = {};
@@ -118,6 +119,20 @@ while (my $comp = $osdial->sql_query(sprintf("SELECT *,IF(NOW()>=acct_startdate 
 					if ($expired>0) {
 						my $stmtA = sprintf("INSERT INTO osdial_acct_trans SET company_id='%s',trans_type='EXPIRED',trans_sec='%s',ref_id='%s',created=NOW();",$company,($credit*-1),$tid);
 						$osdial->sql_execute($stmtA,'A') if (!$TEST);
+
+						my $tkey='T'.$tid;
+						my $acctdata={};
+						$acctdata->{'acct_minutes_remaining'} = '0';
+						$acctdata->{'acct_days_remaining'} = '0';
+						$acctdata->{'acct_days_remaining'} = $comp->{'daystillend'} if ($comp->{'daystillend'}>0);
+						$acctdata->{'acct_credit_total'} = '0';
+						$acctdata->{'acct_credit_total'} = int($credit2/60) if ($credit2>0);
+						$acctdata->{'acct_credit_expired'} = '0';
+						$acctdata->{'acct_credit_expired'} = int($credit/60) if ($credit>0);
+						my $cused = ($credit2 - $credit);
+						$acctdata->{'acct_credit_used'} = '0';
+						$acctdata->{'acct_credit_used'} = int($cused/60) if ($cused>0);
+						$expired_email->{$tkey} = $acctdata;
 					}
 				}
 			}
@@ -166,13 +181,35 @@ while (my $comp = $osdial->sql_query(sprintf("SELECT *,IF(NOW()>=acct_startdate 
 	# Evaluate remaining time and cutoff.
 	my $pastcutoff=0;
 	my $emailwarning=0;
+	my $emailwarningmin=0;
+	my $emailwarningday=0;
 	my $secremain=0;
 	while (my $sr_oat = $osdial->sql_query(sprintf("SELECT company_id,sum(trans_sec) AS secremain FROM osdial_acct_trans_daily WHERE company_id='%s';",$comp->{'id'}),"OAT")) {
 		$secremain=$sr_oat->{'secremain'};
 	}
 	$pastcutoff++ if (($comp->{'acct_cutoff'}*60)>=$secremain);
-	$emailwarning++ if ($comp->{'email'} ne '' and $comp->{'acct_warning_sent'} eq '0000-00-00 00:00:00' and $osdial->{'settings'}{'acct_email_warning_time'} ne '0' and ($osdial->{'settings'}{'acct_email_warning_time'}*60)>=$secremain);
-	$emailwarning++ if ($comp->{'email'} ne '' and $comp->{'acct_warning_sent'} eq '0000-00-00 00:00:00' and $comp->{'acct_enddate'} ne '0000-00-00 00:00:00' and $osdial->{'settings'}{'acct_email_warning_expire'} ne '0' and $osdial->{'settings'}{'acct_email_warning_expire'}>=$comp->{'daystillend'});
+	if ($comp->{'email'} ne '' and $comp->{'acct_warning_sent'} eq '0000-00-00 00:00:00' and $osdial->{'settings'}{'acct_email_warning_time'} ne '0' and ($osdial->{'settings'}{'acct_email_warning_time'}*60)>=$secremain) {
+		$emailwarning++;
+		$emailwarningmin++;
+	}
+	if ($comp->{'email'} ne '' and $comp->{'acct_warning_sent'} eq '0000-00-00 00:00:00' and $comp->{'acct_enddate'} ne '0000-00-00 00:00:00' and $osdial->{'settings'}{'acct_email_warning_expire'} ne '0' and $osdial->{'settings'}{'acct_email_warning_expire'}>=$comp->{'daystillend'}) {
+		$emailwarning++;
+		$emailwarningday++;
+	}
+
+	# Send emails for expired time trans.
+	foreach my $expacctkey (keys %{$expired_email}) {
+		my $acctdata = $expired_email->{$expacctkey};
+		$acctdata->{'acct_minutes_remaining'} = int($secremain / 60) if ($secremain>0);
+		my $etid='MCABCREDEXP';
+		while (my $et = $osdial->sql_query(sprintf("SELECT * FROM osdial_email_templates WHERE et_id='%s';",$etid),"ET")) {
+			my $et_subject = mergeETdata($et->{'et_subject'},$osdial->{'settings'},$comp,$acctdata);
+			my $et_body_html = mergeETdata($et->{'et_body_html'},$osdial->{'settings'},$comp,$acctdata);
+			my $et_body_text = mergeETdata($et->{'et_body_text'},$osdial->{'settings'},$comp,$acctdata);
+
+			my $eres = $osdial->send_email({host=>$et->{'et_host'},port=>$et->{'et_port'},user=>$et->{'et_user'},pass=>$et->{'et_pass'},to=>$comp->{'email'},from=>$osdial->{'settings'}{'system_email'},subject=>$et_subject,html=>$et_body_html,text=>$et_body_text});
+		}
+	}
 
 	# Evaluate company startdate and enddate.
 	if ($curact) {
@@ -184,29 +221,94 @@ while (my $comp = $osdial->sql_query(sprintf("SELECT *,IF(NOW()>=acct_startdate 
 		$cstate = 'ACTIVE' if ($comp->{'started'}==1 and $comp->{'ended'}==0 and $pastcutoff==0 and $secremain>0);
 	}
 
-	# Set status and remaining time.
-	my $stmtA = sprintf("UPDATE osdial_companies SET status='%s',acct_remaining_time='%s' WHERE id='%s';",$cstate,$secremain,$comp->{'id'});
-	$osdial->sql_execute($stmtA,'A') if (!$TEST);
-
 	# Send email warnings.
-	if ($emailwarning) {
-		if ($comp->{'email'} ne '' and $osdial->{'settings'}{'acct_email_warning_from'} ne '' and $osdial->{'settings'}{'acct_email_warning_subject'} ne '' and $osdial->{'settings'}{'acct_email_warning_message'} ne ''){
-			my %mail = (
-				To => $comp->{'email'},
-				From => $osdial->{'settings'}{'acct_email_warning_from'},
-				Subject => $osdial->{'settings'}{'acct_email_warning_subject'},
-				Message => $osdial->{'settings'}{'acct_email_warning_message'}
-			);
-			sendmail(%mail);
+	if ($comp->{'status'} eq 'ACTIVE') {
+		if ($comp->{'email'} ne '') {
+			my $etid='';
+			# warn credit low
+			$etid='MCABCREDWARN' if ($emailwarningmin);
+			# warn days low
+			$etid='MCABACCTWARN' if ($emailwarningday);
+			# no credit left;
+			$etid='MCABCREDNO' if ($pastcutoff);
+			# no days left;
+			$etid='MCABACCTEXP' if ($comp->{'ended'}==1);
+			while (my $et = $osdial->sql_query(sprintf("SELECT * FROM osdial_email_templates WHERE et_id='%s';",$etid),"ET")) {
+				my $acctdata={};
+				$acctdata->{'acct_minutes_remaining'} = '0';
+				$acctdata->{'acct_minutes_remaining'} = int($secremain / 60) if ($secremain>0);
+				$acctdata->{'acct_days_remaining'} = '0';
+				$acctdata->{'acct_days_remaining'} = $comp->{'daystillend'} if ($comp->{'daystillend'}>0);
+				$acctdata->{'acct_credit_total'} = $acctdata->{'acct_minutes_remaining'};
+				$acctdata->{'acct_credit_used'} = '0';
+				$acctdata->{'acct_credit_expired'} = '0';
+				my $et_subject = mergeETdata($et->{'et_subject'},$osdial->{'settings'},$comp,$acctdata);
+				my $et_body_html = mergeETdata($et->{'et_body_html'},$osdial->{'settings'},$comp,$acctdata);
+				my $et_body_text = mergeETdata($et->{'et_body_text'},$osdial->{'settings'},$comp,$acctdata);
 
-			my $stmtA = sprintf("UPDATE osdial_companies SET acct_warning_sent=NOW() WHERE id='%s';",$comp->{'id'});
-			$osdial->sql_execute($stmtA,'A') if (!$TEST);
+				my $eres = $osdial->send_email({host=>$et->{'et_host'},port=>$et->{'et_port'},user=>$et->{'et_user'},pass=>$et->{'et_pass'},to=>$comp->{'email'},from=>$osdial->{'settings'}{'system_email'},subject=>$et_subject,html=>$et_body_html,text=>$et_body_text});
+
+				if ($eres) {
+					if ($emailwarning) {
+						my $stmtA = sprintf("UPDATE osdial_companies SET acct_warning_sent=NOW() WHERE id='%s';",$comp->{'id'});
+						$osdial->sql_execute($stmtA,'A') if (!$TEST);
+					}
+				}
+			}
 		}
 	}
 	if ($comp->{'acct_warning_sent'} ne '0000-00-00 00:00:00' and ($osdial->{'settings'}{'acct_email_warning_time'} eq '0' or ($osdial->{'settings'}{'acct_email_warning_time'}*60)<$secremain) and ($osdial->{'settings'}{'acct_email_warning_expire'} eq '0' or $osdial->{'settings'}{'acct_email_warning_expire'}<$comp->{'daystillend'} or $comp->{'acct_enddate'} eq '0000-00-00 00:00:00')) {
 		my $stmtA = sprintf("UPDATE osdial_companies SET acct_warning_sent='0000-00-00 00:00:00' WHERE id='%s';",$comp->{'id'});
 		$osdial->sql_execute($stmtA,'A') if (!$TEST);
 	}
+
+	# Set status and remaining time.
+	my $stmtA = sprintf("UPDATE osdial_companies SET status='%s',acct_remaining_time='%s' WHERE id='%s';",$cstate,$secremain,$comp->{'id'});
+	$osdial->sql_execute($stmtA,'A') if (!$TEST);
+}
+
+
+sub mergeETdata {
+	my ($form,$dsys,$dcomp,$dacct) = @_;
+
+	my $weburl='';
+	while (my $wusvr = $osdial->sql_query(sprintf("SELECT * FROM servers WHERE active='Y' AND server_profile IN ('AIO','CONTROL','WEB') ORDER BY web_url DESC, RAND();"),"WU")) {
+		$weburl=$wusvr->{'web_url'};
+		if ($weburl eq '') {
+			if ($wusvr->{'server_id'} eq '' or $wusvr->{'server_domainname'} eq '') {
+				$weburl='http://'.$wusvr->{'server_ip'}.'/';
+			} else {
+				$weburl='http://'.$wusvr->{'server_id'}.'.'.$wusvr->{'server_domainname'}.'/';
+			}
+		}
+	}
+	my $cprefix = (($dcomp->{'id'} * 1) + 100);
+	$form =~ s/\[\:system_company_name\:\]/$dsys->{'company_name'}/g;
+	$form =~ s/\[\:system_email\:\]/$dsys->{'system_email'}/g;
+	$form =~ s/\[\:system_web_url\:\]/$weburl/g;
+	$form =~ s/\[\:company_prefix\:\]/$cprefix/g;
+	$form =~ s/\[\:company_password_prefix\:\]/$dcomp->{'password_prefix'}/g;
+	$form =~ s/\[\:company_name\:\]/$dcomp->{'name'}/g;
+	$form =~ s/\[\:company_status\:\]/$dcomp->{'status'}/g;
+	$form =~ s/\[\:company_email\:\]/$dcomp->{'email'}/g;
+	$form =~ s/\[\:company_contact_name\:\]/$dcomp->{'contact_name'}/g;
+	$form =~ s/\[\:company_contact_phone_number\:\]/$dcomp->{'contact_phone_number'}/g;
+	$form =~ s/\[\:company_contact_address\:\]/$dcomp->{'contact_address'}/g;
+	$form =~ s/\[\:company_contact_address2\:\]/$dcomp->{'contact_address2'}/g;
+	$form =~ s/\[\:company_contact_city\:\]/$dcomp->{'contact_city'}/g;
+	$form =~ s/\[\:company_contact_state\:\]/$dcomp->{'contact_state'}/g;
+	$form =~ s/\[\:company_contact_postal_code\:\]/$dcomp->{'contact_postal_code'}/g;
+	$form =~ s/\[\:company_contact_country\:\]/$dcomp->{'contact_country'}/g;
+	$form =~ s/\[\:acct_method\:\]/$dcomp->{'acct_method'}/g;
+	$form =~ s/\[\:acct_start_date\:\]/$dcomp->{'acct_startdate'}/g;
+	$form =~ s/\[\:acct_end_date\:\]/$dcomp->{'acct_enddate'}/g;
+	$form =~ s/\[\:acct_minutes_remaining\:\]/$dacct->{'acct_minutes_remaining'}/g;
+	$form =~ s/\[\:acct_days_remaining\:\]/$dacct->{'acct_days_remaining'}/g;
+	$form =~ s/\[\:acct_credit_total\:\]/$dacct->{'acct_credit_total'}/g;
+	$form =~ s/\[\:acct_credit_used\:\]/$dacct->{'acct_credit_used'}/g;
+	$form =~ s/\[\:acct_credit_expired\:\]/$dacct->{'acct_credit_expired'}/g;
+
+	return $form;
 }
 
 
