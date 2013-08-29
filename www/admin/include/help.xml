@@ -1621,6 +1621,19 @@ The OSDial basic web-based lead loader is designed simply to take a lead file, t
   ARCHIVE - Archive&lt;br/&gt;
   OTHER - Future use
     </item>
+
+    <item pathId="server_domainname" sectionId="24" title="Server Domain Name">
+    The domain portion of the FQDN, in most cases this will be figured out automatically. It is safe to leave blank.
+    </item>
+
+    <item pathId="server_public_ip" sectionId="25" title="Server Public IP Address">
+    A public IP address that is configured on a secondary interface or is one that is forwarded to this server.
+    </item>
+
+    <item pathId="web_url" sectionId="26" title="Web URL">
+    If server is an AIO, CONTROL, or WEB profile, this option becomes available. It allows for setting the Web URL that is presented to users through email or other screens. This is useful if you create domain records for your dialers web services. For Example: http://dialer.widget-wholeseller.com/
+    </item>
+
   </section>
 
 
@@ -1797,16 +1810,22 @@ OSDial Server Trunks allows you to restrict the outgoing lines that are used on 
     The day threshold to use for sending email warnings.
     </item>
 
-    <item pathId="acct_email_warning_from" sectionId="36" title="Accounting Email Warning From">
-    The from address for warning emails.
+    <item pathId="mc_default_enable_system_phones" sectionId="36" title="Multicompany Default Enable System Phones Setting">
+    This setting will enable or disable access to system phones as a default for all newly created companies. This setting may be overridden per-company by the Enable System Phones setting under the company profile..
     </item>
 
-    <item pathId="acct_email_warning_subject" sectionId="37" title="Accounting Email Warning Subject">
-    The subject for warning emails.
+    <item pathId="acct_email_template" sectionId="37" title="Account Email Templates">
+    Each notification email can be customized by modifying one of the listed email templates.&lt;br/&gt;&lt;br/&gt;
+    New Company - Sent to the email address of the company when automatically or manually created.&lt;br/&gt;
+    Credit Warning - Sent to company when credit is running low (below Email Warning Time setting).&lt;br/&gt;
+    Credit Expired - Sent to company when a credit transaction reaches its expiration date.&lt;br/&gt;
+    No Credit Remaining - Sent to company when credit is out (below Cutoff Time).&lt;br/&gt;
+    Expire Warning - Sent to company when within a few days of expiration (Email Warning Expire Days).&lt;br/&gt;
+    Account Expired - Sent to company when the companies account has reached its expiration date.
     </item>
 
-    <item pathId="acct_email_warning_message" sectionId="38" title="Accounting Email Warning Message">
-    The message for warning emails.
+    <item pathId="system_email" sectionId="38" title="System Email">
+    The sender address for all emails from the system. Format: "John Doe" &lt;joindoe@gmail.com&gt;
     </item>
 
     <item pathId="acct_package_type" sectionId="39" title="Accounting Package - Type">
@@ -2014,6 +2033,38 @@ OSDial Server Trunks allows you to restrict the outgoing lines that are used on 
 
     <item pathId="email" sectionId="26" title="Email">
     An email address where alerts and warnings for this company can be sent.
+    </item>
+
+    <item pathId="contact_name" sectionId="27" title="Contact Name">
+    Name of contact with company.
+    </item>
+
+    <item pathId="contact_phone_number" sectionId="28" title="Contact Phone Number">
+    Contact phone number for company.
+    </item>
+
+    <item pathId="contact_address" sectionId="29" title="Contact Address">
+    Company street address.
+    </item>
+
+    <item pathId="contact_address2" sectionId="30" title="Contact Address2">
+    Company stree address 2, suite, apt, etc.
+    </item>
+
+    <item pathId="contact_city" sectionId="31" title="Contact City">
+    City company is located in.
+    </item>
+
+    <item pathId="contact_state" sectionId="32" title="Contact State">
+    State company is located in.
+    </item>
+
+    <item pathId="contact_postal_code" sectionId="33" title="Contact Postal Code">
+    Postal Code for company.
+    </item>
+
+    <item pathId="contact_country" sectionId="34" title="Contact Country">
+    Country company is located in.
     </item>
 
   </section>
