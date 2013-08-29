@@ -1256,6 +1256,19 @@ sub media_save_files {
 
 
 
+
+
+=over 4
+
+=item B<send_email( $host, $port, $user, $pass, $to, $from, $subject, $html, $text )>
+=item B<send_email({ host=>$host, port=>$port, user=>$user, pass=>$pass, to=>$to, from=>$from, subject=>$subject, $html=>$html, text=>$text })>
+
+Sends out an email using the given parameters. Returns 1 on success, 0 on failure.
+
+=back
+
+=cut
+
 sub send_email {
 	my ($self, $opt1, $port, $user, $pass, $to, $from, $subject, $html, $text) = @_;
 
