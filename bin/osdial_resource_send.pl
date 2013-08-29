@@ -10,7 +10,7 @@ use OSDial;
 use Getopt::Long;
 use IO::Interface::Simple;
 use IO::Socket::Multicast;
-use Data::Validate::IP qw(is_private_ipv4);
+use Data::Validate::IP qw(is_private_ipv4 is_public_ipv4);
 use Net::Address::IP::Local;
 $|++;
 
