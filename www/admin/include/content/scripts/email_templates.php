@@ -84,7 +84,7 @@ if ($ADD=="7email") {
     $system_company_name = $config['settings']['company_name'];
     $system_email = $config['settings']['system_email'];
     $company_prefix = '101';
-    $company_password_prefix = '8wTx235i';
+    $company_password_prefix = randomString(8);
     $company_name = 'ACME Sprockets';
     $company_status = 'ACTIVE';
     $company_email = 'test@test.com';
@@ -651,7 +651,7 @@ if ($ADD=="4email") {
                 $system_company_name = $config['settings']['company_name'];
                 $system_email = $config['settings']['system_email'];
                 $company_prefix = '101';
-                $company_password_prefix = '8wTx235i';
+                $company_password_prefix = randomString(8);
                 $company_name = 'ACME Sprockets';
                 $company_status = 'ACTIVE';
                 $company_email = 'test@test.com';
