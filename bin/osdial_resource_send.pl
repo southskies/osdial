@@ -22,9 +22,10 @@ my $bgpid;
 
 sub handlesig {
 	my ($sig) = @_;
-	kill('TERM',$bgpid) if (pexists($bgpid));
-	sleep 2;
-	kill('KILL',$bgpid) if (pexists($bgpid));
+	if ($bgpid>0 and pexists($bgpid)) {
+		kill('QUIT',$bgpid);
+		waitpid($bgpid, 0);
+	}	
 	exit 0;
 }
 
@@ -69,11 +70,13 @@ while (1) {
 	my $error = 0;
 	foreach my $int (keys %{$interfaces}) {
 		# Get loadavg info;
+		print STDERR $int . ': Get loadavg.'."\n" if ($DB);
 		my $loadstr = `sar -q 1 1 | grep Average | awk '{ print (\$2)"/"(\$3)" "(\$4)" "(\$5)" "(\$6) }'`;
 		chomp($loadstr);
 		my($loadprocs,$load1,$load5,$load10) = split(/ /, $loadstr);
 
 		#Get memory info
+		print STDERR $int . ': Get meminfo.'."\n" if ($DB);
 		my %meminfo;
 		my @mem = split(/\n|\s+/,`free | grep -E 'Mem|Swap'`);
 		$meminfo{MemTotal} = $mem[1];
@@ -85,6 +88,7 @@ while (1) {
 		my $mempct = sprintf('%3.2f%%',((($meminfo{MemTotal} - ($meminfo{MemFree} + $meminfo{Cached})) / $meminfo{MemTotal}) * 100));
 		my $swpused = ($meminfo{SwapTotal} - ($meminfo{SwapFree} + $meminfo{SwapCached}));
 
+		print STDERR $int . ': Get cpuinfo.'."\n" if ($DB);
 		my $cpupcts = `sar -u 1 2 | grep Average | awk '{ print (\$3)" "(\$5)" "(\$8)" "(100 - \$8) }'`;
 		chomp($cpupcts);
 		my($ucpupct,$scpupct,$icpupct,$cpupct) = split(/ /, $cpupcts);
@@ -100,10 +104,11 @@ while (1) {
 		my $timestamp = `date +\%Y\%m\%d\%H\%M\%S`;
 		chomp $timestamp;
 
-		my $sret = $interfaces->{$int}->sql_query("SELECT server_ip,server_description,server_profile,sys_perf_log FROM servers WHERE server_ip='" . $IPs->{$int} . "';");
+		my $sret = $interfaces->{$int}->sql_query("SELECT server_ip,server_description,server_profile,sys_perf_log,server_domainname FROM servers WHERE server_ip='" . $IPs->{$int} . "';");
 		if (defined($sret->{server_ip}) and $sret->{server_ip} ne '') {
 			$label = $sret->{server_description} if ($label eq "");
 			if ($sret->{server_domainname} eq '') {
+				print STDERR $int . ': Updated server record with domainname: '.$domain."\n" if ($DB);
 				my $sql = sprintf("UPDATE servers SET server_domainname='%s' WHERE server_ip='%s';",$interfaces->{$int}->mres($domain), $interfaces->{$int}->mres($IPs->{$int}));
 				$interfaces->{$int}->sql_execute($sql);
 			}
@@ -153,18 +158,22 @@ while (1) {
 	if ($use_multicast) {
 		($IPs, $interfaces) = initinterfaces() if ($error);
 	} else {
+		print STDERR "Pid $bgpid still open.\n" if ($bgpid>0 and pexists($bgpid));
 		sleep(5);
-		($IPs, $interfaces) = initinterfaces() if ($loopcnt%23==0);
+		($IPs, $interfaces) = initinterfaces() if ($loopcnt%60==0);
 	}
 	$loopcnt++;
 }
 
 sub initinterfaces {
+	print STDERR 'Starting initinterfaces function.'."\n" if ($DB);
 	my %IPs;
 	my %NETMASKs;
+	print STDERR 'Building list of system interfaces.'."\n" if ($DB);
 	my @ints = IO::Interface::Simple->interfaces;
 	foreach my $int (@ints) {
-		if ($int =~ /^e|^b/) {
+		#if ($int =~ /^e|^b/) {
+		if ($int !~ /^lo|^tun|^vbox|^vir|^vif|^bnx|^tmp|^bond/) {
 			my $ip = IO::Interface::Simple->new($int);
 			$IPs{$int} = $ip->address if ($ip->address);
 			$NETMASKs{$int} = $ip->netmask if ($ip->netmask);
@@ -176,12 +185,13 @@ sub initinterfaces {
 	my $private_int='';
 	my $public_int='';
 	my $first_int='';
+	my $tmposdial;
+	$tmposdial = OSDial->new('DB'=>$DB) unless ($use_multicast);
 	foreach my $int (sort keys %IPs) {
 		if ($use_multicast) {
 			$interfaces{$int} = IO::Socket::Multicast->new(Proto=>'udp',PeerAddr=>$mcast_dest);
 			$interfaces{$int}->mcast_if($int);
 		} else {
-			my $tmposdial = OSDial->new('DB'=>$DB);
 			$sql_int = $int if ($sql_int eq '' and Net::Address::IP::Local->connected_to($tmposdial->{VARDB_server}) eq $IPs{$int});
 			$private_int = $int if ($private_int eq '' and is_private_ipv4($IPs{$int}));
 			$public_int = $int if ($public_int eq '' and is_public_ipv4($IPs{$int}));
@@ -192,38 +202,43 @@ sub initinterfaces {
 		my $use_int = $first_int;
 		$use_int = $private_int if ($private_int ne '');
 		$use_int = $sql_int if ($sql_int ne '');
-		$interfaces{$use_int} = OSDial->new('DB'=>$DB);
+		$interfaces{$use_int} = $tmposdial->clone();
 		my $sret = $interfaces{$use_int}->sql_query("SELECT SQL_NO_CACHE count(*) AS fndsvr FROM server_stats WHERE server_ip='" . $IPs{$use_int} . "';");
 		$interfaces{$use_int}->sql_execute("INSERT INTO server_stats SET server_ip='" . $IPs{$use_int} . "';") if ($sret->{fndsvr} == 0);
 		$interfaces{$use_int}->sql_execute("DELETE FROM server_stats WHERE server_ip='" . $IPs{$first_int} . "';") if ($use_int eq $private_int and $first_int ne '' and $first_int ne $private_int);
 		$interfaces{$use_int}->sql_execute("DELETE FROM server_stats WHERE server_ip='" . $IPs{$private_int} . "';") if ($use_int eq $sql_int and $private_int ne '' and $private_int ne $sql_int);
 		if ($public_int ne '') {
+			print STDERR 'Found a public_interface, assigning it to the server record (if its blank).'."\n" if ($DB);
 			my $sql = sprintf("UPDATE servers SET server_public_ip='%s' WHERE server_ip='%s' AND server_public_ip='';",$interfaces{$use_int}->mres($IPs{$public_int}), $interfaces{$use_int}->mres($IPs{$use_int}));
 			$interfaces{$use_int}->sql_execute($sql);
 		}
+		print STDERR 'Check if server as a public IP yet.'."\n" if ($DB);
 		my $sret2 = $interfaces{$use_int}->sql_query(sprintf("SELECT count(*) AS pubcnt FROM servers WHERE server_ip='%s' AND server_public_ip!='';",$IPs{$use_int}));
 		if ($sret2->{'pubcnt'}==0) {
 			my $intmd5 = md5_hex($IPs{$use_int});
 			my $pthost=$IPs{$use_int};
 			my $ptport='13425';
+			print STDERR 'Started HTTP Daemon for remote IP communication verification.'."\n" if ($DB);
 			my $wsvr = OSDialPublicIPTest->new($ptport);
 			$wsvr->host($pthost);
-			$bgpid = $wsvr->background();
+			$bgpid = $wsvr->background({setsid=>1});
 			sleep 1;
 
+			print STDERR 'Registering md5 key with HTTP Daemon.'."\n" if ($DB);
 			my $lwpua = LWP::UserAgent->new(agent=>'OSDialAddrClient/1.0');
 			my $lwpres = $lwpua->request(HTTP::Request->new(GET=>'http://'.$pthost.':'.$ptport.'/regkey?req='.$intmd5));
-			sleep 1;
 
+			print STDERR 'Contacting remote server at osdial.org and giving them the port to connect back to this HTTP Daemon.'."\n" if ($DB);
 			my $lwpua2 = LWP::UserAgent->new(agent=>'OSDialAddrClient/1.0');
 			my $lwpres2 = $lwpua2->request(HTTP::Request->new(GET=>'http://osdial.org/getaddr.php?port='.$ptport));
 			if ($lwpres2->is_success) {
 				print STDERR 'Content: '.$lwpres2->decoded_content."\n" if ($DB);
 				my ($retip,$retmd5key) = split(/\|/,$lwpres2->decoded_content);
 				if (is_public_ipv4($retip)) {
-					print STDERR 'Good IP: '.$retip."\n" if ($DB);
+					print STDERR 'Remote IP is usable and outbound connections originate from it: '.$retip."\n" if ($DB);
 					if ($intmd5 eq $retmd5key) {
-						print STDERR 'Good Keys: '.$retmd5key."\n" if ($DB);
+						print STDERR 'Key Exchange has been validated, NAT is allowing us to take inbound connections: '.$retmd5key."\n" if ($DB);
+						print STDERR 'Marking NATed Public IP as the server IP.'."\n" if ($DB);
 						my $sql = sprintf("UPDATE servers SET server_public_ip='%s' WHERE server_ip='%s' AND server_public_ip='';",$retip, $interfaces{$use_int}->mres($IPs{$use_int}));
 						$interfaces{$use_int}->sql_execute($sql);
 					}
@@ -234,11 +249,9 @@ sub initinterfaces {
 					$interfaces{$use_int}->sql_execute($sql);
 				}
 			}
-			kill('TERM',$bgpid) if (pexists($bgpid));
-			sleep 1;
-			kill('TERM',$bgpid) if (pexists($bgpid));
-			sleep 2;
-			kill('KILL',$bgpid) if (pexists($bgpid));
+			print STDERR 'Signalled QUIT to HTTP Daemon.'."\n" if ($DB);
+			kill('QUIT',$bgpid);
+			waitpid($bgpid, 0);
 		}
 	}
 
