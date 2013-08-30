@@ -1825,7 +1825,7 @@ OSDial Server Trunks allows you to restrict the outgoing lines that are used on 
     </item>
 
     <item pathId="system_email" sectionId="38" title="System Email">
-    The sender address for all emails from the system. Format: "John Doe" &lt;joindoe@gmail.com&gt;
+    The sender address for all emails from the system.&lt;br/&gt;Format: "John Doe" &amp;lt;joindoe@gmail.com&amp;gt;
     </item>
 
     <item pathId="acct_package_type" sectionId="39" title="Accounting Package - Type">
