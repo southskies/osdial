@@ -1087,8 +1087,13 @@ function media_extension_label_list($link) {
 
 
 function phone_voicemail_list($link) {
+    global $LOG;
     $plist = array();
-    $pkrh = get_krh($link, 'phones', '*','voicemail_id ASC',"voicemail_id!=''",'');
+    $csql='';
+    if ($LOG['multicomp_user']>0) {
+        $csql = sprintf(" AND company='%s'",$LOG['company_prefix']);
+    }
+    $pkrh = get_krh($link, 'phones', '*','voicemail_id ASC',"voicemail_id!=''".$csql,'');
     if (is_array($pkrh)) {
         $pkeys = array();
         foreach ($pkrh as $op) {
@@ -1109,8 +1114,13 @@ function phone_voicemail_list($link) {
 
 
 function phone_extension_list($link) {
+    global $LOG;
     $plist = array();
-    $pkrh = get_krh($link, 'phones', '*','dialplan_number ASC',"dialplan_number!=''",'');
+    $csql='';
+    if ($LOG['multicomp_user']>0) {
+        $csql = sprintf(" AND company='%s'",$LOG['company_prefix']);
+    }
+    $pkrh = get_krh($link, 'phones', '*','dialplan_number ASC',"dialplan_number!=''".$csql,'');
     if (is_array($pkrh)) {
         $pkeys = array();
         foreach ($pkrh as $op) {
@@ -1190,8 +1200,18 @@ function ivr_file_text_options($link, $name, $val, $size, $maxsize) {
 
 
 function list_id_list($link) {
+    global $LOG;
     $llist = array();
-    $lkrh = get_krh($link, 'osdial_lists', '*','list_id ASC',"list_id>='20' AND active='Y'",'');
+    $csql='';
+    if ($LOG['multicomp_user']>0) {
+        $csql=sprintf(" AND campaign_id LIKE '%s%%'",$LOG['company_prefix']);
+    }
+    $asql='';
+    $lfr = get_first_record($link, 'osdial_lists', 'count(*) AS cnt', "list_id>='20'".$csql);
+    if ($lfr['cnt']>40) {
+        $asql=sprintf(" AND active='Y'");
+    }
+    $lkrh = get_krh($link, 'osdial_lists', '*','list_id ASC',"list_id>='20'".$asql.$csql,'');
     if (is_array($lkrh)) {
         $lkeys = array();
         foreach ($lkrh as $ol) {
