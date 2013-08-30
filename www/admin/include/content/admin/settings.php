@@ -46,12 +46,12 @@ if ($ADD==411111111111111) {
             $stmt = sprintf("UPDATE system_settings SET use_non_latin='%s',webroot_writable='%s',enable_queuemetrics_logging='%s',queuemetrics_server_ip='%s',queuemetrics_dbname='%s'," .
                 "queuemetrics_login='%s',queuemetrics_pass='%s',queuemetrics_url='%s',queuemetrics_log_id='%s',queuemetrics_eq_prepend='%s',osdial_agent_disable='%s',allow_sipsak_messages='%s'," .
                 "admin_home_url='%s',enable_agc_xfer_log='%s',company_name='%s',admin_template='%s',agent_template='%s',enable_lead_allocation='%s',enable_external_agents='%s',enable_filters='%s'," .
-                "enable_multicompany='%s',multicompany_admin='%s',default_carrier_id='%s',intra_server_protocol='%s',default_date_format='%s',use_browser_timezone_offset='%s',last_recording_extension='%s',last_general_extension='%s',default_phone_code='%s',default_acct_method='%s',default_acct_cutoff='%s',default_acct_expire_days='%s',acct_email_warning_time='%s',acct_email_warning_expire='%s',use_old_admin_auth='%s',default_ext_context='%s',admin_session_expiration='%s',admin_session_lockout='%s',mc_default_enable_system_phones='%s';",
+                "enable_multicompany='%s',multicompany_admin='%s',default_carrier_id='%s',intra_server_protocol='%s',default_date_format='%s',use_browser_timezone_offset='%s',last_recording_extension='%s',last_general_extension='%s',default_phone_code='%s',default_acct_method='%s',default_acct_cutoff='%s',default_acct_expire_days='%s',acct_email_warning_time='%s',acct_email_warning_expire='%s',use_old_admin_auth='%s',default_ext_context='%s',admin_session_expiration='%s',admin_session_lockout='%s',mc_default_enable_system_phones='%s',system_email='%s';",
                 mres($use_non_latin),mres($webroot_writable),mres($enable_queuemetrics_logging),mres($queuemetrics_server_ip),mres($queuemetrics_dbname),
                 mres($queuemetrics_login),mres($queuemetrics_pass),mres($queuemetrics_url),mres($queuemetrics_log_id),mres($queuemetrics_eq_prepend),mres($osdial_agent_disable),mres($allow_sipsak_messages),
                 mres($admin_home_url),mres($enable_agc_xfer_log),mres($company_name),mres($admin_template),mres($agent_template),mres($enable_lead_allocation),mres($enable_external_agents),mres($enable_filters),
                 mres($enable_multicompany),mres($multicompany_admin),mres($carrier_id),mres($intra_server_protocol),mres($default_date_format),mres($use_browser_timezone_offset),mres($last_recording_extension),
-                mres($last_general_extension),mres($default_phone_code),mres($default_acct_method),mres($default_acct_cutoff),mres($default_acct_expire_days),mres($acct_email_warning_time),mres($acct_email_warning_expire),mres($use_old_admin_auth),mres($default_ext_context),mres($admin_session_expiration),mres($admin_session_lockout),mres($mc_default_enable_system_phones));
+                mres($last_general_extension),mres($default_phone_code),mres($default_acct_method),mres($default_acct_cutoff),mres($default_acct_expire_days),mres($acct_email_warning_time),mres($acct_email_warning_expire),mres($use_old_admin_auth),mres($default_ext_context),mres($admin_session_expiration),mres($admin_session_lockout),mres($mc_default_enable_system_phones),mres($system_email));
             $rslt=mysql_query($stmt, $link);
 
             ### LOG CHANGES TO LOG FILE ###
@@ -305,7 +305,7 @@ if ($ADD==311111111111111) {
 
         echo "        <tr bgcolor=$oddrows>\n";
         echo "          <td align=right>System Email:</td>\n";
-        echo "          <td align=left><input type=text name=system_email size=30 maxlength=255 value=\"$system_settings[system_email]\">".helptag("system_settings-system_email")."</td>\n";
+        echo "          <td align=left><input type=text name=system_email size=30 maxlength=255 value=\"".htmlentities($system_settings[system_email])."\">".helptag("system_settings-system_email")."</td>\n";
         echo "        </tr>\n";
 
         echo "        <tr class=tabheader><td colspan=2>Admin GUI</td></tr>\n";
