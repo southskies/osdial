@@ -174,8 +174,8 @@ sub initinterfaces {
 		$interfaces{$use_int}->sql_execute("DELETE FROM server_stats WHERE server_ip='" . $IPs{$first_int} . "';") if ($use_int eq $private_int and $first_int ne '' and $first_int ne $private_int);
 		$interfaces{$use_int}->sql_execute("DELETE FROM server_stats WHERE server_ip='" . $IPs{$private_int} . "';") if ($use_int eq $sql_int and $private_int ne '' and $private_int ne $sql_int);
 		if ($public_int ne '') {
-			my $sql = sprintf("UPDATE servers SET server_public_ip='%s' WHERE server_ip='%s' AND server_public_ip='';",$interfaces->{$use_int}->mres($IPs{$public_int}), $interfaces->{$use_int}->mres($IPs{$use_int}));
-			$interfaces->{$use_int}->sql_execute($sql);
+			my $sql = sprintf("UPDATE servers SET server_public_ip='%s' WHERE server_ip='%s' AND server_public_ip='';",$interfaces{$use_int}->mres($IPs{$public_int}), $interfaces{$use_int}->mres($IPs{$use_int}));
+			$interfaces{$use_int}->sql_execute($sql);
 		}
 	}
 
