@@ -3,7 +3,7 @@
 ALTER TABLE system_settings MODIFY multicompany_admin VARCHAR(255) default 'admin';##|##
  ## Increase multicompany_admin size to 255.;
 
-ALTER TABLE system_settings CHANGE acct_email_warning_from system_email VARCHAR(255) default '';##|##
+ALTER TABLE system_settings CHANGE acct_email_warning_from system_email VARCHAR(255) default '\"John Doe\" <johndoe@gmail.com>';##|##
  ## Change acct_email_warning_from to system_email.;
 
 ALTER TABLE system_settings DROP COLUMN acct_email_warning_message;##|##
