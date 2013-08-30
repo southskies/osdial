@@ -4,6 +4,7 @@
 # beacons containing the IP address of its associated multicast
 # interface.  Which you allow a workstation recieving those requests
 # to correctly identify where to point the browser.
+package main;
 
 use strict;
 use OSDial;
@@ -12,7 +13,25 @@ use IO::Interface::Simple;
 use IO::Socket::Multicast;
 use Data::Validate::IP qw(is_private_ipv4 is_public_ipv4);
 use Net::Address::IP::Local;
+use LWP::UserAgent;
+use Digest::MD5 qw(md5_hex);
+use Proc::Exists qw(pexists);
 $|++;
+
+my $bgpid;
+
+sub handlesig {
+	my ($sig) = @_;
+	kill('TERM',$bgpid) if (pexists($bgpid));
+	sleep 2;
+	kill('KILL',$bgpid) if (pexists($bgpid));
+	exit 0;
+}
+
+$SIG{'TERM'}  = \&handlesig;
+$SIG{'HUP'}  = \&handlesig;
+$SIG{'INT'}  = \&handlesig;
+$SIG{'QUIT'}  = \&handlesig;
 
 my $use_multicast=0;
 my $mcast_dest='226.1.1.2:2001'; 
@@ -23,6 +42,8 @@ GetOptions('multicast!' => \$use_multicast, 'debug!' => \$DB);
 
 my $IPs;
 my $interfaces;
+
+my $bgservice={};
 
 # Get hostname / domain / label
 my $hostname = `hostname -s`;
@@ -43,6 +64,7 @@ $cpucnt = $cpucnt + 2;
 
 ($IPs, $interfaces) = initinterfaces();
 
+my $loopcnt=0;
 while (1) {
 	my $error = 0;
 	foreach my $int (keys %{$interfaces}) {
@@ -132,7 +154,9 @@ while (1) {
 		($IPs, $interfaces) = initinterfaces() if ($error);
 	} else {
 		sleep(5);
+		($IPs, $interfaces) = initinterfaces() if ($loopcnt%23==0);
 	}
+	$loopcnt++;
 }
 
 sub initinterfaces {
@@ -177,8 +201,127 @@ sub initinterfaces {
 			my $sql = sprintf("UPDATE servers SET server_public_ip='%s' WHERE server_ip='%s' AND server_public_ip='';",$interfaces{$use_int}->mres($IPs{$public_int}), $interfaces{$use_int}->mres($IPs{$use_int}));
 			$interfaces{$use_int}->sql_execute($sql);
 		}
+		my $sret2 = $interfaces{$use_int}->sql_query(sprintf("SELECT count(*) AS pubcnt FROM servers WHERE server_ip='%s' AND server_public_ip!='';",$IPs{$use_int}));
+		if ($sret2->{'pubcnt'}==0) {
+			my $intmd5 = md5_hex($IPs{$use_int});
+			my $pthost=$IPs{$use_int};
+			my $ptport='13425';
+			my $wsvr = OSDialPublicIPTest->new($ptport);
+			$wsvr->host($pthost);
+			$bgpid = $wsvr->background();
+			sleep 1;
+
+			my $lwpua = LWP::UserAgent->new(agent=>'OSDialAddrClient/1.0');
+			my $lwpres = $lwpua->request(HTTP::Request->new(GET=>'http://'.$pthost.':'.$ptport.'/regkey?req='.$intmd5));
+			sleep 1;
+
+			my $lwpua2 = LWP::UserAgent->new(agent=>'OSDialAddrClient/1.0');
+			my $lwpres2 = $lwpua2->request(HTTP::Request->new(GET=>'http://osdial.org/getaddr.php?port='.$ptport));
+			if ($lwpres2->is_success) {
+				print STDERR 'Content: '.$lwpres2->decoded_content."\n" if ($DB);
+				my ($retip,$retmd5key) = split(/\|/,$lwpres2->decoded_content);
+				if (is_public_ipv4($retip)) {
+					print STDERR 'Good IP: '.$retip."\n" if ($DB);
+					if ($intmd5 eq $retmd5key) {
+						print STDERR 'Good Keys: '.$retmd5key."\n" if ($DB);
+						my $sql = sprintf("UPDATE servers SET server_public_ip='%s' WHERE server_ip='%s' AND server_public_ip='';",$retip, $interfaces{$use_int}->mres($IPs{$use_int}));
+						$interfaces{$use_int}->sql_execute($sql);
+					}
+				}
+				if (!is_public_ipv4($retip) or $intmd5 ne $retmd5key) {
+					print STDERR 'IP or Key Exchange Failed, disabling remote IP lookup for this server: '.$retip.'|'.$retmd5key."\n" if ($DB);
+					my $sql = sprintf("UPDATE servers SET server_public_ip='.' WHERE server_ip='%s' AND server_public_ip='';",$interfaces{$use_int}->mres($IPs{$use_int}));
+					$interfaces{$use_int}->sql_execute($sql);
+				}
+			}
+			kill('TERM',$bgpid) if (pexists($bgpid));
+			sleep 1;
+			kill('TERM',$bgpid) if (pexists($bgpid));
+			sleep 2;
+			kill('KILL',$bgpid) if (pexists($bgpid));
+		}
 	}
 
 	print STDERR "osdial_resource_send: (Re)Init called...SUCCESS.\n" if ($use_multicast);
 	return (\%IPs, \%interfaces);
 }
+
+
+{
+	package OSDialPublicIPTest;
+
+	use HTTP::Server::Simple::CGI;
+	use base qw(HTTP::Server::Simple::CGI);
+	use Data::Dumper;
+
+	sub new {
+		my($proto, $port) = @_;
+		my $class = ref($proto) || $proto;
+		my $self = {port=>$port};
+		$self->{dispatch} = {'/regkey' => \&resp_regkey, '/getkey' => \&resp_getkey};
+		$self->{md5key} = '';
+		bless( $self, $class );
+		return $self;
+	}
+
+	sub handle_request {
+		my ($self, $cgi) = @_;
+		my $path = $cgi->path_info();
+		my $handler = %{$self->{dispatch}}->{$path};
+		if (ref($handler) eq "CODE") {
+			print "HTTP/1.0 200 OK\r\n";
+			$handler->($self,$cgi);
+		} else {
+			print "HTTP/1.0 404 Not found\r\n";
+			print $cgi->header, $cgi->start_html('Not found'), $cgi->h1('Not found'), $cgi->end_html;
+		}
+	}
+
+	sub resp_getkey {
+		my ($self, $cgi) = @_;
+		return if !ref $cgi;
+		print STDERR 'getkey'."\n" if ($DB);
+		print $cgi->header, $self->{'md5key'};
+	}
+
+	sub resp_regkey {
+		my ($self, $cgi) = @_;
+		return if !ref $cgi;
+		my $req = $cgi->param('req');
+		print STDERR 'regkey: '.$req."\n" if ($DB);
+		$self->{'md5key'} = $req;
+		print $cgi->header, $cgi->start_html("OK"), $cgi->h1("OK"), $cgi->end_html;
+	}
+
+	sub print_banner {
+		my ($self) = @_;
+	}
+
+}
+
+
+
+### PHP script for verifying a two-way IP connection.
+### Should be placed on remote server, /getaddr.php.
+#<?php
+#$remip = $_SERVER["REMOTE_ADDR"];
+#if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+#	$remip = $_SERVER['HTTP_CLIENT_IP'];
+#} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+#	$remip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+#}
+#if (!isset($_GET['port'])) {
+#	echo $remip;
+#} else {
+#	$remport = $_GET['port'];
+#	$remurl='http://'.$remip.':'.$remport.'/getkey';
+#	$ch = curl_init($remurl);
+#	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+#	$curl_content = curl_exec($ch);
+#	curl_close($ch);
+#	echo $remip.'|'.$curl_content;
+#}
+#?>
+
+
+1;
