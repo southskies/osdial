@@ -113,6 +113,12 @@ sub new {
         return $self;
 }
 
+sub clone {
+	my $self = shift;
+	my $copy = bless { %$self }, ref $self;
+	return $copy;
+}
+
 =head2 B<Contructor Arguments and Defaults>
 
    DB                               => '0'
