@@ -21,10 +21,10 @@
 #
 # 0906090157 - Added XFER_INGROUP forms.
 
-if ($campaign_id != '') {
+if (!empty($campaign_id)) {
     $crec = get_first_record($link, 'osdial_campaigns', '*', sprintf("campaign_id='%s'",mres($campaign_id)));
     $oivr = get_first_record($link, 'osdial_ivr', '*', sprintf("id='%s'",mres($crec['ivr_id'])));
-    if ($oivr['id'] != '') {
+    if (!empty($oivr['id']) and $oivr['id'] != '0') {
         $oivr_id = $oivr['id'];
     } else {
         $SUB = "";
