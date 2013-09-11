@@ -1084,7 +1084,7 @@ if ($ADD==31) {
         $hide_xfer_park_dial = $row[93];
         $hide_xfer_blind_vmail = $row[94];
         $allow_md_hopperlist = $row[95];
-        $ivr_id = $row[95];
+        $ivr_id = $row[96];
 
         if (OSDpreg_match("/DISABLED/",$list_order_mix)) {
             $DEFlistDISABLE = '';
