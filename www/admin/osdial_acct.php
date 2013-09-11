@@ -94,14 +94,15 @@ if (OSDpreg_match('/paypal/',$remote_name)) {
 		$trans_id=0;
 		$comp = get_first_record($link, 'osdial_companies', '*', sprintf("email='%s'",mres($email)) );
 		$pck = get_first_record($link, 'osdial_acct_packages', '*', sprintf("code='%s'",mres($purchase_type)) );
-		if ($pck['ptype']=='OTHER' and $pck['other_action']=='CREATE_NEW_COMPANY') {
+		if (($pck['ptype']=='OTHER' and $pck['other_action']=='CREATE_NEW_COMPANY') or ($pck['ptype']!='OTHER' and !empty($ppvar['option_selection1']))) {
 			if ($comp['email']!=$email) {
 				$default_acct_method=$config['settings']['default_acct_method'];
 				if ($pck['other_newcomp_acct_method']!='') $default_acct_method=$pck['other_newcomp_acct_method'];
 
 				$passprefix = randomString(8);
 
-				$stmt=sprintf("INSERT INTO osdial_companies SET name='%s',acct_method='%s',acct_cutoff='%s',acct_expire_days='%s',email='%s',contact_name='%s',contact_phone_number='%s',contact_address='%s',contact_address2='%s',contact_city='%s',contact_state='%s',contact_postal_code='%s',contact_country='%s',status='ACTIVE',ext_context='%s',password_prefix='%s',enable_system_phones='%s';",mres($ppvar['option_selection1']),mres($default_acct_method),mres($config['settings']['default_acct_cutoff']),mres($config['settings']['default_acct_expire_days']),mres($email),mres($ppvar['first_name'].' '.$ppvar['last_name']),mres($ppvar['option_selection2']),mres($ppvar['address_street']),mres($ppvar['address_street2']),mres($ppvar['address_city']),mres($ppvar['address_state']),mres($ppvar['address_zip']),mres($ppvar['address_country_code']),mres($config['settings']['default_ext_context']),mres($passprefix),mres($config['settings']['mc_default_enable_system_phones']));
+				$stmt=sprintf("INSERT INTO osdial_companies SET name='%s',acct_method='%s',acct_cutoff='%s',acct_expire_days='%s',email='%s',contact_name='%s',contact_phone_number='%s',contact_address='%s',contact_address2='%s',contact_city='%s',contact_state='%s',contact_postal_code='%s',contact_country='%s',status='ACTIVE',default_ext_context='%s',password_prefix='%s',enable_system_phones='%s';",mres($ppvar['option_selection1']),mres($default_acct_method),mres($config['settings']['default_acct_cutoff']),mres($config['settings']['default_acct_expire_days']),mres($email),mres($ppvar['first_name'].' '.$ppvar['last_name']),mres($ppvar['option_selection2']),mres($ppvar['address_street']),mres($ppvar['address_street2']),mres($ppvar['address_city']),mres($ppvar['address_state']),mres($ppvar['address_zip']),mres($ppvar['address_country_code']),mres($config['settings']['default_ext_context']),mres($passprefix),mres($config['settings']['mc_default_enable_system_phones']));
+                $output.="\n\n".$stmt."\n\n";
 				$rslt=mysql_query($stmt, $link);
 				$company_id =  mysql_insert_id($link);
 
@@ -320,7 +321,7 @@ if (OSDpreg_match('/paypal/',$remote_name)) {
 
 
 			} else {
-				$error = 'Email address already assigned to company!';
+				#$error = 'Email address already assigned to company!';
 			}
 		}
 		if (empty($error) and $comp['email']==$email) {
