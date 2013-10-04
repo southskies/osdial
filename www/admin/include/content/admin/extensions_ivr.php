@@ -853,7 +853,7 @@ if ($IVR == "3menu") {
             if (OSDpreg_match('/A/',$opt['keypress'])) {
                 echo "      <td align=center colspan=2 class=tabbutton1><input type=submit value=\"Edit\"></td>\n";
             } else {
-                echo "      <td align=center><a href=$PHP_SELF?IVR=6keys&exten_id=" . $exten_id . "&oivr_id=" . $oivr['id'] . "&oivr_opt_id=" . $opt['id'] . ">DELETE</a></td>\n";
+                echo "      <td align=center><a href=$PHP_SELF?ADD=" . $ADD . "&IVR=6keys&exten_id=" . $exten_id . "&oivr_id=" . $oivr['id'] . "&oivr_opt_id=" . $opt['id'] . ">DELETE</a></td>\n";
                 echo "      <td align=center class=tabbutton1><input type=submit value=\"Edit\"></td>\n";
             }
             echo "  </tr>";
@@ -1464,7 +1464,7 @@ if ($IVR == "3keys") {
             if (OSDpreg_match('/A/',$opt['keypress'])) {
                 echo "      <td align=center class=tabbutton1 colspan=2><input type=submit value=\"Edit\"></td>\n";
             } else {
-                echo "      <td align=center><a href=$PHP_SELF?IVR=6keys&exten_id=" . $exten_id . "&oivr_id=" . $oivr['id'] . "&oivr_opt_id=" . $opt['id'] . ">DELETE</a></td>\n";
+                echo "      <td align=center><a href=$PHP_SELF?ADD=" . $ADD . "&IVR=6keys&exten_id=" . $exten_id . "&oivr_id=" . $oivr['id'] . "&oivr_opt_id=" . $opt['id'] . ">DELETE</a></td>\n";
                 echo "      <td align=center class=tabbutton1><input type=submit value=\"Edit\"></td>\n";
             }
             echo "  </tr>";
