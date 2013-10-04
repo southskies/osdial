@@ -4259,6 +4259,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 							previewFD_time_remaining =  previewFD_time;
 							previewFD_timeout_id = setTimeout("ManualDialOnly()", previewFD_time * 1000);
 							previewFD_display_id = setInterval("previewFDDisplayTime()", 1000);
+						} else if (previewFD_time == 0 && document.osdial_form.LeadPreview.checked==true) {
+							ManualDialOnly();
 						}
 
 						reselect_preview_dial = 1;
