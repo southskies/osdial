@@ -3963,10 +3963,12 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			//document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
 			document.getElementById("DiaLControl").innerHTML = "<span class=DialNextButtonOff>Dial Next Number</span>";
 		}
+		var man_preview = 'NO';
+		var man_status = '';
 		if (document.osdial_form.LeadPreview.checked==true) {
 			reselect_preview_dial = 1;
-			var man_preview = 'YES';
-			var man_status = "&nbsp;&nbsp;&nbsp;&nbsp;<font style='text-decoration: blink;color:" + status_intense_color + ";'>Preview the Lead then <a href=\"#\" id=\"dialleadlink\" onclick=\"document.getElementById('dialleadlink').setAttribute('onclick','void(0);'); manual_dial_menu=0; ManualDialOnly();\"><font class=\"preview_text\" color=" + status_preview_color + ">DIAL LEAD</font></a><font style='{text-decoration: blink;color:" + status_intense_color + ";'>";
+			man_preview = 'YES';
+			man_status = "&nbsp;&nbsp;&nbsp;&nbsp;<font style='text-decoration: blink;color:" + status_intense_color + ";'>Preview the Lead then <a href=\"#\" id=\"dialleadlink\" onclick=\"document.getElementById('dialleadlink').setAttribute('onclick','void(0);'); manual_dial_menu=0; ManualDialOnly();\"><font class=\"preview_text\" color=" + status_preview_color + ">DIAL LEAD</font></a><font style='{text-decoration: blink;color:" + status_intense_color + ";'>";
 			if (manual_dial_allow_skip == 1) {
 				man_status = man_status + " or </font><a href=\"#\" id=\"skipleadlink\"onclick=\"document.getElementById('skipleadlink').setAttribute('onclick','void(0);'); manual_dial_menu=0; ManualDialSkip();\"><font class=\"preview_text\" color=" + status_preview_color + ">SKIP LEAD</font></a>"; 
 			} else {
@@ -3974,8 +3976,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			}
 		} else {
 			reselect_preview_dial = 0;
-			var man_preview = 'NO';
-			var man_status = " Waiting for Ring..."; 
+			man_preview = 'NO';
+			man_status = " Waiting for Ring..."; 
 		}
 
 		var xmlhttp=getXHR();
@@ -4137,8 +4139,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 						var status_display_number = formatPhone(document.osdial_form.phone_code.value,dialed_number);
 
 						document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
-						//document.getElementById("MainStatuSSpan").innerHTML = " Calling " + status_display_number + "&nbsp;&nbsp;<font color=" + status_bg+ ">UID: " + MDnextCID + "</font> &nbsp; " + man_status;
-						document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "</font>&nbsp;&nbsp;";
+						document.getElementById("MainStatuSSpan").innerHTML = " Calling " + status_display_number + "&nbsp;&nbsp;&nbsp;&nbsp; " + man_status;
+						//document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "</font>&nbsp;&nbsp;";
 						if ( (dialed_label.length < 3) || (dialed_label=='NONE') ) {
 							dialed_label='MAIN';
 						}
@@ -4259,8 +4261,6 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 							previewFD_time_remaining =  previewFD_time;
 							previewFD_timeout_id = setTimeout("ManualDialOnly()", previewFD_time * 1000);
 							previewFD_display_id = setInterval("previewFDDisplayTime()", 1000);
-						} else if (previewFD_time == 0 && document.osdial_form.LeadPreview.checked==true) {
-							ManualDialOnly();
 						}
 
 						reselect_preview_dial = 1;
