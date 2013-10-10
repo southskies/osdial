@@ -432,9 +432,9 @@ function report_realtime_detail() {
             $thtml = "<table frame=border><tr><td>";
             if ($comp['acct_method'] != 'NONE' and $comp['acct_method'] != '' and $comp['acct_method'] != 'RANGE') {
                 if (($comp['acct_cutoff']*60)>=$comp['acct_remaining_time'] || ($config['settings']['acct_email_warning_time']*60)>=$comp['acct_remaining_time']) {
-                    $thtml .= "<font size=1>Credit Left:</font><font size=1 color=#600> <b>".$comp['acct_remaining_time']." min</b>&nbsp;&nbsp;&nbsp;&nbsp;</font>";
+                    $thtml .= "<font size=1>Credit Left:</font><font size=1 color=#600> <b>".($comp['acct_remaining_time']/60)." min</b>&nbsp;&nbsp;&nbsp;&nbsp;</font>";
                 } else {
-                    $thtml .= "<font size=1>Credit Left:</font><font size=1 color=#060> ".$comp['acct_remaining_time']." min&nbsp;&nbsp;&nbsp;&nbsp;</font>";
+                    $thtml .= "<font size=1>Credit Left:</font><font size=1 color=#060> ".($comp['acct_remaining_time']/60)." min&nbsp;&nbsp;&nbsp;&nbsp;</font>";
                 }
                 $tcnt++;
             }

@@ -229,9 +229,9 @@ echo "            <br />\n";
 if ($LOG['multicomp']>0) {
     if ($LOG['company']['acct_method'] != 'NONE' and $LOG['company']['acct_method'] != '' and $LOG['company']['acct_method'] != 'RANGE') {
         if (($LOG['company']['acct_cutoff']*60)>=$LOG['company']['acct_remaining_time'] || ($config['settings']['acct_email_warning_time']*60)>=$LOG['company']['acct_remaining_time']) {
-            echo "         &nbsp;&nbsp;<font size=2>Credit Left:</font><font size=2 color=#600> <b>".$LOG['company']['acct_remaining_time']." min</b></font>";
+            echo "         &nbsp;&nbsp;<font size=2>Credit Left:</font><font size=2 color=#600> <b>".($LOG['company']['acct_remaining_time']/60)." min</b></font>";
         } else {
-            echo "         &nbsp;&nbsp;<font size=2>Credit Left:</font><font size=2 color=#060> ".$LOG['company']['acct_remaining_time']." min</font>";
+            echo "         &nbsp;&nbsp;<font size=2>Credit Left:</font><font size=2 color=#060> ".($LOG['company']['acct_remaining_time']/60)." min</font>";
         }
     }
     if ($LOG['company']['acct_enddate'] != '0000-00-00 00:00:00' and $LOG['company']['acct_enddate'] != '') {
