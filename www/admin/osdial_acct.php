@@ -67,9 +67,14 @@ if (OSDpreg_match('/paypal/',$remote_name)) {
 	$output.="\n\nVERIFY:".$verifyurl;
 	$output.="\n\n";
 
-	$ch = curl_init($verifyurl);
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    $ch = curl_init($verifysite);
+    curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $verifyparams);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_FORBID_REUSE, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Connection: Close'));
 	$curl_content = curl_exec($ch);
 	curl_close($ch);
 	$output.='CURL:'.$curl_content."\n\n";
@@ -84,6 +89,7 @@ if (OSDpreg_match('/paypal/',$remote_name)) {
 		$payment_date=$ppvar['payment_date'];
 		$payment_transid=$ppvar['txn_id'];
 		$purchase_quantity=$ppvar['quantity'];
+        if (empty($purchase_quantity)) $purchase_quantity=1;
 		ksort($ppvar);
 		$output.="\n\nPPVAR:\n";
 		foreach ($ppvar as $ppvk=>$ppvv) {
