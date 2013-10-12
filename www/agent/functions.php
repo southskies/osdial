@@ -19,6 +19,27 @@
 #     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+require_once('Net/IPv4.php');
+
+function ipIsRFC1918 ($ip) {
+    $ipfound=0;
+    if (Net_IPv4::ipInNetwork($ip, '127.0.0.1/8')) $ipfound=1;
+    if (Net_IPv4::ipInNetwork($ip, '10.0.0.0/8')) $ipfound=1;
+    if (Net_IPv4::ipInNetwork($ip, '172.16.0.0/12')) $ipfound=1;
+    if (Net_IPv4::ipInNetwork($ip, '192.168.0.0/16')) $ipfound=1;
+    return $ipfound;
+}
+
+function ipInNetworks ($ip) {
+    $ipnetworks = array();
+    exec("/sbin/ip ro li | /bin/grep -v tun | /bin/grep -v default | /bin/awk '{ print $1 }' | /bin/grep '/'", $ipnetworks);
+    $ipfound=0;
+    foreach ($ipnetworks as $ipnet) {
+                if (Net_IPv4::ipInNetwork($ip, $ipnet)) $ipfound=1;
+    }
+    return $ipfound;
+}
+
 
 # Get a variable from a form post/get
 function get_variable($varid) {

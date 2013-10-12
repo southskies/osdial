@@ -1403,7 +1403,16 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
         $voicemail_email=$row[69];
 
         if ($protocol=='WebSIP') {
-            $WebPhoneHTML = "<div id=\"WebPhone\" debugLevel=\"warn\" hide=\"1\" autoanswer=\"1\" register=\"1\" user=\"$login\" password=\"$pass\" domain=\"$server_ip\" websocket=\"ws://$server_ip:8088/ws/\" OFFiceServer=\"stun:$server_ip:3478\" onregister=\"NoneInSessionCalL();\" onpermissionask=\"BrowserMediaAccess();\" onpermissiongranted=\"BrowserMediaAccessOK();\" onpermissiondeny=\"BrowserMediaAccessDeny();\"> </div>\n";
+            $sip_server_ip=$server_ip;
+            if (!ipInNetworks($ip)) {
+                $stmt=sprintf("SELECT server_public_ip FROM servers WHERE server_ip='%s' AND active='Y';",mres($server_ip));
+                if ($DB) echo "|$stmt|\n";
+                $rslt=mysql_query($stmt, $link);
+                $row=mysql_fetch_row($rslt);
+                $server_public_ip=$row[0];
+                $sip_server_ip=$server_public_ip;
+            }
+            $WebPhoneHTML = "<div id=\"WebPhone\" debugLevel=\"warn\" hide=\"1\" autoanswer=\"1\" register=\"1\" user=\"$login\" password=\"$pass\" domain=\"$sip_server_ip\" websocket=\"ws://$sip_server_ip:8088/ws/\" OFFiceServer=\"stun:$sip_server_ip:3478\" onregister=\"NoneInSessionCalL();\" onpermissionask=\"BrowserMediaAccess();\" onpermissiongranted=\"BrowserMediaAccessOK();\" onpermissiondeny=\"BrowserMediaAccessDeny();\"> </div>\n";
             $protocol='SIP';
         }
 
