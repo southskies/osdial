@@ -59,7 +59,7 @@
     function login_allowable_campaigns() {
         var xmlhttp=getXHR();
         if (xmlhttp) { 
-            logincampaign_query = "&user=" + document.osdial_form.VD_login.value + "&pass=" + document.osdial_form.VD_pass.value + "&ACTION=LogiNCamPaigns&format=html";
+            logincampaign_query = "&user=" + document.osdial_form.VD_login.value + "&pass=" + document.osdial_form.VD_pass.value + "&campaign=" + document.osdial_form.VD_campaign.value + "&ACTION=LogiNCamPaigns&format=html";
             xmlhttp.open('POST', 'vdc_db_query.php'); 
             xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
             xmlhttp.send(logincampaign_query); 

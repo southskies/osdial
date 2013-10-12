@@ -320,7 +320,7 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 							$rtins_sql .= sprintf(",('%s','%s','%d','%s','%s')",$osdial->mres($rtcontext),$osdial->mres($rtexten),$osdial->mres($rtprio),$osdial->mres($rtapp),$osdial->mres($rtappdata));
 						}
 						if ($rtins_cnt>500) {
-							$rtins_sql .= ';';
+							$rtins_sql .= ' ON DUPLICATE KEY UPDATE app=VALUES(app),appdata=VALUES(appdata);';
 							$rtins_cnt=0;
 							$osdial->sql_execute($rtins_sql,'RT');
 							$rtins_sql='';
@@ -330,7 +330,7 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 			}
 		}
 		if ($rtins_sql ne '') {
-			$rtins_sql .= ';';
+			$rtins_sql .= ' ON DUPLICATE KEY UPDATE app=VALUES(app),appdata=VALUES(appdata);';
 			$rtins_cnt=0;
 			$osdial->sql_execute($rtins_sql,'RT');
 			$rtins_sql='';
@@ -385,6 +385,7 @@ sub gen_servers {
 	my $esvr = $achead;
 	my $isvr = $achead;
 	my $ssvr = $achead;
+	my $rsvr = $achead;
 	my $sreg='';
 	my $ireg='';
 
@@ -439,6 +440,12 @@ sub gen_servers {
 	$stmt .= ") AND server_profile IN ('AIO','DIALER');";
 	print $stmt . "\n" if ($DB);
 	while (my $sret = $osdial->sql_query($stmt)) {
+		$rsvr .= "[general]\n";
+		$rsvr .= "rtpstart=10000\n";
+		$rsvr .= "rtpend=20000\n";
+		$rsvr .= "icesupport=yes\n";
+		$rsvr .= "stunaddr=".$sret->{server_ip}.":3478\n";
+
 		$sret->{server_id} =~ s/-|\./_/g;
 		my @sip = split /\./, $sret->{server_ip};
 		my $fsip = sprintf('%.3d*%.3d*%.3d*%.3d',@sip);
@@ -562,6 +569,7 @@ sub gen_servers {
 	write_reload($esvr,'osdial_extensions_servers',$extreload);
 	write_reload($isvr,'osdial_iax_servers','iax2 reload');
 	write_reload($ssvr,'osdial_sip_servers','sip reload');
+	write_reload($rsvr,'rtp','module reload res_rtp_asterisk.so');
 	
 	return ($sreg, $ireg);
 }
@@ -948,7 +956,7 @@ sub gen_phones {
 		$oeodata =~ s/^;DEFSEL;exten/exten/gm; 
 	}
 
-	my $stmt = "SELECT * FROM phones WHERE protocol IN ('SIP','IAX2','Zap','DAHDI','EXTERNAL') AND active='Y' AND (";
+	my $stmt = "SELECT * FROM phones WHERE protocol IN ('SIP','IAX2','Zap','DAHDI','EXTERNAL','WebSIP') AND active='Y' AND (";
 	foreach my $ip (@myips) {
 		$stmt .= " server_ip=\'" . $ip . "\' OR";
 	}
@@ -963,7 +971,7 @@ sub gen_phones {
 		$sret->{outbound_cid_name} = $sret->{fullname} if ($sret->{outbound_cid_name} eq "");
 		$sret->{outbound_cid_name} =~ s/[^0-9a-zA-Z\ \.\-\_]//g;
 		$sret->{outbound_cid_name} = "Unknown" if ($sret->{outbound_cid_name} eq "");
-		if ($sret->{protocol} eq "SIP" and $sret->{extension} !~ /\@/) {
+		if ($sret->{protocol} =~ /SIP/ and $sret->{extension} !~ /\@/) {
 			$sphn .= ";\n[". $sret->{extension} ."]\n";
 			$sphn .= "type=friend\n";
 			$sphn .= "username=" . $sret->{extension} . "\n";
@@ -976,12 +984,27 @@ sub gen_phones {
 			}
 			$sphn .= "dtmfmode=auto\n";
 			$sphn .= "relaxdtmf=yes\n";
-			$sphn .= "disallow=all\n";
-			$sphn .= "allow=ulaw\n";
-			$sphn .= "allow=gsm\n";
-			$sphn .= "allow=g729\n";
+			if ($sret->{protocol} eq 'WebSIP') {
+				$sphn .= "encryption=yes\n";
+				$sphn .= "avpf=yes\n";
+				$sphn .= "icesupport=yes\n";
+				$sphn .= "directmedia=no\n";
+				$sphn .= "transport=udp,wss,ws\n";
+				$sphn .= "disallow=all\n";
+				$sphn .= "allow=ulaw\n";
+				$sphn .= "allow=alaw\n";
+				$sphn .= "allow=gsm\n";
+				$sphn .= "qualifyfreq=600\n";
+				$sphn .= "sendrpid=no\n";
+				$sphn .= "trustrpid=yes\n";
+			} else {
+				$sphn .= "disallow=all\n";
+				$sphn .= "allow=ulaw\n";
+				$sphn .= "allow=gsm\n";
+				$sphn .= "allow=g729\n";
+			}
 			$sphn .= "qualify=5000\n";
-			$sphn .= "nat=yes\n" if ($sret->{phone_type} =~ /NAT/i);
+			$sphn .= "nat=force_rport,comedia\n" if ($sret->{phone_type} =~ /NAT/i);
 			$sphn .= "context=" . $sret->{ext_context} . "\n";
 			$sphn .= "mailbox=" . $sret->{voicemail_id} . "\@osdial\n" if ($sret->{voicemail_id});
 		} elsif ($sret->{protocol} eq "IAX2" and $sret->{extension} !~ /\@|\//) {

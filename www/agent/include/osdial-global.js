@@ -49,6 +49,7 @@ var auto_dial_alt_dial=0;
 var AutoDialReady=0;
 var AutoDialWaiting=0;
 var blind_transfer=0;
+var browser_media_access=0;
 var busyext_order='asc';
 var busyext_query;
 var busylocalhangup_order='asc';

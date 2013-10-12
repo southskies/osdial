@@ -153,6 +153,7 @@ install-docs: .osdial.config
 	@echo "Installing User-Interface (web) in $(DESTDIR)$(PATHweb)..."
 	@install -d -m 777 $(DESTDIR)$(PATHweb)/agent
 	@install -d -m 777 $(DESTDIR)$(PATHweb)/agent/include
+	@install -d -m 755 $(DESTDIR)$(PATHweb)/agent/sounds
 	@install -d -m 755 $(DESTDIR)$(PATHweb)/agent/templates
 	@install -d -m 755 $(DESTDIR)$(PATHweb)/agent/templates/default
 	@install -d -m 755 $(DESTDIR)$(PATHweb)/agent/templates/default/images
@@ -189,6 +190,7 @@ install-docs: .osdial.config
 	@install -p -m 644 ./www/agent/*.php $(DESTDIR)$(PATHweb)/agent
 	@install -p -m 666 ./www/agent/*.txt $(DESTDIR)$(PATHweb)/agent
 	@install -p -m 644 ./www/agent/include/* $(DESTDIR)$(PATHweb)/agent/include
+	@install -p -m 644 ./www/agent/sounds/* $(DESTDIR)$(PATHweb)/agent/sounds
 	@install -p -m 644 ./www/agent/templates/default/*.css $(DESTDIR)$(PATHweb)/agent/templates/default
 	@install -p -m 644 ./www/agent/templates/default/*.ttf $(DESTDIR)$(PATHweb)/agent/templates/default
 	@install -p -m 644 ./www/agent/templates/default/*.php $(DESTDIR)$(PATHweb)/agent/templates/default
