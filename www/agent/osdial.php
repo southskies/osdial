@@ -1403,7 +1403,7 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
         $voicemail_email=$row[69];
 
         if ($protocol=='WebSIP') {
-            $WebPhoneHTML = "<div id=\"WebPhone\" debugLevel=\"warn\" hide=\"1\" autoanswer=\"1\" register=\"1\" user=\"$login\" password=\"$pass\" domain=\"$server_ip\" websocket=\"ws://$server_ip:8088/ws/\" iceServer=\"stun:$server_ip:3478\" onregister=\"NoneInSessionCalL();\" onpermissionask=\"BrowserMediaAccess();\" onpermissiongranted=\"BrowserMediaAccessOK();\" onpermissiondeny=\"BrowserMediaAccessDeny();\"> </div>\n";
+            $WebPhoneHTML = "<div id=\"WebPhone\" debugLevel=\"warn\" hide=\"1\" autoanswer=\"1\" register=\"1\" user=\"$login\" password=\"$pass\" domain=\"$server_ip\" websocket=\"ws://$server_ip:8088/ws/\" OFFiceServer=\"stun:$server_ip:3478\" onregister=\"NoneInSessionCalL();\" onpermissionask=\"BrowserMediaAccess();\" onpermissiongranted=\"BrowserMediaAccessOK();\" onpermissiondeny=\"BrowserMediaAccessDeny();\"> </div>\n";
             $protocol='SIP';
         }
 
