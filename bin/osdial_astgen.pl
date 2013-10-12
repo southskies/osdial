@@ -385,6 +385,7 @@ sub gen_servers {
 	my $esvr = $achead;
 	my $isvr = $achead;
 	my $ssvr = $achead;
+	my $rsvr = $achead;
 	my $sreg='';
 	my $ireg='';
 
@@ -439,6 +440,12 @@ sub gen_servers {
 	$stmt .= ") AND server_profile IN ('AIO','DIALER');";
 	print $stmt . "\n" if ($DB);
 	while (my $sret = $osdial->sql_query($stmt)) {
+		$rsvr .= "[general]\n";
+		$rsvr .= "rtpstart=10000\n";
+		$rsvr .= "rtpend=20000\n";
+		$rsvr .= "icesupport=yes\n";
+		$rsvr .= "stunaddr=".$sret->{server_ip}.":3478\n";
+
 		$sret->{server_id} =~ s/-|\./_/g;
 		my @sip = split /\./, $sret->{server_ip};
 		my $fsip = sprintf('%.3d*%.3d*%.3d*%.3d',@sip);
@@ -562,6 +569,7 @@ sub gen_servers {
 	write_reload($esvr,'osdial_extensions_servers',$extreload);
 	write_reload($isvr,'osdial_iax_servers','iax2 reload');
 	write_reload($ssvr,'osdial_sip_servers','sip reload');
+	write_reload($rsvr,'rtp','module reload res_rtp_asterisk.so');
 	
 	return ($sreg, $ireg);
 }
