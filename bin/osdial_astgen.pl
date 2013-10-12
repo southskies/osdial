@@ -989,22 +989,23 @@ sub gen_phones {
 				$sphn .= "avpf=yes\n";
 				$sphn .= "icesupport=yes\n";
 				$sphn .= "directmedia=no\n";
-				$sphn .= "transport=udp,wss,ws\n";
+				$sphn .= "transport=udp,ws\n";
 				$sphn .= "disallow=all\n";
 				$sphn .= "allow=ulaw\n";
 				$sphn .= "allow=alaw\n";
 				$sphn .= "allow=gsm\n";
-				$sphn .= "qualifyfreq=600\n";
 				$sphn .= "sendrpid=no\n";
 				$sphn .= "trustrpid=yes\n";
+				$sphn .= "qualify=yes\n";
+				$sphn .= "nat=force_rport,comedia\n";
 			} else {
 				$sphn .= "disallow=all\n";
 				$sphn .= "allow=ulaw\n";
 				$sphn .= "allow=gsm\n";
 				$sphn .= "allow=g729\n";
+				$sphn .= "qualify=5000\n";
+				$sphn .= "nat=force_rport,comedia\n" if ($sret->{phone_type} =~ /NAT/i);
 			}
-			$sphn .= "qualify=5000\n";
-			$sphn .= "nat=force_rport,comedia\n" if ($sret->{phone_type} =~ /NAT/i);
 			$sphn .= "context=" . $sret->{ext_context} . "\n";
 			$sphn .= "mailbox=" . $sret->{voicemail_id} . "\@osdial\n" if ($sret->{voicemail_id});
 		} elsif ($sret->{protocol} eq "IAX2" and $sret->{extension} !~ /\@|\//) {
