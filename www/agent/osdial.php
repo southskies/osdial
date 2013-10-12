@@ -42,6 +42,7 @@ header('Content-Type: text/html; charset=utf-8');
 
 require_once("dbconnect.php");
 require_once('functions.php');
+require_once("Net/IPv4.php");
 
 $DB=get_variable("DB");
 $phone_login=get_variable("phone_login");
@@ -1410,7 +1411,9 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
                 $rslt=mysql_query($stmt, $link);
                 $row=mysql_fetch_row($rslt);
                 $server_public_ip=$row[0];
-                $sip_server_ip=$server_public_ip;
+                if (!empty($server_public_ip) and Net_IPv4::validateIP($server_public_ip)) {
+                    $sip_server_ip=$server_public_ip;
+                }
             }
             $WebPhoneHTML = "<div id=\"WebPhone\" debugLevel=\"warn\" hide=\"1\" autoanswer=\"1\" register=\"1\" user=\"$login\" password=\"$pass\" domain=\"$sip_server_ip\" websocket=\"ws://$sip_server_ip:8088/ws/\" OFFiceServer=\"stun:$sip_server_ip:3478\" onregister=\"NoneInSessionCalL();\" onpermissionask=\"BrowserMediaAccess();\" onpermissiongranted=\"BrowserMediaAccessOK();\" onpermissiondeny=\"BrowserMediaAccessDeny();\"> </div>\n";
             $protocol='SIP';
