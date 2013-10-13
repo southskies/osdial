@@ -386,6 +386,7 @@ sub gen_servers {
 	my $isvr = $achead;
 	my $ssvr = $achead;
 	my $rsvr = $achead;
+	my $rmsvr = $achead;
 	my $sreg='';
 	my $ireg='';
 
@@ -444,7 +445,11 @@ sub gen_servers {
 		$rsvr .= "rtpstart=10000\n";
 		$rsvr .= "rtpend=20000\n";
 		$rsvr .= "icesupport=yes\n";
-		$rsvr .= "stunaddr=".$sret->{server_ip}.":3478\n";
+		#$rsvr .= "stunaddr=".$sret->{server_ip}.":3478\n";
+		$rsvr .= "stunaddr=stun.l.google.com:19302\n";
+
+		$rmsvr .= "[general]\n";
+		$rmsvr .= "stunaddr = stun.l.google.com:19302\n";
 
 		$sret->{server_id} =~ s/-|\./_/g;
 		my @sip = split /\./, $sret->{server_ip};
@@ -570,6 +575,7 @@ sub gen_servers {
 	write_reload($isvr,'osdial_iax_servers','iax2 reload');
 	write_reload($ssvr,'osdial_sip_servers','sip reload');
 	write_reload($rsvr,'rtp','module reload res_rtp_asterisk.so');
+	write_reload($rmsvr,'res_stun_monitor','module reload res_stun_monitor.so');
 	
 	return ($sreg, $ireg);
 }
@@ -997,7 +1003,6 @@ sub gen_phones {
 				$sphn .= "sendrpid=no\n";
 				$sphn .= "trustrpid=yes\n";
 				$sphn .= "qualify=yes\n";
-				$sphn .= "nat=force_rport,comedia\n";
 			} else {
 				$sphn .= "disallow=all\n";
 				$sphn .= "allow=ulaw\n";
