@@ -1451,7 +1451,7 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
     } else {
         $acnt += 1;
     }
-    if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_system_carriers'] == 1) {
+    if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_system_carriers'] == 'Y') {
         $amenu .= "    <td height=20 align=center bgcolor=$carriers_color class=$carriers_class colspan=1><span class=\"font2 $carriers_fc\"><a href=\"$PHP_SELF?ADD=3carrier\"> Carriers </a></span></td>\n";
     } else {
         $acnt += 1;
