@@ -3250,7 +3250,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 							osdalert("Logged-out user!<br>Company profile is no longer active!!!<br>Please tell your manager or system administrator.", 180);
 						}
 					}
-					if (acct_method!='NONE' && acct_method!='RANGE') {
+					if (acct_method!='' && acct_method!='NONE' && acct_method!='RANGE') {
 						if ((company_acct_cutoff*60) >= acct_remaining || acct_remaining <= 0) {
 							LogouT();
 							document.getElementById('SysteMAlerTBoX').style.zIndex='101';
