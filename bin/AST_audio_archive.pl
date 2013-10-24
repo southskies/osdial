@@ -181,7 +181,7 @@ foreach my $file (readdir(FILE)) {
 	my $size1 = 0;
 	my $size2 = 0;
 
-	if (length($file) > 4 and $file !~ /-all\.wav|-out\.wav|archive.lock|lost\+found/i and not -d $file) {
+	if (length($file) > 4 and $file !~ /-out\.wav|archive.lock|lost\+found/i and not -d $file) {
 
 		my $size_checks = 10;
 		if (-e "/var/spool/asterisk/record_cache") {
