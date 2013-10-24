@@ -259,8 +259,8 @@ if ($call_handle_method =~ /^CLOSER/) {
 		$parked_by =		$EXT_vars[3];	# leadID
 		$park_extension =	$EXT_vars[4];	# filename of the on-hold music file
 		$park_extension="8301" if ($park_extension=="");
-		$comment_d =		$EXT_vars[5];	# N/A
-		$comment_e =		$EXT_vars[6];	# N/A
+		$phone_number =		$EXT_vars[5];	# phone number of customer
+		$fronter =		$EXT_vars[6];	# user of the fronter that tranfered
 
 		$CIDlead_id = $parked_by;
 
@@ -419,9 +419,9 @@ exit 0 if ($group_active eq 'N');
 exit 0 if ($cbc == 0);
 
 # If the channel_group is an A2A and the call was an inbound, use the agent alert from the initial ingroup.
-if ($channel_group =~ /^A2A_/ and $comment_d ne '') {
+if ($channel_group =~ /^A2A_/ and $phone_number ne '') {
 	$a2aingroup='';
-	$stmtA = "SELECT campaign_id FROM osdial_auto_calls WHERE callerid='$comment_d' AND call_type='IN' AND campaign_id NOT LIKE 'A2A_%' LIMIT 1;";
+	$stmtA = "SELECT campaign_id FROM osdial_auto_calls WHERE callerid='$phone_number' AND call_type='IN' AND campaign_id NOT LIKE 'A2A_%' LIMIT 1;";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -632,6 +632,9 @@ if ( ($hm < $ct_default_start) || ($hm > $ct_default_stop) ) {
 		### if DROP extension is defined then send the dropped call there instead of hangup
 		if (length($DROPexten)>0) {
 			$AGI->stream_file('sip-silence'); # stop music-on-hold process
+			$AGI->stream_file('sip-silence');
+			$AGI->stream_file('sip-silence');
+			$AGI->stream_file('sip-silence');
 			#sleep(1);
 			if ($AGILOG) {$agi_string = "exiting the VDAD app after hours, transferring call to $DROPexten";   &agi_output;}
 			print "SET CONTEXT $ext_context\n";
@@ -660,6 +663,9 @@ if ( ($hm < $ct_default_start) || ($hm > $ct_default_stop) ) {
 		$affected_rows = $dbhA->do($stmtA);  
 		if ($AGILOG) {$agi_string = "--    VDCL call_hungup after hours: |$VHqueryCID|$VDADconf_exten|$channel|insert to osdial_manager";   &agi_output;}
 	} elsif ($after_hours_action =~ /MESSAGE/) {
+		$AGI->stream_file('sip-silence');
+		$AGI->stream_file('sip-silence');
+		$AGI->stream_file('sip-silence');
 		$AGI->stream_file('sip-silence');
 		$AGI->stream_file("$after_hours_message_filename");
 		#sleep(1);
@@ -979,6 +985,7 @@ while ($drop_timer <= $DROP_TIME) {
 				}
 
 				$AGI->stream_file('sip-silence'); # stop music-on-hold process
+				$AGI->stream_file('sip-silence');
 
 				### update calls_today for osdial_live_inbound_agents ###
 				$stmtA = "SELECT SQL_NO_CACHE calls_today FROM osdial_inbound_group_agents WHERE user='" . $osdial->mres($VDADuser) . "' AND group_id='" . $osdial->mres($channel_group) . "';";
@@ -1203,6 +1210,7 @@ while ($drop_timer <= $DROP_TIME) {
 				}
 
 				$AGI->stream_file('sip-silence'); # stop music-on-hold process
+				$AGI->stream_file('sip-silence');
 
 				### update calls_today for osdial_live_inbound_agents ###
 				$stmtA = "SELECT SQL_NO_CACHE calls_today FROM osdial_inbound_group_agents WHERE user='" . $osdial->mres($VDADuser) . "' AND group_id='" . $osdial->mres($channel_group) . "';";
@@ -1298,6 +1306,7 @@ while ($drop_timer <= $DROP_TIME) {
 
 	if ($hold_message_counter > $prompt_interval) {
 		# stop music-on-hold process
+		$AGI->stream_file('sip-silence');
 		$AGI->stream_file('sip-silence');
 		# this prompt must be less than 10 seconds long
 		$AGI->stream_file("$onhold_prompt_filename");
@@ -1414,6 +1423,9 @@ if ($drop_timer > $DROP_TIME) {
 	### if DROP extension is defined then send the dropped call there instead of hangup
 	if (length($DROPexten)>0) {
 		$AGI->stream_file('sip-silence'); # stop music-on-hold process
+		$AGI->stream_file('sip-silence');
+		$AGI->stream_file('sip-silence');
+		$AGI->stream_file('sip-silence');
 		#sleep(1);
 
 		if ($AGILOG) {$agi_string = "exiting the VDAD app, transferring call to $DROPexten | $term_reason";   &agi_output;}
