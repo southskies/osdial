@@ -318,7 +318,7 @@ if ($ADD==41111111111111) {
 				echo "<br><font color=red>$t1 CONFERENCE NOT MODIFIED - Please go back and look at the data you entered</font>\n";
 			} else {
 			echo "<br><font color=$default_text>$t1 CONFERENCE MODIFIED: $conf_exten</font>\n";
-			$stmt=sprintf("UPDATE osdial_conferences SET conf_exten='$conf_exten',server_ip='%s',extension='%s' WHERE conf_exten='%s' AND server_ip='%s';",mres($conf_exten),mres($server_ip),mres($extension),mres($old_conf_exten),mres($old_server_ip));
+			$stmt=sprintf("UPDATE osdial_conferences SET leave_3way='0',conf_exten='%s',server_ip='%s',extension='%s' WHERE conf_exten='%s' AND server_ip='%s';",mres($conf_exten),mres($server_ip),mres($extension),mres($old_conf_exten),mres($old_server_ip));
 			$rslt=mysql_query($stmt, $link);
 
 			}
