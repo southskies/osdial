@@ -213,8 +213,8 @@ my $list_id;
 my $phone_code;
 my $Scampaign_id;
 my $referring_extension;
-my $comment_d;
-my $comment_e;
+my $phone_number;
+my $fronter;
 my $CIDlead_id;
 
 
@@ -276,8 +276,8 @@ if ($call_handle_method =~ /^CLOSER/) {
 		$inbound_number = $EXT_vars[2]; # extension to send call to after parsing
 		$parked_by = $EXT_vars[3]; # leadID
 		$park_extension = $EXT_vars[4]; # filename of the on-hold music file
-		$comment_d = $EXT_vars[5]; # N/A
-		$comment_e = $EXT_vars[6]; # N/A
+		$phone_number = $EXT_vars[5]; # N/A
+		$fronter = $EXT_vars[6]; # N/A
 
 		$park_extension="8301" if ($park_extension eq "");
 		$CIDlead_id = $parked_by;
@@ -315,7 +315,7 @@ $phone_code = $osdial->{settings}{default_phone_code} if ($phone_code eq '');
 $phone_number =~ s/^\+1//;
 $phone_number = $inbound_number if ($phone_number eq '');
 $pin=$inbound_number if (length($pin) < 1);
-my $fronter = $pin;
+$fronter = $pin if(length($pin)>0);
 
 #$vars->{channel} =~ s/-.*//gi if ($vars->{channel} =~ /^SIP/);
 #$vars->{channel} =~ s/-\d$//gi if ($vars->{channel} =~ /^Zap\//);
@@ -360,9 +360,9 @@ if ($ingroup->{group_id} ne '') {
 exit 0 if ($ingroup->{group_id} eq '' or $ingroup->{active} eq 'N');
 
 # If the channel_group is an A2A and the call was an inbound, use the agent alert from the initial ingroup.
-if ($channel_group =~ /^A2A_/ and $comment_d ne '') {
+if ($channel_group =~ /^A2A_/ and $phone_number ne '') {
 	my $a2aingroup='';
-	$stmtA = sprintf("SELECT campaign_id FROM osdial_auto_calls WHERE callerid='%s' AND call_type='IN' AND campaign_id NOT LIKE 'A2A_%%' LIMIT 1;",$osdial->mres($comment_d));
+	$stmtA = sprintf("SELECT campaign_id FROM osdial_auto_calls WHERE callerid='%s' AND call_type='IN' AND campaign_id NOT LIKE 'A2A_%%' LIMIT 1;",$osdial->mres($phone_number));
 	while (my $rec = $osdial->sql_query($stmtA)) {
 		$a2aingroup = $rec->{campaign_id};
 		$stmtA = sprintf("SELECT agent_alert_exten,agent_alert_delay FROM osdial_inbound_groups WHERE group_id='%s' LIMIT 1;",$osdial->mres($a2aingroup));
