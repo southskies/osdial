@@ -889,11 +889,11 @@ while ($drop_timer <= $DROP_TIME) {
 					my $VHqueryCID = "VH$CIDdate$VDADconf_exten";
 
 					### insert a NEW record to the osdial_manager table to play the alert message to the agent
-					$stmtA = sprintf("INSERT INTO osdial_manager VALUES ('','','%s','NEW','N','%s','','Originate','%s','Exten: %s','Context: %s','Channel: Local/%s\@%s','Priority: 1','Callerid: %s','Timeout: 10','Account: %s','','','');",$osdial->mres($SQLdate),$osdial->mres($osdial->{'VARserver_ip'}),$osdial->mres($VHqueryCID),$osdial->mres($ingroup->{agent_alert_exten}),$osdial->mres($osdial->{server}{ext_context}),$osdial->mres($alertVDADremDIALstr),$osdial->mres($osdial->{server}{ext_context}),$osdial->mres($VHqueryCID),$osdial->mres($VHqueryCID));
+					$stmtA = sprintf("INSERT INTO osdial_manager VALUES ('','','%s','NEW','N','%s','','Originate','%s','Exten: %s','Context: %s','Channel: Local/%s\@%s','Priority: 1','Callerid: %s','Timeout: 10','Account: %s','','','');",$osdial->mres($SQLdate),$osdial->mres($osdial->{'VARserver_ip'}),$osdial->mres($VHqueryCID),$osdial->mres($alertVDADremDIALstr),$osdial->mres($osdial->{server}{ext_context}),$osdial->mres($ingroup->{agent_alert_exten}),$osdial->mres($osdial->{server}{ext_context}),$osdial->mres($VHqueryCID),$osdial->mres($VHqueryCID));
 					$affected_rows = $osdial->sql_execute($stmtA);
 					$osdial->agi_output("--    OSDCL agent alert: |$VHqueryCID|$alertVDADremDIALstr|".$vars->{channel}."|insert to osdial_manager");
 
-					usleep(1 * $ingroup->{agent_alert_delay} * 1000);
+					usleep(1 * ($ingroup->{agent_alert_delay}+500) * 1000);
 				}
 
 				#stream_file('sip-silence'); # stop music-on-hold process

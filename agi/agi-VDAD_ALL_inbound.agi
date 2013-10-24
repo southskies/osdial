@@ -978,11 +978,11 @@ while ($drop_timer <= $DROP_TIME) {
 					$VHqueryCID = "VH$CIDdate$VDADconf_exten";
 
 					### insert a NEW record to the osdial_manager table to play the alert message to the agent
-					$stmtA = "INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$VHqueryCID','Exten: $agent_alert_exten','Context: $ext_context','Channel: Local/$alertVDADremDIALstr$at$ext_context','Priority: 1','Callerid: $VHqueryCID','Timeout: 10','Account: $VHqueryCID','','','');";
+					$stmtA = "INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$VHqueryCID','Exten: $alertVDADremDIALstr','Context: $ext_context','Channel: Local/$agent_alert_exten$at$ext_context','Priority: 1','Callerid: $VHqueryCID','Timeout: 10','Account: $VHqueryCID','','','');";
 					$affected_rows = $dbhA->do($stmtA);  
 					if ($AGILOG) {$agi_string = "--    VDCL agent alert: |$VHqueryCID|$alertVDADremDIALstr|$channel|insert to osdial_manager";   &agi_output;}
 
-					usleep(1 * $agent_alert_delay * 1000);
+					usleep(1 * ($agent_alert_delay+500) * 1000);
 				}
 
 				$AGI->stream_file('sip-silence'); # stop music-on-hold process
@@ -1204,11 +1204,11 @@ while ($drop_timer <= $DROP_TIME) {
 					$VHqueryCID = "VH$CIDdate$VDADconf_exten";
 
 					### insert a NEW record to the osdial_manager table to play the alert message to the agent
-					$stmtA = "INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$VHqueryCID','Exten: $agent_alert_exten','Context: $ext_context','Channel: Local/$alertVDADremDIALstr$at$ext_context','Priority: 1','Callerid: $VHqueryCID','Timeout: 10','Account: $VHqueryCID','','','');";
+					$stmtA = "INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$VHqueryCID','Exten: $alertVDADremDIALstr','Context: $ext_context','Channel: Local/$agent_alert_exten$at$ext_context','Priority: 1','Callerid: $VHqueryCID','Timeout: 10','Account: $VHqueryCID','','','');";
 					$affected_rows = $dbhA->do($stmtA);  
 					if ($AGILOG) {$agi_string = "--    VDCL agent alert: |$VHqueryCID|$alertVDADremDIALstr|$channel|insert to osdial_manager";   &agi_output;}
 
-					usleep(1 * $agent_alert_delay * 1000);
+					usleep(1 * ($agent_alert_delay+500) * 1000);
 				}
 
 				$AGI->stream_file('sip-silence'); # stop music-on-hold process
