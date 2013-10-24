@@ -392,7 +392,7 @@ if ($ACTION=="Hangup") {
             if ($row[0] > 0) {
                 $channel_live=0;
                 echo "Channel $channel in use by another agent on $call_server_ip, Hangup command not inserted $rowx[0]\n$stmt\n";
-                debugLog('osdial_debug',"$NOW_TIME|MDCHU|$user|$channel|$call_server_ip|$exten|\n");
+                if ($DBFILE) debugLog('osdial_debug',"$NOW_TIME|MDCHU|$user|$channel|$call_server_ip|$exten|\n");
             } else {
                 echo "$stmt\n";
             }
@@ -715,7 +715,7 @@ if ($ACTION=="RedirectXtraCXNeW") {
         echo "ext_context $ext_context must be set\n";
         echo "ext_priority $ext_priority must be set\n";
         echo "\nRedirect Action not sent\n";
-        if (OSDpreg_match("/SECOND|FIRST|DEBUG/",$filename)) debugLog("osdial_debug","$NOW_TIME|RDCXC|$filename|$user|$campaign|$channel|$extrachannel|$queryCID|$exten|$ext_context|ext_priority|");
+        if ($DBFILE and OSDpreg_match("/SECOND|FIRST|DEBUG/",$filename)) debugLog("osdial_debug","$NOW_TIME|RDCXC|$filename|$user|$campaign|$channel|$extrachannel|$queryCID|$exten|$ext_context|ext_priority|");
     } else {
         if (OSDpreg_match("/NEXTAVAILABLE/",$exten)) {
             $exten='';
@@ -751,7 +751,7 @@ if ($ACTION=="RedirectXtraCXNeW") {
                 if (!empty($row[0])) $agentchannel = $row[0];
 
                 $queryCID = "CXAR24$NOWnum";
-                $stmtG=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Redirect','%s','Channel: %s','Context: %s','Exten: 7%s','Priority: 1','CallerID: %s','','','','','');",mres($NOW_TIME),mres($server_ip),mres($queryCID),mres($agentchannel),mres($ext_context),mres($exten),mres($queryCID));
+                $stmtG=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Redirect','%s','Channel: %s','Context: %s','Exten: %s','Priority: 1','CallerID: %s','','','','','');",mres($NOW_TIME),mres($server_ip),mres($queryCID),mres($agentchannel),mres($ext_context),mres($exten),mres($queryCID));
                 if ($format=='debug') echo "\n<!-- $stmtG -->";
                 $rslt=mysql_query($stmtG, $link);
 
@@ -766,7 +766,82 @@ if ($ACTION=="RedirectXtraCXNeW") {
                 }
 
                 echo "NeWSessioN|$exten|\n";
-                echo "|$stmtA|$stmtB|$stmtC|$stmtD|$stmtE|$stmtF|$stmtG|$stmtH|$stmtI|\n";
+
+                $stmtJ=sprintf("SELECT server_ip,conf_exten,user FROM osdial_live_agents WHERE lead_id='%s' AND user!='%s';",mres($lead_id),mres($user));
+                if ($format=='debug') echo "\n<!-- $stmtJ -->";
+                $rslt=mysql_query($stmtJ, $link);
+                $rowx=mysql_fetch_row($rslt);
+                $dest_server_ip = $rowx[0];
+                $dest_session_id = $rowx[1];
+                $dest_user = $rowx[2];
+
+                $dest_dialstring = "7$dest_session_id";
+
+                $stmtK=sprintf("SELECT channel_group FROM live_sip_channels WHERE server_ip='%s' AND extension='%s' AND channel_group!='%s';",mres($server_ip),mres($session_id),mres($agentchannel));
+                if ($format=='debug') echo "\n<!-- $stmtK -->";
+                $rslt=mysql_query($stmtK, $link);
+                $twaycnt = mysql_num_rows($rslt);
+                $tcnt=0;
+                if ($tcnt < $twaycnt) {
+                    $row=mysql_fetch_row($rslt);
+                    $twaychannel=$row[0];
+
+                    $queryCID = "CXR24$tcnt$NOWnum";
+                    $stmtL=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Redirect','%s','Channel: %s','Context: %s','Exten: %s','Priority: 1','CallerID: %s','','','','','');",mres($NOW_TIME),mres($server_ip),mres($queryCID),mres($twaychannel),mres($ext_context),mres($dest_dialstring),mres($queryCID));
+                    if ($format=='debug') echo "\n<!-- $stmtL -->";
+                    $rslt=mysql_query($stmtL, $link);
+
+                    $tcnt++;
+                }
+
+                $dest_dialstring = "$dest_session_id";
+
+                $stmtM=sprintf("SELECT channel FROM live_channels WHERE server_ip='%s' AND extension='%s';",mres($server_ip),mres($session_id));
+                if ($format=='debug') echo "\n<!-- $stmtM -->";
+                $rslt=mysql_query($stmtM, $link);
+                $twaycnt2 = mysql_num_rows($rslt);
+                if ($tcnt < $twaycnt+$twaycnt2) {
+                    $row=mysql_fetch_row($rslt);
+                    $twaychannel=$row[0];
+
+                    $queryCID = "CXR24$tcnt$NOWnum";
+                    $stmtN=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Redirect','%s','Channel: %s','Context: %s','Exten: %s','Priority: 1','CallerID: %s','','','','','');",mres($NOW_TIME),mres($server_ip),mres($queryCID),mres($twaychannel),mres($ext_context),mres($dest_dialstring),mres($queryCID));
+                    if ($format=='debug') echo "\n<!-- $stmtN -->";
+                    $rslt=mysql_query($stmtN, $link);
+
+                    $tcnt++;
+                }
+                if ($tcnt) {
+                    $stmtO=sprintf("UPDATE osdial_conferences SET leave_3way='0',leave_3way_datetime='%s',extension='' WHERE server_ip='%s' AND conf_exten='%s';",mres($NOW_TIME),mres($server_ip),mres($session_id));
+                    if ($format=='debug') echo "\n<!-- $stmtO -->";
+                    $rslt=mysql_query($stmtO, $link);
+
+                    $stmtP=sprintf("UPDATE osdial_live_agents SET channel='%s' WHERE conf_exten='%s' AND server_ip='%s' AND user='%s';",mres($channel),mres($dest_session_id),mres($dest_server_ip),mres($dest_user));
+                    if ($format=='debug') echo "\n<!-- $stmtP -->";
+                    $rslt=mysql_query($stmtP, $link);
+
+                    $stmtQ=sprintf("UPDATE osdial_auto_calls SET channel='%s' WHERE server_ip='%s' AND lead_id='%s';",mres($channel),mres($server_ip),mres($lead_id));
+                    if ($format=='debug') echo "\n<!-- $stmtQ -->";
+                    $rslt=mysql_query($stmtQ, $link);
+
+                    $queryCID = "HU24$NOWnum";
+                    $stmtR=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','%s','Hangup','%s','Channel: %s','','','','','','','','','');",mres($NOW_TIME),mres($server_ip),mres($extrachannel),mres($queryCID),mres($extrachannel));
+                    if ($format=='debug') echo "\n<!-- $stmtR -->";
+                    $rslt=mysql_query($stmtR, $link);
+
+                    $stmtS=sprintf("SELECT callerid FROM osdial_live_agents WHERE server_ip='%s' AND conf_exten='%s';",mres($dest_server_ip),mres($dest_session_id));
+                    if ($format=='debug') echo "\n<!-- $stmtS -->";
+                    $rslt=mysql_query($stmtS, $link);
+                    $row=mysql_fetch_row($rslt);
+                    $origCID=$row[0];
+
+                    $queryCID = "SC24$NOWnum";
+                    $stmtT=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Setvar','%s','Channel: %s','Variable: CDR(accountcode)','Value: %s','Account: %s','','','','','','');",mres($NOW_TIME),mres($server_ip),mres($queryCID),mres($channel),mres($origCID),mres($queryCID));
+                    if ($format=='debug') echo "\n<!-- $stmtT -->";
+                    $rslt=mysql_query($stmtT, $link);
+                }
+
+                echo "$origCID|$channel|$extrachannel|$stmtA|$stmtB|$stmtC|$stmtD|$stmtE|$stmtF|$stmtG|$stmtH|$stmtI|$stmtJ|$stmtK|$stmtL|$stmtM|$stmtN|$stmtO|$stmtP|$stmtQ|$stmtR\n";
 
                 exit;
             } else {
@@ -836,7 +911,7 @@ if ($ACTION=="RedirectXtraCXNeW") {
                 if (OSDstrlen($D_s_ip[2])<3) $D_s_ip[2] = "0$D_s_ip[2]";
                 if (OSDstrlen($D_s_ip[3])<2) $D_s_ip[3] = "0$D_s_ip[3]";
                 if (OSDstrlen($D_s_ip[3])<3) $D_s_ip[3] = "0$D_s_ip[3]";
-                $dest_dialstring = "$D_s_ip[0]$S$D_s_ip[1]$S$D_s_ip[2]$S$D_s_ip[3]$config[settings][intra_server_sep]$dest_session_id$S$lead_id$S$dest_user$S$phone_code$S$phone_number$S$campaign$S";
+                $dest_dialstring = "$D_s_ip[0]$S$D_s_ip[1]$S$D_s_ip[2]$S$D_s_ip[3]" . $config['settings']['intra_server_sep'] . "$dest_session_id$S$lead_id$S$dest_user$S$phone_code$S$phone_number$S$campaign$S";
 
                 $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Redirect','%s','Channel: %s','Context: %s','Exten: %s','Priority: %s','CallerID: %s','','','','','');",mres($NOW_TIME),mres($call_server_ip),mres($queryCID),mres($channel),mres($ext_context),mres($dest_dialstring),mres($ext_priority),mres($queryCID));
                 if ($format=='debug') echo "\n<!-- $stmt -->";
@@ -861,7 +936,7 @@ if ($ACTION=="RedirectXtraCXNeW") {
             if (OSDpreg_match("/SECOND|FIRST|DEBUG/",$filename)) $DBout .= "Changed to Redirect: $channel on $server_ip";
         }
 
-        if (OSDpreg_match("/SECOND|FIRST|DEBUG/",$filename)) debugLog('osdial_debug', "$NOW_TIME|RDCXC|$filename|$user|$campaign|$DBout|");
+        if ($DBFILE and OSDpreg_match("/SECOND|FIRST|DEBUG/",$filename)) debugLog('osdial_debug', "$NOW_TIME|RDCXC|$filename|$user|$campaign|$DBout|");
     }
 }
 
@@ -1055,7 +1130,7 @@ if ($ACTION=="RedirectXtraNeW") {
             echo "ext_priority $ext_priority must be set\n";
             echo "session_id $session_id must be set\n";
             echo "\nRedirect Action not sent\n";
-            if (OSDpreg_match("/SECOND|FIRST|DEBUG/",$filename)) debugLog('osdial_debug', "$NOW_TIME|RDX|$filename|$user|$campaign|$channel|$extrachannel|$queryCID|$exten|$ext_context|ext_priority|$session_id|");
+            if ($DBFILE and OSDpreg_match("/SECOND|FIRST|DEBUG/",$filename)) debugLog('osdial_debug', "$NOW_TIME|RDX|$filename|$user|$campaign|$channel|$extrachannel|$queryCID|$exten|$ext_context|ext_priority|$session_id|");
         } else {
             if (OSDpreg_match("/NEXTAVAILABLE/",$exten)) {
                 $exten='';
@@ -1189,7 +1264,7 @@ if ($ACTION=="RedirectXtraNeW") {
                 }
             }
 
-            if (OSDpreg_match("/SECOND|FIRST|DEBUG/",$filename)) debugLog('osdial_debug', "$NOW_TIME|RDX|$filename|$user|$campaign|$DBout|");
+            if ($DBFILE and OSDpreg_match("/SECOND|FIRST|DEBUG/",$filename)) debugLog('osdial_debug', "$NOW_TIME|RDX|$filename|$user|$campaign|$DBout|");
         }
     }
 }
