@@ -625,7 +625,6 @@ while ($drop_timer <= $DROP_TIME) {
 
 	###################################################################################################
 	##### Attempt to send the call.
-	my $VDADremDIALstr='';
 	my $VDADconf_exten='';
 	my $VDADuser='';
 	my $VDADextension='';
@@ -744,6 +743,7 @@ while ($drop_timer <= $DROP_TIME) {
 				$agi_string .= "\n|$stmtA|" if ($DB>1);
 				$osdial->agi_output($agi_string);
 
+				my $VDADremDIALstr='';
 				if ($agent_search_method eq 'LB' or ($agent_search_method eq 'LO' and $ASattempt>0)) {
 					### format the remote server dialstring to get the call to the overflow agent meetme room
 					if ($VDADserver_ip =~ m/(\S+)\.(\S+)\.(\S+)\.(\S+)/ and $VDADserver_ip ne $osdial->{VARserver_ip}) {
