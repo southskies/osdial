@@ -1337,7 +1337,7 @@
 						if (taskCheckOR == 'YES') {
 							XDuniqueid = MDlookResponse_array[0];
 							XDchannel = MDlookResponse_array[1];
-							if ( (XDchannel.match(regMDL)) && (asterisk_version != '1.0.8') && (asterisk_version != '1.0.9') && ((MD_ring_secondS < 10 && document.osdial_form.xfernumber.value!='CXFER') || (MD_ring_secondS < 2 && document.osdial_form.xfernumber.value=='CXFER'))) {
+							if ( (XDchannel.match(regMDL)) && (asterisk_version != '1.0.8') && (asterisk_version != '1.0.9') && ((MD_ring_secondS < 10 && document.osdial_form.xfernumber.value!='CXFER') || (MD_ring_secondS < 1 && document.osdial_form.xfernumber.value=='CXFER'))) {
 								// bad grab of Local channel, try again
 								MD_ring_secondS++;
 								var status_display_number = formatPhone(document.osdial_form.phone_code.value,dialed_number);
@@ -1365,6 +1365,11 @@
 								document.getElementById("HangupXferLine").innerHTML ="<a href=\"#\" onclick=\"xfercall_send_hangup();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_hangupxferline.gif\" width=145 height=16 border=0 alt=\"Hangup Xfer Line\"></a>";
 
 								document.getElementById("HangupBothLines").innerHTML ="<a href=\"#\" onclick=\"bothcall_send_hangup();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_hangupbothlines.gif\" width=145 height=16 border=0 alt=\"Hangup Both Lines\"></a>";
+
+								document.getElementById("DialBlindTransfer").innerHTML ="<img src=\"templates/" + agent_template + "/images/vdc_XB_blindtransfer_OFF.gif\" width=137 height=16 border=0 alt=\"Dial Blind Transfer\">";
+								document.getElementById("LocalCloser").innerHTML ="<img src=\"templates/" + agent_template + "/images/vdc_XB_localcloser_OFF.gif\" width=107 height=16 border=0 alt=\"LOCAL CLOSER\">";
+								document.getElementById("DialBlindVMail").innerHTML ="<img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage_OFF.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\">";
+								document.getElementById("DialBlindVMail2").innerHTML ="<img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage_OFF.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\">";
 
 								xferchannellive=1;
 								XDcheck = '';
@@ -2035,6 +2040,13 @@
 			document.getElementById("HangupXferLine").innerHTML ="<img src=\"templates/" + agent_template + "/images/vdc_XB_hangupxferline_OFF.gif\" width=145 height=16 border=0 alt=\"Hangup Xfer Line\">";
 
 			document.getElementById("HangupBothLines").innerHTML ="<a href=\"#\" onclick=\"bothcall_send_hangup();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_hangupbothlines.gif\" width=145 height=16 border=0 alt=\"Hangup Both Lines\"></a>";
+
+			document.getElementById("LocalCloser").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRLOCAL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_localcloser.gif\" width=107 height=16 border=0 alt=\"LOCAL CLOSER\"></a>";
+
+			document.getElementById("DialBlindTransfer").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRBLIND','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_blindtransfer.gif\" width=137 height=16 border=0 alt=\"Dial Blind Transfer\"></a>";
+
+			document.getElementById("DialBlindVMail").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\"></a>";
+			document.getElementById("DialBlindVMail2").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\"></a>";
 		}
 	}
 
