@@ -814,6 +814,9 @@
 				closerxferinternal = '';
 				taskvar = 'XfeRLOCAL';
 			}
+			if (taskvar == 'XfeRBLIND' && document.osdial_form.xfernumber.value=='CXFER') {
+				taskvar = 'XfeRLOCAL';
+			}
 			if (taskvar == 'XfeRBLIND' || taskvar == 'XfeRVMAIL') {
 				var queryCID = "XBvdcW" + epoch_sec + user_abb;
 				var blindxferdialstring = document.osdial_form.xfernumber.value;
