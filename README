@@ -1,15 +1,40 @@
 
+General Information
+---------------------
+
+Dialer systems can be very complex, and it is our view that in order to
+provide a quality system the installed dialer system must be consistent
+and purpose built. This means that only ISOs are the best option for
+new installations. While this in an Open Source project, and it is
+possible to build the packages from source, it is recommended that
+you acquire an ISO or DVD of the precompiled packages for installation.
+Our certified installation media provides all of the OSDial dependencies,
+pre-compiled, and verified to work flawlessly with the OSDial package.
+
+The DVD is available for download for a reasonable price from http://osdial.com.
+The price includes free updates using the Yum package manager until this version
+of OSDial reaches End-of-Life.
+
 
 Installation
 -----------------
 
 This tar-ball is specifically created for the generation of RPM packages.
-Currently, only RedHat Enterprise Linux 5 and CentOS 5 are supported.
+Currently, only RedHat Enterprise Linux 6 and CentOS 6 and other EL6 based
+distrobutions are supported. Sorry, there is no support for Debian-based
+systems, including Ubuntu.
 
 
-Dialer systems can be very complex, and it is our view that in order to
-provide a quality system the installed dialer system must be consistent
-and purpose built.  This means that only ISOs are currently available for
-fresh installations.
+The easiest route to building the package is to use rpmbuild.
 
+tar xzvf osdial-3.x.tgz
+cp ./osdial-3.x/extras/osdial.spec ~/rpmbuild/SPECS
+cp ./osdial-3.x.tgz ~/rpmbuild/SOURCES
+cp ./osdial-3.x/extras/osdial-template-example.tgz ~/rpmbuild/SOURCES
+rpmbuild -ba ~/rpmbuild/SPECS/osdial.spec
+
+
+WARNING: There will be an exhaustive list of unmet RPM dependencies, required
+for both building and installing. Most of these are not available through
+the mainline distrobution or 3rd-party packagers.
 
