@@ -2045,8 +2045,13 @@
 
 			document.getElementById("DialBlindTransfer").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRBLIND','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_blindtransfer.gif\" width=137 height=16 border=0 alt=\"Dial Blind Transfer\"></a>";
 
-			document.getElementById("DialBlindVMail").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\"></a>";
-			document.getElementById("DialBlindVMail2").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\"></a>";
+			if (VD_live_customer_call==1) {
+				document.getElementById("DialBlindVMail").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\"></a>";
+				document.getElementById("DialBlindVMail2").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\"></a>";
+			}
+		} else {
+			document.getElementById("DialBlindVMail").innerHTML ="<img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage_OFF.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\">";
+			document.getElementById("DialBlindVMail2").innerHTML ="<img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage_OFF.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\">";
 		}
 	}
 
