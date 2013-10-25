@@ -450,6 +450,9 @@ Requires:       perl-version
 Requires:       perl-Parse-RecDescent
 Requires:       perl-Proc-Exists
 Requires:       perl-TermReadKey
+Requires:       perl-Mail-Sendmail
+Requires:       perl-Email-Stuffer
+Requires:	perl-HTTP-Server-Simple
 Requires:       readline
 Requires:       sox
 Requires:       lame
@@ -644,6 +647,17 @@ Provides:       osdial-nonfree-companies = %{version}-%{release}
 BuildArch:      noarch
 
 %description nonfree
+OSDial Non-Free
+
+%package nonfree-acct
+Summary:        OSDial Non-Free
+Group:          Applications/Telephony
+Requires:       osdial-web = %{version}-%{release}
+Requires:	osdial-nonfree-companies = %{version}-%{release}
+Requires:	osdial-nonfree-emailtemplates = %{version}-%{release}
+BuildArch:      noarch
+
+%description nonfree-acct
 OSDial Non-Free
 
 %package nonfree-emailtemplates
@@ -1094,8 +1108,13 @@ if [ $RES -eq 0 ]; then
 fi
 
 
-DRIVES=`ls /dev/sd[a-z] /dev/hd[a-z] /dev/cciss/c[0-9]d[0-9] 2>/dev/null | tr "\n" "," | sed 's|,$||'`
-%{__perl} -pi -e "s|/dev/sda, /dev/sdb|${DRIVES}|" %{_opt}/osdial/html/phpsysinfo/plugins/SMART/SMART.config.php || :
+DRIVES=`ls /dev/cciss/c0d[0-9] 2>/dev/null | tr "\n" "," | sed 's|,$||'`
+if [ -n "${DRIVES}" ]; then
+	%{__perl} -pi -e "s|DEVICE=false|DEVICE=\"cciss,0\"|" %{_opt}/osdial/html/phpsysinfo/phpsysinfo.ini || :
+else
+	DRIVES=`ls /dev/xvd[a-z] /dev/sd[a-z] /dev/hd[a-z] 2>/dev/null | tr "\n" "," | sed 's|,$||'`
+fi
+%{__perl} -pi -e "s|DEVICES=\"/dev/sda, /dev/sdb\"|DEVICES=\"${DRIVES}\"|" %{_opt}/osdial/html/phpsysinfo/phpsysinfo.ini || :
 %{_sbindir}/usermod -G asterisk,disk apache || :
 %{_sbindir}/usermod -G tty,apache,disk asterisk || :
 
@@ -1581,6 +1600,11 @@ if [ "$INTY" -ge 1 ]; then
             echo -e "#32 0 * * * %{_opt}/osdial/bin/AST_VDsales_export.pl > /dev/null 2>&1" >> $CTB
             echo -e "#42 0 * * * %{_opt}/osdial/bin/AST_sourceID_summary_export.pl > /dev/null 2>&1" >> $CTB
         fi
+        if [ -z "`%{__grep} osdial_acct_reconcile $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) Reconcile acct tables." >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/osdial_acct_reconcile.pl > /dev/null 2>&1" >> $CTB
+        fi
 
         if [ -z "`%{__grep} osdial_astgen $CTB`" ]; then
             echo -e "" >> $CTB
@@ -1712,6 +1736,9 @@ if [ "$INTY" -ge 1 ]; then
         echo -e "#2 0 * * 0 %{_opt}/osdial/bin/AST_agent_week.pl > /dev/null 2>&1" >> $CTB
         echo -e "#22 0 * * * %{_opt}/osdial/bin/AST_agent_day.pl > /dev/null 2>&1" >> $CTB
         echo -e "" >> $CTB
+        echo -e "### (sql) Reconcile acct tables." >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/osdial_acct_reconcile.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
         echo -e "### (dialer) Generate asterisk config files and reload modules" >> $CTB
         echo -e "* * * * * %{_opt}/osdial/bin/osdial_astgen.pl -q > /dev/null 2>&1" >> $CTB
         echo -e "" >> $CTB
@@ -1835,6 +1862,11 @@ if [ "$INTY" -ge 1 ]; then
             echo -e "#32 0 * * * %{_opt}/osdial/bin/AST_VDsales_export.pl > /dev/null 2>&1" >> $CTB
             echo -e "#42 0 * * * %{_opt}/osdial/bin/AST_sourceID_summary_export.pl > /dev/null 2>&1" >> $CTB
         fi
+        if [ -z "`%{__grep} osdial_acct_reconcile $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) Reconcile acct tables." >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/osdial_acct_reconcile.pl > /dev/null 2>&1" >> $CTB
+        fi
     else
         touch $CTB > /dev/null 2>&1 || :
         chown asterisk:asterisk $CTB > /dev/null 2>&1 || :
@@ -1882,6 +1914,9 @@ if [ "$INTY" -ge 1 ]; then
         echo -e "### (sql) OSDial agent time log weekly and daily summary report generation" >> $CTB
         echo -e "#2 0 * * 0 %{_opt}/osdial/bin/AST_agent_week.pl > /dev/null 2>&1" >> $CTB
         echo -e "#22 0 * * * %{_opt}/osdial/bin/AST_agent_day.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) Reconcile acct tables." >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/osdial_acct_reconcile.pl > /dev/null 2>&1" >> $CTB
     fi
     kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
 fi
@@ -1964,6 +1999,11 @@ if [ "$INTY" -ge 1 ]; then
             echo -e "#32 0 * * * %{_opt}/osdial/bin/AST_VDsales_export.pl > /dev/null 2>&1" >> $CTB
             echo -e "#42 0 * * * %{_opt}/osdial/bin/AST_sourceID_summary_export.pl > /dev/null 2>&1" >> $CTB
         fi
+        if [ -z "`%{__grep} osdial_acct_reconcile $CTB`" ]; then
+            echo -e "" >> $CTB
+            echo -e "### (sql) Reconcile acct tables." >> $CTB
+            echo -e "* * * * * %{_opt}/osdial/bin/osdial_acct_reconcile.pl > /dev/null 2>&1" >> $CTB
+        fi
     else
         touch $CTB > /dev/null 2>&1 || :
         chown asterisk:asterisk $CTB > /dev/null 2>&1 || :
@@ -2011,6 +2051,9 @@ if [ "$INTY" -ge 1 ]; then
         echo -e "### (sql) OSDial agent time log weekly and daily summary report generation" >> $CTB
         echo -e "#2 0 * * 0 %{_opt}/osdial/bin/AST_agent_week.pl > /dev/null 2>&1" >> $CTB
         echo -e "#22 0 * * * %{_opt}/osdial/bin/AST_agent_day.pl > /dev/null 2>&1" >> $CTB
+        echo -e "" >> $CTB
+        echo -e "### (sql) Reconcile acct tables." >> $CTB
+        echo -e "* * * * * %{_opt}/osdial/bin/osdial_acct_reconcile.pl > /dev/null 2>&1" >> $CTB
     fi
     kill -1 `ps -ef | %{__grep} crond | head -1 | %{__awk} '{ print $2 }'` > /dev/null 2>&1 || :
 fi
@@ -2522,6 +2565,7 @@ echo -n
 %attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-OSDagent_conf.agi
 %attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-OSDamd.agi
 %attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-OSDamd_post.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-OSDinbound.agi
 %attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/VD_auto_post_VERIFY.agi
 %attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-VDAD_ALL_inbound.agi
 %attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-VDAD_LB_transfer.agi
@@ -2551,6 +2595,7 @@ echo -n
 %attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/debug_speak.agi
 %attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/invalid_speak.agi
 %attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/agi-OSDpark.agi
+%attr(0755,asterisk,asterisk) %{_sharedstatedir}/asterisk/agi-bin/ivr-OSDinbound.pl
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/ari
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/ari/bin
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/ari/includes
@@ -2581,8 +2626,9 @@ echo -n
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/httpd/conf.d/osdial-ari.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/httpd/conf.d/osdial-psi.conf
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo
-%attr(0664,apache,asterisk) %config %{_opt}/osdial/html/phpsysinfo/config.php
-%attr(0664,apache,asterisk) %config %{_opt}/osdial/html/phpsysinfo/config.php.new
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/config.php
+%attr(0664,apache,asterisk) %config %{_opt}/osdial/html/phpsysinfo/phpsysinfo.ini.new
+%attr(0664,apache,asterisk) %config %{_opt}/osdial/html/phpsysinfo/phpsysinfo.ini
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/js
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/js/jQuery
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/js/phpSysInfo
@@ -2591,7 +2637,12 @@ echo -n
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/gfx/images
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/gfx/treeTable
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/templates
-%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/templates/plugin
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/templates/two
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/templates/aqua
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/templates/cream
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/templates/html
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/templates/nextgen
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/includes
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/includes/plugin
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/includes/ups
@@ -2605,13 +2656,65 @@ echo -n
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/includes/error
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/includes/mb
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/language
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/ChangeLog
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/tools
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/tools/aptana
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/sample
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/sample/logs
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/sample/ups
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/sample/main
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/sample/motherboard
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/sample/motherboard/ipmitool
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/sample/motherboard/lmsensors
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/sample/motherboard/mbm5
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/sample/plugin_quotas
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/sample/plugin_psstatus
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/sample/plugin_mdstat
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/sample/plugin_smart
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/sample/plugin_updatenotifier
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/sample/plugin_ps
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/sample/plugin_bat
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/bat
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/bat/js
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/bat/lang
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/updatenotifier
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/updatenotifier/js
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/updatenotifier/lang
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/ipmiinfo
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/ipmiinfo/js
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/ipmiinfo/lang
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/ps
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/ps/js
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/ps/lang
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/snmppinfo
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/snmppinfo/js
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/snmppinfo/lang
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/quotas
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/quotas/js
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/quotas/css
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/quotas/lang
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/smart
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/smart/js
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/smart/css
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/smart/lang
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/mdstatus
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/mdstatus/js
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/mdstatus/css
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/mdstatus/gfx
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/mdstatus/lang
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/psstatus
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/psstatus/js
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/psstatus/css
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/psstatus/gfx
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/phpsysinfo/plugins/psstatus/lang
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/.htaccess
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/CHANGELOG
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/COPYING
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/index.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/js.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/*.xsd
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/*.xslt
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/README
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/README.md
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/README_PLUGIN
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/xml.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/data/*
@@ -2634,8 +2737,64 @@ echo -n
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/js/jQuery/*
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/js/phpSysInfo/*
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/language/*
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/*
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/templates/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/bat/*.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/bat/js/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/bat/lang/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/updatenotifier/*.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/updatenotifier/js/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/updatenotifier/lang/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/ipmiinfo/*.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/ipmiinfo/js/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/ipmiinfo/lang/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/ps/*.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/ps/js/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/ps/lang/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/snmppinfo/*.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/snmppinfo/js/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/snmppinfo/lang/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/quotas/*.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/quotas/js/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/quotas/css/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/quotas/lang/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/smart/*.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/smart/js/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/smart/css/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/smart/lang/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/mdstatus/*.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/mdstatus/js/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/mdstatus/css/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/mdstatus/gfx/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/mdstatus/lang/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/psstatus/*.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/psstatus/js/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/psstatus/css/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/psstatus/gfx/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/plugins/psstatus/lang/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/templates/*.css
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/templates/plugin/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/templates/two/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/templates/aqua/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/templates/cream/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/templates/html/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/templates/nextgen/*
+%attr(0775,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/tools/*.sh
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/tools/*.ini
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/tools/*.bat
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/tools/README
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/tools/aptana/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/sample/logs/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/sample/ups/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/sample/main/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/sample/motherboard/ipmitool/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/sample/motherboard/lmsensors/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/sample/motherboard/mbm5/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/sample/plugin_quotas/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/sample/plugin_psstatus/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/sample/plugin_mdstat/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/sample/plugin_smart/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/sample/plugin_updatenotifier/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/sample/plugin_ps/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/phpsysinfo/sample/plugin_bat/*
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/osdial.conf
 %attr(0755,root,root) %{_sysconfdir}/profile.d/osdial.sh
 %attr(0755,root,root) %{_sysconfdir}/init.d/osdial
@@ -2715,6 +2874,7 @@ echo -n
 %attr(0644,asterisk,asterisk) %{_opt}/osdial/bin/phone_codes_GMT.txt
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/start_asterisk_boot.pl
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/AST_ntp_update.sh
+%attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/osdial_acct_reconcile.pl
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/osdial_astgen.pl
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/osdial_external_dnc.pl
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/osdial.cron
@@ -2802,6 +2962,14 @@ echo -n
 %files nonfree
 %defattr(644,asterisk,asterisk,755)
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/admin/company.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/admin/company_settings.php
+
+%files nonfree-acct
+%defattr(644,asterisk,asterisk,755)
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/admin/acct_settings.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/admin/acct_company.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/reports/acct_detail.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/osdial_acct.php
 
 %files nonfree-emailtemplates
 %defattr(644,asterisk,asterisk,755)
@@ -2922,6 +3090,7 @@ echo -n
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/vtiger_search.php
 %attr(0664,apache,asterisk) %config(noreplace) %{_opt}/osdial/html/admin/VMnow.txt
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/admin.js
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/ColorPicker.js
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/EditableSelect.js
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/CalendarPopup.js
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/auth.php
@@ -2929,6 +3098,8 @@ echo -n
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/admin/carriers.js
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/admin/conference.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/admin/iframe.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/admin/extensions.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/admin/extensions_ivr.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/admin/media.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/admin/phones.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/admin/server.php
