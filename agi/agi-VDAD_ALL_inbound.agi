@@ -960,6 +960,8 @@ while ($drop_timer <= $DROP_TIME) {
 				$stmtA = "UPDATE osdial_closer_log SET user='" . $osdial->mres($VDADuser) . "' WHERE lead_id='$insert_lead_id' ORDER BY call_date DESC LIMIT 1;";
 				$affected_rows = $dbhA->do($stmtA);
 				if ($AGILOG) {$agi_string = "--    closer log : |$affected_rows|$insert_lead_id";  $agi_string .= "\n|$stmtA|" if ($DB>1);  &agi_output;}
+
+				$AGI->set_variable("LASTAGENTCONF",$VDADconf_exten);
 				$VDADremDIALstr='';
 				### format the remote server dialstring to get the call to the overflow agent meetme room
 				#$S='*';
@@ -983,6 +985,8 @@ while ($drop_timer <= $DROP_TIME) {
 					if ($AGILOG) {$agi_string = "--    VDCL agent alert: |$VHqueryCID|$alertVDADremDIALstr|$channel|insert to osdial_manager";   &agi_output;}
 
 					usleep(1 * ($agent_alert_delay+500) * 1000);
+					$AGI->set_variable("CHANALERTLEAVE",'8306');
+					$AGI->set_variable("CHANNEL(hangup_handler_wipe)","osdial,8330,1");
 				}
 
 				$AGI->stream_file('sip-silence'); # stop music-on-hold process
@@ -1186,6 +1190,7 @@ while ($drop_timer <= $DROP_TIME) {
 				my $affected_rows = $dbhA->do($stmtA);
 				if ($AGILOG) {$agi_string = "--    closer log : |$affected_rows|update of vcl table: $insert_lead_id";  $agi_string .= "\n|$stmtA|" if ($DB>1);  &agi_output;}
 
+				$AGI->set_variable("LASTAGENTCONF",$VDADconf_exten);
 				$VDADremDIALstr='';
 				### format the remote server dialstring to get the call to the overflow agent meetme room
 				$S='*';
@@ -1209,6 +1214,8 @@ while ($drop_timer <= $DROP_TIME) {
 					if ($AGILOG) {$agi_string = "--    VDCL agent alert: |$VHqueryCID|$alertVDADremDIALstr|$channel|insert to osdial_manager";   &agi_output;}
 
 					usleep(1 * ($agent_alert_delay+500) * 1000);
+					$AGI->set_variable("CHANALERTLEAVE",'8306');
+					$AGI->set_variable("CHANNEL(hangup_handler_wipe)","osdial,8330,1");
 				}
 
 				$AGI->stream_file('sip-silence'); # stop music-on-hold process

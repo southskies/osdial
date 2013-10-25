@@ -743,6 +743,7 @@ while ($drop_timer <= $DROP_TIME) {
 				$agi_string .= "\n|$stmtA|" if ($DB>1);
 				$osdial->agi_output($agi_string);
 
+				$osdial->AGI->set_variable("LASTAGENTCONF",$VDADconf_exten);
 				my $VDADremDIALstr='';
 				if ($agent_search_method eq 'LB' or ($agent_search_method eq 'LO' and $ASattempt>0)) {
 					### format the remote server dialstring to get the call to the overflow agent meetme room
@@ -768,6 +769,8 @@ while ($drop_timer <= $DROP_TIME) {
 					$osdial->agi_output("--    VDCL agent alert: |$VHqueryCID|$alertVDADremDIALstr|".$osdial->AGI->{channel}."|insert to osdial_manager");
 
 					usleep(1 * ($ingroup->{agent_alert_delay}+500) * 1000);
+					$osdial->AGI->set_variable("CHANALERTLEAVE",'8306');
+					$osdial->AGI->set_variable("CHANNEL(hangup_handler_wipe)","osdial,8330,1");
 				}
 
 				$osdial->AGI->stream_file('sip-silence'); # stop music-on-hold process

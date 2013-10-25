@@ -835,13 +835,18 @@ if ($ACTION=="RedirectXtraCXNeW") {
                     $row=mysql_fetch_row($rslt);
                     $origCID=$row[0];
 
-                    $queryCID = "SC24$NOWnum";
+                    $queryCID = "SC241$NOWnum";
                     $stmtT=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Setvar','%s','Channel: %s','Variable: CDR(accountcode)','Value: %s','Account: %s','','','','','','');",mres($NOW_TIME),mres($server_ip),mres($queryCID),mres($channel),mres($origCID),mres($queryCID));
                     if ($format=='debug') echo "\n<!-- $stmtT -->";
                     $rslt=mysql_query($stmtT, $link);
+
+                    $queryCID = "SC242$NOWnum";
+                    $stmtU=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Setvar','%s','Channel: %s','Variable: LASTAGENTCONF','Value: %s','Account: %s','','','','','','');",mres($NOW_TIME),mres($server_ip),mres($queryCID),mres($channel),mres($dest_session_id),mres($queryCID));
+                    if ($format=='debug') echo "\n<!-- $stmtU -->";
+                    $rslt=mysql_query($stmtU, $link);
                 }
 
-                echo "$origCID|$channel|$extrachannel|$stmtA|$stmtB|$stmtC|$stmtD|$stmtE|$stmtF|$stmtG|$stmtH|$stmtI|$stmtJ|$stmtK|$stmtL|$stmtM|$stmtN|$stmtO|$stmtP|$stmtQ|$stmtR\n";
+                echo "$origCID|$channel|$extrachannel|$stmtA|$stmtB|$stmtC|$stmtD|$stmtE|$stmtF|$stmtG|$stmtH|$stmtI|$stmtJ|$stmtK|$stmtL|$stmtM|$stmtN|$stmtO|$stmtP|$stmtQ|$stmtR|$stmtS|$stmtT|$stmtU\n";
 
                 exit;
             } else {
