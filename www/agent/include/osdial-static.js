@@ -2217,29 +2217,33 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 	function DtMf_PreSet_a_DiaL() {
 		debug("<b>DtMf_PreSet_a_DiaL:</b>",2);
-		ShoWTransferMain("ON");
-		document.osdial_form.conf_dtmf.value = CalL_XC_a_Dtmf;
-		document.osdial_form.xfernumber.value = CalL_XC_a_NuMber;
-		//basic_originate_call(CalL_XC_a_NuMber,'NO','YES',session_id,'YES');
-		var regAXFvars = new RegExp("AXFER","g");
-		if (CalL_XC_a_NuMber.match(regAXFvars)) {
-			mainxfer_send_redirect('XfeRBLIND',lastcustchannel,lastcustserverip);
-		} else {
-			SendManualDial('YES');
+		if (XD_live_customer_call==0 && VD_live_customer_call==1) {
+			ShoWTransferMain("ON");
+			document.osdial_form.conf_dtmf.value = CalL_XC_a_Dtmf;
+			document.osdial_form.xfernumber.value = CalL_XC_a_NuMber;
+			//basic_originate_call(CalL_XC_a_NuMber,'NO','YES',session_id,'YES');
+			var regAXFvars = new RegExp("AXFER","g");
+			if (CalL_XC_a_NuMber.match(regAXFvars)) {
+				mainxfer_send_redirect('XfeRBLIND',lastcustchannel,lastcustserverip);
+			} else {
+				SendManualDial('YES');
+			}
 		}
 	}
 
 	function DtMf_PreSet_b_DiaL() {
 		debug("<b>DtMf_PreSet_b_DiaL:</b>",2);
-		ShoWTransferMain("ON");
-		document.osdial_form.conf_dtmf.value = CalL_XC_b_Dtmf;
-		document.osdial_form.xfernumber.value = CalL_XC_b_NuMber;
-		//basic_originate_call(CalL_XC_b_NuMber,'NO','YES',session_id,'YES');
-		var regAXFvars = new RegExp("AXFER","g");
-		if (CalL_XC_a_NuMber.match(regAXFvars)) {
-			mainxfer_send_redirect('XfeRBLIND',lastcustchannel,lastcustserverip);
-		} else {
-			SendManualDial('YES');
+		if (XD_live_customer_call==0 && VD_live_customer_call==1) {
+			ShoWTransferMain("ON");
+			document.osdial_form.conf_dtmf.value = CalL_XC_b_Dtmf;
+			document.osdial_form.xfernumber.value = CalL_XC_b_NuMber;
+			//basic_originate_call(CalL_XC_b_NuMber,'NO','YES',session_id,'YES');
+			var regAXFvars = new RegExp("AXFER","g");
+			if (CalL_XC_a_NuMber.match(regAXFvars)) {
+				mainxfer_send_redirect('XfeRBLIND',lastcustchannel,lastcustserverip);
+			} else {
+				SendManualDial('YES');
+			}
 		}
 	}
 
