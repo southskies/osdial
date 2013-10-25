@@ -881,6 +881,7 @@ while ($drop_timer <= $DROP_TIME) {
 						}
 					}
 				}
+				set_variable("LASTAGENTCONF",$VDADconf_exten);
 				my $alertVDADremDIALstr = $VDADremDIALstr;
 				$alertVDADremDIALstr .= "9".$VDADconf_exten;
 
@@ -894,6 +895,9 @@ while ($drop_timer <= $DROP_TIME) {
 					$osdial->agi_output("--    OSDCL agent alert: |$VHqueryCID|$alertVDADremDIALstr|".$vars->{channel}."|insert to osdial_manager");
 
 					usleep(1 * ($ingroup->{agent_alert_delay}+500) * 1000);
+
+					set_variable("CHANALERTLEAVE",'8306');
+					set_variable("CHANNEL(hangup_handler_wipe)","osdial|8330|1");
 				}
 
 				#stream_file('sip-silence'); # stop music-on-hold process
