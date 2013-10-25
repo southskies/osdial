@@ -47,7 +47,7 @@ if ($ADD=="11media") {
         echo "  </tr>\n";
         echo "  <tr bgcolor=$oddrows><td colspan=2>&nbsp;</td></tr>";
         echo "  <tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
-        echo "</table></center>\n";
+        echo "</table></form></center>\n";
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
     }
@@ -75,7 +75,31 @@ if ($ADD=="21media") {
             $recfilename = OSDpreg_replace('/\.wav$/i','.wav',$recfilename);
             $recfilename = OSDpreg_replace('/\.gsm$/i','.gsm',$recfilename);
             $recfilename = OSDpreg_replace('/\.mp3$/i','.mp3',$recfilename);
-            rename($recfiletmp, '/tmp/'.$recfilename);
+            move_uploaded_file($recfiletmp, '/tmp/'.$recfilename);
+
+            if (OSDpreg_match('/\.wav$/i',$recfilename)) {
+                $convfile = '/tmp/CONV_'.$recfilename;
+                $destfile = '/tmp/'.$recfilename;
+                rename($destfile, $convfile);
+                $soxtype = exec('/usr/bin/soxi -t \''.$convfile.'\'');
+                if (OSDpreg_match('/wav/i',$soxtype)) {
+                    $soxbit = (exec('/usr/bin/soxi -b \''.$convfile.'\'')*1);
+                    $soxrate = (exec('/usr/bin/soxi -r \''.$convfile.'\'')*1);
+                    $soxchan = (exec('/usr/bin/soxi -c \''.$convfile.'\'')*1);
+                    $sbopt=($soxbit!=16?'-b 16':'');
+                    $sropt=($soxrate!=8000?'rate 8k':'');
+                    $scopt=($soxchan!=1?'remix -':'');
+                    if (!empty($sbopt) or !empty($sropt) or !empty($scopt)) {
+                        exec('/usr/bin/sox \''.$convfile.'\' '.$sbopt.' \''.$destfile.'\' '.$sropt.' '.$scopt);
+                        if (file_exists($destfile)) {
+                            unlink($convfile);
+                        }
+                    }
+                }
+                if (file_exists($convfile)) {
+                        rename($convfile, $destfile);
+                }
+            }
 
             if ($recfilename != '') media_add_file($link, '/tmp/'.$recfilename, mimemap($recfilename), $media_description, $media_extension,1);
             unlink('/tmp/'.$recfilename);
