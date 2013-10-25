@@ -105,7 +105,7 @@ my $proctab = new Proc::ProcessTable;
 print "Processes " . scalar($proctab) . "\n" if ($DBX);
 foreach my $proc (@{$proctab->table}) {
 	# Only check process if it is run by perl and is not a thread.
-	if ($proc->exec eq "/usr/bin/perl" and $proc->ppid != 1) {
+	if (($proc->exec eq "/usr/bin/perl" or $proc->cmndline =~ /^\/usr\/bin\/perl /)  and $proc->ppid != 1) {
 		foreach my $progname (keys %keepalive) {
 			if ($proc->cmndline =~ /$progname/) {
 				$running{$progname}++;
