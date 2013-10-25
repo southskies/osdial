@@ -2247,7 +2247,7 @@ flush();
     <?php load_status('Initializing GUI...<br>TransferMain<br>&nbsp;'); ?>
     <!-- Transfer Link -->
     <span style="position:absolute;left:185px;top:<?php echo $HTheight; ?>px;z-index:21;visibility:hidden;" id="TransferMain">
-        <table bgcolor="<?php echo $xfer_bg1; ?>" frame=box width=<?php echo ($XFwidth-255); ?>>
+        <table bgcolor="<?php echo $xfer_bg1; ?>" frame=box width=<?php echo ($XFwidth-260); ?>>
             <tr>
                 <td align=left>
                     <div class="text_input" id="TransferMaindiv">
@@ -2257,24 +2257,34 @@ flush();
                                     <td align=center colspan=5><font color=<?php echo $xfer_fc; ?>><b>Transfer & Conference Functions</b><br></font></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="XfeRGrouPLisT"><select size=1 name=XfeRGrouP class="cust_form"><option>-- SELECT A GROUP TO SEND YOUR CALL TO --</option></select></span></td>
-                                    <td align=center><span style="visibility:<?php echo $hide_xfer_local_closer; ?>;background-color:<?php echo $xfer_bg2; ?>;" id="LocalCloser"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_XB_localcloser_OFF.gif" width=107 height=16 border=0 alt="LOCAL CLOSER"></span></td>
-                                    <td align=center><span style="visibility:<?php echo $hide_xfer_hangup_xfer; ?>;background-color:<?php echo $xfer_bg2; ?>;" id="HangupXferLine"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_XB_hangupxferline_OFF.gif" width=145 height=16 border=0 alt="Hangup Xfer Line"></span></td>
-                                    <td align=center><span style="visibility:<?php echo $hide_xfer_hangup_both; ?>;background-color:<?php echo $xfer_bg2; ?>;" id="HangupBothLines"><a href="#" onclick="bothcall_send_hangup();return false;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_XB_hangupbothlines.gif" width=145 height=16 border=0 alt="Hangup Both Lines"></a></span></td>
+                                    <td>&nbsp;</td>
+                                    <td><font size=1 color=<?php echo $xfer_fc; ?>>Transfer Group:&nbsp;</font><span id="XfeRGrouPLisT"><select size=1 name=XfeRGrouP class="cust_form"><option>-- SELECT A GROUP TO SEND YOUR CALL TO --</option></select></span></td>
+                                    <td align=center><div style="visibility:<?php echo $hide_xfer_local_closer; ?>;" id="LocalCloser"><span class="XferLocalCloserButtonOff">Local Closer</span></div></td>
+                                    <td align=center><div style="visibility:<?php echo $hide_xfer_dial_with; ?>;" id="DialWithCustomer"><a href="#" onclick="SendManualDial('YES');return false;"><span class="XferDialButton">Dial With Customer</span></a></div></td>
                                     <td align=center><?php if (OSDstrlen($xferconf_a_number)) { ?><a href="#" onclick="DtMf_PreSet_a();return false;"><font class="<?php echo $diallink_class; ?>">D1</font></a><?php } ?></td>
                                 </tr>
                                 <tr>
-                                    <td><font size=1 color=<?php echo $xfer_fc; ?>>Number to call:&nbsp;<input type=text size=15 name=xfernumber maxlength=25 class="cust_form" value="<?php echo $xferconf_a_number; ?>"><input type=hidden name=xferuniqueid></font></td>
-                                    <td align=center><span style="visibility:<?php echo $hide_xfer_dial_override; ?>;" id="XferOverride"><input type=checkbox name=xferoverride id=xferoverride size=1 value="0"><font size=1 color=<?php echo $xfer_fc; ?>><label for=xferoverride>Dial Override</label></font></span></td>
-                                    <td align=center><span style="visibility:<?php echo $hide_xfer_leave_3way; ?>;background-color:<?php echo $xfer_bg2; ?>;" id="Leave3WayCall"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_XB_leave3waycall_OFF.gif" width=137 height=16 border=0 alt="LEAVE 3-WAY CALL"></span></td>
-                                    <td align=center><span style="visibility:<?php echo $hide_xfer_blind_xfer; ?>;background-color:<?php echo $xfer_bg2; ?>;" id="DialBlindTransfer"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_XB_blindtransfer_OFF.gif" width=137 height=16 border=0 alt="Dial Blind Transfer"></span></td>
+                                    <td>&nbsp;</td>
+                                    <td><font size=1 color=<?php echo $xfer_fc; ?>>Number:&nbsp;<input type=text size=26 name=xfernumber maxlength=25 class="cust_form" value="<?php echo $xferconf_a_number; ?>"><input type=hidden name=xferuniqueid></font></td>
+                                    <td align=center><div style="visibility:<?php echo $hide_xfer_blind_xfer; ?>;" id="DialBlindTransfer"><span class="XferBlindDialButtonOff">Dial Blind Transfer</span></div></td>
+                                    <td align=center><div style="visibility:<?php echo $hide_xfer_park_dial; ?>;" id="ParkCustomerDial"><a href="#" onclick="xfer_park_dial();return false;"><span class="XferParkDialButton">Park Customer Dial</span></a></div></td>
                                     <td align=center><?php if (OSDstrlen($xferconf_b_number)) { ?><a href="#" onclick="DtMf_PreSet_b();return false;"><font class="<?php echo $diallink_class; ?>">D2</font></a><?php } ?></td>
                                 </tr>
                                 <tr>
-                                    <td><font size=1 color=<?php echo $xfer_fc; ?>>Seconds:&nbsp;<input type=text size=2 name=xferlength maxlength=4 class="cust_form"></font></td>
-                                    <td><font size=1 color=<?php echo $xfer_fc; ?>>Channel:&nbsp;<input type=text size=12 name=xferchannel maxlength=100 class="cust_form"></font></td>
-                                    <td align=center><span style="visibility:<?php echo $hide_xfer_dial_with; ?>;background-color:<?php echo $xfer_bg2; ?>;" id="DialWithCustomer"><a href="#" onclick="SendManualDial('YES');return false;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_XB_dialwithcustomer.gif" width=144 height=16 border=0 alt="Dial With Customer"></a></span></td>
-                                    <td align=center><span style="visibility:<?php echo $hide_xfer_park_dial; ?>;background-color:<?php echo $xfer_bg2; ?>;" id="ParkCustomerDial"><a href="#" onclick="xfer_park_dial();return false;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_XB_parkcustomerdial.gif" width=147 height=16 border=0 alt="Park Customer Dial"></a></span></td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        <font size=1 color=<?php echo $xfer_fc; ?>>Seconds:&nbsp;<input type=text size=3 name=xferlength maxlength=4 class="cust_form"></font>&nbsp;
+                                        <span style="visibility:<?php echo $hide_xfer_dial_override; ?>;" id="XferOverride"><input type=checkbox name=xferoverride id=xferoverride size=1 value="0"><font size=1 color=<?php echo $xfer_fc; ?>><label for=xferoverride>Override</label></font></span>
+                                    </td>
+                                    <td>&nbsp;</td>
+                                    <td align=center><div style="visibility:<?php echo $hide_xfer_leave_3way; ?>;" id="Leave3WayCall"><span class="XferLeave3wayButtonOff">Leave 3WAY Call</span></div></td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td><font size=1 color=<?php echo $xfer_fc; ?>>Channel:&nbsp;<input type=text size=26 name=xferchannel maxlength=200 class="cust_form"></font></td>
+                                    <td align=center><div style="visibility:<?php echo $hide_xfer_hangup_both; ?>;" id="HangupBothLines"><a href="#" onclick="bothcall_send_hangup();return false;"><span class="XferHangupBothButton">Hangup Both Lines</span></a></div></td>
+                                    <td align=center><div style="visibility:<?php echo $hide_xfer_hangup_xfer; ?>;" id="HangupXferLine"><span class="XferHangupButtonOff">Hangup XFER Line</span></div></td>
                                     <td align=center><span style="visibility:<?php echo $hide_xfer_blind_vmail; ?>;background-color:<?php echo $xfer_bg2; ?>;" id="DialBlindVMail"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_XB_ammessage_OFF.gif" width=36 height=16 border=0 alt="Blind Transfer VMail Message"></span></td>
                                 </tr>
                             </table>

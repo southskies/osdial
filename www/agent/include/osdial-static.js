@@ -358,7 +358,7 @@
 						MD_channel_look=1;
 						XDcheck = 'YES';
 
-				//		document.getElementById("HangupXferLine").innerHTML ="<a href=\"#\" onclick=\"xfercall_send_hangup();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_hangupxferline.gif\" width=145 height=16 border=0 alt=\"Hangup Xfer Line\"></a>";
+				//		document.getElementById("HangupXferLine").innerHTML ="<a href=\"#\" onclick=\"xfercall_send_hangup();return false;\"><span class=\"XferHangupButton\">Hangup XFER Line</span></a>";
 					}
 				}
 			}
@@ -1356,18 +1356,18 @@
 								document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
 								document.getElementById("MainStatuSSpan").innerHTML = " Called 3rd party: " + document.osdial_form.xfernumber.value + "&nbsp;&nbsp;"
 
-								document.getElementById("Leave3WayCall").innerHTML ="<a href=\"#\" onclick=\"leave_3way_call('FIRST');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_leave3waycall.gif\" width=137 height=16 border=0 alt=\"LEAVE 3-WAY CALL\"></a>";
+								document.getElementById("Leave3WayCall").innerHTML ="<a href=\"#\" onclick=\"leave_3way_call('FIRST');return false;\"><span class=\"XferLeave3wayButton\">Leave 3WAY Call</span></a>";
 
-								document.getElementById("DialWithCustomer").innerHTML ="<img src=\"templates/" + agent_template + "/images/vdc_XB_dialwithcustomer_OFF.gif\" width=144 height=16 border=0 alt=\"Dial With Customer\">";
+								document.getElementById("DialWithCustomer").innerHTML ="<span class=\"XferDialButtonOff\">Dial With Customer</span>";
 
-								document.getElementById("ParkCustomerDial").innerHTML ="<img src=\"templates/" + agent_template + "/images/vdc_XB_parkcustomerdial_OFF.gif\" width=147 height=16 border=0 alt=\"Park Customer Dial\">";
+								document.getElementById("ParkCustomerDial").innerHTML ="<span class=\"XferParkDialButtonOff\">Park Customer Dial</span>";
 
-								document.getElementById("HangupXferLine").innerHTML ="<a href=\"#\" onclick=\"xfercall_send_hangup();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_hangupxferline.gif\" width=145 height=16 border=0 alt=\"Hangup Xfer Line\"></a>";
+								document.getElementById("HangupXferLine").innerHTML ="<a href=\"#\" onclick=\"xfercall_send_hangup();return false;\"><span class=\"XferHangupButton\">Hangup XFER Line</span></a>";
 
-								document.getElementById("HangupBothLines").innerHTML ="<a href=\"#\" onclick=\"bothcall_send_hangup();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_hangupbothlines.gif\" width=145 height=16 border=0 alt=\"Hangup Both Lines\"></a>";
+								document.getElementById("HangupBothLines").innerHTML ="<a href=\"#\" onclick=\"bothcall_send_hangup();return false;\"><span class=\"XferHangupBothButton\">Hangup Both Lines</span></a>";
 
-								document.getElementById("DialBlindTransfer").innerHTML ="<img src=\"templates/" + agent_template + "/images/vdc_XB_blindtransfer_OFF.gif\" width=137 height=16 border=0 alt=\"Dial Blind Transfer\">";
-								document.getElementById("LocalCloser").innerHTML ="<img src=\"templates/" + agent_template + "/images/vdc_XB_localcloser_OFF.gif\" width=107 height=16 border=0 alt=\"LOCAL CLOSER\">";
+								document.getElementById("DialBlindTransfer").innerHTML ="<span class=\"XferBlindDialButtonOff\">Dial Blind Transfer</span>";
+								document.getElementById("LocalCloser").innerHTML ="<span class=\"XferLocalCloserButtonOff\">Local Closer</span>";
 								document.getElementById("DialBlindVMail").innerHTML ="<img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage_OFF.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\">";
 								document.getElementById("DialBlindVMail2").innerHTML ="<img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage_OFF.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\">";
 
@@ -1426,9 +1426,9 @@
 
 								document.getElementById("XferControl").innerHTML = "<a href=\"#\" onclick=\"ShoWTransferMain('ON');\"><span class=XferButton>Transfer / Conference</span></a>";
 
-								document.getElementById("LocalCloser").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRLOCAL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_localcloser.gif\" width=107 height=16 border=0 alt=\"LOCAL CLOSER\"></a>";
+								document.getElementById("LocalCloser").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRLOCAL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><span class=\"XferLocalCloserButton\">Local Closer</span></a>";
 
-								document.getElementById("DialBlindTransfer").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRBLIND','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_blindtransfer.gif\" width=137 height=16 border=0 alt=\"Dial Blind Transfer\"></a>";
+								document.getElementById("DialBlindTransfer").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRBLIND','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><span class=\"XferBlindDialButton\">Dial Blind Transfer</span></a>";
 
 								document.getElementById("DialBlindVMail").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\"></a>";
 								document.getElementById("DialBlindVMail2").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\"></a>";
@@ -1892,8 +1892,8 @@
 			document.getElementById("ParkControl").innerHTML = "<span class=ParkButtonOff>Park Call</span>";
 			document.getElementById("HangupControl").innerHTML = "<span class=HangupButtonOff>Hangup Customer</span>";
 			document.getElementById("XferControl").innerHTML = "<span class=XferButtonOff>Transfer / Conference</span>";
-			document.getElementById("LocalCloser").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_XB_localcloser_OFF.gif\" width=107 height=16 border=0 alt=\"LOCAL CLOSER\">";
-			document.getElementById("DialBlindTransfer").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_XB_blindtransfer_OFF.gif\" width=137 height=16 border=0 alt=\"Dial Blind Transfer\">";
+			document.getElementById("LocalCloser").innerHTML ="<span class=\"XferLocalCloserButtonOff\">Local Closer</span>";
+			document.getElementById("DialBlindTransfer").innerHTML ="<span class=\"XferBlindDialButtonOff\">Dial Blind Transfer</span>";
 			document.getElementById("DialBlindVMail").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage_OFF.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\">";
 			document.getElementById("DialBlindVMail2").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage_OFF.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\">";
 			document.getElementById("VolumeUpSpan").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_volume_up_off.gif\" width=28 height=15 BORDER=0>";
@@ -2031,19 +2031,19 @@
 			document.osdial_form.xferchannel.value = "";
 			lastxferchannel='';
 
-			document.getElementById("Leave3WayCall").innerHTML ="<img src=\"templates/" + agent_template + "/images/vdc_XB_leave3waycall_OFF.gif\" width=137 height=16 border=0 alt=\"LEAVE 3-WAY CALL\">";
+			document.getElementById("Leave3WayCall").innerHTML ="<span class=\"XferLeave3wayButtonOff\">Leave 3WAY Call</span>";
 
-			document.getElementById("DialWithCustomer").innerHTML ="<a href=\"#\" onclick=\"SendManualDial('YES');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_dialwithcustomer.gif\" width=144 height=16 border=0 alt=\"Dial With Customer\"></a>";
+			document.getElementById("DialWithCustomer").innerHTML ="<a href=\"#\" onclick=\"SendManualDial('YES');return false;\"><span class=\"XferDialButton\">Dial With Customer</span></a>";
 
-			document.getElementById("ParkCustomerDial").innerHTML ="<a href=\"#\" onclick=\"xfer_park_dial();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_parkcustomerdial.gif\" width=147 height=16 border=0 alt=\"Park Customer Dial\"></a>";
+			document.getElementById("ParkCustomerDial").innerHTML ="<a href=\"#\" onclick=\"xfer_park_dial();return false;\"><span class=\"XferParkDialButton\">Park Customer Dial</span></a>";
 
-			document.getElementById("HangupXferLine").innerHTML ="<img src=\"templates/" + agent_template + "/images/vdc_XB_hangupxferline_OFF.gif\" width=145 height=16 border=0 alt=\"Hangup Xfer Line\">";
+			document.getElementById("HangupXferLine").innerHTML ="<span class=\"XferHangupButton\">Hangup XFER Line</span>";
 
-			document.getElementById("HangupBothLines").innerHTML ="<a href=\"#\" onclick=\"bothcall_send_hangup();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_hangupbothlines.gif\" width=145 height=16 border=0 alt=\"Hangup Both Lines\"></a>";
+			document.getElementById("HangupBothLines").innerHTML ="<a href=\"#\" onclick=\"bothcall_send_hangup();return false;\"><span class=\"XferHangupBothButton\">Hangup Both Lines</span></a>";
 
-			document.getElementById("LocalCloser").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRLOCAL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_localcloser.gif\" width=107 height=16 border=0 alt=\"LOCAL CLOSER\"></a>";
+			document.getElementById("LocalCloser").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRLOCAL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><span class=\"XferLocalCloserButton\">Local Closer</span></a>";
 
-			document.getElementById("DialBlindTransfer").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRBLIND','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_blindtransfer.gif\" width=137 height=16 border=0 alt=\"Dial Blind Transfer\"></a>";
+			document.getElementById("DialBlindTransfer").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRBLIND','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><span class=\"XferBlindDialButton\">Dial Blind Transfer</span></a>";
 
 			if (VD_live_customer_call==1) {
 				document.getElementById("DialBlindVMail").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\"></a>";
@@ -2155,9 +2155,9 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		document.getElementById("callchannel").innerHTML = '';
 		document.osdial_form.callserverip.value = '';
 		document.osdial_form.xferchannel.value = '';
-		document.getElementById("DialWithCustomer").innerHTML ="<a href=\"#\" onclick=\"SendManualDial('YES');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_dialwithcustomer.gif\" border=0 alt=\"Dial With Customer\"></a>";
-		document.getElementById("ParkCustomerDial").innerHTML ="<a href=\"#\" onclick=\"xfer_park_dial();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_parkcustomerdial.gif\" border=0 alt=\"Park Customer Dial\"></a>";
-		document.getElementById("HangupBothLines").innerHTML ="<a href=\"#\" onclick=\"bothcall_send_hangup();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_hangupbothlines.gif\" border=0 alt=\"Hangup Both Lines\"></a>";
+		document.getElementById("DialWithCustomer").innerHTML ="<a href=\"#\" onclick=\"SendManualDial('YES');return false;\"><span class=\"XferDialButton\">Dial With Customer</span></a>";
+		document.getElementById("ParkCustomerDial").innerHTML ="<a href=\"#\" onclick=\"xfer_park_dial();return false;\"><span class=\"XferParkDialButton\">Park Customer Dial</span></a>";
+		document.getElementById("HangupBothLines").innerHTML ="<a href=\"#\" onclick=\"bothcall_send_hangup();return false;\"><span class=\"XferHangupBothButton\">Hangup Both Lines</span></a>";
 
 		var DispoChoice = document.osdial_form.DispoSelection.value;
 
@@ -4622,9 +4622,9 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 							document.getElementById("XferControl").innerHTML = "<a href=\"#\" onclick=\"ShoWTransferMain('ON');\"><span class=XferButton>Transfer / Conference</span></a>";
 
-							document.getElementById("LocalCloser").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRLOCAL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_localcloser.gif\" width=107 height=16 border=0 alt=\"LOCAL CLOSER\"></a>";
+							document.getElementById("LocalCloser").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRLOCAL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><span class=\"XferLocalCloserButton\">Local Closer</span></a>";
 
-							document.getElementById("DialBlindTransfer").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRBLIND','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_blindtransfer.gif\" width=137 height=16 border=0 alt=\"Dial Blind Transfer\"></a>";
+							document.getElementById("DialBlindTransfer").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRBLIND','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><span class=\"XferBlindDialButton\">Dial Blind Transfer</span></a>";
 
 							document.getElementById("DialBlindVMail").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\"></a>";
 							document.getElementById("DialBlindVMail2").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\"></a>";
@@ -5214,9 +5214,9 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		document.getElementById("callchannel").innerHTML = '';
 		document.osdial_form.callserverip.value = '';
 		document.osdial_form.xferchannel.value = '';
-		document.getElementById("DialWithCustomer").innerHTML ="<a href=\"#\" onclick=\"SendManualDial('YES');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_dialwithcustomer.gif\" border=0 alt=\"Dial With Customer\"></a>";
-		document.getElementById("ParkCustomerDial").innerHTML ="<a href=\"#\" onclick=\"xfer_park_dial();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_parkcustomerdial.gif\" border=0 alt=\"Park Customer Dial\"></a>";
-		document.getElementById("HangupBothLines").innerHTML ="<a href=\"#\" onclick=\"bothcall_send_hangup();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_hangupbothlines.gif\" border=0 alt=\"Hangup Both Lines\"></a>";
+		document.getElementById("DialWithCustomer").innerHTML ="<a href=\"#\" onclick=\"SendManualDial('YES');return false;\"><span class=\"XferDialButton\">Dial With Customer</span></a>";
+		document.getElementById("ParkCustomerDial").innerHTML ="<a href=\"#\" onclick=\"xfer_park_dial();return false;\"><span class=\"XferParkDialButton\">Park Customer Dial</span></a>";
+		document.getElementById("HangupBothLines").innerHTML ="<a href=\"#\" onclick=\"bothcall_send_hangup();return false;\"><span class=\"XferHangupBothButton\">Hangup Both Lines</span></a>";
 
 		var DispoChoice = document.osdial_form.DispoSelection.value;
 
@@ -6837,8 +6837,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 					document.getElementById("HangupControl").innerHTML = "<a href=\"#\" onclick=\"dialedcall_send_hangup();\"><span class=HangupButton>Hangup Customer</span></a>";
 					document.getElementById("XferControl").innerHTML = "<a href=\"#\" onclick=\"ShoWTransferMain('ON');\"><span class=XferButton>Transfer / Conference</span></a>";
-					document.getElementById("LocalCloser").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRLOCAL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_localcloser.gif\" width=107 height=16 border=0 alt=\"LOCAL CLOSER\"></a>";
-					document.getElementById("DialBlindTransfer").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRBLIND','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_blindtransfer.gif\" width=137 height=16 border=0 alt=\"Dial Blind Transfer\"></a>";
+					document.getElementById("LocalCloser").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRLOCAL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><span class=\"XferLocalCloserButton\">Local Closer</span></a>";
+					document.getElementById("DialBlindTransfer").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRBLIND','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><span class=\"XferBlindDialButton\">Dial Blind Transfer</span></a>";
 					document.getElementById("DialBlindVMail").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\"></a>";
 					document.getElementById("DialBlindVMail2").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\"></a>";
 					document.getElementById("DTMFDialPad0").innerHTML = "<a href=\"#\" alt=\"0\" onclick=\"document.osdial_form.conf_dtmf.value='0'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_0.png\" width=26 height=19 border=0></a>";

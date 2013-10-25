@@ -1046,7 +1046,7 @@ a:visited {
     border-radius: 5px 5px 5px 5px;
     box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
     color:#000;
-    padding:0px 30px 0px 30px;
+    padding:0px 39px 0px 39px;
     height:12px;
     width:140px;
 }
@@ -1055,7 +1055,7 @@ a:visited {
     border-radius: 5px 5px 5px 5px;
     box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
     color:#6F6E6E;
-    padding:0px 40px 0px 40px;
+    padding:0px 39px 0px 39px;
     height:12px;
     width:140px;
 }
@@ -1066,7 +1066,7 @@ a:visited {
     border-radius: 5px 5px 5px 5px;
     box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
     color:#000;
-    padding:0px 5px 0px 5px;
+    padding:0px 8px 0px 8px;
     height:12px;
     width:140px;
 }
@@ -1079,6 +1079,125 @@ a:visited {
     height:12px;
     width:140px;
 }
+.XferLocalCloserButton {
+    background: -webkit-linear-gradient(top, #E8E5C0, #FFFCD3);
+    background: -moz-linear-gradient(top, #E8E5C0, #FFFCD3);
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
+    color:#000;
+    padding:1px 37px 1px 37px;
+    font-size:11px;
+}
+.XferLocalCloserButtonOff {
+    background: #B5B4B4;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
+    color:#6F6E6E;
+    padding:1px 37px 1px 37px;
+    font-size:11px;
+}
+.XferLeave3wayButton {
+    background: -webkit-linear-gradient(top, #A0D19C, #D3FFD8);
+    background: -moz-linear-gradient(top, #A0D19C, #D3FFD8);
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
+    color:#000;
+    padding:1px 26px 1px 26px;
+    font-size:11px;
+}
+.XferLeave3wayButtonOff {
+    background: #B5B4B4;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
+    color:#6F6E6E;
+    padding:1px 26px 1px 26px;
+    font-size:11px;
+}
+.XferBlindDialButton {
+    background: -webkit-linear-gradient(top, #E8E5C0, #FFFCD3);
+    background: -moz-linear-gradient(top, #E8E5C0, #FFFCD3);
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
+    color:#000;
+    padding:1px 19px 1px 19px;
+    font-size:11px;
+}
+.XferBlindDialButtonOff {
+    background: #B5B4B4;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
+    color:#6F6E6E;
+    padding:1px 19px 1px 19px;
+    font-size:11px;
+}
+.XferParkDialButton {
+    background: -webkit-linear-gradient(top, #E8E5C0, #FFFCD3);
+    background: -moz-linear-gradient(top, #E8E5C0, #FFFCD3);
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
+    color:#000;
+    padding:1px 17px 1px 17px;
+    font-size:11px;
+}
+.XferParkDialButtonOff {
+    background: #B5B4B4;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
+    color:#6F6E6E;
+    padding:1px 17px 1px 17px;
+    font-size:11px;
+}
+.XferDialButton {
+    background: -webkit-linear-gradient(top, #E8E5C0, #FFFCD3);
+    background: -moz-linear-gradient(top, #E8E5C0, #FFFCD3);
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
+    color:#000;
+    padding:1px 18px 1px 18px;
+    font-size:11px;
+}
+.XferDialButtonOff {
+    background: #B5B4B4;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
+    color:#6F6E6E;
+    padding:1px 18px 1px 18px;
+    font-size:11px;
+}
+.XferHangupBothButtonOff {
+    background: #B5B4B4;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
+    padding:1px 19px 1px 19px;
+    color:#6F6E6E;
+    font-size:11px;
+}
+.XferHangupBothButton {
+    background: -webkit-linear-gradient(top, #B65050, #FF7070);
+    background: -moz-linear-gradient(top, #B65050, #FF7070);
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
+    padding:1px 19px 1px 19px;
+    color:#000;
+    font-size:11px;
+}
+.XferHangupButtonOff {
+    background: #B5B4B4;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
+    padding:1px 21px 1px 21px;
+    color:#6F6E6E;
+    font-size:11px;
+}
+.XferHangupButton {
+    background: -webkit-linear-gradient(top, #B65050, #FF7070);
+    background: -moz-linear-gradient(top, #B65050, #FF7070);
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
+    padding:1px 21px 1px 21px;
+    color:#000;
+    font-size:11px;
+}
 .ReloadDataButton {
     background: -webkit-linear-gradient(top, #E8E5C0, #FFFCD3);
     background: -moz-linear-gradient(top, #E8E5C0, #FFFCD3);
@@ -1086,7 +1205,7 @@ a:visited {
     box-shadow: rgba(0,0,0,0.2) 0px 0px 1px 1px;
     color:#000;
     padding:0px 5px 0px 5px;
-    height:12px;
+    height:16px;
     width:140px;
 }
 .SendDTMF {
@@ -1134,3 +1253,5 @@ a:visited {
 .table_title { font-weight: bold; color: #0D2999; }
 
 .hotkeyitem:hover { color:yellow; cursor:pointer; }
+
+#XfeRGrouP { width: 225px; overflow: hidden; }
