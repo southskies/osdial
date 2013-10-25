@@ -1334,7 +1334,7 @@
 						if (taskCheckOR == 'YES') {
 							XDuniqueid = MDlookResponse_array[0];
 							XDchannel = MDlookResponse_array[1];
-							if ( (XDchannel.match(regMDL)) && (asterisk_version != '1.0.8') && (asterisk_version != '1.0.9') && (MD_ring_secondS < 10) ) {
+							if ( (XDchannel.match(regMDL)) && (asterisk_version != '1.0.8') && (asterisk_version != '1.0.9') && ((MD_ring_secondS < 10 && document.osdial_form.xfernumber.value!='CXFER') || (MD_ring_secondS < 2 && document.osdial_form.xfernumber.value=='CXFER'))) {
 								// bad grab of Local channel, try again
 								MD_ring_secondS++;
 								var status_display_number = formatPhone(document.osdial_form.phone_code.value,dialed_number);
