@@ -206,6 +206,7 @@ my $call_handle_method;
 my $agent_search_method;
 my $channel_group;
 my $inbound_number;
+my $outbound_number;
 my $parked_by;
 my $park_extension;
 my $status;
@@ -252,7 +253,7 @@ if (length($vars->{'args'})>1) {
 	$agent_search_method = $ARGV_vars[1];
 	$channel_group = $ARGV_vars[2];
 	$inbound_number = $ARGV_vars[3];
-	$parked_by = $ARGV_vars[4];
+	$parked_by = $phone_number = $ARGV_vars[4];
 	$park_extension = $ARGV_vars[5];
 	$status = $ARGV_vars[6];
 	$list_id = $ARGV_vars[7];
@@ -260,7 +261,7 @@ if (length($vars->{'args'})>1) {
 	$Scampaign_id = $ARGV_vars[9];
 
 	$inbound_number =~ s/^\+1//;
-	$parked_by =~ s/^\+1//;
+	$phone_number =~ s/^\+1//;
 	$park_extension="8301" if ($park_extension eq "");
 }
 
@@ -273,7 +274,7 @@ if ($call_handle_method =~ /^CLOSER/) {
 		
 		$referring_extension = $EXT_vars[0]; # initial extension sent
 		$channel_group = $EXT_vars[1]; # name of the parked group
-		$inbound_number = $EXT_vars[2]; # extension to send call to after parsing
+		$outbound_number = $EXT_vars[2]; # extension to send call to after parsing
 		$parked_by = $EXT_vars[3]; # leadID
 		$park_extension = $EXT_vars[4]; # filename of the on-hold music file
 		$phone_number = $EXT_vars[5]; # N/A
@@ -294,7 +295,6 @@ if ($call_handle_method =~ /^CLOSER/) {
 	}
 }
 
-my $phone_number = '';
 my $VLcomments = '';
 if ($call_handle_method =~ /^CID/) {
 	$phone_number = $vars->{callerid} if (length($vars->{callerid})>0);
@@ -326,7 +326,7 @@ $osdial->agi_output("+++++ INBOUND CALL OSDCL STARTED : |$channel_group|".$vars-
 
 
 if ($vars->{channel} =~ /Local/i) {
-	if ( ($inbound_number =~ /CXFER/) || ($call_handle_method =~ /^CLOSER/) ) {
+	if ( ($outbound_number =~ /CXFER/) || ($call_handle_method =~ /^CLOSER/) ) {
 		$osdial->agi_output("+++++ OSDAD START LOCAL CHANNEL: CXFER OVERRIDE- ".$vars->{priority});
 		if ($call_handle_method =~ /^CLOSER/) {
 			sleep(1);
@@ -1252,7 +1252,12 @@ sub exit_ivr {
 	my $exit = 'E';
 	$exit = 'H' if ($hangup);
 	print "$exit,.\n";
-	my $newin = infunc();
+	my $t=1;
+	while ($t++) {
+		exit if ($t>100);
+		my $newin = infunc();
+		sleep 1;
+	}
 }
 
 sub callback_prompt {
