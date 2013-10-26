@@ -19,9 +19,9 @@
 
 %define _opt /opt
 
-%define version %(if [ -f osdial.version ]; then %{__cat} osdial.version; else %{__cat} /builddir/build/SOURCES/osdial.version; fi)
-%define release %(if [ -f osdial.release ]; then %{__cat} osdial.release; else %{__cat} /builddir/build/SOURCES/osdial.release; fi)
-%define buildver %(if [ -f osdial.build ]; then %{__cat} osdial.build; else %{__cat} /builddir/build/SOURCES/osdial.build; fi)
+%define version 3.0.1.114
+%define release 1
+%define buildver 0
 
 # Current versions
 %define mysql_version 5.1.39-5
@@ -45,9 +45,6 @@ Source0:        osdial-%{version}.tgz
 Source1:        osdial-template-highcontrast.tgz
 Source2:        osdial-template-slingdial.tgz
 Source3:        osdial-template-largedialpresets.tgz
-Source4:        osdial.version
-Source5:        osdial.release
-Source6:        osdial.build
 URL:            http://www.callcentersg.com
 Packager:       lottc@fugitol.com
 Vendor:         Call Center Service Group
