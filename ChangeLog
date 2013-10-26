@@ -1,6 +1,1418 @@
+2013-10-25 19:56:41 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Update build instructions. (HEAD, origin/master, origin/HEAD, master)
+
+2013-10-25 18:26:17 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add process to convert uploaded WAV files to the correct format...8k 16bit mono. (stage/master)
+
+2013-10-25 10:15:23 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix use of phone_number / inbound_number variables. Added a time and exit to exit_now of the IVR.
+
+2013-10-25 09:47:32 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix to properly terminate perl scripts.
+
+2013-10-25 03:11:42 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Convert image-based buttons in Transfer/Conf to CSS-based buttons.  Reorganize Transfer/Conf section.
+
+2013-10-24 23:21:13 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix VM control to only appear when a call is active and there is not an xfer in progress.
+
+2013-10-24 22:32:52 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Do not allow D1/D2 preset to make xfer when no call is active.
+
+2013-10-24 22:30:52 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Set correct xfer controls on use (disable blind, local, vm, etc when in xfer call).
+
+2013-10-24 21:56:27 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* On blind xfer to a CXFER group, send to closer.
+
+2013-10-24 21:55:23 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* On CXFER to group, only wait 2 seconds for MD ring.
+
+2013-10-24 21:17:35 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add Hangup Handlers to catch terminated inbound channels and play a sound to the agent. Added extension 8330 to handle inbound hangups. Hangup Handling uses channel variables CHANALERTLEAVE (for media extensions) and LASTAGENTCONF (for agents session).
+
+2013-10-24 18:46:01 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add extension 8305 and 8306 for conference entry and exit sounds.
+
+2013-10-24 18:26:15 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add 500ms to agent alert (silence should be played prior to the alert).  Reverse the origination for an agent alert.
+
+2013-10-24 17:40:42 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Clear alert dial strings. Play silence before ding to prime channel.  Update database to 3.0.1.114.
+
+2013-10-24 17:02:24 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Change comment_d and comment_e to phone_number and fronter.
+
+2013-10-24 17:00:40 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Change comment_d and comment_e to phone_number and fronter.
+
+2013-10-24 11:24:03 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Modify "Leave 3-way" process to move all channels over to the third-party conference and clear the temp conference.
+
+2013-10-24 11:23:34 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Ok to process -all.wav files.
+
+2013-10-24 11:23:02 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Additional sip-silence calls. Name comment_d and comment_e variables.
+
+2013-10-24 11:22:27 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix saving osdial_conference records.
+
+2013-10-15 23:54:57 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* enable_system_carriers can have options Y/N, not 1/0.
+
+2013-10-15 23:54:14 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix for no acct_method when companies enabled.
+
+2013-10-12 22:13:20 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add res_stun_monitor.conf to asterisk configs and parse its config in astgen.
+
+2013-10-12 18:49:09 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Make sure public IP is valid before assigning.
+
+2013-10-12 18:48:35 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Update transport, nat, qualify settings for webphone.
+
+2013-10-12 15:33:28 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add functions for checking if an ip is rfc1918 or if a given IP is locally routable.  If not locally routable, use the public ip to the server.
+
+2013-10-12 06:14:04 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Update to latest config for stun server.
+
+2013-10-12 03:16:19 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge branch 'v3.x-websip'
+
+2013-10-12 03:12:32 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Turn stun server off. (v3.x-websip)
+
+2013-10-12 03:09:34 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Generate rtp.conf for stun server. Stun server example config.
+
+2013-10-12 02:55:46 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Do not need to force encryption length.
+
+2013-10-12 02:54:44 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Make iceServers optional. Set classid on objects correctly. Fix scope on autoRemove.
+
+2013-10-12 02:53:43 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Update extensions on duplicates.  Modify WebSIP client connection options.
+
+2013-10-10 12:33:41 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Increase voicemail_id size to 20.
+
+2013-10-10 12:12:38 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Paypal was requiring the verification variables to be posted.
+
+2013-10-09 20:32:04 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Display acct_remaining_time as minutes.
+
+2013-10-05 20:51:16 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Invalid SQL_NO_CACHE in query.
+
+2013-10-04 09:28:22 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix Lead Preview to properly display option to call previewed lead or skip to next lead when preview FD time is 0.
+
+2013-10-04 09:16:14 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix manual dial when preview FD time is 0 and lead_preview is checked, to dial immediately.
+
+2013-10-04 09:15:36 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix Extensions IVR keypress delete.
+
+2013-09-11 18:49:02 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* ivr_id had the wrong element.
+
+2013-09-11 14:09:57 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* The labels for many Call Transfer Options were not worded correctly.  A value of Y in these will disable the associated option. Changed to: Disable Local Closer, Disable Dial Override, Disable Hangup Xfer Line, Disable Leave 3Way Call, Disable Dial With Customer, Disable Hangup Both Lines, Disable Blind Transfer, Disable Park Customer Dial, Disable Blind VMail.
+
+2013-09-11 13:36:35 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Bug: If ivr_id of campaign was 0, it would not create a new ivr.
+
+2013-09-11 09:45:40 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* If the company name is supplied, on an Addition, check for existance of company and add it if needed. If company does exist, just add time as normal.
+
+2013-08-30 14:49:30 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* In Phones, Voicemails, and Lists dropdowns, select the correct company if in multicomp.
+
+2013-08-30 14:48:57 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix multicomp users in auth.
+
+2013-08-30 11:06:28 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fixed stale forked child pid. Added debug messaging. domainname was getting reupdated on each iteration.
+
+2013-08-30 11:05:36 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added helper clone function to assist in copying the object.
+
+2013-08-30 08:23:33 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add routine to update the public IP server field with the IP from the public interface.  If a public interface does not exist, attempt a connection to osdial.org, two-way communication is verified by opening a port and exchanging a key with the remote server (NAT detection), if forward does exist, consider the remote detected IP to belong to the server. If an IP is not remotely located, disable further detection attempts by saving a '.' into the public IP field.
+
+2013-08-29 23:23:15 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add default for system_email.
+
+2013-08-29 20:53:35 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Settings SQL update was missing system_email. Value of system_email must be escaped.
+
+2013-08-29 20:52:40 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix double-escaped email address example.
+
+2013-08-29 20:39:21 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Function call to improper hash type.
+
+2013-08-29 19:09:14 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Missing is_public_ipv4 function in use.
+
+2013-08-29 19:04:58 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Update servers table with domainname and public IP if available.
+
+2013-08-29 18:31:45 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add missing help.
+
+2013-08-29 17:50:12 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added mc_default_enable_system_phones field to system_settings for setting the default enable phones setting on new companies. Modified SQL on company.php and osdial_acct.php to use the new default phone setting on new company creation. Added input for field into company_settings.php form. Modified SQL of settings.php to use new field. Removed old acct_email_warning_message, acct_email_warning_from, acct_email_warning_subject fields.
+
+2013-08-29 17:20:34 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Removed old email process. Added conditions for sending emails using the ACCT email templates, MCABCREDWARN, MCABACCTWARN, MCABCREDEXP, MCABCREDNO, MCABACCTEXP. Added function mergeETdata, to help process merge fields.
+
+2013-08-29 17:20:02 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Missing perldoc.
+
+2013-08-29 17:15:36 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add send_email function to mimic our PHP version, can be called with an array of options like in PHP, or options as a hashref.
+
+2013-08-29 12:00:11 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add message for no credit remaining. Reorder email templates.
+
+2013-08-29 09:12:03 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Default to ACTIVE status on manual company creation. Add routines to send new company emails on both manual and automated company creation.
+
+2013-08-29 09:11:40 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix formatting on templates.
+
+2013-08-29 08:15:38 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Make static password_prefix in samples dynamic.
+
+2013-08-29 08:00:55 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Change acct_email_warning_from to system_email in system_settings. Remove acct_email_warning_message and acct_email_warning_subject from system_settings. Add email template 'MCABCREDWARN', 'MCABACCTWARN', 'MCABCREDEXP', 'MCABACCTEXP', 'MCABNEWCOMP'. Add field password_prefix to osdial_companies. Add server_domainname server_public_ip and web_url to servers. Remove acct_email_warning_from, acct_email_warning_message, and acct_email_warning_subject from settings page and add buttons for modifying the email templates. Compute the randomString for password_prefix in company.php and osdial_acct.php, then save into the company record and apply that prefix to all password fields (phone, users). Add Public IP and DomainName into Servers form, also the Web URL if the current server_profile is AIO, CONTROL, OR WEB. Modify email_templates.php to not list Acct related email templates, hide unneeded fields (Active, Send Action, From), hide lead-based form-field selection buttons and add a Sys/Comp/Acct form-field selection list, add new form-field elements into preview and send sample email modes.
+
+2013-08-29 07:59:19 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added randomString function to generate a alpha-numeric string of a giveb length.
+
+2013-08-29 03:53:55 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Advance to version 3.0.1.112. Change size of mc_admin field to 255. Modify System Settings to take multiple multi-tenant admins. Modify auth routine to parse out new pipe-seperated mc_admin field.
+
+2013-08-29 02:47:07 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* WebSIP routines for agent UI. Add Global vars. Add BrowserMedia Detection windows. Change to user_login_first. First bad user login forms. Script phone login if the phone is selected as the users default phone. Initiate and terminate WebSIP connections as needed. Fix minor label issues.
+
+2013-08-29 02:46:15 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add campaign ID to osdial-login URL. Select last campaign ID in campaign selection box on re-login.
+
+2013-08-29 02:45:40 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add WebSIP protocol type.
+
+2013-08-29 02:44:56 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add configuration for WebSIP protocol type.
+
+2013-08-29 02:43:29 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added SIPml-api.js library. Created sipphone.js wrapper for SIPml-api.js. Added sounds directory to agent UI. Added individual DTMF tones for key press on WebSIP phone. Add install of agent/sounds directory in Makefile.
+
+2013-08-29 02:42:42 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Change encrypt tag length to 32 and enable tcp in sip.conf for Asterisk.
+
+2013-08-29 02:41:52 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Changed to bind to 0.0.0.0 in http.conf for Asterisk.
+
+2013-08-29 02:04:36 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Advance to version 3.0.1.111
+
+2013-08-28 15:40:06 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix SQL.
+
+2013-08-28 15:33:48 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Remove debug.
+
+2013-08-28 15:31:38 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix some missing fields on SQL insert.
+
+2013-08-19 14:09:42 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Bad SQL insert.
+
+2013-08-15 16:46:11 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Inbound calls were being forced to present callback prompt.
+
+2013-08-09 20:02:03 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Check acct_method before acct_remaining.
+
+2013-08-09 19:29:44 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Missing closing span tags for Pause/Resume.
+
+2013-08-09 19:28:32 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Shrink Spacers F and G so Repull can be displayed on Incoming calls.
+
+2013-08-07 00:05:40 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Outbound and IVR scripts where using old SQL statement for osdial_ivr and bailing, preventing an auto-dial answer.
+
+2013-08-06 18:56:49 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix missing field on list loading.
+
+2013-08-06 18:56:24 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix auto-dial on omit phone code.
+
+2013-08-02 15:46:20 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added onhold_startdelay, callback_startdelay, placement_startdelay, and queuetime_startdelay, which can initially start a prompt before the interval timeout.
+
+2013-08-02 11:35:09 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added support for Extended Statuses, which allow for many sub-levels.
+
+2013-08-02 11:34:05 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Was leaving phone_number blank on lead.
+
+2013-08-02 05:19:27 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Reformatted System Statuses code. Reformatted Campaign Statuses code. Added osdial_statuses_extended and osdial_campaign_statuses_extended. Modified System and Campaign status entry screens to allow for hierarchical status creation, it should allow 8+ levels if needed. Added status_extended field to osdial_list. Set DB version to 3.0.1.109.
+
+2013-08-01 23:26:18 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added agent_message field to user_groups. Alert agent session on agent_message change. Update DB version to 3.0.1.108.
+
+2013-08-01 21:27:57 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added callback_interval and callback_interrupt_key to osdial_inbound_groups. Advanced DB version to 3.0.1.107. Added help for Ingroup modifications.
+
+2013-08-01 18:19:29 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Modify to use ivr-OSDinbound.pl
+
+2013-08-01 18:18:29 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Rewrite of agi-OSDinbound.agi to be a ExtenalIVR script, which allows for async control of audio channels and better dtmf.
+
+2013-08-01 18:17:13 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Cleanup/rewrite of agi-VDAD_ALL_inbound.agi.
+
+2013-08-01 18:15:50 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Alter auto_dial script to re-queue a callback if it is not answered and it has a lead_recycle definition.
+
+2013-08-01 18:15:11 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix broken IVR handling.
+
+2013-08-01 18:11:50 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Rename drop_exten to drop_action in osdial_inbound_groups. Add placement_interval, placement_max_repeat, queuetime_interval, queuetime_max_repeat to osdial_inbound_groups. Reoganize Ingroups screen. Increase DB version to 3.0.1.106. Fix other misc SQL insertions for ingroups.
+
+2013-08-01 06:47:20 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added sql_dbh and sql_last_insert_id functions.
+
+2013-08-01 06:46:42 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Grab all scripts for inbound groups.
+
+2013-08-01 05:27:19 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add label to Blended checkbox.
+
+2013-07-27 05:33:06 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Missing upgrade map.
+
+2013-07-27 05:09:41 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* cosmetics.
+
+2013-07-27 05:08:11 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Missing help for Extension IVR.
+
+2013-07-27 04:45:20 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added an "Extensions" panel to admin. Create a simple dialplan builder for manual extensions.
+
+2013-07-27 04:43:10 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Make sure only numbers can be entered into the DID field.
+
+2013-07-27 04:42:02 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Try javascript functions that can be used in an onkeypress to block non-number entries.
+
+2013-07-26 13:08:23 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Adds admin_session_expiration and admin_session_lockout options to system settings.
+
+2013-07-26 05:57:11 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Use PHP_SELF instead of trying to dismantle the URI. After agent logout, wait 5 minutes for input, if none, open agent login window. Once session has timed-out to the agent login window, wait another 5 minutes for input, if none, back out to home screen.
+
+2013-07-26 05:55:56 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Check if remote IP is masked by a proxy, if so use X-Forwarded-For.
+
+2013-07-26 05:54:28 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added haproxy configuration examples.
+
+2013-07-26 00:45:17 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Created a sample httpd balancer configuration. The agent UI needed some helper cookie clearing conditions.
+
+2013-07-25 18:32:15 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add structures to sort by host, label, ip.  Initially sort by label.
+
+2013-07-25 15:22:26 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add inactivity timeout to auth, so session is discarded 30 min after session expiration.
+
+2013-07-25 09:33:07 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Require param "map=1" for experimental image maps.
+
+2013-07-25 09:13:04 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added server_id and description to server selection box.
+
+2013-07-25 04:09:43 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add overridable vpn name to /etc/sysconfig/osdial, OSDIAL_OPENVPN_NAME.
+
+2013-07-25 00:58:52 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Use server description if label is not passed.
+
+2013-07-25 00:46:55 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix auth form so that passwords can be saved.
+
+2013-07-25 00:21:25 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix "Show Agents" to highlight menu correctly.
+
+2013-07-25 00:13:33 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Go to home screen after 3 failed login attempts. After url request when session expired, record params and attempt to load requested page after authentication. After url request, record session params, and if session expires, attempt to pull last successful page after authentication. Added javascript to check if session is expired every 60 seconds, and if expired or auth does not match, prompt for authentication.
+
+2013-07-24 20:38:01 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Change default_ext_context to be used with system-wide settings. Set default_ext_context as default on phone creation. Add default_ext_context help.
+
+2013-07-24 18:02:58 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Missing 301103 db file.
+
+2013-07-24 18:02:11 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Set default_ext_context on multi-tenant creation.
+
+2013-07-24 17:58:23 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add default_ext_context to multi-tenant system settings. Advance db version to 3.0.1.103.
+
+2013-07-20 22:56:13 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Reworked admin auth module to use Sessions instead of Basic Auth. Added option to switch between Basic Auth and Sessions in settings. Updated all 'extenal' scripts to recognize session cookies. Updated database to revision 3.0.1.102.
+
+2013-07-20 22:47:08 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Missing a counter decrement.
+
+2013-07-20 22:44:49 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add server_performance updating for non-DIALER and non-AIO servers (those get processed by AST_update). Modified to use programs instead of read /proc, which can get stuck in waits.
+
+2013-07-20 07:42:07 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Prevent text-selection of all non-input based elements.
+
+2013-07-20 07:41:44 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix bug with double-click.
+
+2013-07-20 06:55:18 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Modify database to use LIVE_AGENT as the default value for the Agent Disable Display field. This relays critical errors to the agent.
+
+2013-07-20 06:52:47 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add reference to the called uri of the agent.
+
+2013-07-20 06:51:10 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Reorganize and check the osdial_live_agents and osdial_conferences tables...  If the agent doesn't exist, he has been emergency logged out.
+
+2013-07-20 06:50:24 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix clearing of osdial_campaigns table on emergency logout.
+
+2013-07-18 22:08:52 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Leave DEVICES as is.
+
+2013-07-18 22:04:53 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Update phpsysinfo to 3.1.5.
+
+2013-07-18 14:47:28 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add acct_package defaults.
+
+2013-07-18 14:28:53 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Bad SQL statement, no default on text.
+
+2013-07-18 13:14:08 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* The IPN receiver and processor for Paypal.
+
+2013-07-18 13:13:12 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Created reconciliation script to parse transactions every minute and every night. Added to cron.
+
+2013-07-18 13:10:53 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add accounting table changes. Modify company and settings scripts for accounting options. Created accounting detail report. Added remaining times to realtime reports. Added needed variables. Added remaining time to header. Added help documentation.
+
+2013-07-18 13:09:19 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* All company admin to login when account is suspended.
+
+2013-07-18 13:08:13 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Modifications to user interface and backend components for precision call accounting.
+
+2013-07-12 16:10:04 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add id to editableSelect.
+
+2013-07-12 15:35:24 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fixes for copying campaigns in multi-tenant.
+
+2013-07-12 15:31:32 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* remove any created events and stop propagation of clicks past their target functions.
+
+2013-07-12 15:29:36 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Alter DID creation to allow for company prefixed ingroups.
+
+2013-07-12 14:07:49 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Make 8309, 8310, 8311 infinate loops for conferences.
+
+2013-07-12 13:59:07 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix so disabled "Today" does not disable "Clear".
+
+2013-07-12 00:15:06 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Ran source through jsbeautifier.
+
+2013-07-11 23:47:59 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added enableClearDate(val) option, which displays a "Clear" link next to the "Today" link, when clicked, it sets the text field value to "val".
+
+2013-07-11 20:12:28 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix broken resource monitor that got pushed into master. (display.php variables can't be called from perl...)
+
+2013-07-11 15:30:51 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Increase leave_3way timeout to 2 hours.
+
+2013-07-11 12:15:23 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix issue with XLS loading.
+
+2013-06-20 14:12:33 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Call time add was missing ID.
+
+2013-06-20 14:05:28 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix dialplan generation for agent monitoring/barge/whisper.
+
+2013-06-13 15:17:06 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Missing a unique identifier to use in SQL UNION.
+
+2013-06-13 14:21:48 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Ensure lead status is updated at the beginning of action functions.
+
+2013-06-13 13:55:30 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* select sub-query does not accept SQL_NO_CACHE.
+
+2013-06-10 17:49:47 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fixes for script display.
+
+2013-06-10 17:45:15 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Somewhere the org changes got regressed. This fixes the script display issue.
+
+2013-06-10 17:08:43 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Typo in variable name for field length.
+
+2013-06-10 11:07:17 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix minor issue with gen_carriers.
+
+2013-06-07 17:14:08 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* This will fix the schema for anyone who installed the first 3.0.1. (tag: v3.0.1)
+
+2013-06-07 17:04:30 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Wrong file name.
+
+2013-06-07 10:18:00 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Push to 3.0.1.099
+
+2013-06-07 09:56:15 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix phone listing and Context listing.
+
+2013-06-07 09:51:55 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Increase all related functions calls.
+
+2013-06-07 09:50:46 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Pass opts to editableSelectBox.
+
+2013-06-07 09:19:20 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Typos, missing semi-colons.
+
+2013-06-07 07:39:05 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Bump to next version.
+
+2013-06-07 07:38:30 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Found major database issues with last release.
+
+2013-06-07 07:37:55 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* fix spacing
+
+2013-06-07 07:37:22 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add hard-coded extension and files to dropdown lists.
+
+2013-06-07 07:36:45 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Check if valid directory on media files.
+
+2013-06-07 03:36:24 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Allow the sql_connect routine to fail gracefully on secondary connections. It will use the sql_onfail setting for the primary connection.
+
+2013-06-07 03:35:45 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add missing contexts. Make sure priorities are numbered.
+
+2013-06-07 03:33:55 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Make gen_osdial_extensions actually write the osdial_extensions.conf file. Added in some missing contexts. Fix some issues with realtime processing.
+
+2013-06-06 22:13:49 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add meetme conferences to realtime processing.
+
+2013-06-06 22:12:44 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Reorganize contexts so 'switch' is evaluated before pattern matching.
+
+2013-06-06 16:50:25 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix undefined error.
+
+2013-06-06 16:43:02 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add box-shadow and round bottom of borders.  Add routine to stopPropagation after mouse events. Add onclick to body to remove and open options.
+
+2013-06-06 16:41:54 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Change color picker size to 50px.
+
+2013-06-06 16:41:28 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Make rounding consistent on picker.
+
+2013-06-06 16:39:02 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Hide picker if span is clicked a second time.
+
+2013-06-06 15:07:34 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Created ColorPicker.js and added it for color selection fields.
+
+2013-06-05 22:33:08 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add onkeyup and onchange for color selection.
+
+2013-06-05 19:39:03 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix phone modification logic for multi-tenant saving, would concat company id into extension, dialplan_number, login, voicemail_id on every save.
+
+2013-06-05 18:08:36 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fixed typo.
+
+2013-06-05 11:26:10 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* aribins are processed in the rpmspec.
+
+2013-06-05 11:16:18 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added switch statements for realtime data. Moved all literal extension definitions into realtime processing.
+
+2013-06-05 11:15:36 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Moved in dahdi testing extension.
+
+2013-06-05 11:14:49 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Reorganized osdialEXT and osdialBLOCK sections. Added switch statements for realtime data.
+
+2013-06-05 11:14:12 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added extensions section for realtime extensions.
+
+2013-06-05 11:06:29 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added realtime extension processing. Created procexten function to either return a formatted exten string or track extens to populate extensions table. Added extend command-line option, which expands patterned extensions into literal extensions. Rewrote all exten strings to use procexten. Added needed osdialEXT and osdialBLOCK extens where missing. Created gen_osdial_extensions function, which loads all non-patterned osdial control extensions into realtime data.
+
+2013-06-05 11:00:55 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Updated aribins to include el6 cp/rm/mkdir, both i386 and x86_64.  Created wrapper to call for correct arch. Modified voicemail module to use wrapper.
+
+2013-05-30 16:28:34 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge branch 'master' of 10.125.65.252:/home/git/osdial (tag: v3.0.0, stage/release/3.0.0)
+
+2013-05-30 16:27:54 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Make sure hostname has been set on firstrun.
+
+2013-05-29 19:51:32 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Merge branch 'master' of 10.125.65.252:/home/git/osdial
+
+2013-05-29 19:50:37 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Added a new class for headings on white bg
+
+2013-05-28 15:01:54 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix date/time processing.
+
+2013-05-27 09:46:56 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added possible future support for imagemaps.
+
+2013-05-26 19:23:33 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge branch 'master' of 10.125.65.252:/home/git/osdial
+
+2013-05-26 19:16:16 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fixed Server Performance Report. Changed scaling on the server performance graphic to always be relative to the current select range. Changed graphic sizing and positioning of elements. Adpoted a color schema that fits OSDial. Moved stats from PRE section into the graphic itself. The User and System Proc stats are percentages, but the multiplier was not factoring in Processes or Channels...they now display as a percentage of the total graph.
+
+2013-05-26 19:15:17 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added DejaVeSansMono and Bold fonts.
+
+2013-05-26 18:35:16 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Added missing class to headers, modified shade
+
+2013-05-26 17:06:23 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Move DST over OAC calls.
+
+2013-05-26 14:48:56 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added editableSelect for contexts options.
+
+2013-05-26 14:24:44 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix table layouts on search and add. Use editableSelects for user level and group selection.
+
+2013-05-26 14:18:33 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add function rev_mclabel.
+
+2013-05-25 22:37:10 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge branch 'master' of 10.125.65.252:/home/git/osdial
+
+2013-05-25 22:36:35 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add Dial Method help.
+
+2013-05-25 22:35:55 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Change box-shadow to 1px;
+
+2013-05-25 18:44:57 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Missing closing font tag.
+
+2013-05-25 18:43:46 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Missing closing font tag.
+
+2013-05-25 17:24:30 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Change HotKey selection cursor to a pointer.
+
+2013-05-25 17:22:11 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Change Repull Lead Data to Reload Data Using Phone1.
+
+2013-05-25 17:12:20 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Spacing changes to styles.css.
+
+2013-05-25 17:03:58 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix inplace editing of non-forced boxes. Added "End" key to be used for field completion. Fixed tab to get focus of next element.
+
+2013-05-25 13:55:34 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add default auto_dial_level to 0.
+
+2013-05-25 13:47:03 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Modify campaign creation defaults.
+
+2013-05-25 13:22:38 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Merge branch 'master' of 10.125.65.252:/home/git/osdial
+
+2013-05-25 13:21:39 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Change positioning for Hopper List and Pause Codes.
+
+2013-05-25 12:53:22 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Merge branch 'master' of 10.125.65.252:/home/git/osdial
+
+2013-05-25 12:52:54 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Change Pending to Displayed.
+
+2013-05-25 12:49:03 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Disable submit when Pending Dial Method change.
+
+2013-05-25 11:17:46 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Moved Add Additional Form into menu
+
+2013-05-25 09:56:40 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Corrected border statement
+
+2013-05-25 09:50:17 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Adjusted table widths and corrected some wrongly indented code
+
+2013-05-25 09:16:47 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Updated notice
+
+2013-05-25 04:07:04 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Update RPM spec.
+
+2013-05-25 03:51:26 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Change z-index of the "Dialing in" display to go over the HotKey panel. Change HotKey Panel positioning and layout. Added hotkeyitem:hover CSS style class. Added onclick events to the HotKey items to allow for click selection.
+
+2013-05-25 03:50:20 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Remove old HotKey processing code and in its place add a call to HotKeyDispo.
+
+2013-05-25 03:48:32 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add HotKeyDispo function to handle the keypress or clicking of a hotkey item. This functionality was previously embedded in hotkeypress of osdial-dynamic.js.
+
+2013-05-25 03:43:15 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Modified Dial Method functionality. Added selected-button CSS style class. Modified behavior to display a "PENDING" indication over the selected Dial Method. Upon selecting a Dial Method, disable all Submit buttons, enable the Change Mode button, and add tooltips. Add double-click to Dial Method for quick mode changed.
+
+2013-05-24 23:52:48 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix missinge classes, Hopper List table, and LogOut window. Added font1-font7 classed to stylesheet. Added table_title to stylesheet. Reduce hopper list table header font-size and change font color.  Increase size of priority modifiers. Change LogOut window to 998px and start at 0px at top/left (fixes underlapping agent-phone connection alert window).
+
+2013-05-24 21:55:08 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Add sec2time function to admin.js.
+
+2013-05-23 14:54:59 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Merge branch 'master' of 10.125.65.252:/home/git/osdial
+
+2013-05-23 14:54:09 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Added space above Dial Next Number button
+
+2013-05-23 13:07:07 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add missing AUTO_INCREMENT to latest.sql.
+
+2013-05-23 11:40:15 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Allowed dispo window to fit three columns without wrapping text lines
+
+2013-05-23 11:11:50 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Corrected some var declarations
+
+2013-05-23 10:29:30 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Added logo to agent login again screen
+
+2013-05-21 15:03:35 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Added missing links to List Statuses
+
+2013-05-21 14:57:26 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Changed the sequence of sections and added CID to Create Campaign GUI (SQL change still to be done)
+
+2013-05-20 19:13:04 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Adjusting colors to fit new color scheme
+
+2013-05-20 18:47:24 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Increased height of status line to not shift up and down
+
+2013-05-20 18:27:58 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Updated wrong css, adjusted positions, size
+
+2013-05-20 13:43:20 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Made Repull Data image css3, minor repositionings and fixed issue with Hotkey logic
+
+2013-05-19 19:11:56 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Adding css support for mozilla
+
+2013-05-19 15:42:29 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Modifed HotKey button and started adding formatting support for Firefox
+
+2013-05-16 11:20:09 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Decreased the text shadows
+
+2013-05-15 13:39:27 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added missing help, fixed bad helptags and added missing helptags.
+
+2013-05-14 21:18:46 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Modified appearance of Login Again
+
+2013-05-14 11:53:24 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Updated copyright notice
+
+2013-05-13 21:35:34 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Added classes for future DTMF buttons
+
+2013-05-13 21:02:24 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Turning buttons into html5
+
+2013-05-13 13:31:40 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Corrected /form entry.
+
+2013-05-13 09:02:42 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Gave Channel Informations window a z-index position above main display
+
+2013-05-13 09:01:07 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Corrected width for script window class div.scroll_script
+
+2013-05-13 08:22:42 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Updated copyright notice
+
+2013-05-13 00:28:59 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Added jump_section (links) to List Status section.
+
+2013-05-12 21:18:24 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Modifed look of main page border and sidetab.
+
+2013-05-12 12:42:17 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Modified hot key colors.
+
+2013-05-11 20:00:57 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Converted Hot Key button to html5
+
+2013-05-11 19:29:01 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Altered wording for hot key window info.
+
+2013-05-11 19:26:36 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Updated hot key window color scheme
+
+2013-05-11 19:11:03 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Updated the script window color scheme.
+
+2013-05-11 18:26:15 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Cleaning up Tabs
+
+2013-05-11 17:39:37 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Fixed broken channel info display.
+
+2013-05-11 17:32:14 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Changed MM:SS to TIME and showing hours as well.
+
+2013-05-10 11:16:14 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Moved campaign sections around to flow better.
+
+2013-05-09 16:17:35 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Minor cosmetic changes
+
+2013-05-09 15:28:41 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Added active_only=Y to Summary.
+
+2013-05-09 14:57:46 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Missing callchannel element.
+
+2013-05-05 21:36:20 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* More aesthetic changes.
+
+2013-05-05 21:34:34 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Corrected styles gradient for Firefox.
+
+2013-05-05 19:33:30 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Help changes and updates including mods to field headings to keep it consistent and synced with help.
+
+2013-05-05 18:27:03 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Modified list servers to show Modify before Sysinfo.
+
+2013-05-05 18:13:48 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Modified screen layouts.
+
+2013-05-04 13:54:09 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Removed scroll bars on add and copy campaigns.
+
+2013-05-04 12:40:19 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Increased spacing for Ratio Dial table.
+
+2013-05-04 11:50:48 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Added a red colon after company id.
+
+2013-05-04 11:49:17 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Commented out show voicemail as a separate menu option.
+
+2013-05-04 11:47:10 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Added a red colon after company id.
+
+2013-05-04 10:29:33 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Syncronizing help and headings for Agent screens under admin.
+
+2013-05-03 21:05:21 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Move old MP3 conversion to OLDMP3 and allow for conversion to MP3 via sox.
+
+2013-05-03 18:31:34 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Update internal INET variable after network restart.
+
+2013-05-03 17:39:20 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge branch 'master' of 10.125.65.252:/home/git/osdial
+
+2013-05-03 17:36:31 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Change back to 16kpbs.
+
+2013-05-03 16:22:03 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Add mc defaults to extras.
+
+2013-05-03 15:46:04 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Change mp3 compression to 8kpbs.
+
+2013-04-29 16:28:55 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add auto increment to osdial_carriers.
+
+2013-04-28 04:50:04 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix depsolving problem on osdial-profile for osdial-profile-all. Add plymouth-theme-osdial to requirements list.
+
+2013-04-28 04:48:38 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Always leave space for the company name in the issue.
+
+2013-04-27 18:28:43 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge branch 'master' of 10.125.65.252:/home/git/osdial
+
+2013-04-27 18:26:19 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix bad option.
+
+2013-04-27 16:49:32 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Admin: Added link to System Settings on version number
+
+2013-04-27 16:44:39 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Admin: Changed version # to only show three characters.
+
+2013-04-27 15:23:14 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Use rpm vars for directories and programs. Use spaces instead of tabs. Put VARactive_keepalives guess values in the install section of common.
+
+2013-04-27 14:36:53 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add missing VARflush_hopper_each_run and VARflush_hopper_manual. Set cps to 15 and min autodial level to 1.0.
+
+2013-04-27 09:44:50 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* An SQL dump containing the latest full database definition, minus examples, as of 300096.sql.
+
+2013-04-27 09:41:55 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Changed --install option to install using the SQL file latest.sql. Added --rolling-install option to install from the cumulative install path starting at SQL file 000000.sql. Added --no-examples option which when given excluded loading the SQL file 999999.sql.
+
+2013-04-27 07:43:44 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Update company and IP in /etc/issue. If hostname is localhost, change it to osdial-[uuid].osdial.com, set /etc/sysconfig/network and add a /etc/hosts entry.
+
+2013-04-26 16:39:21 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Added label to AFF. Change font size on AFF labels.
+
+2013-04-25 19:53:27 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Admin: Added a helpful msg to dial method. Prepared for additional potential field: Auto Assist to turn on Tally Only when below a certain number of agents.
+
+2013-04-25 19:49:05 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Agent: Moving debug msgs to Channel information window. Moving Status msg to the right. Shifting three rows of links further together to allow for when 'dialpad' expands. Making cursor pointer when mouse goes over tabs.
+
+2013-04-25 19:43:36 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Admin: updated Refresh Campaigns button
+
+2013-04-25 19:41:46 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Admin: Adding 3D effects to real time screen.
+
+2013-04-22 15:09:04 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Admin: Removed a dash and space to make color map fully fit.
+
+2013-04-21 18:54:37 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Admin: Cleanup list loader screen. (More time could be spent here.)
+
+2013-04-21 17:21:15 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Agent: Formatting changes to tabs.
+
+2013-04-21 15:27:57 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Agent: Added gradient background.
+
+2013-04-21 14:30:11 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Agent: Changed comment field to only adjust vertically in size.
+
+2013-04-21 13:52:38 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Agent: Formatting changes.
+
+2013-04-21 13:50:26 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Agent: Change font color and centering of Call Queue
+
+2013-04-21 11:19:50 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Agent: Changed information to Information.
+
+2013-04-21 11:18:21 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Agent: Returning some to left:0px.
+
+2013-04-21 11:14:42 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Agent: Adjusted screens to start at 2px in rather than zero.
+
+2013-04-20 19:39:20 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Agent: Altered line 1 and 2 for consistent look. Call Queue remaining.
+
+2013-04-20 17:20:14 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Agent: Moved CHannel Info onto agent screen. Started work on login again page.
+
+2013-04-20 14:07:33 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Agent: Moved MUTED sign to not overlap hot key display.
+
+2013-04-20 14:00:16 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Agent: Upgraded look of channel information display.
+
+2013-04-20 12:23:18 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Belongs to previous commit of layout changes.
+
+2013-04-20 11:02:45 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Agent: Removed "bottom" information bar and moved links to main section. Reorganized layout of customer fields.
+
+2013-04-20 08:54:26 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Adding in osdial-support.pub key handling. Added more ignores to the error_reporting of php.
+
+2013-04-20 00:22:26 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add our public support key.
+
+2013-04-19 23:59:01 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add some instruction for how to login to the console and change the root password. Indicate that Chrome and Firefox are supported browsers.
+
+2013-04-19 23:29:04 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Remove default root password message in the issue. New install packages will prompt the installer for a password, so we need not set a default root password.
+
+2013-04-19 09:32:28 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added organization and organization_title to template parsing, forms, and updates.
+
+2013-04-19 09:29:46 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added organization and organization_title to template documentation.
+
+2013-04-19 09:28:04 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added ability to search by organization and/or organization_title. Output Org in results. Resized result table. Reduce result table header font size. Set result table size at section_width + 65.
+
+2013-04-19 09:25:52 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added ability to search by organziation or organization and organization_title. Output Org in results. Resized table. Added Search Again option after successful search.
+
+2013-04-19 09:16:46 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add organization and organization_title to export.
+
+2013-04-19 08:41:49 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add organization and organization_title to template engines.
+
+2013-04-19 06:32:44 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Typo in spec osdial-sql section.
+
+2013-04-19 06:13:55 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Updated my.cnf to 5.5 (MariaDB) desired options, this file should be renamed to system.cnf and added to the system's /etc/my.cnf.d directory. Renamed my.cnf to my-5.1.cnf.
+
+2013-04-19 06:13:28 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Sample php.ini with desired options set.
+
+2013-04-19 06:13:03 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Increase CPS to 15 and decrease minimum dial-level to 1.0.
+
+2013-04-19 06:12:39 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Latest RPM spec file.
+
+2013-04-19 04:57:05 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Version number typo in upgrade_sql.map.
+
+2013-04-19 04:35:00 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Re-add help.gif to Makefile.
+
+2013-04-19 03:40:01 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Change panel selection to 100% CSS.
+
+2013-04-19 01:35:03 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Modify Forms sidetab to use 100% CSS.
+
+2013-04-18 21:43:13 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Merge branch 'master' of 10.125.65.252:/home/git/osdial
+
+2013-04-18 21:42:51 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix type in organization_title variable.
+
+2013-04-18 21:40:53 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Merge branch 'master' of 10.125.65.252:/home/git/osdial
+
+2013-04-18 21:40:31 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add organization and organization_title to modify lead.
+
+2013-04-18 21:34:27 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Merge branch 'master' of 10.125.65.252:/home/git/osdial
+
+2013-04-18 21:33:16 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add organization and organization_title to list_loader. Add organization organization_title to variables. Rename organization_name to organization_title.
+
+2013-04-18 21:20:51 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Merge branch 'master' of 10.125.65.252:/home/git/osdial
+
+2013-04-18 21:19:19 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Generate new ChangeLog. Add organization and organization_name to database. Increase version to 3.0.0.096.
+
+2013-04-18 18:02:04 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
+
+	* Added rounded corners, moved some buttons to better positions, testing blue text.
+
 2013-04-18 16:11:25 -0400 Lott Caskey <lottcaskey@gmail.com> 
 
-	* Revert "Merge branch 'v3.x-agentredesign' of ccsg:/home/git/osdial" (HEAD, stage/master, origin/master, origin/HEAD, master)
+	* Revert "Merge branch 'v3.x-agentredesign' of ccsg:/home/git/osdial"
 
 2013-04-18 15:55:41 -0400 Lott Caskey <lottcaskey@gmail.com> 
 
@@ -16,7 +1428,7 @@
 
 2013-04-18 13:44:46 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
 
-	* Changes for new look and bigger agent screen. (origin/v3.x-agentredesign)
+	* Changes for new look and bigger agent screen.
 
 2013-04-18 13:29:54 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
 
@@ -28,7 +1440,7 @@
 
 2013-04-18 13:16:45 -0400 Steve Szmidt <sszmidt@callcentersg.com> 
 
-	* Revert "Resized agent screen to allow script visible all the time. Rough draft." (origin/v3.0.094-guiredesign)
+	* Revert "Resized agent screen to allow script visible all the time. Rough draft."
 
 2013-04-18 13:11:38 -0400 Lott Caskey <lottcaskey@gmail.com> 
 
@@ -36,7 +1448,7 @@
 
 2013-04-17 18:09:41 -0400 Lott Caskey <lottcaskey@gmail.com> 
 
-	* Merge branch 'master' into v3.0.094-guiredesign (stage/v3.0.094-guiredesign)
+	* Merge branch 'master' into v3.0.094-guiredesign
 
 2013-04-16 00:33:42 -0400 Lott Caskey <lottcaskey@gmail.com> 
 
@@ -224,7 +1636,7 @@
 
 2013-03-29 06:54:02 -0400 Lott Caskey <lottcaskey@gmail.com> 
 
-	* Merge branch 'v3.0.094-guiredesign' into v3.0.094-guiredesign-asterisk11 (stage/v3.0.094-guiredesign-asterisk11, origin/v3.0.094-guiredesign-asterisk11)
+	* Merge branch 'v3.0.094-guiredesign' into v3.0.094-guiredesign-asterisk11
 
 2013-03-29 06:48:36 -0400 Lott Caskey <lottcaskey@gmail.com> 
 
@@ -400,7 +1812,7 @@
 
 2013-03-13 03:09:39 +0000 Lott Caskey <lottcaskey@gmail.com> 
 
-	* Fix callerID on transfers. (REL-2.3.0.094)
+	* Fix callerID on transfers. (tag: v2.3.0.094, stage/release/2.3.0)
 
 2013-03-13 03:08:46 +0000 Lott Caskey <lottcaskey@gmail.com> 
 
@@ -660,7 +2072,7 @@
 
 2012-02-08 14:51:11 +0000 Lott Caskey <lottcaskey@gmail.com> 
 
-	* Added --recording_location option to allow for command-line specification for where to look for recordings. (REL-2.3.0.092)
+	* Added --recording_location option to allow for command-line specification for where to look for recordings. (tag: v2.3.0.092)
 
 2012-02-02 02:54:18 +0000 Lott Caskey <lottcaskey@gmail.com> 
 
@@ -2060,7 +3472,7 @@
 
 2011-01-23 01:43:07 +0000 Lott Caskey <lottcaskey@gmail.com> 
 
-	* Bug: On inbound call, calls are not bridged into a local channel correctly.  This can cause problems with park and transfers. (REL-2.2.9.083)
+	* Bug: On inbound call, calls are not bridged into a local channel correctly.  This can cause problems with park and transfers. (tag: v2.2.9.083, stage/release/2.2.9, origin/release/2.2.9, release/2.2.9)
 
 2011-01-23 01:31:31 +0000 Lott Caskey <lottcaskey@gmail.com> 
 
@@ -4452,7 +5864,7 @@
 
 2010-01-19 21:30:21 +0000 Lott Caskey <lottcaskey@gmail.com> 
 
-	* ChangeLog update (REL-2.2.0.038)
+	* ChangeLog update (tag: v2.2.0.083, stage/release/2.2.0, origin/release/2.2.0, release/2.2.0)
 
 2010-01-04 21:18:22 +0000 Lott Caskey <lottcaskey@gmail.com> 
 
@@ -6504,7 +7916,7 @@
 
 2009-04-19 22:30:08 +0000 Lott Caskey <lottcaskey@gmail.com> 
 
-	* Fix menubarcolor on Conference list (stage/RB-2.1.002, origin/RB-2.1.002)
+	* Fix menubarcolor on Conference list
 
 2009-04-19 22:28:56 +0000 Lott Caskey <lottcaskey@gmail.com> 
 
@@ -6732,7 +8144,7 @@
 
 2009-03-15 18:52:18 +0000 Lott Caskey <lottcaskey@gmail.com> 
 
-	* Update trunk to RB-2.1.0b1 (REL-2.1.0.001)
+	* Update trunk to RB-2.1.0b1 (tag: v2.1.0.001, stage/release/2.1.0, origin/release/2.1.0, release/2.1.0)
 
 2009-03-15 18:51:44 +0000 Lott Caskey <lottcaskey@gmail.com> 
 
@@ -6748,11 +8160,11 @@
 
 2009-02-20 04:43:12 +0000 Lott Caskey <lottcaskey@gmail.com> 
 
-	* Misplaced branch (stage/RB-2.1.0b2, origin/RB-2.1.0b2)
+	* Misplaced branch
 
 2009-03-14 03:19:37 +0000 Lott Caskey <lottcaskey@gmail.com> 
 
-	* Release to version 2.1.0.001 (stage/RB-2.1.0b1, origin/RB-2.1.0b1)
+	* Release to version 2.1.0.001
 
 2009-03-12 22:28:05 +0000 Lott Caskey <lottcaskey@gmail.com> 
 
@@ -6844,11 +8256,11 @@
 
 2009-02-20 04:41:45 +0000 Lott Caskey <lottcaskey@gmail.com> 
 
-	* Release Branch 2.1.0b2 (RB-2.1.0b2, PRERB-2.1.0b2)
+	* Release Branch 2.1.0b2 (tag: rb2.1.0b2, tag: prerb2.1.0b2)
 
 2009-02-20 03:57:32 +0000 Lott Caskey <lottcaskey@gmail.com> 
 
-	* Release Branch 2.1.0b1 (PRERB-2.1.0b1)
+	* Release Branch 2.1.0b1 (tag: prerb2.1.0b1)
 
 2009-02-20 03:50:10 +0000 Lott Caskey <lottcaskey@gmail.com> 
 
