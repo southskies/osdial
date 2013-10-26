@@ -310,7 +310,7 @@ WebPhone = function() {
 					display_name: this.displayName,
 					websocket_proxy_url: this.websocket_proxy,
 					outbound_proxy_url: this.outbound_proxy,
-					ice_servers: this.ice_server ? [{ url: this.ice_server, credential: this.ice_credential ? this.ice_credential : null }] : [],
+					ice_servers: [{ url: this.ice_server, credential: this.ice_credential ? this.ice_credential : null }],
 					enable_rtcweb_breaker: false,
 					enable_media_stream_cache: true,
 					events_listener: { events: '*', listener: this.onSipEventStack },
@@ -1110,38 +1110,38 @@ WebPhone = function() {
 
 			var wpobj1 = document.createElement('object');
 			wpobj1.id = 'fakeVideoDisplay';
-			wpobj1.setAttribute('classid','clsid:5C2C407B-09D9-449B-BB83-C39B7802A684');
+			wpobj1.classid = 'clsid:5C2C407B-09D9-449B-BB83-C39B7802A684';
 			wpobj1.className = 'hiddenObject';
 			wpint.appendChild(wpobj1);
 
 			var wpobj2 = document.createElement('object');
 			wpobj2.id = 'fakeLooper';
-			wpobj2.setAttribute('classid','clsid:7082C446-54A8-4280-A18D-54143846211A');
+			wpobj2.classid = 'clsid:7082C446-54A8-4280-A18D-54143846211A';
 			wpobj2.className = 'hiddenObject';
 			wpint.appendChild(wpobj2);
 
 			var wpobj3 = document.createElement('object');
 			wpobj3.id = 'fakeSessionDescription';
-			wpobj3.setAttribute('classid','clsid:DBA9F8E2-F9FB-47CF-8797-986A69A1CA9C');
+			wpobj3.classid = 'clsid:DBA9F8E2-F9FB-47CF-8797-986A69A1CA9C';
 			wpobj3.className = 'hiddenObject';
 			wpint.appendChild(wpobj3);
 
 			var wpobj4 = document.createElement('object');
 			wpobj4.id = 'fakeNetTransport';
-			wpobj4.setAttribute('classid','clsid:5A7D84EC-382C-4844-AB3A-9825DBE30DAE');
+			wpobj4.classid = 'clsid:5A7D84EC-382C-4844-AB3A-9825DBE30DAE';
 			wpobj4.className = 'hiddenObject';
 			wpint.appendChild(wpobj4);
 
 			var wpobj5 = document.createElement('object');
 			wpobj5.id = 'fakePeerConnection';
-			wpobj5.setAttribute('classid','clsid:56D10AD3-8F52-4AA4-854B-41F4D6F9CEA3');
+			wpobj5.classid = 'clsid:56D10AD3-8F52-4AA4-854B-41F4D6F9CEA3';
 			wpobj5.className = 'hiddenObject';
 			wpint.appendChild(wpobj5);
 
-			this.audAudioRemote = document.createElement('audio');
-			this.audAudioRemote.id = 'audio_remote';
-			this.audAudioRemote.autoplay = 'autoplay';
-			wpint.appendChild(this.audAudioRemote);
+			var audAudioRemote = document.createElement('audio');
+			audAudioRemote.id = 'audio_remote';
+			audAudioRemote.autoplay = 'autoplay';
+			wpint.appendChild(audAudioRemote);
 
 			this.ringtone = document.createElement('audio');
 			this.ringtone.id = 'ringtone';
