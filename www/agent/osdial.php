@@ -117,7 +117,7 @@ $HKuser_level           = '5';  # minimum osdial user_level for HotKeys
 $campaign_login_list    = '1';  # show drop-down list of campaigns at login	
 $manual_dial_preview    = '1';  # allow preview lead option when manual dial
 $multi_line_comments    = '1';  # set to 1 to allow multi-line comment box
-$user_login_first       = '1';  # set to 1 to have the osdial_user login before the phone login
+$user_login_first       = '0';  # set to 1 to have the osdial_user login before the phone login
 $view_scripts           = '1';  # set to 1 to show the SCRIPTS tab
 $dispo_check_all_pause  = '0';  # set to 1 to allow for persistent pause after dispo
 $callholdstatus         = '1';  # set to 1 to show calls on hold count
@@ -227,7 +227,6 @@ $VARstatusesEXTJSON='';
 $VARstatusnamesEXT='';
 $VU_user_group='';
 $agent_message='';
-$WebPhoneHTML='';
 
 echo "<html>\n";
 echo "<head>\n";
@@ -280,11 +279,7 @@ $wsc .= "</span>";
 $company_id=0;
 $company_prefix='';
 if ($config['settings']['enable_multicompany'] > 0) {
-    if (empty($phone_login)) {
-        $company_prefix = OSDsubstr($VD_login,0,3);
-    } else {
-        $company_prefix = OSDsubstr($phone_login,0,3);
-    }
+    $company_prefix = OSDsubstr($phone_login,0,3);
     $company_id = ($company_prefix * 1) - 100;
     if (!empty($VD_login) and !empty($phone_login)) {
         if (OSDsubstr($VD_login,0,3) != OSDsubstr($phone_login,0,3)) {
@@ -402,21 +397,14 @@ if ($relogin == 'YES') {
     echo "    <td align=left>&nbsp;</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    #echo "    <td align=left></td>\n";
-    #echo "    <td align=right><font color=" . $login_fc . ">Campaign:&nbsp;</font></td>\n";
-    #echo "    <td align=left>$camp_form_code</td>\n";
-    #echo "    <td align=left>&nbsp;</td>\n";
-    echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
+    echo "    <td align=left></td>\n";
     echo "    <td align=right><font color=" . $login_fc . ">Campaign:&nbsp;</font></td>\n";
-    echo "    <td align=left><span id=\"LogiNCamPaigns\">$camp_form_code</span></td>\n";
-    echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
+    echo "    <td align=left>$camp_form_code</td>\n";
+    echo "    <td align=left>&nbsp;</td>\n";
     echo "  </tr>\n";
     echo "  <tr><td colspan=4>&nbsp;</td></tr>\n";
     echo "  <tr>\n";
-    #echo "    <td align=center colspan=4><input class=submit type=button onclick=\"login_submit(); return false;\" name=SUBMIT value=Submit></td>\n";
-    echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
-    echo "    <td align=center colspan=2><input class=submit type=submit name=SUBMIT value=Submit> &nbsp; <span id=\"LogiNReseT\"></span></td>\n";
-    echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
+    echo "    <td align=center colspan=4><input class=submit type=button onclick=\"login_submit(); return false;\" name=SUBMIT value=Submit></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=right colspan=4><font size=1>&nbsp;Version: $version</font>&nbsp;</td>\n";
@@ -470,21 +458,14 @@ if ($user_login_first == 1) {
         echo "    <td align=left>&nbsp;</td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        #echo "    <td align=left></td>\n";
-        #echo "    <td align=right><font color=" . $login_fc . ">Campaign:&nbsp;</font></td>\n";
-        #echo "    <td align=left>$camp_form_code</td>\n";
-        #echo "    <td align=left>&nbsp;</td>\n";
-        echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
+        echo "    <td align=left></td>\n";
         echo "    <td align=right><font color=" . $login_fc . ">Campaign:&nbsp;</font></td>\n";
-        echo "    <td align=left><span id=\"LogiNCamPaigns\">$camp_form_code</span></td>\n";
-        echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
+        echo "    <td align=left>$camp_form_code</td>\n";
+        echo "    <td align=left>&nbsp;</td>\n";
         echo "  </tr>\n";
         echo "  <tr><td colspan=4>&nbsp;</td></tr>\n";
-        echo "  <tr><td colspan=4>&nbsp;</td></tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
-        echo "    <td align=center colspan=2><input class=submit type=submit name=SUBMIT value=Submit> &nbsp; <span id=\"LogiNReseT\"></span></td>\n";
-        echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
+        echo "     <td align=center colspan=4 class=submit><input type=submit name=SUBMIT value=Submit></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=right colspan=4><font size=1>&nbsp;Version: $version</font>&nbsp;</td>\n";
@@ -496,27 +477,15 @@ if ($user_login_first == 1) {
         echo "</html>\n";
         exit;
     } else {
-        if (empty($phone_login) and empty($phone_pass)) {
+        if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
             $stmt=sprintf("SELECT phone_login,phone_pass FROM osdial_users WHERE user='%s' AND pass='%s' AND user_level>0;",mres($VD_login),mres($VD_pass));
             if ($DB) echo "|$stmt|\n";
+            
             $rslt=mysql_query($stmt, $link);
             $row=mysql_fetch_row($rslt);
             $phone_login=$row[0];
             $phone_pass=$row[1];
-
-            if (!empty($phone_login)) {
-                if (empty($phone_pass)) {
-                    $stmt=sprintf("SELECT login,pass FROM phones WHERE login='%s';",mres($phone_login));
-                    if ($DB) echo "|$stmt|\n";
-                    $rslt=mysql_query($stmt, $link);
-                    $row=mysql_fetch_row($rslt);
-                    $phone_login=$row[0];
-                    $phone_pass=$row[1];
-                }
-            }
-        }
-
-        if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
+    
             echo "<title>$t1 web client: Login</title>\n";
             echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $config['settings']['agent_template'] . "/styles.css\" media=\"screen\">\n";
             #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
@@ -529,65 +498,41 @@ if ($user_login_first == 1) {
             echo $welcome_span;
             echo "<form name=osdial_form id=osdial_form action=\"$agcPAGE\" method=post>\n";
             echo "<input type=hidden name=DB value=\"$DB\">\n";
-            echo "<div class=containera><div class=acrosslogin2>\n";
-            echo "<table width=500 cellpadding=0 cellspacing=0 border=0>\n";
+            echo "<br><br><br>\n";
+            echo "<table class=accrosslogin width=460 cellpadding=0 cellspacing=0>\n";
             echo "  <tr>\n";
-            echo "    <td class=across-top align=center colspan=4>&nbsp;</td>\n";
+            echo "    <td align=left>&nbsp;&nbsp;<font color=blue>$t1</font></td>\n";
+            echo "    <td align=center><font color=white>Login</font></td>\n";
             echo "  </tr>\n";
+            echo "  <tr><td align=left colspan=2><font size=1>&nbsp;</font></td></tr>\n";
             echo "  <tr>\n";
-            echo "    <td align=left>&nbsp;</td>\n";
-            echo "    <td align=center colspan=2><font color=" . $login_fc . "><b>Agent Login</b></font></td>\n";
-            echo "    <td align=left>&nbsp;</td>\n";
-            echo "  </tr>\n";
-            echo "  <tr>\n";
-            echo "    <td align=right colspan=4>&nbsp;</td>\n";
-            echo "  </tr>\n";
-            echo "  <tr>\n";
-            echo "    <td align=left></td>\n";
-            echo "    <td align=right><font color=" . $login_fc . ">User&nbsp;Login:&nbsp;</font></td>\n";
-            echo "    <td align=left><input type=text name=VD_login size=10 maxlength=20 value=\"$VD_login\"></td>\n";
-            echo "    <td align=left>&nbsp;</td>\n";
-            echo "  </tr>\n";
-            echo "  <tr>\n";
-            echo "    <td align=left></td>\n";
-            echo "    <td align=right><font color=" . $login_fc . ">User&nbsp;Password:&nbsp;</font></td>\n";
-            echo "    <td align=left><input type=password name=VD_pass size=10 maxlength=20 value=\"$VD_pass\"></td>\n";
-            echo "    <td align=left>&nbsp;</td>\n";
-            echo "  </tr>\n";
-            echo "  <tr>\n";
-            echo "    <td align=left></td>\n";
-            echo "    <td align=right><font color=" . $login_fc . ">Phone&nbsp;Login:&nbsp;</font></td>\n";
+            echo "    <td align=right><font color=white>Phone Login:</font></td>\n";
             echo "    <td align=left><input type=text name=phone_login size=10 maxlength=20 value=\"$phone_login\"></td>\n";
-            echo "    <td align=left>&nbsp;</td>\n";
             echo "  </tr>\n";
             echo "  <tr>\n";
-            echo "    <td align=left></td>\n";
-            echo "    <td align=right><font color=" . $login_fc . ">Phone&nbsp;Password:&nbsp;</font></td>\n";
+            echo "    <td align=right><font color=white>Phone Password:</font></td>\n";
             echo "    <td align=left><input type=password name=phone_pass size=10 maxlength=20 value=\"$phone_pass\"></td>\n";
-            echo "    <td align=right>&nbsp;</td>\n";
             echo "  </tr>\n";
             echo "  <tr>\n";
-            #echo "    <td align=left></td>\n";
-            #echo "    <td align=right><font color=" . $login_fc . ">Campaign:&nbsp;</font></td>\n";
-            #echo "    <td align=left>$camp_form_code</td>\n";
-            #echo "    <td align=left>&nbsp;</td>\n";
-            echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
-            echo "    <td align=right><font color=" . $login_fc . ">Campaign:&nbsp;</font></td>\n";
+            echo "    <td align=right><font color=white>User Login:</font></td>\n";
+            echo "    <td align=left><input type=text name=VD_login size=10 maxlength=20 value=\"$VD_login\"></td>\n";
+            echo "  </tr>\n";
+            echo "  <tr>\n";
+            echo "    <td align=right><font color=white>User Password:</font></td>\n";
+            echo "    <td align=left><input type=password name=VD_pass size=10 maxlength=20 value=\"$VD_pass\"></td>\n";
+            echo "  </tr>\n";
+            echo "  <tr>\n";
+            echo "    <td align=right><font color=white>Campaign:</font></td>\n";
             echo "    <td align=left><span id=\"LogiNCamPaigns\">$camp_form_code</span></td>\n";
-            echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
             echo "  </tr>\n";
-            echo "  <tr><td colspan=4>&nbsp;</td></tr>\n";
+            echo "  <tr><td colspan=2>&nbsp;</td></tr>\n";
             echo "  <tr>\n";
-            #echo "    <td align=center colspan=4><input class=submit type=button onclick=\"login_submit(); return false;\" name=SUBMIT value=Submit></td>\n";
-            echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
-            echo "    <td align=center colspan=2><input class=submit type=submit name=SUBMIT value=Submit> &nbsp; <span id=\"LogiNReseT\"></span></td>\n";
-            echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
+            echo "    <td align=center colspan=2>\n";
+            echo "      <input type=button onclick=\"login_submit(); return false;\" name=SUBMIT value=SUBMIT><span class=refresh id=\"LogiNReseT\"></span>\n";
+            echo "    </td>\n";
             echo "  </tr>\n";
-            echo "  <tr>\n";
-            echo "    <td align=right colspan=4><font size=1>&nbsp;Version: $version</font>&nbsp;</td>\n";
-            echo "  </tr>\n";
+            echo "  <tr><td align=left colspan=2><font size=1><br>VERSION: $version</font></td></tr>\n";
             echo "</table>\n";
-            echo "</div></div>\n";
             echo "</form>\n";
             echo "</body>\n";
             echo "</html>\n";
@@ -1402,11 +1347,6 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
         $voicemail_password=$row[68];
         $voicemail_email=$row[69];
 
-        if ($protocol=='WebSIP') {
-            $WebPhoneHTML = "<div id=\"WebPhone\" debugLevel=\"warn\" hide=\"1\" autoanswer=\"1\" register=\"1\" user=\"$login\" password=\"$pass\" domain=\"$server_ip\" websocket=\"ws://$server_ip:8088/ws/\" iceServer=\"stun:$server_ip:3478\" onregister=\"NoneInSessionCalL();\" onpermissionask=\"BrowserMediaAccess();\" onpermissiongranted=\"BrowserMediaAccessOK();\" onpermissiondeny=\"BrowserMediaAccessDeny();\"> </div>\n";
-            $protocol='SIP';
-        }
-
         $phone_gmt = $local_gmt;
         if ($clientDST) $local_gmt = ($local_gmt + $isdst);
         if ($protocol == 'EXTERNAL' or (OSDpreg_match('/SIP|IAX/',$protocol) and OSDpreg_match('/^.*@.*$/',$extension))) {
@@ -1600,14 +1540,12 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
                 $SIqueryCID = "$SIPSAK_prefix$VD_campaign$DS$CIDdate";
             }
 
-            if (empty($WebPhoneHTML)) {
-                ### insert a NEW record to the osdial_manager table to be processed
-                $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Originate','%s','Channel: %s','Context: %s','Exten: 2%s','Priority: 1','Callerid: \"OSDial#%s\" <%s>','Account: %s','','','','');",mres($NOW_TIME),mres($server_ip),mres($SIqueryCID),mres($SIP_user_DiaL),mres($ext_context),mres($session_id),mres($SIP_user),mres($campaign_cid),mres($SIqueryCID));
-                if ($DB) echo "$stmt\n";
-                $rslt=mysql_query($stmt, $link);
-                $affected_rows = mysql_affected_rows($link);
-                print "<!-- call placed to session_id: $session_id from phone: $SIP_user_DiaL -->\n";
-            }
+            ### insert a NEW record to the osdial_manager table to be processed
+            $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Originate','%s','Channel: %s','Context: %s','Exten: 2%s','Priority: 1','Callerid: \"OSDial#%s\" <%s>','Account: %s','','','','');",mres($NOW_TIME),mres($server_ip),mres($SIqueryCID),mres($SIP_user_DiaL),mres($ext_context),mres($session_id),mres($SIP_user),mres($campaign_cid),mres($SIqueryCID));
+            if ($DB) echo "$stmt\n";
+            $rslt=mysql_query($stmt, $link);
+            $affected_rows = mysql_affected_rows($link);
+            print "<!-- call placed to session_id: $session_id from phone: $SIP_user_DiaL -->\n";
 
             if ($auto_dial_level > 0) {
                 print "<!-- campaign is set to auto_dial_level: $auto_dial_level -->\n";
@@ -1918,13 +1856,6 @@ echo "</script>\n";
 #echo "document.write('$wsc');\n";
 #echo "</script>\n";
 
-echo "<script type=\"text/javascript\">\n";
-require('include/SIPml-api.js');
-echo "</script>\n";
-
-echo "<script type=\"text/javascript\">\n";
-require('include/sipphone.js');
-echo "</script>\n";
 
 
 
@@ -1939,9 +1870,6 @@ flush();
 <!-- ===================================================================================================================== -->
 
 <body onload="begin_all_refresh();"  onunload="BrowserCloseLogout();" name=osdial>
-<script language="JavaScript">
-  document.write(WebPhone.getWebPhoneStyles());
-</script>
 <?php echo $welcome_span; ?>
 
 <?php load_status('Initializing GUI...<br>&nbsp;<br>&nbsp;'); ?>
@@ -2176,8 +2104,8 @@ flush();
                             <td align=left><font class="body_text"><input type=text size=14 maxlength=12 name=MDPhonENumbeR class="cust_form" value="">&nbsp; <font color=<?php echo $mandial_fc; ?>>(12 digits max - digits only)</font></font></td>
                         </tr>
                         <tr>
-                            <td align=right><font class="body_text"><font color=<?php echo $mandial_fc; ?>> <label for=LeadLookuP>Search Existing Leads: </label></font></font></td>
-                            <td align=left><font class="body_text"><input type=checkbox id=LeadLookuP name=LeadLookuP size=1 value="0">&nbsp; <font color=<?php echo $mandial_fc; ?>><label for=LeadLookuP>(If checked will attempt to Find the phone number in the system before inserting it as a New Lead)</label></font></font></td>
+                            <td align=right><font class="body_text"><font color=<?php echo $mandial_fc; ?>> Search Existing Leads: </font></font></td>
+                            <td align=left><font class="body_text"><input type=checkbox name=LeadLookuP size=1 value="0">&nbsp; <font color=<?php echo $mandial_fc; ?>>(If checked will attempt to Find the phone number in the system before inserting it as a New Lead)</font></font></td>
                         </tr>
                         <tr>
                             <td align=center colspan=2>
@@ -2348,21 +2276,6 @@ flush();
                     <a href="#" onclick="NoneInSessionCalL();return false;" style='text-decoration: blink;color:<?php echo $noone_fc; ?>;'><u><b>Try Calling Your Phone Here</b></u></a>
                     <br><br><br>
                     <a href="#" onclick="NoneInSessionOK();return false;" style='color:<?php echo $noone_fc2; ?>;'>Go Back</a>
-                </td>
-            </tr>
-        </table>
-    </span>
-
-    <?php load_status('Initializing GUI...<br>BrowserMediaAccess<br>&nbsp;'); ?>
-    <!-- Browser Media Access -->
-    <span style="position:absolute;left:0px;top:0px;z-index:41;visibility:hidden;" id="BrowserMediaAccess">
-        <table border=1 bgcolor="<?php echo $noone_bg; ?>" width=1020 height=565>
-            <tr>
-                <td align=center>
-                    <b><font color=<?php echo $noone_fc; ?>><span id="BrowserMediaAccessMessage">The WebSIP Phone is requesting Media Access to your browser.<br>The request is usually located at the top of the window and asks for permission to use the microphone.</span></font></b>
-                    <br><br>
-                    <span id="BrowserMediaAccessLogout" style='color:<?php echo $noone_fc2; ?>;'></span><br>
-                    <a href="#" onclick="BrowserMediaAccessOK();return false;" style='color:<?php echo $noone_bg; ?>;'>Go Back</a>
                 </td>
             </tr>
         </table>
@@ -2546,8 +2459,8 @@ flush();
                             </tr>
                         </table>
                         <input type=hidden name=DispoSelection><br>
-                        <input type=checkbox name=DispoSelectStop id=DispoSelectStop size=1 value="0">
-                        <label for=DispoSelectStop>PAUSE <?php echo (($inbound_man>0)?"INBOUND CALLS":"AGENT DIALING") ?></label> <br>
+                        <input type=checkbox name=DispoSelectStop size=1 value="0">
+                        PAUSE <?php echo (($inbound_man>0)?"INBOUND CALLS":"AGENT DIALING") ?> <br>
                         <a href="#" onclick="DispoMaximize();DispoSelectContent_create('','ReSET');return false;">CLEAR FORM</a>
                         &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; 
                         <a href="#" onclick="DispoMaximize();DispoSelect_submit();return false;"><b>SUBMIT</b></a>
@@ -2687,7 +2600,7 @@ flush();
                             <option selected>PM</option>
                         </select> &nbsp;<br>
                         <?php if ($agentonly_callbacks) {
-                            echo "<input type=checkbox name=CallBackOnlyMe id=CallBackOnlyMe size=1 value=\"0\"><label for=CallBackOnlyMe> MY CALLBACK ONLY </label><br>";
+                            echo "<input type=checkbox name=CallBackOnlyMe id=CallBackOnlyMe size=1 value=\"0\"> MY CALLBACK ONLY <br>";
                         } ?>
                         CB Comments: <input type=text name="CallBackCommenTsField" id="CallBackCommenTsField" size=50>
                         <br><br>
@@ -2753,7 +2666,7 @@ flush();
         <span id="DiaLLeaDPrevieWHide">Channel</span>
         <span id="DiaLDiaLAltPhonEHide">Channel</span>
         <?php if (!$agentonly_callbacks) {
-            echo "<input type=checkbox name=CallBackOnlyMe id=CallBackOnlyMe size=1 value=\"0\"><label for=CallBackOnlyMe> MY CALLBACK ONLY </label><br>";
+            echo "<input type=checkbox name=CallBackOnlyMe size=1 value=\"0\"> MY CALLBACK ONLY <br>";
         } ?>
     </span>
 
@@ -3284,7 +3197,6 @@ if(isset($_SERVER['HTTP_USER_AGENT'])){
                 CANCEL
             </div>
         </div>
-<?php echo $WebPhoneHTML; ?>
     </span>
 <!-- END *********   The end of the main OSDial display panel -->
 

@@ -418,7 +418,7 @@
 				xmlhttprequestcheckconf.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 				xmlhttprequestcheckconf.send(checkconf_query); 
 				xmlhttprequestcheckconf.onreadystatechange = function() { 
-					if (typeof(xmlhttprequestcheckconf) != "undefined" && xmlhttprequestcheckconf.readyState == 4 && xmlhttprequestcheckconf.status == 200) {
+					if (xmlhttprequestcheckconf.readyState == 4 && xmlhttprequestcheckconf.status == 200) {
 						var check_conf = null;
 						var LMAforce = taskforce;
 						check_conf = xmlhttprequestcheckconf.responseText;
@@ -2338,27 +2338,6 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 	}
 
 
-	function BrowserMediaAccess() {
-		debug("<b>BrowserMediaAccess:</b>",2);
-        var bmamsg = 'The WebSIP Phone is requesting Media Access to your browser.<br>The request is usually located at the top of the window and asks for permission to use the microphone.';
-        document.getElementById('BrowserMediaAccessMessage').innerHTML = bmamsg;
-		showDiv('BrowserMediaAccess');
-		browser_media_access=1;
-	}
-	function BrowserMediaAccessDeny() {
-		debug("<b>BrowserMediaAccessDeny:</b>",2);
-        var bmamsg = 'The Browser Media Request was denied!<br>You must modify your browser settings to allow media access to the microphone.';
-        document.getElementById('BrowserMediaAccessMessage').innerHTML = bmamsg;
-        document.getElementById('BrowserMediaAccessLogout').innerHTML = '<a href="#" onclick="LogouT();return false;">Logout</a>';
-		showDiv('BrowserMediaAccess');
-		browser_media_access=1;
-	}
-	function BrowserMediaAccessOK() {
-		debug("<b>BrowserMediaAccessOK:</b>",2);
-		hideDiv('BrowserMediaAccess');
-		browser_media_access=0;
-		nochannelinsession=0;
-	}
 // ################################################################################
 // Generate the Closer In Group Chooser panel
 	function CloserSelectContent_create() {
@@ -2557,8 +2536,6 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		voicemail_ariclose();
 
 		logTimeTrans();
-
-		WebPhone.close();
 
 		var xmlhttp=getXHR();
 		if (xmlhttp) { 
@@ -2909,7 +2886,6 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			hideDiv('CallBacKsLisTBox');
 			hideDiv('NeWManuaLDiaLBox');
 			hideDiv('PauseCodeSelectBox');
-			hideDiv('BrowserMediaAccess');
 			if (scheduled_callbacks != '1') {
 				hideDiv('CallbacksButtons');
 			} else {
@@ -3086,7 +3062,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			if ( (custchannellive < -10) && (lastcustchannel.length > 3) ) {
 				ReChecKCustoMerChaN();
 			}
-			if ( (browser_media_access==0) && (nochannelinsession > 16) && (check_n > 15) ) {
+			if ( (nochannelinsession > 16) && (check_n > 15) ) {
 				NoneInSession();
 			}
 			if (WaitingForNextStep==0) {
