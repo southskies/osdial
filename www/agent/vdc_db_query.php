@@ -414,8 +414,7 @@ if ($ACTION == 'LogiNCamPaigns') {
         $o=0;
         while ($camps_to_print > $o) {
             $rowx=mysql_fetch_row($rslt);
-            $csel=''; if ($rowx[0] == $campaign) $csel = ' selected';
-            echo "<option value=\"$rowx[0]\" $csel>" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
+            echo "<option value=\"$rowx[0]\">" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
             $o++;
         }
         echo "</select>\n";
