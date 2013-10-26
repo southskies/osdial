@@ -77,8 +77,7 @@ if ($ADD==11111111111) {
         echo "  <td align=right>Client Protocol: </td>\n";
         echo "  <td align=left>\n";
         echo "    <select size=1 name=protocol>\n";
-        echo "      <option selected>WebSIP</option>\n";
-        echo "      <option>SIP</option>\n";
+        echo "      <option selected>SIP</option>\n";
         echo "      <option>IAX2</option>\n";
         $svrp = get_first_record($link, 'servers', 'count(*) AS count', "asterisk_version LIKE '1.2.%%'");
         if ($svrp['count'] > 0) echo "        <option>Zap</option>\n";
@@ -361,7 +360,6 @@ if ($ADD==31111111111) {
         echo "  <td align=right>Client Protocol: </td>\n";
         echo "  <td align=left>\n";
         echo "    <select size=1 name=protocol>\n";
-        echo "      <option>WebSIP</option>\n";
         echo "      <option>SIP</option>\n";
         echo "      <option>IAX2</option>\n";
         $svrp = get_first_record($link, 'servers', 'count(*) AS count', "asterisk_version LIKE '1.2.%%'");
