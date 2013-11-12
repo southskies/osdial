@@ -394,7 +394,7 @@ function report_lead_search_advanced($lsa_seg='form') {
                     $status_found++;
                 } elseif ($field == "status") {
                     $status_found++;
-                } elseif ($field == "campaign_id" or $field == "lead_id" or $field == "list_id" or $field == "user" or $field == "phone_number") {
+                } elseif ($field == "campaign_id" or (($field == "lead_id" or $field == "phone_number") and ($use_osdial_log or $use_osdial_agent_log)) or $field == "list_id" or $field == "user") {
                     if ($use_osdial_log) {
                         $searchFLD .= "osdial_log." . $field . ",";
                     } elseif ($use_osdial_agent_log) {
@@ -487,6 +487,7 @@ function report_lead_search_advanced($lsa_seg='form') {
         $field_label['entry_date'] = '';
         $field_label['modify_date'] = '';
         $field_label['status'] = '';
+        $field_label['status_extended'] = '';
         $field_label['user'] = '';
         $field_label['vendor_lead_code'] = '';
         $field_label['source_id'] = '';
