@@ -4353,6 +4353,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		if (manual_dial_in_progress==1) {
 			osdalert('You cannot skip a Call-Back or a call placed to a manually entered number.');
 		} else {
+			CBcommentsBoxhide();
 			if (previewFD_time > 0) {
 				clearTimeout(previewFD_timeout_id);
 				clearInterval(previewFD_display_id);
