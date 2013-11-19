@@ -521,7 +521,7 @@ if ($ADD==10000000000) {
         echo "<a name=VMList></a>";
         echo '<br><br><br><br>';
         echo '<center>';
-        echo "<b><font class=top_header2 color=$default_text size=-1>VOICE MAIL</b><br>";
+        echo "<b><font class=top_header2 color=$default_text size=-1>VOICEMAIL</b><br>";
         if (file_exists ('VMnow.txt') ) {
             echo "<font color=$default_text><p> As of " . date("l dS o F h:i:s A",filectime('VMnow.txt') )  . "</p></font>";
             echo "<table class=shadedtable bgcolor=grey cellspacing=1 align=center width=560>\n";
@@ -542,7 +542,7 @@ if ($ADD==10000000000) {
                 //        break;
                 //}
                 // Ensuring only vm entries show up
-                if ( OSDsubstr($line,0,7) == "default" ) {
+                if ( OSDsubstr($line,0,6) == "osdial" ) {
                     $line = rtrim($line);
                     $lary = OSDpreg_split("/\\s+/",$line);
                     echo "  <tr " . bgcolor($o) . " class=\"row font1\">\n";
