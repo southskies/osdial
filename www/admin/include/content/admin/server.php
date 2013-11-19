@@ -164,11 +164,11 @@ if ($ADD==411111111111) {
                     $stmt = sprintf("UPDATE servers SET server_id='%s',server_description='%s',server_ip='%s',active='%s',asterisk_version='%s',max_osdial_trunks='%s',telnet_host='%s',".
                         "telnet_port='%s',ASTmgrUSERNAME='%s',ASTmgrSECRET='%s',ASTmgrUSERNAMEupdate='%s',ASTmgrUSERNAMElisten='%s',ASTmgrUSERNAMEsend='%s',local_gmt='%s',".
                         "voicemail_dump_exten='%s',answer_transfer_agent='%s',ext_context='%s',sys_perf_log='%s',vd_server_logs='%s',agi_output='%s',osdial_balance_active='%s',".
-                        "balance_trunks_offlimits='%s',server_profile='%s' WHERE server_id='%s';",
+                        "balance_trunks_offlimits='%s',server_profile='%s',asterisk_languages='%s' WHERE server_id='%s';",
                         mres($server_id),mres($server_description),mres($server_ip),mres($active),mres($asterisk_version),mres($max_osdial_trunks),mres($telnet_host),
                         mres($telnet_port),mres($ASTmgrUSERNAME),mres($ASTmgrSECRET),mres($ASTmgrUSERNAMEupdate),mres($ASTmgrUSERNAMElisten),mres($ASTmgrUSERNAMEsend),mres($local_gmt),
                         mres($voicemail_dump_exten),mres($answer_transfer_agent),mres($ext_context),mres($sys_perf_log),mres($vd_server_logs),mres($agi_output),mres($osdial_balance_active),
-                        mres($balance_trunks_offlimits),mres($server_profile),mres($old_server_id));
+                        mres($balance_trunks_offlimits),mres($server_profile),mres($asterisk_languages),mres($old_server_id));
 
                     $rslt=mysql_query($stmt, $link);
 
