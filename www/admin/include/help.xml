@@ -958,6 +958,10 @@
     How long to wait after joining the queue before playing the prompt. Set to "1" to play immediately. Set to "0" to wait for the normal prompt interval time. A value greater than the prompt interval will have no effect. Default is "0".
     </item>
 
+    <item pathId="welcome_message_min_playtime" sectionId="45" title="Welcome Message Minimum Playtime">
+    The minimum amount of time in seconds that the Welcome Message will play for, even if agents are available. 0 - Default Behavior (no minimum), BLANK - Play entire file.
+    </item>
+
   </section>
 
 
