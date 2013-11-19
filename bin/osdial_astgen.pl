@@ -320,7 +320,7 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 							$rtins_sql .= sprintf(",('%s','%s','%d','%s','%s')",$osdial->mres($rtcontext),$osdial->mres($rtexten),$osdial->mres($rtprio),$osdial->mres($rtapp),$osdial->mres($rtappdata));
 						}
 						if ($rtins_cnt>500) {
-							$rtins_sql .= ';';
+							$rtins_sql .= ' ON DUPLICATE KEY UPDATE app=VALUES(app),appdata=VALUES(appdata);';
 							$rtins_cnt=0;
 							$osdial->sql_execute($rtins_sql,'RT');
 							$rtins_sql='';
@@ -330,7 +330,7 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 			}
 		}
 		if ($rtins_sql ne '') {
-			$rtins_sql .= ';';
+			$rtins_sql .= ' ON DUPLICATE KEY UPDATE app=VALUES(app),appdata=VALUES(appdata);';
 			$rtins_cnt=0;
 			$osdial->sql_execute($rtins_sql,'RT');
 			$rtins_sql='';
