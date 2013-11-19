@@ -1629,6 +1629,10 @@ The OSDial basic web-based lead loader is designed simply to take a lead file, t
   ARCHIVE - Archive&lt;br/&gt;
   OTHER - Future use
     </item>
+
+    <item pathId="asterisk_languages" sectionId="24" title="Asterisk Languages">
+    The audio file language sets that have been detected as available for this Asterisk instance.
+    </item>
   </section>
 
 
