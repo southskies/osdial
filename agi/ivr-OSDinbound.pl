@@ -60,8 +60,8 @@ use IO::Select;
 use Data::Dumper;
 use Time::HiRes ('gettimeofday','usleep','sleep');
 
-my $script='agi-OSDinbound.agi';
-my $DB=0;
+my $script='ivr-OSDinbound.agi';
+my $DB=1;
 
 my $osdial = OSDial->new('DB'=>0);
 $osdial->{_agi}{mod}=$script;
@@ -71,6 +71,8 @@ $s->add(\*STDIN);
 
 my $params = {};
 my $vars = {};
+my $streamsize = {};
+my $streampos = {};
 my @fullin;
 my $in_enterpin=0;
 my $docallback=0;
@@ -111,8 +113,14 @@ sub infunc {
 			exit 0; 
 		} elsif ($ins[0] eq 'H') {
 			exit 0; 
+		} elsif ($ins[0] eq 'B') {
+			$streampos->{$ins[2]} = 0;
+			$streamsize->{$ins[2]} = $ins[3];
 		} elsif ($inhold==1 and $ins[0] eq 'F' and $ins[2] eq $hold) {
 			#print "A,$hold\n";
+			$streampos->{$ins[2]} = 0;
+			$start_moh=2;
+			$inhold=0;
 		} elsif ($incallback==1 and $ins[0] eq 'F' and $ins[2] eq 'sip-silence') {
 			$incallback=0;
 			print "H,callback\n";
@@ -127,8 +135,12 @@ sub infunc {
 			$start_moh=2;
 		} elsif ($inhold==1 and $start_moh==1 and $ins[0] eq 'F') {
 			$start_moh=2;
-		} elsif ($inhold==1 and $ins[0] eq 'T' and $ins[2] eq $hold) {
-			$inhold=0;
+		} elsif ($ins[0] eq 'D') {
+			$streampos->{$ins[2]} = 0;
+			$inhold=0 if ($inhold==1 and $ins[2] eq $hold);
+		} elsif ($ins[0] eq 'T') {
+			$streampos->{$ins[2]} = $ins[4];
+			$inhold=0 if ($inhold==1 and $ins[2] eq $hold);
 		} elsif ($inafterhours) {
 			$inafterhours=0;
 			if ($ins[0] eq '*') {
@@ -976,6 +988,7 @@ while ($drop_timer <= $DROP_TIME) {
 
 	if ($inwelcome==1) {
 		stream_file('sip-silence');
+		stream_file('silence/2');
 		while ($inwelcome==1) {
 			my $innew = infunc();
 			$docallback=1 if ($innew eq '*');
@@ -988,6 +1001,7 @@ while ($drop_timer <= $DROP_TIME) {
 			stop_stream();
 			stream_file($ingroup->{onhold_prompt_filename});
 			stream_file('sip-silence');
+			stream_file('silence/2');
 			$hold_message_counter = 0;
 			$last_played=0;
 		} elsif ($last_played>$prompt_buffer and $callback_message_counter > $ingroup->{callback_interval} and $ingroup->{callback_interval} != 0) {
@@ -999,6 +1013,7 @@ while ($drop_timer <= $DROP_TIME) {
 			$cbkey = 'pound' if ($cbkey eq '#');
 			stream_file('digits/'.$cbkey);
 			stream_file('sip-silence');
+			stream_file('silence/2');
 			$callback_message_counter = 0;
 			$last_played=0;
 		} elsif ($last_played>$prompt_buffer and ($ingroup->{placement_max_repeat}==0 or $placement_playcount<$ingroup->{placement_max_repeat}) and $ingroup->{placement_interval} != 0 and $placement_counter > $ingroup->{placement_interval}) {
@@ -1031,6 +1046,7 @@ while ($drop_timer <= $DROP_TIME) {
 				stream_file('queue-callswaiting');
 			}
 			stream_file('sip-silence');
+			stream_file('silence/2');
 			$placement_counter = 0;
 			$placement_playcount++;
 			$last_played=0;
@@ -1068,6 +1084,7 @@ while ($drop_timer <= $DROP_TIME) {
 				stream_file('queue-minutes');
 			}
 			stream_file('sip-silence');
+			stream_file('silence/2');
 			$queuetime_counter = 0;
 			$queuetime_playcount++;
 			$last_played=0;
@@ -1083,7 +1100,7 @@ while ($drop_timer <= $DROP_TIME) {
 			$last_played++;
 		} elsif ($start_moh>1) {
 			$start_moh=0;
-			stream_file($hold);
+			stream_file($hold,$streampos->{$hold});
 			$inhold=1;
 		}
 	}
@@ -1215,13 +1232,15 @@ sub start_hold {
 }
 
 sub stream_start_file {
-	my ($file) = @_;
-	print "S,$file\n";
+	my ($file,$pos) = @_;
+	$pos=0 if (!defined($pos));
+	print "S,$file,$pos\n";
 }
 
 sub stream_file {
-	my ($file) = @_;
-	print "A,$file\n";
+	my ($file,$pos) = @_;
+	$pos=0 if (!defined($pos));
+	print "A,$file,$pos\n";
 }
 
 sub set_variable {
