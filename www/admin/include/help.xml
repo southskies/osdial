@@ -962,6 +962,10 @@
     The minimum amount of time in seconds that the Welcome Message will play for, even if agents are available. 0 - Default Behavior (no minimum), BLANK - Play entire file.
     </item>
 
+    <item pathId="prompt_language" sectionId="46" title="Prompt Language">
+    The audio file language set to use on calls into this ingroup.
+    </item>
+
   </section>
 
 
