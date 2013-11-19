@@ -118,6 +118,8 @@ sub infunc {
 		} elsif ($ins[0] eq 'B') {
 			$streampos->{$ins[2]} = 0;
 			$streamsize->{$ins[2]} = $ins[3];
+		} elsif ($loopwelcome==1 and $ins[0] eq 'F' and $ins[2] eq $welcome) {
+			$loopwelcome=0;
 		} elsif ($inhold==1 and $ins[0] eq 'F' and $ins[2] eq $hold) {
 			#print "A,$hold\n";
 			$streampos->{$ins[2]} = 0;
@@ -130,8 +132,6 @@ sub infunc {
 			$inaftercall=0;
 		} elsif ($inafterhours==1 and $ins[0] eq 'F' and $ins[2] eq 'sip-silence') {
 			$inafterhours=0;
-		} elsif ($inwelcome==1 and $ins[0] eq 'F' and $welcome ne '' and $ins[2] eq $welcome) {
-			$loopwelcome=0;
 		} elsif ($inwelcome==1 and $ins[0] eq 'F' and $ins[2] eq 'sip-silence') {
 			$inwelcome=0;
 		} elsif ($inprompt==1 and $ins[0] eq 'F' and $ins[2] eq 'sip-silence') {
@@ -610,18 +610,17 @@ if ($hm<$ct_default_start or $hm>$ct_default_stop) {
 $inwelcome=1;
 my $loopstart = time();
 stream_file('silence/1');
-unless ($ingroup->{welcome_message_filename} =~ /---NONE---/ or $ingroup->{welcome_message_filename} eq '') {
-	$welcome = $ingroup->{welcome_message_filename};
+if ($ingroup->{'welcome_message_filename'} !~ /---NONE---/ and $ingroup->{'welcome_message_filename'} ne '') {
+	$welcome = $ingroup->{'welcome_message_filename'};
 	stream_file($welcome);
 	stream_file('silence/2');
-	if ($ingroup->{'welcome_message_min_playtime'} eq '' or $ingroup->{'welcome_message_min_playtime'} > 0) {
+	if ($ingroup->{'welcome_message_min_playtime'} eq '' or $ingroup->{'welcome_message_min_playtime'}>0) {
 		$loopwelcome=1;
-		#stream_file('sip-silence');
 	}
-	while ($loopwelcome>1) {
+	while ($loopwelcome==1) {
 		my $innew = infunc();
 		my $loopcur = time();
-		$loopwelcome=0 if ($ingroup->{'welcome_message_min_playtime'} >= ($loopcur-$loopstart));
+		$loopwelcome=0 if ($ingroup->{'welcome_message_min_playtime'}>0 and ($loopcur-$loopstart)>$ingroup->{'welcome_message_min_playtime'});
 	}
 }
 
