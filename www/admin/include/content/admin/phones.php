@@ -468,6 +468,16 @@ if ($ADD==10000000000) {
     $rslt=mysql_query($stmt, $link);
     $phones_to_print = mysql_num_rows($rslt);
 
+    echo "<script>\n";
+    echo "  var voicemail_ariopen = function() {};\n";
+    echo "  var voicemail_ariclose = function() {};\n";
+    echo "  var voicemail_arihangup = function() {};\n";
+    echo "</script>\n";
+    echo "<div style=\"display:none;position:relative;z-index:40;\" name=\"ARIPanel\" id=\"ARIPanel\">\n";
+    echo "    <iframe src=\"/agent/blank.php\" width=\"973\" height=\"550\" name=\"ARIFrame\" id=\"ARIFrame\" style=\"background-color: white;\"></iframe>\n";
+    echo "</div>\n";
+
+    echo "<div style=\"display:block;position:relative;z-index:35;\" name=\"VMPanel\" id=\"VMPanel\">\n";
     echo "<center><br><font class=top_header color=$default_text size=+1>PHONES</font><br><br>\n";
     echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1>\n";
     echo "  <tr class=tabheader>";
@@ -481,7 +491,6 @@ if ($ADD==10000000000) {
     echo "    <td>DIALPLAN</B></td>\n";
     echo "    <td><a href=\"$PHP_SELF?ADD=10000000000&$STATUSlink\">STATUS</a></td>\n";
     echo "    <td>NAME</td>\n";
-    echo "    <td colspan=3>VOICEMAIL</td>\n";
     echo "    <td align=center>LINKS</td>\n";
     echo "  </tr>\n";
 
@@ -501,74 +510,86 @@ if ($ADD==10000000000) {
         echo "    <td>$row[1]</td>\n";
         echo "    <td>$row[8]</td>\n";
         echo "    <td>$row[11]</td>\n";
-        echo "    <td>$row[2]</td>\n";
-        echo "    <td>$row[14]</td>\n";
-        echo "    <td>$row[15]</td>\n";
         echo "    <td align=center><a href=\"$PHP_SELF?ADD=31111111111&extension=$row[0]&server_ip=$row[5]\">MODIFY</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=31&phone_extension=$row[0]&phone_server_ip=$row[5]\">STATS</a></td>\n";
         echo "  </tr>\n";
         $o++;
     }
 
     echo "  <tr class=tabfooter>\n";
-    echo "    <td colspan=10></td>\n";
+    echo "    <td colspan=7></td>\n";
     echo "  </tr>\n";
     echo "</table></center>\n";
 
-    if ($LOG['multicomp'] == 0) {
-        // List all voicemail on dialer 1
-        echo "<a name=VMList></a>";
-        echo '<br><br><br><br>';
-        echo '<center>';
-        echo "<b><font class=top_header2 color=$default_text size=-1>VOICEMAIL</b><br>";
-        if (file_exists ('VMnow.txt') ) {
-            echo "<font color=$default_text><p> As of " . date("l dS o F h:i:s A",filectime('VMnow.txt') )  . "</p></font>";
-            echo "<table class=shadedtable bgcolor=grey cellspacing=1 align=center width=560>\n";
-            echo "  <tr class=tabheader>\n";
-            echo "    <td width=10 align=center>Context</td>\n";
-            echo "    <td width=30 align=center>Mbox</td>\n";
-            echo "    <td width=110 align=center>Agent</td>\n";
-            echo "    <td width=35 align=right>NewMsgs</td>\n";
-            echo "  </tr>";
-            #echo "</table>";
-            // get a web page into an array and print it out ("l dS of F Y h:i:s A")
-            $fcontents = file( 'VMnow.txt' );
-            #echo "<table>";
-            $o=0;
-            while ( list( $line_num, $line ) = each( $fcontents ) ) {
-                // Exit if the Verbosity line shows up - Obscured by only listing vm context 'default'
-                //if ( OSDsubstr($line,0,9) == "Verbosity") {
-                //        break;
-                //}
-                // Ensuring only vm entries show up
-                if ( OSDsubstr($line,0,6) == "osdial" ) {
-                    $line = rtrim($line);
-                    $lary = OSDpreg_split("/\\s+/",$line);
-                    echo "  <tr " . bgcolor($o) . " class=\"row font1\">\n";
-                    echo "    <td>" . $lary[0] . "</td>\n";
-                    echo "    <td>" . $lary[1] . "</td>\n";
-                    $llast = count($lary) - 1;
-                    $lagent='';
-                    if ($llast - 1 > 2) {
-                        foreach (range(2, $llast - 1) as $lnum) {
-                            $lagent .= $lary[$lnum] . " ";
-                        }
-                        $lagent = rtrim($lagent);
-                    }
-                    echo "    <td>" . $lagent . "</td>\n";
-                    echo "    <td align=right>" . $lary[$llast] . "</td>\n";
-                    echo "</tr>";
-                    #echo "<tr><td><pre>" . $line . "</td></tr>";
-                    $o++;
-                }
-            }
-            echo "  <tr class=tabfooter>\n";
-            echo "    <td colspan=4></td>\n";
-            echo "  </tr>\n";
-            echo "</table>";
-        } else {
-            echo "Error! VMnow.txt is missing!";
-        }
+
+    if ($LOG['multicomp_user'] > 0) {
+        $stmt=sprintf("SELECT * FROM phones WHERE company='%s' AND voicemail_id!='' %s;",$LOG['company_prefix'],$SQLorder);
+    } else {
+        $stmt=sprintf("SELECT * FROM phones WHERE voicemail_id!='' %s;",$SQLorder);
     }
+    $rslt=mysql_query($stmt, $link);
+    $vm_to_print = mysql_num_rows($rslt);
+    // List all voicemail on dialer 1
+    echo "<a name=VMList></a>";
+    echo '<br><br><br><br>';
+    echo '<center>';
+    echo "<b><font class=top_header2 color=$default_text size=-1>VOICEMAIL</b><br>";
+    echo "<font color=$default_text><p> As of " . date("l dS F o, h:i:s A")  . "</p></font>";
+    echo "<table class=shadedtable bgcolor=grey cellspacing=1 align=center width=670>\n";
+    echo "  <tr class=tabheader>\n";
+    echo "    <td width=\"10%\" align=center>VMbox</td>\n";
+    echo "    <td width=\"15%\" align=center>Server</td>\n";
+    echo "    <td width=\"10%\" align=center>Exten</td>\n";
+    echo "    <td width=\"20%\" align=center>Agent</td>\n";
+    echo "    <td width=\"25%\" align=center>Email</td>\n";
+    echo "    <td width=\"10%\" align=right>New Msgs</td>\n";
+    echo "    <td width=\"10%\" align=right>Old Msgs</td>\n";
+    echo "  </tr>";
+    $o=0;
+    while ($phones_to_print > $o) {
+        $rowV=mysql_fetch_assoc($rslt);
+    	$vmjs='';
+    	$vmjs .= "    voicemail_ariopen = function() {\n";
+    	$vmjs .= "        document.getElementById('VMPanel').style.display='none';\n";
+    	$vmjs .= "        document.getElementById('ARIPanel').style.display='block';\n";
+    	$vmjs .= "        document.getElementById('ARIFrame').src = '/voicemail/".$rowV['server_ip']."/ari/index.php?sessionid=1".$rowV['voicemail_id']."&username=".$rowV['voicemail_id']."&password=".$rowV['voicemail_password']."';\n";
+    	$vmjs .= "    };\n";
+
+    	$vmjs .= "    voicemail_ariclose = function() {\n";
+    	$vmjs .= "            document.getElementById('ARIFrame').src = '/voicemail/".$rowV['server_ip']."/ari/index.php?logout=1';\n";
+    	$vmjs .= "            document.getElementById('ARIPanel').style.display='none';\n";
+    	$vmjs .= "            document.getElementById('VMPanel').style.display='block';\n";
+    	$vmjs .= "            document.getElementById('ARIFrame').src = '/agent/blank.php';\n";
+    	$vmjs .= "            voicemail_arihangup();\n";
+    	$vmjs .= "    };\n";
+
+    	$vmjs .= "    voicemail_arihangup = function() {\n";
+    	$vmjs .= "            var arixmlhttp=getXHR();\n";
+    	$vmjs .= "            if (arixmlhttp) {\n";
+    	$vmjs .= "                    ari_url = '/voicemail/".$rowV['server_ip']."/ari/misc/callme_page.php';\n";
+    	$vmjs .= "                    ari_query = 'action=h&callmenum=1".$rowV['voicemail_id']."';\n";
+    	$vmjs .= "                    arixmlhttp.open('POST', ari_url, false);\n";
+    	$vmjs .= "                    arixmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');\n";
+    	$vmjs .= "                    arixmlhttp.send(ari_query);\n";
+    	$vmjs .= "                    delete arixmlhttp;\n";
+    	$vmjs .= "            }\n";
+    	$vmjs .= "    };\n";
+
+        echo "  <tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"$vmjs voicemail_ariopen();\">\n";
+        echo "    <td><a href=\"#\" onclick=\"$vmjs voicemail_ariopen();\">" . $rowV['voicemail_id'] . "</a></td>\n";
+        echo "    <td>" . $rowV['server_ip'] . "</td>\n";
+        echo "    <td>" . $rowV['extension'] . "</td>\n";
+        echo "    <td>" . $rowV['fullname'] . "</td>\n";
+        echo "    <td>" . $rowV['voicemail_email'] . "</td>\n";
+        echo "    <td align=right>" . $rowV['messages'] . "</td>\n";
+        echo "    <td align=right>" . $rowV['old_messages'] . "</td>\n";
+        echo "  </tr>";
+        $o++;
+    }
+    echo "  <tr class=tabfooter>\n";
+    echo "    <td colspan=7></td>\n";
+    echo "  </tr>\n";
+    echo "</table>";
+    echo "</div>";
 }
 
 
