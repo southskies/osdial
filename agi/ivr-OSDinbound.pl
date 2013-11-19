@@ -361,6 +361,7 @@ $groupidSQL = sprintf("group_id='%s'",$osdial->mres($channel_group));
 $groupidSQL = sprintf("group_id LIKE '___%s'",$osdial->mres(substr($channel_group,3))) if ($osdial->{settings}{enable_multicompany} and $channel_group =~ /^...IN_/);
 $stmtA = sprintf("SELECT * FROM osdial_inbound_groups WHERE %s LIMIT 1;",$groupidSQL);
 my $ingroup = $osdial->sql_query($stmtA);
+set_variable("CHANNEL(language)",$ingroup->{'prompt_language'});
 
 if ($ingroup->{group_id} ne '') {
 	$hold = $ingroup->{background_music_filename};
