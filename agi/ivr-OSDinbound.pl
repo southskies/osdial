@@ -612,7 +612,7 @@ my $loopstart = time();
 stream_file('silence/1');
 unless ($ingroup->{welcome_message_filename} =~ /---NONE---/ or $ingroup->{welcome_message_filename} eq '') {
 	$welcome = $ingroup->{welcome_message_filename};
-	stream_file($welcome)
+	stream_file($welcome);
 	stream_file('silence/2');
 	if ($ingroup->{'welcome_message_min_playtime'} eq '' or $ingroup->{'welcome_message_min_playtime'} > 0) {
 		$loopwelcome=1;
