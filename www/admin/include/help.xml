@@ -1630,15 +1630,19 @@ The OSDial basic web-based lead loader is designed simply to take a lead file, t
   OTHER - Future use
     </item>
 
-    <item pathId="server_domainname" sectionId="24" title="Server Domain Name">
+    <item pathId="asterisk_languages" sectionId="24" title="Asterisk Languages">
+    The audio file language sets that have been detected as available for this Asterisk instance.
+    </item>
+
+    <item pathId="server_domainname" sectionId="25" title="Server Domain Name">
     The domain portion of the FQDN, in most cases this will be figured out automatically. It is safe to leave blank.
     </item>
 
-    <item pathId="server_public_ip" sectionId="25" title="Server Public IP Address">
+    <item pathId="server_public_ip" sectionId="26" title="Server Public IP Address">
     A public IP address that is configured on a secondary interface or is one that is forwarded to this server.
     </item>
 
-    <item pathId="web_url" sectionId="26" title="Web URL">
+    <item pathId="web_url" sectionId="27" title="Web URL">
     If server is an AIO, CONTROL, or WEB profile, this option becomes available. It allows for setting the Web URL that is presented to users through email or other screens. This is useful if you create domain records for your dialers web services. For Example: http://dialer.widget-wholeseller.com/
     </item>
 
