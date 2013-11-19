@@ -136,12 +136,23 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 		$CLOexpand=1 if ($CLOrealtime>0);
 	}
 
+	my $asterisk_languages='';
+	opendir(FILE, "/var/lib/asterisk/sounds/");
+	foreach my $file (sort readdir(FILE)) {
+		if (-d "/var/lib/asterisk/sounds/".$file) {
+			if ($file ne '.' and $file ne '..' and $file ne 'osdial' and $file ne 'tts' and $file ne 'ivr') {
+				$asterisk_languages .= '|' if ($asterisk_languages ne '');
+				$asterisk_languages .= $file;
+			}
+		}
+	}
+	closedir FILE;
 	#Check and set Asterisk version.
 	$asterisk_version = `/usr/sbin/asterisk -V`;
 	chomp $asterisk_version;
 	$asterisk_version =~ s/Asterisk //;
 	if ($asterisk_version ne "") {
-		my $stmt = sprintf("UPDATE servers SET asterisk_version='\%s' WHERE server_ip='\%s';",$asterisk_version,$osdial->{VARserver_ip});
+		my $stmt = sprintf("UPDATE servers SET asterisk_version='\%s',asterisk_languages='\%s' WHERE server_ip='\%s';",$asterisk_version,$asterisk_languages,$osdial->{VARserver_ip});
 		$osdial->sql_execute($stmt) if (!$CLOtest);
 		print STDERR "\n|$stmt|\n" if ($DB);
 
