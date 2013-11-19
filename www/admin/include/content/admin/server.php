@@ -382,6 +382,7 @@ if ($ADD==311111111111) {
 
         if (OSDpreg_match('/CONTROL|SQL|WEB|ARCHIVE|OTHER/',$row[22])) {
             echo "<input type=hidden name=asterisk_version value=\"$row[4]\">\n";
+            echo "<input type=hidden name=asterisk_languages value=\"$row[26]\">\n";
             echo "<input type=hidden name=max_osdial_trunks value=\"$row[5]\">\n";
             echo "<input type=hidden name=osdial_balance_active value=\"$row[20]\">\n";
             echo "<input type=hidden name=balance_trunks_offlimits value=\"$row[21]\">\n";
@@ -398,6 +399,8 @@ if ($ADD==311111111111) {
             echo "<input type=hidden name=answer_transfer_agent value=\"$row[15]\">\n";
         } else {
             echo "<tr bgcolor=$oddrows><td align=right>Asterisk Version: </td><td align=left><input type=text name=asterisk_version size=20 maxlength=20 value=\"$row[4]\">".helptag("servers-asterisk_version")."</td></tr>\n";
+            echo "<input type=hidden name=asterisk_languages value=\"$row[26]\">\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Asterisk Languages: </td><td align=left><b>" . OSDpreg_replace('/\|/',', ',$row[26]) ."</b>".helptag("servers-asterisk_version")."</td></tr>\n";
             echo "<tr bgcolor=$oddrows><td align=right>Max Trunks: </td><td align=left><input type=text name=max_osdial_trunks size=5 maxlength=4 value=\"$row[5]\">".helptag("servers-max_osdial_trunks")."</td></tr>\n";
             echo "<tr bgcolor=$oddrows><td align=right>Balance Dialing: </td><td align=left><select size=1 name=osdial_balance_active><option>Y</option><option>N</option><option selected>$row[20]</option></select>".helptag("servers-osdial_balance_active")."</td></tr>\n";
             echo "<tr bgcolor=$oddrows><td align=right>Balance Offlimits: </td><td align=left><input type=text name=balance_trunks_offlimits size=5 maxlength=4 value=\"$row[21]\">".helptag("servers-balance_trunks_offlimits")."</td></tr>\n";

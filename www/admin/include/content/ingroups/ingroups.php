@@ -190,7 +190,7 @@ if ($ADD==2011) {
 			 echo "<br>Group name and group color must be at least 2 characters in length</font><br>\n";
         } else {
             if ($LOG['multicomp'] > 0) $group_id = (($company_id * 1) + 100) . $group_id;
-			$stmt=sprintf("INSERT INTO osdial_inbound_groups (group_id,group_name,group_color,active,web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,drop_call_seconds,drop_action,drop_exten,call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,default_xfer_group,web_form_address2,allow_tab_switch,web_form_extwindow,web_form2_extwindow,drop_trigger,allow_multicall,placement_interval,placement_max_repeat,queuetime_interval,queuetime_max_repeat,background_music_filename,drop_message_filename,callback_interval,callback_interrupt_key,onhold_startdelay,callback_startdelay,placement_startdelay,queuetime_startdelay) SELECT '%s','%s',group_color,'N',web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,drop_call_seconds,drop_action,drop_exten,call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,default_xfer_group,web_form_address2,allow_tab_switch,web_form_extwindow,web_form2_extwindow,drop_trigger,allow_multicall,placement_interval,placement_max_repeat,queuetime_interval,queuetime_max_repeat,background_music_filename,drop_message_filename,callback_interval,callback_interrupt_key,onhold_startdelay,callback_startdelay,placement_startdelay,queuetime_startdelay FROM osdial_inbound_groups WHERE group_id='%s';",mres($group_id),mres($group_name),mres($source_group_id));
+			$stmt=sprintf("INSERT INTO osdial_inbound_groups (group_id,group_name,group_color,active,web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,drop_call_seconds,drop_action,drop_exten,call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,default_xfer_group,web_form_address2,allow_tab_switch,web_form_extwindow,web_form2_extwindow,drop_trigger,allow_multicall,placement_interval,placement_max_repeat,queuetime_interval,queuetime_max_repeat,background_music_filename,drop_message_filename,callback_interval,callback_interrupt_key,onhold_startdelay,callback_startdelay,placement_startdelay,queuetime_startdelay,prompt_language) SELECT '%s','%s',group_color,'N',web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,drop_call_seconds,drop_action,drop_exten,call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,default_xfer_group,web_form_address2,allow_tab_switch,web_form_extwindow,web_form2_extwindow,drop_trigger,allow_multicall,placement_interval,placement_max_repeat,queuetime_interval,queuetime_max_repeat,background_music_filename,drop_message_filename,callback_interval,callback_interrupt_key,onhold_startdelay,callback_startdelay,placement_startdelay,queuetime_startdelay,prompt_language FROM osdial_inbound_groups WHERE group_id='%s';",mres($group_id),mres($group_name),mres($source_group_id));
 			$rslt=mysql_query($stmt, $link);
 
 			echo "<br><B><font color=$default_text>GROUP ADDED: $group_id</font></B>\n";
@@ -226,7 +226,7 @@ if ($ADD==4111) {
         } else {
             echo "<br><B><font color=$default_text>GROUP MODIFIED: $group_id</font></B>\n";
 
-            $stmt=sprintf("UPDATE osdial_inbound_groups SET group_name='%s',group_color='%s',active='%s',web_form_address='%s',voicemail_ext='%s',next_agent_call='%s',fronter_display='%s',ingroup_script='%s',get_call_launch='%s',xferconf_a_dtmf='%s',xferconf_a_number='%s',xferconf_b_dtmf='%s',xferconf_b_number='%s',drop_action='%s',drop_call_seconds='%s',drop_exten='%s',call_time_id='%s',after_hours_action='%s',after_hours_message_filename='%s',after_hours_exten='%s',after_hours_voicemail='%s',welcome_message_filename='%s',moh_context='%s',onhold_prompt_filename='%s',prompt_interval='%s',agent_alert_exten='%s',agent_alert_delay='%s',default_xfer_group='%s',web_form_address2='%s',allow_tab_switch='%s',web_form_extwindow='%s',web_form2_extwindow='%s',drop_trigger='%s',allow_multicall='%s',placement_interval='%s',placement_max_repeat='%s',queuetime_interval='%s',queuetime_max_repeat='%s',background_music_filename='%s',drop_message_filename='%s',callback_interval='%s',callback_interrupt_key='%s',onhold_startdelay='%s',callback_startdelay='%s',placement_startdelay='%s',queuetime_startdelay='%s' WHERE group_id='%s';",mres($group_name),mres($group_color),mres($active),mres($web_form_address),mres($voicemail_ext),mres($next_agent_call),mres($fronter_display),mres($script_id),mres($get_call_launch),mres($xferconf_a_dtmf),mres($xferconf_a_number),mres($xferconf_b_dtmf),mres($xferconf_b_number),mres($drop_action),mres($drop_call_seconds),mres($drop_exten),mres($call_time_id),mres($after_hours_action),mres($after_hours_message_filename),mres($after_hours_exten),mres($after_hours_voicemail),mres($welcome_message_filename),mres($moh_context),mres($onhold_prompt_filename),mres($prompt_interval),mres($agent_alert_exten),mres($agent_alert_delay),mres($default_xfer_group),mres($web_form_address2),mres($allow_tab_switch),mres($web_form_extwindow),mres($web_form2_extwindow),mres($drop_trigger),mres($allow_multicall),mres($placement_interval),mres($placement_max_repeat),mres($queuetime_interval),mres($queuetime_max_repeat),mres($background_music_filename),mres($drop_message_filename),mres($callback_interval),mres($callback_interrupt_key),mres($onhold_startdelay),mres($callback_startdelay),mres($placement_startdelay),mres($queuetime_startdelay),mres($group_id));
+            $stmt=sprintf("UPDATE osdial_inbound_groups SET group_name='%s',group_color='%s',active='%s',web_form_address='%s',voicemail_ext='%s',next_agent_call='%s',fronter_display='%s',ingroup_script='%s',get_call_launch='%s',xferconf_a_dtmf='%s',xferconf_a_number='%s',xferconf_b_dtmf='%s',xferconf_b_number='%s',drop_action='%s',drop_call_seconds='%s',drop_exten='%s',call_time_id='%s',after_hours_action='%s',after_hours_message_filename='%s',after_hours_exten='%s',after_hours_voicemail='%s',welcome_message_filename='%s',moh_context='%s',onhold_prompt_filename='%s',prompt_interval='%s',agent_alert_exten='%s',agent_alert_delay='%s',default_xfer_group='%s',web_form_address2='%s',allow_tab_switch='%s',web_form_extwindow='%s',web_form2_extwindow='%s',drop_trigger='%s',allow_multicall='%s',placement_interval='%s',placement_max_repeat='%s',queuetime_interval='%s',queuetime_max_repeat='%s',background_music_filename='%s',drop_message_filename='%s',callback_interval='%s',callback_interrupt_key='%s',onhold_startdelay='%s',callback_startdelay='%s',placement_startdelay='%s',queuetime_startdelay='%s',prompt_language='%s' WHERE group_id='%s';",mres($group_name),mres($group_color),mres($active),mres($web_form_address),mres($voicemail_ext),mres($next_agent_call),mres($fronter_display),mres($script_id),mres($get_call_launch),mres($xferconf_a_dtmf),mres($xferconf_a_number),mres($xferconf_b_dtmf),mres($xferconf_b_number),mres($drop_action),mres($drop_call_seconds),mres($drop_exten),mres($call_time_id),mres($after_hours_action),mres($after_hours_message_filename),mres($after_hours_exten),mres($after_hours_voicemail),mres($welcome_message_filename),mres($moh_context),mres($onhold_prompt_filename),mres($prompt_interval),mres($agent_alert_exten),mres($agent_alert_delay),mres($default_xfer_group),mres($web_form_address2),mres($allow_tab_switch),mres($web_form_extwindow),mres($web_form2_extwindow),mres($drop_trigger),mres($allow_multicall),mres($placement_interval),mres($placement_max_repeat),mres($queuetime_interval),mres($queuetime_max_repeat),mres($background_music_filename),mres($drop_message_filename),mres($callback_interval),mres($callback_interrupt_key),mres($onhold_startdelay),mres($callback_startdelay),mres($placement_startdelay),mres($queuetime_startdelay),mres($prompt_language),mres($group_id));
             $rslt=mysql_query($stmt, $link);
 
             ### LOG CHANGES TO LOG FILE ###
@@ -345,6 +345,7 @@ if ($ADD==3111) {
         $callback_startdelay =	    $row[44];
         $placement_startdelay =	    $row[45];
         $queuetime_startdelay =	    $row[46];
+        $prompt_language =	        $row[47];
 
         ##### get in-groups listings for dynamic pulldown
         $stmt="SELECT group_id,group_name FROM osdial_inbound_groups ORDER BY group_id;";
@@ -369,6 +370,23 @@ if ($ADD==3111) {
             $Xgroups_menu .= "<option value=\"---NONE---\">---NONE---</option>\n";
         }
 
+        $astlangs = array();
+        $stmt = sprintf("SELECT * FROM servers WHERE active='Y' AND server_profile IN ('AIO','DIALER');");
+        $rslt=mysql_query($stmt, $link);
+        $astnum = mysql_num_rows($rslt);
+        $astlangcnt=0;
+        while ($astlangcnt < $astnum) {
+            $rowS=mysql_fetch_assoc($rslt);
+            $langs = OSDpreg_split('/\|/', $rowS['asterisk_languages']);
+            foreach ($langs as $lang) {
+                if (array_key_exists($lang,$astlangs)) {
+                    $astlangs[$lang]++;
+                } else {
+                    $astlangs[$lang] = 1;
+                }
+            }
+            $astlangcnt++;
+        }
 
         echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY AN IN-GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
         echo "<input type=hidden name=ADD value=4111>\n";
@@ -439,6 +457,21 @@ if ($ADD==3111) {
 
         echo "<tr class=tabheader><td colspan=2></td></tr>\n";
 
+        echo "<tr bgcolor=$oddrows>\n";
+        echo "  <td align=right>Prompt Language: </td>\n";
+        echo "  <td align=left>\n";
+        echo "    <select size=1 name=prompt_language>\n";
+        $asel = ''; if ($prompt_language == '') $asel=' selected';
+        echo "      <option value=\"\" $asel>DEFAULT</option>\n";
+        foreach ($astlangs as $k => $v) {
+            if ($v == $astlangcnt) {
+                $asel = ''; if ($k == $prompt_language) $asel=' selected';
+                echo "      <option value=\"$k\"$asel>$k</option>\n";
+            }
+        }
+        echo "    </select>".helptag("osdial_inbound_groups-prompt_language");
+        echo "  </td>\n";
+        echo "</tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>On Hold Prompt Filename: </td>\n";
         echo "  <td align=left>\n";
         #echo "    <select name=onhold_prompt_filename>\n";
