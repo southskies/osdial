@@ -61,7 +61,7 @@ use Data::Dumper;
 use Time::HiRes ('gettimeofday','usleep','sleep');
 
 my $script='ivr-OSDinbound.agi';
-my $DB=1;
+my $DB=0;
 
 my $osdial = OSDial->new('DB'=>0);
 $osdial->{_agi}{mod}=$script;
