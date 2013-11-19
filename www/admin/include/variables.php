@@ -951,6 +951,7 @@ $web_form2_extwindow = get_variable("web_form2_extwindow");
 $web_url = get_variable("web_url");
 $webroot_writable = get_variable("webroot_writable");
 $welcome_message_filename = get_variable("welcome_message_filename");
+$welcome_message_min_playtime = get_variable("welcome_message_min_playtime");
 $wrapup_message = get_variable("wrapup_message");
 $wrapup_seconds = get_variable("wrapup_seconds");
 
