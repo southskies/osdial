@@ -37,7 +37,7 @@ if ($ADD==11111111111) {
 
         echo "<tr bgcolor=$oddrows><td align=right>Extension: </td><td align=left><input type=text name=extension size=20 maxlength=100 value=\"\">".helptag("phones-extension")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Dial Plan Number: </td><td align=left><input type=text name=dialplan_number size=15 maxlength=20 value=\"$row[1]\"> (digits only)".helptag("phones-dialplan_number")."</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Voicemail Box: </td><td align=left><input type=text name=voicemail_id size=10 maxlength=10 value=\"$row[2]\"> (digits only)".helptag("phones-voicemail_id")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Voicemail Box: </td><td align=left><input type=text name=voicemail_id size=20 maxlength=20 value=\"$row[2]\"> (digits only)".helptag("phones-voicemail_id")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Outbound CallerID Name: </td><td align=left><input type=text name=outbound_cid_name size=20 maxlength=40 value=\"$row[67]\">".helptag("phones-outbound_cid_name")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Outbound CallerID: </td><td align=left><input type=text name=outbound_cid size=10 maxlength=20 value=\"$row[65]\"> (digits only)".helptag("phones-outbound_cid")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Phone IP address: </td><td align=left><input type=text name=phone_ip size=20 maxlength=15 value=\"$row[3]\"> (optional)".helptag("phones-phone_ip")."</td></tr>\n";
@@ -314,7 +314,7 @@ if ($ADD==31111111111) {
             echo "<font color=$default_text>" . $row[12] . "</font>";
             if ($row[12] == OSDsubstr($row[2],0,3)) $vmb = OSDsubstr($row[2],3,OSDstrlen($row[2]));
         }
-        echo "<input type=text name=voicemail_id size=10 maxlength=10 value=\"$vmb\">";
+        echo "<input type=text name=voicemail_id size=20 maxlength=20 value=\"$vmb\">";
         echo " (digits only)".helptag("phones-voicemail_id")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Voicemail Password: </td><td align=left><input type=text name=voicemail_password size=10 maxlength=10 value=\"$row[68]\">".helptag("phones-voicemail_password")."</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Voicemail Email: </td><td align=left><input type=text name=voicemail_email size=50 maxlength=255 value=\"$row[69]\">".helptag("phones-voicemail_email")."</td></tr>\n";
