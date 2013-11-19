@@ -394,7 +394,7 @@ function report_lead_search_advanced($lsa_seg='form') {
                     $status_found++;
                 } elseif ($field == "status") {
                     $status_found++;
-                } elseif ($field == "campaign_id" or (($field == "lead_id" or $field == "phone_number") and ($use_osdial_log or $use_osdial_agent_log)) or $field == "list_id" or $field == "user") {
+                } elseif ($field == "campaign_id" or $field == "list_id" or (($field == "lead_id" or $field == "phone_number" or $field == "user") and ($use_osdial_log or $use_osdial_agent_log))) {
                     if ($use_osdial_log) {
                         $searchFLD .= "osdial_log." . $field . ",";
                     } elseif ($use_osdial_agent_log) {
