@@ -151,6 +151,7 @@ if ($CLOsaf != 1) {
 		$dbhT->do($charmode) or ($connerr=1);
 		$dbhT->do("GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
 		$dbhT->do("GRANT UPDATE on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+		$dbhT->do("GRANT RELOAD, SHUTDOWN, PROCESS, FILE on *.* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "' WITH GRANT OPTION;") or ($connerr=1);
 		print "connerr:" . $connerr . "\n" if($DB);
 		$dbhT->disconnect();
 	}
@@ -174,6 +175,7 @@ if ($CLOsaf != 1) {
 		$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'localhost' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
 		$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
 		$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'\%' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+		$dbhT->do("GRANT RELOAD, SHUTDOWN, PROCESS, FILE on *.* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "' WITH GRANT OPTION;") or ($connerr=1);
 		# Now grant for all IPs on this machine.
 		my @interfaces = IO::Interface::Simple->interfaces;
 		foreach my $interface (@interfaces) {
@@ -183,6 +185,7 @@ if ($CLOsaf != 1) {
 				$dbhT->do("GRANT GRANT OPTION on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $ip->address . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
 				$dbhT->do("GRANT UPDATE on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $ip->address . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';");
 				$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $ip->address . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+				$dbhT->do("GRANT RELOAD, SHUTDOWN, PROCESS, FILE on *.* TO '" . $config->{VARDB_user} . "'\@'" . $ip->address . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "' WITH GRANT OPTION;");
 			}
 		}
 		if ($install < 1) {
@@ -200,6 +203,7 @@ if ($CLOsaf != 1) {
 				$dbhT->do("GRANT GRANT OPTION on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $sip . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';");
 				$dbhT->do("GRANT UPDATE on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $sip . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';");
 				$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $sip . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';");
+				$dbhT->do("GRANT RELOAD, SHUTDOWN, PROCESS, FILE on *.* TO '" . $config->{VARDB_user} . "'\@'" . $sip . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "' WITH GRANT OPTION;");
 			}
 		}
 		$dbhT->disconnect();
@@ -211,12 +215,14 @@ if ($CLOsaf != 1) {
 		print   "\n      GRANT GRANT OPTION on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
 		print   "\n      GRANT UPDATE on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
 		print   "\n      GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
+		print   "\n      GRANT RELOAD, SHUTDOWN, PROCESS, FILE on *.* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "' WITH GRANT OPTION;";
 
 		if ($config->{VARDB_server} ne $config->{VARserver_ip}) {
 			print "\n\n      GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARserver_ip} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
 			print   "\n      GRANT GRANT OPTION on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARserver_ip} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
 			print   "\n      GRANT UPDATE on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARserver_ip} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
 			print   "\n      GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARserver_ip} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
+			print   "\n      GRANT RELOAD, SHUTDOWN, PROCESS, FILE on *.* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARserver_ip} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "' WITH GRANT OPTION;";
 		}
 
 		
@@ -228,6 +234,7 @@ if ($CLOsaf != 1) {
 				print   "\n      GRANT GRANT OPTION on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARserver_ip} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
 				print   "\n      GRANT UPDATE on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARserver_ip} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
 				print   "\n      GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARserver_ip} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
+				print   "\n      GRANT RELOAD, SHUTDOWN, PROCESS, FILE on *.* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARserver_ip} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "' WITH GRANT OPTION;";
 			}
 		}
 		print "\n\n";
