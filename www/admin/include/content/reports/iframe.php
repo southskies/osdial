@@ -27,7 +27,9 @@
 function iFrameAutoResize(id){
     var newheight;
     if(document.getElementById(id)) {
-        newheight=document.getElementById(id).contentWindow.document.height-20;
+        var adj = Math.round(document.getElementById(id).contentWindow.document.body.offsetHeight/100);
+        if (adj>20) adj=20;
+        newheight=document.getElementById(id).contentWindow.document.body.offsetHeight-adj;
         if (newheight>0) document.getElementById(id).height=(newheight) + "px";
     }
 }
