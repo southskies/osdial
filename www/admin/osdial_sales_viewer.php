@@ -38,7 +38,25 @@ header("Pragma: no-cache");
 #if (isset($_GET["forc"]))						{$forc=$_GET["forc"];}
 #	elseif (isset($_POST["forc"]))				{$forc=$_POST["forc"];}
 
+session_start();
+
 require_once("include/dbconnect.php");
+
+$PHP_AUTH_USER='';
+$PHP_AUTH_PW='';
+if ($config['settings']['use_old_admin_auth']) {
+    if (isset($_SERVER['PHP_AUTH_USER'])) $PHP_AUTH_USER=$_SERVER['PHP_AUTH_USER'];
+    if (isset($_SERVER['PHP_AUTH_PW'])) $PHP_AUTH_PW=$_SERVER['PHP_AUTH_PW'];
+} else {
+    if (isset($_SESSION[KEY]['valid'])) {
+        $_SESSION[KEY]['last_update'] = time();
+        if (isset($_SESSION[KEY]['PHP_AUTH_USER'])) $PHP_AUTH_USER=$_SESSION[KEY]['PHP_AUTH_USER'];
+        if (isset($_SESSION[KEY]['PHP_AUTH_PW'])) $PHP_AUTH_PW=$_SESSION[KEY]['PHP_AUTH_PW'];
+    }
+    if (empty($PHP_AUTH_USER)) $PHP_AUTH_USER=get_variable('PHP_AUTH_USER');
+    if (empty($PHP_AUTH_PW)) $PHP_AUTH_PW=get_variable('PHP_AUTH_PW');
+}
+
 require_once($WeBServeRRooT . "/admin/include/functions.php");
 require_once($WeBServeRRooT . "/admin/include/variables.php");
 require_once($WeBServeRRooT . "/admin/include/auth.php");
@@ -51,6 +69,20 @@ $list_ids = get_variable("list_ids");
 $sales_number = get_variable("sales_number");
 $sales_time_frame = get_variable("sales_time_frame");
 $forc = get_variable("forc");
+
+$stmt=sprintf("SELECT count(*) FROM osdial_users WHERE user='%s' AND pass='%s' AND user_level>6 AND view_reports='1';",mysql_real_escape_string($PHP_AUTH_USER),mysql_real_escape_string($PHP_AUTH_PW));
+$rslt=mysql_query($stmt, $link);
+$row=mysql_fetch_row($rslt);
+$auth=$row[0];
+
+if (strlen($PHP_AUTH_USER)<2 or strlen($PHP_AUTH_PW)<2 or !$auth) {
+    if ($config['settings']['use_old_admin_auth']) {
+        Header("WWW-Authenticate: Basic realm=\"OSIDAL-PROJECTS\"");
+        Header("HTTP/1.0 401 Unauthorized");
+    }
+    echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
+    exit;
+}
 
 
 echo "<html>\n";
@@ -84,7 +116,8 @@ echo "<table align=center cellpadding=0 cellspacing=0>\n";
 echo "  <tr>\n";
 echo "    <td align=center>\n";
 echo "      <br><font color=$default_text size=+1>RECENT OUTBOUND SALES REPORT</font><br>\n";
-echo "      <form action=\"$PHP_SELF\" method=post onSubmit=\"return GatherListIDs()\">\n";
+echo "      <font color=$default_text size=2>(Last 24-Hours)</font>\n";
+echo "      <form action=\"$PHP_SELF\" method=post onSubmit=\"return GatherListIDs()\" name=osvform>\n";
 echo "      <input type=\"hidden\" name=\"list_ids\">\n";
 echo "      <table border=0 cellpadding=5 cellspacing=0 align=center width=600>\n";
 echo "        <tr>\n";
@@ -137,27 +170,39 @@ echo "          </td>\n";
 echo "        </tr>\n";
 echo "        <tr bgcolor=$oddrows>\n";
 echo "          <td align=center width=350 colspan=3><br><font class=font2>View sales made within the last\n";
-echo "            <select name=sales_time_frame>\n";
-echo "              <option value=''>----------</option>\n";
-echo "              <option value='15'>15 minutes</option>\n";
-echo "              <option value='30'>30 minutes</option>\n";
-echo "              <option value='45'>45 minutes</option>\n";
-echo "              <option value='60'>1 hour</option>\n";
-echo "              <option value='120'>2 hours</option>\n";
-echo "              <option value='180'>3 hours</option>\n";
-echo "              <option value='240'>4 hours</option>\n";
-echo "              <option value='360'>6 hours</option>\n";
-echo "              <option value='480'>8 hours</option>\n";
+echo "            <select name=sales_time_frame onclick=\"document.osvform.sales_number.value='';\">\n";
+$stsel=''; if ($sales_time_frame=='') $stsel=' selected';
+echo "              <option value=''$stsel>----------</option>\n";
+$stsel=''; if ($sales_time_frame=='15') $stsel=' selected';
+echo "              <option value='15'$stsel>15 minutes</option>\n";
+$stsel=''; if ($sales_time_frame=='30') $stsel=' selected';
+echo "              <option value='30'$stsel>30 minutes</option>\n";
+$stsel=''; if ($sales_time_frame=='45') $stsel=' selected';
+echo "              <option value='45'$stsel>45 minutes</option>\n";
+$stsel=''; if ($sales_time_frame=='60') $stsel=' selected';
+echo "              <option value='60'$stsel>1 hour</option>\n";
+$stsel=''; if ($sales_time_frame=='120') $stsel=' selected';
+echo "              <option value='120'$stsel>2 hours</option>\n";
+$stsel=''; if ($sales_time_frame=='180') $stsel=' selected';
+echo "              <option value='180'$stsel>3 hours</option>\n";
+$stsel=''; if ($sales_time_frame=='240') $stsel=' selected';
+echo "              <option value='240'$stsel>4 hours</option>\n";
+$stsel=''; if ($sales_time_frame=='360') $stsel=' selected';
+echo "              <option value='360'$stsel>6 hours</option>\n";
+$stsel=''; if ($sales_time_frame=='480') $stsel=' selected';
+echo "              <option value='480'$stsel>8 hours</option>\n";
 echo "            </select><br>\n";
 echo "          <b>OR</b><br>\n";
-echo "          <font class=font2>View the last <input type=text size=5 maxlength=5 name=sales_number> sales**</font>\n";
+echo "          <font class=font2>View the last <input type=text size=5 maxlength=5 name=sales_number value=\"$sales_number\" onclick=\"document.osvform.sales_time_frame.selectedIndex=0;\"> sales**</font>\n";
 echo "        </tr>\n";
 echo "        <tr bgcolor='$oddrows'>\n";
 echo "          <td colspan=3 align=center><font class=font1>(If you enter values in both fields, the results will be limited by the first criteria met)</font><br><br></td>\n";
 echo "        </tr>\n";
+$fself=''; if ($forc=='F') $fself=' checked';
+$fselc=''; if ($forc=='C' or $forc=='') $fselc=' checked';
 echo "        <tr bgcolor='$oddrows'>\n";
-echo "          <td align=right><font class=font2>Campaign is:&nbsp;&nbsp;&nbsp;&nbsp;<input type=radio name=forc value=F>Transfer</font></td>\n";
-echo "          <td colspan=2 align=left><font class=font2>&nbsp;&nbsp;<input type=radio name=forc value=C checked>Non-transfer</font></td>\n";
+echo "          <td align=right><font class=font2>Campaign is:&nbsp;&nbsp;&nbsp;&nbsp;<input type=radio name=forc value=F $fself>Transfer</font></td>\n";
+echo "          <td colspan=2 align=left><font class=font2>&nbsp;&nbsp;<input type=radio name=forc value=C $fselc>Non-transfer</font></td>\n";
 echo "        </tr>\n";
 echo "        <tr class=tabfooter>\n";
 echo "          <td colspan=3 class=tabbutton><input type=submit name=submit_report value=SUBMIT></td>\n";
@@ -187,8 +232,10 @@ if (isset($submit_report) && isset($list_ids)) {
 	if (isset($sales_time_frame) && $sales_time_frame>0) {
 		$hours=$sales_time_frame/60;
 		$timestamp=date("YmdHis", mktime(date("H"),(date("i")-$sales_time_frame),date("s"),date("m"),date("d"),date("Y")));
+		$timestamp2=date("Y-m-d H:i:s", mktime(date("H"),(date("i")-$sales_time_frame),date("s"),date("m"),date("d"),date("Y")));
 	} else {
-		$timestamp=date("YmdHis", mktime(date("H"),date("i"),date("s"),date("m"),(date("d")-1),date("Y")));
+		$timestamp=date("YmdHis", (mktime(date("H"),date("i"),date("s"),date("m"),date("d"),date("Y"))-24*60*60));
+		$timestamp2=date("Y-m-d H:i:s", (mktime(date("H"),date("i"),date("s"),date("m"),date("d"),date("Y"))-24*60*60));
 		$hours=24;
 	}
 	echo "      <hr>\n";
@@ -215,7 +262,7 @@ if (isset($submit_report) && isset($list_ids)) {
 	$rslt=mysql_query($stmt, $link);
 	$q=0;
 	echo "        <tr>\n";
-    echo "          <th colspan=8 bgcolor=$oddrows><font class='standard_bold' color='$default_text'>Last ".mysql_num_rows($rslt)." sales made</font></th>\n";
+    echo "          <th colspan=8 bgcolor=$oddrows><font class='standard_bold' color='$default_text'>Last ".mysql_num_rows($rslt)." sales made since $timestamp2</font></th>\n";
     echo "        </tr>\n";
 	echo "        <tr class=tabheader>\n";
 	echo "          <td>Sales Rep(s)</td>\n";
