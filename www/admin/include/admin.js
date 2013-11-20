@@ -535,6 +535,25 @@ if (janGMTtmp != julGMTtmp) {
 }
 document.cookie = "webClientDST=" + webClientDST + "; expires=" + cgexp;
 
+// Ctrl-Z to turn copy/paste selection on/off.
+document.onkeypress = function(evt) {
+	var e = evt? evt : window.event;
+	if(!e) return;
+	var key = 0;
+	if (e.keyCode) {
+		key = e.keyCode;
+	} else if (typeof(e.which)!= 'undefined') {
+		key = e.which;
+	}
+	if (key==26) {
+		if (document.getElementById('content').style.webkitUserSelect!='initial') {
+			document.getElementById('content').style.webkitUserSelect='initial';
+		} else {
+			document.getElementById('content').style.webkitUserSelect='none';
+		}
+	}
+}
+
 // ################################################################################
 // Return seconds as hh:mm:sec as applicable
 function sec2time(secIn) {
