@@ -6411,6 +6411,22 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			// +(44)(xxx) xxxx xxx
 			if (phnum.length==10) resnum = '+('+phcode+')('+phnum.substring(0,3)+') '+phnum.substring(3,7)+' '+phnum.substring(7,10);
 
+		// Sweden
+		} else if (phcode=='46') {
+			var tac1 = phnum.substring(0,1);
+			var tac = phnum.substring(0,2);
+			if (tac1=='0') {
+				phnum = phnum.substring(1);
+			}
+			if (tac1=='7' || tac1=='8') {
+				resnum = '+('+phcode+')(0'+phnum.substring(0,1)+') '+phnum.substring(1,5)+' '+phnum.substring(5);
+			} else if (tac=='10' || tac=='11' || tac=='13' || tac=='16' || tac=='18' || tac=='19' || tac=='20' || tac=='21' || tac=='23' || tac=='26' || tac=='31' ||
+			           tac=='33' || tac=='35' || tac=='36' || tac=='40' || tac=='42' || tac=='44' || tac=='46' || tac=='54' || tac=='63' || tac=='90' || tac=='99') {
+				resnum = '+('+phcode+')(0'+phnum.substring(0,2)+') '+phnum.substring(2,5)+' '+phnum.substring(5);
+			} else {
+				resnum = '+('+phcode+')(0'+phnum.substring(0,3)+') '+phnum.substring(3,5)+' '+phnum.substring(5);
+			}
+
 		// Hong Kong
 		} else if (phcode=='852') {
 			// +(852)(xxx) xxxx xxxx
