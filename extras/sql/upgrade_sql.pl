@@ -287,7 +287,7 @@ if ($CLOconvert) {
 				}
 			});
 		if ($use_latin) {
-			$dbh->do("ALTER TABLE $tables[0] $charsql;") unless ($CLOtest);
+			$dbh->do("ALTER TABLE $tables[0] CONVERT TO $charsql;") unless ($CLOtest);
 		} else {
 			$dbh->do("ALTER TABLE $tables[0] CONVERT TO $charsql;") unless ($CLOtest);
 		}
