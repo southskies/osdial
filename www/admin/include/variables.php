@@ -50,7 +50,11 @@ while ($i < $confnum) {
 $config['settings']['intra_server_sep']='*';
 if ($config['settings']['intra_server_protocol']='IAX2') $config['settings']['intra_server_sep']='#';
 
-if ($config['settings']['use_non_latin'] > 0) $rslt=mysql_query("SET NAMES 'utf8' COLLATE 'utf8_general_ci';",$link);
+if ($config['settings']['use_non_latin'] > 0) {
+    $rslt=mysql_query("SET NAMES 'utf8' COLLATE 'utf8_general_ci';",$link);
+} else {
+    $rslt=mysql_query("SET NAMES 'latin1' COLLATE 'latin1_swedish_ci';",$link);
+}
 
 $stmt = "SELECT * FROM system_settings LIMIT 1;";
 $rslt=mysql_query($stmt, $link);

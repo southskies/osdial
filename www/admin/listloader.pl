@@ -185,7 +185,11 @@ $sthA->finish();
 ###########################################
 
 
-if ($non_latin > 0) {$affected_rows = $dbhA->do("SET NAMES 'UTF8'");}
+if ($non_latin > 0) {
+	$affected_rows = $dbhA->do("SET NAMES 'UTF8';");
+} else {
+	$affected_rows = $dbhA->do("SET NAMES 'latin1';");
+}
 
 	### Grab Server values from the database
 	$stmtA = "SELECT local_gmt FROM servers where server_ip = '$server_ip';";

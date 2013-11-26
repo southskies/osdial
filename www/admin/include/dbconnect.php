@@ -119,6 +119,10 @@ if ($config['settings']['use_non_latin'] > 0) {
     $rslt=mysql_query("SET NAMES 'utf8' COLLATE 'utf8_general_ci';",$link);
     mb_internal_encoding('UTF-8');
     mb_regex_encoding('UTF-8');
+} else {
+    $rslt=mysql_query("SET NAMES 'latin1' COLLATE 'latin1_swedish_ci';",$link);
+    mb_internal_encoding('ISO-8859-1');
+    mb_regex_encoding('ISO-8859-1');
 }
 
 $stmt = sprintf("SELECT * FROM servers WHERE server_ip='%s' LIMIT 1;",mres($config['VARserver_ip']));

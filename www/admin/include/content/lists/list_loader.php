@@ -21,6 +21,17 @@
 #
 
 if ($ADD==122) {
+  class utf8encode_filter extends php_user_filter {
+    function filter($in, $out, &$consumed, $closing) {
+      while ($bucket = stream_bucket_make_writeable($in)) {
+        if (mb_detect_encoding($bucket->data,'UTF-8, ISO-8859-1') != 'UTF-8') $bucket->data = utf8_encode($bucket->data);
+        $consumed += $bucket->datalen;
+        stream_bucket_append($out, $bucket);
+      }
+      return PSFS_PASS_ON;
+    }
+  }
+
   if ($LOG['load_leads']==1 and $LOG['user_level'] > 7) {
     #@apache_setenv('no-gzip', 1);
     #@ini_set('zlib.output_compression', 0);
@@ -220,6 +231,8 @@ if ($ADD==122) {
 
             flush();
 			$file=fopen("$lead_file", "r");
+            stream_filter_register("utf8encode", "utf8encode_filter");
+            stream_filter_prepend($file, "utf8encode");
 		
 			if ($WeBRooTWritablE > 0 and $single_insert < 1) $stmt_file=fopen("$WeBServeRRooT/admin/listloader_stmts.txt", "w");
 					
@@ -661,6 +674,8 @@ if ($ADD==122) {
 
                 flush();
 		    	$file=fopen("$lead_file", "r");
+                stream_filter_register("utf8encode", "utf8encode_filter");
+                stream_filter_prepend($file, "utf8encode");
 		    	if ($WeBRooTWritablE > 0 and $single_insert < 1) $stmt_file=fopen("$WeBServeRRooT/admin/listloader_stmts.txt", "w");
 				
 		    	echo "<center><font size=3 color='$default_text'><B>Processing $delim_name file...</b><br/><br/></font>\n";
