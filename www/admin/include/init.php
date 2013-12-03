@@ -67,7 +67,7 @@ if ( ( (OSDstrlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($
                     $stmt=sprintf("UPDATE osdial_campaign_agents SET campaign_rank='%s',campaign_weight='%s' WHERE campaign_id='%s' AND user='%s' AND user LIKE '%s__%%';",mres($campaign_rank),mres($campaign_rank),mres($campaign_id_values[$o]),mres($user),mres($LOG['company_prefix']));
                     $rslt=mysql_query($stmt, $link);
                 } else {
-                    $stmt=sprintf("INSERT INTO osdial_campaign_agents SET campaign_rank='%s',campaign_weight='%s',campaign_id='%s',user='%s' AND user LIKE '%s__%%';",mres($campaign_rank),mres($campaign_rank),mres($campaign_id_values[$o]),mres($user),mres($LOG['company_prefix']));
+                    $stmt=sprintf("INSERT INTO osdial_campaign_agents SET campaign_rank='%s',campaign_weight='%s',campaign_id='%s',user='%s';",mres($campaign_rank),mres($campaign_rank),mres($campaign_id_values[$o]),mres($user));
                     $rslt=mysql_query($stmt, $link);
                 }
                 $stmt=sprintf("UPDATE osdial_live_agents SET campaign_weight='%s' WHERE campaign_id='%s' AND user='%s' AND user LIKE '%s__%%';",mres($campaign_rank),mres($campaign_id_values[$o]),mres($user),mres($LOG['company_prefix']));
