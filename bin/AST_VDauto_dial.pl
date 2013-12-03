@@ -1324,7 +1324,7 @@ while($one_day_interval > 0)
 				$call_timeout = ($CLdial_timeout + $CLdrop_call_seconds);
 				if ($CLstage =~ /SURVEY|REMIND|IVR/) {$call_timeout = ($call_timeout + 120);}
 
-				if ( ($dialtime_log >= $call_timeout) || ($dialtime_catch >= $call_timeout) || ($CLstatus =~ /BUSY|DISCONNECT|XFER|CLOSER/) )
+				if ( ($dialtime_log >= $call_timeout) || ($dialtime_catch >= $call_timeout) || ($CLstatus =~ /BUSY|DISCONNECT|XFER|CLOSER|CONGESTION|CPA/) )
 					{
 					if ($CLcall_type !~ /IN/) 
 						{
@@ -1334,7 +1334,7 @@ while($one_day_interval > 0)
 							$affected_rows = $dbhA->do($stmtA);
 	
 							if ($affected_rows > 0) {
-								$event_string = "|     dead call vac DELETED|$auto_call_id|$CLlead_id|$CLuniqueid|$KLuniqueid[$kill_vac]|$KLcallerid[$kill_vac]|$end_epoch|$affected_rows|$KLchannel[$kill_vac]|$CLcall_type|$CLdial_timeout|$CLdrop_call_seconds|$call_timeout|$dialtime_log|$dialtime_catch|";
+								$event_string = "|     dead call vac DELETED|$auto_call_id|$CLlead_id|$CLuniqueid|$KLuniqueid[$kill_vac]|$KLcallerid[$kill_vac]|$end_epoch|$affected_rows|$KLchannel[$kill_vac]|$CLcall_type|$CLdial_timeout|$CLdrop_call_seconds|$call_timeout|$dialtime_log|$dialtime_catch|$CLstatus|";
 						 		&event_logger;
 							}
 	
