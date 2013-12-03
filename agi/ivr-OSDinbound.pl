@@ -588,16 +588,16 @@ if ($hm<$ct_default_start or $hm>$ct_default_stop) {
 		$inafterhours=1;
 		stream_start_file($ingroup->{after_hours_message_filename});
 		stream_file('sip-silence');
+		while ($inafterhours==1) {
+			my $innew = infunc();
+			if ($ingroup->{callback_interval}>0) {
+				$docallback=1 if ($innew eq $ingroup->{callback_interrupt_key});
+			}
+		}
+		callback_prompt() if ($docallback);
 		$stmtA = sprintf("INSERT INTO osdial_manager VALUES ('','','%s','NEW','N','%s','%s','Hangup','%s','Channel: %s','','','','','','','','','');",$osdial->mres($SQLdate),$osdial->mres($osdial->{'VARserver_ip'}),$osdial->mres($vars->{channel}),$osdial->mres($VHqueryCID),$osdial->mres($vars->{channel}));
 		$affected_rows = $osdial->sql_execute($stmtA);
 		$osdial->agi_output("--    OSDCL call_hungup after hours: |$VHqueryCID||".$vars->{channel}."|insert to osdial_manager");
-		if ($ingroup->{callback_interval}>0) {
-			while ($inafterhours==1) {
-				my $innew = infunc();
-				$docallback=1 if ($innew eq $ingroup->{callback_interrupt_key});
-			}
-			callback_prompt() if ($docallback);
-		}
 	}
 	$osdial->sql_disconnect();
 	exit_ivr();
