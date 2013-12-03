@@ -234,7 +234,7 @@ if ( ( (OSDstrlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($
                     $stmt=sprintf("UPDATE osdial_inbound_group_agents SET group_rank='%s',group_weight='%s' WHERE group_id='%s' AND user='%s' AND user LIKE '%s__%%';",mres($group_rank),mres($group_rank),mres($group_id_values[$o]),mres($user),mres($LOG['company_prefix']));
                     $rslt=mysql_query($stmt, $link);
                 } else {
-                    $stmt=sprintf("INSERT INTO osdial_inbound_group_agents SET group_rank='%s',group_weight='%s',group_id='%s',user='%s' AND user LIKE '%s__%%';",mres($group_rank),mres($group_rank),mres($group_id_values[$o]),mres($user),mres($LOG['company_prefix']));
+                    $stmt=sprintf("INSERT INTO osdial_inbound_group_agents SET group_rank='%s',group_weight='%s',group_id='%s',user='%s';",mres($group_rank),mres($group_rank),mres($group_id_values[$o]),mres($user));
                     $rslt=mysql_query($stmt, $link);
                 }
                 $stmt=sprintf("UPDATE osdial_live_inbound_agents SET group_weight='%s' WHERE group_id='%s' AND user='%s' AND user LIKE '%s__%%';",mres($group_rank),mres($group_id_values[$o]),mres($user),mres($LOG['company_prefix']));
