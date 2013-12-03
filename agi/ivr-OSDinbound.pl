@@ -813,8 +813,8 @@ while ($drop_timer <= $DROP_TIME) {
 	
 		if ($rec_countWAIT < 1) {
 			if ($aco_sub>0) {
-				$stmtA = "LOCK TABLES osdial_live_agents WRITE, osdial_live_inbound_agents WRITE;";
-				$affected_rows = $osdial->sql_execute($stmtA);
+				#$stmtA = "LOCK TABLES osdial_live_agents WRITE, osdial_live_inbound_agents WRITE;";
+				#$affected_rows = $osdial->sql_execute($stmtA);
 
 
 				$stmtA = sprintf("SELECT SQL_NO_CACHE osdial_live_agents.conf_exten,osdial_live_agents.user,osdial_live_agents.extension,osdial_live_agents.server_ip FROM osdial_live_agents JOIN osdial_live_inbound_agents ON osdial_live_agents.user=osdial_live_inbound_agents.user WHERE status IN ('CLOSER','READY') AND osdial_live_inbound_agents.group_id='%s' AND last_update_time>'%s' %s %s LIMIT 1;",$osdial->mres($channel_group),$osdial->mres($BDtsSQLdate),$svrSQLwhere,$agent_call_order);
@@ -836,8 +836,8 @@ while ($drop_timer <= $DROP_TIME) {
 					$found_agents=$affected_rows;
 				}
 
-				$stmtA = "UNLOCK TABLES;";
-				$affected_rows = $osdial->sql_execute($stmtA);
+				#$stmtA = "UNLOCK TABLES;";
+				#$affected_rows = $osdial->sql_execute($stmtA);
 			} else {
 				my $random = int( rand(9999999)) + 10000000;
 				$stmtA = sprintf("UPDATE osdial_live_agents SET status='QUEUE',random_id='%s',lead_id='%s',uniqueid='%s',channel='%s',callerid='%s'%s WHERE status IN('CLOSER','READY') AND campaign_id IN (%s) AND closer_campaigns LIKE '%% %s %%' AND last_update_time>'%s' %s LIMIT 1;",$osdial->mres($random),$osdial->mres($insert_lead_id),$osdial->mres($vars->{uniqueid}),$osdial->mres($vars->{channel}),$osdial->mres($vars->{accountcode}),$csvrSQLfld,$INBOUNDcampsSQL,$osdial->mres($channel_group),$osdial->mres($BDtsSQLdate),$agent_call_order);
