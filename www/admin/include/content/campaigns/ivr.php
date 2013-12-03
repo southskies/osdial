@@ -44,7 +44,7 @@ if ($ADD == "1menu") {
         $oivr_id = 0;
         $crec = get_first_record($link, 'osdial_campaigns', '*', sprintf("campaign_id='%s'",mres($campaign_id)));
         $oivr = get_first_record($link, 'osdial_ivr', '*', sprintf("id='%s'",mres($crec['ivr_id'])));
-        if ($oivr['campaign_id'] != "") {
+        if (!empty($oivr['id']) and $oivr['id'] != '0') {
             $SUB = "2keys";
             $ADD = "3menu"; # go to campaign modification form below
         } else {
@@ -85,8 +85,33 @@ if ($ADD == "1keys" or $ADD == '4keys') {
             $recfilename = OSDpreg_replace('/\.wav$/i','.wav',$recfilename);
             $recfilename = OSDpreg_replace('/\.gsm$/i','.gsm',$recfilename);
             $recfilename = OSDpreg_replace('/\.mp3$/i','.mp3',$recfilename);
+            move_uploaded_file($recfiletmp, '/tmp/'.$recfilename);
+
+            if (OSDpreg_match('/\.wav$/i',$recfilename)) {
+                $convfile = '/tmp/CONV_'.$recfilename;
+                $destfile = '/tmp/'.$recfilename;
+                rename($destfile, $convfile);
+                $soxtype = exec('/usr/bin/soxi -t \''.$convfile.'\'');
+                if (OSDpreg_match('/wav/i',$soxtype)) {
+                    $soxbit = (exec('/usr/bin/soxi -b \''.$convfile.'\'')*1);
+                    $soxrate = (exec('/usr/bin/soxi -r \''.$convfile.'\'')*1);
+                    $soxchan = (exec('/usr/bin/soxi -c \''.$convfile.'\'')*1);
+                    $sbopt=($soxbit!=16?'-b 16':'');
+                    $sropt=($soxrate!=8000?'rate 8k':'');
+                    $scopt=($soxchan!=1?'remix -':'');
+                    if (!empty($sbopt) or !empty($sropt) or !empty($scopt)) { 
+                        exec('/usr/bin/sox \''.$convfile.'\' '.$sbopt.' \''.$destfile.'\' '.$sropt.' '.$scopt);
+                        if (file_exists($destfile)) {
+                            unlink($convfile);
+                        } 
+                    }
+                }
+                if (file_exists($convfile)) {
+                        rename($convfile, $destfile);
+                }
+            }
+
             if ($recfilename != '') {
-                rename($recfiletmp, '/tmp/'.$recfilename);
                 media_add_file($link, '/tmp/'.$recfilename, mimemap($recfilename), "IVR: $campaign_id - $oivr_opt_action",'',1);
                 copy('/tmp/'.$recfilename, $WeBServeRRooT . "/ivr/" . $recfilename);
                 unlink('/tmp/'.$recfilename);
@@ -583,8 +608,33 @@ if ($ADD == "4menu") {
             $recfilename = OSDpreg_replace('/\.wav$/i','.wav',$recfilename);
             $recfilename = OSDpreg_replace('/\.gsm$/i','.gsm',$recfilename);
             $recfilename = OSDpreg_replace('/\.mp3$/i','.mp3',$recfilename);
+            move_uploaded_file($recfiletmp, '/tmp/'.$recfilename);
+
+            if (OSDpreg_match('/\.wav$/i',$recfilename)) {
+                $convfile = '/tmp/CONV_'.$recfilename;
+                $destfile = '/tmp/'.$recfilename;
+                rename($destfile, $convfile);
+                $soxtype = exec('/usr/bin/soxi -t \''.$convfile.'\'');
+                if (OSDpreg_match('/wav/i',$soxtype)) {
+                    $soxbit = (exec('/usr/bin/soxi -b \''.$convfile.'\'')*1);
+                    $soxrate = (exec('/usr/bin/soxi -r \''.$convfile.'\'')*1);
+                    $soxchan = (exec('/usr/bin/soxi -c \''.$convfile.'\'')*1);
+                    $sbopt=($soxbit!=16?'-b 16':'');
+                    $sropt=($soxrate!=8000?'rate 8k':'');
+                    $scopt=($soxchan!=1?'remix -':'');
+                    if (!empty($sbopt) or !empty($sropt) or !empty($scopt)) { 
+                        exec('/usr/bin/sox \''.$convfile.'\' '.$sbopt.' \''.$destfile.'\' '.$sropt.' '.$scopt);
+                        if (file_exists($destfile)) {
+                            unlink($convfile);
+                        } 
+                    }
+                }
+                if (file_exists($convfile)) {
+                        rename($convfile, $destfile);
+                }
+            }
+
             if ($recfilename != '') {
-                rename($recfiletmp, '/tmp/'.$recfilename);
                 media_add_file($link, '/tmp/'.$recfilename, mimemap($recfilename), "IVR: $campaign_id - MAIN_MENU",'',1);
                 copy('/tmp/'.$recfilename, $WeBServeRRooT . "/ivr/" . $recfilename);
                 unlink('/tmp/'.$recfilename);
