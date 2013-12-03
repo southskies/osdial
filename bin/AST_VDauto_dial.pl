@@ -1605,7 +1605,7 @@ while($one_day_interval > 0)
 											if ($enable_multicompany > 0) {
 												$comp_id=0;
 												$dnc_method='';
-												$stmtA="SELECT comp_id,dnc_method FROM osdial_companies WHERE company_id='" . $osdial->mres((substr($CLcampaign_id,0,3) * 1) - 100) . "';";
+												$stmtA="SELECT id,dnc_method FROM osdial_companies WHERE id='" . $osdial->mres((substr($CLcampaign_id,0,3) * 1) - 100) . "';";
 												if ($AGILOG) {$event_string = "|$stmtA|";   &event_logger;}
 												$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 												$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
