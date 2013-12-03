@@ -408,11 +408,11 @@ if ($ADD==20)
         {echo "<br><font color=red> CAMPAIGN NOT ADDED - there is already a campaign in the system with this ID</font>";}
     else
         {
-         if ( (OSDstrlen($campaign_id) < 2) or (OSDstrlen($campaign_id) > 8) or  (OSDstrlen($campaign_name) < 2) or (OSDstrlen($source_campaign_id) < 2) or (OSDstrlen($source_campaign_id) > 8) )
+         if ( (OSDstrlen($campaign_id) < 2) or (OSDstrlen($campaign_id) > 20) or  (OSDstrlen($campaign_name) < 2) or (OSDstrlen($source_campaign_id) < 2) or (OSDstrlen($source_campaign_id) > 20) )
             {
              echo "<br><font color=red> CAMPAIGN NOT ADDED - Please go back and look at the data you entered";
-             echo "<br>campaign ID must be between 2 and 8 characters in length";
-             echo "<br>source campaign ID must be between 2 and 8 characters in length</font><br>";
+             echo "<br>campaign ID must be between 2 and 20 characters in length";
+             echo "<br>source campaign ID must be between 2 and 20 characters in length</font><br>";
             }
          else
             {
