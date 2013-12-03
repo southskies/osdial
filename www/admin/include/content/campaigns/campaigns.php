@@ -533,9 +533,9 @@ if ($ADD==41)
 		    {
 		    if ($dial_level_override > 0)
 			{
+			$available_only_ratio_tally = get_variable('ADAPT_available_only_ratio_tally');
 			$auto_dial_level = get_variable("ADAPT_auto_dial_level");
 			$adlSQL = sprintf("auto_dial_level='%s',",mres($auto_dial_level));
-			$available_only_ratio_tally = get_variable('ADAPT_available_only_ratio_tally');
 			}
 		    else
 			{
@@ -546,6 +546,7 @@ if ($ADD==41)
 			    }
 			else
 			    {
+			    $available_only_ratio_tally = get_variable('ADAPT_available_only_ratio_tally');
 			    $auto_dial_level = get_variable("ADAPT_auto_dial_level");
 			    $adlSQL = "";
 			    if ($auto_dial_level < 1)
