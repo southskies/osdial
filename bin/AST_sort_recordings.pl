@@ -126,6 +126,10 @@ if (! -e $lock_file) {
 
 my $webpath = $osdial->{VARHTTP_path};
 $webpath = $osdial->{configuration}{ArchiveWebPath} if ($osdial->{configuration}{ArchiveWebPath} ne "");
+if ($webpath =~ /^http\:\/\/127\.0\.0\.1/) {
+	my $newsvr = "http://".$osdial->{VARserver_ip};
+	$webpath =~ s/^http\:\/\/127\.0\.0\.1/$newsvr/;
+}
 	
 
 ### directory where -all recordings are
