@@ -10,7 +10,7 @@ $browser = getenv("HTTP_USER_AGENT");
 if (!preg_match('/wget/i',$browser)) {
     echo "<html>\n";
     echo "<head>\n";
-    echo "    <title>Choose Login:</title>\n";
+    echo "    <title>"._("Choose Login:")."</title>\n";
     echo "    <link rel=\"stylesheet\" type=\"text/css\" href=\"admin/templates/$template/styles.css\" media=\"screen\">\n";
     echo "    <!-- <link rel=\"stylesheet\" type=\"text/css\" href=\"admin/templates/default/styles.css\" media=\"screen\"> -->\n";
     echo "</head>\n";
@@ -38,10 +38,10 @@ if (!preg_match('/wget/i',$browser)) {
     echo "                    </tr>\n";
     echo "                    <tr valign=\"top\">\n";
     echo "                        <td align=\"center\" class=\"homepage\" width=\"50%\">\n";
-    echo "                            <span><a href=\"agent\">Agent Login</a></span>\n";
+    echo "                            <span><a href=\"agent\">"._("Agent Login")."</a></span>\n";
     echo "                        </td>\n";
     echo "                        <td align=\"center\" class=\"homepage\">\n";
-    echo "                            <span><a href=\"admin/admin.php?ADD=10\">Admin Login</a></span>\n";
+    echo "                            <span><a href=\"admin/admin.php?ADD=10\">"._("Admin Login")."</a></span>\n";
     echo "                        </td>\n";
     echo "                    </tr>\n";
     echo "                </table>\n";
@@ -51,7 +51,7 @@ if (!preg_match('/wget/i',$browser)) {
     echo "        <tr height=\"50\"><td colspan=\"2\">&nbsp;</td></tr>\n";
     echo "        <tr>\n";
     echo "            <td class=\"homepagelogo\">\n";
-    echo "                <a href=\"http://callcentersg.com/licenses.php\" target=\"_blank\" title=\"Click for License Information\"><img class=\"homepagelogo\" src=\"admin/templates/default/images/osdial-logo.gif\" height=\"100\"></a>\n";
+    echo "                <a href=\"http://callcentersg.com/licenses.php\" target=\"_blank\" title=\""._("Click for License Information")."\"><img class=\"homepagelogo\" src=\"admin/templates/default/images/osdial-logo.gif\" height=\"100\"></a>\n";
     echo "            </td>\n";
 
     echo "            <td width=\"170\" align=\"right\" valign=\"bottom\">\n";
