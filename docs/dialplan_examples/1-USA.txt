@@ -1,0 +1,48 @@
+;
+; Dialplan Example for NANPA / USA / Canada / Mexico
+;---------------------------------------------------
+; Country code: 1
+; Number length: 10-digits
+; International Prefix: 011
+; Trunk Prefix: none
+;
+
+; The following tags can be used to substitute corresponding values from the carrier options.
+;   <NAME>  <PROTOCOL>  <STRIP_MSD>  <ALLOW_INTERNATIONAL>
+;   <DEFAULT_CALLERID>  <DEFAULT_AREACODE>  <DEFAULT_PREFIX>
+
+; Format long distance number (add default prefix).
+exten => _1NXXNXXXXXX,1,Goto(<DEFAULT_PREFIX>${EXTEN:1},1)
+
+; Format long distance number (prefix dialed, 1 missing)
+exten => _NNXXNXXXXXX,1,Goto(${EXTEN:0:1}1${EXTEN:1},1)
+
+; Format long distance number (add default prefix, add 1).
+exten => _NXXNXXXXXX,1,Goto(<DEFAULT_PREFIX>1${EXTEN},1)
+
+; Format local number (add 1, add default areacode)
+exten => _NNXXXXXX,1,Goto(${EXTEN:0:1}1<DEFAULT_AREACODE>${EXTEN:1},1)
+
+; Format local number (add default prefix, add 1, add default areacode).
+exten => _NXXXXXX,1,Goto(<DEFAULT_PREFIX>1<DEFAULT_AREACODE>${EXTEN},1)
+
+; Format international number (add default prefix).
+exten => _011.,1,Goto(<DEFAULT_PREFIX>${EXTEN},1)
+exten => _00.,1,Goto(<DEFAULT_PREFIX>011${EXTEN:2},1)
+
+; Dial long distance number (format correct).
+exten => _N1NXXNXXXXXX,1,GotoIf($["<STRIP_MSD>" = "Y"]?setcid${EXTEN:0:1}${EXTEN:2},1:setcid${EXTEN},1)
+
+; Dial an international number (if allowed).
+exten => _N011.,1,GotoIf($["<ALLOW_INTERNATIONAL>" = "Y"]?setcid${EXTEN},1)
+exten => _N00.,1,Goto(${EXTEN:0:1}011${EXTEN:3},1)
+
+; Make sure callerid is set.
+exten => _setcid.,1,GotoIf($["${LEN(${CALLERID(number)})}" = "${LEN(<DEFAULT_CALLERID>)}"]?dial${EXTEN:6},1)
+exten => _setcid.,n,Set(CALLERID(number)=<DEFAULT_CALLERID>)
+exten => _setcid.,n,Goto(dial${EXTEN:6},1)
+
+; This section is the 'prefix' dialed.
+exten => _dial9.,1,AGI(agi://127.0.0.1:4577/call_log)
+exten => _dial9.,n,Dial(<PROTOCOL>/<NAME>/${EXTEN:5},60,o)
+exten => _dial9.,n,Goto(failover${EXTEN:5},1)
