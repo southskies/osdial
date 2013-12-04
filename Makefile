@@ -244,12 +244,14 @@ install-asterisk-sample-config:
 .install-docs:
 	@echo "Installing documents in $(DESTDIR)$(PATHdocs)..."
 	@install -d -m 755 $(DESTDIR)$(PATHdocs)/conf_examples
+	@install -d -m 755 $(DESTDIR)$(PATHdocs)/dialplan_examples
 	@install -d -m 755 $(DESTDIR)$(PATHdocs)/api
 	#@install -d -m 755 $(DESTDIR)$(PATHdocs)/extras
 	@install -p -m 644 ./docs/*.txt $(DESTDIR)$(PATHdocs)
 	@install -p -m 644 ./docs/copyright $(DESTDIR)$(PATHdocs)
 	@install -p -m 644 ./docs/conf_examples/*.conf $(DESTDIR)$(PATHdocs)/conf_examples
 	@install -p -m 644 ./docs/conf_examples/*.osdial $(DESTDIR)$(PATHdocs)/conf_examples
+	@install -p -m 644 ./docs/dialplan_examples/*.txt $(DESTDIR)$(PATHdocs)/dialplan_examples
 	@install -p -m 644 ./docs/api/* $(DESTDIR)$(PATHdocs)/api
 	##@install -p -m 644 ./extras/firewall.sh $(DESTDIR)$(PATHdocs)
 	##@install -p -m 644 ./extras/osdial-template-example.tgz $(DESTDIR)$(PATHdocs)
