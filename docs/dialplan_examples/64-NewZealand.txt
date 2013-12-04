@@ -1,0 +1,59 @@
+;
+; Dialplan Example for New Zealand
+;----------------------------------
+; Country code: 64
+; Number length: 8 to 9-digits
+; International Prefix: 00
+; Trunk Prefix: 0
+;
+
+; The following tags can be used to substitute corresponding values from the carrier options.
+;   <NAME>  <PROTOCOL>  <STRIP_MSD>  <ALLOW_INTERNATIONAL>
+;   <DEFAULT_CALLERID>  <DEFAULT_AREACODE>  <DEFAULT_PREFIX>
+
+; Format long distance number (add default prefix, remove 0).
+exten => _640ZXXXXXXX,1,Goto(<DEFAULT_PREFIX>${EXTEN:0:2}${EXTEN:3},1)
+exten => _640ZXXXXXXXX,1,Goto(<DEFAULT_PREFIX>${EXTEN:0:2}${EXTEN:3},1)
+
+; Format long distance number (add default prefix).
+exten => _64ZXXXXXXX,1,Goto(<DEFAULT_PREFIX>${EXTEN},1)
+exten => _64ZXXXXXXXX,1,Goto(<DEFAULT_PREFIX>${EXTEN},1)
+
+; Format long distance number (add default prefix, remove 0).
+exten => _0ZXXXXXXX,1,Goto(<DEFAULT_PREFIX>64${EXTEN:1},1)
+exten => _0ZXXXXXXXX,1,Goto(<DEFAULT_PREFIX>64${EXTEN:1},1)
+
+; Format long distance number (prefix dialed, add country code)
+exten => _NZXXXXXXX,1,Goto(${EXTEN:0:1}64${EXTEN:1},1)
+exten => _NZXXXXXXXX,1,Goto(${EXTEN:0:1}64${EXTEN:1},1)
+
+; Format long distance number (prefix dialed, add country code, remove 0)
+exten => _N0ZXXXXXXX,1,Goto(${EXTEN:0:1}64${EXTEN:2},1)
+exten => _N0ZXXXXXXXX,1,Goto(${EXTEN:0:1}64${EXTEN:2},1)
+
+; Format long distance number (prefix dialed, remove 0)
+exten => _N640ZXXXXXXX,1,Goto(${EXTEN:0:1}${EXTEN:1:2}${EXTEN:4},1)
+exten => _N640ZXXXXXXXX,1,Goto(${EXTEN:0:1}${EXTEN:1:2}${EXTEN:4},1)
+
+; Format long distance number (format correct)
+exten => _N64ZXXXXXXX,1,GotoIf($["<STRIP_MSD>" = "Y"]?setcid${EXTEN:0:1}0${EXTEN:3},1:setcid${EXTEN},1)
+exten => _N64ZXXXXXXXX,1,GotoIf($["<STRIP_MSD>" = "Y"]?setcid${EXTEN:0:1}0${EXTEN:3},1:setcid${EXTEN},1)
+
+; Format international number (add default prefix).
+exten => _00.,1,Goto(<DEFAULT_PREFIX>${EXTEN},1)
+exten => _011.,1,Goto(<DEFAULT_PREFIX>00${EXTEN:3},1)
+
+; Dial an international number (if allowed).
+exten => _N00.,1,GotoIf($["<ALLOW_INTERNATIONAL>" = "Y"]?setcid${EXTEN},1)
+exten => _N0064.,1,Goto(${EXTEN:0:1}${EXTEN:3},1)
+exten => _N011.,1,Goto(${EXTEN:0:1}00${EXTEN:4},1)
+
+; Make sure callerid is set.
+exten => _setcid.,1,GotoIf($["${LEN(${CALLERID(number)})}" = "${LEN(<DEFAULT_CALLERID>)}"]?dial${EXTEN:6},1)
+exten => _setcid.,n,Set(CALLERID(number)=<DEFAULT_CALLERID>)
+exten => _setcid.,n,Goto(dial${EXTEN:6},1)
+
+; This section is the 'prefix' dialed.
+exten => _dial9.,1,AGI(agi://127.0.0.1:4577/call_log)
+exten => _dial9.,n,Dial(<PROTOCOL>/<NAME>/${EXTEN:5},60,o)
+exten => _dial9.,n,Goto(failover${EXTEN:5},1)
