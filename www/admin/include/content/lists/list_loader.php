@@ -24,7 +24,7 @@ if ($ADD==122) {
   class utf8encode_filter extends php_user_filter {
     function filter($in, $out, &$consumed, $closing) {
       while ($bucket = stream_bucket_make_writeable($in)) {
-        if (mb_detect_encoding($bucket->data,'UTF-8, ISO-8859-1') != 'UTF-8') $bucket->data = utf8_encode($bucket->data);
+        if (mb_detect_encoding($bucket->data,'UTF-8, Windows-1252, ISO-8859-1') != 'UTF-8') $bucket->data = utf8_encode($bucket->data);
         $consumed += $bucket->datalen;
         stream_bucket_append($out, $bucket);
       }
