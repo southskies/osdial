@@ -186,9 +186,9 @@ $sthA->finish();
 
 
 if ($non_latin > 0) {
-	$affected_rows = $dbhA->do("SET NAMES 'UTF8';");
+	$affected_rows = $dbhA->do("SET NAMES 'utf8' COLLATE 'utf8_general_ci';");
 } else {
-	$affected_rows = $dbhA->do("SET NAMES 'latin1';");
+	$affected_rows = $dbhA->do("SET NAMES 'latin1' COLLATE 'latin1_swedish_ci';");
 }
 
 ### Grab Server values from the database

@@ -108,14 +108,14 @@ while ($i < $confnum) {
 $config['settings']['intra_server_sep']='*';
 if ($config['settings']['intra_server_protocol']='IAX2') $config['settings']['intra_server_sep']='#';
 
+mb_internal_encoding('UTF-8');
+mb_regex_encoding('UTF-8');
 if ($config['settings']['use_non_latin'] > 0) {
     $rslt=mysql_query("SET NAMES 'utf8' COLLATE 'utf8_general_ci';",$link);
-    mb_internal_encoding('UTF-8');
-    mb_regex_encoding('UTF-8');
+    mysql_set_charset('utf8', $link);
 } else {
     $rslt=mysql_query("SET NAMES 'latin1' COLLATE 'latin1_swedish_ci';",$link);
-    mb_internal_encoding('ISO-8859-1');
-    mb_regex_encoding('ISO-8859-1');
+    mysql_set_charset('latin1', $link);
 }
 
 $stmt = "SELECT * FROM system_settings LIMIT 1;";

@@ -1443,61 +1443,41 @@ function dateToServer($link, $svrip, $cnvdate, $locGMT, $fmt="", $locisDST, $add
 
 
 function OSDstrwidth($instr) {
-    global $config;
-    if ($config['settings']['use_non_latin']==1) return mb_strwidth($instr,'UTF-8');
-    return strlen($instr);
+    return mb_strwidth($instr);
 }
 function OSDstrlen($instr) {
-    global $config;
-    if ($config['settings']['use_non_latin']==1) return mb_strlen($instr,'UTF-8');
-    return strlen($instr);
+    return mb_strlen($instr);
 }
 function OSDstrtolower($instr) {
-    global $config;
-    if ($config['settings']['use_non_latin']==1) return mb_strtolower($instr,'UTF-8');
-    return strtolower($instr);
+    return mb_strtolower($instr);
 }
 function OSDstrtoupper($instr) {
-    global $config;
-    if ($config['settings']['use_non_latin']==1) return mb_strtoupper($instr,'UTF-8');
-    return strtoupper($instr);
+    return mb_strtoupper($instr);
 }
 function OSDpreg_replace($inre,$insub,$instr) {
-    global $config;
-    if ($config['settings']['use_non_latin']==1) return preg_replace($inre.'u',$insub,$instr);
-    return preg_replace($inre,$insub,$instr);
+    return preg_replace($inre.'u',$insub,$instr);
 }
 function OSDpreg_split($inre,$instr) {
-    global $config;
-    if ($config['settings']['use_non_latin']==1) return preg_split($inre.'u',$instr);
-    return preg_split($inre,$instr);
+    return preg_split($inre.'u',$instr);
 }
 function OSDpreg_splitX($inre,$instr,$incnt) {
-    global $config;
-    if ($config['settings']['use_non_latin']==1) return preg_split($inre.'u',$instr,$incnt);
-    return preg_split($inre,$instr,$incnt);
+    return preg_split($inre.'u',$instr,$incnt);
 }
 function OSDpreg_split4($inre,$instr,$incnt,$inflag) {
-    global $config;
-    if ($config['settings']['use_non_latin']==1) return preg_split($inre.'u',$instr,$incnt,$inflag);
-    return preg_split($inre,$instr,$incnt,$inflag);
+    return preg_split($inre.'u',$instr,$incnt,$inflag);
 }
 function OSDpreg_match($inre,$instr) {
-    global $config;
-    if ($config['settings']['use_non_latin']==1) return preg_match($inre.'u',$instr);
-    return preg_match($inre,$instr);
+    return preg_match($inre.'u',$instr);
 }
 function OSDsubstr($instr,$instart,$inlen) {
-    global $config;
-    if ($config['settings']['use_non_latin']==1) return mb_substr($instr,$instart,$inlen,'UTF-8');
-    return substr($instr,$instart,$inlen);
+    return mb_substr($instr,$instart,$inlen);
 }
 
 function OSDsprintf() {
     $args = func_get_args();
     global $config;
-    if ($config['settings']['use_non_latin']==1) return call_user_func_array('mb_sprintf', $args);;
-    return call_user_func_array('sprintf', $args);;
+    if ($config['settings']['use_non_latin']==1) return call_user_func_array('mb_sprintf', $args);
+    return call_user_func_array('sprintf', $args);
 }
 
 
