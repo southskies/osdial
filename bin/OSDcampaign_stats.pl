@@ -114,7 +114,17 @@ sub set_campaign_stats {
 	my $shdone    = 0;
 	my $sinsmulti = '';
 	my $sinsonupd = ' ON DUPLICATE KEY UPDATE ';
+	my $lastccols=0;
+	my $lastacols=0;
+	my $lastscols=0;
 	foreach my $campaign (sort keys %{$cdata}) {
+		my $ccols = scalar keys %{$cdata->{$campaign}{campaign}};
+		if ($ccols>$lastccols) {
+			$cinshead  = "INSERT INTO osdial_campaign_stats (campaign_id,";
+			$cinsonupd = ' ON DUPLICATE KEY UPDATE ';
+			$chdone    = 0;
+			$lastccols=$ccols;
+		}
 		my $cadd=1;
 		$cadd=0 if (scalar(keys %{$cdata->{$campaign}{campaign}}) < 30);
 		print "  -- OSDcampaign_stats.pl: set_campaign_stats: got campaign $campaign.\n" if ($osdial->{DB}>1);
@@ -136,6 +146,13 @@ sub set_campaign_stats {
 		}
 	
 		foreach my $agent (sort keys %{$cdata->{$campaign}{agent}}) {
+			my $acols = scalar keys %{$cdata->{$campaign}{agent}{$agent}};
+			if ($acols>$lastacols) {
+				$ainshead  = "INSERT INTO osdial_campaign_agent_stats (campaign_id,user,";
+				$ainsonupd = ' ON DUPLICATE KEY UPDATE ';
+				$ahdone    = 0;
+				$lastacols=$acols;
+			}
 			print "    -- OSDcampaign_stats.pl: set_campaign_stats: campaign: $campaign  got agent $agent.\n" if ($osdial->{DB}>1);
 			$ainsmulti .= "('" . $osdial->mres($campaign) . "','" . $osdial->mres($agent) . "',";
 			foreach my $afld (sort keys %{$cdata->{$campaign}{agent}{$agent}}) {
@@ -155,6 +172,13 @@ sub set_campaign_stats {
 			}
 		}
 		foreach my $server (sort keys %{$cdata->{$campaign}{server}}) {
+			my $scols = scalar keys %{$cdata->{$campaign}{server}{$server}};
+			if ($scols>$lastscols) {
+				$sinshead  = "INSERT INTO osdial_campaign_server_stats (campaign_id,server_ip,";
+				$shdone    = 0;
+				$sinsonupd = ' ON DUPLICATE KEY UPDATE ';
+				$lastscols=$scols;
+			}
 			print "    -- OSDcampaign_stats.pl: set_campaign_stats: campaign: $campaign  got server $server.\n" if ($osdial->{DB}>1);
 			$sinsmulti .= "('" . $osdial->mres($campaign) . "','$server',";
 			foreach my $sfld (sort keys %{$cdata->{$campaign}{server}{$server}}) {
@@ -205,7 +229,7 @@ sub get_campaign_stats {
 	my $Shalfhour = $secX - 1800;
 	my $Sfivemin  = $secX - 300;
 	my $Sonemin   = $secX - 60;
-	my $today     = $osdial->get_date($secX);
+	my $today = $osdial->get_date($secX);
 
 
 	# Get Status Categories for Display Setting
