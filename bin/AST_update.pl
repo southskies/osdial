@@ -323,7 +323,7 @@ $sthA->finish();
 	print STDERR "LOOKING FOR SIP clients assigned to this server:\n";
 	$SIP_client_count=0;
 	$SIP_client_list='|';
-	$stmtA = "SELECT extension FROM phones WHERE protocol='SIP' AND server_ip='$server_ip';";
+	$stmtA = "SELECT extension FROM phones WHERE protocol IN ('SIP','WebSIP') AND server_ip='$server_ip';";
 	if($DB){print STDERR "|$stmtA|\n";}
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -712,7 +712,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 				print STDERR "LOOKING FOR SIP clients assigned to this server:\n";
 				$SIP_client_count=0;
 				$SIP_client_list='|';
-				$stmtA = "SELECT extension FROM phones WHERE protocol='SIP' AND server_ip='$server_ip';";
+				$stmtA = "SELECT extension FROM phones WHERE protocol IN ('SIP','WebSIP') AND server_ip='$server_ip';";
 				if($DB){print STDERR "|$stmtA|\n";}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
