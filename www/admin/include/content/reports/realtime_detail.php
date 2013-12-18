@@ -984,6 +984,9 @@ function report_realtime_detail() {
             }
 
             $stmt=sprintf("SELECT login FROM phones WHERE server_ip='%s' AND %s AND protocol='%s';",mres($Aserver_ip[$i]),$exten,mres($protocol));
+            if ($protocol=='SIP') {
+                $stmt=sprintf("SELECT login FROM phones WHERE server_ip='%s' AND %s AND protocol IN ('SIP','WebSIP');",mres($Aserver_ip[$i]),$exten);
+            }
             $rslt=mysql_query($stmt, $link);
             if ($DB) {echo "$stmt\n";}
             $phones_to_print = mysql_num_rows($rslt);
@@ -1142,43 +1145,28 @@ function report_realtime_detail() {
             $EG = '';
             $pausecode='';
             if ($Lstatus=='DISPO') {
-                if ($call_time_M_int >= 360) {
-                    $j++;
-                    continue;
-                } else {
-                    $agent_paused++;
-                    $agent_total++;
-                    $Lstatus = 'DISPO';
-                    $status = sprintf("%-6s",'DISPO');
-                    $G='<span class="dispo0">'; $EG='</span>';
-                    if ($call_time_S >= 15) {$G='<span class="dispo1">'; $EG='</span>';}
-                    if ($call_time_S >= 30) {$G='<span class="dispo2">'; $EG='</span>';}
-                    if ($call_time_M_int >= 1) {$G='<span class="dispo3">'; $EG='</span>';}
-                }
+                $agent_paused++;
+                $agent_total++;
+                $Lstatus = 'DISPO';
+                $status = sprintf("%-6s",'DISPO');
+                $G='<span class="dispo0">'; $EG='</span>';
+                if ($call_time_S >= 15) {$G='<span class="dispo1">'; $EG='</span>';}
+                if ($call_time_S >= 30) {$G='<span class="dispo2">'; $EG='</span>';}
+                if ($call_time_M_int >= 1) {$G='<span class="dispo3">'; $EG='</span>';}
             } elseif ($Lstatus=='AGTPHN') {
-                if ($call_time_M_int >= 360) {
-                    $j++;
-                    continue;
-                } else {
-                    $agent_dead++;
-                    $agent_total++;
-                    $Lstatus = 'AGTPHN';
-                    $status = sprintf("%-6s",'AGTPHN');
-                    $G='<span class="agtphn0">'; $EG='</span>';
-                    if ($call_time_S >= 10) {$G='<span class="agtphn1">'; $EG='</span>';}
-                }
+                $agent_dead++;
+                $agent_total++;
+                $Lstatus = 'AGTPHN';
+                $status = sprintf("%-6s",'AGTPHN');
+                $G='<span class="agtphn0">'; $EG='</span>';
+                if ($call_time_S >= 10) {$G='<span class="agtphn1">'; $EG='</span>';}
             } elseif ($Lstatus=='DEAD') {
-                if ($call_time_M_int >= 360) {
-                    $j++;
-                    continue;
-                } else {
-                    $agent_dead++;
-                    $agent_total++;
-                    $Lstatus = 'DEAD';
-                    $status = sprintf("%-6s",'HUNGUP');
-                    if ($call_time_S < 30) {$G='<span class="dead0">'; $EG='</span>'; $status=sprintf('%-6s','HUNGUP');}
-                    if ($call_time_M >= 5) {$G='<span class="dead1">'; $EG='</span>';}
-                }
+                $agent_dead++;
+                $agent_total++;
+                $Lstatus = 'DEAD';
+                $status = sprintf("%-6s",'HUNGUP');
+                if ($call_time_S < 30) {$G='<span class="dead0">'; $EG='</span>'; $status=sprintf('%-6s','HUNGUP');}
+                if ($call_time_M >= 5) {$G='<span class="dead1">'; $EG='</span>';}
             } elseif (OSDpreg_match('/INCALL|QUEUE/i',$Lstatus)) {
                 $agent_incall++;
                 $agent_total++;
@@ -1191,24 +1179,19 @@ function report_realtime_detail() {
                     if ($lstatus != "" and $lstatus != "      ") $status = $lstatus;
                 }
             } elseif ($Lstatus=='PAUSED') {
-                if ($call_time_M_int >= 360) {
-                    $j++;
-                    continue;
-                } else {
-                    if ($agent_pause_codes_active>0) {
-                        $stmtC=sprintf("SELECT sub_status FROM osdial_agent_log WHERE user='%s' ORDER BY agent_log_id DESC LIMIT 1;",mres($Luser));
-                        $rsltC=mysql_query($stmtC,$link);
-                        $rowC=mysql_fetch_row($rsltC);
-                        $pausecode = $rowC[0];
-                    }
-                    $agent_paused++;
-                    $agent_total++;
-                    $G='<span class="pause0">'; $EG='</span>';
-                    if ($call_time_S >= 10) {$G='<span class="pause1">'; $EG='</span>';}
-                    if ($call_time_M_int >= 1) {$G='<span class="pause2">'; $EG='</span>';}
-                    if ($call_time_M_int >= 5) {$G='<span class="pause3">'; $EG='</span>';}
-                    if (OSDstrlen($pausecode) > 0 and $pausecode != 'LOGIN') {$G='<span class="pausecode">'; $EG='</span>';}
+                if ($agent_pause_codes_active>0) {
+                    $stmtC=sprintf("SELECT sub_status FROM osdial_agent_log WHERE user='%s' ORDER BY agent_log_id DESC LIMIT 1;",mres($Luser));
+                    $rsltC=mysql_query($stmtC,$link);
+                    $rowC=mysql_fetch_row($rsltC);
+                    $pausecode = $rowC[0];
                 }
+                $agent_paused++;
+                $agent_total++;
+                $G='<span class="pause0">'; $EG='</span>';
+                if ($call_time_S >= 10) {$G='<span class="pause1">'; $EG='</span>';}
+                if ($call_time_M_int >= 1) {$G='<span class="pause2">'; $EG='</span>';}
+                if ($call_time_M_int >= 5) {$G='<span class="pause3">'; $EG='</span>';}
+                if (OSDstrlen($pausecode) > 0 and $pausecode != 'LOGIN') {$G='<span class="pausecode">'; $EG='</span>';}
             } elseif (OSDpreg_match('/READY|CLOSER/i',$Lstatus)) {
                 $agent_ready++;
                 $agent_total++;
