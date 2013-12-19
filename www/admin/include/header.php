@@ -28,6 +28,31 @@ if ($ADD==131 && $SUB==2) {
     exit;
 }
 
+if ($ADD==999999 && $SUB==26) {
+    $csvfile = get_variable('csvfile');
+    $csvcharset='windows-1252';
+    if ($config['settings']['use_non_latin'] > 0) {
+        $csvcharset='utf-8';
+    }
+        
+    if (!empty($csvfile) and file_exists($csvfile)) {
+        header ("Content-type: text/csv; charset=".$csvcharset);
+        header ("Content-Disposition: inline; filename=" . $csvfile);
+        $ch = fopen($csvfile,'r');
+        $co = fopen('php://output','w');
+        while ($row = fgetcsv($ch, 0, ',')) {
+            $trow=array();
+            foreach ($row as $ritem) {
+                $trow[] = mb_convert_encoding($ritem, $csvcharset);
+            }
+            fputcsv($co, $trow);
+        }
+        fclose($ch);
+        fclose($co);
+        exit;
+    }
+}
+
 #header ("Content-type: text/html; charset=utf-8");
 echo "<html>\n";
 echo "<head>\n";

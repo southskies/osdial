@@ -1305,7 +1305,7 @@ function report_lead_search_advanced($lsa_seg='form') {
                 }
                 fclose($fcsv);
                 $data .= "  <tr bgcolor=$oddrows>\n";
-                $data .= "    <td colspan=17 align=center><font size=3 color=$default_text><a target=_new href=\"$csvfile\">Click here to transfer CSV file.</a></font></td>\n";
+                $data .= "    <td colspan=17 align=center><font size=3 color=$default_text><a target=_new href=\"$PHP_SELF?ADD=999999&SUB=26&csvfile=$csvfile\">Click here to transfer CSV file.</a></font></td>\n";
                 $data .= "  </tr>\n";
             } elseif ($results_to_print < 1) {
                 $data .= "  <tr bgcolor=$oddrows>\n";
