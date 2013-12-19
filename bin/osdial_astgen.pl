@@ -1345,6 +1345,18 @@ sub gen_carriers {
 		$dialplan .= "[" . $context . "-Switch]\n" if($CLOrealtime>0);
 		$dialplan .= "switch => Realtime/".$context."\@extensions/p\n\n" if($CLOrealtime>0);
 		$dialplan .= "[" . $context . "-Patterns]\n";
+
+		# Route calls destined into the 's' extension.
+		my $trunkprefix = '';
+		if ($osdial->{settings}{default_phone_code} =~ /^(44|46|61|64|86)$/) {
+			$trunkprefix='0';
+		}
+		$dialplan .= procexten($context,'s',1,"Set","FROMDID=\${CUT(CUT(SIP_HEADER(To),<,2),\@,1):4})");
+		$dialplan .= procexten($context,'s',2,"Set","CCODE=".$osdial->{settings}{default_phone_code});
+		$dialplan .= procexten($context,'s',3,"Set","PCCODE=+".$osdial->{settings}{default_phone_code});
+		$dialplan .= procexten($context,'s',4,"Set","FROMDID=\${IF(\"\${FROMDID:0:\${LEN(\${CCODE})}}\" = \"\${PCCODE}\"?\${FROMDID:\${LEN(\${PCCODE})}}:\${FROMDID})}");
+		$dialplan .= procexten($context,'s',5,"Goto",$context.",".$trunkprefix."\${FROMDID},1");
+
 		my %didchk;
 		my $dids = {};
 		my $stmt = sprintf("SELECT * FROM osdial_carrier_dids WHERE carrier_id='\%s';",$carrier);
