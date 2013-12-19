@@ -659,6 +659,34 @@ if ($ACTION=="RedirectToPark") {
         echo "parkedby $parkedby must be set\n";
         echo "\nRedirectToPark Action not sent\n";
     } else {
+        if ($config['settings']['enable_queuemetrics_logging'] > 0) {
+            $linkB=mysql_connect($config['settings']['queuemetrics_server_ip'], $config['settings']['queuemetrics_login'], $config['settings']['queuemetrics_pass']);
+            mysql_select_db($config['settings']['queuemetrics_dbname'], $linkB);
+            if ($config['settings']['use_non_latin'] > 0) $rslt=mysql_query("SET NAMES 'utf8' COLLATE 'utf8_general_ci';",$linkB);
+
+            $stmt=sprintf("SELECT time_id,queue,agent FROM queue_log WHERE call_id='%s' AND verb='CONNECT' ORDER BY time_id DESC LIMIT 1;",mres($CalLCID));
+            $rslt=mysql_query($stmt, $linkB);
+            $VAC_cn_ct = mysql_num_rows($rslt);
+            if ($VAC_cn_ct > 0) {
+                $row=mysql_fetch_row($rslt);
+                $time_id = $row[0];
+                $queue = $row[1];
+                $agent = $row[2];
+            }
+            $StarTtime = date("U");
+            if ($time_id > 100000) {
+                $secondS = ($StarTtime - $time_id);
+            }
+
+            if ($VAC_eq_ct > 0) {
+                $stmt = sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='Agent/%s',verb='CALLERONHOLD',data1='PARK',serverid='%s';",mres($StarTtime),mres($CalLCID),mres($queue),mres($user),mres($queuemetrics_log_id));
+                $rslt=mysql_query($stmt, $linkB);
+                if ($mel > 0) {mysql_error_logging($NOW_TIME,$linkB,$mel,$stmt,'02101',$user,$server_ip,$session_name,$one_mysql_log);}
+                $affected_rows = mysql_affected_rows($linkB);
+                if ($format=='debug') {echo "\n<!-- $affected_rows|$stmt -->";}
+            }
+        }
+
         if (OSDstrlen($call_server_ip)>6) {$server_ip = $call_server_ip;}
         $stmt=sprintf("INSERT INTO parked_channels VALUES('%s','%s','','%s','%s','%s');",mres($channel),mres($server_ip),mres($extenName),mres($parkedby),mres($NOW_TIME));
         if ($format=='debug') echo "\n<!-- $stmt -->";
@@ -679,6 +707,34 @@ if ($ACTION=="RedirectFromPark") {
         echo "ext_priority $ext_priority must be set\n";
         echo "\nRedirectFromPark Action not sent\n";
     } else {
+        $parked_sec=0;
+        if ($config['settings']['enable_queuemetrics_logging'] > 0) {
+            $linkB=mysql_connect($config['settings']['queuemetrics_server_ip'], $config['settings']['queuemetrics_login'], $config['settings']['queuemetrics_pass']);
+            mysql_select_db($config['settings']['queuemetrics_dbname'], $linkB);
+            if ($config['settings']['use_non_latin'] > 0) $rslt=mysql_query("SET NAMES 'utf8' COLLATE 'utf8_general_ci';",$linkB);
+
+            $stmt=sprintf("SELECT time_id,queue,agent FROM queue_log WHERE call_id='%s' AND verb='CONNECT' ORDER BY time_id DESC LIMIT 1;",mres($CalLCID));
+            $rslt=mysql_query($stmt, $linkB);
+            $VAC_cn_ct = mysql_num_rows($rslt);
+            if ($VAC_cn_ct > 0) {
+                $row=mysql_fetch_row($rslt);
+                $time_id = $row[0];
+                $queue = $row[1];
+                $agent = $row[2];
+            }
+            $StarTtime = date("U");
+            if ($time_id > 100000) {
+                $secondS = ($StarTtime - $time_id);
+            }
+
+            if ($VAC_eq_ct > 0) {
+                $stmt = sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='Agent/%s',verb='CALLEROFFHOLD',data1='%s',serverid='%s';",mres($StarTtime),mres($CalLCID),mres($queue),mres($user),mres($parked_sec),mres($queuemetrics_log_id));
+                $rslt=mysql_query($stmt, $linkB);
+                if ($mel > 0) {mysql_error_logging($NOW_TIME,$linkB,$mel,$stmt,'02101',$user,$server_ip,$session_name,$one_mysql_log);}
+                $affected_rows = mysql_affected_rows($linkB);
+                if ($format=='debug') {echo "\n<!-- $affected_rows|$stmt -->";}
+            }
+        }
         if (OSDstrlen($call_server_ip)>6) {$server_ip = $call_server_ip;}
         $stmt=sprintf("DELETE FROM parked_channels WHERE server_ip='%s' AND channel='%s';",mres($server_ip),mres($channel));
         if ($format=='debug') echo "\n<!-- $stmt -->";

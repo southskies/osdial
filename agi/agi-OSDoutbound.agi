@@ -119,7 +119,7 @@ if ($osd->sql_execute($stmt)) {
 		$data2 .= $oac->{phone_number};
 
 		$osd->sql_connect('QM',$osd->{settings}{queuemetrics_dbname},$osd->{settings}{queuemetrics_server_ip},'3306',$osd->{settings}{queuemetrics_login},$osd->{settings}{queuemetrics_pass});
-		$stmt = sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='NONE',verb='ENTERQUEUE',data2='%s',serverid='%s';",$secX,$osd->AGI->{accountcode},$oac->{campaign_id},$data2,$osd->{settings}{queuemetrics_log_id});
+		$stmt = sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='NONE',verb='CALLOUTBOUND',data2='%s',serverid='%s';",$secX,$osd->AGI->{accountcode},$oac->{campaign_id},$data2,$osd->{settings}{queuemetrics_log_id});
 		$osd->sql_execute($stmt,'QM');
 		$osd->sql_disconnect('QM');
 	}
@@ -347,7 +347,7 @@ while ($drop_timer <= $campaign->{drop_call_seconds}) {
 
 			if ($osd->{settings}{enable_queuemetrics_logging} > 0) {
 				$osd->sql_connect('QM',$osd->{settings}{queuemetrics_dbname},$osd->{settings}{queuemetrics_server_ip},'3306',$osd->{settings}{queuemetrics_login},$osd->{settings}{queuemetrics_pass});
-				$stmt = sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='NONE',verb='ENTERQUEUE',data2='%s',serverid='%s';",$secX,$osd->AGI->{accountcode},$oac->{campaign_id},$drop_timer,$osd->{settings}{queuemetrics_log_id});
+				$stmt = sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='Agent/%s',verb='CONNECT',data1='%s',serverid='%s';",$secX,$osd->AGI->{accountcode},$oac->{campaign_id},$user,$drop_timer,$osd->{settings}{queuemetrics_log_id});
 				$osd->sql_execute($stmt,'QM');
 				$osd->sql_disconnect('QM');
 			}
@@ -424,19 +424,21 @@ if ($drop_timer >= $campaign->{drop_call_seconds}) {
 	if ($drop_seconds < 1) {
 		$drop_seconds = $campaign->{drop_call_seconds};
 
-		if ($osd->{settings}{enable_queuemetrics_logging} > 0) {
-			$osd->sql_connect('QM',$osd->{settings}{queuemetrics_dbname},$osd->{settings}{queuemetrics_server_ip},'3306',$osd->{settings}{queuemetrics_login},$osd->{settings}{queuemetrics_pass});
-			$stmt = sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='NONE',verb='ENTERQUEUE',data2='%s',serverid='%s';",$secX,$osd->AGI->{accountcode},$oac->{campaign_id},'1',$osd->{settings}{queuemetrics_log_id});
-			$osd->sql_execute($stmt,'QM');
-			$osd->sql_disconnect('QM');
-		}
-
 		if ($campaign->{safe_harbor_message} =~ /Y/) {
 			$DROPexten = $campaign->{safe_harbor_exten};
 		} else {
 			$campaign->{voicemail_ext} =~ s/\D//gi;
 			$DROPexten = $osd->{server}{voicemail_dump_exten} . $campaign->{voicemail_ext} if (length($campaign->{voicemail_ext})>0);
 		}
+	}
+
+	if ($osd->{settings}{enable_queuemetrics_logging} > 0) {
+		$osd->sql_connect('QM',$osd->{settings}{queuemetrics_dbname},$osd->{settings}{queuemetrics_server_ip},'3306',$osd->{settings}{queuemetrics_login},$osd->{settings}{queuemetrics_pass});
+		$stmt = sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='NONE',verb='EXITWITHTIMEOUT',data1='%s',serverid='%s';",$secX,$osd->AGI->{accountcode},$oac->{campaign_id},'1',$osd->{settings}{queuemetrics_log_id});
+		$osd->sql_execute($stmt,'QM');
+		$stmt = sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='NONE',verb='CALLSTATUS',data1='%s',serverid='%s';",$secX,$osd->AGI->{accountcode},$oac->{campaign_id},'DROP',$osd->{settings}{queuemetrics_log_id});
+		$osd->sql_execute($stmt,'QM');
+		$osd->sql_disconnect('QM');
 	}
 
 

@@ -682,6 +682,14 @@ $agi_string .= "\n |$stmtA|" if ($DB>1);
 $osdial->agi_output($agi_string);
 $affected_rows = $osdial->sql_execute($stmtA);
 
+if ($osdial->{settings}{enable_queuemetrics_logging} > 0) {
+	$osdial->sql_connect('QM',$osdial->{settings}{queuemetrics_dbname},$osdial->{settings}{queuemetrics_server_ip},'3306',$osdial->{settings}{queuemetrics_login},$osdial->{settings}{queuemetrics_pass});
+	$osdial->agi_output("CONNECTED TO DATABASE:  ".$osdial->{settings}{queuemetrics_server_ip}."|".$osdial->{settings}{queuemetrics_dbname}) if ($DB>1);
+	my $stmtB = sprintf("UPDATE queue_log SET call_id='%s' WHERE time_id>'%s' AND call_id='%s' AND queue='NONE' AND agent='NONE' AND verb='INFO' AND data1 IN ('DID','IVR');",$osdial->mres($YqueryCID),$osdial->mres(($now_date_epoch-86400)),$osdial->mres($vars->{uniqueid}));
+	$osdial->sql_execute($stmtB,'QM');
+	$osdial->sql_disconnect('QM');
+}
+
 $stmtA = sprintf("INSERT INTO osdial_closer_log (lead_id,list_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,uniqueid,callerid) VALUES ('%s','%s','%s','%s','%s','QUEUE','%s','%s','VDCL','N','%s','%s');",$osdial->mres($insert_lead_id),$osdial->mres($list_id),$osdial->mres($channel_group),$osdial->mres($SQLdate),$osdial->mres($now_date_epoch),$osdial->mres($phone_code),$osdial->mres($phone_number),$osdial->mres($vars->{uniqueid}),$osdial->mres($vars->{accountcode}));
 $affected_rows = $osdial->sql_execute($stmtA);
 $agi_string = "--    OSDCL : |$insert_lead_id|insert to osdial_closer_log";
@@ -882,16 +890,21 @@ while ($drop_timer <= $DROP_TIME) {
 					my $stmtB = sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='Agent/%s',verb='CONNECT',data1='%s',serverid='%s';",$osdial->mres($now_date_epoch),$osdial->mres($YqueryCID),$osdial->mres($channel_group),$osdial->mres($VDADuser),$osdial->mres($drop_timer),$osdial->mres($osdial->{settings}{queuemetrics_log_id}));
 					$osdial->sql_execute($stmtB,'QM');
 
+					$stmtB = sprintf("SELECT count(*) AS qcnt FROM queue_log WHERE call_id='%s' AND verb='ABANDON';",$osdial->mres($YqueryCID));
+					my $rec = $osdial->sql_query($stmtB,'QM');
+					if ($rec->{qcnt}>0 and length($osdial->mres($vars->{accountcode}))>15) {
+						$stmtB = sprintf("DELETE FROM queue_log WHERE call_id='%s' AND verb='ABANDON';",$osdial->mres($YqueryCID));
+						$osdial->sql_execute($stmtB,'QM');
+					}
+
 					$osdial->sql_disconnect('QM');
 				}
 
-				if ($call_handle_method =~ /CLOSER|DIGITID$/) {
-					$stmtA = sprintf("UPDATE osdial_xfer_log SET closer='%s' WHERE lead_id='%s' ORDER BY call_date DESC LIMIT 1;",$osdial->mres($VDADuser),$osdial->mres($insert_lead_id));
-					$affected_rows = $osdial->sql_execute($stmtA);
-					$agi_string = "--    OSDXL osdial_xfer_log update: |$affected_rows|$insert_lead_id|$VDADuser";
-					$agi_string .= "\n|$stmtA|" if ($DB>1);
-					$osdial->agi_output($agi_string);
-				}
+				$stmtA = sprintf("UPDATE osdial_xfer_log SET closer='%s' WHERE lead_id='%s' ORDER BY call_date DESC LIMIT 1;",$osdial->mres($VDADuser),$osdial->mres($insert_lead_id));
+				$affected_rows = $osdial->sql_execute($stmtA);
+				$agi_string = "--    OSDXL osdial_xfer_log update: |$affected_rows|$insert_lead_id|$VDADuser";
+				$agi_string .= "\n|$stmtA|" if ($DB>1);
+				$osdial->agi_output($agi_string);
 
 				$stmtA = sprintf("UPDATE osdial_closer_log SET user='%s' WHERE lead_id='%s' ORDER BY call_date DESC LIMIT 1;",$osdial->mres($VDADuser),$osdial->mres($insert_lead_id));
 				$affected_rows = $osdial->sql_execute($stmtA);
@@ -1168,6 +1181,9 @@ if ($drop_timer > $DROP_TIME) {
 	$SQLdateBEGIN = $now_date;
 	$drop_seconds = time() - $start_epoch;
 
+	my $DRterm='QUEUETIMEOUT';
+	my $DRstatus='TIMEOT';
+
 	if ($osdial->{settings}{enable_queuemetrics_logging} > 0) {
 		$osdial->sql_connect('QM',$osdial->{settings}{queuemetrics_dbname},$osdial->{settings}{queuemetrics_server_ip},'3306',$osdial->{settings}{queuemetrics_login},$osdial->{settings}{queuemetrics_pass});
 		$osdial->agi_output("CONNECTED TO DATABASE:  ".$osdial->{settings}{queuemetrics_server_ip}."|".$osdial->{settings}{queuemetrics_dbname}) if ($DB>1);
@@ -1179,7 +1195,7 @@ if ($drop_timer > $DROP_TIME) {
 		my $stmtB = sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='NONE',verb='EXITWITHTIMEOUT',data1='%s',serverid='%s';",$osdial->mres($now_date_epoch),$osdial->mres($YqueryCID),$osdial->mres($channel_group),$osdial->mres($place),$osdial->mres($osdial->{settings}{queuemetrics_log_id}));
 		$osdial->sql_execute($stmtB,'QM');
 
-		$stmtB = sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='NONE',verb='CALLSTATUS',data1='DROP',serverid='%s';",$osdial->mres($now_date_epoch),$osdial->mres($YqueryCID),$osdial->mres($channel_group),$osdial->mres($osdial->{settings}{queuemetrics_log_id}));
+		$stmtB = sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='NONE',verb='CALLSTATUS',data1='%s',serverid='%s';",$osdial->mres($now_date_epoch),$osdial->mres($YqueryCID),$osdial->mres($channel_group),$DRstatus,$osdial->mres($osdial->{settings}{queuemetrics_log_id}));
 		$osdial->sql_execute($stmtB,'QM');
 
 		$osdial->sql_disconnect('QM');
@@ -1223,13 +1239,13 @@ if ($drop_timer > $DROP_TIME) {
 	$affected_rows = $osdial->sql_execute($stmtA);
 	$osdial->agi_output("--    OSDCL vac record deleted: |$affected_rows| $channel_group|");
 
-	$stmtA = sprintf("UPDATE osdial_closer_log SET status='DROP',end_epoch='%s',length_in_sec='%s',queue_seconds='%s',term_reason='%s' WHERE lead_id='%s' ORDER BY start_epoch DESC LIMIT 1;",$osdial->mres($now_date_epoch),$osdial->mres($drop_seconds),$osdial->mres($drop_seconds),$osdial->mres($term_reason),$osdial->mres($insert_lead_id));
+	$stmtA = sprintf("UPDATE osdial_closer_log SET status='%s',end_epoch='%s',length_in_sec='%s',queue_seconds='%s',term_reason='%s' WHERE lead_id='%s' ORDER BY start_epoch DESC LIMIT 1;",$DRstatus,$osdial->mres($now_date_epoch),$osdial->mres($drop_seconds),$osdial->mres($drop_seconds),$osdial->mres($DRterm),$osdial->mres($insert_lead_id));
 	$affected_rows = $osdial->sql_execute($stmtA);
 	$agi_string = "--    OSDCL ocl update: |$affected_rows|$insert_lead_id";
 	$agi_string .= "\n|$stmtA|" if ($DB>1);
 	$osdial->agi_output($agi_string);
 
-	$stmtA = sprintf("UPDATE osdial_list SET status='XDROP' WHERE lead_id='%s';",$osdial->mres($insert_lead_id));
+	$stmtA = sprintf("UPDATE osdial_list SET status='%s' WHERE lead_id='%s';",$DRstatus,$osdial->mres($insert_lead_id));
 	$affected_rows = $osdial->sql_execute($stmtA);
 	$agi_string = "--    OSDCL ol update: |$affected_rows|$insert_lead_id";
 	$agi_string .= "\n|$stmtA|" if ($DB>1);
