@@ -668,6 +668,7 @@ if ($ACTION == 'manDiaLnextCaLL') {
                 $source_id		= trim($row[6]);
                 $list_id		= trim($row[7]);
                 $gmt_offset_now	= trim($row[8]);
+                $called_since_last_reset	= trim($row[9]);
                 $phone_code		= trim($row[10]);
                 $phone_number	= trim($row[11]);
                 $title			= trim($row[12]);
@@ -710,16 +711,18 @@ if ($ACTION == 'manDiaLnextCaLL') {
             $CBuser =			'';
             $CBcomments =		'';
             if (OSDpreg_match("/CALLBK/",$dispo)) {
-                $stmt=sprintf("SELECT SQL_NO_CACHE entry_time,callback_time,user,comments FROM osdial_callbacks WHERE lead_id='%s' ORDER BY callback_id DESC LIMIT 1;",mres($lead_id));
+                $stmt=sprintf("SELECT SQL_NO_CACHE entry_time,callback_time,user,comments FROM osdial_callbacks WHERE lead_id='%s' ORDER BY callback_id ASC;",mres($lead_id));
                 $rslt=mysql_query($stmt, $link);
                 if ($DB) echo "$stmt\n";
                 $cb_record_ct = mysql_num_rows($rslt);
-                if ($cb_record_ct > 0) {
+                $cbcnt=0;
+                while ($cbcnt < $cb_record_ct) {
                     $row=mysql_fetch_row($rslt);
                     $CBentry_time =		trim($row[0]);
                     $CBcallback_time =	trim($row[1]);
                     $CBuser =			trim($row[2]);
-                    $CBcomments =		trim($row[3]);
+                    $CBcomments .=		trim($row[3]) . '<br>';
+                    $cbcnt++;
                 }
             }
 
@@ -1193,7 +1196,7 @@ if ($ACTION == 'OLDmanDiaLlookCaLL') {
         exit;
     } else {
         ##### look for the channel in the UPDATED osdial_manager record of the call initiation
-        $stmt=sprintf("SELECT SQL_NO_CACHE uniqueid,channel FROM osdial_manager WHERE callerid='%s' AND server_ip='%s' AND status IN('UPDATED','DEAD') LIMIT 1;",mres($MDnextCID),mres($server_ip));
+        $stmt=sprintf("SELECT SQL_NO_CACHE uniqueid,channel,status FROM osdial_manager WHERE callerid='%s' AND server_ip='%s' AND status IN('UPDATED','DEAD') LIMIT 1;",mres($MDnextCID),mres($server_ip));
         $rslt=mysql_query($stmt, $link);
         if ($DB) echo "$stmt\n";
         $VM_mancall_ct = mysql_num_rows($rslt);
@@ -1201,7 +1204,7 @@ if ($ACTION == 'OLDmanDiaLlookCaLL') {
             $row=mysql_fetch_row($rslt);
             $uniqueid =$row[0];
             $channel =$row[1];
-            echo "$uniqueid\n$channel";
+            echo "$uniqueid\n$channel\n$status";
 
             if (!OSDpreg_match('/^Local\//',$channel)) {
                 $PADlead_id = sprintf("%09s", $lead_id);
@@ -1982,7 +1985,8 @@ if ($ACTION == 'manDiaLlogCaLL') {
                     $rec_channels[$total_rec] = $row[0];
                     $total_rec++;
                 } else {
-                    if ( ($agentchannel == $row[0]) or (OSDpreg_match('/ASTblind/',$row[0])) ) {
+                    #if ( $agentchannel == $row[0]) or (OSDpreg_match('/ASTblind/',$row[0])) ) {
+                    if ( (OSDpreg_replace('/-\S+$/','',$agentchannel) == $row[0]) or (OSDpreg_match('/ASTblind/',$row[0])) ) {
                         $donothing=1;
                     } else {
                         $hangup_channels[$total_hangup] = $row[0];
@@ -2267,16 +2271,18 @@ if ($ACTION == 'VDADcheckINCOMING') {
             $CBuser =			'';
             $CBcomments =		'';
             if (OSDpreg_match("/CALLBK/",$dispo)) {
-                $stmt=sprintf("SELECT entry_time,callback_time,user,comments FROM osdial_callbacks WHERE lead_id='%s' ORDER BY callback_id DESC LIMIT 1;",mres($lead_id));
+                $stmt=sprintf("SELECT entry_time,callback_time,user,comments FROM osdial_callbacks WHERE lead_id='%s' ORDER BY callback_id ASC;",mres($lead_id));
                 $rslt=mysql_query($stmt, $link);
                 if ($DB) echo "$stmt\n";
                 $cb_record_ct = mysql_num_rows($rslt);
-                if ($cb_record_ct > 0) {
+                $cbcnt=0;
+                while ($cbcnt < $cb_record_ct) {
                     $row=mysql_fetch_row($rslt);
                     $CBentry_time =		trim($row[0]);
                     $CBcallback_time =	trim($row[1]);
                     $CBuser =			trim($row[2]);
-                    $CBcomments =		trim($row[3]);
+                    $CBcomments .=		trim($row[3]) . "<br>";
+                    $cbcnt++;
                 }
             }
 
@@ -2881,16 +2887,18 @@ if ($ACTION == 'multicallQueueSwap') {
             $CBuser =			'';
             $CBcomments =		'';
             if (OSDpreg_match("/CALLBK/",$dispo)) {
-                $stmt=sprintf("SELECT entry_time,callback_time,user,comments FROM osdial_callbacks WHERE lead_id='%s' ORDER BY callback_id DESC LIMIT 1;",mres($lead_id));
+                $stmt=sprintf("SELECT entry_time,callback_time,user,comments FROM osdial_callbacks WHERE lead_id='%s' ORDER BY callback_id DESC;",mres($lead_id));
                 $rslt=mysql_query($stmt, $link);
                 if ($DB) echo "$stmt\n";
                 $cb_record_ct = mysql_num_rows($rslt);
-                if ($cb_record_ct > 0) {
+                $cbcnt=0;
+                while ($cbcnt < $cb_record_ct) {
                     $row=mysql_fetch_row($rslt);
                     $CBentry_time =		trim($row[0]);
                     $CBcallback_time =	trim($row[1]);
                     $CBuser =			trim($row[2]);
                     $CBcomments =		trim($row[3]);
+                    $cbcnt++;
                 }
             }
 
