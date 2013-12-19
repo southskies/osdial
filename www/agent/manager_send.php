@@ -398,6 +398,24 @@ if ($ACTION=="Hangup") {
             }
         }
 
+        $lccnt=0;
+        $lsccnt=0;
+        $stmt=sprintf("SELECT count(*) FROM live_channels WHERE server_ip='%s' AND channel='%s';",mres($call_server_ip),mres($channel));
+        if ($format=='debug') echo "\n<!-- $stmt -->";
+        $rslt=mysql_query($stmt, $link);
+        $row=mysql_fetch_row($rslt);
+        $lccnt=$row[0];
+
+        $stmt=sprintf("SELECT count(*) FROM live_sip_channels WHERE server_ip='%s' AND channel='%s';",mres($call_server_ip),mres($channel));
+        if ($format=='debug') echo "\n<!-- $stmt -->";
+        $rslt=mysql_query($stmt, $link);
+        $row=mysql_fetch_row($rslt);
+        $lsccnt=$row[0];
+
+        if ($lccnt==0 and $lsccnt==0) {
+            $channel_live=0;
+        }
+
         if ($channel_live==1) {
             if (OSDstrlen($CalLCID)>15 and $secondS>0) {
                 $stmt=sprintf("SELECT count(*) FROM osdial_auto_calls WHERE callerid='%s';",mres($CalLCID));
@@ -485,9 +503,28 @@ if ($ACTION=="Hangup") {
                 }
             }
 
-            $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','%s','Hangup','%s','Channel: %s','','','','','','','','','');",mres($NOW_TIME),mres($call_server_ip),mres($channel),mres($queryCID),mres($channel));
+            $huchans=array();
+
+            $stmt=sprintf("SELECT channel_group FROM live_sip_channels WHERE server_ip='%s' AND channel='%s';",mres($call_server_ip),mres($channel));
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
+            $chgrpcnt = mysql_num_rows($rslt);
+            if ($chgrpcnt>0) {
+                $c=0;
+                while ($c<$chgrpcnt) {
+                    $row=mysql_fetch_row($rslt);
+                    $huchans[] = $row[0];
+                    $c++;
+                }
+            } else {
+                $huchans[] = $channel;
+            }
+
+            foreach ($huchans as $chan) {
+                $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','%s','Hangup','%s','Channel: %s','','','','','','','','','');",mres($NOW_TIME),mres($call_server_ip),mres($chan),mres($queryCID),mres($chan));
+                if ($format=='debug') echo "\n<!-- $stmt -->";
+                $rslt=mysql_query($stmt, $link);
+            }
             echo "Hangup command sent for Channel $channel on $call_server_ip\n";
         }
     }
