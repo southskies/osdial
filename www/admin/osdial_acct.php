@@ -53,7 +53,7 @@ if (OSDpreg_match('/paypal/',$remote_name)) {
 	}
 	#$output.="\n\nPOST:\n";
 	foreach ($_POST as $k => $v) {
-		$verifyparams.='&'.$k.'='.htmlentities($v);
+		$verifyparams.='&'.$k.'='.urlencode($v);
 		if ($k=="payment_date") {
 			$tpd=strtotime($v);
 			$ppvar['payment_date_orig']=$v;
