@@ -837,6 +837,31 @@ if ($ACTION == 'manDiaLnextCaLL') {
                     if ($format=='debug') echo "\n<!-- $stmt -->";
                     $rslt=mysql_query($stmt, $link);
                 }
+
+                if ($config['settings']['enable_queuemetrics_logging'] > 0) {
+                    $linkB=mysql_connect($config['settings']['queuemetrics_server_ip'], $config['settings']['queuemetrics_login'], $config['settings']['queuemetrics_pass']);
+                    mysql_select_db($config['settings']['queuemetrics_dbname'], $linkB);
+                    if ($config['settings']['use_non_latin'] > 0) $rslt=mysql_query("SET NAMES 'utf8' COLLATE 'utf8_general_ci';",$linkB);
+
+                    $data4SQL='';
+
+                    $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='NONE',queue='NONE',agent='Agent/%s',verb='UNPAUSEALL',serverid='%s'%s;",mres($StarTtime),mres($user),mres($config['settings']['queuemetrics_log_id']),$data4SQL);
+                    if ($DB) echo "$stmt\n";
+                    $rslt=mysql_query($stmt, $linkB);
+                    $affected_rows = mysql_affected_rows($linkB);
+
+                    $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='NONE',verb='CALLOUTBOUND',data2='%s',serverid='%s'%s;",mres($StarTtime),mres($MqueryCID),mres($campaign),mres($phone_number),mres($config['settings']['queuemetrics_log_id']),$data4SQL);
+                    if ($DB) echo "$stmt\n";
+                    $rslt=mysql_query($stmt, $linkB);
+                    $affected_rows = mysql_affected_rows($linkB);
+
+                    $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='Agent/%s',verb='CONNECT',data1='0',serverid='%s'%s;",mres($StarTtime),mres($MqueryCID),mres($campaign),mres($user),mres($config['settings']['queuemetrics_log_id']),$data4SQL);
+                    if ($DB) echo "$stmt\n";
+                    $rslt=mysql_query($stmt, $linkB);
+                    $affected_rows = mysql_affected_rows($linkB);
+
+                    mysql_close($linkB);
+                }
             }
 
             $comments = OSDpreg_replace("/\r/",'',$comments);
@@ -1083,6 +1108,30 @@ if ($ACTION == 'manDiaLonly') {
         $rslt=mysql_query($stmt, $link);
 
         echo "$MqueryCID\n";
+
+        if ($config['settings']['enable_queuemetrics_logging'] > 0) {
+            $linkB=mysql_connect($config['settings']['queuemetrics_server_ip'], $config['settings']['queuemetrics_login'], $config['settings']['queuemetrics_pass']);
+            mysql_select_db($config['settings']['queuemetrics_dbname'], $linkB);
+            if ($config['settings']['use_non_latin'] > 0) $rslt=mysql_query("SET NAMES 'utf8' COLLATE 'utf8_general_ci';",$linkB);
+
+            $data4SQL='';
+
+            $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='NONE',queue='NONE',agent='Agent/%s',verb='UNPAUSEALL',serverid='%s'%s;",mres($StarTtime),mres($user),mres($config['settings']['queuemetrics_log_id']),$data4SQL);
+            if ($DB) echo "$stmt\n";
+            $rslt=mysql_query($stmt, $linkB);
+
+            $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='NONE',verb='CALLOUTBOUND',data2='%s',serverid='%s'%s;",mres($StarTtime),mres($MqueryCID),mres($campaign),mres($phone_number),mres($config['settings']['queuemetrics_log_id']),$data4SQL);
+            if ($DB) echo "$stmt\n";
+            $rslt=mysql_query($stmt, $linkB);
+            $affected_rows = mysql_affected_rows($linkB);
+
+            $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='Agent/%s',verb='CONNECT',data1='0',serverid='%s'%s;",mres($StarTtime),mres($MqueryCID),mres($campaign),mres($user),mres($config['settings']['queuemetrics_log_id']),$data4SQL);
+            if ($DB) echo "$stmt\n";
+            $rslt=mysql_query($stmt, $linkB);
+            $affected_rows = mysql_affected_rows($linkB);
+
+            mysql_close($linkB);
+        }
     }
 }
 
@@ -1731,15 +1780,6 @@ if ($ACTION == 'manDiaLlogCaLL') {
                         if ($config['settings']['use_non_latin'] > 0) $rslt=mysql_query("SET NAMES 'utf8' COLLATE 'utf8_general_ci';",$linkB);
 
                         $data4SQL='';
-                        $stmt=sprintf("SELECT queuemetrics_phone_environment FROM osdial_campaigns WHERE campaign_id='%s' AND queuemetrics_phone_environment!='';",mres($campaign));
-                        $rslt=mysql_query($stmt, $link);
-                        if ($DB) echo "$stmt\n";
-                        $cqpe_ct = mysql_num_rows($rslt);
-                        if ($cqpe_ct > 0) {
-                            $row=mysql_fetch_row($rslt);
-                            $data4SQL = sprintf(",data4='%s'",mres($row[0]));
-                        }
-
 
                         $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='NONE',queue='NONE',agent='Agent/%s',verb='PAUSEALL',serverid='%s'%s;",mres($StarTtime),mres($user),mres($config['settings']['queuemetrics_log_id']),$data4SQL);
                         if ($DB) echo "$stmt\n";
@@ -1778,14 +1818,6 @@ if ($ACTION == 'manDiaLlogCaLL') {
                     if ($config['settings']['use_non_latin'] > 0) $rslt=mysql_query("SET NAMES 'utf8' COLLATE 'utf8_general_ci';",$linkB);
 
                     $data4SQL='';
-                    $stmt=sprintf("SELECT queuemetrics_phone_environment FROM osdial_campaigns WHERE campaign_id='%s' AND queuemetrics_phone_environment!='';",mres($campaign));
-                    $rslt=mysql_query($stmt, $link);
-                    if ($DB) echo "$stmt\n";
-                    $cqpe_ct = mysql_num_rows($rslt);
-                    if ($cqpe_ct > 0) {
-                        $row=mysql_fetch_row($rslt);
-                        $data4SQL = sprintf(",data4='%s'",mres($row[0]));
-                    }
 
                     $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='Agent/%s',verb='COMPLETEAGENT',data1='%s',data2='%s',data3='1',serverid='%s'%s;",mres($StarTtime),mres($MDnextCID),mres($campaign),mres($user),mres($CLstage),mres($length_in_sec),mres($config['settings']['queuemetrics_log_id']),$data4SQL);
                     if ($DB) echo "$stmt\n";
@@ -1813,14 +1845,6 @@ if ($ACTION == 'manDiaLlogCaLL') {
                         if ($config['settings']['use_non_latin'] > 0) $rslt=mysql_query("SET NAMES 'utf8' COLLATE 'utf8_general_ci';",$linkB);
 
                         $data4SQL='';
-                        $stmt=sprintf("SELECT queuemetrics_phone_environment FROM osdial_campaigns WHERE campaign_id='%s' AND queuemetrics_phone_environment!='';",mres($campaign));
-                        $rslt=mysql_query($stmt, $link);
-                        if ($DB) echo "$stmt\n";
-                        $cqpe_ct = mysql_num_rows($rslt);
-                        if ($cqpe_ct > 0) {
-                            $row=mysql_fetch_row($rslt);
-                            $data4SQL = sprintf(",data4='%s'",mres($row[0]));
-                        }
 
                         $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='NONE',queue='NONE',agent='Agent/%s',verb='PAUSEALL',serverid='%s'%s;",mres($StarTtime),mres($user),mres($config['settings']['queuemetrics_log_id']),$data4SQL);
                         if ($DB) echo "$stmt\n";
@@ -1945,14 +1969,6 @@ if ($ACTION == 'manDiaLlogCaLL') {
                         }
                         if ($agent_complete < 1) {
                             $data4SQL='';
-                            $stmt=sprintf("SELECT queuemetrics_phone_environment FROM osdial_campaigns WHERE campaign_id='%s' AND queuemetrics_phone_environment!='';",mres($campaign));
-                            $rslt=mysql_query($stmt, $link);
-                            if ($DB) echo "$stmt\n";
-                            $cqpe_ct = mysql_num_rows($rslt);
-                            if ($cqpe_ct > 0) {
-                                $row=mysql_fetch_row($rslt);
-                                $data4SQL = sprintf(",data4='%s'",mres($row[0]));
-                            }
 
                             $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='%s',queue='%s',agent='Agent/%s',verb='COMPLETEAGENT',data1='%s',data2='%s',data3='1',serverid='%s'%s;",mres($StarTtime),mres($MDnextCID),mres($Lcampaign_id),mres($user),mres($CLstage),mres($length_in_sec),mres($config['settings']['queuemetrics_log_id']),$data4SQL);
                             if ($DB) echo "$stmt\n";

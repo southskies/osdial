@@ -154,22 +154,22 @@ while ( $sthArows > $rec_count ) {
 $sthA->finish();
 
 my ($dbhB,$stmtB,$Baffected_rows);
-if ( $enable_queuemetrics_logging > 0 ) {
-	$dbhB = DBI->connect(
-		"DBI:mysql:$queuemetrics_dbname:$queuemetrics_server_ip:3306",
-		"$queuemetrics_login", "$queuemetrics_pass" )
-	  or die "Couldn't connect to database: " . DBI->errstr;
-
-	print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n" if ($DBX);
-
-	$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secT',call_id='NONE',queue='NONE',agent='NONE',verb='QUEUESTART',serverid='$queuemetrics_log_id';";
-	if ($CLOtest) {
-		print $stmtB;
-	} else {
-		$Baffected_rows = $dbhB->do($stmtB);
-	}
-	$dbhB->disconnect();
-}
+#if ( $enable_queuemetrics_logging > 0 ) {
+#	$dbhB = DBI->connect(
+#		"DBI:mysql:$queuemetrics_dbname:$queuemetrics_server_ip:3306",
+#		"$queuemetrics_login", "$queuemetrics_pass" )
+#	  or die "Couldn't connect to database: " . DBI->errstr;
+#
+#	print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n" if ($DBX);
+#
+#	$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secT',call_id='NONE',queue='NONE',agent='NONE',verb='QUEUESTART',serverid='$queuemetrics_log_id';";
+#	if ($CLOtest) {
+#		print $stmtB;
+#	} else {
+#		$Baffected_rows = $dbhB->do($stmtB);
+#	}
+#	$dbhB->disconnect();
+#}
 ##### END QUEUEMETRICS LOGGING LOOKUP #####
 ###########################################
 my ($diff_ratio_updater,$RESETdiff_ratio_updater) = (0,0);
