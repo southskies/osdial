@@ -90,9 +90,17 @@ my $running=0;
 my $proctab = new Proc::ProcessTable;
 print "Processes " . scalar($proctab) . "\n" if ($DBX);
 foreach my $proc (@{$proctab->table}) {
-	if ($proc->exec eq "/usr/bin/perl" and $proc->cmndline =~ /AST_VDhopper/) {
-		print $proc->exec . "    " . $proc->cmndline . "     " . $proc->pid . "\n" if ($DB);
-		$running++;
+	if (($proc->exec eq "/usr/bin/perl" or $proc->cmndline =~ /^\/usr\/bin\/perl /) and $proc->cmndline =~ /AST_VDhopper/) {
+		print $proc->exec . "    " . $proc->cmndline . "     " . $proc->pid . " " . (time - $proc->start) . "\n" if ($DB);
+		# TODO: An issue exists where sometimes the hopper processing gets stuck when accessing clustered DB systems.
+		#       This solution will reset any hopper that was running for more than 5 minutes, but the solution is not ideal.
+		#       The problem likely stems from the scoping of variables, however, rewriting the script will be required to resolve.
+		if ((time - $proc->start) > 300) {
+			print STDERR "ERROR: Killing existing instance of hopper at PID ".$proc->pid.", which has been running for more than 5 minutes.\n";
+			kill 9, $proc->pid;
+		} else {
+			$running++;
+		}
 	}
 }
 if ($running>1) {
