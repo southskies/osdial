@@ -68,7 +68,7 @@ if (!isset($osdial_skip_auth)) {
 
 
     } elseif ($sess_check) {
-        if ($use_base_auth==0) {
+        if ($use_basic_auth==0) {
             if (isset($_SESSION[KEY]['valid'])) {
                 if ($session_expiry>0 and time()>$_SESSION[KEY]['last_update']+$session_expiry) {
                     echo "EXPIRED";
