@@ -3056,11 +3056,12 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			if (logout_stop_timeouts==1) {
 				WaitingForNextStep=1;
 			}
-			if ( (custchannellive < -30) && (lastcustchannel.length > 3) ) {
-				CustomerChanneLGone();
-			}
-			if ( (custchannellive < -10) && (lastcustchannel.length > 3) ) {
-				ReChecKCustoMerChaN();
+			if (lastcustchannel.length > 3) {
+				if (custchannellive < -3) {
+					CustomerChanneLGone();
+				} else if (custchannellive < -1) {
+					ReChecKCustoMerChaN();
+				}
 			}
 			if ( (nochannelinsession > 16) && (check_n > 15) ) {
 				NoneInSession();
