@@ -839,7 +839,7 @@ while ($drop_timer <= $DROP_TIME) {
 				$affected_rows=0;
 				if ($rec->{conf_exten} ne '') {
 					my $random = int( rand(9999999)) + 10000000;
-					$stmtA = sprintf("UPDATE osdial_live_agents SET status='QUEUE',lead_id='%s',random_id='%s',uniqueid='%s',channel='%s',callerid='%s'%s WHERE user='%s';",$osdial->mres($insert_lead_id),$osdial->mres($random),$osdial->mres($vars->{uniqueid}),$osdial->mres($vars->{channel}),$osdial->mres($vars->{accountcode}),$csvrSQLfld,$osdial->mres($VDADuser));
+					$stmtA = sprintf("UPDATE osdial_live_agents SET status='QUEUE',lead_id='%s',random_id='%s',uniqueid='%s',channel='%s',callerid='%s'%s WHERE user='%s'%s;",$osdial->mres($insert_lead_id),$osdial->mres($random),$osdial->mres($vars->{uniqueid}),$osdial->mres($vars->{channel}),$osdial->mres($vars->{accountcode}),$csvrSQLfld,$osdial->mres($VDADuser),$svrSQLwhere);
 					$affected_rows = $osdial->sql_execute($stmtA);
 					$found_agents=$affected_rows;
 				}
@@ -848,7 +848,7 @@ while ($drop_timer <= $DROP_TIME) {
 				#$affected_rows = $osdial->sql_execute($stmtA);
 			} else {
 				my $random = int( rand(9999999)) + 10000000;
-				$stmtA = sprintf("UPDATE osdial_live_agents SET status='QUEUE',random_id='%s',lead_id='%s',uniqueid='%s',channel='%s',callerid='%s'%s WHERE status IN('CLOSER','READY') AND campaign_id IN (%s) AND closer_campaigns LIKE '%% %s %%' AND last_update_time>'%s' %s LIMIT 1;",$osdial->mres($random),$osdial->mres($insert_lead_id),$osdial->mres($vars->{uniqueid}),$osdial->mres($vars->{channel}),$osdial->mres($vars->{accountcode}),$csvrSQLfld,$INBOUNDcampsSQL,$osdial->mres($channel_group),$osdial->mres($BDtsSQLdate),$agent_call_order);
+				$stmtA = sprintf("UPDATE osdial_live_agents SET status='QUEUE',random_id='%s',lead_id='%s',uniqueid='%s',channel='%s',callerid='%s'%s WHERE status IN('CLOSER','READY') AND campaign_id IN (%s) AND closer_campaigns LIKE '%% %s %%' AND last_update_time>'%s'%s %s LIMIT 1;",$osdial->mres($random),$osdial->mres($insert_lead_id),$osdial->mres($vars->{uniqueid}),$osdial->mres($vars->{channel}),$osdial->mres($vars->{accountcode}),$csvrSQLfld,$INBOUNDcampsSQL,$osdial->mres($channel_group),$osdial->mres($BDtsSQLdate),$svrSQLwhere,$agent_call_order);
 				$affected_rows = $osdial->sql_execute($stmtA);
 				$found_agents=$affected_rows;
 			}
