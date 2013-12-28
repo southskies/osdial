@@ -16,7 +16,7 @@ var dialplan_tail =
 	"\n"+
 	"; This section is the 'prefix' dialed.\n"+
 	"exten => _dial9.,1,AGI(agi://127.0.0.1:4577/call_log)\n"+
-	"exten => _dial9.,n,Dial(<PROTOCOL>/<NAME>/${EXTEN:5},60,o)\n"+
+	"exten => _dial9.,n,Dial(<PROTOCOL>/<NAME>/${EXTEN:5},60,oR)\n"+
 	"exten => _dial9.,n,Goto(failover${EXTEN:5},1)\n";
 
 var dialplan_1 =
