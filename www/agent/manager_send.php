@@ -406,7 +406,7 @@ if ($ACTION=="Hangup") {
         $row=mysql_fetch_row($rslt);
         $lccnt=$row[0];
 
-        $stmt=sprintf("SELECT count(*) FROM live_sip_channels WHERE server_ip='%s' AND channel='%s';",mres($call_server_ip),mres($channel));
+        $stmt=sprintf("SELECT count(*) FROM live_sip_channels WHERE server_ip='%s' AND (channel='%s' OR channel_group='%s');",mres($call_server_ip),mres($channel),mres($channel));
         if ($format=='debug') echo "\n<!-- $stmt -->";
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
