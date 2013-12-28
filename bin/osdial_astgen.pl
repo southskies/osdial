@@ -400,6 +400,7 @@ sub gen_servers {
 	my $rmsvr = $achead;
 	my $sreg='';
 	my $ireg='';
+	my $myserverid='';
 
 	my $pmmask="deny=0.0.0.0/0.0.0.0\n";
 	$pmmask.="permit=127.0.0.1/255.255.255.255\n";
@@ -517,6 +518,8 @@ sub gen_servers {
 		$ssvr .= "context=osdial\n";
 		$ssvr .= "insecure=port\n";
 		$ssvr .= "canreinvite=no\n";
+
+		$myserverid=$sret->{server_id};
 	}
 
 	# Get other servers 
@@ -543,7 +546,11 @@ sub gen_servers {
 		$isvr .= ";\n;" . $sret->{server_id} . ' - ' . $sret->{server_ip} . "\n";
 		$isvr .= "[" . $sret->{server_id} . "]\n";
 		$isvr .= "type=friend\n";
-		$isvr .= "username=" . $sret->{server_id} . "\n";
+		if ($myserverid ne '') {
+			$isvr .= "username=" . $myserverid . "\n";
+		} else {
+			$isvr .= "username=" . $sret->{server_id} . "\n";
+		}
 		$isvr .= "host=" . $sret->{server_ip} . "\n";
 		$isvr .= $pmmask;
 		$isvr .= "trunk=yes\n";
@@ -560,7 +567,11 @@ sub gen_servers {
 		$ssvr .= ";\n;" . $sret->{server_id} . ' - ' . $sret->{server_ip} . "\n";
 		$ssvr .= "[" . $sret->{server_id} . "]\n";
 		$ssvr .= "type=friend\n";
-		$ssvr .= "username=" . $sret->{server_id} . "\n";
+		if ($myserverid ne '') {
+			$ssvr .= "username=" . $myserverid . "\n";
+		} else {
+			$ssvr .= "username=" . $sret->{server_id} . "\n";
+		}
 		$ssvr .= "host=" . $sret->{server_ip} . "\n";
 		$ssvr .= $pmmask;
 		$ssvr .= "tos_sip=cs3\n";
