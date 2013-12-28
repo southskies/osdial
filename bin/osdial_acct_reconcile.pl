@@ -81,7 +81,7 @@ while (my $comp = $osdial->sql_query(sprintf("SELECT *,IF(NOW()>=acct_startdate 
 	# Run reconcile if no INIT or forced.
 	if ($comp->{'acct_method'} ne 'RANGE' and ($initcnt==0 or $CLOforce)) {
 		my $compsec = {};
-		while (my $sr_oat = $osdial->sql_query(sprintf("SELECT *,IF(NOW()>expire_date AND expire_date!='0000-00-00 00:00:00',1,0) AS expired FROM osdial_acct_trans WHERE company_id='%s' AND trans_sec>0 AND ref_id=0 AND reconciled='0000-00-00 00:00:00';",$comp->{'id'}),"OAT")) {
+		while (my $sr_oat = $osdial->sql_query(sprintf("SELECT *,IF(NOW()>expire_date AND expire_date!='0000-00-00 00:00:00',1,0) AS expired FROM osdial_acct_trans WHERE company_id='%s' AND trans_sec>0 AND ref_id=0 AND reconciled='0000-00-00 00:00:00' AND trans_type!='DATE';",$comp->{'id'}),"OAT")) {
 			my $tid=$sr_oat->{'id'};
 			my $company=$sr_oat->{'company_id'};
 			my $credit=$sr_oat->{'trans_sec'};
@@ -89,15 +89,15 @@ while (my $comp = $osdial->sql_query(sprintf("SELECT *,IF(NOW()>=acct_startdate 
 			my $expire_date=$sr_oat->{'expire_date'};
 			my $expired=$sr_oat->{'expired'};
 
-			while (my $sr_oat2 = $osdial->sql_query(sprintf("SELECT * FROM osdial_acct_trans WHERE company_id='%s' AND ref_id='%s';",$company,$tid),"OAT2")) {
+			while (my $sr_oat2 = $osdial->sql_query(sprintf("SELECT * FROM osdial_acct_trans WHERE company_id='%s' AND ref_id='%s' AND trans_type!='DATE';",$company,$tid),"OAT2")) {
 				$credit+=$sr_oat2->{'trans_sec'};
 			}
 
 			if ($credit>0) {
 				my $adj=0;
-				my $stmt = sprintf("SELECT * FROM osdial_acct_trans WHERE company_id='%s' AND trans_sec<=0 AND ref_id='0' AND updated<NOW()-200;",$company);
+				my $stmt = sprintf("SELECT * FROM osdial_acct_trans WHERE company_id='%s' AND trans_sec<=0 AND ref_id='0' AND updated<NOW()-200 AND trans_type!='DATE';",$company);
 				if ($expire_date != '0000-00-00 00:00:00') {
-					$stmt = sprintf("SELECT * FROM osdial_acct_trans WHERE company_id='%s' AND trans_sec<=0 AND ref_id='0' AND updated<NOW()-200 AND created<='%s';",$company,$expire_date);
+					$stmt = sprintf("SELECT * FROM osdial_acct_trans WHERE company_id='%s' AND trans_sec<=0 AND ref_id='0' AND updated<NOW()-200 AND created<='%s' AND trans_type!='DATE';",$company,$expire_date);
 				}
 				while (my $sr_oat2 = $osdial->sql_query($stmt,"OAT2")) {
 					if ($credit>0) {
@@ -137,16 +137,16 @@ while (my $comp = $osdial->sql_query(sprintf("SELECT *,IF(NOW()>=acct_startdate 
 				}
 			}
 
-			while (my $sr_oat2 = $osdial->sql_query(sprintf("SELECT * FROM osdial_acct_trans WHERE company_id='%s' AND ref_id='%s';",$company,$tid),"OAT2")) {
+			while (my $sr_oat2 = $osdial->sql_query(sprintf("SELECT * FROM osdial_acct_trans WHERE company_id='%s' AND ref_id='%s' AND trans_type!='DATE';",$company,$tid),"OAT2")) {
 				$credit2+=$sr_oat2->{'trans_sec'};
 			}
 			if ($credit2==0) {
-				my $stmtA = sprintf("UPDATE osdial_acct_trans SET reconciled=NOW() WHERE id='%s';",$tid);
+				my $stmtA = sprintf("UPDATE osdial_acct_trans SET reconciled=NOW() WHERE id='%s' AND trans_type!='DATE';",$tid);
 				$osdial->sql_execute($stmtA,'A') if (!$TEST);
-				my $stmtA = sprintf("UPDATE osdial_acct_trans SET reconciled=NOW() WHERE ref_id='%s';",$tid);
+				my $stmtA = sprintf("UPDATE osdial_acct_trans SET reconciled=NOW() WHERE ref_id='%s' AND trans_type!='DATE';",$tid);
 				$osdial->sql_execute($stmtA,'A') if (!$TEST);
 			}
-			while (my $sr_oat2 = $osdial->sql_query(sprintf("SELECT * FROM osdial_acct_trans WHERE company_id='%s' AND trans_sec<=0 AND reconciled='0000-00-00 00:00:00';",$company),"OAT2")) {
+			while (my $sr_oat2 = $osdial->sql_query(sprintf("SELECT * FROM osdial_acct_trans WHERE company_id='%s' AND trans_sec<=0 AND reconciled='0000-00-00 00:00:00' AND trans_type!='DATE';",$company),"OAT2")) {
 				$credit2-=$sr_oat2->{'trans_sec'};
 			}
 
@@ -164,7 +164,7 @@ while (my $comp = $osdial->sql_query(sprintf("SELECT *,IF(NOW()>=acct_startdate 
 			my $stmtA = sprintf("INSERT INTO osdial_acct_trans_daily SET company_id='%s',trans_type='INIT',trans_sec='%s',created=NOW();",$company,$compsec->{$comps});
 			$osdial->sql_execute($stmtA,'A') if (!$TEST);
 
-			while (my $sr_oat2 = $osdial->sql_query(sprintf("SELECT * FROM osdial_acct_trans WHERE company_id='%s' AND trans_sec<=0 AND reconciled='0000-00-00 00:00:00';",$company),"OAT2")) {
+			while (my $sr_oat2 = $osdial->sql_query(sprintf("SELECT * FROM osdial_acct_trans WHERE company_id='%s' AND trans_sec<=0 AND reconciled='0000-00-00 00:00:00' AND trans_type!='DATE';",$company),"OAT2")) {
 				my $stmtA = sprintf("INSERT INTO osdial_acct_trans_daily SET company_id='%s',agent_log_id='%s',trans_type='%s',trans_sec='%s',created='%s';",$company,$sr_oat2->{'agent_log_id'},$sr_oat2->{'trans_type'},$sr_oat2->{'trans_sec'},$sr_oat2->{'created'});
 				$osdial->sql_execute($stmtA,'A') if (!$TEST);
 			}
