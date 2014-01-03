@@ -112,7 +112,10 @@ if (OSDpreg_match('/paypal/',$remote_name)) {
 				$rslt=mysql_query($stmt, $link);
 				$company_id =  mysql_insert_id($link);
 
-				$server_ip=$config['VARserver_ip'];
+                $stmt=sprintf("SELECT server_ip FROM servers WHERE active='N' AND server_profile IN ('AIO','DIALER') LIMIT 1;");
+                $rslt=mysql_query($stmt, $link);
+                $row=mysql_fetch_row($rslt);
+                $server_ip=$row[0];
 
 				$cmp = (($company_id * 1) + 100);
 
