@@ -132,6 +132,8 @@ $dbhA = DBI->connect( 'DBI:mysql:' . $config->{VARDB_database} . ':' . $config->
   or die "Couldn't connect to database: " . DBI->errstr;
 print 'CONNECTED TO DATABASE:  ' . $config->{VARDB_server} . '|' . $config->{VARDB_database} . "\n" if ($DBX);
 
+$dbhA->{RaiseError} = 1;
+
 #############################################
 ##### START QUEUEMETRICS LOGGING LOOKUP #####
 $stmtA = "SELECT enable_queuemetrics_logging,queuemetrics_server_ip,queuemetrics_dbname,queuemetrics_login,queuemetrics_pass,queuemetrics_log_id FROM system_settings;";
