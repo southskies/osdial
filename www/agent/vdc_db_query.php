@@ -219,6 +219,7 @@ $date_of_birth = get_variable("date_of_birth");
 $dial_context = get_variable("dial_context");
 $dial_timeout = get_variable("dial_timeout");
 $dial_prefix = get_variable("dial_prefix");
+$DiaL_SecondS = get_variable("DiaL_SecondS");
 $dispo_choice = get_variable("dispo_choice");
 $email = get_variable("email");
 $enable_sipsak_messages = get_variable("enable_sipsak_messages");
@@ -1200,30 +1201,32 @@ if ($ACTION == 'manDiaLlookCaLL') {
         }
 
         if ($call_good>0) {
-            $dead_epochSQL = '';
-            $pause_sec=0;
-            $wait_epoch='';
-            $wait_sec=0;
-            $stmt=sprintf("SELECT pause_epoch,wait_epoch FROM osdial_agent_log WHERE agent_log_id='%s';",mres($agent_log_id));
-            if ($DB) echo "$stmt\n";
-            $rslt=mysql_query($stmt, $link);
-            $VDpr_ct = mysql_num_rows($rslt);
-            if ($VDpr_ct > 0) {
-                $row=mysql_fetch_row($rslt);
-                $pause_epoch = $row[0];
-                $wait_epoch = $row[1];
-                if (OSDstrlen($wait_epoch)<5) $wait_epoch=$StarTtime;
-                $pause_sec = ($StarTtime - $pause_epoch);
-                $wait_sec = ($StarTtime - $wait_epoch);
-                if ($wait_sec<0) $wait_sec=0;
-            }
-            $stmt=sprintf("UPDATE osdial_agent_log SET pause_sec='%s',wait_epoch='%s',wait_sec='%s',talk_epoch='%s',lead_id='%s' WHERE agent_log_id='%s';",mres($pause_sec),mres($wait_epoch),mres($wait_sec),mres($StarTtime),mres($lead_id),mres($agent_log_id));
-            if ($format=='debug') echo "\n<!-- $stmt -->";
-            $rslt=mysql_query($stmt, $link);
+            if ($stage!="YES") {
+                $dead_epochSQL = '';
+                $pause_sec=0;
+                $wait_epoch='';
+                $wait_sec=0;
+                $stmt=sprintf("SELECT pause_epoch,wait_epoch FROM osdial_agent_log WHERE agent_log_id='%s';",mres($agent_log_id));
+                if ($DB) echo "$stmt\n";
+                $rslt=mysql_query($stmt, $link);
+                $VDpr_ct = mysql_num_rows($rslt);
+                if ($VDpr_ct > 0) {
+                    $row=mysql_fetch_row($rslt);
+                    $pause_epoch = $row[0];
+                    $wait_epoch = $row[1];
+                    if (OSDstrlen($wait_epoch)<5) $wait_epoch=$StarTtime;
+                    $pause_sec = ($StarTtime - $pause_epoch);
+                    $wait_sec = ($StarTtime - $wait_epoch);
+                    if ($wait_sec<0) $wait_sec=0;
+                }
+                $stmt=sprintf("UPDATE osdial_agent_log SET pause_sec='%s',wait_epoch='%s',wait_sec='%s',talk_epoch='%s',lead_id='%s' WHERE agent_log_id='%s';",mres($pause_sec),mres($wait_epoch),mres($wait_sec),mres($StarTtime),mres($lead_id),mres($agent_log_id));
+                if ($format=='debug') echo "\n<!-- $stmt -->";
+                $rslt=mysql_query($stmt, $link);
 
-            $stmt=sprintf("UPDATE osdial_auto_calls SET uniqueid='%s',channel='%s' WHERE callerid='%s';",mres($uniqueid),mres($channel),mres($MDnextCID));
-            if ($format=='debug') echo "\n<!-- $stmt -->";
-            $rslt=mysql_query($stmt, $link);
+                $stmt=sprintf("UPDATE osdial_auto_calls SET uniqueid='%s',channel='%s' WHERE callerid='%s';",mres($uniqueid),mres($channel),mres($MDnextCID));
+                if ($format=='debug') echo "\n<!-- $stmt -->";
+                $rslt=mysql_query($stmt, $link);
+            }
 
             $stmt=sprintf("UPDATE call_log SET uniqueid='%s',channel='%s' WHERE caller_code='%s';",mres($uniqueid),mres($channel),mres($MDnextCID));
             if ($format=='debug') echo "\n<!-- $stmt -->";

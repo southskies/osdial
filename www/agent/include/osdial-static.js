@@ -1305,7 +1305,7 @@
 		}
 		var xmlhttp=getXHR();
 		if (xmlhttp) { 
-			manDiaLlook_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=OLDmanDiaLlookCaLL&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&MDnextCID=" + CIDcheck + "&agent_log_id=" + agent_log_id + "&lead_id=" + document.osdial_form.lead_id.value;
+			manDiaLlook_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLlookCaLL&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&MDnextCID=" + CIDcheck + "&agent_log_id=" + agent_log_id + "&lead_id=" + document.osdial_form.lead_id.value + "&DiaL_SecondS=" + MD_ring_secondS + "&stage=" + taskCheckOR;
 			xmlhttp.open('POST', 'vdc_db_query.php'); 
 			xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 			xmlhttp.send(manDiaLlook_query); 
@@ -1334,19 +1334,25 @@
 						}
 					} else {
 						var regMDL = new RegExp("^Local","ig");
+						MDuniqueid = MDlookResponse_array[0];
+						MDchannel = MDlookResponse_array[1];
+						MDerror = MDlookResponse_array[2];
+						MDhangupcause = MDlookResponse_array[3];
+						// 3rd party dials (XD)
 						if (taskCheckOR == 'YES') {
-							XDuniqueid = MDlookResponse_array[0];
-							XDchannel = MDlookResponse_array[1];
-							if ( (XDchannel.match(regMDL)) && (asterisk_version != '1.0.8') && (asterisk_version != '1.0.9') && ((MD_ring_secondS < 10 && document.osdial_form.xfernumber.value!='CXFER') || (MD_ring_secondS < 1 && document.osdial_form.xfernumber.value=='CXFER'))) {
+							if (MDerror == 'ERROR') {
+								document.getElementById("MainStatuSSpan").innerHTML = "<font color=" + status_alert_color + "> Call Rejected: " + MDhangupcause + "&nbsp;&nbsp;</font>";
+								osdalert("Call Rejected: " + MDhangupcause + "\n",5);
+							} else if ( (MDchannel.match(regMDL)) && (asterisk_version != '1.0.8') && (asterisk_version != '1.0.9') && ((MD_ring_secondS < 10 && document.osdial_form.xfernumber.value!='CXFER') || (MD_ring_secondS < 1 && document.osdial_form.xfernumber.value=='CXFER'))) {
 								// bad grab of Local channel, try again
 								MD_ring_secondS++;
 								var status_display_number = formatPhone(document.osdial_form.phone_code.value,dialed_number);
 								//document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
 								document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "&nbsp;&nbsp;</font><font color=" + status_intense_color + " style='text-decoration:blink;'></font><font style='margin-left:40px;' color=white><b>Waiting for Ring... " + MD_ring_secondS + " seconds<b></font>";
 							} else {
-								document.osdial_form.xferuniqueid.value	= MDlookResponse_array[0];
-								document.osdial_form.xferchannel.value	= MDlookResponse_array[1];
-								lastxferchannel = MDlookResponse_array[1];
+								document.osdial_form.xferuniqueid.value	= MDuniqueid;
+								document.osdial_form.xferchannel.value	= MDchannel;
+								lastxferchannel = MDchannel;
 								document.osdial_form.xferlength.value		= 0;
 
 								XD_live_customer_call = 1;
@@ -1374,10 +1380,17 @@
 								xferchannellive=1;
 								XDcheck = '';
 							}
+
+						// Manual dials (MD)
 						} else {
-							MDuniqueid = MDlookResponse_array[0];
-							MDchannel = MDlookResponse_array[1];
-							if ( (MDchannel.match(regMDL)) && (asterisk_version != '1.0.8') && (asterisk_version != '1.0.9') ) {
+							if (MDerror == 'ERROR') {
+								logTimeTrans();
+								agent_log_type="TALK";
+								agent_log_time=0;
+								agent_log_epoch_start=agent_log_epoch;
+								document.getElementById("MainStatuSSpan").innerHTML = "<font color=" + status_alert_color + "> Call Rejected: " + MDhangupcause + "&nbsp;&nbsp;</font>";
+								osdalert("Call Rejected: " + MDhangupcause + "\n",5);
+							} else if ( (MDchannel.match(regMDL)) && (asterisk_version != '1.0.8') && (asterisk_version != '1.0.9') ) {
 								if (agent_log_type=="PAUSE") {
 									logTimeTrans();
 									agent_log_type="WAIT";
@@ -1393,10 +1406,10 @@
 							} else {
 								custchannellive=1;
 
-								document.osdial_form.uniqueid.value		= MDlookResponse_array[0];
-								//document.osdial_form.callchannel.value	= MDlookResponse_array[1];
-								document.getElementById("callchannel").innerHTML = MDlookResponse_array[1];
-								lastcustchannel = MDlookResponse_array[1];
+								document.osdial_form.uniqueid.value		= MDuniqueid;
+								//document.osdial_form.callchannel.value	= MDchannel;
+								document.getElementById("callchannel").innerHTML = MDchannel;
+								lastcustchannel = MDchannel;
 								lastcustserverip = server_ip;
 								if( document.images ) {
 									document.images['livecall'].src = image_livecall_ON.src;
@@ -1462,7 +1475,7 @@
 			delete xmlhttp;
 		}
 
-		if (MD_ring_secondS > 49) {
+		if (MD_ring_secondS > 49 && MD_ring_secondS > dial_timeout) {
 			MD_channel_look=0;
 			MD_ring_secondS=0;
 			dial_timedout = 1;
