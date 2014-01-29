@@ -1377,7 +1377,12 @@ if ($ACTION == 'manDiaLlogCaLL') {
 
     if ($stage == "end") {
         $status_dispo='NONE';
-        if ($alt_num_status > 0) $status_dispo = 'ALTNUM';
+        if ($alt_num_status > 0) {
+            $status_dispo = 'ALTNUM';
+            $stmt=sprintf("UPDATE osdial_list SET called_count=called_count+1 WHERE lead_id='%s';",mres($lead_id));
+            if ($DB) echo "$stmt\n";
+            $rslt=mysql_query($stmt, $link);
+        }
         $LAcomments='NONE';
         $stmt=sprintf("SELECT SQL_NO_CACHE comments FROM osdial_live_agents WHERE user='%s' ORDER BY last_update_time DESC LIMIT 1;",mres($user));
         if ($format=='debug') echo "\n<!-- $stmt -->";
