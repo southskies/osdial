@@ -2917,7 +2917,7 @@ if ($ACTION == 'multicallQueueSwap') {
                     $CBentry_time =		trim($row[0]);
                     $CBcallback_time =	trim($row[1]);
                     $CBuser =			trim($row[2]);
-                    $CBcomments =		trim($row[3]);
+                    $CBcomments .=		trim($row[3]);
                     $cbcnt++;
                 }
             }
@@ -3901,6 +3901,26 @@ if ($ACTION == 'CalLBacKLisT') {
         $entry_time[$loop_count]    = $row[4];
         $callback_time[$loop_count] = $row[5];
         $comments[$loop_count]      = $row[6];
+        $loop_count++;
+    }
+    $loop_count=0;
+    while ($callbacks_count>$loop_count) {
+        $stmt=sprintf("SELECT entry_time,comments FROM osdial_callbacks WHERE recipient='USERONLY' AND user='%s' AND lead_id='%s' AND callback_id!='%s' ORDER BY callback_time;",mres($user),mres($lead_id[$loop_count]),mres($callback_id[$loop_count]));
+        if ($DB) echo "$stmt\n";
+        $rslt=mysql_query($stmt, $link);
+        if ($rslt) $prevcb_count = mysql_num_rows($rslt);
+        $prevloop_count=0;
+        $cbcomm='';
+        while ($prevcb_count>$prevloop_count) {
+            $row=mysql_fetch_row($rslt);
+            if (!empty($row[1])) {
+                $cbet .= $row[0] . '-<br/>';
+                $cbcomm .= $row[1] . '-<br/>';
+            }
+            $prevloop_count++;
+        }
+        $entry_time[$loop_count] = $cbet . $entry_time[$loop_count];
+        $comments[$loop_count] = $cbcomm . $comments[$loop_count];
         $loop_count++;
     }
     $loop_count=0;
