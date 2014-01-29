@@ -326,6 +326,7 @@ if (OSDpreg_match('/paypal/',$remote_name)) {
 					$et_body_text = OSDpreg_replace('/\[\:acct_credit_expired\:\]/',          '0',                                 $et_body_text);
 
 					send_email($et['et_host'], $et['et_port'], $et['et_user'], $et['et_pass'], $comp['email'], $config['settings']['system_email'], $et_subject, $et_body_html, $et_body_text);
+					send_email($et['et_host'], $et['et_port'], $et['et_user'], $et['et_pass'], $config['settings']['system_email'], $comp['email'], $et_subject, $et_body_html, $et_body_text);
 				}
 
 
