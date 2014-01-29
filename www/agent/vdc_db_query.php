@@ -2359,7 +2359,7 @@ if ($ACTION == 'VDADcheckINCOMING') {
             }
 
             if ( ($call_type=='OUT') or ($call_type=='OUTBALANCE') ) {
-                $stmt=sprintf("UPDATE osdial_log SET user='%s',comments='AUTO',list_id='%s',status='INCALL',user_group='%s' WHERE lead_id='%s' AND uniqueid='%s';",mres($user),mres($list_id),mres($user_group),mres($lead_id),mres($uniqueid));
+                $stmt=sprintf("UPDATE osdial_log SET user='%s',comments=IF(comments IS NULL,IF(phone_number='%s','AUTO','AUTOALT'),comments),list_id='%s',status='INCALL',user_group='%s' WHERE lead_id='%s' AND uniqueid='%s';",mres($user),mres($phone_number),mres($list_id),mres($user_group),mres($lead_id),mres($uniqueid));
                 if ($DB) echo "$stmt\n";
                 $rslt=mysql_query($stmt, $link);
 
@@ -2420,7 +2420,7 @@ if ($ACTION == 'VDADcheckINCOMING') {
                 }
             } else {
                 ### update the osdial_closer_log user to INCALL
-                $stmt=sprintf("UPDATE osdial_closer_log SET user='%s',comments='AUTO',list_id='%s',status='INCALL',user_group='%s' WHERE lead_id='%s' ORDER BY closecallid DESC LIMIT 1;",mres($user),mres($list_id),mres($user_group),mres($lead_id));
+                $stmt=sprintf("UPDATE osdial_closer_log SET user='%s',comments=IF(comments IS NULL,IF(phone_number='%s','AUTO','AUTOALT'),comments),list_id='%s',status='INCALL',user_group='%s' WHERE lead_id='%s' ORDER BY closecallid DESC LIMIT 1;",mres($user),mres($phone_number),mres($list_id),mres($user_group),mres($lead_id));
                 if ($DB) echo "$stmt\n";
                 $rslt=mysql_query($stmt, $link);
 
@@ -2975,7 +2975,7 @@ if ($ACTION == 'multicallQueueSwap') {
             }
 
             if ( ($call_type=='OUT') or ($call_type=='OUTBALANCE') ) {
-                $stmt=sprintf("UPDATE osdial_log SET user='%s',comments='AUTO',list_id='%s',status='INCALL',user_group='%s' WHERE lead_id='%s' AND uniqueid='%s';",mres($user),mres($list_id),mres($user_group),mres($lead_id),mres($uniqueid));
+                $stmt=sprintf("UPDATE osdial_log SET user='%s',comments=IF(comments IS NULL,IF(phone_number='%s','AUTO','AUTOALT'),comments),list_id='%s',status='INCALL',user_group='%s' WHERE lead_id='%s' AND uniqueid='%s';",mres($user),mres($phone_number),mres($list_id),mres($user_group),mres($lead_id),mres($uniqueid));
                 if ($DB) echo "$stmt\n";
                 $rslt=mysql_query($stmt, $link);
 
@@ -3036,7 +3036,7 @@ if ($ACTION == 'multicallQueueSwap') {
                 }
             } else {
                 ### update the osdial_closer_log user to INCALL
-                $stmt=sprintf("UPDATE osdial_closer_log SET user='%s',comments='AUTO',list_id='%s',status='INCALL',user_group='%s' WHERE lead_id='%s' ORDER BY closecallid DESC LIMIT 1;",mres($user),mres($list_id),mres($user_group),mres($lead_id));
+                $stmt=sprintf("UPDATE osdial_closer_log SET user='%s',comments=IF(comments IS NULL,IF(phone_number='%s','AUTO','AUTOALT'),comments),list_id='%s',status='INCALL',user_group='%s' WHERE lead_id='%s' ORDER BY closecallid DESC LIMIT 1;",mres($user),mres($phone_number),mres($list_id),mres($user_group),mres($lead_id));
                 if ($DB) echo "$stmt\n";
                 $rslt=mysql_query($stmt, $link);
 
