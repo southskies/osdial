@@ -149,6 +149,7 @@ if ($ADD==1121) {
 			        $call_log .= "    <td align=right>$row[2]</td>\n";
 			        $call_log .= "    <td align=right>$row[1]</td>\n";
 			        $call_log .= "    <td align=right>$row[15]</td>\n";
+			        $call_log .= "    <td align=right>$row[12]</td>\n";
                     $call_log .= "  </tr>\n";
 			
 			        $campaign_id = $row[3];
@@ -213,6 +214,8 @@ if ($ADD==1121) {
 			        $closer_log .= "    <td align=right>$row[2]</td>\n";
 			        $closer_log .= "    <td align=right>$row[1]</td>\n";
 			        $closer_log .= "    <td align=right>$row[14]</td>\n";
+			        $closer_log .= "    <td align=right>$row[16]</td>\n";
+			        $closer_log .= "    <td align=right>$row[12]</td>\n";
 			        $closer_log .= "  </tr>\n";
 			
 			        $campaign_id = $row[3];
@@ -629,9 +632,9 @@ if ($ADD==1121) {
 			        }
 		        }
 
-	            echo "    <table width=750 cellspacing=0 cellpadding=1>\n";
+	            echo "    <table width=850 cellspacing=0 cellpadding=1>\n";
 	            echo "      <tr class=tabheader>\n";
-	            echo "        <td class=top_header2 colspan=9><font size='+1'>CALLS TO THIS LEAD</font></td>\n";
+	            echo "        <td class=top_header2 colspan=10><font size='+1'>CALLS TO THIS LEAD</font></td>\n";
 	            echo "      </tr>\n";
 	            echo "      <tr class=tabheader>\n";
                 echo "        <td># </td>\n";
@@ -643,18 +646,19 @@ if ($ADD==1121) {
 	            echo "        <td>LIST</td>\n";
 	            echo "        <td>LEAD</td>\n";
                 echo "        <td>TERM REASON</td>\n";
+                echo "        <td>COMMENTS</td>\n";
 	            echo "      </tr>\n";
 	            echo "$call_log\n";
                 echo "      <tr class=tabfooter>\n";
-                echo "        <td colspan=9></td>\n";
+                echo "        <td colspan=10></td>\n";
                 echo "      </tr>\n";
 	            echo "    </table>\n";
 	            echo "    <br><br>\n";
 	            echo "    <br><br>\n";
 			
-	            echo "    <table width=750 cellspacing=0 cellpadding=1>\n";
+	            echo "    <table width=850 cellspacing=0 cellpadding=1>\n";
 	            echo "      <tr class=tabheader>\n";
-	            echo "        <td class=top_header2 colspan=9><font size='+1'>CLOSER RECORDS FOR THIS LEAD</font></td>\n";
+	            echo "        <td class=top_header2 colspan=11><font size='+1'>CLOSER RECORDS FOR THIS LEAD</font></td>\n";
 	            echo "      </tr>\n";
 	            echo "      <tr class=tabheader>\n";
                 echo "        <td># </td>\n";
@@ -666,17 +670,19 @@ if ($ADD==1121) {
                 echo "        <td>LIST</td>\n";
                 echo "        <td>LEAD</td>\n";
                 echo "        <td>WAIT</td>\n";
+                echo "        <td>TERM REASON</td>\n";
+                echo "        <td>COMMENTS</td>\n";
                 echo "      </tr>\n";
 	            echo "$closer_log\n";
                 echo "      <tr class=tabfooter>\n";
-                echo "        <td colspan=9></td>\n";
+                echo "        <td colspan=11></td>\n";
                 echo "      </tr>\n";
 	            echo "    </table>\n";
 	            echo "    <br><br>\n";
 	            echo "    <br><br>\n";
 			
 			
-	            echo "    <table width=750 cellspacing=0 cellpadding=1>\n";
+	            echo "    <table width=850 cellspacing=0 cellpadding=1>\n";
 	            echo "      <tr class=tabheader>\n";
 	            echo "        <td class=top_header2 colspan=11><font size='+1'>AGENT LOG RECORDS FOR THIS LEAD</font></td>\n";
 	            echo "      </tr>\n";
@@ -701,7 +707,7 @@ if ($ADD==1121) {
 	            echo "    <br><br>\n";
 	            echo "    <br><br>\n";
 			
-	            echo "    <table width=750 cellspacing=0 cellpadding=1>\n";
+	            echo "    <table width=850 cellspacing=0 cellpadding=1>\n";
 	            echo "      <tr class=tabheader>\n";
 	            echo "        <td class=top_header2 colspan=8><font size='+1'>RECORDINGS FOR THIS LEAD</font></td>\n";
 	            echo "      </tr>\n";
