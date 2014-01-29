@@ -629,10 +629,10 @@ while($one_day_interval > 0)
 
 									if ($UDaffected_rows)
 									{
-									$lead_id=''; $phone_code=''; $phone_number=''; $called_count='';
+									$hopper_id=''; $lead_id=''; $phone_code=''; $phone_number=''; $called_count='';
 										while ($call_CMPIPct < $UDaffected_rows)
 										{
-										$stmtA = "SELECT SQL_NO_CACHE lead_id FROM osdial_hopper WHERE campaign_id='" . $osdial->mres($DBfill_campaign[$camp_CIPct]) . "' AND status='QUEUE' AND user='VDAD_$DB_camp_server_server_ip[$server_CIPct]' ORDER BY priority DESC,hopper_id LIMIT 1;";
+										$stmtA = "SELECT SQL_NO_CACHE lead_id,hopper_id FROM osdial_hopper WHERE campaign_id='" . $osdial->mres($DBfill_campaign[$camp_CIPct]) . "' AND status='QUEUE' AND user='VDAD_$DB_camp_server_server_ip[$server_CIPct]' ORDER BY priority DESC,hopper_id LIMIT 1;";
 										print "|$stmtA|\n";
 											$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 											$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -643,6 +643,7 @@ while($one_day_interval > 0)
 												{
 												@aryA = $sthA->fetchrow_array;
 													$lead_id =		"$aryA[0]";
+													$hopper_id =		"$aryA[1]";
 												$rec_count++;
 												}
 											$sthA->finish();
@@ -660,7 +661,7 @@ while($one_day_interval > 0)
 											}
 										else
 											{
-											$stmtA = "UPDATE osdial_hopper SET status='INCALL' WHERE lead_id='$lead_id';";
+											$stmtA = "UPDATE osdial_hopper SET status='INCALL' WHERE hopper_id='$hopper_id';";
 											print "|$stmtA|\n";
 											$UQaffected_rows = $dbhA->do($stmtA);
 											print "hopper row updated to INCALL: |$UQaffected_rows|$lead_id|\n";
@@ -720,7 +721,7 @@ while($one_day_interval > 0)
 												$stmtA = "UPDATE osdial_list set called_since_last_reset='$CSLR', called_count='$called_count',user='VDAD',last_local_call_time='$LLCT_DATE' where lead_id='$lead_id'";
 												$affected_rows = $dbhA->do($stmtA);
 
-												$stmtA = "DELETE FROM osdial_hopper WHERE lead_id='$lead_id';";
+												$stmtA = "DELETE FROM osdial_hopper WHERE hopper_id='$hopper_id';";
 												$affected_rows = $dbhA->do($stmtA);
 
 												$CCID_on=0;
