@@ -667,11 +667,9 @@
 			if (xmlhttprequestcheckconf_wait >= conf_check_attempts_cleanup) {
 				// In case the handler function fails to do cleanup, cleanup manually.
 				xmlhttprequestcheckconf_wait = 0;
-				delete xmlhttprequestcheckconf;
-				xmlhttprequestcheckconf = undefined;
-			} else {
-				xmlhttprequestcheckconf = undefined;
 			}
+			xmlhttprequestcheckconf = undefined;
+			delete xmlhttprequestcheckconf;
 		}
 	}
 
