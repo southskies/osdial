@@ -1003,7 +1003,16 @@ sub gen_phones {
 			$sphn .= "allow=gsm\n";
 			$sphn .= "allow=g729\n";
 			$sphn .= "qualify=5000\n";
-			$sphn .= "nat=yes\n" if ($sret->{phone_type} =~ /NAT/i);
+			$sphn .= "nat=force_rport,comedia\n" if ($sret->{phone_type} =~ /NAT/i);
+			if ($sret->{protocol} eq 'WebSIP') {
+				$sphn .= "encryption=yes\n";
+				$sphn .= "avpf=yes\n";
+				$sphn .= "icesupport=yes\n";
+				$sphn .= "directmedia=no\n";
+				$sphn .= "transport=udp,ws\n";
+				$sphn .= "sendrpid=no\n";
+				$sphn .= "trustrpid=yes\n";
+			}
 			$sphn .= "context=" . $sret->{ext_context} . "\n";
 			$sphn .= "mailbox=" . $sret->{voicemail_id} . "\@osdial\n" if ($sret->{voicemail_id});
 		} elsif ($sret->{protocol} eq "IAX2" and $sret->{extension} !~ /\@|\//) {
@@ -1019,6 +1028,7 @@ sub gen_phones {
 			}
 			$iphn .= "disallow=all\n";
 			$iphn .= "allow=ulaw\n";
+			$iphn .= "allow=alaw\n";
 			$iphn .= "allow=gsm\n";
 			$iphn .= "allow=g729\n";
 			$iphn .= "qualify=5000\n";
