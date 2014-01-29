@@ -184,6 +184,7 @@ my $start_time = $now_date;
 
 my $CIDdate = $now_date;
 $CIDdate =~ s/\D//g;
+my $anon_number = $CIDdate;
 $CIDdate = substr($CIDdate,4,10);
 
 my $tsSQLdate = $now_date;
@@ -227,6 +228,7 @@ my $parked_by;
 my $park_extension;
 my $status;
 my $list_id;
+my $trunk_prefix;
 my $phone_code;
 my $Scampaign_id;
 my $referring_extension;
@@ -276,8 +278,24 @@ if (length($vars->{'args'})>1) {
 	$phone_code = $ARGV_vars[8];
 	$Scampaign_id = $ARGV_vars[9];
 
-	$inbound_number =~ s/^\+1//;
-	$phone_number =~ s/^\+1//;
+	$phone_code = $osdial->{settings}{default_phone_code} if ($phone_code eq '');
+	$phone_code = '1' if ($phone_code eq '');
+
+	$trunk_prefix='';
+	$trunk_prefix='0' if ($phone_code eq "44");
+	$trunk_prefix='0' if ($phone_code eq "46");
+	$trunk_prefix='0' if ($phone_code eq "61");
+	$trunk_prefix='0' if ($phone_code eq "64");
+	$trunk_prefix='0' if ($phone_code eq "86");
+
+	$inbound_number =~ s/^anonymous$/99$anon_number/i;
+	$inbound_number =~ s/^[0]*$/99$anon_number/;
+	$inbound_number =~ s/^\+//;
+	$inbound_number =~ s/^$phone_code/$trunk_prefix/;
+	$phone_number =~ s/^anonymous$/99$anon_number/i;
+	$phone_number =~ s/^[0]*$/99$anon_number/;
+	$phone_number =~ s/^\+//;
+	$phone_number =~ s/^$phone_code/$trunk_prefix/;
 	$park_extension="8301" if ($park_extension eq "");
 }
 
@@ -328,7 +346,17 @@ if ($call_handle_method =~ /^ANI/) {
 }
 
 $phone_code = $osdial->{settings}{default_phone_code} if ($phone_code eq '');
-$phone_number =~ s/^\+1//;
+$phone_code = '1' if ($phone_code eq '');
+$trunk_prefix='';
+$trunk_prefix='0' if ($phone_code eq "44");
+$trunk_prefix='0' if ($phone_code eq "46");
+$trunk_prefix='0' if ($phone_code eq "61");
+$trunk_prefix='0' if ($phone_code eq "64");
+$trunk_prefix='0' if ($phone_code eq "86");
+$phone_number =~ s/^anonymous$/99$anon_number/i;
+$phone_number =~ s/^[0]*$/99$anon_number/;
+$phone_number =~ s/^\+//;
+$phone_number =~ s/^$phone_code/$trunk_prefix/;
 $phone_number = $inbound_number if ($phone_number eq '');
 $pin=$inbound_number if (length($pin) < 1);
 $fronter = $pin if(length($pin)>0);
