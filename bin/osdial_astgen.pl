@@ -1028,6 +1028,7 @@ sub gen_phones {
 			} else {
 				$sphn .= "disallow=all\n";
 				$sphn .= "allow=ulaw\n";
+				$sphn .= "allow=alaw\n";
 				$sphn .= "allow=gsm\n";
 				$sphn .= "allow=g729\n";
 				$sphn .= "qualify=5000\n";
@@ -1048,6 +1049,7 @@ sub gen_phones {
 			}
 			$iphn .= "disallow=all\n";
 			$iphn .= "allow=ulaw\n";
+			$iphn .= "allow=alaw\n";
 			$iphn .= "allow=gsm\n";
 			$iphn .= "allow=g729\n";
 			$iphn .= "qualify=5000\n";
