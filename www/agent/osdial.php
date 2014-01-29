@@ -1065,6 +1065,7 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
 
                 ##### grab the inbound groups to choose from if campaign contains CLOSER
                 $VARingroups="''";
+                $INgrpCT=0;
                 if ($campaign_allow_inbound > 0) {
                     $VARingroups='';
                     $closerSQL = sprintf("group_id IN(%s)",$closer_campaigns);
@@ -1073,7 +1074,6 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
                     $rslt=mysql_query($stmt, $link);
                     if ($DB) echo "$stmt\n";
                     $closer_ct = mysql_num_rows($rslt);
-                    $INgrpCT=0;
                     while ($INgrpCT < $closer_ct) {
                         $row=mysql_fetch_row($rslt);
                         $closer_groups[$INgrpCT] = $row[0];
