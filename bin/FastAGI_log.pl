@@ -1491,7 +1491,7 @@ sub process_request {
 									}
 								}
 								if ($VD_alt_dnc_count < 1) {
-									$stmtA = "INSERT INTO osdial_hopper SET lead_id='$VD_lead_id',campaign_id='" . $osdial->mres($VD_campaign_id) . "',status='READY',list_id='" . $osdial->mres($VD_list_id) . "',gmt_offset_now='$VD_gmt_offset_now',state='" . $osdial->mres($VD_state) . "',alt_dial='ALT',user='',priority='25';";
+									$stmtA = "INSERT INTO osdial_hopper SET lead_id='$VD_lead_id',campaign_id='" . $osdial->mres($VD_campaign_id) . "',status='HOLD',list_id='" . $osdial->mres($VD_list_id) . "',gmt_offset_now='$VD_gmt_offset_now',state='" . $osdial->mres($VD_state) . "',alt_dial='ALT',user='',priority='25';";
 									$affected_rows = $dbhA->do($stmtA);
 									if ($AGILOG) {
 										$agi_string = "--   VDH record inserted: |$affected_rows|   |$stmtA|";
@@ -1567,7 +1567,7 @@ sub process_request {
 									}
 								}
 								if ($VD_addr3_dnc_count < 1) {
-									$stmtA = "INSERT INTO osdial_hopper SET lead_id='$VD_lead_id',campaign_id='" . $osdial->mres($VD_campaign_id) . "',status='READY',list_id='" . $osdial->mres($VD_list_id) . "',gmt_offset_now='$VD_gmt_offset_now',state='" . $osdial->mres($VD_state) . "',alt_dial='ADDR3',user='',priority='25';";
+									$stmtA = "INSERT INTO osdial_hopper SET lead_id='$VD_lead_id',campaign_id='" . $osdial->mres($VD_campaign_id) . "',status='HOLD',list_id='" . $osdial->mres($VD_list_id) . "',gmt_offset_now='$VD_gmt_offset_now',state='" . $osdial->mres($VD_state) . "',alt_dial='ADDR3',user='',priority='25';";
 									$affected_rows = $dbhA->do($stmtA);
 									if ($AGILOG) {
 										$agi_string = "--   VDH record inserted: |$affected_rows|   |$stmtA|";
@@ -1657,7 +1657,7 @@ sub process_request {
 									}
 
 									if ($VD_aff_dnc_count < 1) {
-										$stmtA = "INSERT INTO osdial_hopper SET lead_id='$VD_lead_id',campaign_id='" . $osdial->mres($VD_campaign_id) . "',status='READY',list_id='" . $osdial->mres($VD_list_id) . "',gmt_offset_now='$VD_gmt_offset_now',state='" . $osdial->mres($VD_state) . "',alt_dial='AFFAP$cur_aff',user='',priority='25';";
+										$stmtA = "INSERT INTO osdial_hopper SET lead_id='$VD_lead_id',campaign_id='" . $osdial->mres($VD_campaign_id) . "',status='HOLD',list_id='" . $osdial->mres($VD_list_id) . "',gmt_offset_now='$VD_gmt_offset_now',state='" . $osdial->mres($VD_state) . "',alt_dial='AFFAP$cur_aff',user='',priority='25';";
 										$affected_rows = $dbhA->do($stmtA);
 										if ($AGILOG) {
 											$agi_string = "--   VDH record inserted: |$affected_rows|   |$stmtA|";

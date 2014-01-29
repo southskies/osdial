@@ -901,10 +901,10 @@ while($one_day_interval > 0)
 
 					if ($UDaffected_rows)
 						{
-						$lead_id=''; $phone_code=''; $phone_number=''; $called_count=''; $custom2='';
+						$hopper_id=''; $lead_id=''; $phone_code=''; $phone_number=''; $called_count=''; $custom2='';
 						while ($call_CMPIPct < $UDaffected_rows)
 							{
-							$stmtA = "SELECT SQL_NO_CACHE lead_id,alt_dial FROM osdial_hopper WHERE campaign_id='" . $osdial->mres($DBIPcampaign[$user_CIPct]) . "' AND status='QUEUE' AND user='VDAD_$server_ip' ORDER BY priority DESC,hopper_id LIMIT 1";
+							$stmtA = "SELECT SQL_NO_CACHE lead_id,alt_dial,hopper_id FROM osdial_hopper WHERE campaign_id='" . $osdial->mres($DBIPcampaign[$user_CIPct]) . "' AND status='QUEUE' AND user='VDAD_$server_ip' ORDER BY priority DESC,hopper_id LIMIT 1";
 							print "|$stmtA|\n";
 							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -916,6 +916,7 @@ while($one_day_interval > 0)
 								@aryA = $sthA->fetchrow_array;
 									$lead_id =		"$aryA[0]";
 									$alt_dial =		"$aryA[1]";
+									$hopper_id =		"$aryA[2]";
 								$rec_count++;
 								}
 							$sthA->finish();
@@ -933,7 +934,7 @@ while($one_day_interval > 0)
 							}
 						else
 							{
-							$stmtA = "UPDATE osdial_hopper SET status='INCALL' WHERE lead_id='$lead_id';";
+							$stmtA = "UPDATE osdial_hopper SET status='INCALL' WHERE hopper_id='$hopper_id';";
 							print "|$stmtA|\n";
 							$UQaffected_rows = $dbhA->do($stmtA);
 							print "hopper row updated to INCALL: |$UQaffected_rows|$lead_id|\n";
@@ -970,7 +971,7 @@ while($one_day_interval > 0)
 							if ($ld_status =~ /^DNC$|^DNCE$|^DNCL$|^DNCC$/) {
 								$event_string = "DNC: Lead status is already a DNC, removing entry from hopper.|$ld_status|$lead_id|";
 								&event_logger;
-								$stmtA = "DELETE FROM osdial_hopper WHERE lead_id='$lead_id';";
+								$stmtA = "DELETE FROM osdial_hopper WHERE hopper_id='$hopper_id';";
 								$affected_rows = $dbhA->do($stmtA);
 							 	$rec_countCUSTDATA=0;
 							} else {
@@ -1017,7 +1018,7 @@ while($one_day_interval > 0)
 										&event_logger;
 										$stmtA = "UPDATE osdial_list SET status='DNCL' WHERE lead_id='$lead_id';";
 										$affected_rows = $dbhA->do($stmtA);
-										$stmtA = "DELETE FROM osdial_hopper WHERE lead_id='$lead_id';";
+										$stmtA = "DELETE FROM osdial_hopper WHERE hopper_id='$hopper_id';";
 										$affected_rows = $dbhA->do($stmtA);
 							 			$rec_countCUSTDATA=0;
 									}
@@ -1091,7 +1092,7 @@ while($one_day_interval > 0)
 								$stmtA = "UPDATE osdial_campaigns SET campaign_lastcall=NOW() WHERE campaign_id='" . $osdial->mres($DBIPcampaign[$user_CIPct]) . "';";
 								$affected_rows = $dbhA->do($stmtA);
 
-								$stmtA = "DELETE FROM osdial_hopper WHERE lead_id='$lead_id';";
+								$stmtA = "DELETE FROM osdial_hopper WHERE hopper_id='$hopper_id';";
 								$affected_rows = $dbhA->do($stmtA);
 
 								$CCID_on=0;
@@ -1642,7 +1643,7 @@ while($one_day_interval > 0)
 											}
 										}
 										if ($VD_alt_dnc_count < 1) {
-											$stmtA = "INSERT INTO osdial_hopper SET lead_id='$CLlead_id',campaign_id='" . $osdial->mres($CLcampaign_id) . "',status='READY',list_id='" . $osdial->mres($VD_list_id) . "',gmt_offset_now='$VD_gmt_offset_now',state='" . $osdial->mres($VD_state) . "',alt_dial='ALT',user='',priority='25';";
+											$stmtA = "INSERT INTO osdial_hopper SET lead_id='$CLlead_id',campaign_id='" . $osdial->mres($CLcampaign_id) . "',status='HOLD',list_id='" . $osdial->mres($VD_list_id) . "',gmt_offset_now='$VD_gmt_offset_now',state='" . $osdial->mres($VD_state) . "',alt_dial='ALT',user='',priority='25';";
 											$affected_rows = $dbhA->do($stmtA);
 											if ($AGILOG) {$event_string = "--    VDH record inserted: |$affected_rows|   |$stmtA|";   &event_logger;}
 										}
@@ -1682,7 +1683,7 @@ while($one_day_interval > 0)
 											$sthA->finish();
 										}
 										if ($VD_addr3_dnc_count < 1) {
-											$stmtA = "INSERT INTO osdial_hopper SET lead_id='$CLlead_id',campaign_id='" . $osdial->mres($CLcampaign_id) . "',status='READY',list_id='" . $osdial->mres($VD_list_id) . "',gmt_offset_now='$VD_gmt_offset_now',state='" . $osdial->mres($VD_state) . "',alt_dial='ADDR3',user='',priority='20';";
+											$stmtA = "INSERT INTO osdial_hopper SET lead_id='$CLlead_id',campaign_id='" . $osdial->mres($CLcampaign_id) . "',status='HOLD',list_id='" . $osdial->mres($VD_list_id) . "',gmt_offset_now='$VD_gmt_offset_now',state='" . $osdial->mres($VD_state) . "',alt_dial='ADDR3',user='',priority='20';";
 											$affected_rows = $dbhA->do($stmtA);
 											if ($AGILOG) {$event_string = "--    VDH record inserted: |$affected_rows|   |$stmtA|";   &event_logger;}
 										}
@@ -1737,7 +1738,7 @@ while($one_day_interval > 0)
 												$sthA->finish();
 											}
 											if ($VD_aff_dnc_count < 1) {
-												$stmtA = "INSERT INTO osdial_hopper SET lead_id='$CLlead_id',campaign_id='" . $osdial->mres($CLcampaign_id) . "',status='READY',list_id='" . $osdial->mres($VD_list_id) . "',gmt_offset_now='$VD_gmt_offset_now',state='" . $osdial->mres($VD_state) . "',alt_dial='AFFAP$cur_aff',user='',priority='20';";
+												$stmtA = "INSERT INTO osdial_hopper SET lead_id='$CLlead_id',campaign_id='" . $osdial->mres($CLcampaign_id) . "',status='HOLD',list_id='" . $osdial->mres($VD_list_id) . "',gmt_offset_now='$VD_gmt_offset_now',state='" . $osdial->mres($VD_state) . "',alt_dial='AFFAP$cur_aff',user='',priority='20';";
 												$affected_rows = $dbhA->do($stmtA);
 												if ($AGILOG) {$event_string = "--    VDH record inserted: |$affected_rows|   |$stmtA|";   &event_logger;}
 												$cur_aff=10;
