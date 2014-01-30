@@ -124,7 +124,7 @@
 		}
 		var xmlhttp=getXHR();
 		if (xmlhttp) { 
-			var queryCID = "VCagcW" + epoch_sec + user_abb;
+			var queryCID = "VCagcW" + new Date().getTime().toString();
 			var volchanvalue = taskvolchannel;
 			livevolume_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=VolumeControl&format=text&channel=" + volchanvalue + "&stage=" + taskdirection + "&exten=" + session_id + "&ext_context=" + ext_context + "&queryCID=" + queryCID;
 			xmlhttp.open('POST', 'manager_send.php'); 

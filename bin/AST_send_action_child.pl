@@ -286,9 +286,22 @@ if ($action) {
 			my ($clkey, $clval) = split(/: /,$rline);
 			$clkey = lc($clkey);
 			$ame{$clkey} = $clval;
+		} else {
+			$ame{'message'} = $ame{'message'}.$rline."\n";
 		}
 	}
-	if ($ame{response} eq 'Error') {
+	if ($ame{response} eq 'Follows') {
+		if ($ame{actionid} =~ /Command$/i and $ame{message} =~ /END COMMAND/mi) {
+			my ($man_id,$usec_id,$action) = split(/~/,$ame{actionid});
+			$man_id =~ s/^M//;
+			$usec_id =~ s/^U//;
+			if ($man_id ne '') {
+				my $osdial = OSDial->new('DB'=>$DB);
+				$osdial->sql_execute(sprintf("UPDATE osdial_manager SET status='DEAD',uniqueid='%s' WHERE man_id='%s';",$usec_id,$man_id));
+				$event_string .= "*** Marking completed command ($man_id) as DEAD.\n";
+			}
+		}
+	} elsif ($ame{response} eq 'Error') {
 		if ($ame{actionid} =~ /Hangup$/i and $ame{message} =~ /No such channel/i) {
 			my ($man_id,$usec_id,$action) = split(/~/,$ame{actionid});
 			$man_id =~ s/^M//;

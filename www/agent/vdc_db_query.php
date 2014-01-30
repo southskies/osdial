@@ -3318,12 +3318,9 @@ if ($ACTION == 'userLOGout') {
         }
 
         if ($LogouTKicKAlL > 0) {
-            $local_DEF = 'Local/5555';
-            $local_AMP = '@';
-            $kick_local_channel = "$local_DEF$conf_exten$local_AMP$ext_context";
             $queryCID = "ULGH3458$StarTtime";
 
-            $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Originate','%s','Channel: %s','Context: %s','Exten: 8300','Priority: 1','Callerid: %s','Account: %s','','','%s','%s');",mres($NOW_TIME),mres($server_ip),mres($queryCID),mres($kick_local_channel),mres($ext_context),mres($queryCID),mres($queryCID),mres($channel),mres($exten));
+            $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Command','%s','Command: %s','','','','','','','','','');",mres($NOW_TIME),mres($server_ip),mres($queryCID),mres('meetme kick '.$conf_exten.' all'));
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
         }

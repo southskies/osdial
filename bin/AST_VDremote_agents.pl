@@ -810,7 +810,7 @@ while($one_day_interval > 0)
 							if ($VD_extension[$z] =~ /^R\/va/) {
 								&get_time_now;
 								my $KqueryCID='ULGH3956'.$CIDdate;
-								$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$KqueryCID','Channel: Local/5555" . $VD_conf_exten[$z] . "\@osdial','Context: osdial','Exten: 8300','Priority: 1','Callerid: $KqueryCID','Accountcode: $KqueryCID','','','','')";
+								$stmtA=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Command','%s','Command: %s','','','','','','','','','');",$osdial->mres($SQLdate),$osdial->mres($VARserver_ip),$osdial->mres($KqueryCID),$osdial->mres('meetme kick '.$VD_conf_exten[$z].' all'));
 								$affected_rows = $dbhA->do($stmtA);
 							}
 						}

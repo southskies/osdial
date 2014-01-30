@@ -512,7 +512,7 @@ sub hangup_and_dispo {
 	my $xepoch = time();
 	my $xdate = $osdial->get_datetime($xepoch);
 	my $KqueryCID = 'ULGH3955' . $cinfo->{CIDdate};
-	my $kick = $osdial->sql_execute("INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $osdial->{VARserver_ip} . "','','Originate','$KqueryCID','Channel: Local/5555" . $cinfo->{conf_exten} . "\@" . $osdial->{server}{ext_context} . "','Context: " . $osdial->{server}{ext_context} . "','Exten: 8300','Priority: 1','Callerid: $KqueryCID','Account: $KqueryCID','','','','');");
+	my $kick = $osdial->sql_execute(sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Command','%s','Command: %s','','','','','','','','','');",$osdial->mres($xdate),$osdial->mres($osdial->{VARserver_ip}),$osdial->mres($KqueryCID),$osdial->mres('meetme kick '.$cinfo->{conf_exten}.' all')));
 
 	# Send hangups to all conferences and outbound channels.
 	foreach my $huc (@huchan) {

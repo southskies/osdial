@@ -367,7 +367,7 @@ exit 0;
 # calculate a unique password that will remain constant across servers.
 #   (total of user ids + total of phone extensions) * number of users
 sub calc_password {
-	my $stmt = "SELECT MD5(CONCAT((SELECT company_name FROM system_settings LIMIT 1),SUM(INET_ATON(server_ip)))) AS calc FROM servers;";
+	my $stmt = "SELECT SUBSTRING(MD5(CONCAT((SELECT company_name FROM system_settings LIMIT 1),SUM(INET_ATON(server_ip)))),1,15) AS calc FROM servers;";
 	my $sret = $osdial->sql_query($stmt);
 	my $pass = $sret->{calc};
 	$pass = '6l5a4i3d2s1o0o1s2d3i4a5l6' if ($pass eq '');;
@@ -412,32 +412,34 @@ sub gen_servers {
 	$isvr .= ";\n; IAX loopback for testing\n";
 	$isvr .= "[ASTloop]\n";
 	$isvr .= "type=friend\n";
+	$isvr .= "username=ASTloop\n";
 	$isvr .= "accountcode=ASTloop\n";
 	$isvr .= "context=osdial\n";
-	$isvr .= "auth=plaintext\n";
+	$isvr .= "auth=md5,plaintext\n";
 	$isvr .= "trunk=yes\n";
 	$isvr .= "host=dynamic\n";
 	$isvr .= $pmmask;
 	$isvr .= "secret=$pass\n";
 	$isvr .= "disallow=all\n";
-	$isvr .= "allow=ulaw,alaw,gsm,slin,slin16,g729,g726,g722,g723\n";
+	$isvr .= "allow=ulaw,alaw,gsm,slin,slin16\n";
 	$isvr .= "requirecalltoken=no\n";
-	$isvr .= "qualify=no\n";
+	$isvr .= "qualify=yes\n";
 
 	$isvr .= ";\n; IAX loopback for blind monitoring\n";
 	$isvr .= "[ASTblind]\n";
 	$isvr .= "type=friend\n";
+	$isvr .= "username=ASTblind\n";
 	$isvr .= "accountcode=ASTblind\n";
 	$isvr .= "context=osdial\n";
-	$isvr .= "auth=plaintext\n";
+	$isvr .= "auth=md5,plaintext\n";
 	$isvr .= "trunk=yes\n";
 	$isvr .= "host=dynamic\n";
 	$isvr .= $pmmask;
 	$isvr .= "secret=$pass\n";
 	$isvr .= "disallow=all\n";
-	$isvr .= "allow=ulaw,alaw,gsm,slin,slin16,g729,g726,g722,g723\n";
+	$isvr .= "allow=ulaw,alaw,gsm,slin,slin16\n";
 	$isvr .= "requirecalltoken=no\n";
-	$isvr .= "qualify=no\n";
+	$isvr .= "qualify=yes\n";
 
 	$ireg .= "register => ASTloop:$pass\@127.0.0.1:40569\n";
 	$ireg .= "register => ASTblind:$pass\@127.0.0.1:41569\n";
@@ -616,18 +618,6 @@ sub gen_conferences {
 	}
 	if (!$CLOexpand) {
 		$cnf .= ";\n;Volume adjustments\n";
-		$cnf .= procexten("osdial","_X4860XXXX","1","MeetMeAdmin","\${EXTEN:2},T,\${EXTEN:0:1}");
-		$cnf .= procexten("osdial","_X4860XXXX","2","Hangup","");
-		$cnf .= procexten("osdial","_X3860XXXX","1","MeetMeAdmin","\${EXTEN:2},t,\${EXTEN:0:1}");
-		$cnf .= procexten("osdial","_X3860XXXX","2","Hangup","");
-		$cnf .= procexten("osdial","_X2860XXXX","1","MeetMeAdmin","\${EXTEN:2},m,\${EXTEN:0:1}");
-		$cnf .= procexten("osdial","_X2860XXXX","2","Hangup","");
-		$cnf .= procexten("osdial","_X1860XXXX","1","MeetMeAdmin","\${EXTEN:2},M,\${EXTEN:0:1}");
-		$cnf .= procexten("osdial","_X1860XXXX","2","Hangup","");
-		$cnf .= procexten("osdial","_5555860XXXX","1","MeetMeAdmin","\${EXTEN:4},K");
-		$cnf .= procexten("osdial","_5555860XXXX","2","Hangup","");
-		$cnf .= procexten("osdial","_555587XXXXXX","1","MeetMeAdmin","\${EXTEN:4},K");
-		$cnf .= procexten("osdial","_555587XXXXXX","2","Hangup","");
 	}
 	if (!$CLOexpand) {
 		$cnf .= ";\n;Local blind monitoring\n";
@@ -667,21 +657,10 @@ sub gen_conferences {
 								$cnf2 .= procexten("osdial",$prenum.$prenum2.$sret->{conf_exten},"1","Dial",$trunkblind."/\${EXTEN:1},55,o");
 								$cnf2 .= procexten("osdial",$prenum.$prenum2.$sret->{conf_exten},"2","Hangup","");
 							}
-						} else {
-							$cnf2 .= procexten("osdial",$prenum."4".$sret->{conf_exten},"1","MeetMeAdmin","\${EXTEN:2},T,\${EXTEN:0:1}");
-							$cnf2 .= procexten("osdial",$prenum."4".$sret->{conf_exten},"2","Hangup","");
-							$cnf2 .= procexten("osdial",$prenum."3".$sret->{conf_exten},"1","MeetMeAdmin","\${EXTEN:2},t,\${EXTEN:0:1}");
-							$cnf2 .= procexten("osdial",$prenum."3".$sret->{conf_exten},"2","Hangup","");
-							$cnf2 .= procexten("osdial",$prenum."2".$sret->{conf_exten},"1","MeetMeAdmin","\${EXTEN:2},m,\${EXTEN:0:1}");
-							$cnf2 .= procexten("osdial",$prenum."2".$sret->{conf_exten},"2","Hangup","");
-							$cnf2 .= procexten("osdial",$prenum."1".$sret->{conf_exten},"1","MeetMeAdmin","\${EXTEN:2},M,\${EXTEN:0:1}");
-							$cnf2 .= procexten("osdial",$prenum."1".$sret->{conf_exten},"2","Hangup","");
 						}
 					}
 					$cnf2 .= procexten("osdial","0".$sret->{conf_exten},"1","Dial",$trunkblind."/6\${EXTEN:1},55,o");
 					$cnf2 .= procexten("osdial","0".$sret->{conf_exten},"2","Hangup","");
-					$cnf2 .= procexten("osdial","5555".$sret->{conf_exten},"1","MeetMeAdmin","\${EXTEN:4},K");
-					$cnf2 .= procexten("osdial","5555".$sret->{conf_exten},"2","Hangup","");
 					$cnf2 .= procexten("osdial",$sret->{conf_exten},"1","AGI","agi-OSDagent_conf.agi,genconf");
 					$cnf2 .= procexten("osdial",$sret->{conf_exten},"2","Hangup","");
 				} else {
@@ -731,21 +710,10 @@ sub gen_conferences {
 								$cnf2 .= procexten("osdial",$prenum.$prenum2.$sret->{conf_exten},"1","Dial",$trunkblind."/\${EXTEN:1},55,o");
 								$cnf2 .= procexten("osdial",$prenum.$prenum2.$sret->{conf_exten},"2","Hangup","");
 							}
-						} else {
-							$cnf2 .= procexten("osdial",$prenum."4".$sret->{conf_exten},"1","MeetMeAdmin","\${EXTEN:2},T,\${EXTEN:0:1}");
-							$cnf2 .= procexten("osdial",$prenum."4".$sret->{conf_exten},"2","Hangup","");
-							$cnf2 .= procexten("osdial",$prenum."3".$sret->{conf_exten},"1","MeetMeAdmin","\${EXTEN:2},t,\${EXTEN:0:1}");
-							$cnf2 .= procexten("osdial",$prenum."3".$sret->{conf_exten},"2","Hangup","");
-							$cnf2 .= procexten("osdial",$prenum."2".$sret->{conf_exten},"1","MeetMeAdmin","\${EXTEN:2},m,\${EXTEN:0:1}");
-							$cnf2 .= procexten("osdial",$prenum."2".$sret->{conf_exten},"2","Hangup","");
-							$cnf2 .= procexten("osdial",$prenum."1".$sret->{conf_exten},"1","MeetMeAdmin","\${EXTEN:2},M,\${EXTEN:0:1}");
-							$cnf2 .= procexten("osdial",$prenum."1".$sret->{conf_exten},"2","Hangup","");
 						}
 					}
 					$cnf2 .= procexten("osdial","0".$sret->{conf_exten},"1","Dial",$trunkblind."/6\${EXTEN:1},55,o");
 					$cnf2 .= procexten("osdial","0".$sret->{conf_exten},"2","Hangup","");
-					$cnf2 .= procexten("osdial","5555".$sret->{conf_exten},"1","MeetMeAdmin","\${EXTEN:4},K");
-					$cnf2 .= procexten("osdial","5555".$sret->{conf_exten},"2","Hangup","");
 					$cnf2 .= procexten("osdial",$sret->{conf_exten},"1","AGI","agi-OSDagent_conf.agi,agentconf");
 					$cnf2 .= procexten("osdial",$sret->{conf_exten},"2","Hangup","");
 					foreach my $prenum (qw(1 2 3 6 7 9)) {
@@ -820,8 +788,6 @@ sub gen_conferences {
 		if ($CLOexpand or $sret->{conf_exten} !~ /^87......$/) {
 			if ($asterisk_version =~ /^1\.6|^1\.8|^10\.|^11\./) {
 				if ($CLOexpand) {
-					$cnf2 .= procexten("osdial","5555".$sret->{conf_exten},"1","MeetMeAdmin","\${EXTEN:4},K");
-					$cnf2 .= procexten("osdial","5555".$sret->{conf_exten},"2","Hangup","");
 					$cnf2 .= procexten("osdial",$sret->{conf_exten},"1","Answer","");
 					$cnf2 .= procexten("osdial",$sret->{conf_exten},"2","Playback","sip-silence");
 					$cnf2 .= procexten("osdial",$sret->{conf_exten},"3","AGI","agi-OSDagent_conf.agi,vaconf");
@@ -1136,6 +1102,14 @@ sub gen_osdial_extensions {
 	$oblock = $ctx->{'osdialBLOCK'};
 	$ocore = $ctx->{'osdial'};
 	$oext = $ctx->{'osdialEXT'};
+
+	foreach my $name (sort keys %{$ctx}) {
+		if ($name !~ /^osdial$|^osdialEXT$|^osdialBLOCK$|^osdial_arivmcall$|^incoming$/) {
+			$oeout .= "[$name]\n";
+			$oeout .= "switch => Realtime/$name\@extensions/p\n" if($CLOrealtime>0);
+			$oeout .= $ctx->{$name}."\n";
+		}
+	}
 
 	# Build TTS extensions.
 	my $stmt = "SELECT * FROM osdial_tts WHERE extension!='';";
