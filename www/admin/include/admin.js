@@ -484,7 +484,7 @@ function keyextonly(evt) {
 	} else if (typeof(e.which)!= 'undefined') {
 		key = e.which;
 	}
-	if (!((key>=48 && key<=57)||key==8||key==9||key==13||key==37||key==39||key==88||key==90||key==78||key==46||key==91||key==93||key==45||key==95||key==116||key==104||key==105||key==42||key==35)) {
+	if (!((key>=48 && key<=57)||key==8||key==9||key==13||key==37||key==39||key==88||key==90||key==78||key==46||key==91||key==93||key==45||key==95||key==116||key==104||key==105||key==42||key==35||key==115)) {
 		e.cancel=true;
 		e.returnValue=false;
 	}
