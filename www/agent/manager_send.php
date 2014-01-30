@@ -1684,7 +1684,7 @@ if ( ($ACTION=="MonitorConf") || ($ACTION=="StopMonitorConf") ) {
             while (OSDstrlen($PADlead_id) > 9) $PADlead_id = OSDsubstr($PADlead_id, 0, -1);
             $queryCID = "W$CIDdate$PADlead_id";
 
-            $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Originate','%s','Channel: %s','Context: %s','Exten: %s','Priority: %s','Callerid: %s','Account: %s','','','','');",mres($NOW_TIME),mres($server_ip),mres($queryCID),mres($channel),mres($ext_context),mres($exten),mres($ext_priority),mres($filename),mres($queryCID));
+            $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Originate','%s','Channel: %s','Context: %s','Exten: %s','Priority: %s','Callerid: %s','Account: %s','Variable: FILENAME=%s','','','');",mres($NOW_TIME),mres($server_ip),mres($queryCID),mres($channel),mres($ext_context),mres($exten),mres($ext_priority),mres($queryCID),mres($queryCID),mres($filename));
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
 
@@ -1748,16 +1748,18 @@ if ($ACTION=="VolumeControl") {
     if ( (OSDstrlen($exten)<1) or (OSDstrlen($channel)<1) or (OSDstrlen($stage)<1) or (OSDstrlen($queryCID)<1) ) {
         echo "Conference $exten, Stage $stage is not valid or queryCID $queryCID is not valid, Originate command not inserted\n";
     } else {
+        $stmt='';
         $participant_number='XXYYXXYYXXYYXX';
-        if (OSDpreg_match('/UP/',$stage)) $vol_prefix='4';
-        if (OSDpreg_match('/DOWN/',$stage)) $vol_prefix='3';
-        if (OSDpreg_match('/UNMUTE/',$stage)) $vol_prefix='2';
-        if (OSDpreg_match('/MUTING/',$stage)) $vol_prefix='1';
-        $local_DEF = 'Local/';
-        $local_AMP = '@';
-        $volume_local_channel = "$local_DEF$participant_number$vol_prefix$exten$local_AMP$ext_context";
+        if (OSDpreg_match('/MUTING|UNMUTE/',$stage)) {
+            $vol_cmd='mute';
+            if (OSDpreg_match('/UNMUTE/',$stage)) $vol_cmd='unmute';
+            $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Command','%s','Command: %s','','','','','','','','','');",mres($NOW_TIME),mres($server_ip),mres($queryCID),mres('meetme '.$vol_cmd.' '.$exten.' '.$participant_number));
+        } elseif (OSDpreg_match('/UP|DOWN/',$stage)) {
+            $vol_cmd='T';
+            if (OSDpreg_match('/DOWN/',$stage)) $vol_cmd='t';
+            $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Originate','%s','Data: %s','Application: %s','Channel: %s','Callerid: %s','Account: %s','','','','%s','%s');",mres($NOW_TIME),mres($server_ip),mres($queryCID),mres($exten.','.$vol_cmd.','.$participant_number),mres('MeetMeAdmin'),mres('Local/8307@osdial/n'),mres($queryCID),mres($queryCID),mres($channel),mres($exten));
+        }
 
-        $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Originate','%s','Channel: %s','Context: %s','Exten: 8300','Priority: 1','Callerid: %s','Account: %s','','','%s','%s');",mres($NOW_TIME),mres($server_ip),mres($queryCID),mres($volume_local_channel),mres($ext_context),mres($queryCID),mres($queryCID),mres($channel),mres($exten));
         if ($format=='debug') echo "\n<!-- $stmt -->";
         $rslt=mysql_query($stmt, $link);
         echo "Volume command sent for Conference $exten, Stage $stage Channel $channel on $server_ip\n";

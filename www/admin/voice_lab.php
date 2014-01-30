@@ -320,9 +320,7 @@ if ($KILL_VOICE_LAB > 1)
 {
 	if ( (strlen($server_ip) > 6) && (strlen($session_id) > 6) && (strlen($campaign_id) > 2) )
 	{
-	$kill_dial_string = "5555$session_id";
-	$hangup_exten='8300';
-	$stmt="INSERT INTO osdial_manager values('','','$MYSQL_datetime','NEW','N','$server_ip','','Originate','VLK$FILE_datetime','Channel: $local_DEF$kill_dial_string$local_AMP$ext_context','Context: $ext_context','Exten: $hangup_exten','Priority: 1','Callerid: VLK$FILE_datetime','Account: VLK$FILE_datetime','','','','')";
+    $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Command','%s','Command: %s','','','','','','','','','');",mres($MYSQL_datetime),mres($server_ip),mres('VLK'.$FILE_datetime),mres('meetme kick '.$session_id.' all'));
 	echo "|$stmt|\n<BR><BR>\n";
 	$rslt=mysql_query($stmt, $link);
 

@@ -1015,7 +1015,7 @@ sub process_request {
 							my $CIDdate = $now_date;
 							$CIDdate =~ s/[ \-:]//g;
 							my $KqueryCID='ULGH3956'.$CIDdate;
-							$stmtA = "INSERT INTO osdial_manager values('','','$now_date','NEW','N','$OLAserver','','Originate','$KqueryCID','Channel: Local/5555" . $OLAconf . "\@osdial','Context: osdial','Exten: 8300','Priority: 1','Callerid: $KqueryCID','Accountcode: $KqueryCID','','','','')";
+							$stmtA=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Command','%s','Command: %s','','','','','','','','','');",$osdial->mres($now_date),$osdial->mres($OLAserver),$osdial->mres($KqueryCID),$osdial->mres('meetme kick '.$OLAconf.' all'));
 							my $affected_rows = $dbhA->do($stmtA);
 
 							my $OALcalls=0;

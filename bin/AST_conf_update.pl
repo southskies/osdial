@@ -223,12 +223,9 @@ $sthA->finish();
 $k=0;
 while ($k < $rec_count)
 	{
-	$local_DEF = 'Local/5555';
-	$local_AMP = '@';
-	$kick_local_channel = "$local_DEF$PT_conf_extens[$k]$local_AMP$ext_context";
 	$queryCID = "ULGC35$TDnum";
 
-	$stmtA="INSERT INTO osdial_manager values('','','$now_date','NEW','N','$server_ip','','Originate','$queryCID','Channel: $kick_local_channel','Context: $ext_context','Exten: 8300','Priority: 1','Callerid: $queryCID','Account: $queryCID','','','','');";
+	$stmtA=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Command','%s','Command: %s','','','','','','','','','');",$now_date,$server_ip,$queryCID,'meetme kick '.$PT_conf_extens[$k].' all'));
 		$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query:|$stmtA|\n";
 
 	$stmtA = "UPDATE osdial_conferences SET extension='',leave_3way='0' WHERE server_ip='$server_ip' AND conf_exten='$PT_conf_extens[$k]';";
@@ -337,12 +334,9 @@ foreach(@PTextensions)
 		if ($NEWexten[$i] =~ /Xtimeout1$/i)
 			{
 			### Kick all participants if there are any left in the conference so it can be reused
-			$local_DEF = 'Local/5555';
-			$local_AMP = '@';
-			$kick_local_channel = "$local_DEF$PT_conf_extens[$i]$local_AMP$ext_context";
 			$queryCID = "ULGC36$TDnum";
 
-			$stmtA="INSERT INTO osdial_manager values('','','$now_date','NEW','N','$server_ip','','Originate','$queryCID','Channel: $kick_local_channel','Context: $ext_context','Exten: 8300','Priority: 1','Callerid: $queryCID','Account: $queryCID','','','','');";
+			$stmtA=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Command','%s','Command: %s','','','','','','','','','');",$now_date,$server_ip,$queryCID,'meetme kick '.$PT_conf_extens[$i].' all'));
 				$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query:|$stmtA|\n";
 			if($DB){print STDERR "\n|$affected_rows|$stmtA|\n";}
 			}
