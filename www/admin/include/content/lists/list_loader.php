@@ -524,7 +524,7 @@ if ($ADD==122) {
                 }
 
 
-				if (OSDstrlen($phone_number) > 6 and OSDstrlen($phone_number) < 17 and $dup_lead < 1) {
+				if (OSDstrlen($phone_number) > 5 and OSDstrlen($phone_number) < 17 and $dup_lead < 1) {
 					$gmtl = lookup_gmt($phone_code,$USarea,$state,$local_gmt,$Shour,$Smin,$Ssec,$Smon,$Smday,$Syear,$postalgmt,$postal_code);
 					$gmt_offset = $gmtl[0];
                     $postal = $gmtl[1];
@@ -570,8 +570,8 @@ if ($ADD==122) {
                         $badmsg='';
                         if (OSDstrlen($phone_number)==0) {
                             $badmsg = ": No phone number in record.";
-                        } elseif (OSDstrlen($phone_number)<7) {
-                            $badmsg = ": Phone number must be at least 7 characters ($phone_number).";
+                        } elseif (OSDstrlen($phone_number)<6) {
+                            $badmsg = ": Phone number must be at least 6 characters ($phone_number).";
                         } elseif (OSDstrlen($phone_number)>17) {
                             $badmsg = ": Phone number cannot exceed 16 characters ($phone_number).";
                         } else {
@@ -799,7 +799,7 @@ if ($ADD==122) {
                     }
 
 
-	                if (OSDstrlen($phone_number) > 6 and OSDstrlen($phone_number) < 17 and $dup_lead < 1) {
+	                if (OSDstrlen($phone_number) > 5 and OSDstrlen($phone_number) < 17 and $dup_lead < 1) {
 					    $gmtl = lookup_gmt($phone_code,$USarea,$state,$local_gmt,$Shour,$Smin,$Ssec,$Smon,$Smday,$Syear,$postalgmt,$postal_code);
 					    $gmt_offset = $gmtl[0];
                         $postal = $gmtl[1];
@@ -834,8 +834,8 @@ if ($ADD==122) {
                             $badmsg='';
                             if (OSDstrlen($phone_number)==0) {
                                 $badmsg = ": No phone number in record.";
-                            } elseif (OSDstrlen($phone_number)<7) {
-                                $badmsg = ": Phone number must be at least 7 characters ($phone_number).";
+                            } elseif (OSDstrlen($phone_number)<6) {
+                                $badmsg = ": Phone number must be at least 6 characters ($phone_number).";
                             } elseif (OSDstrlen($phone_number)>17) {
                                 $badmsg = ": Phone number cannot exceed 16 characters ($phone_number).";
                             } else {
