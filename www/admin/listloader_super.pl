@@ -405,7 +405,7 @@ foreach $oWkS (@{$oBook->{Worksheet}}) {
 				}
 			}
 
-		if ( (length($phone_number)>6) && ($dup_lead < 1) )
+		if ( (length($phone_number)>5) && ($dup_lead < 1) )
 			{
 			$phone_list .= "$phone_number$US$list_id|";
 			$postalgmt_found=0;
