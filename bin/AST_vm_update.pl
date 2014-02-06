@@ -182,7 +182,7 @@ if ($sthArows > 0)
 	
 
 @PTextensions=@MT; @PTvoicemail_ids=@MT; @PTmessages=@MT; @PTold_messages=@MT; @NEW_messages=@MT; @OLD_messages=@MT;
-$stmtA = "SELECT extension,voicemail_id,messages,old_messages FROM phones WHERE server_ip='$server_ip';";
+$stmtA = "SELECT extension,voicemail_id,messages,old_messages FROM phones WHERE server_ip='$server_ip' AND voicemail_id!='';";
 if ($DB) {print "|$stmtA|\n";}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
