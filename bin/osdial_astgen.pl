@@ -1003,7 +1003,9 @@ sub gen_phones {
 			$iphn .= "context=" . $sret->{ext_context} . "\n";
 			$iphn .= "mailbox=" . $sret->{voicemail_id} . "\@osdial\n" if ($sret->{voicemail_id});
 		}
-		$vphn .= $sret->{voicemail_id} . ' => ' . $sret->{voicemail_password} . ',' . $sret->{fullname} . ',' . $sret->{voicemail_email} . ',,' . "\n";
+		if ($sret->{voicemail_id} ne "" and $sret->{voicemail_password} ne "") {
+			$vphn .= $sret->{voicemail_id} . ' => ' . $sret->{voicemail_password} . ',' . $sret->{fullname} . ',' . $sret->{voicemail_email} . ',,' . "\n";
+		}
 		my $dext = $sret->{protocol} . "/" . $sret->{extension};
 		if ($sret->{protocol} =~ /SIP|IAX2/ and $sret->{extension} =~ /\@/) {
 			my($sext,$ssrv) = split /\@/,$sret->{extension};
@@ -1232,6 +1234,48 @@ sub gen_carriers {
 	while (my $carrier = $osdial->sql_query($stmt)) {
 		$carriers->{$carrier->{id}} = $carrier;
 	}
+
+	$dialplan .= "\n\n[dial-Switch]\n" if($CLOrealtime>0);
+	$dialplan .= "switch => Realtime/dial\@extensions/p\n\n" if($CLOrealtime>0);
+	$dialplan .= "[dial-Patterns]\n";
+
+
+	$dialplan .= '; ${ARG1} - Protocol  ${ARG2} - Carrier Name  ${ARG3} - Phone Number'."\n";
+	$dialplan .= procexten('dial','s','1','Set','LOCAL(indial)=1');
+	$dialplan .= procexten('dial','s','2','Set','__carrierid=${ARG1}');
+	$dialplan .= procexten('dial','s','3','Set','LOCAL(prot)=${ARG2}');
+	$dialplan .= procexten('dial','s','4','Set','LOCAL(name)=${ARG3}');
+	$dialplan .= procexten('dial','s','5','Set','LOCAL(numb)=${ARG4}');
+	$dialplan .= procexten('dial','s','6','Dial','${prot}/${name}/${numb},,tToRb(${numb}^1)');
+	$dialplan .= procexten('dial','s','7','Goto','s-${DIALSTATUS},1');
+	$dialplan .= procexten('dial','s','8','Return','');
+
+	$dialplan .= procexten('dial','s-NOANSWER','1','Playback','number-not-answering,noanswer');
+	$dialplan .= procexten('dial','s-NOANSWER','2','Return','');
+	$dialplan .= procexten('dial','s-BUSY','1','Playback','all-circuits-busy-now,noanswer');
+	$dialplan .= procexten('dial','s-BUSY','2','Playtones','busy');
+	$dialplan .= procexten('dial','s-BUSY','3','Busy','10');
+	$dialplan .= procexten('dial','s-BUSY','4','Return','');
+	$dialplan .= procexten('dial','s-CHANUNAVAIL','1','Gosub','failover-${name},s,1(${EXTEN})');
+	$dialplan .= procexten('dial','s-CHANUNAVAIL','2','Playtones','congestion');
+	$dialplan .= procexten('dial','s-CHANUNAVAIL','3','Congestion','10');
+	$dialplan .= procexten('dial','s-CHANUNAVAIL','4','Return','');
+	$dialplan .= procexten('dial','s-CONGESTION','1','Gosub','failover-${name},s,1(${EXTEN})');
+	$dialplan .= procexten('dial','s-CONGESTION','2','Playtones','congestion');
+	$dialplan .= procexten('dial','s-CONGESTION','3','Congestion','10');
+	$dialplan .= procexten('dial','s-CONGESTION','4','Return','');
+	$dialplan .= procexten('dial','_s-.','1','Return','');
+
+	$dialplan .= procexten('dial','_X.','1','AGI','agi://127.0.0.1:4577/call_log');
+	$dialplan .= procexten('dial','_X.','2','Return','');
+
+	$dialplan .= procexten('dial',"h","1","AGI","agi://127.0.0.1:4577/call_log--HVcauses--PRI-----NODEBUG-----\${HANGUPCAUSE}-----\${DIALSTATUS}-----\${DIALEDTIME}-----\${ANSWEREDTIME}");
+	$dialplan .= procexten('dial','i','1','Return','');
+
+	$dialplan .= "\n\n[dial]\n";
+	$dialplan .= "include => dial-Switch\n" if($CLOrealtime>0);
+	$dialplan .= "include => dial-Patterns\n\n";
+
 	foreach my $carrier (sort keys %{$carriers}) {
 		$default_carrier_context = 'OOUT' . $carriers->{$carrier}{name} if ($osdial->{settings}{default_carrier_id}==$carrier);
 		$default_carrier_prefix = $carriers->{$carrier}{default_prefix} if ($osdial->{settings}{default_carrier_id}==$carrier);
@@ -1275,32 +1319,74 @@ sub gen_carriers {
 
 		# Create Outbound dialplan for the carrier.
 		$dialplan .= '';
+
+		my $failover = '';
+
+		$failover .= "[failover-".$carriers->{$carrier}{name}."-Switch]\n" if($CLOrealtime>0);
+		$failover .= "switch => Realtime/failover-".$carriers->{$carrier}{name}."\@extensions/p\n\n" if($CLOrealtime>0);
+		$failover .= "[failover-".$carriers->{$carrier}{name}."-Patterns]\n";
+
+		$failover .= procexten("failover-".$carriers->{$carrier}{name},"h","1","AGI","agi://127.0.0.1:4577/call_log--HVcauses--PRI-----NODEBUG-----\${HANGUPCAUSE}-----\${DIALSTATUS}-----\${DIALEDTIME}-----\${ANSWEREDTIME}");
+		$failover .= procexten("failover-".$carriers->{$carrier}{name},'i','1','Return','');
+		$failover .= procexten("failover-".$carriers->{$carrier}{name},'s','1','GotoIf','$["${OOUTFAIL}" != ""]?s-EXIT,1');
+		$failover .= procexten("failover-".$carriers->{$carrier}{name},'s','2','Set','OOUTFAIL=1');
+		$failover .= procexten("failover-".$carriers->{$carrier}{name},'s','3','Set','LOCAL(stat)=${ARG1}');
+		# Create failover dialplan, which will attempt another carrier based on the DIALSTATUS.
+		if (!$carriers->{$carrier}{failover_id}>0) {
+			$failover .= procexten("failover-".$carriers->{$carrier}{name},'s','4','Return','');
+		} else {
+			my $stmt = sprintf("SELECT * FROM osdial_carriers WHERE id='\%s';",$carriers->{$carrier}{failover_id});
+			my $failover_carrier = $osdial->sql_query($stmt);
+			$failover .= procexten("failover-".$carriers->{$carrier}{name},'s','4','Goto','${stat},1');
+			$failover .= procexten("failover-".$carriers->{$carrier}{name},'s','5','Return','');
+			if ($carriers->{$carrier}{failover_condition} eq 'CHANUNAVAIL') {
+				$failover .= procexten("failover-".$carriers->{$carrier}{name},'s-CHANUNAVAIL','1','Gosub','OOUT'.$failover_carrier->{name}.',${numb},1');
+				$failover .= procexten("failover-".$carriers->{$carrier}{name},'s-CHANUNAVAIL','2','Return','');
+				$failover .= procexten("failover-".$carriers->{$carrier}{name},'s-CONGESTION','1','Return','');
+			} elsif ($carriers->{$carrier}{failover_condition} eq 'CONGESTION') {
+				$failover .= procexten("failover-".$carriers->{$carrier}{name},'s-CONGESTION','1','Gosub','OOUT'.$failover_carrier->{name}.',${numb},1');
+				$failover .= procexten("failover-".$carriers->{$carrier}{name},'s-CONGESTION','2','Return','');
+				$failover .= procexten("failover-".$carriers->{$carrier}{name},'s-CHANUNAVAIL','1','Return','');
+			} elsif ($carriers->{$carrier}{failover_condition} eq 'BOTH') {
+				$failover .= procexten("failover-".$carriers->{$carrier}{name},'s-CHANUNAVAIL','1','Gosub','OOUT'.$failover_carrier->{name}.',${numb},1');
+				$failover .= procexten("failover-".$carriers->{$carrier}{name},'s-CHANUNAVAIL','2','Return','');
+				$failover .= procexten("failover-".$carriers->{$carrier}{name},'s-CONGESTION','1','Gosub','OOUT'.$failover_carrier->{name}.',${numb},1');
+				$failover .= procexten("failover-".$carriers->{$carrier}{name},'s-CONGESTION','2','Return','');
+			}
+			$failover .= procexten("failover-".$carriers->{$carrier}{name},'_s-.','1','Return','');
+		}
+
+		$dialplan .= $failover . "\n\n";;
+
+		$dialplan .= "[failover-".$carriers->{$carrier}{name}."]\n";
+		$dialplan .= "include => failover-".$carriers->{$carrier}{name}."-Switch\n" if($CLOrealtime>0);
+		$dialplan .= "include => failover-".$carriers->{$carrier}{name}."-Patterns\n\n";
+
 		$dialplan .= "[OOUT" . $carriers->{$carrier}{name} . "-Switch]\n" if($CLOrealtime>0);
 		$dialplan .= "switch => Realtime/OOUT".$carriers->{$carrier}{name}."\@extensions/p\n\n" if($CLOrealtime>0);
 		$dialplan .= "[OOUT" . $carriers->{$carrier}{name} . "-Patterns]\n";
 
-		# Create failover dialplan, which will attempt another carrier based on the DIALSTATUS.
-		my $failover = '';
-		if (!$carriers->{$carrier}{failover_id}>0) {
-			$failover .= procexten("OOUT".$carriers->{$carrier}{name},"_failover.","1","Hangup","");
-		} else {
-			my $stmt = sprintf("SELECT * FROM osdial_carriers WHERE id='\%s';",$carriers->{$carrier}{failover_id});
-			my $failover_carrier = $osdial->sql_query($stmt);
-			if ($carriers->{$carrier}{failover_condition} eq 'CHANUNAVAIL') {
-				$failover .= procexten("OOUT".$carriers->{$carrier}{name},"_failover.","1","GotoIf","\$[\"\${DIALSTATUS}\" = \"CHANUNAVAIL\"]?2:4");
-			} elsif ($carriers->{$carrier}{failover_condition} eq 'CONGESTION') {
-				$failover .= procexten("OOUT".$carriers->{$carrier}{name},"_failover.","1","GotoIf","\$[\"\${DIALSTATUS}\" = \"CONGESTION\"]?2:4");
-			} elsif ($carriers->{$carrier}{failover_condition} eq 'BOTH') {
-				$failover .= procexten("OOUT".$carriers->{$carrier}{name},"_failover.","1","GotoIf","\$[\"\${DIALSTATUS}\" = \"CHANUNAVAIL\"|\"\${DIALSTATUS}\" = \"CONGESTION\"]?2:4");
-			}
-			$failover .= procexten("OOUT".$carriers->{$carrier}{name},"_failover.","2","AGI","agi://127.0.0.1:4577/call_log--HVcauses--PRI-----NODEBUG-----\${HANGUPCAUSE}-----\${DIALSTATUS}-----\${DIALEDTIME}-----\${ANSWEREDTIME}");
-			$failover .= procexten("OOUT".$carriers->{$carrier}{name},"_failover.","3","Goto","OOUT".$failover_carrier->{name}.",\${EXTEN:8},1");
-			$failover .= procexten("OOUT".$carriers->{$carrier}{name},"_failover.","4","Hangup","");
-		}
-
-		$dialplan .= $failover;
 		$dialplan .= $carriers->{$carrier}{dialplan} . "\n";
-		$dialplan .= procexten("OOUT".$carriers->{$carrier}{name},"h","1","AGI","agi://127.0.0.1:4577/call_log--HVcauses--PRI-----NODEBUG-----\${HANGUPCAUSE}-----\${DIALSTATUS}-----\${DIALEDTIME}-----\${ANSWEREDTIME}");
+
+		$dialplan .= procexten("OOUT".$carriers->{$carrier}{name},'_dial9.','1','Gosub','dial,s,1('.$carriers->{$carrier}{id}.','.$carriers->{$carrier}{protocol}.','.$carriers->{$carrier}{name}.',${EXTEN:5})');
+		$dialplan .= procexten("OOUT".$carriers->{$carrier}{name},'_dial9.','2','Hangup','');
+
+		$dialplan .= procexten("OOUT".$carriers->{$carrier}{name},'_X.','1','Set','INVALID_EXTEN=${EXTEN}');
+		$dialplan .= procexten("OOUT".$carriers->{$carrier}{name},'_X.','2','Goto','i,1');
+
+		$dialplan .= procexten("OOUT".$carriers->{$carrier}{name},'i','1','AGI','agi://127.0.0.1:4577/call_log');
+		$dialplan .= procexten("OOUT".$carriers->{$carrier}{name},'i','2','NoOp','OOUT Error: Invalid phone format: ${INVALID_EXTEN}');
+		$dialplan .= procexten("OOUT".$carriers->{$carrier}{name},'i','3','Playback','cannot-complete-as-dialed,noanswer');
+		$dialplan .= procexten("OOUT".$carriers->{$carrier}{name},'i','4','Congestion','10');
+		$dialplan .= procexten("OOUT".$carriers->{$carrier}{name},'i','5','GotoIf','$["${indial}" != ""]?6:7');
+		$dialplan .= procexten("OOUT".$carriers->{$carrier}{name},'i','6','Return','');
+		$dialplan .= procexten("OOUT".$carriers->{$carrier}{name},'i','7','Hangup','');
+
+		$dialplan .= procexten("OOUT".$carriers->{$carrier}{name},'t','1','Return','');
+
+		$dialplan .= procexten("OOUT".$carriers->{$carrier}{name},"h","1","GotoIf",'$["${indial}" != ""]?2:3');
+		$dialplan .= procexten("OOUT".$carriers->{$carrier}{name},"h","2","Return",'');
+		$dialplan .= procexten("OOUT".$carriers->{$carrier}{name},"h","3","AGI","agi://127.0.0.1:4577/call_log--HVcauses--PRI-----NODEBUG-----\${HANGUPCAUSE}-----\${DIALSTATUS}-----\${DIALEDTIME}-----\${ANSWEREDTIME}");
 
 		$dialplan .= "[OOUT" . $carriers->{$carrier}{name} . "]\n";
 		$dialplan .= "include => OOUT" . $carriers->{$carrier}{name} . "-Switch\n" if($CLOrealtime>0);
@@ -1339,6 +1425,8 @@ sub gen_carriers {
 				if ($dids->{$did}{did_action} eq 'INGROUP') {
 					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Answer","");
 					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Playback","sip-silence");
+					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Set",'IVR_CARRIERID='.$dids->{$did}{carrier_id});
+					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Set",'IVR_DIDID='.$dids->{$did}{id});
 					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Set",'IVR_UNIQUEID=${UNIQUEID}');
 					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Set",'IVR_CHANNEL=${CHANNEL}');
 					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Set",'IVR_CONTEXT=${CONTEXT}');
@@ -1351,7 +1439,7 @@ sub gen_carriers {
 					."-----".$dids->{$did}{ingroup}."-----\${EXTEN}-----\${CALLERID(number)}-----".$dids->{$did}{park_file}."-----".$dids->{$did}{initial_status}."-----".$dids->{$did}{default_list_id}
 					."-----".$dids->{$did}{default_phone_code}."-----".$dids->{$did}{search_campaign});
 					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"ExternalIVR","/var/lib/asterisk/agi-bin/ivr-OSDinbound.pl(1)");
-					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"GotoIf",'$["${IVR_GOTO}" = "1"]?15:16');
+					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"GotoIf",'$["${IVR_GOTO}" = "1"]?17:18');
 					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Goto",'${IVR_CONTEXT},${IVR_EXTEN},${IVR_PRIORITY}');
 					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Hangup","");
 					#$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"AGI","agi-VDAD_ALL_inbound.agi,".$dids->{$did}{lookup_method}."-----".$dids->{$did}{server_allocation}
@@ -1447,7 +1535,7 @@ sub get_myips {
 sub procexten {
 	my ($context,$exten,$priority,$app,$appdata) = @_;
 	my $extout = '';
-	if ($exten!~/^_/ and $CLOrealtime>0) {
+	if ($exten!~/^_/ and $exten!~/\-/ and $CLOrealtime>0) {
 		$realtime_ext->{$context}{$exten}{sprintf('%d',$priority)} = {'app'=>$app, 'appdata' => $appdata};
 	} else {
 		$extout .= sprintf("exten => %s,%s,%s(%s)\n",$exten,$priority,$app,$appdata);
