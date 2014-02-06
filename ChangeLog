@@ -1,10 +1,382 @@
+2014-02-06 11:09:22 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added callerid and server_id to osdial_log queries, added server_id to osdial_closer_log queries. (HEAD, origin/master, origin/HEAD, master)
+
+2014-02-06 08:51:46 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Defaults for CDR.
+
+2014-02-06 08:51:09 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix stun server settings and dial9 replace.
+
+2014-02-06 08:50:19 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Only scan existing voicemail boxes.
+
+2014-02-05 21:11:52 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Update dialplan generation for nested dial routines.
+
+2014-02-05 21:11:11 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Update for new call_log table layout.
+
+2014-02-05 21:05:32 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Format phone_code if not equal to default_phone_code.
+
+2014-02-05 20:44:00 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Use only READY status hopper entries for realtime hopper counts.
+
+2014-02-05 11:23:56 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Set minimum phone length to 6.
+
+2014-02-05 11:21:53 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Set minimum phone length to 6.
+
+2014-01-30 03:13:00 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Summary: Changed how common commands like muting and volume adjustments are processed. An Originate would be sent and connected to an extension that would run the maintainance on the the conference. Now we are using AMI events directly for these, if not the "Command" event, the "Originate" is still used in many cases for commands, but instead of it of it calling into the dialplan, we pass it the fields Application and Data, and it calls the function directly.
+
+2014-01-30 01:28:29 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added 's' to selectable extentension characters.
+
+2014-01-29 13:56:00 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add alaw to phones.
+
+2014-01-29 12:40:10 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix phone_number by stripping off + and phone_code, adding trunk_prefix if known, rename anonymous or all zeros to 99YYYYMMDDHHMMSS.
+
+2014-01-29 12:39:18 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* If comments blank on osdial_log/osdial_closer_log, set to AUTO/AUTOALT.
+
+2014-01-29 12:38:24 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Update comments of osdial_log with AUTO/AUTOALT/etc.
+
+2014-01-29 12:35:13 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Display comments in call and closer logs.
+
+2014-01-29 10:21:31 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* INgrpCT variable was not being reset to 0 when there were no selected InGroups.
+
+2014-01-29 08:19:50 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Send emails to system email address on Acct activity.
+
+2014-01-29 04:43:24 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Increase volume of enter and leave sounds for ingroups.
+
+2014-01-29 01:01:17 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Increment called_count on ALTNUM manual dial.
+
+2014-01-29 00:56:45 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix readyState undefined bug.
+
+2014-01-28 23:59:05 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add comment history to user only comments.
+
+2014-01-28 21:06:01 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Use hopper_id where possible. Set new hopper entries from alt_dial as HOLDs.
+
+2014-01-21 22:47:12 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Additional Outbound groupings. Make more strict variable scoping.
+
+2014-01-21 22:44:24 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Update listen events for local channels and other conditions.
+
+2014-01-21 22:43:31 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Use manDiaLlookCaLL instead of old variant, catch errors.
+
+2014-01-15 04:02:51 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add RaiseError to DB handle. Will cause it to die and restart instead of looping.
+
+2014-01-15 04:02:05 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Agent conferences should not answer the channel, but they should hangup.
+
+2014-01-14 00:33:29 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix server grab on new acct entry.
+
+2014-01-03 18:40:47 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Pull server_ip for phone creation.
+
+2013-12-28 17:17:32 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add 'R' option to Dial.
+
+2013-12-28 12:14:09 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Do not allow processing of trans_type DATE on non-RANGEd account type. (stage/master)
+
+2013-12-28 01:41:04 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add TIMEOT status to osdial_statuses.
+
+2013-12-28 00:59:04 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Reduce customer channel hangup detection time to 5 seconds.
+
+2013-12-28 00:55:52 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix hangup on live_sip_channels.
+
+2013-12-27 23:46:56 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add client server id as username in server to server exchanges.
+
+2013-12-27 23:08:57 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add server_ip select for SO and LO modes.
+
+2013-12-20 14:18:13 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Typo in variable name.
+
+2013-12-19 16:43:06 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Update Queuemetrics queries.
+
+2013-12-19 14:15:10 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Ensure channels exist before sending hangup. Append comments for Callbacks together.
+
+2013-12-19 09:58:21 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added 's' catch for inbound DIDs. Also processes off the +CountryCode if present and adds the trunk prefix, if needed.
+
+2013-12-19 03:30:22 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Modify CSV output to use Windows-1252 encoding.
+
+2013-12-18 20:37:20 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Use urlencode instead of htmlentities for PayPal verification fields.
+
+2013-12-18 19:12:16 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Kill any other existing running hopper processes which have been running for more than 5 minutes.
+
+2013-12-18 18:50:19 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Removed conditions the dropped the agent line from being displayed when AGTPHN, PAUSED, DISPO, DEAD.
+
+2013-12-18 16:28:53 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Get status for WebSIP agent phones.
+
+2013-12-04 19:16:38 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* The column name parsing was missing serveral fields from tables with less calculated data, the was generating malformed SQL statements.
+
+2013-12-04 17:46:39 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Use the system ip for the webpath if it is set to http://127.0.0.1.
+
+2013-12-04 17:45:09 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* add gettext localization shorthand.
+
+2013-12-04 08:27:25 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Prep file for gettext.
+
+2013-12-04 02:32:05 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add dialplan_examples to Makefile.
+
+2013-12-04 02:26:55 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add example dialplan configurations for several countries.
+
+2013-12-04 01:27:39 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add several dialplan examples for various countries.
+
+2013-12-04 01:25:59 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add phone formatting for Poland. Adjust Swedish formatting.
+
+2013-12-03 21:33:46 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Set internal encoding for php to utf8. Set encoding on mysql to latin1 if use_non_latin is not set. Use mb_* string functions for all OSD routines. Set Windows-1252 on CSV load.
+
+2013-12-03 14:42:04 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix osdial_campaign_agents record creation.
+
+2013-12-03 14:40:56 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix osdial_inbound_group_agents record creation.
+
+2013-12-03 13:23:35 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix available only tally on adaptive mode.
+
+2013-12-03 13:14:03 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Condition testing if IVR exists would make multiple IVR entries.  media_file_add adjustments for WAV files.
+
+2013-12-03 12:47:30 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Set maximum campaing ID size to 20 on campaign copy.
+
+2013-12-03 12:43:56 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add CONGESTION and CPA to dead call check.
+
+2013-12-03 06:20:26 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix bad field name, comp_id on osdial_companies, should have been id.
+
+2013-12-02 23:00:55 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Wait till after the afterhours message is played before sending hangup.
+
+2013-12-02 22:57:25 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Table lock was causing a deadlock.
+
+2013-11-26 04:21:14 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Increase campaign CID size to 20. Advance to 3.0.1.117.
+
+2013-11-26 04:20:38 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add Swedish phone formatting to agent js.
+
+2013-11-26 01:10:01 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Set correct character set on SQL conversion. Detect and set character set on lead loading. Set character set to latin1 if not use_non_latin.
+
+2013-11-20 08:43:06 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add global mysql permission to osdial user so it can call reload.
+
+2013-11-20 07:01:25 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Rewrote backup script. It takes many more files into account. It is more consistent with package names. Added the ability to select components to backup, ie DB, WEB, CONF, BIN, SOUNDS, ARCHIVE. Script determines best component options to use as default based on the current servers profile, so a Dialer only chooses CONF&BIN&SOUNDS, a Control picks DB,WEB,CONF,BIN as its defaults, a SQL server picks DB,CONF,BIN, etc...
+
+2013-11-19 20:37:46 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Modify the auto frame adjustment to be more consistent with small content as well as large.
+
+2013-11-19 20:04:28 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Test that newheight in iframe JS is > 0. Add session auth to osdial_sales_viewer.php. Minor cleanup on osdial_sales_viewer.
+
+2013-11-19 19:17:50 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* In admin, Ctrl-Z to turn copy/paste selection on/off.
+
+2013-11-19 17:21:05 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix CSV output when selecting campaign_id, list_id, or user.
+
+2013-11-19 13:38:46 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix issues with welcome_message_min_playtime.
+
+2013-11-19 12:30:19 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add missing welcome_message_min_playtime variable.
+
+2013-11-19 12:26:56 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix typo.
+
+2013-11-19 12:20:54 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add asterisk_languages help.
+
+2013-11-19 12:17:24 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add help for prompt_language.
+
+2013-11-19 12:14:01 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add welcome_message_min_playtime to inbound groups.
+
+2013-11-19 11:41:12 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add ARI window to admin phones and switch from file to DB based VM info.
+
+2013-11-19 10:25:33 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Use the osdial context for voicemail listing in phones.
+
+2013-11-19 09:39:44 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Only set the language channel variable if there is a value in prompt_language.
+
+2013-11-19 09:33:33 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Set language on channel.
+
+2013-11-19 09:29:57 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add asterisk_languages to update SQL.
+
+2013-11-19 09:27:10 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add asterisk_languages to servers and prompt_language to ingroups.
+
+2013-11-19 07:04:27 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Set WebSIP as default phone type on company creation.
+
+2013-11-19 05:48:53 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Disable debug in ivr-OSDinbound.pl.
+
+2013-11-19 05:23:02 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add stream file positioning, so that the background media resumes at the position where it left off. Added silence/2 streams after final sip-silence stream in each section, fixes long pause before hold music resume. Fixed background music which would not repeat after completion.
+
+2013-11-18 18:06:57 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Hide comments box on ManualDialSkip.
+
+2013-11-13 09:56:33 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Change call to agi-VDAD_all_inbound.agi to use appropriate variables for an inbound call, even though we should never get one here.
+
+2013-11-12 17:03:10 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* CSV export would fail when selecting specific fields, it was trying to resolve lead_id and phone_number from osdial_lists. Added status_extended to export field selection.
+
+2013-10-25 20:04:34 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* ChangeLog
+
 2013-10-25 19:56:41 -0400 Lott Caskey <lottcaskey@gmail.com> 
 
-	* Update build instructions. (HEAD, origin/master, origin/HEAD, master)
+	* Update build instructions.
 
 2013-10-25 18:26:17 -0400 Lott Caskey <lottcaskey@gmail.com> 
 
-	* Add process to convert uploaded WAV files to the correct format...8k 16bit mono. (stage/master)
+	* Add process to convert uploaded WAV files to the correct format...8k 16bit mono.
 
 2013-10-25 10:15:23 -0400 Lott Caskey <lottcaskey@gmail.com> 
 
@@ -784,7 +1156,7 @@
 
 2013-05-30 16:28:34 -0400 Lott Caskey <lottcaskey@gmail.com> 
 
-	* Merge branch 'master' of 10.125.65.252:/home/git/osdial (tag: v3.0.0, stage/release/3.0.0)
+	* Merge branch 'master' of 10.125.65.252:/home/git/osdial (tag: v3.0.0)
 
 2013-05-30 16:27:54 -0400 Lott Caskey <lottcaskey@gmail.com> 
 
@@ -1812,7 +2184,7 @@
 
 2013-03-13 03:09:39 +0000 Lott Caskey <lottcaskey@gmail.com> 
 
-	* Fix callerID on transfers. (tag: v2.3.0.094, stage/release/2.3.0)
+	* Fix callerID on transfers. (tag: v2.3.0.094)
 
 2013-03-13 03:08:46 +0000 Lott Caskey <lottcaskey@gmail.com> 
 
