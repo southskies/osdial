@@ -795,7 +795,7 @@ if ($ACTION == 'manDiaLnextCaLL') {
                 }
 
                 $int_prefix = '';
-                if ($phone_code != '1' and !OSDpreg_match('/^0/',$phone_code)) $int_prefix='011';
+                if ($phone_code != $config['settings']['default_phone_code'] and !OSDpreg_match('/^0/',$phone_code)) $int_prefix='011';
                 
                 ### whether to omit phone_code or not
                 if (OSDpreg_match('/Y/i',$omit_phone_code)) {
@@ -1068,7 +1068,7 @@ if ($ACTION == 'manDiaLonly') {
         }
 
         $int_prefix = '';
-        if ($phone_code != '1' and !OSDpreg_match('/^0/',$phone_code)) $int_prefix='011';
+        if ($phone_code != $config['settings']['default_phone_code'] and !OSDpreg_match('/^0/',$phone_code)) $int_prefix='011';
 
         ### whether to omit phone_code or not
         if (OSDpreg_match('/Y/i',$omit_phone_code)) {
@@ -1228,7 +1228,7 @@ if ($ACTION == 'manDiaLlookCaLL') {
                 $rslt=mysql_query($stmt, $link);
             }
 
-            $stmt=sprintf("UPDATE call_log SET uniqueid='%s',channel='%s' WHERE caller_code='%s';",mres($uniqueid),mres($channel),mres($MDnextCID));
+            $stmt=sprintf("UPDATE call_log SET uniqueid='%s',channel='%s',answer_time='%s',answer_epoch='%s' WHERE caller_code='%s';",mres($uniqueid),mres($channel),mres($NOW_TIME),mres($StarTtime),mres($MDnextCID));
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
 
