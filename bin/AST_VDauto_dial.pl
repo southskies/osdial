@@ -965,7 +965,6 @@ while($one_day_interval > 0)
 							$sthA->finish();
 
 							$phone_code =~ s/^011|^010|^00//;
-							$phone_code = '011' . $phone_code if ($phone_code ne '1' and substr($phone_code,0,1) ne '0');
 
 							# DNC Check.
 							if ($ld_status =~ /^DNC$|^DNCE$|^DNCL$|^DNCC$/) {
@@ -1152,7 +1151,13 @@ while($one_day_interval > 0)
 								if ($DBIPomitcode[$user_CIPct] > 0) 
 									{$Ndialstring = "$Local_out_prefix$phone_number";}
 								else
-									{$Ndialstring = "$Local_out_prefix$phone_code$phone_number";}
+									{
+									$Ndialstring = "$Local_out_prefix";
+									if ($phone_code ne $osdial->{settings}{default_phone_code}) {
+										$Ndialstring .= "011";
+									}
+									$Ndialstring .= "$phone_code$phone_number";
+								}
 
 								### use manager middleware-app to connect the next call to the meetme room
 								# VmmddhhmmssLLLLLLLLL
