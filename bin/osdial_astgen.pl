@@ -459,11 +459,13 @@ sub gen_servers {
 		$rsvr .= "rtpstart=10000\n";
 		$rsvr .= "rtpend=20000\n";
 		$rsvr .= "icesupport=yes\n";
+		my $stunsvr = 'stun.l.google.com:19302';
+		$stunsvr = $osdial->{VARstun_server} if ($osdial->{VARstun_server} ne '');
 		#$rsvr .= "stunaddr=".$sret->{server_ip}.":3478\n";
-		$rsvr .= "stunaddr=stun.l.google.com:19302\n";
+		$rsvr .= "stunaddr=$stunsvr\n";
 
 		$rmsvr .= "[general]\n";
-		$rmsvr .= "stunaddr = stun.l.google.com:19302\n";
+		$rmsvr .= "stunaddr=$stunsvr\n";
 
 		$sret->{server_id} =~ s/-|\./_/g;
 		my @sip = split /\./, $sret->{server_ip};
@@ -1387,10 +1389,11 @@ sub gen_carriers {
 		$dialplan .= "switch => Realtime/OOUT".$carriers->{$carrier}{name}."\@extensions/p\n\n" if($CLOrealtime>0);
 		$dialplan .= "[OOUT" . $carriers->{$carrier}{name} . "-Patterns]\n";
 
+		$carriers->{$carrier}{dialplan} =~ s/^exten \=\> \_dial/;exten \=\> \_dial/mg;
 		$dialplan .= $carriers->{$carrier}{dialplan} . "\n";
 
-		$dialplan .= procexten("OOUT".$carriers->{$carrier}{name},'_dial9.','1','Gosub','dial,s,1('.$carriers->{$carrier}{id}.','.$carriers->{$carrier}{protocol}.','.$carriers->{$carrier}{name}.',${EXTEN:5})');
-		$dialplan .= procexten("OOUT".$carriers->{$carrier}{name},'_dial9.','2','Hangup','');
+		$dialplan .= procexten("OOUT".$carriers->{$carrier}{name},'_dial.','1','Gosub','dial,s,1('.$carriers->{$carrier}{id}.','.$carriers->{$carrier}{protocol}.','.$carriers->{$carrier}{name}.',${EXTEN:5})');
+		$dialplan .= procexten("OOUT".$carriers->{$carrier}{name},'_dial.','2','Hangup','');
 
 		$dialplan .= procexten("OOUT".$carriers->{$carrier}{name},'_X.','1','Set','INVALID_EXTEN=${EXTEN}');
 		$dialplan .= procexten("OOUT".$carriers->{$carrier}{name},'_X.','2','Goto','i,1');
