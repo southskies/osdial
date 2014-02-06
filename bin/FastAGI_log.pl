@@ -926,7 +926,7 @@ sub process_request {
 					#$stmtA = "UPDATE osdial_log set status='" . $osdial->mres($VDL_status) . "' where uniqueid = '$uniqueid';";
 					$Euniqueid=$uniqueid;
 					$Euniqueid =~ s/\.\d+$//gi;
-					$stmtA = "UPDATE osdial_log FORCE INDEX(lead_id) SET status='" . $osdial->mres($VDL_status) . "' WHERE lead_id='$CIDlead_id' AND uniqueid LIKE '$Euniqueid%';";
+					$stmtA = "UPDATE osdial_log FORCE INDEX(lead_id) SET status='" . $osdial->mres($VDL_status) . "' WHERE lead_id='$CIDlead_id' AND uniqueid LIKE '$Euniqueid%' AND server_ip='$VARserver_ip';";
 					if ($AGILOG) {
 						$agi_string = "|$stmtA|";
 						&agi_output;
@@ -988,7 +988,7 @@ sub process_request {
 				} else {
 					my $OLstart_epoch=0;
 					my $OLend_epoch=0;
-					$stmtA = "SELECT start_epoch,end_epoch FROM osdial_log WHERE uniqueid='$uniqueid' LIMIT 1;";
+					$stmtA = "SELECT start_epoch,end_epoch FROM osdial_log WHERE uniqueid='$uniqueid' AND server_ip='$VARserver_ip' LIMIT 1;";
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					$sthArows=$sthA->rows;
@@ -1186,7 +1186,7 @@ sub process_request {
 
 					if ($accountcode !~ /^Y\d\d\d\d/) {
 						########## FIND AND UPDATE osdial_log ##########
-						$stmtA = "SELECT start_epoch,status,user,term_reason,comments FROM osdial_log FORCE INDEX(lead_id) WHERE lead_id='$VD_lead_id' AND uniqueid LIKE \"$Euniqueid%\" LIMIT 1;";
+						$stmtA = "SELECT start_epoch,status,user,term_reason,comments FROM osdial_log FORCE INDEX(lead_id) WHERE lead_id='$VD_lead_id' AND uniqueid LIKE \"$Euniqueid%\" AND server_ip='$VARserver_ip' LIMIT 1;";
 						if ($AGILOG) {
 							$agi_string = "|$stmtA|";
 							&agi_output;
@@ -1292,7 +1292,7 @@ sub process_request {
 
 						if ($accountcode !~ /^Y\d\d\d\d/) {
 							$VDL_update=1;
-							$stmtA = "UPDATE osdial_log FORCE INDEX(lead_id) SET $SQL_status end_epoch='$now_date_epoch',length_in_sec='$VD_seconds' WHERE lead_id='$VD_lead_id' AND uniqueid LIKE \"$Euniqueid%\";";
+							$stmtA = "UPDATE osdial_log FORCE INDEX(lead_id) SET $SQL_status end_epoch='$now_date_epoch',length_in_sec='$VD_seconds' WHERE lead_id='$VD_lead_id' AND uniqueid LIKE \"$Euniqueid%\" AND server_ip='$VARserver_ip';";
 							if ($AGILOG) {
 								$agi_string = "|$stmtA|";
 								&agi_output;

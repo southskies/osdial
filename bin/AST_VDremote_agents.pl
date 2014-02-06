@@ -323,12 +323,12 @@ while($one_day_interval > 0)
 
 			if ($QHcall_type[$w] =~ /IN/)
 				{
-				$stmtC = "UPDATE osdial_closer_log SET status='XFER',user='" . $osdial->mres($QHuser[$w]) . "',comments='REMOTE' WHERE uniqueid='$QHuniqueid[$w]' AND status NOT LIKE 'V%';";
+				$stmtC = "UPDATE osdial_closer_log SET status='XFER',user='" . $osdial->mres($QHuser[$w]) . "',comments='REMOTE' WHERE uniqueid='$QHuniqueid[$w]' AND server_ip='$server_ip' AND status NOT LIKE 'V%';";
 				$Caffected_rows = $dbhA->do($stmtC);
 				}
 			else
 				{
-				$stmtC = "UPDATE osdial_log SET status='XFER',user='" . $osdial->mres($QHuser[$w]) . "',comments='REMOTE' WHERE uniqueid='$QHuniqueid[$w]' AND status NOT LIKE 'V%';";
+				$stmtC = "UPDATE osdial_log SET status='XFER',user='" . $osdial->mres($QHuser[$w]) . "',comments='REMOTE' WHERE uniqueid='$QHuniqueid[$w]' AND server_ip='$server_ip' AND status NOT LIKE 'V%';";
 				$Caffected_rows = $dbhA->do($stmtC);
 				}
 

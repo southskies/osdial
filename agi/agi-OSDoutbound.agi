@@ -105,7 +105,7 @@ if ($osd->sql_execute($stmt)) {
 	$osd->agi_output("|$stmt|") if ($DB);
 	$osd->sql_execute($stmt);
 
-	$stmt = sprintf("INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,server_ip) VALUES ('%s','%s','%s','%s','%s','QUEUE','%s','%s','VDAD','N','%s');",$osd->AGI->{uniqueid},$CIDlead_id,$osd->mres($oac->{campaign_id}),$SQLdate,$now_date_epoch,$oac->{phone_code},$oac->{phone_number},$osd->{VARserver_ip});
+	$stmt = sprintf("INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,server_ip,callerid) VALUES ('%s','%s','%s','%s','%s','QUEUE','%s','%s','VDAD','N','%s','%s');",$osd->AGI->{uniqueid},$CIDlead_id,$osd->mres($oac->{campaign_id}),$SQLdate,$now_date_epoch,$oac->{phone_code},$oac->{phone_number},$osd->{VARserver_ip},$osd->AGI->{accountcode});
 	$osd->agi_output("|$stmt|") if ($DB);
 	$osd->sql_execute($stmt);
 	$osd->agi_output("--    VDAD : |" . $oac->{lead_id} . "|$CIDlead_id|insert to osdial_log: " . $osd->AGI->{uniqueid});
@@ -221,7 +221,7 @@ while ($drop_timer <= $campaign->{drop_call_seconds}) {
 			$osd->agi_output("--    OSDAD CPD osdac record deleted: |".$affected_rows."|".$campaign->{campaign_id}."|");
 		}
 
-		my $stmt = sprintf("UPDATE osdial_log SET status='%s',end_epoch='%s',length_in_sec='%s',term_reason='AGENT' WHERE uniqueid='%s';",$osd->mres($olog_result),$osd->mres($now_date_epoch),$osd->mres($drop_seconds),$osd->mres($osd->AGI->{uniqueid}));
+		my $stmt = sprintf("UPDATE osdial_log SET status='%s',end_epoch='%s',length_in_sec='%s',term_reason='AGENT' WHERE uniqueid='%s' AND server_ip='%s';",$osd->mres($olog_result),$osd->mres($now_date_epoch),$osd->mres($drop_seconds),$osd->mres($osd->AGI->{uniqueid},$osd->{VARserver_ip}));
 		my $affected_rows = $osd->sql_execute($stmt);
 		$osd->agi_output("|$stmt|");
 		$osd->agi_output("--    OSDAD osdial_log update: |$affected_rows|" . $osd->AGI->{uniqueid});
@@ -467,7 +467,7 @@ if ($drop_timer >= $campaign->{drop_call_seconds}) {
 	$osd->agi_output("|$stmt|") if ($DB);
 	$osd->agi_output("--    VDAD vac record deleted: |$affected_rows|" . $oac->{campaign_id} . "|");
 
-	$stmt = sprintf("UPDATE osdial_log SET status='DROP',end_epoch='%s',length_in_sec='%s',term_reason='ABANDON' WHERE uniqueid='%s';",$now_date_epoch,$drop_seconds,$osd->AGI->{uniqueid});
+	$stmt = sprintf("UPDATE osdial_log SET status='DROP',end_epoch='%s',length_in_sec='%s',term_reason='ABANDON' WHERE uniqueid='%s' AND server_ip='%s';",$now_date_epoch,$drop_seconds,$osd->AGI->{uniqueid},$osd->{VARserver_ip});
 	$affected_rows = $osd->sql_execute($stmt);
 	$osd->agi_output("|$stmt|");
 	$osd->agi_output("--    VDAD osdial_log update: |$affected_rows|" . $osd->AGI->{uniqueid});
