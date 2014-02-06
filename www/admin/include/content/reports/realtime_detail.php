@@ -342,13 +342,13 @@ function report_realtime_detail() {
         $DIALstatuses = (OSDpreg_replace('/ /',', ',$DIALstatuses));
 
         if ($group=='XXXX-ALL-ACTIVE-XXXX') {
-            $stmt=sprintf("SELECT count(*) FROM osdial_hopper WHERE campaign_id IN %s;",$LOG['allowed_campaignsSQL']);
+            $stmt=sprintf("SELECT count(*) FROM osdial_hopper WHERE campaign_id IN %s AND status='READY';",$LOG['allowed_campaignsSQL']);
         } elseif ($group=='XXXX-OUTBOUND-XXXX') {
-            $stmt=sprintf("SELECT count(*) FROM osdial_hopper LEFT JOIN osdial_campaigns ON (osdial_hopper.campaign_id=osdial_campaigns.campaign_id) WHERE length(closer_campaigns)<6 AND osdial_hopper.campaign_id IN %s;",$LOG['allowed_campaignsSQL']);
+            $stmt=sprintf("SELECT count(*) FROM osdial_hopper LEFT JOIN osdial_campaigns ON (osdial_hopper.campaign_id=osdial_campaigns.campaign_id) WHERE length(closer_campaigns)<6 AND osdial_hopper.campaign_id IN %s AND status='READY';",$LOG['allowed_campaignsSQL']);
         } elseif ($group=='XXXX-INBOUND-XXXX') {
-            $stmt=sprintf("SELECT count(*) FROM osdial_hopper LEFT JOIN osdial_campaigns ON (osdial_hopper.campaign_id=osdial_campaigns.campaign_id) WHERE length(closer_campaigns)>5 AND osdial_hopper.campaign_id IN %s;",$LOG['allowed_campaignsSQL']);
+            $stmt=sprintf("SELECT count(*) FROM osdial_hopper LEFT JOIN osdial_campaigns ON (osdial_hopper.campaign_id=osdial_campaigns.campaign_id) WHERE length(closer_campaigns)>5 AND osdial_hopper.campaign_id IN %s AND status='READY';",$LOG['allowed_campaignsSQL']);
         } else {
-            $stmt=sprintf("SELECT count(*) FROM osdial_hopper WHERE campaign_id IN %s AND campaign_id='%s';",$LOG['allowed_campaignsSQL'],mres($group));
+            $stmt=sprintf("SELECT count(*) FROM osdial_hopper WHERE campaign_id IN %s AND campaign_id='%s' AND status='READY';",$LOG['allowed_campaignsSQL'],mres($group));
         }
 
         $rslt=mysql_query($stmt, $link);

@@ -191,7 +191,7 @@ function report_realtime_summary() {
         $DIALstatuses = OSDpreg_replace("/ -$|^ /","",$DIALstatuses);
         $DIALstatuses = OSDpreg_replace('/ /',', ',$DIALstatuses);
         
-        $stmt=sprintf("SELECT count(*) FROM osdial_hopper WHERE campaign_id IN %s AND campaign_id='%s';",$LOG['allowed_campaignsSQL'],mres($group));
+        $stmt=sprintf("SELECT count(*) FROM osdial_hopper WHERE campaign_id IN %s AND campaign_id='%s' AND status='READY';",$LOG['allowed_campaignsSQL'],mres($group));
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
         $VDhop = $row[0];
