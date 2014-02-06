@@ -326,7 +326,7 @@ if ($affected_rows > 0)
 		}
 	$sthA->finish();
 
-	$stmtA = "INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed) values('$uniqueid','$CIDlead_id','$VDADcampaign','$SQLdate','$now_date_epoch','N','$VDADphone_code','$VDADphone','VDAD','N')";
+	$stmtA = "INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,server_ip,callerid) values('$uniqueid','$CIDlead_id','$VDADcampaign','$SQLdate','$now_date_epoch','N','$VDADphone_code','$VDADphone','VDAD','N','$VARserver_ip','$callerid')";
 		if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 	$affected_rows = $dbhA->do($stmtA);
 
@@ -354,7 +354,7 @@ if ($pin < 1)
 		$end_date_epoch = time();
 		$length_in_sec = ($end_date_epoch - $now_date_epoch);
 
-		$stmtA = "UPDATE osdial_log set end_epoch='$end_date_epoch', length_in_sec='$length_in_sec' where uniqueid='$uniqueid' and lead_id='$CIDlead_id';";
+		$stmtA = "UPDATE osdial_log set end_epoch='$end_date_epoch', length_in_sec='$length_in_sec' where uniqueid='$uniqueid' and server_ip='$VARserver_ip' and lead_id='$CIDlead_id';";
 		$affected_rows = $dbhA->do($stmtA);
 		if ($AGILOG) {$agi_string = "--    VDAD vac record deleted: |$affected_rows|$VDADcampaign|$end_date_epoch|$now_date_epoch|$length_in_sec|";   &agi_output;}
 
@@ -412,7 +412,7 @@ if ($pin == "1")	### send call to voicemail
 		$now_date = "$year-$mon-$mday $hour:$min:$sec";
 	if ($AGILOG) {$agi_string = "XXXXXXXXXX VDAD transferred: start|stop      $start_time|$now_date";   &agi_output;}
 
-	$stmtA = "UPDATE osdial_log set status='VM', end_epoch='$end_date_epoch', length_in_sec='$length_in_sec' where uniqueid='$uniqueid' and lead_id='$CIDlead_id';";
+	$stmtA = "UPDATE osdial_log set status='VM', end_epoch='$end_date_epoch', length_in_sec='$length_in_sec' where uniqueid='$uniqueid' and server_ip='$VARserver_ip' and lead_id='$CIDlead_id';";
 	$affected_rows = $dbhA->do($stmtA);
 	if ($AGILOG) {$agi_string = "--    VDAD vac record updated: |$affected_rows|$VDADcampaign|";   &agi_output;}
 
@@ -470,7 +470,7 @@ if ($pin == "2")	### mark call as a CALLBK
 		$now_date = "$year-$mon-$mday $hour:$min:$sec";
 	if ($AGILOG) {$agi_string = "XXXXXXXXXX VDAD transferred: start|stop      $start_time|$now_date";   &agi_output;}
 
-	$stmtA = "UPDATE osdial_log set status='CALLBK', end_epoch='$end_date_epoch', length_in_sec='$length_in_sec' where uniqueid='$uniqueid' and lead_id='$CIDlead_id';";
+	$stmtA = "UPDATE osdial_log set status='CALLBK', end_epoch='$end_date_epoch', length_in_sec='$length_in_sec' where uniqueid='$uniqueid' and server_ip='$VARserver_ip' and lead_id='$CIDlead_id';";
 	$affected_rows = $dbhA->do($stmtA);
 	if ($AGILOG) {$agi_string = "--    VDAD vac record updated: |$affected_rows|$VDADcampaign|";   &agi_output;}
 
@@ -516,7 +516,7 @@ if ($pin == "3")	### send call to extension
 		$now_date = "$year-$mon-$mday $hour:$min:$sec";
 	if ($AGILOG) {$agi_string = "XXXXXXXXXX VDAD transferred: start|stop      $start_time|$now_date";   &agi_output;}
 
-	$stmtA = "UPDATE osdial_log set status='XFER', end_epoch='$end_date_epoch', length_in_sec='$length_in_sec' where uniqueid='$uniqueid' and lead_id='$CIDlead_id';";
+	$stmtA = "UPDATE osdial_log set status='XFER', end_epoch='$end_date_epoch', length_in_sec='$length_in_sec' where uniqueid='$uniqueid' and server_ip='$VARserver_ip' and lead_id='$CIDlead_id';";
 	$affected_rows = $dbhA->do($stmtA);
 	if ($AGILOG) {$agi_string = "--    VDAD vac record updated: |$affected_rows|$VDADcampaign|";   &agi_output;}
 
@@ -617,7 +617,7 @@ $channel_status = $AGI->channel_status("$channel");
 
 	if ($channel_status == 6)
 		{
-		$stmtA = "UPDATE osdial_log set status='MP' where uniqueid = '$uniqueid' and lead_id='$CIDlead_id';";
+		$stmtA = "UPDATE osdial_log set status='MP' where uniqueid = '$uniqueid' and server_ip='$VARserver_ip' and lead_id='$CIDlead_id';";
 			if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 		$affected_rows = $dbhA->do($stmtA);
 		if ($AGILOG) {$agi_string = "--    VDAD osdial_log update: N|$affected_rows|$uniqueid";   &agi_output;}

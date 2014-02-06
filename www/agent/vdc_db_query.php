@@ -1335,7 +1335,7 @@ if ($ACTION == 'manDiaLlogCaLL') {
             }
 
             $manualVLexists=0;
-            $stmt=sprintf("SELECT count(*) FROM osdial_log WHERE lead_id='%s' AND user='%s' AND phone_number='%s' AND uniqueid='%s';",mres($lead_id),mres($user),mres($phone_number),mres($uniqueid));
+            $stmt=sprintf("SELECT count(*) FROM osdial_log WHERE lead_id='%s' AND user='%s' AND phone_number='%s' AND uniqueid='%s' AND server_ip='%s';",mres($lead_id),mres($user),mres($phone_number),mres($uniqueid),mres($server_ip));
             $rslt=mysql_query($stmt, $link);
             if ($DB) echo "$stmt\n";
             $VL_exists_ct = mysql_num_rows($rslt);
@@ -1348,7 +1348,7 @@ if ($ACTION == 'manDiaLlogCaLL') {
 
             if ($manualVLexists<1) {
                 ##### insert log into osdial_log for manual OSDiaL call
-                $stmt=sprintf("INSERT INTO osdial_log (uniqueid,lead_id,list_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,comments,processed,user_group,server_ip) VALUES('%s','%s','%s','%s','%s','%s','INCALL','%s','%s','%s','MANUAL','N','%s','%s');",mres($uniqueid),mres($lead_id),mres($list_id),mres($campaign),mres($NOW_TIME),mres($StarTtime),mres($phone_code),mres($phone_number),mres($user),mres($user_group),mres($server_ip));
+                $stmt=sprintf("INSERT INTO osdial_log (uniqueid,lead_id,list_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,comments,processed,user_group,server_ip,callerid) VALUES('%s','%s','%s','%s','%s','%s','INCALL','%s','%s','%s','MANUAL','N','%s','%s');",mres($uniqueid),mres($lead_id),mres($list_id),mres($campaign),mres($NOW_TIME),mres($StarTtime),mres($phone_code),mres($phone_number),mres($user),mres($user_group),mres($server_ip),mres($MDnextCID));
                 if ($DB) echo "$stmt\n";
                 $rslt=mysql_query($stmt, $link);
                 $DUPerrno = mysql_errno($link);
@@ -1357,7 +1357,7 @@ if ($ACTION == 'manDiaLlogCaLL') {
             }
             if ($manualVLexists>0 or $manualVLexistsDUP>0) {
                 ##### insert log into osdial_log for manual OSDial call
-                $stmt=sprintf("UPDATE osdial_log SET list_id='%s',comments='MANUAL',user_group='%s',server_ip='%s' WHERE lead_id='%s' AND user='%s' AND phone_number='%s' AND uniqueid='%s';",mres($list_id),mres($user_group),mres($server_ip),mres($lead_id),mres($user),mres($phone_number),mres($uniqueid));
+                $stmt=sprintf("UPDATE osdial_log SET list_id='%s',comments='MANUAL',user_group='%s' WHERE lead_id='%s' AND user='%s' AND phone_number='%s' AND server_ip='%s' AND uniqueid='%s';",mres($list_id),mres($user_group),mres($server_ip),mres($lead_id),mres($user),mres($phone_number),mres($server_ip),mres($uniqueid));
                 if ($DB) echo "$stmt\n";
                 $rslt=mysql_query($stmt, $link);
                 $affected_rows = mysql_affected_rows($link);
@@ -1412,7 +1412,7 @@ if ($ACTION == 'manDiaLlogCaLL') {
                     $stmt=sprintf("SELECT SQL_NO_CACHE start_epoch,term_reason,closecallid,campaign_id,status FROM osdial_closer_log WHERE phone_number='%s' AND lead_id='%s' AND user='%s' AND call_date>'%s' ORDER BY closecallid DESC LIMIT 1;",mres($phone_number),mres($lead_id),mres($user),mres($four_hours_ago));
                 } else {
                     ##### look for the start epoch in the osdial_log table
-                    $stmt=sprintf("SELECT SQL_NO_CACHE start_epoch,term_reason,uniqueid,campaign_id,status FROM osdial_log WHERE uniqueid='%s' AND lead_id='%s' ORDER BY call_date DESC LIMIT 1;",mres($uniqueid),mres($lead_id));
+                    $stmt=sprintf("SELECT SQL_NO_CACHE start_epoch,term_reason,uniqueid,campaign_id,status FROM osdial_log WHERE uniqueid='%s' AND server_ip='%s' AND lead_id='%s' ORDER BY call_date DESC LIMIT 1;",mres($uniqueid),mres($server_ip),mres($lead_id));
                     $VDIDselect = "VDL_UIDLID $uniqueid $lead_id";
                 }
                 $rslt=mysql_query($stmt, $link);
@@ -1434,7 +1434,7 @@ if ($ACTION == 'manDiaLlogCaLL') {
                     debugLog('osdial_debug',"$NOW_TIME|INBND_LOG_1|$uniqueid|$lead_id|$user|$inOUT|$length_in_sec|$Lterm_reason|$Luniqueid|$start_epoch|");
 
                     ##### start epoch in the osdial_log table, couldn't find one in osdial_closer_log
-                    $stmt=sprintf("SELECT SQL_NO_CACHE start_epoch,term_reason,campaign_id,status FROM osdial_log WHERE uniqueid='%s' AND lead_id='%s' ORDER BY call_date DESC LIMIT 1;",mres($uniqueid),mres($lead_id));
+                    $stmt=sprintf("SELECT SQL_NO_CACHE start_epoch,term_reason,campaign_id,status FROM osdial_log WHERE uniqueid='%s' AND server_ip='%s' AND lead_id='%s' ORDER BY call_date DESC LIMIT 1;",mres($uniqueid),mres($server_ip),mres($lead_id));
                     $rslt=mysql_query($stmt, $link);
                     if ($DB) echo "$stmt\n";
                     $VM_mancall_ct = mysql_num_rows($rslt);
@@ -1870,7 +1870,7 @@ if ($ACTION == 'manDiaLlogCaLL') {
 
                 if ( (OSDpreg_match("/NONE/",$term_reason)) or (OSDpreg_match("/NONE/",$Lterm_reason)) or (OSDstrlen($Lterm_reason) < 1) ) {
                     ### check to see if lead should be alt_dialed
-                    $stmt=sprintf("SELECT SQL_NO_CACHE term_reason,uniqueid,status FROM osdial_log WHERE uniqueid='%s' AND lead_id='%s' ORDER BY call_date DESC LIMIT 1;",mres($uniqueid),mres($lead_id));
+                    $stmt=sprintf("SELECT SQL_NO_CACHE term_reason,uniqueid,status FROM osdial_log WHERE uniqueid='%s' AND server_ip='%s' AND lead_id='%s' ORDER BY call_date DESC LIMIT 1;",mres($uniqueid),mres($server_ip),mres($lead_id));
                     $rslt=mysql_query($stmt, $link);
                     $VAC_qm_ct = mysql_num_rows($rslt);
                     if ($VAC_qm_ct > 0) {
@@ -1889,7 +1889,7 @@ if ($ACTION == 'manDiaLlogCaLL') {
 
                 ### check to see if the osdial_log record exists, if not, insert it
                 $manualVLexists=0;
-                $stmt=sprintf("SELECT status FROM osdial_log WHERE lead_id='%s' AND user='%s' AND phone_number='%s' AND uniqueid='%s';",mres($lead_id),mres($user),mres($phone_number),mres($uniqueid));
+                $stmt=sprintf("SELECT status FROM osdial_log WHERE lead_id='%s' AND user='%s' AND phone_number='%s' AND uniqueid='%s' and server_ip='%s';",mres($lead_id),mres($user),mres($phone_number),mres($uniqueid),mres($server_ip));
                 $rslt=mysql_query($stmt, $link);
                 if ($DB) echo "$stmt\n";
                 $manualVLexists = mysql_num_rows($rslt);
@@ -1900,7 +1900,7 @@ if ($ACTION == 'manDiaLlogCaLL') {
 
                 if ($manualVLexists < 1) {
                     ##### insert log into osdial_log for manual OSDial call
-                    $stmt=sprintf("INSERT INTO osdial_log (uniqueid,lead_id,list_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,comments,processed,user_group,server_ip) VALUES('%s','%s','%s','%s','%s','%s','DONEM','%s','%s','%s','MANUAL','N','%s','%s');",mres($uniqueid),mres($lead_id),mres($list_id),mres($campaign),mres($NOW_TIME),mres($StarTtime),mres($phone_code),mres($phone_number),mres($user),mres($user_group),mres($server_ip));
+                    $stmt=sprintf("INSERT INTO osdial_log (uniqueid,lead_id,list_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,comments,processed,user_group,server_ip,callerid) VALUES('%s','%s','%s','%s','%s','%s','DONEM','%s','%s','%s','MANUAL','N','%s','%s');",mres($uniqueid),mres($lead_id),mres($list_id),mres($campaign),mres($NOW_TIME),mres($StarTtime),mres($phone_code),mres($phone_number),mres($user),mres($user_group),mres($server_ip),mres($MDnextCID));
                     if ($DB) echo "$stmt\n";
                     $rslt=mysql_query($stmt, $link);
                     $affected_rows = mysql_affected_rows($link);
@@ -1912,7 +1912,7 @@ if ($ACTION == 'manDiaLlogCaLL') {
                         echo "LOG NOT ENTERED\n";
                     }
                 } else {
-                    $stmt=sprintf("UPDATE osdial_log SET uniqueid='%s' WHERE lead_id='%s' AND user='%s' AND phone_number='%s' AND uniqueid='%s';",mres($uniqueid),mres($lead_id),mres($user),mres($phone_number),mres($uniqueid));
+                    $stmt=sprintf("UPDATE osdial_log SET uniqueid='%s' WHERE lead_id='%s' AND user='%s' AND phone_number='%s' AND uniqueid='%s' AND server_ip='%s';",mres($uniqueid),mres($lead_id),mres($user),mres($phone_number),mres($uniqueid),mres($server_ip));
                     if ($DB) echo "$stmt\n";
                     $rslt=mysql_query($stmt, $link);
                     $affected_rows = mysql_affected_rows($link);
@@ -1921,7 +1921,7 @@ if ($ACTION == 'manDiaLlogCaLL') {
                 ##### update the duration and end time in the osdial_log table
                 $ol_statusSQL='';
                 if ($Lstatus=='INCALL') $ol_statusSQL = sprintf(",status='%s'",mres($status_dispo));
-                $stmt=sprintf("UPDATE osdial_log SET %send_epoch='%s',length_in_sec='%s'%s WHERE uniqueid='%s' AND lead_id='%s' AND user='%s' ORDER BY call_date DESC LIMIT 1;",$SQLterm,mres($StarTtime),mres($length_in_sec),$ol_statusSQL,mres($uniqueid),mres($lead_id),mres($user));
+                $stmt=sprintf("UPDATE osdial_log SET %send_epoch='%s',length_in_sec='%s'%s WHERE uniqueid='%s' AND server_ip='%s' AND lead_id='%s' AND user='%s' ORDER BY call_date DESC LIMIT 1;",$SQLterm,mres($StarTtime),mres($length_in_sec),$ol_statusSQL,mres($uniqueid),mres($server_ip),mres($lead_id),mres($user));
                 if ($DB) echo "$stmt\n";
                 $rslt=mysql_query($stmt, $link);
                 $affected_rows = mysql_affected_rows($link);
@@ -2359,7 +2359,7 @@ if ($ACTION == 'VDADcheckINCOMING') {
             }
 
             if ( ($call_type=='OUT') or ($call_type=='OUTBALANCE') ) {
-                $stmt=sprintf("UPDATE osdial_log SET user='%s',comments=IF(comments IS NULL,IF(phone_number='%s','AUTO','AUTOALT'),comments),list_id='%s',status='INCALL',user_group='%s' WHERE lead_id='%s' AND uniqueid='%s';",mres($user),mres($phone_number),mres($list_id),mres($user_group),mres($lead_id),mres($uniqueid));
+                $stmt=sprintf("UPDATE osdial_log SET user='%s',comments=IF(comments IS NULL,IF(phone_number='%s','AUTO','AUTOALT'),comments),list_id='%s',status='INCALL',user_group='%s' WHERE lead_id='%s' AND uniqueid='%s' AND server_ip='%s';",mres($user),mres($phone_number),mres($list_id),mres($user_group),mres($lead_id),mres($uniqueid),mres($server_ip));
                 if ($DB) echo "$stmt\n";
                 $rslt=mysql_query($stmt, $link);
 
@@ -2424,7 +2424,7 @@ if ($ACTION == 'VDADcheckINCOMING') {
                 if ($DB) echo "$stmt\n";
                 $rslt=mysql_query($stmt, $link);
 
-                $stmt=sprintf("SELECT SQL_NO_CACHE count(*) FROM osdial_log WHERE lead_id='%s' AND uniqueid='%s';",mres($lead_id),mres($uniqueid));
+                $stmt=sprintf("SELECT SQL_NO_CACHE count(*) FROM osdial_log WHERE lead_id='%s' AND uniqueid='%s' AND server_ip='%s';",mres($lead_id),mres($uniqueid),mres($server_ip));
                 if ($DB) echo "$stmt\n";
                 $rslt=mysql_query($stmt, $link);
                 $VDL_cid_ct = mysql_num_rows($rslt);
@@ -2608,7 +2608,7 @@ if ($ACTION == 'VDADcheckINCOMING') {
             }
             echo $LeaD_InfO;
 
-            $stmt=sprintf("SELECT SQL_NO_CACHE start_epoch FROM osdial_log WHERE uniqueid='%s' LIMIT 1;",mres($uniqueid));
+            $stmt=sprintf("SELECT SQL_NO_CACHE start_epoch FROM osdial_log WHERE uniqueid='%s' AND server_ip='%s' LIMIT 1;",mres($uniqueid),mres($server_ip));
             if ($DB) echo "$stmt\n";
             $rslt=mysql_query($stmt, $link);
             $row=mysql_fetch_row($rslt);
@@ -2975,7 +2975,7 @@ if ($ACTION == 'multicallQueueSwap') {
             }
 
             if ( ($call_type=='OUT') or ($call_type=='OUTBALANCE') ) {
-                $stmt=sprintf("UPDATE osdial_log SET user='%s',comments=IF(comments IS NULL,IF(phone_number='%s','AUTO','AUTOALT'),comments),list_id='%s',status='INCALL',user_group='%s' WHERE lead_id='%s' AND uniqueid='%s';",mres($user),mres($phone_number),mres($list_id),mres($user_group),mres($lead_id),mres($uniqueid));
+                $stmt=sprintf("UPDATE osdial_log SET user='%s',comments=IF(comments IS NULL,IF(phone_number='%s','AUTO','AUTOALT'),comments),list_id='%s',status='INCALL',user_group='%s' WHERE lead_id='%s' AND uniqueid='%s' AND server_ip='%s';",mres($user),mres($phone_number),mres($list_id),mres($user_group),mres($lead_id),mres($uniqueid),mres($server_ip));
                 if ($DB) echo "$stmt\n";
                 $rslt=mysql_query($stmt, $link);
 
@@ -3040,7 +3040,7 @@ if ($ACTION == 'multicallQueueSwap') {
                 if ($DB) echo "$stmt\n";
                 $rslt=mysql_query($stmt, $link);
 
-                $stmt=sprintf("SELECT SQL_NO_CACHE count(*) FROM osdial_log WHERE lead_id='%s' AND uniqueid='%s';",mres($lead_id),mres($uniqueid));
+                $stmt=sprintf("SELECT SQL_NO_CACHE count(*) FROM osdial_log WHERE lead_id='%s' AND uniqueid='%s' AND server_ip='%s';",mres($lead_id),mres($uniqueid),mres($server_ip));
                 if ($DB) echo "$stmt\n";
                 $rslt=mysql_query($stmt, $link);
                 $VDL_cid_ct = mysql_num_rows($rslt);
@@ -4044,7 +4044,7 @@ if ($ACTION == 'RepullLeadData')
 
     # update the logs with the new lead/list ids
     if ( ($call_type=='OUT') or ($call_type=='OUTBALANCE') ) {
-        $stmt=sprintf("UPDATE osdial_log SET list_id='%s',lead_id='%s' WHERE lead_id='%s' AND uniqueid='%s';",mres($list_id),mres($lead_id),mres($oldlead),mres($uniqueid));
+        $stmt=sprintf("UPDATE osdial_log SET list_id='%s',lead_id='%s' WHERE lead_id='%s' AND uniqueid='%s' AND server_ip='%s';",mres($list_id),mres($lead_id),mres($oldlead),mres($uniqueid),mres($server_ip));
         if ($DB) echo "$stmt\n";
         $rslt=mysql_query($stmt, $link);
     } else {

@@ -634,7 +634,7 @@ if ($ACTION=="RedirectVD") {
             $rslt=mysql_query($stmt, $link);
         }
         if ($auto_dial_level < 1) {
-            $stmt=sprintf("UPDATE osdial_log SET end_epoch='%s',length_in_sec='%s',status='XFER' WHERE uniqueid='%s';",mres($StarTtime),mres($secondS),mres($uniqueid));
+            $stmt=sprintf("UPDATE osdial_log SET end_epoch='%s',length_in_sec='%s',status='XFER' WHERE uniqueid='%s' AND server_ip='%s';",mres($StarTtime),mres($secondS),mres($uniqueid),mres($server_ip));
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
         } else {

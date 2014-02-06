@@ -161,9 +161,9 @@ if ($affected_rows > 0) {
 	$sthA->finish();
 	$vars->{drop_time} = $campaign->{drop_call_seconds};
 
-	$stmtA =  "INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed) ";
+	$stmtA =  "INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,server_ip,callerid) ";
 	$stmtA .= "values('" . $AGI->{uniqueid} . "','" . $vars->{CIDlead_id} . "','" . $auto_calls->{campaign_id} . "','" . $vars->{start_date} . "','";
-	$stmtA .= $vars->{start_epoch} . "','QUEUE','" . $auto_calls->{phone_code} . "','" . $auto_calls->{phone_number} . "','IVR','N')";
+	$stmtA .= $vars->{start_epoch} . "','QUEUE','" . $auto_calls->{phone_code} . "','" . $auto_calls->{phone_number} . "','IVR','N','".$vars->{server_ip}."'.'".$AGI->{callerid}."')";
 	agi_output("|$stmtA|") if ($vars->{DB} > 1);
 	my $affected_rows = $dbhA->do($stmtA);
 	agi_output("--    ODOI : |insert to osdial_log: ");

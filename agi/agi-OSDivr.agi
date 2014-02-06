@@ -92,9 +92,9 @@ if ($virtivr) {
 	$osdial->agi_output("+++   ODIVR: Update osdial_auto_calls| $stmt",4);
 	$osdial->sql_execute($stmt);
 
-	$affected_rows = $osdial->sql_execute("UPDATE osdial_log SET user='".$osdial->mres($live_agents->{user})."' WHERE uniqueid='" . $AGI->{uniqueid} . "';");
+	$affected_rows = $osdial->sql_execute("UPDATE osdial_log SET user='".$osdial->mres($live_agents->{user})."',callerid='".$AGI->{accountcode}."' WHERE uniqueid='" . $AGI->{uniqueid} . "' AND server_ip='".$osdial->mres($osdial->{VARserver_ip})."';");
 	if ($affected_rows<1){
-		$affected_rows = $osdial->sql_execute("UPDATE osdial_closer_log SET user='".$osdial->mres($live_agents->{user})."' WHERE uniqueid='" . $AGI->{uniqueid} . "';");
+		$affected_rows = $osdial->sql_execute("UPDATE osdial_closer_log SET user='".$osdial->mres($live_agents->{user})."' WHERE uniqueid='" . $AGI->{uniqueid} . "' AND server_ip='".$osdial->{'VARserver_ip'}."';");
 	}
 
 	$cinfo->{CIDlead_id} = (substr($AGI->{accountcode}, 11, 9) + 0);
@@ -286,9 +286,9 @@ sub update_status {
 			$affected_rows = $osdial->sql_execute("UPDATE osdial_list SET $upsql where lead_id='" . $cinfo->{CIDlead_id} . "';",'B');
 			$osdial->agi_output("--    ODOI osdial_list update: |$affected_rows|" . $upsql);
 
-			$affected_rows = $osdial->sql_execute("UPDATE osdial_log SET $upsql where uniqueid='" . $AGI->{uniqueid} . "';",'B');
+			$affected_rows = $osdial->sql_execute("UPDATE osdial_log SET $upsql where uniqueid='" . $AGI->{uniqueid} . "' AND server_ip='".$osdial->{VARserver_ip}."';",'B');
 			if ($affected_rows < 1) {
-				$affected_rows = $osdial->sql_execute("UPDATE osdial_closer_log SET $upsql where uniqueid='" . $AGI->{uniqueid} . "';",'B');
+				$affected_rows = $osdial->sql_execute("UPDATE osdial_closer_log SET $upsql where uniqueid='" . $AGI->{uniqueid} . "' AND server_ip='".$osdial->{'VARserver_ip'}."';",'B');
 				$osdial->agi_output("--    ODOI osdial_closer_log update: |$affected_rows");
 			} else {
 				$osdial->agi_output("--    ODOI osdial_log update: |$affected_rows");
@@ -502,15 +502,15 @@ sub hangup_and_dispo {
 		my $tdate = $osdial->get_datetime($tepoch);
 		my $call_length = $tepoch - $cinfo->{start_epoch};
 
-		$affected_rows = $osdial->sql_execute("UPDATE osdial_log SET end_epoch='$tepoch' WHERE uniqueid='" . $AGI->{uniqueid} . "';");
+		$affected_rows = $osdial->sql_execute("UPDATE osdial_log SET end_epoch='$tepoch' WHERE uniqueid='" . $AGI->{uniqueid} . " AND server_ip='".$osdial->{VARserver_ip}."';");
 		if ($affected_rows<1) {
-			$affected_rows = $osdial->sql_execute("UPDATE osdial_closer_log SET end_epoch='$tepoch' WHERE uniqueid='" . $AGI->{uniqueid} . "';");
+			$affected_rows = $osdial->sql_execute("UPDATE osdial_closer_log SET end_epoch='$tepoch' WHERE uniqueid='" . $AGI->{uniqueid} . "' AND server_ip='".$osdial->{VARserver_ip}."';");
 			$osdial->agi_output("--    ODOI osdial_closer_log update: |$affected_rows");
-			$affected_rows = $osdial->sql_execute("UPDATE osdial_closer_log SET length_in_sec=end_epoch-start_epoch WHERE uniqueid='".$AGI->{uniqueid}."';");
+			$affected_rows = $osdial->sql_execute("UPDATE osdial_closer_log SET length_in_sec=end_epoch-start_epoch WHERE uniqueid='".$AGI->{uniqueid}."' AND server_ip='".$osdial->{VARserver_ip}."';");
 			$osdial->agi_output("--    ODOI osdial_closer_log update: $affected_rows");
 		} else {
 			$osdial->agi_output("--    ODOI osdial_log update: $affected_rows");
-			$affected_rows = $osdial->sql_execute("UPDATE osdial_log SET length_in_sec=end_epoch-start_epoch WHERE uniqueid='".$AGI->{uniqueid}."';");
+			$affected_rows = $osdial->sql_execute("UPDATE osdial_log SET length_in_sec=end_epoch-start_epoch WHERE uniqueid='".$AGI->{uniqueid}."' AND server_ip='".$osdial->{VARserver_ip}."';");
 			$osdial->agi_output("--    ODOI osdial_log update: $affected_rows");
 		}
 

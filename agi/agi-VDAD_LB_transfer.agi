@@ -360,7 +360,7 @@ if ($affected_rows > 0)
 		}
 	$sthA->finish();
 
-	$stmtA = "INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,server_ip) values('$uniqueid','$CIDlead_id','$VDADcampaign','$SQLdate','$now_date_epoch','QUEUE','$VDADphone_code','$VDADphone','VDAD','N','$VARserver_ip')";
+	$stmtA = "INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,server_ip,callerid) values('$uniqueid','$CIDlead_id','$VDADcampaign','$SQLdate','$now_date_epoch','QUEUE','$VDADphone_code','$VDADphone','VDAD','N','$VARserver_ip','$accountcode')";
 		if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 	$affected_rows = $dbhA->do($stmtA);
 
@@ -755,7 +755,7 @@ if ($drop_seconds < 1)
 	$affected_rows = $dbhA->do($stmtA);
 	if ($AGILOG) {$agi_string = "--    VDAD vac record deleted: |$affected_rows|$VDADcampaign|";   &agi_output;}
 
-	$stmtA = "UPDATE osdial_log set status='DROP',end_epoch='$now_date_epoch',length_in_sec='$drop_seconds', term_reason='ABANDON' where uniqueid = '$uniqueid';";
+	$stmtA = "UPDATE osdial_log set status='DROP',end_epoch='$now_date_epoch',length_in_sec='$drop_seconds', term_reason='ABANDON' where uniqueid = '$uniqueid' AND server_ip='$VARserver_ip';";
 		if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 	$affected_rows = $dbhA->do($stmtA);
 	if ($AGILOG) {$agi_string = "--    VDAD osdial_log update: |$affected_rows|$uniqueid";   &agi_output;}
