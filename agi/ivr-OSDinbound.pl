@@ -235,6 +235,8 @@ my $referring_extension;
 my $phone_number;
 my $fronter;
 my $CIDlead_id;
+my $carrierid;
+my $didid;
 
 
 print STDERR "Started Inbound Group.\n" if ($DB);
@@ -250,6 +252,8 @@ while ($newin = infunc() and !($newin eq 'G')) {}
 print "G,IVR_CONTEXT,IVR_PRIORITY,IVR_EXTENSION\n";
 while ($newin = infunc() and !($newin eq 'G')) {}
 print "G,IVR_CALLERIDNAME,IVR_CALLERID\n";
+while ($newin = infunc() and !($newin eq 'G')) {}
+print "G,IVR_CARRIERID,IVR_DIDID\n";
 while ($newin = infunc() and !($newin eq 'G')) {}
 
 
@@ -557,6 +561,12 @@ $vars->{accountcode} = $YqueryCID;
 ### set the accountcode 
 set_variable("CDR(accountcode)",$YqueryCID);
 $osdial->agi_output("--    AccountCode changed: $YqueryCID");
+
+$stmtA = sprintf("UPDATE call_log SET caller_code='%s',channel_group='Inbound',answer_time='%s',answer_epoch='%s',carrier_id='%s',did_id='%s' WHERE uniqueid='%s' AND server_ip='%s';",$osdial->mres($YqueryCID),$osdial->mres($now_date),$osdial->mres($now_date_epoch),$osdial->mres($vars->{carrierid}),$osdial->mres($vars->{didid}),$osdial->mres($vars->{uniqueid}),$osdial->mres($osdial->{'VARserver_ip'}));
+$affected_rows = $osdial->sql_execute($stmtA);
+$agi_string = "--    CL cl update: |$affected_rows|";
+$agi_string .= "\n|$stmtA|" if ($DB>1);
+$osdial->agi_output($agi_string);
 
 
 ##### BEGIN AFTER HOURS CHECK #####
@@ -1090,7 +1100,7 @@ while ($drop_timer <= $DROP_TIME) {
 				if (length($dcnt)==3) {
 					my $dig = substr($dcnt,0,1);
 					stream_file('digits/'.$dig);
-					stream_file('hundred');
+					stream_file('digits/hundred');
 					$dcnt = substr($dcnt,1,2);
 				}
 				if (length($dcnt)==2 and $dcnt!=0) {

@@ -101,6 +101,10 @@ if ($osd->sql_execute($stmt)) {
 	$osd->agi_output("|$stmt|") if ($DB);
 	$hopper = $osd->sql_query($stmt);
 
+	$stmt = sprintf("UPDATE call_log SET answer_time='%s',answer_epoch='%s' WHERE uniqueid='%s' AND server_ip='%s';",$SQLdate,$now_date_epoch,$osd->AGI->{uniqueid},$osd->{VARserver_ip});
+	$osd->agi_output("|$stmt|") if ($DB);
+	$osd->sql_execute($stmt);
+
 	$stmt = sprintf("INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,server_ip) VALUES ('%s','%s','%s','%s','%s','QUEUE','%s','%s','VDAD','N','%s');",$osd->AGI->{uniqueid},$CIDlead_id,$osd->mres($oac->{campaign_id}),$SQLdate,$now_date_epoch,$oac->{phone_code},$oac->{phone_number},$osd->{VARserver_ip});
 	$osd->agi_output("|$stmt|") if ($DB);
 	$osd->sql_execute($stmt);

@@ -294,70 +294,67 @@ sub process_request {
 	my $HVcauses=0;
 	my $DShasvalue=1;
 	my $fullCID=0;
-	my ($uniqueid, $priority, $channel, $extension, $type, $request, $accountcode, $callerid, $calleridname, $context, $dnid, $language, $rdnis, $threadid, $version);
+	my ($uniqueid, $carrierid, $linkedid, $priority, $channel, $extension, $type, $request, $accountcode, $callerid, $calleridname, $context, $dnid, $language, $rdnis, $threadid, $version);
 	my ($PRI, $DEBUG, $hangup_cause, $dialstatus, $dial_time, $answered_time, $ring_time);
-	my %AGI;
-	while(<STDIN>) {
-		chomp;
-		last unless length($_);
-		$AGI{$1} = $2 if ($AGILOG and /^agi_(\w+)\:\s+(.*)$/);
+	$osdial->AGI('FastAGI_log.pl');
+	$uniqueid = $osdial->AGI->{'uniqueid'};
+	$priority = $osdial->AGI->{'priority'};
+	$channel = $osdial->AGI->{'channel'};
+	$extension = $osdial->AGI->{'extension'};
+	$type = $osdial->AGI->{'type'};
+	$request = $osdial->AGI->{'request'};
+	$accountcode = $osdial->AGI->{'accountcode'};
+	$callerid = $osdial->AGI->{'callerid'};
+	$calleridname = $osdial->AGI->{'calleridname'};
+	$context = $osdial->AGI->{'context'};
+	$dnid = $osdial->AGI->{'dnid'};
+	$dnid =~ s/unknown//;
+	$language = $osdial->AGI->{'language'};
+	$rdnis = $osdial->AGI->{'rdnis'};
+	$threadid = $osdial->AGI->{'threadid'};
+	$version = $osdial->AGI->{'version'};
+	$linkedid = $osdial->AGI->get_variable('CDR(linkedid)');
+	$carrierid = $osdial->AGI->get_variable('carrierid');
+	if ( ($request =~ /--fullCID--/i) and (!$fullCID) ) {
+		$fullCID=1;
+		my @CID = split(/-----/, $request);
+		$callerid = $CID[2];
+		$calleridname = $CID[3];
+		$agi_string = "URL fullCID: |$callerid|$calleridname|$request|";
+		&agi_output;
+	}
+	if ( ($request =~ /--HVcauses--/i) and (!$HVcauses) ) {
+		$HVcauses=1;
+		my @ARGV_vars = split(/-----/, $request);
+		$PRI = $ARGV_vars[0];
+		$PRI =~ s/.*--HVcauses--//gi;
+		$DEBUG = $ARGV_vars[1];
+		$hangup_cause = $ARGV_vars[2];
+		$dialstatus = $ARGV_vars[3];
+		$dial_time = $ARGV_vars[4];
+		$answered_time = $ARGV_vars[5];
+		$ring_time=0;
+		if($dial_time > $answered_time) {
+			$ring_time = $dial_time - $answered_time;
+		}
+		$agi_string = "URL HVcauses: |$PRI|$DEBUG|$hangup_cause|$dialstatus|$dial_time|$answered_time|$ring_time|";
+		&agi_output;
+		$DShasvalue=0 if ($dialstatus eq '');
+	}
+	# if no fullCID sent
+	if (!$fullCID) {
+		$calleridname =~ s/\"//gi if ( $calleridname =~ /\"/);
+		$callerid = $calleridname if (((length($calleridname)>5) and (!$callerid or $callerid =~ /unknown|private|00000000/i or $callerid =~ /5551212/ )) or (length($calleridname)>17 and $calleridname =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/));
 
-		$uniqueid = $AGI{'uniqueid'};
-		$priority = $AGI{'priority'};
-		$channel = $AGI{'channel'};
-		$extension = $AGI{'extension'};
-		$type = $AGI{'type'};
-		$request = $AGI{'request'};
-		$accountcode = $AGI{'accountcode'};
-		$callerid = $AGI{'callerid'};
-		$calleridname = $AGI{'calleridname'};
-		$context = $AGI{'context'};
-		$dnid = $AGI{'dnid'};
-		$language = $AGI{'language'};
-		$rdnis = $AGI{'rdnis'};
-		$threadid = $AGI{'threadid'};
-		$version = $AGI{'version'};
-		if ( ($request =~ /--fullCID--/i) and (!$fullCID) ) {
-			$fullCID=1;
-			my @CID = split(/-----/, $request);
-			$callerid = $CID[2];
-			$calleridname = $CID[3];
-			$agi_string = "URL fullCID: |$callerid|$calleridname|$request|";
-			&agi_output;
+		### allow for ANI being sent with the DNIS "*3125551212*9999*"
+		if ($extension =~ /^\*\d\d\d\d\d\d\d\d\d\d\*/) {
+			$callerid = $extension;
+			$callerid =~ s/\*\d\d\d\d\*$//gi;
+			$callerid =~ s/^\*//gi;
+			$extension =~ s/^\*\d\d\d\d\d\d\d\d\d\d\*//gi;
+			$extension =~ s/\*$//gi;
 		}
-		if ( ($request =~ /--HVcauses--/i) and (!$HVcauses) ) {
-			$HVcauses=1;
-			my @ARGV_vars = split(/-----/, $request);
-			$PRI = $ARGV_vars[0];
-			$PRI =~ s/.*--HVcauses--//gi;
-			$DEBUG = $ARGV_vars[1];
-			$hangup_cause = $ARGV_vars[2];
-			$dialstatus = $ARGV_vars[3];
-			$dial_time = $ARGV_vars[4];
-			$answered_time = $ARGV_vars[5];
-			$ring_time=0;
-			if($dial_time > $answered_time) {
-				$ring_time = $dial_time - $answered_time;
-			}
-			$agi_string = "URL HVcauses: |$PRI|$DEBUG|$hangup_cause|$dialstatus|$dial_time|$answered_time|$ring_time|";
-			&agi_output;
-			$DShasvalue=0 if ($dialstatus eq '');
-		}
-		# if no fullCID sent
-		if (!$fullCID) {
-			$calleridname =~ s/\"//gi if ( $calleridname =~ /\"/);
-			$callerid = $calleridname if (((length($calleridname)>5) and (!$callerid or $callerid =~ /unknown|private|00000000/i or $callerid =~ /5551212/ )) or (length($calleridname)>17 and $calleridname =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/));
-
-			### allow for ANI being sent with the DNIS "*3125551212*9999*"
-			if ($extension =~ /^\*\d\d\d\d\d\d\d\d\d\d\*/) {
-				$callerid = $extension;
-				$callerid =~ s/\*\d\d\d\d\*$//gi;
-				$callerid =~ s/^\*//gi;
-				$extension =~ s/^\*\d\d\d\d\d\d\d\d\d\d\*//gi;
-				$extension =~ s/\*$//gi;
-			}
-			$calleridname = $callerid;
-		}
+		$calleridname = $callerid;
 	}
 
 	if ($AGILOG) {
@@ -365,16 +362,17 @@ sub process_request {
 		&agi_output;
 	}
 
-	foreach my $i (sort keys %AGI) {
+	foreach my $i (sort keys %{$osdial->AGI}) {
 		if ($AGILOG) {
-			$agi_string = " -- $i = $AGI{$i}";
+			$agi_string = " -- $i = ".$osdial->AGI->{$i};
 			&agi_output;
 		}
 	}
 
 
 	if ($AGILOG) {
-		$agi_string = "AGI Variables: |$uniqueid|$channel|$extension|$type|$callerid|$accountcode|";
+		my $linkid = $osdial->AGI->get_variable('CDR(linkedid)');
+		$agi_string = "AGI Variables: |$uniqueid|$channel|$extension|$type|$callerid|$accountcode|".$linkid;
 		&agi_output;
 	}
 
@@ -396,9 +394,11 @@ sub process_request {
 	if ($process =~ /^call_log/) {
 		### call start stage
 		if ($stage =~ /START/) {
+			$uniqueid=$linkedid if ($uniqueid ne $linkedid and $linkedid ne '');
 			my ($channel_group, $number_dialed, $is_client_phone);
 			my $orig_extension = $extension;
 			$extension =~ s/^dial.//g;
+			$channel_group = $type." Channel Line";
 
 			if ($AGILOG) {
 				$agi_string = "+++++ CALL LOG START : $now_date";
@@ -534,11 +534,13 @@ sub process_request {
 				}
 				$sthA->finish();
 				$extension =~ s/\D//gi;
+				my $dpc = $osdial->{settings}{default_phone_code};
+				$number_dialed =~ s/^.$dpc/$dpc/;
 				$number_dialed =~ s/\D//gi;
 				$number_dialed=$extension if (length($number_dialed)<1);
 			}
 			if ($accountcode =~ /^Y/ and $accountcode =~ /\d\d\d\d\d\d\d\d\d/ and length($number_dialed)<1) {
-				$number_dialed = $callerid;
+				$number_dialed = $extension;
 				$number_dialed='' if (length($number_dialed)<1);
 			}
 
@@ -648,14 +650,20 @@ sub process_request {
 					}
 				}
 			}
+			$stmtA = sprintf("SELECT COUNT(*) AS cnt FROM call_log WHERE uniqueid='%s' AND server_ip='%s';",$osdial->mres($uniqueid),$osdial->mres($VARserver_ip));
+			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+			@aryA = $sthA->fetchrow_array;
 
-			$stmtA = sprintf("INSERT INTO call_log SET uniqueid='%s',channel='%s',channel_group='%s',type='%s',server_ip='%s',extension='%s',number_dialed='%s',start_time='%s',start_epoch='%s',end_time='',end_epoch='',length_in_sec='',length_in_min='',caller_code='%s';",$osdial->mres($uniqueid),$osdial->mres($channel),$osdial->mres($channel_group),$osdial->mres($type),$osdial->mres($VARserver_ip),$osdial->mres($extension),$osdial->mres($number_dialed),$osdial->mres($now_date),$osdial->mres($now_date_epoch),$osdial->mres($accountcode));
+			if ($aryA[0] == 0) {
+				$stmtA = sprintf("INSERT INTO call_log SET uniqueid='%s',channel='%s',channel_group='%s',type='%s',server_ip='%s',extension='%s',number_dialed='%s',start_time='%s',start_epoch='%s',end_time='',end_epoch='',length_in_sec='',length_in_min='',caller_code='%s',carrier_id='%s',cid_name='%s',cid_number='%s',dnid='%s',language='%s';",$osdial->mres($uniqueid),$osdial->mres($channel),$osdial->mres($channel_group),$osdial->mres($type),$osdial->mres($VARserver_ip),$osdial->mres($extension),$osdial->mres($number_dialed),$osdial->mres($now_date),$osdial->mres($now_date_epoch),$osdial->mres($accountcode),$osdial->mres($carrierid),$osdial->mres($calleridname),$osdial->mres($callerid),$osdial->mres($dnid),$osdial->mres($language));
 
-			if ($AGILOG) {
-				$agi_string = "|$stmtA|";
-				&agi_output;
+				if ($AGILOG) {
+					$agi_string = "|$stmtA|";
+					&agi_output;
+				}
+				my $affected_rows = $dbhA->do($stmtA);
 			}
-			my $affected_rows = $dbhA->do($stmtA);
 
 			$dbhA->disconnect();
 
@@ -674,6 +682,7 @@ sub process_request {
 				$PRI =~ s/.*--HVcauses--//gi;
 				$DEBUG = $ARGV_vars[1];
 				$hangup_cause = $ARGV_vars[2];
+				$hangup_cause = '16' if ($hangup_cause eq '0' or $hangup_cause eq '');
 				$dialstatus = $ARGV_vars[3];
 				$dial_time = $ARGV_vars[4];
 				$answered_time = $ARGV_vars[5];
@@ -685,6 +694,10 @@ sub process_request {
 				&agi_output;
 			}
 
+			if ($accountcode !~ /^M/) {
+				$uniqueid=$linkedid if ($uniqueid ne $linkedid and $linkedid ne '');
+			}
+
 			### If HVcauses and DIALSTATUS is blank, skip call END.
 			if ($DShasvalue<1) {
 				$agi_string = "ERROR: DIALSTATUS is empty...";
@@ -692,9 +705,9 @@ sub process_request {
 			}
 
 			### get uniqueid and start_epoch from the call_log table
-			$stmtA = sprintf("SELECT uniqueid,start_epoch,channel,end_epoch,channel_group FROM call_log WHERE uniqueid='%s';",$osdial->mres($uniqueid));
+			$stmtA = sprintf("SELECT uniqueid,start_epoch,channel,end_epoch,channel_group FROM call_log WHERE uniqueid='%s' AND server_ip='%s';",$osdial->mres($uniqueid),$osdial->mres($VARserver_ip));
 			if ($accountcode =~ /^M/) {
-				$stmtA = sprintf("SELECT uniqueid,start_epoch,channel,end_epoch,channel_group FROM call_log WHERE caller_code='%s' AND channel NOT LIKE 'Local/%%';",$osdial->mres($accountcode));
+				$stmtA = sprintf("SELECT uniqueid,start_epoch,channel,end_epoch,channel_group FROM call_log WHERE caller_code='%s' AND channel NOT LIKE 'Local/%%' AND server_ip='%s';",$osdial->mres($accountcode),$osdial->mres($VARserver_ip));
 			}
 			if ($AGILOG) {
 				$agi_string = "|$stmtA|";
@@ -731,12 +744,14 @@ sub process_request {
 					&agi_output;
 				}
 
-				$stmtA = sprintf("UPDATE call_log SET end_time='%s',end_epoch='%s',length_in_sec='%s',length_in_min='%s',channel='%s',isup_result='%s' WHERE uniqueid='%s';",$osdial->mres($now_date),$osdial->mres($now_date_epoch),$osdial->mres($length_in_sec),$osdial->mres($length_in_min),$osdial->mres($channel),$osdial->mres($hangup_cause),$osdial->mres($uniqueid));
+				$stmtA = sprintf("UPDATE call_log SET end_time='%s',end_epoch='%s',length_in_sec='%s',length_in_min='%s',channel='%s',isup_result='%s' WHERE uniqueid='%s' AND server_ip='%s';",$osdial->mres($now_date),$osdial->mres($now_date_epoch),$osdial->mres($length_in_sec),$osdial->mres($length_in_min),$osdial->mres($channel),$osdial->mres($hangup_cause),$osdial->mres($uniqueid),$osdial->mres($VARserver_ip));
 
 				if ($AGILOG) {
 					$agi_string = "|$stmtA|";
 					&agi_output;
 				}
+				$affected_rows = $dbhA->do($stmtA);
+				$stmtA = sprintf("UPDATE call_log SET answer_time=IF(answer_time='0000-00-00 00-00-00',end_time,answer_time),answer_epoch=IF(answer_epoch IS NULL,end_epoch,answer_epoch) WHERE uniqueid='%s' AND server_ip='%s';",$osdial->mres($uniqueid),$osdial->mres($VARserver_ip));
 				$affected_rows = $dbhA->do($stmtA);
 			}
 
