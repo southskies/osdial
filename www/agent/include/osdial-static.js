@@ -398,7 +398,6 @@
 		if (typeof(xmlhttprequestcheckconf) == "undefined") {
 			//alert (xmlhttprequestcheckconf == xmlhttpSendConf);
 			xmlhttprequestcheckconf_wait = 0;
-			custchannellive--;
 			if ( (agentcallsstatus == '1') || (callholdstatus == '1') ) {
 				campagentstatct++;
 				if (campagentstatct > campagentstatctmax) {
@@ -419,6 +418,7 @@
 				xmlhttprequestcheckconf.send(checkconf_query); 
 				xmlhttprequestcheckconf.onreadystatechange = function() { 
 					if (typeof(xmlhttprequestcheckconf) != "undefined" && xmlhttprequestcheckconf.readyState == 4 && xmlhttprequestcheckconf.status == 200) {
+						custchannellive--;
 						var check_conf = null;
 						var LMAforce = taskforce;
 						check_conf = xmlhttprequestcheckconf.responseText;
