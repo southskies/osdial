@@ -728,7 +728,7 @@ if ($osdial->{settings}{enable_queuemetrics_logging} > 0) {
 	$osdial->sql_disconnect('QM');
 }
 
-$stmtA = sprintf("INSERT INTO osdial_closer_log (lead_id,list_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,uniqueid,callerid,server_ip) VALUES ('%s','%s','%s','%s','%s','QUEUE','%s','%s','VDCL','N','%s','%s');",$osdial->mres($insert_lead_id),$osdial->mres($list_id),$osdial->mres($channel_group),$osdial->mres($SQLdate),$osdial->mres($now_date_epoch),$osdial->mres($phone_code),$osdial->mres($phone_number),$osdial->mres($vars->{uniqueid}),$osdial->mres($vars->{accountcode}),mres($vars->{VARserver_ip}));
+$stmtA = sprintf("INSERT INTO osdial_closer_log (lead_id,list_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,uniqueid,callerid,server_ip) VALUES ('%s','%s','%s','%s','%s','QUEUE','%s','%s','VDCL','N','%s','%s','%s');",$osdial->mres($insert_lead_id),$osdial->mres($list_id),$osdial->mres($channel_group),$osdial->mres($SQLdate),$osdial->mres($now_date_epoch),$osdial->mres($phone_code),$osdial->mres($phone_number),$osdial->mres($vars->{uniqueid}),$osdial->mres($vars->{accountcode}),$osdial->mres($vars->{VARserver_ip}));
 $affected_rows = $osdial->sql_execute($stmtA);
 $agi_string = "--    OSDCL : |$insert_lead_id|insert to osdial_closer_log";
 $agi_string .= "\n |$stmtA|" if ($DB>1); 
