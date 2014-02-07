@@ -6969,6 +6969,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 	function voicemail_ariopen() {
 		if (VD_live_customer_call==0 && (vmail_messages + vmail_old_messages)>0) {
 			conf_channels_detail('HIDE');
+            document.getElementById('ARIPanel').style.zIndex='40';
 			document.getElementById('ARIPanel').style.visibility='visible';
 			document.getElementById('ARIFrame').src = '/voicemail/' + server_ip + '/ari/index.php?sessionid=1'+session_id+'&username='+voicemail_id+'&password='+voicemail_password;
 		}
@@ -6976,6 +6977,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 	function voicemail_ariclose() {
 		document.getElementById('ARIFrame').src = '/voicemail/' + server_ip + '/ari/index.php?logout=1';
+		document.getElementById('ARIPanel').style.zIndex='-40';
 		document.getElementById('ARIPanel').style.visibility='hidden';
 		document.getElementById('ARIFrame').src = '/agent/blank.php';
 		voicemail_arihangup();
