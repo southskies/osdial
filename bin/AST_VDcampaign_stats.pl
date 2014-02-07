@@ -161,9 +161,9 @@ while ( $master_loop < $CLOloops ) {
 		$rec_count = 0;
 		while ( $sthArows > $rec_count ) {
 			my @aryA               = $sthA->fetchrow_array;
-			$hopper_ready_count_stat = $aryA[0];
+			my $hopper_ready_count_stat = $aryA[0];
 			$hopper_ready_count += $aryA[1];
-			print "     $campaign_id[$i] hopper $hoppper_ready_count_stat count:   $hopper_ready_count\n" if ($DB);
+			print "     $campaign_id[$i] hopper $hopper_ready_count_stat count:   $hopper_ready_count\n" if ($DB);
 			$rec_count++;
 		}
 		$sthA->finish();
