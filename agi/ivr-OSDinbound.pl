@@ -592,7 +592,7 @@ if ($hm<$ct_default_start or $hm>$ct_default_stop) {
 	$affected_rows = $osdial->sql_execute($stmtA);
 	$osdial->agi_output("--    OSDCL vac record deleted: |$affected_rows| $channel_group|");
 
-	$stmtA = sprintf("INSERT INTO osdial_closer_log SET status='DROP',start_epoch='%s',end_epoch='%s',length_in_sec='1',queue_seconds='0',lead_id='%s',campaign_id='%s',user='VDCL',list_id='%s',call_date='%s',phone_code='%s',phone_number='%s',comments='AFTER HOURS DROP',term_reason='AFTERHOURS',uniqueid='%s',callerid='%s',server_ip='%s';",$osdial->mres($now_date_epoch),$osdial->mres($now_date_epoch),$osdial->mres($insert_lead_id),$osdial->mres($channel_group),$osdial->mres($list_id),$osdial->mres($now_date),$osdial->mres($phone_code),$osdial->mres($phone_number),$osdial->mres($vars->{uniqueid}),$osdial->mres($vars->{accountcode}),mres($vars->{VARserver_ip}));
+	$stmtA = sprintf("INSERT INTO osdial_closer_log SET status='DROP',start_epoch='%s',end_epoch='%s',length_in_sec='1',queue_seconds='0',lead_id='%s',campaign_id='%s',user='VDCL',list_id='%s',call_date='%s',phone_code='%s',phone_number='%s',comments='AFTER HOURS DROP',term_reason='AFTERHOURS',uniqueid='%s',callerid='%s',server_ip='%s';",$osdial->mres($now_date_epoch),$osdial->mres($now_date_epoch),$osdial->mres($insert_lead_id),$osdial->mres($channel_group),$osdial->mres($list_id),$osdial->mres($now_date),$osdial->mres($phone_code),$osdial->mres($phone_number),$osdial->mres($vars->{uniqueid}),$osdial->mres($vars->{accountcode}),$osdial->mres($vars->{VARserver_ip}));
 	$affected_rows = $osdial->sql_execute($stmtA);
 	$agi_string = "--    OSDCL ocl insert: |$affected_rows|$insert_lead_id";
 	$agi_string .= "\n|$stmtA|" if ($DB>1);
@@ -673,7 +673,7 @@ chop($INBOUNDcampsSQL);
 $osdial->agi_output("|$stmtA|$insert_lead_id|") if ($DB>1); 
 
 if ($call_handle_method =~ /DIGITID$/) {
-		$stmtA = sprintf("INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,server_ip,callerid) VALUES ('%s','%s','%s','%s','%s','XFER','%s','%s','%s','N','%s','%s');",$osdial->mres($vars->{uniqueid}),$osdial->mres($insert_lead_id),$osdial->mres($channel_group),$osdial->mres($SQLdate),$osdial->mres($now_date_epoch),$osdial->mres($phone_code),$osdial->mres($phone_number),$osdial->mres($fronter),$osdial->mres($osdial->{'VARserver_ip'}),mres($vars->{accountcode}));
+		$stmtA = sprintf("INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,server_ip,callerid) VALUES ('%s','%s','%s','%s','%s','XFER','%s','%s','%s','N','%s','%s');",$osdial->mres($vars->{uniqueid}),$osdial->mres($insert_lead_id),$osdial->mres($channel_group),$osdial->mres($SQLdate),$osdial->mres($now_date_epoch),$osdial->mres($phone_code),$osdial->mres($phone_number),$osdial->mres($fronter),$osdial->mres($osdial->{'VARserver_ip'}),$osdial->mres($vars->{accountcode}));
 		$agi_string = "--    OSDAD : |$insert_lead_id|$fronter|insert to osdial_log: ".$vars->{uniqueid};
 		$agi_string .= "\n|$stmtA|" if ($DB>1);
 		$osdial->agi_output($agi_string);
