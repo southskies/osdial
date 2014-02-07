@@ -225,7 +225,7 @@ while ($k < $rec_count)
 	{
 	$queryCID = "ULGC35$TDnum";
 
-	$stmtA=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Command','%s','Command: %s','','','','','','','','','');",$now_date,$server_ip,$queryCID,'meetme kick '.$PT_conf_extens[$k].' all'));
+	$stmtA=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Command','%s','Command: %s','','','','','','','','','');",$now_date,$server_ip,$queryCID,'meetme kick '.$PT_conf_extens[$k].' all');
 		$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query:|$stmtA|\n";
 
 	$stmtA = "UPDATE osdial_conferences SET extension='',leave_3way='0' WHERE server_ip='$server_ip' AND conf_exten='$PT_conf_extens[$k]';";
@@ -336,7 +336,7 @@ foreach(@PTextensions)
 			### Kick all participants if there are any left in the conference so it can be reused
 			$queryCID = "ULGC36$TDnum";
 
-			$stmtA=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Command','%s','Command: %s','','','','','','','','','');",$now_date,$server_ip,$queryCID,'meetme kick '.$PT_conf_extens[$i].' all'));
+			$stmtA=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Command','%s','Command: %s','','','','','','','','','');",$now_date,$server_ip,$queryCID,'meetme kick '.$PT_conf_extens[$i].' all');
 				$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query:|$stmtA|\n";
 			if($DB){print STDERR "\n|$affected_rows|$stmtA|\n";}
 			}
