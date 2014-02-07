@@ -396,6 +396,8 @@ sub gen_servers {
 	my $esvr = $achead;
 	my $isvr = $achead;
 	my $ssvr = $achead;
+	my $rsvr = $achead;
+	my $rmsvr = $achead;
 	my $sreg='';
 	my $ireg='';
 	my $myserverid='';
@@ -598,6 +600,8 @@ sub gen_servers {
 	write_reload($esvr,'osdial_extensions_servers',$extreload);
 	write_reload($isvr,'osdial_iax_servers','iax2 reload');
 	write_reload($ssvr,'osdial_sip_servers','sip reload');
+	write_reload($rsvr,'rtp','module reload res_rtp_asterisk.so');
+	write_reload($rmsvr,'res_stun_monitor','module reload res_stun_monitor.so');
 	
 	return ($sreg, $ireg);
 }
