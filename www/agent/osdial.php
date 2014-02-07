@@ -2477,7 +2477,7 @@ flush();
 
     <?php load_status('Initializing GUI...<br>ARIPanel<br>&nbsp;'); ?>
     <!-- ARIPanel -->
-    <span style="visibility:hidden;position:absolute;left:3px;top:40px;z-index:40;padding:15;background-color:<?php echo $wrapup_bg; ?>;" name="ARIPanel" id="ARIPanel">
+    <span style="visibility:hidden;position:absolute;left:3px;top:40px;z-index:-40;padding:15;background-color:<?php echo $wrapup_bg; ?>;" name="ARIPanel" id="ARIPanel">
         <iframe src="/agent/blank.php" width="<?php echo $CAwidth; ?>" height="500" name="ARIFrame" id="ARIFrame" style="background-color: white;"></iframe>
     </span>
 
