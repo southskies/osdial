@@ -418,7 +418,7 @@
 				xmlhttprequestcheckconf.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 				xmlhttprequestcheckconf.send(checkconf_query); 
 				xmlhttprequestcheckconf.onreadystatechange = function() { 
-					if (xmlhttprequestcheckconf.readyState == 4 && xmlhttprequestcheckconf.status == 200) {
+					if (typeof(xmlhttprequestcheckconf)!="undefined" && xmlhttprequestcheckconf.readyState == 4 && xmlhttprequestcheckconf.status == 200) {
 						var check_conf = null;
 						var LMAforce = taskforce;
 						check_conf = xmlhttprequestcheckconf.responseText;
