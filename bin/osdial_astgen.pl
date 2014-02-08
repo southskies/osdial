@@ -1274,20 +1274,17 @@ sub gen_carriers {
 	$dialplan .= procexten('dial','s','8','Return','');
 
 	$dialplan .= procexten('dial','s-NOANSWER','1','Playback','number-not-answering,noanswer');
-	$dialplan .= procexten('dial','s-NOANSWER','2','Return','');
+	$dialplan .= procexten('dial','s-NOANSWER','2','Hangup','${HANGUPCAUSE}');
 	$dialplan .= procexten('dial','s-BUSY','1','Playback','all-circuits-busy-now,noanswer');
 	$dialplan .= procexten('dial','s-BUSY','2','Playtones','busy');
-	$dialplan .= procexten('dial','s-BUSY','3','Busy','10');
-	$dialplan .= procexten('dial','s-BUSY','4','Return','');
+	$dialplan .= procexten('dial','s-BUSY','3','Hangup','${HANGUPCAUSE}');
 	$dialplan .= procexten('dial','s-CHANUNAVAIL','1','Gosub','failover-${name},s,1(${EXTEN})');
 	$dialplan .= procexten('dial','s-CHANUNAVAIL','2','Playtones','congestion');
-	$dialplan .= procexten('dial','s-CHANUNAVAIL','3','Congestion','10');
-	$dialplan .= procexten('dial','s-CHANUNAVAIL','4','Return','');
+	$dialplan .= procexten('dial','s-CHANUNAVAIL','3','Hangup','${HANGUPCAUSE}');
 	$dialplan .= procexten('dial','s-CONGESTION','1','Gosub','failover-${name},s,1(${EXTEN})');
 	$dialplan .= procexten('dial','s-CONGESTION','2','Playtones','congestion');
-	$dialplan .= procexten('dial','s-CONGESTION','3','Congestion','10');
-	$dialplan .= procexten('dial','s-CONGESTION','4','Return','');
-	$dialplan .= procexten('dial','_s-.','1','Return','');
+	$dialplan .= procexten('dial','s-CONGESTION','3','Hangup','${HANGUPCAUSE}');
+	$dialplan .= procexten('dial','_s-.','1','Hangup','${HANGUPCAUSE}');
 
 	$dialplan .= procexten('dial','_X.','1','AGI','agi://127.0.0.1:4577/call_log');
 	$dialplan .= procexten('dial','_X.','2','Return','');

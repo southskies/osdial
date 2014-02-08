@@ -1147,13 +1147,14 @@ if ($ACTION == 'manDiaLlookCaLL') {
     $row='';
     $rowx='';
     $call_good=0;
+    $call_output = "NO\n$DiaL_SecondS\n";
     if (OSDstrlen($MDnextCID)<18) {
         echo "NO\n";
         echo "MDnextCID $MDnextCID is not valid\n";
         exit;
     } else {
         ##### look for the channel in the UPDATED osdial_manager record of the call initiation
-        $stmt=sprintf("SELECT uniqueid,channel FROM osdial_manager WHERE callerid='%s' AND server_ip='%s' AND status IN('UPDATED','DEAD') LIMIT 1;",mres($MDnextCID),mres($server_ip));
+        $stmt=sprintf("SELECT uniqueid,channel,status,response FROM osdial_manager WHERE callerid='%s' AND server_ip='%s' LIMIT 1;",mres($MDnextCID),mres($server_ip));
         $rslt=mysql_query($stmt, $link);
         if ($DB) echo "$stmt\n";
         $VM_mancall_ct = mysql_num_rows($rslt);
@@ -1161,14 +1162,13 @@ if ($ACTION == 'manDiaLlookCaLL') {
             $row=mysql_fetch_row($rslt);
             $uniqueid =$row[0];
             $channel =$row[1];
-            $call_output = "$uniqueid\n$channel\n";
-            $call_good++;
-        } else {
-            ### after 10 seconds, start checking for call termination in the carrier log
-            if ($DiaL_SecondS>0 and OSDpreg_match("/0$/",$DiaL_SecondS)) {
-                $stmt=sprintf("SELECT uniqueid,channel,end_epoch,isup_result FROM call_log WHERE caller_code='%s' AND server_ip='%s' ORDER BY start_time DESC LIMIT 1;",mres($MDnextCID),mres($server_ip));
+            $status =$row[2];
+            $response =$row[3];
+            if ($response=='Y') {
+
+                $stmt=sprintf("SELECT uniqueid,channel,end_epoch,isup_result FROM call_log WHERE caller_code='%s' AND server_ip='%s' AND isup_result NOT IN ('0','16') ORDER BY start_time DESC LIMIT 1;",mres($MDnextCID),mres($server_ip));
                 $rslt=mysql_query($stmt, $link);
-                if ($DB) echo "$stmt\n";
+                if ($format=='debug') echo "\n<!-- $stmt -->";
                 $VM_mancallX_ct = mysql_num_rows($rslt);
                 if ($VM_mancallX_ct>0) {
                     $row=mysql_fetch_row($rslt);
@@ -1178,18 +1178,17 @@ if ($ACTION == 'manDiaLlookCaLL') {
                     $hangup_cause =  $row[3];
 
                     #$stmt="SELECT status FROM osdial_log WHERE uniqueid='$uniqueid' AND server_ip='$server_ip' AND channel='$channel' AND status IN('BUSY','CHANUNAVAIL','CONGESTION') LIMIT 1;";
-                    $stmt=sprintf("SELECT status FROM osdial_log WHERE uniqueid='%s' AND server_ip='%s' AND channel='%s' AND ((status IN('B','CPRB') AND user='VDAD') OR status IN('CRR','CRF','CRO','CRC','CPRUNK','CPRNA','CPRATB','CPRCR','CPRLR','CPRSNC','CPRSRO','CPRSIC','CPRSIO','CPRSVC','CPSHU','CPSUNK')) LIMIT 1;",mres($uniqueid),mres($server_ip),mres($channel));
+                    $stmt=sprintf("SELECT status FROM osdial_log WHERE uniqueid='%s' AND server_ip='%s' LIMIT 1;",mres($uniqueid),mres($server_ip));
                     $rslt=mysql_query($stmt, $link);
-                    if ($DB) echo "$stmt\n";
+                    if ($format=='debug') echo "\n<!-- $stmt -->";
                     $CL_mancall_ct = mysql_num_rows($rslt);
                     if ($CL_mancall_ct > 0) {
                         $row=mysql_fetch_row($rslt);
                         $dialstatus =$row[0];
 
-                        $channel = $dialstatus;
-                        $hangup_cause_msg = "Cause: " . $hangup_cause . " - " . hangup_cause_description($hangup_cause);
+                        $hangup_cause_msg = $hangup_cause . " - " . hangup_cause_description($hangup_cause);
 
-                        $call_output = "$uniqueid\n$channel\nERROR\n" . $hangup_cause_msg;
+                        $call_output = "$uniqueid\n$channel\nERROR\n$dialstatus\n$hangup_cause_msg\n";
                         $call_good++;
 
                         ### Delete call record
@@ -1198,46 +1197,46 @@ if ($ACTION == 'manDiaLlookCaLL') {
                         $rslt=mysql_query($stmt, $link);
                     }
                 }
+            } elseif ($status == 'UPDATED' or $status == 'DEAD') {
+                $call_output = "$uniqueid\n$channel\n";
+                $call_good++;
             }
-        }
 
-        if ($call_good>0) {
-            if ($stage!="YES") {
-                $dead_epochSQL = '';
-                $pause_sec=0;
-                $wait_epoch='';
-                $wait_sec=0;
-                $stmt=sprintf("SELECT pause_epoch,wait_epoch FROM osdial_agent_log WHERE agent_log_id='%s';",mres($agent_log_id));
-                if ($DB) echo "$stmt\n";
-                $rslt=mysql_query($stmt, $link);
-                $VDpr_ct = mysql_num_rows($rslt);
-                if ($VDpr_ct > 0) {
-                    $row=mysql_fetch_row($rslt);
-                    $pause_epoch = $row[0];
-                    $wait_epoch = $row[1];
-                    if (OSDstrlen($wait_epoch)<5) $wait_epoch=$StarTtime;
-                    $pause_sec = ($StarTtime - $pause_epoch);
-                    $wait_sec = ($StarTtime - $wait_epoch);
-                    if ($wait_sec<0) $wait_sec=0;
+            if ($call_good>0) {
+                if ($stage!="YES") {
+                    $dead_epochSQL = '';
+                    $pause_sec=0;
+                    $wait_epoch='';
+                    $wait_sec=0;
+                    $stmt=sprintf("SELECT pause_epoch,wait_epoch FROM osdial_agent_log WHERE agent_log_id='%s';",mres($agent_log_id));
+                    if ($format=='debug') echo "\n<!-- $stmt -->";
+                    $rslt=mysql_query($stmt, $link);
+                    $VDpr_ct = mysql_num_rows($rslt);
+                    if ($VDpr_ct > 0) {
+                        $row=mysql_fetch_row($rslt);
+                        $pause_epoch = $row[0];
+                        $wait_epoch = $row[1];
+                        if (OSDstrlen($wait_epoch)<5) $wait_epoch=$StarTtime;
+                        $pause_sec = ($StarTtime - $pause_epoch);
+                        $wait_sec = ($StarTtime - $wait_epoch);
+                        if ($wait_sec<0) $wait_sec=0;
+                    }
+                    $stmt=sprintf("UPDATE call_log SET uniqueid='%s',channel='%s',answer_time='%s',answer_epoch='%s' WHERE caller_code='%s';",mres($uniqueid),mres($channel),mres($NOW_TIME),mres($StarTtime),mres($MDnextCID));
+                    if ($format=='debug') echo "\n<!-- $stmt -->";
+                    $rslt=mysql_query($stmt, $link);
+
+                    $stmt=sprintf("UPDATE osdial_agent_log SET pause_sec='%s',wait_epoch='%s',wait_sec='%s',talk_epoch='%s',lead_id='%s' WHERE agent_log_id='%s';",mres($pause_sec),mres($wait_epoch),mres($wait_sec),mres($StarTtime),mres($lead_id),mres($agent_log_id));
+                    if ($format=='debug') echo "\n<!-- $stmt -->";
+                    $rslt=mysql_query($stmt, $link);
+
+                    $stmt=sprintf("UPDATE osdial_auto_calls SET uniqueid='%s',channel='%s' WHERE callerid='%s';",mres($uniqueid),mres($channel),mres($MDnextCID));
+                    if ($format=='debug') echo "\n<!-- $stmt -->";
+                    $rslt=mysql_query($stmt, $link);
                 }
-                $stmt=sprintf("UPDATE osdial_agent_log SET pause_sec='%s',wait_epoch='%s',wait_sec='%s',talk_epoch='%s',lead_id='%s' WHERE agent_log_id='%s';",mres($pause_sec),mres($wait_epoch),mres($wait_sec),mres($StarTtime),mres($lead_id),mres($agent_log_id));
-                if ($format=='debug') echo "\n<!-- $stmt -->";
-                $rslt=mysql_query($stmt, $link);
-
-                $stmt=sprintf("UPDATE osdial_auto_calls SET uniqueid='%s',channel='%s' WHERE callerid='%s';",mres($uniqueid),mres($channel),mres($MDnextCID));
-                if ($format=='debug') echo "\n<!-- $stmt -->";
-                $rslt=mysql_query($stmt, $link);
             }
-
-            $stmt=sprintf("UPDATE call_log SET uniqueid='%s',channel='%s',answer_time='%s',answer_epoch='%s' WHERE caller_code='%s';",mres($uniqueid),mres($channel),mres($NOW_TIME),mres($StarTtime),mres($MDnextCID));
-            if ($format=='debug') echo "\n<!-- $stmt -->";
-            $rslt=mysql_query($stmt, $link);
-
-            echo "$call_output";
-        } else {
-            echo "NO\n$DiaL_SecondS\n";
         }
     }
+    echo "$call_output";
 }
 
 if ($ACTION == 'OLDmanDiaLlookCaLL') {
