@@ -1304,6 +1304,7 @@
 		var xmlhttp=getXHR();
 		if (xmlhttp) { 
 			manDiaLlook_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLlookCaLL&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&MDnextCID=" + CIDcheck + "&agent_log_id=" + agent_log_id + "&lead_id=" + document.osdial_form.lead_id.value + "&DiaL_SecondS=" + MD_ring_secondS + "&stage=" + taskCheckOR;
+			debug("<b>ManualDialCheckChanneL:</b> vdc_db_query: manDiaLlook_query=" + manDiaLlook_query,4);
 			xmlhttp.open('POST', 'vdc_db_query.php'); 
 			xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 			xmlhttp.send(manDiaLlook_query); 
@@ -1313,6 +1314,7 @@
 					//osdalert(xmlhttp.responseText,30);
 					MDlookResponse = xmlhttp.responseText;
 					var MDlookResponse_array=MDlookResponse.split("\n");
+					debug("<b>ManualDialCheckChanneL return:</b> " + MDlookResponse_array[0] + "|" + MDlookResponse_array[1] + "|" + MDlookResponse_array[2] + "|" + MDlookResponse_array[3] + "|" + MDlookResponse_array[4],4);
 					var MDlookCID = MDlookResponse_array[0];
 					if (MDlookCID == "NO") {
 						if (dial_timedout == 0) {
@@ -1335,18 +1337,25 @@
 						MDuniqueid = MDlookResponse_array[0];
 						MDchannel = MDlookResponse_array[1];
 						MDerror = MDlookResponse_array[2];
-						MDhangupcause = MDlookResponse_array[3];
+						MDstatus = MDlookResponse_array[3];
+						MDhangupcause = MDlookResponse_array[4];
 						// 3rd party dials (XD)
 						if (taskCheckOR == 'YES') {
 							if (MDerror == 'ERROR') {
-								document.getElementById("MainStatuSSpan").innerHTML = "<font color=" + status_alert_color + "> Call Rejected: " + MDhangupcause + "&nbsp;&nbsp;</font>";
-								osdalert("Call Rejected: " + MDhangupcause + "\n",5);
+								document.osdial_form.xferuniqueid.value	= MDuniqueid;
+								document.osdial_form.xferchannel.value	= MDchannel;
+								lastxferchannel = MDchannel;
+								document.osdial_form.xferlength.value		= 0;
+								XD_live_call_secondS = 0;
+								osdalert("Call Rejected: "+MDhangupcause+"  Status: "+MDstatus+"\n",5);
+								xfercall_send_hangup();
+								document.getElementById("MainStatuSSpan").innerHTML = "<font color=" + status_alert_color + "> Call Rejected: " + MDhangupcause + "&nbsp;&nbsp;Status: "+MDstatus+"</font>";
 							} else if ( (MDchannel.match(regMDL)) && (asterisk_version != '1.0.8') && (asterisk_version != '1.0.9') && ((MD_ring_secondS < 10 && document.osdial_form.xfernumber.value!='CXFER') || (MD_ring_secondS < 1 && document.osdial_form.xfernumber.value=='CXFER'))) {
 								// bad grab of Local channel, try again
 								MD_ring_secondS++;
 								var status_display_number = formatPhone(document.osdial_form.phone_code.value,dialed_number);
 								//document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
-								document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "&nbsp;&nbsp;</font><font color=" + status_intense_color + " style='text-decoration:blink;'></font><font style='margin-left:40px;' color=white><b>Waiting for Ring... " + MD_ring_secondS + " seconds<b></font>";
+								document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "&nbsp;&nbsp;</font><font color=" + status_intense_color + " style='text-decoration:blink;'></font><font style='margin-left:40px;' color=white><b>Ringing ... " + MD_ring_secondS + " seconds<b></font>";
 							} else {
 								document.osdial_form.xferuniqueid.value	= MDuniqueid;
 								document.osdial_form.xferchannel.value	= MDchannel;
@@ -1386,8 +1395,18 @@
 								agent_log_type="TALK";
 								agent_log_time=0;
 								agent_log_epoch_start=agent_log_epoch;
-								document.getElementById("MainStatuSSpan").innerHTML = "<font color=" + status_alert_color + "> Call Rejected: " + MDhangupcause + "&nbsp;&nbsp;</font>";
-								osdalert("Call Rejected: " + MDhangupcause + "\n",5);
+								document.osdial_form.uniqueid.value		= MDuniqueid;
+								document.getElementById("callchannel").innerHTML = MDchannel;
+								lastcustchannel = MDchannel;
+								lastcustserverip = server_ip;
+								document.osdial_form.SecondS.value		= 0;
+								osdalert("Call Rejected: "+MDhangupcause+"  Status: "+MDstatus+"\n",5);
+								document.osdial_form.DispoSelection.value = MDstatus;
+								auto_dial_level=1;
+								dialedcall_send_hangup('NO','YES');
+								document.getElementById("MainStatuSSpan").innerHTML = "<font color=" + status_alert_color + "> Call Rejected: " + MDhangupcause + "&nbsp;&nbsp;Status: "+MDstatus+"</font>";
+								AutoDial_ReSume_PauSe('VDADready','NEW_ID');
+								document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><span class=ResumeButtonOff>Resume</span><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
 							} else if ( (MDchannel.match(regMDL)) && (asterisk_version != '1.0.8') && (asterisk_version != '1.0.9') ) {
 								if (agent_log_type=="PAUSE") {
 									logTimeTrans();
@@ -1400,7 +1419,7 @@
 								var status_display_number = formatPhone(document.osdial_form.phone_code.value,dialed_number);
 
 								//document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
-								document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "&nbsp;&nbsp;</font><font color=" + status_intense_color + " style='text-decoration:blink;'></font><font style='margin-left:40px;' color=white><b>Waiting for Ring... " + MD_ring_secondS + " seconds<b></font>";
+								document.getElementById("MainStatuSSpan").innerHTML = "<font color=white> Calling " + status_display_number + "&nbsp;&nbsp;</font><font color=" + status_intense_color + " style='text-decoration:blink;'></font><font style='margin-left:40px;' color=white><b>Ringing Ring... " + MD_ring_secondS + " seconds<b></font>";
 							} else {
 								custchannellive=1;
 

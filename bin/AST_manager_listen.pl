@@ -300,9 +300,10 @@ while($one_day_interval > 0) {
 					$logmsg = "Asterisk server shutting down."
 
 				# Got hangup on channel, update manager.
-				} elsif ($ame{event} =~ /Hangup/i) {
-					my $stmtA = sprintf("UPDATE osdial_manager SET status='DEAD',channel='%s' WHERE server_ip='%s' AND uniqueid='%s' AND callerid NOT LIKE 'DCagcW%';",$ame{channel},$osdial->{VARserver_ip},$ame{uniqueid});
-					my $affected_rows1 = $osdial->sql_execute($stmtA);
+				} elsif ($ame{event} =~ /^Hangup$/i) {
+					my $affected_rows1;
+					my $stmtA = sprintf("UPDATE osdial_manager SET status='DEAD',channel='%s',response='Y' WHERE server_ip='%s' AND uniqueid='%s' AND callerid NOT LIKE 'DCagcW%';",$ame{channel},$osdial->{VARserver_ip},$ame{uniqueid});
+					$affected_rows1 = $osdial->sql_execute($stmtA);
 					print "|$affected_rows1 HANGUPs updated|$stmtA|\n" if ($DB);
 					if ($ame{calleridname} =~ /^OSDial#/ and $ame{channel} =~ /^Local\/.*@.*-....;.*$/) {
 						$ame{channel} =~ s/-....;.*$//;
@@ -323,7 +324,7 @@ while($one_day_interval > 0) {
 				# Update manager on new callerid or accountcode in channel.
 				} elsif ($ame{event} =~ /NewCallerid|NewAccountCode/i) {
 					if ($ame{channel} =~ /^local/i) {
-						my $stmtA = sprintf("UPDATE osdial_manager SET status='UPDATED',channel='%s',uniqueid='%s' WHERE server_ip='%s' AND callerid='%s' LIMIT 1;", $ame{channel}, $ame{uniqueid}, $osdial->{VARserver_ip}, $ame{accountcode});
+						my $stmtA = sprintf("UPDATE osdial_manager SET channel='%s',uniqueid='%s' WHERE server_ip='%s' AND callerid='%s' LIMIT 1;", $ame{channel}, $ame{uniqueid}, $osdial->{VARserver_ip}, $ame{accountcode});
 						my $affected_rows = $osdial->sql_execute($stmtA);
 						print "|$affected_rows NEWCALLIDs updated|$stmtA|\n" if ($DB);
 						$logmsg = $ame{event} . " on channel, update manager. ($affected_rows)";
@@ -360,14 +361,14 @@ while($one_day_interval > 0) {
 				} elsif ($ame{event} =~ /Newstate/i and $ame{accountcode} !~ /^[AD]CagcW/) {
 					if ($ame{accountcode} eq "") {
 						$logmsg = "Unhandled newstate (" . $ame{state} . ") on channel, no accountcode.";
-					} elsif ($ame{state} =~ /Dialing/i) {
+					} elsif ($ame{state} =~ /Dialing|Ringing/i) {
 						my $stmtA = sprintf("UPDATE osdial_manager SET status='SENT',channel='%s',uniqueid='%s' WHERE server_ip='%s' AND callerid='%s';",$ame{channel},$ame{uniqueid},$osdial->{VARserver_ip},$ame{accountcode});
 						my $affected_rows = $osdial->sql_execute($stmtA);
 						print "|$affected_rows DIALINGs updated|$stmtA|\n" if ($DB);
-						$logmsg = "Newstate (dialing) on channel, update manager as SENT. ($affected_rows)";
+						$logmsg = "Newstate (dialing) on channel, update manager. ($affected_rows)";
 
-					} elsif ($ame{state} =~ /Ringing|Up/i) {
-						if ($ame{channel} =~ /^local/i) {
+					} elsif ($ame{state} =~ /Up/i) {
+						if ($ame{channel} =~ /^local/i and $ame{accountcode} !~ /^S/) {
 							$logmsg = "Newstate (ringing/up) on channel, Local channel, not updating manager.";
 						} else {
 							my $stmtA = sprintf("UPDATE osdial_manager SET status='UPDATED',channel='%s',uniqueid='%s' WHERE server_ip='%s' AND callerid='%s';",$ame{channel},$ame{uniqueid},$osdial->{VARserver_ip},$ame{accountcode});
@@ -406,7 +407,7 @@ while($one_day_interval > 0) {
 					}
 				} elsif ($ame{event} =~ /Dial/i and $ame{subevent} =~ /Begin/i) {
 					if ($ame{destination} !~ /^local/i) {
-						my $stmtA = sprintf("UPDATE osdial_manager SET status='UPDATED',channel='%s',uniqueid='%s' WHERE server_ip='%s' AND callerid='%s';",$ame{destination},$ame{destuniqueid},$osdial->{VARserver_ip},$ame{accountcode});
+						my $stmtA = sprintf("UPDATE osdial_manager SET status='SENT',channel='%s',uniqueid='%s' WHERE server_ip='%s' AND callerid='%s';",$ame{destination},$ame{destuniqueid},$osdial->{VARserver_ip},$ame{accountcode});
 						my $affected_rows = $osdial->sql_execute($stmtA);
 						$logmsg = "Dial on non-local channel destination. ($affected_rows)";
 					} else {
