@@ -2073,7 +2073,7 @@ flush();
     
 
     <!-- Pause Code Link -->
-    <span style="position:absolute;left:36px;top:<?php echo ($CBheight+4); ?>px;z-index:40;visibility:hidden;" id="PauseCodeButtons">
+    <span style="position:absolute;left:36px;top:<?php echo ($CBheight+4); ?>px;z-index:14;visibility:hidden;" id="PauseCodeButtons">
         <font class="body_text">
             <span id="PauseCodeLinkSpan"><a href="#" onclick="PauseCodeSelectContent_create();return false;">PAUSE CODE</a></span><br>
         </font>
