@@ -494,7 +494,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 						$extension =~ s/^.*\(|\).*$//gi;
 					}
 				}
-				$extension =~ s/^SIP\/|-\S+$//gi;
+				$extension =~ s/^SIP\/|-[^-]+$//gi;
 				if ($DBasterisk_version =~ /^1\.6|^1\.8|^10\.|^11\./) {
 					$extension =~ s/\,.*//gi;
 				} else {
@@ -505,12 +505,12 @@ if (!$telnet_port) {$telnet_port = '5038';}
 				if ($IAX2_client_count) 
 					{
 					$channel_match=$channel;
-					$channel_match =~ s/\/\d+$|-\d+$//gi;
+					$channel_match =~ s/\/\d+$|-[^-]+$//gi;
 					$channel_match =~ s/^IAX2\///gi;
 					$channel_match =~ s/\*/\\\*/gi;
 					if ($IAX2_client_list =~ /\|$channel_match\|/i) {$test_iax_count++;}
 					$channel_match2=$channel;
-					$channel_match2 =~ s/-\d+$//gi;
+					$channel_match2 =~ s/-[^-]+$//gi;
 					$channel_match2 =~ s/^IAX2\///gi;
 					$channel_match2 =~ s/\*/\\\*/gi;
 					print "\nCCM: $channel_match2\n";
@@ -844,7 +844,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 					#	$duration =		$list_chan_12[10];
 					#	$bridged =		$list_chan_12[11];
 						}
-					$extension =~ s/^SIP\/|-\S+$//gi;
+					$extension =~ s/^SIP\/|-[^-]+$//gi;
 					#$extension =~ s/\|.*$//gi;
 					$extension =~ s/^Local\/|\@.*$//gi;
 					if ($DBasterisk_version =~ /^1\.6|^1\.8|^10\.|^11\./) {
@@ -869,7 +869,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 					if ($IAX2_client_count) 
 						{
 						$channel_match=$channel;
-						$channel_match =~ s/\/\d+$|-\d+$//gi;
+						$channel_match =~ s/\/\d+$|-[^-]+$//gi;
 						$channel_match =~ s/^IAX2\///gi;
 						$channel_match =~ s/\*/\\\*/gi;
 						print "checking for IAX2 client:   |$channel_match|";
@@ -877,7 +877,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 						print "\n";
 						if ($IAX2_client_list !~ /\|$channel_match\|/i) {
 							$channel_match=$channel;
-							$channel_match =~ s/-\d+$//gi;
+							$channel_match =~ s/-[^-]+$//gi;
 							$channel_match =~ s/^IAX2\///gi;
 							$channel_match =~ s/\*/\\\*/gi;
 							print "checking for IAX2 client2:   |$channel_match|";
@@ -896,7 +896,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 					if ($SIP_client_count) 
 						{
 						$channel_match=$channel;
-						$channel_match =~ s/-\S+$//gi;
+						$channel_match =~ s/-[^-]+$//gi;
 						$channel_match =~ s/^SIP\///gi;
 						$channel_match =~ s/\*/\\\*/gi;
 	#					print "checking for SIP client:   |$channel_match|\n";
