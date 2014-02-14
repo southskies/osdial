@@ -1163,8 +1163,8 @@ if ($ACTION == 'manDiaLlookCaLL') {
             $channel =$row[1];
             $status =$row[2];
             $response =$row[3];
-            if ($response=='Y') {
 
+            if ($response=='Y') {
                 $stmt=sprintf("SELECT uniqueid,channel,end_epoch,isup_result FROM call_log WHERE caller_code='%s' AND server_ip='%s' AND isup_result NOT IN ('0','16') ORDER BY start_time DESC LIMIT 1;",mres($MDnextCID),mres($server_ip));
                 $rslt=mysql_query($stmt, $link);
                 if ($format=='debug') echo "\n<!-- $stmt -->";
@@ -1220,6 +1220,13 @@ if ($ACTION == 'manDiaLlookCaLL') {
                         $wait_sec = ($StarTtime - $wait_epoch);
                         if ($wait_sec<0) $wait_sec=0;
                     }
+
+                    if (!OSDpreg_match('/^Local\//',$channel)) {
+                        $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','%s','Redirect','%s','Channel: %s','Context: osdial','Exten: 7%s','Priority: 1','CallerID: %s','Account: %s','','','','');",mres($NOW_TIME),mres($server_ip),mres($channel),mres($MDnextCID),mres($channel),mres($conf_exten),mres($MDnextCID),mres($MDnextCID));
+                        if ($DB) echo "$stmt\n";
+                        $rslt=mysql_query($stmt, $link);
+                    }
+
                     $stmt=sprintf("UPDATE call_log SET uniqueid='%s',channel='%s',answer_time='%s',answer_epoch='%s' WHERE caller_code='%s';",mres($uniqueid),mres($channel),mres($NOW_TIME),mres($StarTtime),mres($MDnextCID));
                     if ($format=='debug') echo "\n<!-- $stmt -->";
                     $rslt=mysql_query($stmt, $link);
@@ -1229,6 +1236,10 @@ if ($ACTION == 'manDiaLlookCaLL') {
                     $rslt=mysql_query($stmt, $link);
 
                     $stmt=sprintf("UPDATE osdial_auto_calls SET uniqueid='%s',channel='%s' WHERE callerid='%s';",mres($uniqueid),mres($channel),mres($MDnextCID));
+                    if ($format=='debug') echo "\n<!-- $stmt -->";
+                    $rslt=mysql_query($stmt, $link);
+
+                    $stmt=sprintf("UPDATE osdial_live_agents SET uniqueid='%s',channel='%s' WHERE callerid='%s';",mres($uniqueid),mres($channel),mres($MDnextCID));
                     if ($format=='debug') echo "\n<!-- $stmt -->";
                     $rslt=mysql_query($stmt, $link);
                 }
