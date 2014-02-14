@@ -295,11 +295,12 @@ sub process_request {
 	my $DShasvalue=1;
 	my $fullCID=0;
 	my ($uniqueid, $carrierid, $linkedid, $priority, $channel, $extension, $type, $request, $accountcode, $callerid, $calleridname, $context, $dnid, $language, $rdnis, $threadid, $version);
-	my ($PRI, $DEBUG, $hangup_cause, $dialstatus, $dial_time, $answered_time, $ring_time);
+	my ($PRI, $DEBUG, $hangup_cause, $dialstatus, $dial_time, $answered_time, $ring_time, $origchannel);
 	$osdial->AGI('FastAGI_log.pl');
 	$uniqueid = $osdial->AGI->{'uniqueid'};
 	$priority = $osdial->AGI->{'priority'};
 	$channel = $osdial->AGI->{'channel'};
+	$origchannel = $channel;
 	$extension = $osdial->AGI->{'extension'};
 	$type = $osdial->AGI->{'type'};
 	$request = $osdial->AGI->{'request'};
@@ -707,7 +708,7 @@ sub process_request {
 			### get uniqueid and start_epoch from the call_log table
 			$stmtA = sprintf("SELECT uniqueid,start_epoch,channel,end_epoch,channel_group FROM call_log WHERE uniqueid='%s' AND server_ip='%s';",$osdial->mres($uniqueid),$osdial->mres($VARserver_ip));
 			if ($accountcode =~ /^M/) {
-				$stmtA = sprintf("SELECT uniqueid,start_epoch,channel,end_epoch,channel_group FROM call_log WHERE caller_code='%s' AND channel NOT LIKE 'Local/%%' AND server_ip='%s';",$osdial->mres($accountcode),$osdial->mres($VARserver_ip));
+				$stmtA = sprintf("SELECT uniqueid,start_epoch,channel,end_epoch,channel_group FROM call_log WHERE (end_epoch IS NULL OR end_epoch='0') AND caller_code='%s' AND channel NOT LIKE 'Local/%%' AND server_ip='%s';",$osdial->mres($accountcode),$osdial->mres($VARserver_ip));
 			}
 			if ($AGILOG) {
 				$agi_string = "|$stmtA|";
@@ -829,11 +830,11 @@ sub process_request {
 			$CIDlead_id = ($CIDlead_id + 0);
 
 			if ($AGILOG) {
-				$agi_string = "VD_hangup : $accountcode $channel $priority $CIDlead_id";
+				$agi_string = "VD_hangup : $accountcode $origchannel $channel $priority $CIDlead_id";
 				&agi_output;
 			}
 
-			if ($channel =~ /^Local/ and $channel !~ /^Local[\/\*\#]87......\@/) {
+			if ($origchannel =~ /^Local/ and $origchannel !~ /^Local[\/\*\#]87......\@/) {
 				my $cpa_found=0;
  				if ($callerid =~ /^V\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/) {
 					sleep(1);
