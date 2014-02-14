@@ -2062,20 +2062,25 @@ if ($ADD==31) {
             echo "<table width=100% cellpadding=0 cellspacing=3>";
             echo "<tr><td align=left class=top_header_sect valign=top>Carrier Options</td></tr>";
             echo "<tr><td align=center><br /><table border=0 cellpadding=0 cellspacing=3 width=55%>";
-            echo "        <tr>";
-            echo "          <td align=left width=50%>Carrier:</td>";
-            echo "          <td align=left>";
-            echo "            <select name=carrier_id>";
-            $krh = get_krh($link, 'osdial_carriers', '*','',"active='Y' AND selectable='Y'",'');
-            $carrier_label = "** USE MANUAL CONFIGURATION **";
-            if ($config['settings']['default_carrier_id'] > 0) {
-                $carrier_label = "** USE SYSTEM DEFAULT **";
+            if ($LOG['multicomp_admin'] > 0) {
+                echo "        <tr>";
+                echo "          <td align=left width=50%>Carrier:</td>";
+                echo "          <td align=left>";
+                echo "            <select name=carrier_id>";
+                $krh = get_krh($link, 'osdial_carriers', '*','',"active='Y' AND selectable='Y'",'');
+                $carrier_label = "** USE MANUAL CONFIGURATION **";
+                if ($config['settings']['default_carrier_id'] > 0) {
+                    $carrier_label = "** USE SYSTEM DEFAULT **";
+                }
+                echo format_select_options($krh, 'id', 'name', $carrier_id, $carrier_label,'');
+                echo "            </select>".helptag("osdial_campaigns-carrier");
+                echo "          </td>";
+                echo "        </tr>";
+                echo "<tr><td align=left>Omit Phone Code: </td><td align=left><select size=1 name=omit_phone_code><option>Y</option><option>N</option><option SELECTED>$omit_phone_code</option></select>".helptag("osdial_campaigns-omit_phone_code")."</td></tr>";
+            } else {
+                echo "<input type=hidden name=\"carrier_id\" value=\"$carrier_id\">";
+                echo "<input type=hidden name=\"omit_phone_code\" value=\"$omit_phone_code\">";
             }
-            echo format_select_options($krh, 'id', 'name', $carrier_id, $carrier_label,'');
-            echo "            </select>".helptag("osdial_campaigns-carrier");
-            echo "          </td>";
-            echo "        </tr>";
-            echo "<tr><td align=left>Omit Phone Code: </td><td align=left><select size=1 name=omit_phone_code><option>Y</option><option>N</option><option SELECTED>$omit_phone_code</option></select>".helptag("osdial_campaigns-omit_phone_code")."</td></tr>";
             echo "<tr><td align=left>CallerID Name: </td><td align=left><input type=text name=campaign_cid_name size=20 maxlength=40 value=\"$campaign_cid_name\">".helptag("osdial_campaigns-campaign_cid_name")."</td></tr>";
             echo "<tr><td align=left>CallerID: </td><td align=left><input type=text name=campaign_cid size=20 maxlength=20 value=\"$campaign_cid\">".helptag("osdial_campaigns-campaign_cid")."</td></tr>";
             echo "<tr><td align=left>Use Custom2 CallerID: </td><td align=left><select name=use_custom2_callerid><option>N</option><option>Y</option><option selected>$use_custom2_callerid</option></select>".helptag("osdial_campaigns-use_custom2_callerid")."</td></tr>";
