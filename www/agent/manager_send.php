@@ -327,7 +327,7 @@ if ($ACTION=="HangupConfDial") {
     } else {
         $local_DEF = 'Local/';
         $local_AMP = '@';
-        $hangup_channel_prefix = "$local_DEF$exten$local_AMP$ext_context";
+        $hangup_channel_prefix = "$local_DEF"."7"."$exten$local_AMP$ext_context";
         
         $stmt=sprintf("SELECT SQL_NO_CACHE count(*) FROM live_sip_channels WHERE server_ip='%s' AND channel LIKE '%s%%';",mres($server_ip),mres($hangup_channel_prefix));
         if ($format=='debug') echo "\n<!-- $stmt -->";

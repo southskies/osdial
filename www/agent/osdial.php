@@ -2073,7 +2073,7 @@ flush();
     
 
     <!-- Pause Code Link -->
-    <span style="position:absolute;left:36px;top:<?php echo ($CBheight+4); ?>px;z-index:14;visibility:hidden;" id="PauseCodeButtons">
+    <span style="position:absolute;left:36px;top:<?php echo ($CBheight+4); ?>px;z-index:40;visibility:hidden;" id="PauseCodeButtons">
         <font class="body_text">
             <span id="PauseCodeLinkSpan"><a href="#" onclick="PauseCodeSelectContent_create();return false;">PAUSE CODE</a></span><br>
         </font>
@@ -2120,7 +2120,7 @@ flush();
 
     <?php load_status('Initializing GUI...<br>CallBacKsLisTBox<br>&nbsp;'); ?>
     <!-- Choose From Available Call Backs -->
-    <span style="position:absolute;left:2px;top:18px;z-index:38;visibility:hidden;" id="CallBacKsLisTBox">
+    <span style="position:absolute;left:2px;top:18px;z-index:0;visibility:hidden;" id="CallBacKsLisTBox">
         <table class=coveragent border=0 bgcolor="<?php echo $callback_bg; ?>" width=<?php echo ($CAwidth+13); ?> height=500>
             <tr>
                 <td align=center valign=top>
@@ -2142,7 +2142,7 @@ flush();
 
     <?php load_status('Initializing GUI...<br>MDHopperListBox<br>&nbsp;'); ?>
     <!-- Choose From Leads in Hopper - Manual Dial only -->
-    <span style="position:absolute;left:0px;top:18px;z-index:38;visibility:hidden;" id="MDHopperListBox">
+    <span style="position:absolute;left:0px;top:18px;z-index:1;visibility:hidden;" id="MDHopperListBox">
         <table border=1 bgcolor="<?php echo $callback_bg; ?>" width=<?php echo ($CAwidth+13); ?> height=545>
             <tr>
                 <td align=center valign=top>
@@ -2156,7 +2156,7 @@ flush();
                     <br/> &nbsp; 
                     <a href="#" onclick="MDHopperListCheck();return false;">Refresh</a>
                     &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; 
-                    <a href="#" onclick="if (PCSpause==1) {AutoDial_ReSume_PauSe('VDADready');} hideDiv('MDHopperListBox');return false;">Go Back</a>
+                    <a href="#" onclick="if (PCSpause==1) {AutoDial_ReSume_PauSe('VDADready');} hideDiv('MDHopperListBox');document.getElementById('MDHopperListBox').style.zIndex='0';return false;">Go Back</a>
                 </td>
             </tr>
         </table>
