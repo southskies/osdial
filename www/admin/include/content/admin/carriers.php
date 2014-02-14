@@ -329,9 +329,9 @@ if ($ADD=="2carrier") {
         ### SUB=2  Added Carrier
         } elseif ($SUB==2) {
             $SUB=1;
-            if (OSDstrlen($carrier_name) < 2 or OSDstrlen($carrier_protocol) < 1) {
+            if (OSDstrlen($carrier_name) < 2 or OSDstrlen($carrier_protocol) < 1 or OSDpreg_match('/\-/',$carrier_name)) {
                 echo "<br><font color=red>CARRIER NOT ADDED - Please go back and look at the data you entered\n";
-                echo "<br>carrier_name must be at least 2 characters.\n";
+                echo "<br>carrier_name must be at least 2 characters, no hyphens, only alphanumeric and underscore allowed.\n";
                 echo "<br>carrier_protocol_config must be at least 10 characters.</font><br>\n";
             } else {
                 $stmt=sprintf("SELECT count(*) FROM osdial_carriers WHERE name='%s' AND protocol='%s';",mres($carrier_name),mres($carrier_protocol));
@@ -458,10 +458,11 @@ if ($ADD=="4carrier") {
         ### SUB=2  Modify Carrier
         } elseif ($SUB==2) {
             $SUB=1;
-            if ($carrier_id < 1 or OSDstrlen($carrier_name) < 2) {
+            if ($carrier_id < 1 or OSDstrlen($carrier_name) < 2 or OSDpreg_match('/\-/',$carrier_name)) {
                 echo "<br><font color=red>CARRIER NOT MODIFIED - Please go back and look at the data you entered\n";
                 echo "<br>carrier_id not set: $carrier_id\n";
-                echo "<br>carrier_name must be at least 2 characters: $carrier_name</font><br>\n";
+                echo "<br>carrier_name must be at least 2 characters: $carrier_name<br>\n";
+                echo "<br>no hyphens, only alphanumeric and underscore allowed.</font><br>\n";
             } else {
                 $stmt=sprintf("SELECT count(*) FROM osdial_carriers WHERE name='%s' AND protocol='%s' AND id!='%s';",mres($carrier_name),mres($carrier_protocol),mres($carrier_id));
                 $rslt=mysql_query($stmt, $link);
