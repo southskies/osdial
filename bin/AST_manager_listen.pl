@@ -362,7 +362,7 @@ while($one_day_interval > 0) {
 					if ($ame{accountcode} eq "") {
 						$logmsg = "Unhandled newstate (" . $ame{state} . ") on channel, no accountcode.";
 					} elsif ($ame{state} =~ /Dialing|Ringing/i) {
-						my $stmtA = sprintf("UPDATE osdial_manager SET status='SENT',channel='%s',uniqueid='%s' WHERE server_ip='%s' AND callerid='%s';",$ame{channel},$ame{uniqueid},$osdial->{VARserver_ip},$ame{accountcode});
+						my $stmtA = sprintf("UPDATE osdial_manager SET status='SENT',channel='%s' WHERE server_ip='%s' AND callerid='%s';",$ame{channel},$osdial->{VARserver_ip},$ame{accountcode});
 						my $affected_rows = $osdial->sql_execute($stmtA);
 						print "|$affected_rows DIALINGs updated|$stmtA|\n" if ($DB);
 						$logmsg = "Newstate (dialing) on channel, update manager. ($affected_rows)";
@@ -371,7 +371,7 @@ while($one_day_interval > 0) {
 						if ($ame{channel} =~ /^local/i and $ame{accountcode} !~ /^S/) {
 							$logmsg = "Newstate (ringing/up) on channel, Local channel, not updating manager.";
 						} else {
-							my $stmtA = sprintf("UPDATE osdial_manager SET status='UPDATED',channel='%s',uniqueid='%s' WHERE server_ip='%s' AND callerid='%s';",$ame{channel},$ame{uniqueid},$osdial->{VARserver_ip},$ame{accountcode});
+							my $stmtA = sprintf("UPDATE osdial_manager SET status='UPDATED',channel='%s' WHERE server_ip='%s' AND callerid='%s';",$ame{channel},$osdial->{VARserver_ip},$ame{accountcode});
 							my $affected_rows = $osdial->sql_execute($stmtA);
 							print "|$affected_rows RINGINGs updated|$stmtA|\n" if ($DB);
 							$logmsg = "Newstate (ringing/up) on channel, update manager. ($affected_rows)";
@@ -407,7 +407,7 @@ while($one_day_interval > 0) {
 					}
 				} elsif ($ame{event} =~ /Dial/i and $ame{subevent} =~ /Begin/i) {
 					if ($ame{destination} !~ /^local/i) {
-						my $stmtA = sprintf("UPDATE osdial_manager SET status='SENT',channel='%s',uniqueid='%s' WHERE server_ip='%s' AND callerid='%s';",$ame{destination},$ame{destuniqueid},$osdial->{VARserver_ip},$ame{accountcode});
+						my $stmtA = sprintf("UPDATE osdial_manager SET status='SENT',channel='%s',uniqueid='%s' WHERE server_ip='%s' AND callerid='%s';",$ame{destination},$ame{uniqueid},$osdial->{VARserver_ip},$ame{accountcode});
 						my $affected_rows = $osdial->sql_execute($stmtA);
 						$logmsg = "Dial on non-local channel destination. ($affected_rows)";
 					} else {
