@@ -1624,4 +1624,22 @@ function randomString($rslength = 64) {
     return $retstr;
 }
 
+
+
+function osdevent($link, $opts) {
+    if (is_assoc($opts)) {
+        $oelsql = '';
+        foreach ($opts as $k => $v) {
+                $oelsql .= sprintf("%s='%s',",$k,mres($v));
+        }
+        $oelsql = rtrim($oelsql,',');
+        if (!empty($oelsql)) {
+            $stmt = sprintf("INSERT INTO osdial_events SET %s;",$oelsql);
+            $rslt = mysql_query($stmt, $link);
+            return mysql_insert_id($link);
+        }
+    }
+    return 0;
+}
+
 ?>

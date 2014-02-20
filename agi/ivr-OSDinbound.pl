@@ -406,7 +406,9 @@ if ($ingroup->{group_id} ne '') {
 	$DROP_TIME = $ingroup->{drop_call_seconds};
 }
 
-exit 0 if ($ingroup->{group_id} eq '' or $ingroup->{active} eq 'N');
+if ($ingroup->{group_id} eq '' or $ingroup->{active} eq 'N') {
+	exit 0;
+}
 
 # If the channel_group is an A2A and the call was an inbound, use the agent alert from the initial ingroup.
 if ($channel_group =~ /^A2A_/ and $phone_number ne '') {
@@ -568,6 +570,19 @@ $agi_string = "--    CL cl update: |$affected_rows|";
 $agi_string .= "\n|$stmtA|" if ($DB>1);
 $osdial->agi_output($agi_string);
 
+$stmtA = sprintf("SELECT count(*) AS cnt FROM osdial_events WHERE event='CALL_START' AND server_ip='%s' AND uniqueid='%s' LIMIT 1;",$osdial->mres($osdial->{'VARserver_ip'}),$osdial->mres($vars->{uniqueid}));
+while (my $rec = $osdial->sql_query($stmtA)) {
+	if ($rec->{cnt}==0) {
+		$osdial->osdevent({event=>'CALL_START',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID});
+	}
+}
+$stmtA = sprintf("SELECT id FROM osdial_events WHERE event='CALL_START' AND server_ip='%s' AND uniqueid='%s' LIMIT 1;",$osdial->mres($osdial->{'VARserver_ip'}),$osdial->mres($vars->{uniqueid}));
+while (my $rec = $osdial->sql_query($stmtA)) {
+	my $stmtB = sprintf("UPDATE osdial_events SET callerid='%s' WHERE event='CALL_START' AND server_ip='%s' AND uniqueid='%s' LIMIT 1;",$osdial->mres($YqueryCID),$osdial->mres($osdial->{'VARserver_ip'}),$osdial->mres($vars->{uniqueid}));
+	$affected_rows = $osdial->sql_execute($stmtB);
+}
+$osdial->osdevent({event=>'INGRP_ENTER',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id},data1=>"".$vars->{didid},data2=>"".$phone_number});
+
 
 ##### BEGIN AFTER HOURS CHECK #####
 $osdial->agi_output("--    After Hours Check: |$hm|$ct_default_start|$ct_default_stop|");
@@ -578,6 +593,11 @@ if ($hm<$ct_default_start or $hm>$ct_default_stop) {
 		my $DROPexten = '';
 		$DROPexten = $ingroup->{after_hours_exten} if ($ingroup->{after_hours_action} =~ /EXTENSION/);
 		$DROPexten = $osdial->{server}{voicemail_dump_exten}.$ingroup->{after_hours_voicemail} if ($ingroup->{after_hours_action} =~ /VOICEMAIL/);
+		if ($ingroup->{after_hours_action} =~ /EXTENSION/) {
+			$osdial->osdevent({event=>'INGRP_AFTERHOURS',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id},data1=>'EXTENSION',data2=>"".$ingroup->{after_hours_exten}});
+		} elsif ($ingroup->{after_hours_action} =~ /VOICEMAIL/) {
+			$osdial->osdevent({event=>'INGRP_AFTERHOURS',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id},data1=>'EXTENSION',data2=>"".$ingroup->{after_hours_voicemail}});
+		}
 		### if DROP extension is defined then send the dropped call there instead of hangup
 		if (length($DROPexten)>0) {
 			stream_file('sip-silence');
@@ -605,12 +625,14 @@ if ($hm<$ct_default_start or $hm>$ct_default_stop) {
 	$osdial->agi_output($agi_string);
 
 	if ($ingroup->{after_hours_action} =~ /HANGUP/) {
+		$osdial->osdevent({event=>'INGRP_AFTERHOURS',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id},data1=>'HANGUP',data2=>''});
 		$stmtA = sprintf("INSERT INTO osdial_manager VALUES ('','','%s','NEW','N','%s','%s','Hangup','%s','Channel: %s','','','','','','','','','');",$osdial->mres($SQLdate),$osdial->mres($osdial->{'VARserver_ip'}),$osdial->mres($vars->{channel}),$osdial->mres($VHqueryCID),$osdial->mres($vars->{channel}));
 		$affected_rows = $osdial->sql_execute($stmtA);
 		$osdial->agi_output("--    OSDCL call_hungup after hours: |$VHqueryCID||".$vars->{channel}."|insert to osdial_manager");
 
 	} elsif ($ingroup->{after_hours_action} =~ /CALLBACK/) {
 		$inafterhours=1;
+		$osdial->osdevent({event=>'INGRP_AFTERHOURS',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id},data1=>'CALLBACK',data2=>"".$ingroup->{after_hours_message_filename}});
 		stream_start_file($ingroup->{after_hours_message_filename});
 		stream_file('sip-silence');
 		while ($inafterhours==1) {
@@ -624,6 +646,7 @@ if ($hm<$ct_default_start or $hm>$ct_default_stop) {
 
 	} elsif ($ingroup->{after_hours_action} =~ /MESSAGE/) {
 		$inafterhours=1;
+		$osdial->osdevent({event=>'INGRP_AFTERHOURS',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id},data1=>'MESSAGE',data2=>"".$ingroup->{after_hours_message_filename}});
 		stream_start_file($ingroup->{after_hours_message_filename});
 		stream_file('sip-silence');
 		while ($inafterhours==1) {
@@ -650,6 +673,7 @@ my $loopstart = time();
 stream_file('silence/1');
 if ($ingroup->{'welcome_message_filename'} !~ /---NONE---/ and $ingroup->{'welcome_message_filename'} ne '') {
 	$welcome = $ingroup->{'welcome_message_filename'};
+	$osdial->osdevent({event=>'INGRP_WELCOME_MSG',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id},data1=>"".$welcome});
 	stream_file($welcome);
 	stream_file('silence/2');
 	if ($ingroup->{'welcome_message_min_playtime'} eq '' or $ingroup->{'welcome_message_min_playtime'}>0) {
@@ -763,6 +787,7 @@ if ($ingroup->{drop_trigger} eq 'NO_AGENTS_AVAILABLE') {
 	if ($res->{cnt}==0) {
 		$drop_timer = $DROP_TIME + 1;
 		$term_reason = 'NOAGENTSAVAILABLE';
+		$osdial->osdevent({event=>'INGRP_AVAIL_TRIGGER',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id},data1=>"".$term_reason,data2=>"".$drop_timer});
 		if ($ingroup->{callback_interval}>0) {
 			stream_file('sip-silence');
 			while ($inwelcome==1) {
@@ -783,6 +808,7 @@ if ($ingroup->{drop_trigger} eq 'NO_AGENTS_AVAILABLE') {
 	if ($res->{cnt}==0) {
 		$drop_timer = $DROP_TIME + 1;
 		$term_reason = 'NOAGENTS';
+		$osdial->osdevent({event=>'INGRP_AVAIL_TRIGGER',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id},data1=>"".$term_reason,data2=>"".$drop_timer});
 		if ($ingroup->{callback_interval}>0) {
 			stream_file('sip-silence');
 			while ($inwelcome==1) {
@@ -1022,6 +1048,7 @@ while ($drop_timer <= $DROP_TIME) {
 				set_context($osdial->{server}{ext_context});
 				set_extension($VDADremDIALstr);
 				set_priority(1);
+				$osdial->osdevent({event=>'INGRP_XFER',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id},user=>$VDADuser,data1=>"".$VDADconf_exten,data2=>"".$drop_timer});
 
 				$stmtA = sprintf("UPDATE osdial_closer_log SET queue_seconds='%s' WHERE lead_id='%s' AND call_date='%s';",$osdial->mres($drop_timer),$osdial->mres($insert_lead_id),$osdial->mres($SQLdate));
 				$affected_rows = $osdial->sql_execute($stmtA);
@@ -1068,6 +1095,7 @@ while ($drop_timer <= $DROP_TIME) {
 		if ($last_played>$prompt_buffer and $hold_message_counter > $ingroup->{prompt_interval} and $ingroup->{prompt_interval} != 0) {
 			$inprompt=1;
 			stop_stream();
+			$osdial->osdevent({event=>'INGRP_ONHOLD_PROMPT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id},data1=>"".$ingroup->{onhold_prompt_filename}});
 			stream_file($ingroup->{onhold_prompt_filename});
 			stream_file('sip-silence');
 			stream_file('silence/2');
@@ -1076,6 +1104,7 @@ while ($drop_timer <= $DROP_TIME) {
 		} elsif ($last_played>$prompt_buffer and $callback_message_counter > $ingroup->{callback_interval} and $ingroup->{callback_interval} != 0) {
 			$inprompt=1;
 			stop_stream();
+			$osdial->osdevent({event=>'INGRP_CALLBACK_PROMPT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id}});
 			stream_file('to-be-called-back');
 			my $cbkey = $ingroup->{callback_interrupt_key};
 			$cbkey = 'star' if ($cbkey eq '*');
@@ -1093,6 +1122,7 @@ while ($drop_timer <= $DROP_TIME) {
 			my $rec = $osdial->sql_query($stmtA);
 			stop_stream();
 			my $dcnt = $rec->{cnt};
+			$osdial->osdevent({event=>'INGRP_PLACEMENT_PROMPT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id},data1=>"".$dcnt});
 			if ($dcnt==0) {
 				stream_file('queue-youarenext');
 			} else {
@@ -1133,6 +1163,7 @@ while ($drop_timer <= $DROP_TIME) {
 			print STDERR "hold:".$qsec."\n" if ($DB);
 			my $dcnt=$qmin;
 			$dcnt=1 if ($dcnt<1);
+			$osdial->osdevent({event=>'INGRP_QUEUETIME_PROMPT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id},data1=>"".$qsec});
 			stop_stream();
 			stream_file('queue-holdtime');
 			if ($qmin<6) {
@@ -1169,6 +1200,7 @@ while ($drop_timer <= $DROP_TIME) {
 			$last_played++;
 		} elsif ($start_moh>1) {
 			$start_moh=0;
+			$osdial->osdevent({event=>'INGRP_HOLD_MESSAGE',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id},data1=>"".$hold,data2=>"".$streampos->{$hold}});
 			stream_file($hold,$streampos->{$hold});
 			$inhold=1;
 		}
@@ -1178,6 +1210,7 @@ while ($drop_timer <= $DROP_TIME) {
 	if ($ingroup->{callback_interval}>0) {
 		$docallback=1 if ($newin eq $ingroup->{callback_interrupt_key});
 		if ($docallback) {
+			$osdial->osdevent({event=>'INGRP_CALLBACK_PRESS',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id},data1=>"".$newin});
 			my $cbret = callback_prompt();
 			$start_moh=2 if ($cbret);
 		}
@@ -1242,7 +1275,9 @@ if ($drop_timer > $DROP_TIME) {
 	my $DROPexten = '8307';
 	if ($ingroup->{drop_action} =~ /EXTENSION/) {
 		$DROPexten = $ingroup->{drop_exten};
+		$osdial->osdevent({event=>'INGRP_TIMEOUT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id},data1=>"".$drop_seconds,data2=>'EXTENSION',data3=>"".$ingroup->{drop_exten}});
 	} elsif ($ingroup->{drop_action} =~ /CALLBACK/) {
+		$osdial->osdevent({event=>'INGRP_TIMEOUT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id},data1=>"".$drop_seconds,data2=>'CALLBACK',data3=>"".$ingroup->{drop_message_filename}});
 		stream_start_file($ingroup->{drop_message_filename});
 		stream_file('sip-silence');
 		while ($inaftercall==1) {
@@ -1251,11 +1286,14 @@ if ($drop_timer > $DROP_TIME) {
 		}
 		callback_prompt() if ($docallback);
 	} elsif ($ingroup->{drop_action} =~ /MESSAGE/) {
+		$osdial->osdevent({event=>'INGRP_TIMEOUT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id},data1=>"".$drop_seconds,data2=>'MESSAGE',data3=>"".$ingroup->{drop_message_filename}});
 		stream_start_file($ingroup->{drop_message_filename});
 		$DROPexten = '8307';
 	} elsif ($ingroup->{drop_action} =~ /HANGUP/) {
+		$osdial->osdevent({event=>'INGRP_TIMEOUT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id},data1=>"".$drop_seconds,data2=>'HANGUP'});
 		$DROPexten = '8307';
 	} elsif ($ingroup->{drop_action} =~ /VOICEMAIL/) {
+		$osdial->osdevent({event=>'INGRP_TIMEOUT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id},data1=>"".$drop_seconds,data2=>'VOICEMAIL',data3=>"".$ingroup->{voicemail_ext}});
 		$DROPexten = $osdial->{server}{voicemail_dump_exten}.$ingroup->{voicemail_ext} if (length($ingroup->{voicemail_ext})>0);
 	}
 
@@ -1306,12 +1344,14 @@ sub start_hold {
 sub stream_start_file {
 	my ($file,$pos) = @_;
 	$pos=0 if (!defined($pos));
+	$osdial->osdevent({event=>'INGRP_PLAY_FILE',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id},data1=>"".$file,data2=>"".$pos}) if ($file !~ /silence/);
 	print "S,$file,$pos\n";
 }
 
 sub stream_file {
 	my ($file,$pos) = @_;
 	$pos=0 if (!defined($pos));
+	$osdial->osdevent({event=>'INGRP_PLAY_FILE',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id},data1=>"".$file,data2=>"".$pos}) if ($file !~ /silence/);
 	print "A,$file,$pos\n";
 }
 
@@ -1340,6 +1380,7 @@ sub set_priority {
 
 sub exit_ivr {
 	my ($hangup) = @_;
+	$osdial->osdevent({event=>'INGRP_EXIT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id}});
 	my $exit = 'E';
 	$exit = 'H' if ($hangup);
 	print "$exit,.\n";
@@ -1364,6 +1405,7 @@ sub callback_prompt {
 	while ($incallback==1 and $cbnext==0) {
 		my $newin = infunc();
 		if ($newin eq '1') {
+			$osdial->osdevent({event=>'INGRP_CALLBACK_SELECTED',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id}});
 			$cbnext=1;
 		} elsif ($newin =~ /[02-9\*#]/) {
 			$cbnext=2;
@@ -1386,6 +1428,7 @@ sub callback_prompt {
 			while ($incallback==1 and $cbnext==0) {
 				my $newin = infunc();
 				if ($newin eq '1') {
+					$osdial->osdevent({event=>'INGRP_CALLBACK_CID',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id},data1=>"".$vars->{callerid}});
 					$cbnext=1;
 					$cbnumber=$vars->{callerid};
 				} elsif ($newin eq '2') {
@@ -1400,6 +1443,7 @@ sub callback_prompt {
 			stop_stream();
 		}
 		if ($cbnext==3) {
+			$osdial->osdevent({event=>'INGRP_CALLBACK_EXIT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id}});
 			$incallback=0;
 			return 1;
 		}
@@ -1420,6 +1464,7 @@ sub callback_prompt {
 			while ($incallback==1 and $cbnext==0) {
 				my $newin = infunc();
 				if ($newin eq '1') {
+					$osdial->osdevent({event=>'INGRP_CALLBACK_CORRECT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id}});
 					$cbnext=1;
 					$cbnumber=$vars->{callerid};
 				} elsif ($newin eq '2') {
@@ -1433,6 +1478,7 @@ sub callback_prompt {
 			}
 		}
 		if ($cbnext==3) {
+			$osdial->osdevent({event=>'INGRP_CALLBACK_EXIT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id}});
 			$incallback=0;
 			return 1;
 		}
@@ -1455,7 +1501,9 @@ sub callback_prompt {
 				}
 				$cbtime++ if (!defined($newin));
 			}
+			$osdial->osdevent({event=>'INGRP_CALLBACK_ENTRY',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id},data1=>"".$cbnumber});
 			if ($cbnext==3) {
+				$osdial->osdevent({event=>'INGRP_CALLBACK_EXIT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id}});
 				$incallback=0;
 				return 1;
 			}
@@ -1474,8 +1522,10 @@ sub callback_prompt {
 				while ($incallback==1 and $cbnext==0) {
 					my $newin = infunc();
 					if ($newin eq '1') {
+						$osdial->osdevent({event=>'INGRP_CALLBACK_CORRECT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id}});
 						$cbnext=1;
 					} elsif ($newin eq '2') {
+						$osdial->osdevent({event=>'INGRP_CALLBACK_INCORRECT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id}});
 						$cbnext=2;
 					} elsif ($newin =~ /[03-9\*#]/) {
 						$cbnext=3;
@@ -1485,6 +1535,7 @@ sub callback_prompt {
 					$cbtime++ if (!defined($newin));
 				}
 				if ($cbnext==3) {
+					$osdial->osdevent({event=>'INGRP_CALLBACK_EXIT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id}});
 					$incallback=0;
 					return 1;
 				}
@@ -1514,10 +1565,13 @@ sub callback_prompt {
 		$agi_string .= "\n|$stmtA|" if ($DB>1);
 		$osdial->agi_output($agi_string);
 
+		$osdial->osdevent({event=>'INGRP_CALLBACK_SCHEDULED',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id}});
+
 		stream_start_file('thank-you-for-calling');
 		sleep 5;
 		stream_start_file('sip-silence');
 	} else {
+		$osdial->osdevent({event=>'INGRP_CALLBACK_EXIT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id}});
 		$incallback=0;
 		return 1;
 	}

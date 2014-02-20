@@ -1262,8 +1262,6 @@ sub media_save_files {
 
 
 
-
-
 =over 4
 
 =item B<send_email( $host, $port, $user, $pass, $to, $from, $subject, $html, $text )>
@@ -1320,6 +1318,36 @@ sub send_email {
 	my $eres = $email->send();
 
 	return 1 if (ref($eres) =~ /^Email::Sender::Success/);
+	return 0;
+}
+
+
+
+=over 4
+
+=item B<osdevent({ server_ip=>$server_ip, unqiueid=>$unqiueid, callerid=>$callerid, user=>$user, campaign_id=>$campaign_id, group_id=>$group_id, lead_id=>$lead_id, event=>$event, data1=>$data1, data2=>$data2, data3=>$data3, data4=>$data4, data5=>$data5, data6=>$data6 })>
+
+Records the given data into the osdial_events table.
+
+=back
+
+=cut
+
+sub osdevent {
+        my ($self,$optref) = @_;
+	my $opts = {};
+	if (ref($optref) eq "HASH") {
+		$opts = $optref;
+	}
+	my $oelsql = '';
+	foreach my $opt (sort keys %{$opts}) {
+		$oelsql .= sprintf("%s=%s,",$opt,$self->quote($opts->{$opt}));
+	}
+	chop($oelsql);
+	if (length($oelsql)>0) {
+		$self->sql_execute(sprintf('INSERT INTO osdial_events SET %s;', $oelsql),'OEL');
+		return $self->sql_last_insert_id('OEL');
+	}
 	return 0;
 }
 

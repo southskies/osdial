@@ -575,4 +575,28 @@ function hangup_cause_description($isup) {
     return "Unknown ISUP Result Code.";
 }
 
+
+function is_assoc($array) {
+    foreach (array_keys($array) as $k => $v) {
+        if ($k !== $v) return true;
+    }
+    return false;
+}
+
+function osdevent($link, $opts) {
+    if (is_assoc($opts)) {
+        $oelsql = '';
+        foreach ($opts as $k => $v) {
+                $oelsql .= sprintf("%s='%s',",$k,mres($v));
+        }
+        $oelsql = rtrim($oelsql,',');
+        if (!empty($oelsql)) {
+            $stmt = sprintf("INSERT INTO osdial_events SET %s;",$oelsql);
+            $rslt = mysql_query($stmt, $link);
+            return mysql_insert_id($link);
+        }
+    }
+    return 0;
+}
+
 ?>

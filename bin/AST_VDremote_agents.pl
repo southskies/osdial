@@ -619,6 +619,9 @@ while($one_day_interval > 0)
 							}
 						if ($affected_rows>0) 
 							{
+							$osdial->osdevent({'event'=>'AGENT_LOGIN','server_ip'=>$server_ip,'campaign_id'=>$DBremote_campaign[$h],'user'=>$DBremote_user[$h],'data1'=>$local_DEF.$DBremote_conf_exten[$h].$local_AMP.$ext_context,'data2'=>$local_DEF.$DBremote_conf_exten[$h].$local_AMP.$ext_context,'data3'=>$DBremote_conf_exten[$h]});
+							$osdial->osdevent({'event'=>'AGENT_PAUSE','server_ip'=>$server_ip,'campaign_id'=>$DBremote_campaign[$h],'user'=>$DBremote_user[$h]});
+							$osdial->osdevent({'event'=>'AGENT_UNPAUSE','server_ip'=>$server_ip,'campaign_id'=>$DBremote_campaign[$h],'user'=>$DBremote_user[$h]});
 							if ($enable_queuemetrics_logging > 0)
 								{
 								$dbhB = DBI->connect("DBI:mysql:$queuemetrics_dbname:$queuemetrics_server_ip:3306", "$queuemetrics_login", "$queuemetrics_pass")
@@ -629,7 +632,10 @@ while($one_day_interval > 0)
 								$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='NONE',queue='" . $osdial->mres($DBremote_campaign[$h]) . "',agent='Agent/" . $osdial->mres($DBremote_user[$h]) . "',verb='AGENTLOGIN',data1='" . $osdial->mres($DBremote_user[$h].$agents) . "',serverid='$queuemetrics_log_id';";
 								$Baffected_rows = $dbhB->do($stmtB);
 
-								$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='NONE',queue='" . $osdial->mres($DBremote_campaign[$h]) . "',agent='Agent/" . $osdial->mres($DBremote_user[$h]) . "',verb='UNPAUSE',serverid='$queuemetrics_log_id';";
+								$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='NONE',queue='" . $osdial->mres($DBremote_campaign[$h]) . "',agent='Agent/" . $osdial->mres($DBremote_user[$h]) . "',verb='PAUSEALL',serverid='$queuemetrics_log_id';";
+								$Baffected_rows = $dbhB->do($stmtB);
+
+								$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='NONE',queue='" . $osdial->mres($DBremote_campaign[$h]) . "',agent='Agent/" . $osdial->mres($DBremote_user[$h]) . "',verb='UNPAUSEALL',serverid='$queuemetrics_log_id';";
 								$Baffected_rows = $dbhB->do($stmtB);
 
 								$dbhB->disconnect();
@@ -716,6 +722,22 @@ while($one_day_interval > 0)
 					}
 					if ($affected_rows>0) 
 						{
+						$stmtA=sprintf("SELECT UNIX_TIMESTAMP(event_time) FROM osdial_events WHERE user='%s' AND event='AGENT_LOGIN' ORDER BY event_time DESC LIMIT 1;",$osdial->mres($DBremote_user[$h]));
+						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+						$sthArows=$sthA->rows;
+						$rec_count=0;
+						$logintime=0;
+						while ($sthArows > $rec_count) {
+							@aryA = $sthA->fetchrow_array;
+							$logintime = $aryA[0];
+							$rec_count++;
+						}
+						$sthA->finish();
+						$time_logged_in = ($FDtsSQLdate - $logintime);
+						if ($time_logged_in < 1) { $time_logged_in=0; }
+						$osdial->osdevent({'event'=>'AGENT_PAUSE','server_ip'=>$server_ip,'campaign_id'=>$DBremote_campaign[$h],'user'=>$DBremote_user[$h]});
+						$osdial->osdevent({'event'=>'AGENT_LOGOUT','server_ip'=>$server_ip,'campaign_id'=>$VD_campaign_id[$h],'user'=>$VD_user[$h],'data1'=>$time_logged_in});
 						if ($enable_queuemetrics_logging > 0)
 							{
 							$dbhB = DBI->connect("DBI:mysql:$queuemetrics_dbname:$queuemetrics_server_ip:3306", "$queuemetrics_login", "$queuemetrics_pass")
@@ -827,6 +849,8 @@ while($one_day_interval > 0)
 
 						if ($affected_rows>0) 
 							{
+							$osdial->osdevent({'event'=>'AGENT_PAUSE','server_ip'=>$server_ip,'campaign_id'=>$DBremote_campaign[$h],'user'=>$DBremote_user[$h]});
+							$osdial->osdevent({'event'=>'AGENT_UNPAUSE','server_ip'=>$server_ip,'campaign_id'=>$DBremote_campaign[$h],'user'=>$DBremote_user[$h]});
 							if ($enable_queuemetrics_logging > 0)
 								{
 								$dbhB = DBI->connect("DBI:mysql:$queuemetrics_dbname:$queuemetrics_server_ip:3306", "$queuemetrics_login", "$queuemetrics_pass")

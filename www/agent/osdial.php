@@ -1704,6 +1704,9 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
                 }
             }
 
+            osdevent($link,['event'=>'AGENT_LOGIN','server_ip'=>$server_ip,'campaign_id'=>$VD_campaign,'user'=>$VD_login,'data1'=>$SIP_user,'data2'=>$SIP_user_DiaL,'data3'=>$session_id]);
+            osdevent($link,['event'=>'AGENT_PAUSE','server_ip'=>$server_ip,'campaign_id'=>$VD_campaign,'user'=>$VD_login]);
+
         } else {
             echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
             echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $config['settings']['agent_template'] . "/styles.css\" media=\"screen\">\n";

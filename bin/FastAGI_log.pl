@@ -663,7 +663,8 @@ sub process_request {
 					$agi_string = "|$stmtA|";
 					&agi_output;
 				}
-				my $affected_rows = $dbhA->do($stmtA);
+#				my $affected_rows = $dbhA->do($stmtA);
+#				$osdial->osdevent({'event'=>'CALL_START','uniqueid'=>$uniqueid,'server_ip'=>$VARserver_ip,'callerid'=>$accountcode});
 			}
 
 			$dbhA->disconnect();
@@ -938,9 +939,42 @@ sub process_request {
 						&agi_output;
 					}
 
+#					my $OCLgroup='';
+#					my $OLcampaign='';
+#					$stmtA = "SELECT campaign_id FROM osdial_closer_log WHERE server_ip='$VARserver_ip' AND (uniqueid='$uniqueid' OR callerid='$accountcode') LIMIT 1;";
+#					if ($AGILOG) {
+#						$agi_string = "|$stmtA|";
+#						&agi_output;
+#					}
+#					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+#					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+#					$sthArows=$sthA->rows;
+#					if ($sthArows > 0) {
+#						@aryA = $sthA->fetchrow_array;
+#						$OCLgroup = $aryA[0];
+#					}
+#					$stmtA = "SELECT campaign_id FROM osdial_log WHERE server_ip='$VARserver_ip' AND (uniqueid='$uniqueid' OR callerid='$accountcode') LIMIT 1;";
+#					if ($AGILOG) {
+#						$agi_string = "|$stmtA|";
+#						&agi_output;
+#					}
+#					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+#					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+#					$sthArows=$sthA->rows;
+#					if ($sthArows > 0) {
+#						@aryA = $sthA->fetchrow_array;
+#						$OLcampaign = $aryA[0];
+#					}
+#
+#					if ($OCLgroup ne '') {
+#						$osdial->osdevent({'event'=>'DISPO','server_ip'=>$VARserver_ip,'group_id'=>$OCLgroup,'callerid'=>$accountcode,'lead_id'=>$CIDlead_id,'data1'=>$VDL_status});
+#					} else {
+#						$osdial->osdevent({'event'=>'DISPO','server_ip'=>$VARserver_ip,'campaign_id'=>$OLcampaign,'callerid'=>$accountcode,'lead_id'=>$CIDlead_id,'data1'=>$VDL_status});
+#					}
+
 					sleep(1);
 
-					$dbhA->disconnect();
+					#$dbhA->disconnect();
 				} else {
 					if ($AGILOG) {
 						$agi_string = "--   VD_hangup Local DEBUG: |$PRI|$accountcode|$dialstatus|$hangup_cause|$cpa_found|";
@@ -1689,6 +1723,111 @@ sub process_request {
 					##### END AUTO ALT PHONE DIAL SECTION #####
 				}
 			}
+#			$accountcode =~ s/^W/M/;
+#
+#			$stmtA = "SELECT uniqueid,campaign_id,group_id,lead_id,UNIX_TIMESTAMP(event_time),user FROM osdial_events WHERE event='CAMP_IN_ANSWER' AND server_ip='$VARserver_ip' AND callerid='$accountcode';";
+#			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+#			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+#			$sthArows=$sthA->rows;
+#			if ($sthArows>0) {
+#				@aryA = $sthA->fetchrow_array;
+#				$CIAuniqueid = $aryA[0];
+#				$CIAcampaign = $aryA[1];
+#				$CIAgroup = $aryA[2];
+#				$CIAlead = $aryA[3];
+#				$CIAtime = $aryA[4];
+#				$CIAuser = $aryA[5];
+#				$CIAsecs = time - $CIAtime;
+#				$CIAsecs = 0 if ($CIAsecs<1);
+#				$stmtA = "SELECT count(*) FROM osdial_events WHERE event='CAMP_IN_HANGUP' AND server_ip='$VARserver_ip' AND callerid='$accountcode';";
+#				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+#				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+#				@aryA = $sthA->fetchrow_array;
+#				if ($aryA[0]==0) {
+#					$osdial->osdevent({'event'=>'CAMP_IN_HANGUP','uniqueid'=>$CIAuniqueid,'server_ip'=>$VARserver_ip,'callerid'=>$accountcode,'campaign_id'=>$CIAcampaign,'group_id'=>$CIAgroup,'lead_id'=>$CIAlead,'user'=>$CIAuser,'data1'=>$CIAsecs});
+#				}
+#			}
+#			$stmtA = "SELECT uniqueid,campaign_id,lead_id,UNIX_TIMESTAMP(event_time),user FROM osdial_events WHERE event='CAMP_OUT_ANSWER' AND server_ip='$VARserver_ip' AND callerid='$accountcode';";
+#			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+#			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+#			$sthArows=$sthA->rows;
+#			if ($sthArows>0) {
+#				@aryA = $sthA->fetchrow_array;
+#				$CIAuniqueid = $aryA[0];
+#				$CIAcampaign = $aryA[1];
+#				$CIAlead = $aryA[2];
+#				$CIAtime = $aryA[3];
+#				$CIAuser = $aryA[4];
+#				$CIAsecs = time - $CIAtime;
+#				$CIAsecs = 0 if ($CIAsecs<1);
+#				$stmtA = "SELECT count(*) FROM osdial_events WHERE event='CAMP_OUT_HANGUP' AND server_ip='$VARserver_ip' AND callerid='$accountcode';";
+#				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+#				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+#				@aryA = $sthA->fetchrow_array;
+#				if ($aryA[0]==0) {
+#					$osdial->osdevent({'event'=>'CAMP_OUT_HANGUP','uniqueid'=>$CIAuniqueid,'server_ip'=>$VARserver_ip,'callerid'=>$accountcode,'campaign_id'=>$CIAcampaign,'lead_id'=>$CIAlead,'user'=>$CIAuser,'data1'=>$CIAsecs});
+#				}
+#			}
+#			$stmtA = "SELECT uniqueid,campaign_id,lead_id,UNIX_TIMESTAMP(event_time),user FROM osdial_events WHERE event='CB_ANSWER' AND server_ip='$VARserver_ip' AND callerid='$accountcode';";
+#			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+#			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+#			$sthArows=$sthA->rows;
+#			if ($sthArows>0) {
+#				@aryA = $sthA->fetchrow_array;
+#				$CIAuniqueid = $aryA[0];
+#				$CIAcampaign = $aryA[1];
+#				$CIAlead = $aryA[2];
+#				$CIAtime = $aryA[3];
+#				$CIAuser = $aryA[4];
+#				$CIAsecs = time - $CIAtime;
+#				$CIAsecs = 0 if ($CIAsecs<1);
+#				$stmtA = "SELECT count(*) FROM osdial_events WHERE event='CB_HANGUP' AND server_ip='$VARserver_ip' AND callerid='$accountcode';";
+#				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+#				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+#				@aryA = $sthA->fetchrow_array;
+#				if ($aryA[0]==0) {
+#					$osdial->osdevent({'event'=>'CB_HANGUP','uniqueid'=>$CIAuniqueid,'server_ip'=>$VARserver_ip,'callerid'=>$accountcode,'campaign_id'=>$CIAcampaign,'lead_id'=>$CIAlead,'user'=>$CIAuser,'data1'=>$CIAsecs});
+#				}
+#			}
+#			$stmtA = "SELECT uniqueid,campaign_id,lead_id,UNIX_TIMESTAMP(event_time),user FROM osdial_events WHERE event='IVR_CB_ANSWER' AND server_ip='$VARserver_ip' AND callerid='$accountcode';";
+#			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+#			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+#			$sthArows=$sthA->rows;
+#			if ($sthArows>0) {
+#				@aryA = $sthA->fetchrow_array;
+#				$CIAuniqueid = $aryA[0];
+#				$CIAcampaign = $aryA[1];
+#				$CIAlead = $aryA[2];
+#				$CIAtime = $aryA[3];
+#				$CIAuser = $aryA[4];
+#				$CIAsecs = time - $CIAtime;
+#				$CIAsecs = 0 if ($CIAsecs<1);
+#				$stmtA = "SELECT count(*) FROM osdial_events WHERE event='IVR_CB_HANGUP' AND server_ip='$VARserver_ip' AND callerid='$accountcode';";
+#				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+#				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+#				@aryA = $sthA->fetchrow_array;
+#				if ($aryA[0]==0) {
+#					$osdial->osdevent({'event'=>'IVR_CB_HANGUP','uniqueid'=>$CIAuniqueid,'server_ip'=>$VARserver_ip,'callerid'=>$accountcode,'campaign_id'=>$CIAcampaign,'lead_id'=>$CIAlead,'user'=>$CIAuser,'data1'=>$CIAsecs});
+#				}
+#			}
+#
+#			$stmtA="SELECT count(*) FROM osdial_events WHERE event='CALL_END' AND server_ip='$VARserver_ip' AND (uniqueid='$uniqueid' OR callerid='$accountcode');";
+#			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+#			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+#			@aryA = $sthA->fetchrow_array;
+#			if ($aryA[0]==0) {
+#				$stmtA="SELECT UNIX_TIMESTAMP(event_time) FROM osdial_events WHERE event='CALL_START' AND server_ip='$VARserver_ip' AND (uniqueid='$uniqueid' OR callerid='$accountcode');";
+#				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+#				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+#				$sthArows=$sthA->rows;
+#				$CLsecs=0;
+#				if ($sthArows>0) {
+#					@aryA = $sthA->fetchrow_array;
+#					$CLsecs = time - $aryA[0];
+#					$CLsecs = 0 if ($CLsecs<1);
+#				}
+#				$osdial->osdevent({'event'=>'CALL_END','uniqueid'=>$uniqueid,'server_ip'=>$VARserver_ip,'callerid'=>$accountcode,'data1'=>$hangup_cause,'data2'=>$CLsecs});
+#			}
 			$dbhA->disconnect();
 		}
 	}

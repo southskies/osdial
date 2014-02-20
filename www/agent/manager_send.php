@@ -416,6 +416,96 @@ if ($ACTION=="Hangup") {
             $channel_live=0;
         }
 
+        $stmt=sprintf("SELECT uniqueid,campaign_id,group_id,lead_id,UNIX_TIMESTAMP(event_time) FROM osdial_events WHERE event='CAMP_IN_ANSWER' AND server_ip='%s' AND callerid='%s';",mres($call_server_ip),mres($CalLCID));
+        if ($format=='debug') echo "\n<!-- $stmt -->";
+        $rslt=mysql_query($stmt, $link);
+        $oecnt = mysql_num_rows($rslt);
+        if ($oecnt > 0) {
+            $row=mysql_fetch_row($rslt);
+            $CIAuniqueid = $row[0];
+            $CIAcampaign = $row[1];
+            $CIAgroup = $row[2];
+            $CIAlead = $row[3];
+            $CIAtime = $row[4];
+            $StarTtime = date("U");
+            $CIAsecs = $StarTtime - $CIAtime;
+            if ($CIAsecs<1) $CIAsecs=0;
+            $stmt=sprintf("SELECT count(*) FROM osdial_events WHERE event='CAMP_IN_HANGUP' AND server_ip='%s' AND callerid='%s';",mres($call_server_ip),mres($CalLCID));
+            if ($format=='debug') echo "\n<!-- $stmt -->";
+            $rslt=mysql_query($stmt, $link);
+            $row=mysql_fetch_row($rslt);
+            $oecnt = $row[0];
+            if ($oecnt==0) {
+                osdevent($link,['event'=>'CAMP_IN_HANGUP','uniqueid'=>$CIAuniqueid,'server_ip'=>$call_server_ip,'callerid'=>$CalLCID,'campaign_id'=>$CIAcampaign,'group_id'=>$CIAgroup,'lead_id'=>$CIAlead,'user'=>$user,'data1'=>$CIAsecs]);
+            }
+        }
+        $stmt=sprintf("SELECT uniqueid,campaign_id,lead_id,UNIX_TIMESTAMP(event_time) FROM osdial_events WHERE event='CAMP_OUT_ANSWER' AND server_ip='%s' AND callerid='%s';",mres($call_server_ip),mres($CalLCID));
+        if ($format=='debug') echo "\n<!-- $stmt -->";
+        $rslt=mysql_query($stmt, $link);
+        $oecnt = mysql_num_rows($rslt);
+        if ($oecnt > 0) {
+            $row=mysql_fetch_row($rslt);
+            $COAuniqueid = $row[0];
+            $COAcampaign = $row[1];
+            $COAlead = $row[2];
+            $COAtime = $row[3];
+            $StarTtime = date("U");
+            $COAsecs = $StarTtime - $COAtime;
+            if ($COAsecs<1) $COAsecs=0;
+            $stmt=sprintf("SELECT count(*) FROM osdial_events WHERE event='CAMP_OUT_HANGUP' AND server_ip='%s' AND callerid='%s';",mres($call_server_ip),mres($CalLCID));
+            if ($format=='debug') echo "\n<!-- $stmt -->";
+            $rslt=mysql_query($stmt, $link);
+            $row=mysql_fetch_row($rslt);
+            $oecnt = $row[0];
+            if ($oecnt==0) {
+                osdevent($link,['event'=>'CAMP_OUT_HANGUP','uniqueid'=>$COAuniqueid,'server_ip'=>$call_server_ip,'callerid'=>$CalLCID,'campaign_id'=>$COAcampaign,'lead_id'=>$COAlead,'user'=>$user,'data1'=>$COAsecs]);
+            }
+        }
+        $stmt=sprintf("SELECT uniqueid,campaign_id,lead_id,UNIX_TIMESTAMP(event_time) FROM osdial_events WHERE event='CB_ANSWER' AND server_ip='%s' AND callerid='%s';",mres($call_server_ip),mres($CalLCID));
+        if ($format=='debug') echo "\n<!-- $stmt -->";
+        $rslt=mysql_query($stmt, $link);
+        $oecnt = mysql_num_rows($rslt);
+        if ($oecnt > 0) {
+            $row=mysql_fetch_row($rslt);
+            $CBuniqueid = $row[0];
+            $CBcampaign = $row[1];
+            $CBlead = $row[2];
+            $CBtime = $row[3];
+            $StarTtime = date("U");
+            $CBsecs = $StarTtime - $CBtime;
+            if ($CBsecs<1) $CBsecs=0;
+            $stmt=sprintf("SELECT count(*) FROM osdial_events WHERE event='CB_HANGUP' AND server_ip='%s' AND callerid='%s';",mres($call_server_ip),mres($CalLCID));
+            if ($format=='debug') echo "\n<!-- $stmt -->";
+            $rslt=mysql_query($stmt, $link);
+            $row=mysql_fetch_row($rslt);
+            $oecnt = $row[0];
+            if ($oecnt==0) {
+                osdevent($link,['event'=>'CB_HANGUP','uniqueid'=>$CBuniqueid,'server_ip'=>$call_server_ip,'callerid'=>$CalLCID,'campaign_id'=>$CBcampaign,'lead_id'=>$CBlead,'user'=>$user,'data1'=>$CBsecs]);
+            }
+        }
+        $stmt=sprintf("SELECT uniqueid,campaign_id,lead_id,UNIX_TIMESTAMP(event_time) FROM osdial_events WHERE event='IVR_CB_ANSWER' AND server_ip='%s' AND callerid='%s';",mres($call_server_ip),mres($CalLCID));
+        if ($format=='debug') echo "\n<!-- $stmt -->";
+        $rslt=mysql_query($stmt, $link);
+        $oecnt = mysql_num_rows($rslt);
+        if ($oecnt > 0) {
+            $row=mysql_fetch_row($rslt);
+            $ICBuniqueid = $row[0];
+            $ICBcampaign = $row[1];
+            $ICBlead = $row[2];
+            $ICBtime = $row[3];
+            $StarTtime = date("U");
+            $ICBsecs = $StarTtime - $ICBtime;
+            if ($ICBsecs<1) $ICBsecs=0;
+            $stmt=sprintf("SELECT count(*) FROM osdial_events WHERE event='IVR_CB_HANGUP' AND server_ip='%s' AND callerid='%s';",mres($call_server_ip),mres($CalLCID));
+            if ($format=='debug') echo "\n<!-- $stmt -->";
+            $rslt=mysql_query($stmt, $link);
+            $row=mysql_fetch_row($rslt);
+            $oecnt = $row[0];
+            if ($oecnt==0) {
+                osdevent($link,['event'=>'IVR_CB_HANGUP','uniqueid'=>$ICBuniqueid,'server_ip'=>$call_server_ip,'callerid'=>$CalLCID,'campaign_id'=>$ICBcampaign,'lead_id'=>$ICBlead,'user'=>$user,'data1'=>$ICBsecs]);
+            }
+        }
+
         if ($channel_live==1) {
             if (OSDstrlen($CalLCID)>15 and $secondS>0) {
                 $stmt=sprintf("SELECT count(*) FROM osdial_auto_calls WHERE callerid='%s';",mres($CalLCID));
@@ -423,6 +513,25 @@ if ($ACTION=="Hangup") {
                 $rowx=mysql_fetch_row($rslt);
                 if ($format=='debug') echo "\n<!-- $rowx[0]|$stmt -->";
                 if ($rowx[0] > 0) {
+                    $stmt=sprintf("SELECT uniqueid,UNIX_TIMESTAMP(event_time) FROM osdial_events WHERE event='CALL_START' AND server_ip='%s' AND callerid='%s';",mres($call_server_ip),mres($CalLCID));
+                    if ($format=='debug') echo "\n<!-- $stmt -->";
+                    $rslt=mysql_query($stmt, $link);
+                    $oecnt = mysql_num_rows($rslt);
+                    if ($oecnt > 0) {
+                        $row=mysql_fetch_row($rslt);
+                        $Cuniqueid = $row[0];
+                        $Ctime = $row[1];
+                        $Csecs = date("U") - $Ctime;
+                        if ($Csecs<1) $Csecs=0;
+                        $stmt=sprintf("SELECT count(*) FROM osdial_events WHERE event='CALL_END' AND server_ip='%s' AND callerid='%s';",mres($call_server_ip),mres($CalLCID));
+                        if ($format=='debug') echo "\n<!-- $stmt -->";
+                        $rslt=mysql_query($stmt, $link);
+                        $row=mysql_fetch_row($rslt);
+                        $oecnt = $row[0];
+                        if ($oecnt==0) {
+                            osdevent($link,['event'=>'CALL_END','uniqueid'=>$Cuniqueid,'server_ip'=>$call_server_ip,'callerid'=>$CalLCID]);
+                        }
+                    }
                    if ($config['settings']['enable_queuemetrics_logging'] > 0) {
                         $linkB=mysql_connect($config['settings']['queuemetrics_server_ip'], $config['settings']['queuemetrics_login'], $config['settings']['queuemetrics_pass']);
                         mysql_select_db($config['settings']['queuemetrics_dbname'], $linkB);
@@ -603,6 +712,55 @@ if ($ACTION=="OLDHangup") {
 }
 
 
+if ($ACTION=="EventXferBlindNumber") {
+    if ( (OSDstrlen($uniqueid)<2) or (OSDstrlen($server_ip)<1) or (OSDstrlen($queryCID)<1) or (OSDstrlen($campaign)<1) or (OSDstrlen($user)<1) or (OSDstrlen($lead_id)<1) or (OSDstrlen($exten)<1)) {
+        echo "\nAction not sent\n";
+    } else {
+        if (OSDstrlen($call_server_ip)>6) {$server_ip = $call_server_ip;}
+        osdevent($link,['event'=>'CALL_XFER_BLIND','uniqueid'=>$uniqueid,'server_ip'=>$server_ip,'callerid'=>$queryCID,'campaign_id'=>$campaign,'user'=>$user,'lead_id'=>$lead_id,'data1'=>$exten]);
+    }
+}
+
+if ($ACTION=="EventXferBlindGroup") {
+    if ( (OSDstrlen($uniqueid)<2) or (OSDstrlen($server_ip)<1) or (OSDstrlen($queryCID)<1) or (OSDstrlen($campaign)<1) or (OSDstrlen($user)<1) or (OSDstrlen($lead_id)<1) or (OSDstrlen($exten)<1)) {
+        echo "\nAction not sent\n";
+    } else {
+        if (OSDstrlen($call_server_ip)>6) {$server_ip = $call_server_ip;}
+        osdevent($link,['event'=>'CALL_XFER_BLIND','uniqueid'=>$uniqueid,'server_ip'=>$server_ip,'callerid'=>$queryCID,'campaign_id'=>$campaign,'group_id'=>$exten,'user'=>$user,'lead_id'=>$lead_id]);
+    }
+}
+
+if ($ACTION=="Event3wayNumber") {
+    if ( (OSDstrlen($uniqueid)<2) or (OSDstrlen($server_ip)<1) or (OSDstrlen($queryCID)<1) or (OSDstrlen($campaign)<1) or (OSDstrlen($user)<1) or (OSDstrlen($lead_id)<1) or (OSDstrlen($exten)<1)) {
+        echo "\nAction not sent\n";
+    } else {
+        osdevent($link,['event'=>'CALL_3WAY','uniqueid'=>$uniqueid,'server_ip'=>$server_ip,'callerid'=>$queryCID,'campaign_id'=>$campaign,'user'=>$user,'lead_id'=>$lead_id,'data1'=>$exten]);
+    }
+}
+
+if ($ACTION=="Event3wayGroup") {
+    if ( (OSDstrlen($uniqueid)<2) or (OSDstrlen($server_ip)<1) or (OSDstrlen($queryCID)<1) or (OSDstrlen($campaign)<1) or (OSDstrlen($user)<1) or (OSDstrlen($lead_id)<1) or (OSDstrlen($exten)<1)) {
+        echo "\nAction not sent\n";
+    } else {
+        osdevent($link,['event'=>'CALL_3WAY','uniqueid'=>$uniqueid,'server_ip'=>$server_ip,'callerid'=>$queryCID,'campaign_id'=>$campaign,'group_id'=>$exten,'user'=>$user,'lead_id'=>$lead_id]);
+    }
+}
+
+if ($ACTION=="Event3wayLeave") {
+    if ( (OSDstrlen($uniqueid)<2) or (OSDstrlen($server_ip)<1) or (OSDstrlen($queryCID)<1) or (OSDstrlen($campaign)<1) or (OSDstrlen($user)<1) or (OSDstrlen($lead_id)<1) or (OSDstrlen($exten)<1)) {
+        echo "\nAction not sent\n";
+    } else {
+        osdevent($link,['event'=>'CALL_3WAY_LEAVE','uniqueid'=>$uniqueid,'server_ip'=>$server_ip,'callerid'=>$queryCID,'campaign_id'=>$campaign,'group_id'=>$exten,'user'=>$user,'lead_id'=>$lead_id]);
+    }
+}
+
+if ($ACTION=="EventXferMessage") {
+    if ( (OSDstrlen($uniqueid)<2) or (OSDstrlen($server_ip)<1) or (OSDstrlen($queryCID)<1) or (OSDstrlen($campaign)<1) or (OSDstrlen($user)<1) or (OSDstrlen($lead_id)<1) or (OSDstrlen($exten)<1)) {
+        echo "\nAction not sent\n";
+    } else {
+        osdevent($link,['event'=>'CALL_XFER_MESSAGE','uniqueid'=>$uniqueid,'server_ip'=>$server_ip,'callerid'=>$queryCID,'campaign_id'=>$campaign,'user'=>$user,'lead_id'=>$lead_id,'data1'=>$exten]);
+    }
+}
 
 ######################
 # ACTION=Redirect, RedirectName, RedirectNameVmail, RedirectToPark, RedirectFromPark, RedirectVD, RedirectXtra, RedirectXtraCX
@@ -688,6 +846,7 @@ if ($ACTION=="RedirectToPark") {
         }
 
         if (OSDstrlen($call_server_ip)>6) {$server_ip = $call_server_ip;}
+        osdevent($link,['event'=>'CALL_ONHOLD','uniqueid'=>$uniqueid,'server_ip'=>$server_ip,'user'=>$user,'data1'=>$channel,'data2'=>$exten]);
         $stmt=sprintf("INSERT INTO parked_channels VALUES('%s','%s','','%s','%s','%s');",mres($channel),mres($server_ip),mres($extenName),mres($parkedby),mres($NOW_TIME));
         if ($format=='debug') echo "\n<!-- $stmt -->";
         $rslt=mysql_query($stmt, $link);
@@ -736,6 +895,16 @@ if ($ACTION=="RedirectFromPark") {
             }
         }
         if (OSDstrlen($call_server_ip)>6) {$server_ip = $call_server_ip;}
+        $Dsecs=0;
+        $stmt=sprintf("SELECT UNIX_TIMESTAMP(event_time) FROM osdial_events WHERE event='CALL_ONHOLD' AND uniqueid='%s' AND server_ip='%s' LIMIT 1;",mres($uniqueid),mres($server_ip));
+        $rslt=mysql_query($stmt, $link);
+        $hold_ct = mysql_num_rows($rslt);
+        if ($hold_ct>0) {
+            $row=mysql_fetch_row($rslt);
+            $Dsecs = Date("U") - $row[0];
+            if ($Dsecs<1) $Dsecs=0;
+        }
+        osdevent($link,['event'=>'CALL_OFFHOLD','uniqueid'=>$uniqueid,'server_ip'=>$server_ip,'user'=>$user,'data1'=>$channel,'data2'=>$exten,'data3'=>$Dsecs]);
         $stmt=sprintf("DELETE FROM parked_channels WHERE server_ip='%s' AND channel='%s';",mres($server_ip),mres($channel));
         if ($format=='debug') echo "\n<!-- $stmt -->";
         $rslt=mysql_query($stmt, $link);

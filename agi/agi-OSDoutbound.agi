@@ -142,6 +142,8 @@ $agent_call_order = 'order by random_id' if ($campaign->{next_agent_call} =~ /ra
 $agent_call_order = 'order by campaign_weight desc,last_call_finish' if ($campaign->{next_agent_call} =~ /campaign_rank/i);
 $agent_call_order = 'order by calls_today,last_call_finish' if ($campaign->{next_agent_call} =~ /fewest_calls/i);
 
+$osd->osdevent({event=>'CAMP_AUTO_START',server_ip=>$osd->{'VARserver_ip'},uniqueid=>$osd->AGI->{uniqueid},callerid=>$osd->AGI->{accountcode},lead_id=>$CIDlead_id,campaign_id=>$oac->{campaign_id}});
+
 while ($drop_timer <= $campaign->{drop_call_seconds}) {
 	my $channel_status = $osd->AGI->channel_status($osd->AGI->{channel});
 	if ($channel_status < 1) {
@@ -382,6 +384,7 @@ while ($drop_timer <= $campaign->{drop_call_seconds}) {
 				$remDIALstr .= $conf_exten;
 			}
 
+			$osd->osdevent({event=>'CAMP_AUTO_XFER',server_ip=>$osd->{'VARserver_ip'},uniqueid=>$osd->AGI->{uniqueid},callerid=>$osd->AGI->{accountcode},lead_id=>$CIDlead_id,campaign_id=>$oac->{campaign_id},user=>$user,data1=>$drop_timer});
 			$osd->agi_output("exiting the VDAD app, transferring call to $remDIALstr");
 			$osd->AGI->set_context($osd->{server}{ext_context});
 			$osd->AGI->set_extension($remDIALstr);
@@ -430,9 +433,11 @@ if ($drop_timer >= $campaign->{drop_call_seconds}) {
 
 		if ($campaign->{safe_harbor_message} =~ /Y/) {
 			$DROPexten = $campaign->{safe_harbor_exten};
+			$osd->osdevent({event=>'CAMP_AUTO_TIMEOUT',server_ip=>$osd->{'VARserver_ip'},uniqueid=>$osd->AGI->{uniqueid},callerid=>$osd->AGI->{accountcode},lead_id=>$CIDlead_id,campaign_id=>$oac->{campaign_id},data1=>'SAFE_HARBOR',data2=>$campaign->{safe_harbor_exten},data3=>$drop_timer});
 		} else {
 			$campaign->{voicemail_ext} =~ s/\D//gi;
 			$DROPexten = $osd->{server}{voicemail_dump_exten} . $campaign->{voicemail_ext} if (length($campaign->{voicemail_ext})>0);
+			$osd->osdevent({event=>'CAMP_AUTO_TIMEOUT',server_ip=>$osd->{'VARserver_ip'},uniqueid=>$osd->AGI->{uniqueid},callerid=>$osd->AGI->{accountcode},lead_id=>$CIDlead_id,campaign_id=>$oac->{campaign_id},data1=>'VOICEMAIL',data2=>$campaign->{voicemail_ext},data3=>$drop_timer});
 		}
 	}
 
