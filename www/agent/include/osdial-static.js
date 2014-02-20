@@ -358,6 +358,26 @@
 						MD_channel_look=1;
 						XDcheck = 'YES';
 
+						eventdest='';
+						if (cxmatch>0) {
+							eventdest = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=Event3wayGroup&format=text&channel=" + channel_value + "&call_server_ip=" + server_ip + "&queryCID=" + CalLCID + "&exten=" + document.getElementById("XfeRGrouP").value + "&ext_context=" + extension_context + "&ext_priority=1&auto_dial_level=" + auto_dial_level + "&campaign=" + campaign + "&uniqueid=" + document.osdial_form.uniqueid.value + "&lead_id=" + document.osdial_form.lead_id.value + "&secondS=" + sec2time(VD_live_call_secondS,0) + "&session_id=" + session_id;
+						} else {
+							eventdest = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=Event3wayNumber&format=text&channel=" + channel_value + "&call_server_ip=" + server_ip + "&queryCID=" + CalLCID + "&exten=" + taskdialvalue + "&ext_context=" + extension_context + "&ext_priority=1&auto_dial_level=" + auto_dial_level + "&campaign=" + campaign + "&uniqueid=" + document.osdial_form.uniqueid.value + "&lead_id=" + document.osdial_form.lead_id.value + "&secondS=" + sec2time(VD_live_call_secondS,0) + "&session_id=" + session_id;
+						}
+						if (eventdest != '') {
+							var xmlhttp3=getXHR();
+							if (xmlhttp3) {
+								xmlhttp3.open('POST', 'manager_send.php');
+								xmlhttp3.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
+								xmlhttp3.send(eventdest);
+								xmlhttp3.onreadystatechange = function() {
+									if (xmlhttp3.readyState == 4 && xmlhttp3.status == 200) {
+									}
+								}
+								delete xmlhttp3;
+							}
+						}
+
 				//		document.getElementById("HangupXferLine").innerHTML ="<a href=\"#\" onclick=\"xfercall_send_hangup();return false;\"><span class=\"XferHangupButton\">Hangup XFER Line</span></a>";
 					}
 				}
@@ -800,6 +820,7 @@
                         }
                     }
                 }
+		eventdest='';
 		var xmlhttp=getXHR();
 		if (xmlhttp) { 
 			var redirectvalue = MDchannel;
@@ -822,6 +843,7 @@
 				if (taskvar == 'XfeRVMAIL') {
 					blindxferdialstring = campaign_am_message_exten;
 					blindxfercontext = ext_context;
+					eventdest = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=EventXferMessage&format=text&channel=" + redirectvalue + "&call_server_ip=" + redirectserverip + "&queryCID=" + CalLCID + "&exten=" + blindxferdialstring + "&ext_context=" + blindxfercontext + "&ext_priority=1&auto_dial_level=" + auto_dial_level + "&campaign=" + campaign + "&uniqueid=" + document.osdial_form.uniqueid.value + "&lead_id=" + document.osdial_form.lead_id.value + "&secondS=" + sec2time(VD_live_call_secondS,0) + "&session_id=" + session_id;
 				} else {
 					var regXFvars = new RegExp("XFER","g");
 					if (blindxferdialstring.match(regXFvars)) {
@@ -842,6 +864,7 @@
 							blindxfercontext = dial_context;
 						}
 					}
+					eventdest = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=EventXferBlindNumber&format=text&channel=" + redirectvalue + "&call_server_ip=" + redirectserverip + "&queryCID=" + CalLCID + "&exten=" + blindxferdialstring + "&ext_context=" + blindxfercontext + "&ext_priority=1&auto_dial_level=" + auto_dial_level + "&campaign=" + campaign + "&uniqueid=" + document.osdial_form.uniqueid.value + "&lead_id=" + document.osdial_form.lead_id.value + "&secondS=" + sec2time(VD_live_call_secondS,0) + "&session_id=" + session_id;
 				}
 				if (blindxferdialstring.length < 2) {
 					xferredirect_query='';
@@ -856,6 +879,8 @@
 				var queryCID = "XLvdcW" + epoch_sec + user_abb;
 				//"90009*$group**$lead_id**$phone_number*$user*";
 				var redirectdestination = closerxferinternal + '90009*' + XfeRSelecT.value + '**' + document.osdial_form.lead_id.value + '**' + document.osdial_form.phone_number.value + '*' + user + '*';
+
+				eventdest = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=EventXferBlindGroup&format=text&channel=" + redirectvalue + "&call_server_ip=" + redirectserverip + "&queryCID=" + CalLCID + "&exten=" + XfeRSelecT.value + "&ext_context=" + ext_context + "&ext_priority=1&auto_dial_level=" + auto_dial_level + "&campaign=" + campaign + "&uniqueid=" + document.osdial_form.uniqueid.value + "&lead_id=" + document.osdial_form.lead_id.value + "&secondS=" + sec2time(VD_live_call_secondS,0) + "&session_id=" + session_id;
 
 				xferredirect_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=RedirectVD&format=text&channel=" + redirectvalue + "&call_server_ip=" + redirectserverip + "&queryCID=" + queryCID + "&exten=" + redirectdestination + "&ext_context=" + ext_context + "&ext_priority=1&auto_dial_level=" + auto_dial_level + "&campaign=" + campaign + "&uniqueid=" + document.osdial_form.uniqueid.value + "&lead_id=" + document.osdial_form.lead_id.value + "&secondS=" + sec2time(VD_live_call_secondS,0) + "&session_id=" + session_id;
 			} else if (taskvar == '3WAY') {
@@ -877,6 +902,11 @@
 				DispO3wayCalLxfernumber = document.osdial_form.xfernumber.value;
 				DispO3wayCalLcamptail = '';
 
+				if (redirecttype == 'RedirectXtraCXNeW') {
+					eventdest = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=Event3wayLeave&format=text&channel=" + redirectvalue + "&call_server_ip=" + redirectserverip + "&queryCID=" + CalLCID + "&exten=" + XfeRSelecT.value + "&ext_context=" + ext_context + "&ext_priority=1&auto_dial_level=" + auto_dial_level + "&campaign=" + campaign + "&uniqueid=" + document.osdial_form.uniqueid.value + "&lead_id=" + document.osdial_form.lead_id.value + "&secondS=" + sec2time(VD_live_call_secondS,0) + "&session_id=" + session_id;
+				} else {
+					eventdest = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=Event3wayLeave&format=text&channel=" + redirectvalue + "&call_server_ip=" + redirectserverip + "&queryCID=" + CalLCID + "&exten=" + DispO3wayCalLxfernumber + "&ext_context=" + ext_context + "&ext_priority=1&auto_dial_level=" + auto_dial_level + "&campaign=" + campaign + "&uniqueid=" + document.osdial_form.uniqueid.value + "&lead_id=" + document.osdial_form.lead_id.value + "&secondS=" + sec2time(VD_live_call_secondS,0) + "&session_id=" + session_id;
+				}
 
 				var manual_dialcode = ''+document.osdial_form.phone_code.value;
 				if (manual_dialcode!='1' && manual_dialcode.substring(0,1)!='0') manual_dialcode = '011' + manual_dialcode;
@@ -961,6 +991,20 @@
 					}
 				}
 				delete xmlhttp2;
+			}
+		}
+
+		if (eventdest != '') {
+			var xmlhttp3=getXHR();
+			if (xmlhttp3) {
+				xmlhttp3.open('POST', 'manager_send.php');
+				xmlhttp3.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
+				xmlhttp3.send(eventdest);
+				xmlhttp3.onreadystatechange = function() {
+					if (xmlhttp3.readyState == 4 && xmlhttp3.status == 200) {
+					}
+				}
+				delete xmlhttp3;
 			}
 		}
 

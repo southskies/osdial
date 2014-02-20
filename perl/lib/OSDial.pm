@@ -1254,6 +1254,96 @@ sub media_save_files {
 
 
 
+=over 4
+
+=item B<send_email( $host, $port, $user, $pass, $to, $from, $subject, $html, $text )>
+=item B<send_email({ host=>$host, port=>$port, user=>$user, pass=>$pass, to=>$to, from=>$from, subject=>$subject, $html=>$html, text=>$text })>
+
+Sends out an email using the given parameters. Returns 1 on success, 0 on failure.
+
+=back
+
+=cut
+
+sub send_email {
+	my ($self, $opt1, $port, $user, $pass, $to, $from, $subject, $html, $text) = @_;
+
+	my $host='';
+
+	if (ref($opt1) =~ /HASH/) {
+		$host = $opt1->{'host'} if (exists($opt1->{'host'}));
+		$port = $opt1->{'port'} if (exists($opt1->{'port'}));
+		$user = $opt1->{'user'} if (exists($opt1->{'user'}));
+		$pass = $opt1->{'pass'} if (exists($opt1->{'pass'}));
+		$to = $opt1->{'to'} if (exists($opt1->{'to'}));
+		$from = $opt1->{'from'} if (exists($opt1->{'from'}));
+		$subject = $opt1->{'subject'} if (exists($opt1->{'subject'}));
+		if (exists($opt1->{'message'})) {
+			$text=$opt1->{'message'};
+			$html="<pre style=\"font-family:'DejaVu Sans mono','Lucida Console',monospace;\">".$text.'</pre>';
+		} else {
+			$html = $opt1->{'html'} if (exists($opt1->{'html'}));
+			$text = $opt1->{'text'} if (exists($opt1->{'text'}));
+		}
+	} else {
+		$host = $opt1;
+	}
+
+	$host='localhost' if (!defined($host) or $host eq '');
+	$port='25' if (!defined($port) or $port eq '');
+
+	my $transparams = { 'host' => $host, 'port' => $port };
+	if (defined($user) and $user ne '') {
+		$transparams->{'sasl_username'} = $user;
+		$transparams->{'sasl_password'} = $pass;
+	}
+
+	my $transport = Email::Sender::Transport::SMTP->new($transparams);
+
+	my $email = Email::Stuffer->to($to)
+		->from($from)
+		->subject($subject)
+		->text_body($text)
+		->html_body($html)
+		->transport($transport);
+
+	my $eres = $email->send();
+
+	return 1 if (ref($eres) =~ /^Email::Sender::Success/);
+	return 0;
+}
+
+
+
+=over 4
+
+=item B<osdevent({ server_ip=>$server_ip, unqiueid=>$unqiueid, callerid=>$callerid, user=>$user, campaign_id=>$campaign_id, group_id=>$group_id, lead_id=>$lead_id, event=>$event, data1=>$data1, data2=>$data2, data3=>$data3, data4=>$data4, data5=>$data5, data6=>$data6 })>
+
+Records the given data into the osdial_events table.
+
+=back
+
+=cut
+
+sub osdevent {
+        my ($self,$optref) = @_;
+	my $opts = {};
+	if (ref($optref) eq "HASH") {
+		$opts = $optref;
+	}
+	my $oelsql = '';
+	foreach my $opt (sort keys %{$opts}) {
+		$oelsql .= sprintf("%s=%s,",$opt,$self->quote($opts->{$opt}));
+	}
+	chop($oelsql);
+	if (length($oelsql)>0) {
+		$self->sql_execute(sprintf('INSERT INTO osdial_events SET %s;', $oelsql),'OEL');
+		return $self->sql_last_insert_id('OEL');
+	}
+	return 0;
+}
+
+
 
 # Make sure we do a little cleanup before exiting.
 sub DESTROY {

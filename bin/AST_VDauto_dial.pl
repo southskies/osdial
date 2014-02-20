@@ -964,6 +964,24 @@ while($one_day_interval > 0)
 								}
 							$sthA->finish();
 
+							my $CBuser='';
+							my $omvariable='';
+							if ($ld_status =~ /^CBHOLD$|^CALLBK$/) {
+								$stmtA = "SELECT user FROM osdial_callbacks WHERE lead_id='$lead_id' ORDER BY callback_id ASC;";
+								$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+								$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+								$sthArows=$sthA->rows;
+								while ($sthArows > $cb_count) {
+									@aryA = $sthA->fetchrow_array;
+									$CBuser = $aryA[0];
+									$cb_count++;
+								}
+								$sthA->finish();
+								if ($CBuser ne '') {
+									$omvariable='Variable: _CALLBACK=1,_CALLBACK_USER='.$CBUSER;
+								}
+							}
+
 							$phone_code =~ s/^011|^010|^00//;
 
 							# DNC Check.
@@ -1165,8 +1183,18 @@ while($one_day_interval > 0)
 								if ($CCID_NAME eq "") { $CCID_NAME="unknown"; }
 								if ($CCID_on) {$CIDstring = "\"$CCID_NAME\" <$CCID>";}
 								else {$CIDstring = "\"unknown\" <0000000000>";}
+
+								$osdial->osdevent({'event'=>'CALL_START','server_ip'=>$DBIPaddress[$user_CIPct],'callerid'=>$VqueryCID});
+								$osdial->osdevent({'event'=>'CAMP_OUT_DIAL','server_ip'=>$DBIPaddress[$user_CIPct],'callerid'=>$VqueryCID,'campaign_id'=>$DBIPcampaign[$user_CIPct],'lead_id'=>$lead_id,'data1'=>$phone_code.$phone_number,'data2'=>'AUTO'});
+								if ($CBuser ne '') {
+									$osdial->osdevent({'event'=>'CB_DIAL','server_ip'=>$DBIPaddress[$user_CIPct],'callerid'=>$VqueryCID,'campaign_id'=>$DBIPcampaign[$user_CIPct],'lead_id'=>$lead_id,'data1'=>$phone_code.$phone_number,'data2'=>'AUTO'});
+									if ($CBuser eq 'VDCL') {
+										$osdial->osdevent({'event'=>'IVR_CB_DIAL','server_ip'=>$DBIPaddress[$user_CIPct],'callerid'=>$VqueryCID,'campaign_id'=>$DBIPcampaign[$user_CIPct],'lead_id'=>$lead_id,'data1'=>$phone_code.$phone_number,'data2'=>'AUTO'});
+									}
+								}
+
 								### insert a NEW record to the osdial_manager table to be processed
-									$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$DBIPaddress[$user_CIPct]','','Originate','$VqueryCID','Exten: $VDAD_dial_exten','Context: $ext_context','Channel: $local_DEF$Ndialstring$local_AMP$DBIPcarrier_context[$user_CIPct]','Priority: 1','Callerid: $CIDstring','Timeout: $Local_dial_timeout','Account: $VqueryCID','','','')";
+									$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$DBIPaddress[$user_CIPct]','','Originate','$VqueryCID','Exten: $VDAD_dial_exten','Context: $ext_context','Channel: $local_DEF$Ndialstring$local_AMP$DBIPcarrier_context[$user_CIPct]','Priority: 1','Callerid: $CIDstring','Timeout: $Local_dial_timeout','Account: $VqueryCID','$omvariable','','')";
 									$affected_rows = $dbhA->do($stmtA);
 
 									$event_string = "|     number call dialed|$DBIPcampaign[$user_CIPct]|$VqueryCID|$stmtA|$gmt_offset_now|$alt_dial|";
@@ -1460,7 +1488,7 @@ while($one_day_interval > 0)
 									$event_string = "|     dead NA call added to log $CLuniqueid|$CLlead_id|$CLphone_number|$CLstatus|$OL_status|$CLnew_status|$affected_rows|";
 							 		&event_logger;
 								} else {
-									$stmtA=sprintf("UPDATE osdial_log SET status='%s',length_in_sec='%s',end_epoch='%s',comments='%s' WHERE lead_id='%s' AND user='%s' AND phone_number='%s' AND uniqueid LIKE '%s%%' AND server_ip='%s';",$osdial->mres($OL_status),$osdial->mres($CLstage),$osdial->mres($end_epoch),$osdial->mres($olcomments),$osdial->mres($CLlead_id),$osdial->mres($CLuser),$osdial->mres($CLphone_number),$osdial->mres($beginUNIQUEID),$osdial->mres($KLserver_ip[$kill_vac]));
+									$stmtA=sprintf("UPDATE osdial_log SET status='%s',length_in_sec='%s',end_epoch='%s',comments='%s',callerid='%s' WHERE lead_id='%s' AND user='%s' AND phone_number='%s' AND uniqueid LIKE '%s%%' AND server_ip='%s';",$osdial->mres($OL_status),$osdial->mres($CLstage),$osdial->mres($end_epoch),$osdial->mres($olcomments),$osdial->mres($KLcallerid[$kill_vac]),$osdial->mres($CLlead_id),$osdial->mres($CLuser),$osdial->mres($CLphone_number),$osdial->mres($beginUNIQUEID),$osdial->mres($KLserver_ip[$kill_vac]));
 									if($M){print STDERR "\n|$stmtA|\n";}
 									$affected_rows = $dbhA->do($stmtA);
 									$event_string = "|     dead NA call updated to log $CLuniqueid|$CLlead_id|$CLphone_number|$CLstatus|$OL_status|$CLnew_status|$affected_rows|";

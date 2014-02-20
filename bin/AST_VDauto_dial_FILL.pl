@@ -792,6 +792,16 @@ while($one_day_interval > 0)
 												if ($CCID_NAME eq "") { $CCID_NAME="unknown"; }
 												if ($CCID_on) {$CIDstring = "\"$CCID_NAME\" <$CCID>";}
 												else {$CIDstring = "\"unknown\" <0000000000>";}
+
+												$osdial->osdevent({'event'=>'CALL_START','server_ip'=>$DB_camp_server_server_ip[$server_CIPct],'callerid'=>$VqueryCID});
+												$osdial->osdevent({'event'=>'CAMP_OUT_DIAL','server_ip'=>$DB_camp_server_server_ip[$server_CIPct],'callerid'=>$VqueryCID,'campaign_id'=>$DBfill_campaign[$camp_CIPct],'lead_id'=>$lead_id,'data1'=>$phone_code.$phone_number,'data2'=>'AUTO'});
+												if ($CBuser ne '') {
+													$osdial->osdevent({'event'=>'CB_DIAL','server_ip'=>$DB_camp_server_server_ip[$server_CIPct],'callerid'=>$VqueryCID,'campaign_id'=>$DBfill_campaign[$camp_CIPct],'lead_id'=>$lead_id,'data1'=>$phone_code.$phone_number,'data2'=>'AUTO'});
+													if ($CBuser eq 'VDCL') {
+														$osdial->osdevent({'event'=>'IVR_CB_DIAL','server_ip'=>$DB_camp_server_server_ip[$server_CIPct],'callerid'=>$VqueryCID,'campaign_id'=>$DBfill_campaign[$camp_CIPct],'lead_id'=>$lead_id,'data1'=>$phone_code.$phone_number,'data2'=>'AUTO'});
+													}
+												}
+
 												### insert a NEW record to the osdial_manager table to be processed
 													$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$DB_camp_server_server_ip[$server_CIPct]','','Originate','$VqueryCID','Exten: $VDAD_dial_exten','Context: $ext_context','Channel: $local_DEF$Ndialstring$local_AMP$DBIPcarrier_context[$camp_CIDct]','Priority: 1','Callerid: $CIDstring','Timeout: $Local_dial_timeout','Account: $VqueryCID','','','')";
 													$affected_rows = $dbhA->do($stmtA);
