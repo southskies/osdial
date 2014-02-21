@@ -134,7 +134,7 @@ if ($ADD==39)			{$hh='campaigns';	$sh='listmix';	$title = "Campaign List Mixes";
 
 # Campaigns - basic
 if ($ADD==44)			{$hh='campaigns';	$sh='basic';	$title = "Modify Campaign - Basic View";}
-if ($ADD==34)			{$hh='campaigns';	$sh='basic';	$title = "Modify Campaign - Basic View";}
+if ($ADD==34)			{$hh='campaigns';	$sh='basic';	$title = "Modify Campaign - Basic View";    $ADD="31";}
 
 # Campaigns - detail
 if ($ADD==11)			{$hh='campaigns';	$sh='detail';	$title = "Add New Campaign";}
