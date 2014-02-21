@@ -860,6 +860,8 @@ sub gen_conferences {
 		$cnf2 .= procexten("osdial","487487","2","AGI","agi-OSDivr-old.agi,\${EXTEN}");
 		$cnf2 .= procexten("osdial","487487","3","Hangup","");
 	}
+	$cnf2 .= procexten("osdial","_487488.","1","Set","CDR(accountcode)=\${EXTEN:6}");
+	$cnf2 .= procexten("osdial","_487488.","2","Goto","osdial,487488,1");
 	$cnf2 .= procexten("osdial","487488","1","Answer","");
 	$cnf2 .= procexten("osdial","487488","2","Playback","sip-silence");
 	$cnf2 .= procexten("osdial","487488","3","AGI","agi-OSDivr.agi,\${EXTEN}");
