@@ -1446,7 +1446,7 @@
 							MDhangupcause = MDlookResponse_array[4];
 							if (MDerror == 'ERROR') {
 								logTimeTrans();
-								agent_log_type="TALK";
+								agent_log_type="DISPO";
 								agent_log_time=0;
 								agent_log_epoch_start=agent_log_epoch;
 								document.osdial_form.uniqueid.value		= MDuniqueid;

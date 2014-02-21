@@ -1224,6 +1224,10 @@ if ($ACTION == 'manDiaLlookCaLL') {
             $status =$row[2];
             $response =$row[3];
 
+            $stmt=sprintf("UPDATE osdial_agent_log SET uniqueid='%s' WHERE agent_log_id='%s';",mres($uniqueid),mres($agent_log_id));
+            if ($format=='debug') echo "\n<!-- $stmt -->";
+            $rslt=mysql_query($stmt, $link);
+
             if ($response=='Y') {
                 $stmt=sprintf("SELECT uniqueid,channel,end_epoch,isup_result FROM call_log WHERE caller_code='%s' AND server_ip='%s' AND isup_result NOT IN ('0','16') ORDER BY start_time DESC LIMIT 1;",mres($MDnextCID),mres($server_ip));
                 $rslt=mysql_query($stmt, $link);

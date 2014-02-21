@@ -1506,15 +1506,27 @@ while($one_day_interval > 0)
 								$pause_sec=$wait_epoch-$pause_epoch;
 								$wait_sec=$talk_epoch-$wait_epoch;
 								$talk_sec=$dispo_epoch-$talk_epoch;
-								$stmtA=sprintf("INSERT INTO osdial_agent_log (user,user_group,server_ip,event_time,lead_id,campaign_id,pause_epoch,pause_sec,wait_epoch,wait_sec,talk_epoch,talk_sec,dispo_epoch,status,uniqueid,prev_status) VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')",$osdial->mres($CLuser),$osdial->mres($CLuser),$osdial->mres($VARserver_ip),$osdial->mres($SQLdate),$osdial->mres($CLlead_id),$osdial->mres($CLcampaign_id),$osdial->mres($pause_epoch),$osdial->mres($pause_sec),$osdial->mres($wait_epoch),$osdial->mres($wait_sec),$osdial->mres($talk_epoch),$osdial->mres($talk_sec),$osdial->mres($dispo_epoch),$osdial->mres($OL_status),$osdial->mres($CLuniqueid),$osdial->mres($orig_status));
-								if($M){print STDERR "\n|$stmtA|\n";}
-								$affected_rows = $dbhA->do($stmtA);
 
-								$stmtA = "SELECT LAST_INSERT_ID();";
+								$stmtA = "SELECT agent_log_id FROM osdial_agent_log WHERE server_ip='$VARserver_ip' AND uniqueid='$CLuniqueid' AND lead_id='$CLlead_id';";
 								$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 								$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-								@aryA = $sthA->fetchrow_array;
-								$logid=$aryA[0];
+								$sthArows=$sthA->rows;
+								if ($sthArows > 0) {
+									@aryA = $sthA->fetchrow_array;
+									$logid = $aryA[0];
+									$stmtA = "UPDATE osdial_agent_log SET status='" . $osdial->mres($OL_status) . "' WHERE server_ip='$VARserver_ip' AND uniqueid='$CLuniqueid' AND lead_id='$CLlead_id';";
+									my $affected_rows = $dbhA->do($stmtA);
+								} else {
+									$stmtA=sprintf("INSERT INTO osdial_agent_log (user,user_group,server_ip,event_time,lead_id,campaign_id,pause_epoch,pause_sec,wait_epoch,wait_sec,talk_epoch,talk_sec,dispo_epoch,status,uniqueid,prev_status) VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')",$osdial->mres($CLuser),$osdial->mres($CLuser),$osdial->mres($VARserver_ip),$osdial->mres($SQLdate),$osdial->mres($CLlead_id),$osdial->mres($CLcampaign_id),$osdial->mres($pause_epoch),$osdial->mres($pause_sec),$osdial->mres($wait_epoch),$osdial->mres($wait_sec),$osdial->mres($talk_epoch),$osdial->mres($talk_sec),$osdial->mres($dispo_epoch),$osdial->mres($OL_status),$osdial->mres($CLuniqueid),$osdial->mres($orig_status));
+									if($M){print STDERR "\n|$stmtA|\n";}
+									$affected_rows = $dbhA->do($stmtA);
+
+									$stmtA = "SELECT LAST_INSERT_ID();";
+									$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+									$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+									@aryA = $sthA->fetchrow_array;
+									$logid=$aryA[0];
+								}
 
 								my $company_id='';
 								if ($CLcampaign_id =~ /^\d\d\d..../) {
@@ -1982,15 +1994,27 @@ while($one_day_interval > 0)
 				$pause_sec=$wait_epoch-$pause_epoch;
 				$wait_sec=$talk_epoch-$wait_epoch;
 				$talk_sec=$dispo_epoch-$talk_epoch;
-				$stmtA=sprintf("INSERT INTO osdial_agent_log (user,user_group,server_ip,event_time,lead_id,campaign_id,pause_epoch,pause_sec,wait_epoch,wait_sec,talk_epoch,talk_sec,dispo_epoch,status,uniqueid,prev_status) VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')",'VDAD','VDAD',$osdial->mres($VARserver_ip),$osdial->mres($SQLdate),$osdial->mres($CLlead_id),$osdial->mres($CLcampaign_id),$osdial->mres($pause_epoch),$osdial->mres($pause_sec),$osdial->mres($wait_epoch),$osdial->mres($wait_sec),$osdial->mres($talk_epoch),$osdial->mres($talk_sec),$osdial->mres($dispo_epoch),$osdial->mres('DROP'),$osdial->mres($CLuniqueid),$osdial->mres($orig_status));
-				if($M){print STDERR "\n|$stmtA|\n";}
-				$affected_rows = $dbhA->do($stmtA);
 
-				$stmtA = "SELECT LAST_INSERT_ID();";
+				$stmtA = "SELECT agent_log_id FROM osdial_agent_log WHERE server_ip='$VARserver_ip' AND uniqueid='$CLuniqueid' AND lead_id='$CLlead_id';";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-				@aryA = $sthA->fetchrow_array;
-				$logid=$aryA[0];
+				$sthArows=$sthA->rows;
+				if ($sthArows > 0) {
+					@aryA = $sthA->fetchrow_array;
+					$logid = $aryA[0];
+					$stmtA = "UPDATE osdial_agent_log SET status='" . $osdial->mres('DROP') . "' WHERE server_ip='$VARserver_ip' AND uniqueid='$CLuniqueid' AND lead_id='$CLlead_id';";
+					my $affected_rows = $dbhA->do($stmtA);
+				} else {
+					$stmtA=sprintf("INSERT INTO osdial_agent_log (user,user_group,server_ip,event_time,lead_id,campaign_id,pause_epoch,pause_sec,wait_epoch,wait_sec,talk_epoch,talk_sec,dispo_epoch,status,uniqueid,prev_status) VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')",'VDAD','VDAD',$osdial->mres($VARserver_ip),$osdial->mres($SQLdate),$osdial->mres($CLlead_id),$osdial->mres($CLcampaign_id),$osdial->mres($pause_epoch),$osdial->mres($pause_sec),$osdial->mres($wait_epoch),$osdial->mres($wait_sec),$osdial->mres($talk_epoch),$osdial->mres($talk_sec),$osdial->mres($dispo_epoch),$osdial->mres('DROP'),$osdial->mres($CLuniqueid),$osdial->mres($orig_status));
+					if($M){print STDERR "\n|$stmtA|\n";}
+					$affected_rows = $dbhA->do($stmtA);
+
+					$stmtA = "SELECT LAST_INSERT_ID();";
+					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+					@aryA = $sthA->fetchrow_array;
+					$logid=$aryA[0];
+				}
 
 				my $company_id='';
 				if ($CLcampaign_id =~ /^\d\d\d..../) {

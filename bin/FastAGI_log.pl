@@ -663,7 +663,7 @@ sub process_request {
 					$agi_string = "|$stmtA|";
 					&agi_output;
 				}
-#				my $affected_rows = $dbhA->do($stmtA);
+				my $affected_rows = $dbhA->do($stmtA);
 #				$osdial->osdevent({'event'=>'CALL_START','uniqueid'=>$uniqueid,'server_ip'=>$VARserver_ip,'callerid'=>$accountcode});
 			}
 
@@ -1106,14 +1106,27 @@ sub process_request {
 							@aryA = $sthA->fetchrow_array;
 							$lstat = $aryA[0];
 							$lcomm = $aryA[1];
-							$stmtA = "INSERT INTO osdial_agent_log SET user='" . $osdial->mres($OLAuser) . "',server_ip='$VARserver_ip',event_time='$OLAlct',uniqueid='$OLAuniqueid',lead_id='$VD_lead_id',campaign_id='" . $osdial->mres($VD_campaign_id) . "',pause_epoch='$pauseepoch',wait_epoch='$waitepoch',wait_sec='$waitsec',talk_epoch='$talkepoch',talk_sec='$talksec',dispo_epoch='$dispoepoch',status='" . $osdial->mres($lstat) . "',user_group='VIRTUAL',comments='" . $osdial->mres($lcomm) . "';";
-							my $affected_rows = $dbhA->do($stmtA);
 
-							$stmtA = "SELECT LAST_INSERT_ID();";
+							$stmtA = "SELECT agent_log_id FROM osdial_agent_log WHERE server_ip='$VARserver_ip' AND uniqueid='$OLAuniqueid' AND lead_id='$VD_lead_id';";
 							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-							@aryA = $sthA->fetchrow_array;
-							$logid=$aryA[0];
+							$sthArows=$sthA->rows;
+							if ($sthArows > 0) {
+								@aryA = $sthA->fetchrow_array;
+								$logid = $aryA[0];
+								$stmtA = "UPDATE osdial_agent_log SET status='" . $osdial->mres($lstat) . "' WHERE server_ip='$VARserver_ip' AND uniqueid='$OLAuniqueid' AND lead_id='$VD_lead_id';";
+								my $affected_rows = $dbhA->do($stmtA);
+
+							} else {
+								$stmtA = "INSERT INTO osdial_agent_log SET user='" . $osdial->mres($OLAuser) . "',server_ip='$VARserver_ip',event_time='$OLAlct',uniqueid='$OLAuniqueid',lead_id='$VD_lead_id',campaign_id='" . $osdial->mres($VD_campaign_id) . "',pause_epoch='$pauseepoch',wait_epoch='$waitepoch',wait_sec='$waitsec',talk_epoch='$talkepoch',talk_sec='$talksec',dispo_epoch='$dispoepoch',status='" . $osdial->mres($lstat) . "',user_group='VIRTUAL',comments='" . $osdial->mres($lcomm) . "';";
+								my $affected_rows = $dbhA->do($stmtA);
+
+								$stmtA = "SELECT LAST_INSERT_ID();";
+								$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+								$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+								@aryA = $sthA->fetchrow_array;
+								$logid=$aryA[0];
+							}
 
 							if ($acct_method !~ /^$|^NONE$|^RANGE$/) {
 								if ($acct_method eq 'TALK_ROUNDUP') {
@@ -1386,14 +1399,25 @@ sub process_request {
 								my $dispoepoch = $now_date_epoch;
 								my $waitsec = ($talkepoch - $waitepoch);
 								my $talksec = ($dispoepoch - $talkepoch);
-								my $stmtB = "INSERT INTO osdial_agent_log SET user='VDCL',user_group='VDCL',server_ip='$VARserver_ip',event_time='$VD_calldate',uniqueid='$VD_uniqueid',lead_id='$VD_lead_id',campaign_id='" . $osdial->mres($VD_campaign_id) . "',pause_epoch='$pauseepoch',wait_epoch='$waitepoch',wait_sec='$waitsec',talk_epoch='$talkepoch',talk_sec='$talksec',dispo_epoch='$dispoepoch',".$VDCLSQL_status."comments='" . $osdial->mres($VD_comments) . "';";
-								$affected_rows = $dbhA->do($stmtB);
-
-								$stmtA = "SELECT LAST_INSERT_ID();";
+								$stmtA = "SELECT agent_log_id FROM osdial_agent_log WHERE server_ip='$VARserver_ip' AND uniqueid='$VD_uniqueid' AND lead_id='$VD_lead_id';";
 								$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 								$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-								@aryA = $sthA->fetchrow_array;
-								$logid=$aryA[0];
+								$sthArows=$sthA->rows;
+								if ($sthArows > 0) {
+									@aryA = $sthA->fetchrow_array;
+									$logid = $aryA[0];
+									$stmtA = "UPDATE osdial_agent_log SET status='" . $osdial->mres($VD_status) . "' WHERE server_ip='$VARserver_ip' AND uniqueid='$VD_uniqueid' AND lead_id='$VD_lead_id';";
+									my $affected_rows = $dbhA->do($stmtA);
+								} else {
+									my $stmtB = "INSERT INTO osdial_agent_log SET user='VDCL',user_group='VDCL',server_ip='$VARserver_ip',event_time='$VD_calldate',uniqueid='$VD_uniqueid',lead_id='$VD_lead_id',campaign_id='" . $osdial->mres($VD_campaign_id) . "',pause_epoch='$pauseepoch',wait_epoch='$waitepoch',wait_sec='$waitsec',talk_epoch='$talkepoch',talk_sec='$talksec',dispo_epoch='$dispoepoch',".$VDCLSQL_status."comments='" . $osdial->mres($VD_comments) . "';";
+									$affected_rows = $dbhA->do($stmtB);
+
+									$stmtA = "SELECT LAST_INSERT_ID();";
+									$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+									$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+									@aryA = $sthA->fetchrow_array;
+									$logid=$aryA[0];
+								}
 
 								my $company_id='';
 								if ($VD_campaign_id =~ /^\d\d\d..../) {
