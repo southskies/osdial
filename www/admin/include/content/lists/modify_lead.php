@@ -133,26 +133,26 @@ if ($ADD==1121) {
 		        $log_campaign = '';
 		        while ($logs_to_print > $u) {
 			        $row=mysql_fetch_row($rslt);
-			        if (OSDstrlen($log_campaign)<1) $log_campaign = $row[3];
+			        if (OSDstrlen($log_campaign)<1) $log_campaign = $row[4];
 			        $u++;
-			        $call_log .= "  <tr " . bgcolor($u) . " class=\"row font1\" title=\"Date/Time: $row[4]\" style=\"white-space:nowrap;\">\n";
+			        $call_log .= "  <tr " . bgcolor($u) . " class=\"row font1\" title=\"Date/Time: $row[5]\" style=\"white-space:nowrap;\">\n";
 			        $call_log .= "    <td>$u</td>\n";
-			        $call_log .= "    <td>" . dateToLocal($link,$row[4],$row[4],$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";
-			        $call_log .= "    <td align=left>$row[7]</td>\n";
+			        $call_log .= "    <td>" . dateToLocal($link,$row[5],$row[5],$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";
 			        $call_log .= "    <td align=left>$row[8]</td>\n";
+			        $call_log .= "    <td align=left>$row[9]</td>\n";
                     if ($LOG['view_agent_stats']) {
-			            $call_log .= "    <td align=left><a href=\"admin.php?ADD=999999&SUB=21&agent=$row[11]&begin_date=".OSDsubstr($row[4],0,10)."&end_date=".OSDsubstr($row[4],0,10)."\" target=\"_blank\">$row[11]</a></td>\n";
+			            $call_log .= "    <td align=left><a href=\"admin.php?ADD=999999&SUB=21&agent=$row[12]&begin_date=".OSDsubstr($row[5],0,10)."&end_date=".OSDsubstr($row[5],0,10)."\" target=\"_blank\">$row[12]</a></td>\n";
                     } else {
-			            $call_log .= "    <td align=left>$row[11]</td>\n";
+			            $call_log .= "    <td align=left>$row[12]</td>\n";
                     }
+			        $call_log .= "    <td align=right>$row[4]</td>\n";
 			        $call_log .= "    <td align=right>$row[3]</td>\n";
 			        $call_log .= "    <td align=right>$row[2]</td>\n";
-			        $call_log .= "    <td align=right>$row[1]</td>\n";
-			        $call_log .= "    <td align=right>$row[15]</td>\n";
-			        $call_log .= "    <td align=right>$row[12]</td>\n";
+			        $call_log .= "    <td align=right>$row[16]</td>\n";
+			        $call_log .= "    <td align=right>$row[13]</td>\n";
                     $call_log .= "  </tr>\n";
 			
-			        $campaign_id = $row[3];
+			        $campaign_id = $row[4];
 		        }
 			
 		        ##### grab osdial_agent_log records #####
