@@ -78,6 +78,8 @@ if ($virtivr) {
 	$AGI->{channel} = $live_agents->{channel};
 	$AGI->{uniqueid} = $live_agents->{uniqueid};
 	$cinfo->{campaign_id} = $live_agents->{campaign_id};
+	$cinfo->{accountcode} = $AGI->{accountcode};
+	$cinfo->{uniqueid} = $AGI->{uniqueid};
 
 	$cinfo->{conf_exten} = $live_agents->{conf_exten};
 	my @scsip = split(/\./,$live_agents->{server_ip});
@@ -115,14 +117,16 @@ if ($virtivr) {
 
 	$cinfo->{campaign_id} = '';
 	$cinfo->{conf_exten} = '';
+	$cinfo->{accountcode} = '';
+	$cinfo->{uniqueid} = '';
 	$cinfo->{CIDlead_id} = 0;
 	$ivr = $osdial->sql_query("SELECT * FROM osdial_ivr WHERE id='" . $osdial->mres($ARGV[1]) . "';");
 }
 
 
 
-$osdial->osdevent({event=>$ivrpre.'_ENTER',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$AGI->{uniqueid},callerid=>$AGI->{accountcode},lead_id=>$cinfo->{lead_id},campaign_id=>$cinfo->{campaign_id}});
-$osdial->osdevent({event=>$ivrpre.'_ANNOUNCEMENT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$AGI->{uniqueid},callerid=>$AGI->{accountcode},lead_id=>$cinfo->{lead_id},campaign_id=>$cinfo->{campaign_id},data1=>$ivr->{announcement}});
+$osdial->osdevent({event=>$ivrpre.'ENTER',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$cinfo->{uniqueid},callerid=>$cinfo->{accountcode},lead_id=>$cinfo->{CIDlead_id},campaign_id=>$cinfo->{campaign_id}});
+$osdial->osdevent({event=>$ivrpre.'ANNOUNCEMENT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$cinfo->{uniqueid},callerid=>$cinfo->{accountcode},lead_id=>$cinfo->{CIDlead_id},campaign_id=>$cinfo->{campaign_id},data1=>"".$ivr->{announcement}});
 
 update_status('VPU',$ivr->{announcement});
 unless ($ivr) {
@@ -151,7 +155,7 @@ sub exit_now {
 	$SIG{INT} = 'IGNORE';
 	$SIG{PIPE} = 'IGNORE';
 	$SIG{QUIT} = 'IGNORE';
-	$osdial->osdevent({event=>$ivrpre.'_EXIT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$AGI->{uniqueid},callerid=>$AGI->{accountcode},lead_id=>$cinfo->{lead_id},campaign_id=>$cinfo->{campaign_id}});
+	$osdial->osdevent({event=>$ivrpre.'EXIT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$cinfo->{uniqueid},callerid=>$cinfo->{accountcode},lead_id=>$cinfo->{CIDlead_id},campaign_id=>$cinfo->{campaign_id}});
 	if (defined($sig) and $sig ne '') {
 		$SIG{ALRM} = sub { print "ERROR: agi-OSDivr.agi timout on exit after 10 seconds.\n"; exit 255; };
 		setitimer(ITIMER_REAL, 10);
@@ -168,7 +172,7 @@ sub ivr_menu {
 	my $totloop = 0;
 	my %menu = %{$menuref};
 	$osdial->agi_output("+++++ ODOI MENU : " . $menu{ivrid} . "/" . $menu{parid});
-	$osdial->osdevent({event=>$ivrpre.'_MENU_ENTER',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$AGI->{uniqueid},callerid=>$AGI->{accountcode},lead_id=>$cinfo->{lead_id},campaign_id=>$cinfo->{campaign_id},data1=>$menu{ivrid} . "/" . $menu{parid}});
+	$osdial->osdevent({event=>$ivrpre.'MENU_ENTER',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$cinfo->{uniqueid},callerid=>$cinfo->{accountcode},lead_id=>$cinfo->{CIDlead_id},campaign_id=>$cinfo->{campaign_id},data1=>$menu{ivrid} . "/" . $menu{parid}});
 	update_status($menu{answered_status},$menu{announcement});
 	while ($ivrloop) {
 		# Get valid-digits from options table.
@@ -218,13 +222,13 @@ sub ivr_menu {
 		}
 
 		if ($invalid) {
-			$osdial->osdevent({event=>$ivrpre.'_MENU_INVALID',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$AGI->{uniqueid},callerid=>$AGI->{accountcode},lead_id=>$cinfo->{lead_id},campaign_id=>$cinfo->{campaign_id},data1=>$menu{ivrid} . "/" . $menu{parid},data2=>$invalid});
+			$osdial->osdevent({event=>$ivrpre.'MENU_INVALID',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$cinfo->{uniqueid},callerid=>$cinfo->{accountcode},lead_id=>$cinfo->{CIDlead_id},campaign_id=>$cinfo->{campaign_id},data1=>$menu{ivrid} . "/" . $menu{parid},data2=>"".$invalid});
 			$ivrloop = playfile('invalid','VTO',1);
 			$ivrloop = 0 if ($totloop >= $menu{repeat_loops});
 		} else {
 			my @aparams = split(/#:#/,$menu{$dkey}{action_data});
 	
-			$osdial->osdevent({event=>$ivrpre.'_MENU_SELECT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$AGI->{uniqueid},callerid=>$AGI->{accountcode},lead_id=>$cinfo->{lead_id},campaign_id=>$cinfo->{campaign_id},data1=>$menu{ivrid} . "/" . $menu{parid},data2=>$dkey});
+			$osdial->osdevent({event=>$ivrpre.'MENU_SELECT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$cinfo->{uniqueid},callerid=>$cinfo->{accountcode},lead_id=>$cinfo->{CIDlead_id},campaign_id=>$cinfo->{campaign_id},data1=>$menu{ivrid} . "/" . $menu{parid},data2=>"".$dkey});
 			if ($menu{$dkey}{action} eq "PLAYFILE") {
 				$ivrloop = playfile(@aparams);
 			} elsif ($menu{$dkey}{action} eq "PLAYFILE_FIELD") {
@@ -263,16 +267,16 @@ sub ivr_menu {
 				$submenuref->{wait_timeout} = shift @aparams;
 				$submenuref->{answered_status} = shift @aparams;
 				$submenuref->{timeout_action} = shift @aparams;
-				$osdial->osdevent({event=>$ivrpre.'_MENU_SUBMENU',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$AGI->{uniqueid},callerid=>$AGI->{accountcode},lead_id=>$cinfo->{lead_id},campaign_id=>$cinfo->{campaign_id},data1=>$menu{ivrid} . "/" . $menu{parid},data1=>$menu{ivrid} . "/" . $menu{$dkey}{id}});
+				$osdial->osdevent({event=>$ivrpre.'MENU_SUBMENU',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$cinfo->{uniqueid},callerid=>$cinfo->{accountcode},lead_id=>$cinfo->{CIDlead_id},campaign_id=>$cinfo->{campaign_id},data1=>$menu{ivrid} . "/" . $menu{parid},data2=>$menu{ivrid} . "/" . $menu{$dkey}{id}});
 				$ivrloop = ivr_menu($submenuref);
 			} elsif ($menu{$dkey}{action} eq "MENU_REPEAT") {
-				$osdial->osdevent({event=>$ivrpre.'_MENU_REPEAT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$AGI->{uniqueid},callerid=>$AGI->{accountcode},lead_id=>$cinfo->{lead_id},campaign_id=>$cinfo->{campaign_id},data1=>$menu{ivrid} . "/" . $menu{parid}});
+				$osdial->osdevent({event=>$ivrpre.'MENU_REPEAT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$cinfo->{uniqueid},callerid=>$cinfo->{accountcode},lead_id=>$cinfo->{CIDlead_id},campaign_id=>$cinfo->{campaign_id},data1=>$menu{ivrid} . "/" . $menu{parid}});
 				$ivrloop = 1;
 			} elsif ($menu{$dkey}{action} eq "MENU_EXIT") {
-				$osdial->osdevent({event=>$ivrpre.'_MENU_EXIT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$AGI->{uniqueid},callerid=>$AGI->{accountcode},lead_id=>$cinfo->{lead_id},campaign_id=>$cinfo->{campaign_id},data1=>$menu{ivrid} . "/" . $menu{parid}});
+				$osdial->osdevent({event=>$ivrpre.'MENU_EXIT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$cinfo->{uniqueid},callerid=>$cinfo->{accountcode},lead_id=>$cinfo->{CIDlead_id},campaign_id=>$cinfo->{campaign_id},data1=>$menu{ivrid} . "/" . $menu{parid}});
 				$ivrloop = playfile('goodbye','VTO',0);
 			} else {
-				$osdial->osdevent({event=>$ivrpre.'_MENU_EXIT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$AGI->{uniqueid},callerid=>$AGI->{accountcode},lead_id=>$cinfo->{lead_id},campaign_id=>$cinfo->{campaign_id},data1=>$menu{ivrid} . "/" . $menu{parid}});
+				$osdial->osdevent({event=>$ivrpre.'MENU_EXIT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$cinfo->{uniqueid},callerid=>$cinfo->{accountcode},lead_id=>$cinfo->{CIDlead_id},campaign_id=>$cinfo->{campaign_id},data1=>$menu{ivrid} . "/" . $menu{parid}});
 				$ivrloop = playfile('goodbye','VTO',0);
 			}
 		}
@@ -288,7 +292,7 @@ sub update_status {
 	my ($status, $comment) = @_;
 
 	if ($virtivr) {
-		$osdial->osdevent({event=>$ivrpre.'_DISPO',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$AGI->{uniqueid},callerid=>$AGI->{accountcode},lead_id=>$cinfo->{lead_id},campaign_id=>$cinfo->{campaign_id},data1=>$status,data2=>$comment});
+		$osdial->osdevent({event=>$ivrpre.'DISPO',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$cinfo->{uniqueid},callerid=>$cinfo->{accountcode},lead_id=>$cinfo->{CIDlead_id},campaign_id=>$cinfo->{campaign_id},data1=>"".$status,data2=>"".$comment});
 		$osdial->sql_connect('B');
 
 		my $upsql;
@@ -322,7 +326,7 @@ sub update_status {
 sub playfile {
 	my ($stream, $status, $rtnmain) = @_;
 
-	$osdial->osdevent({event=>$ivrpre.'_PLAYFILE',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$AGI->{uniqueid},callerid=>$AGI->{accountcode},lead_id=>$cinfo->{lead_id},campaign_id=>$cinfo->{campaign_id},data1=>$stream,data2=>$status});
+	$osdial->osdevent({event=>$ivrpre.'PLAYFILE',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$cinfo->{uniqueid},callerid=>$cinfo->{accountcode},lead_id=>$cinfo->{CIDlead_id},campaign_id=>$cinfo->{campaign_id},data1=>"".$stream,data2=>"".$status});
 	update_status($status);
 	$stream =~ s/\..*$//;
 	$osdial->agi_output("ODOI: playing file $stream|");
@@ -337,7 +341,7 @@ sub playfile_field {
 
 	my $lead = $osdial->sql_query(sprintf("SELECT * FROM osdial_list WHERE lead_id='%s';",$cinfo->{CIDlead_id}));
 	my $stream = $lead->{$field};
-	$osdial->osdevent({event=>$ivrpre.'_PLAYFILE_FIELD',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$AGI->{uniqueid},callerid=>$AGI->{accountcode},lead_id=>$cinfo->{lead_id},campaign_id=>$cinfo->{campaign_id},data1=>$stream,data2=>$status,data3=>$hangup_after});
+	$osdial->osdevent({event=>$ivrpre.'PLAYFILE_FIELD',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$cinfo->{uniqueid},callerid=>$cinfo->{accountcode},lead_id=>$cinfo->{CIDlead_id},campaign_id=>$cinfo->{campaign_id},data1=>"".$stream,data2=>"".$status,data3=>"".$hangup_after});
 	if ($hangup_after eq 'Y') {
 		hangup_and_dispo($stream,$status);
 	} else {
@@ -387,7 +391,7 @@ sub xfer_to_external {
 	$AGI->set_context($osdial->{server}{ext_context});
 	$AGI->set_priority(1);
 	$AGI->set_extension($number);
-	$osdial->osdevent({event=>$ivrpre.'_XFER_EXTERNAL',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$AGI->{uniqueid},callerid=>$AGI->{accountcode},lead_id=>$cinfo->{lead_id},campaign_id=>$cinfo->{campaign_id},data1=>$stream,data2=>$status,data3=>$number});
+	$osdial->osdevent({event=>$ivrpre.'XFER_EXTERNAL',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$cinfo->{uniqueid},callerid=>$cinfo->{accountcode},lead_id=>$cinfo->{CIDlead_id},campaign_id=>$cinfo->{campaign_id},data1=>"".$stream,data2=>"".$status,data3=>"".$number});
 
 	if ($virtivr) {
 		my $xepoch = time();
@@ -406,7 +410,7 @@ sub xfer_to_external_multi {
 	
 	# stream and status will get handled when passed to xfer_to_external.
 	my $number;
-	$osdial->osdevent({event=>$ivrpre.'_XFER_EXTERNAL_MULTI',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$AGI->{uniqueid},callerid=>$AGI->{accountcode},lead_id=>$cinfo->{lead_id},campaign_id=>$cinfo->{campaign_id},data1=>$stream,data2=>$status,data3=>$method});
+	$osdial->osdevent({event=>$ivrpre.'XFER_EXTERNAL_MULTI',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$cinfo->{uniqueid},callerid=>$cinfo->{accountcode},lead_id=>$cinfo->{CIDlead_id},campaign_id=>$cinfo->{campaign_id},data1=>"".$stream,data2=>"".$status,data3=>"".$method});
 
 	if ($method eq "RANDOM") {
 		# Grab a random number from the stack.
@@ -444,7 +448,7 @@ sub xfer_to_agent {
 sub xfer_to_ingroup {
 	my ($stream, $status, $ingroup, $failover_method, $failover_number) = @_;
 
-	$osdial->osdevent({event=>$ivrpre.'_XFER_INGROUP',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$AGI->{uniqueid},callerid=>$AGI->{accountcode},lead_id=>$cinfo->{lead_id},campaign_id=>$cinfo->{campaign_id},data1=>$stream,data2=>$status,data3=>$ingroup,data4=>$failover_method,data5=>$failover_number});
+	$osdial->osdevent({event=>$ivrpre.'XFER_INGROUP',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$cinfo->{uniqueid},callerid=>$cinfo->{accountcode},lead_id=>$cinfo->{CIDlead_id},campaign_id=>$cinfo->{campaign_id},data1=>"".$stream,data2=>"".$status,data3=>"".$ingroup,data4=>"".$failover_method,data5=>"".$failover_number});
 
 	update_status($status);
 	$stream =~ s/\..*$//;
@@ -543,7 +547,7 @@ sub hangup_and_dispo {
 	update_status($status);
 	$stream =~ s/\..*$//;
 	stream_file_tts($stream) if ($stream);
-	$osdial->osdevent({event=>$ivrpre.'_HANGUP',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$AGI->{uniqueid},callerid=>$AGI->{accountcode},lead_id=>$cinfo->{lead_id},campaign_id=>$cinfo->{campaign_id},data1=>$stream,data2=>$status});
+	$osdial->osdevent({event=>$ivrpre.'HANGUP',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$cinfo->{uniqueid},callerid=>$cinfo->{accountcode},lead_id=>$cinfo->{CIDlead_id},campaign_id=>$cinfo->{campaign_id},data1=>"".$stream,data2=>"".$status});
 
 	$AGI->hangup();
 
@@ -645,7 +649,7 @@ sub stream_and_get_dtmf {
 			}
 			$total_digits.=$int_digit;
 			$osdial->agi_output("int_digit |$int_digit|   total_digits |$total_digits|") if ($DB);
-			$osdial->osdevent({event=>$ivrpre.'_GET_DTMF',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$AGI->{uniqueid},callerid=>$AGI->{accountcode},lead_id=>$cinfo->{lead_id},campaign_id=>$cinfo->{campaign_id},data1=>$int_digit});
+			$osdial->osdevent({event=>$ivrpre.'GET_DTMF',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$cinfo->{uniqueid},callerid=>$cinfo->{accountcode},lead_id=>$cinfo->{CIDlead_id},campaign_id=>$cinfo->{campaign_id},data1=>"".$int_digit});
 		}
 
 		my $loop = 0;
@@ -662,7 +666,7 @@ sub stream_and_get_dtmf {
 						$total_digits .= $digit;
 					}
 					$osdial->agi_output("    digit |$digit|   total_digits |$total_digits|") if ($DB);
-					$osdial->osdevent({event=>$ivrpre.'_GET_DTMF',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$AGI->{uniqueid},callerid=>$AGI->{accountcode},lead_id=>$cinfo->{lead_id},campaign_id=>$cinfo->{campaign_id},data1=>$digit});
+					$osdial->osdevent({event=>$ivrpre.'GET_DTMF',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$cinfo->{uniqueid},callerid=>$cinfo->{accountcode},lead_id=>$cinfo->{CIDlead_id},campaign_id=>$cinfo->{campaign_id},data1=>"".$digit});
 				}
 				$loop=0;
 			} else {
@@ -722,7 +726,7 @@ sub stream_file_tts {
 	} else {
 		$retintdigit = $AGI->stream_file($file,$valid_pat);
 	}
-	$osdial->osdevent({event=>$ivrpre.'_STREAM_FILE',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$AGI->{uniqueid},callerid=>$AGI->{accountcode},lead_id=>$cinfo->{lead_id},campaign_id=>$cinfo->{campaign_id},data1=>$file,data2=>$valid_pat,data3=>$retintdigit});
+	$osdial->osdevent({event=>$ivrpre.'STREAM_FILE',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$cinfo->{uniqueid},callerid=>$cinfo->{accountcode},lead_id=>$cinfo->{CIDlead_id},campaign_id=>$cinfo->{campaign_id},data1=>"".$file,data2=>"".$valid_pat,data3=>"".$retintdigit});
 	return $retintdigit;
 }
 
