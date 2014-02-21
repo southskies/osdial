@@ -1377,7 +1377,7 @@ while($one_day_interval > 0)
 							$CLstage =~ s/LIVE|-//gi;
 							if ($CLstage < 0.25) {$CLstage=1;}
 
-                                                        $stmtA = "SELECT status,list_id,called_count,phone_number FROM osdial_list WHERE lead_id='$CLlead_id';";
+                                                        $stmtA = "SELECT status,list_id,called_count,phone_number,user FROM osdial_list WHERE lead_id='$CLlead_id';";
                                                         $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
                                                         $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
                                                         @aryA = $sthA->fetchrow_array;
@@ -1385,6 +1385,7 @@ while($one_day_interval > 0)
                                                         $orig_list = $aryA[1];
                                                         $orig_cc = $aryA[2];
                                                         $orig_phone_number = $aryA[3];
+                                                        $orig_user = $aryA[4];
 							$sthA->finish();
 	
 							if ($CLstatus =~ /BUSY/) {
@@ -1462,7 +1463,11 @@ while($one_day_interval > 0)
 								$CLuser = 'VDAD';
 								$insertVLuser = 'VDAD';
 								$insertVLcount=0;
+								$olcomments = 'AUTO';
+								$olcomments = 'AUTOALT' if ($orig_phone_number ne $CLphone_number);
 								if ($KLcallerid[$kill_vac] =~ /^M\d\d\d\d\d\d\d\d\d\d/) {
+									$olcomments = 'MANUAL';
+									$CLuser = $orig_user;
 									$beginUNIQUEID = $CLuniqueid;
 									$beginUNIQUEID =~ s/\..*//gi;
 									$insertVLuser = $CLuser;
@@ -1477,12 +1482,10 @@ while($one_day_interval > 0)
 									}
 									$sthA->finish();
 								}
-
-								$olcomments = 'AUTO';
-								$olcomments = 'AUTOALT' if ($orig_phone_number ne $CLphone_number);
 								$olcomments .= '-'.$CLalt_dial if ($orig_phone_number ne $CLphone_number and $CLalt_dial ne '' and $CLalt_dial !~ /NONE/);
+
 								if ($insertVLcount < 1) {
-									$stmtA=sprintf("INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,length_in_sec,end_epoch,server_ip,comments,callerid) VALUES('%s','%s','%s','%s','%s','%s','%s','%s','VDAD','N','%s','%s','%s','%s','%s')",$osdial->mres($CLuniqueid),$osdial->mres($CLlead_id),$osdial->mres($CLcampaign_id),$osdial->mres($SQLdate),$osdial->mres($now_date_epoch),$osdial->mres($OL_status),$osdial->mres($CLphone_code),$osdial->mres($CLphone_number),$osdial->mres($CLstage),$osdial->mres($end_epoch),$osdial->mres($VARserver_ip),$osdial->mres($olcomments),$osdial->mres($KLcallerid[$kill_vac]));
+									$stmtA=sprintf("INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,length_in_sec,end_epoch,server_ip,comments,callerid) VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s','N','%s','%s','%s','%s','%s')",$osdial->mres($CLuniqueid),$osdial->mres($CLlead_id),$osdial->mres($CLcampaign_id),$osdial->mres($SQLdate),$osdial->mres($now_date_epoch),$osdial->mres($OL_status),$osdial->mres($CLphone_code),$osdial->mres($CLphone_number),$osdial->mres($CLuser),$osdial->mres($CLstage),$osdial->mres($end_epoch),$osdial->mres($VARserver_ip),$osdial->mres($olcomments),$osdial->mres($KLcallerid[$kill_vac]));
 									if($M){print STDERR "\n|$stmtA|\n";}
 									$affected_rows = $dbhA->do($stmtA);
 									$event_string = "|     dead NA call added to log $CLuniqueid|$CLlead_id|$CLphone_number|$CLstatus|$OL_status|$CLnew_status|$affected_rows|";
