@@ -1033,7 +1033,7 @@ while ($drop_timer <= $DROP_TIME) {
 					} else {
 						set_variable("SPYGROUP",$vars->{accountcode});
 						$stmtA=sprintf("INSERT INTO osdial_manager VALUES ('','','%s','NEW','N','%s','','Originate','%s','Channel: Local/7%s\@%s','Context: %s','Exten: 487489%s','Priority: 1','Account: %s','','','','','');",$osdial->mres($SQLdate),$osdial->mres($osdial->{'VARserver_ip'}),$osdial->mres($vars->{accountcode}),$osdial->mres($VDADconf_exten),$osdial->mres($osdial->{server}{ext_context}),$osdial->mres($osdial->{server}{ext_context}),$osdial->mres($vars->{accountcode}),$osdial->mres($vars->{accountcode}));
-						$VDADremDIALstr .= '487488';
+						$VDADremDIALstr .= '487488'.$vars->{accountcode};
 					}
 					$affected_rows = $osdial->sql_execute($stmtA);
 					$agi_string = "--    IVR insert into manager.";
