@@ -34,7 +34,7 @@ my $secStart = time();
 my ($DB, $DBX, $CLOhelp, $CLOcampaign, $CLOrecalc, $CLOloops, $CLOdelay);
 
 ### begin parsing run-time options ###
-$CLOloops = 1000000;
+$CLOloops = 60; # 60 * 10 1-second waits = 600 seconds = 10min
 $CLOdelay = 1;
 $CLOrecalc = 10;
 
@@ -77,14 +77,23 @@ $DB=0 unless($DB);
 
 my $osdial = OSDial->new('DB'=>$DB);
 
+if ($osdial->server_process_tracker($prog,$osdial->{VARserver_ip},$$,0)) {
+	print STDERR "ERROR: Process already running!\n\n";
+	exit 1;
+}
+
 my $loop = 0;
 my $calc = 0;
 my $start_time = 0;
 my $end_time = 0;
 while ($loop < $CLOloops) {
 	$start_time = time();
-	print "  -- OSDcampaign_stats.pl: Entering loop. $calc\n" if ($osdial->{DB}>1);
+	print "  -- OSDcampaign_stats.pl: Entering loop. $calc $loop\n" if ($osdial->{DB}>1);
 	if ($calc >= $CLOrecalc) {
+		if ($osdial->server_process_tracker($prog,$osdial->{VARserver_ip},$$,0)) {
+			print STDERR "ERROR: Process already running!\n\n";
+			exit 1;
+		}
 		my $camp_stats = get_campaign_stats($osdial,$CLOcampaign);
 		print "  -- OSDcampaign_stats.pl: Stats collection completed.\n" if ($osdial->{DB}>0);
 
@@ -93,10 +102,10 @@ while ($loop < $CLOloops) {
 		$end_time = time();
 		print "  -- OSDcampaign_stats.pl: Stats run-time(" . ($end_time - $start_time) . ").\n" if ($osdial->{DB}>0);
 		$calc=0;
+		$loop++;
 	}
-	sleep($CLOdelay);
+	usleep($CLOdelay*1000*1000);
 	$calc++;
-	$loop++;
 }
 
 
@@ -197,7 +206,7 @@ sub set_campaign_stats {
 				$shdone++;
 			}
 		}
-		usleep(1*10*1000);
+		#usleep(1*10*1000);
 	}
 	chop($cinsmulti);
 	chop($ainsmulti);
@@ -205,17 +214,17 @@ sub set_campaign_stats {
 	if ($chdone>0) {
 		print "  -- OSDcampaign_stats.pl: set_campaign_stats: cins: " . $cinshead . $cinsmulti . $cinsonupd . "\n\n\n" if ($osdial->{DB}>1);
 		$osdial->sql_execute($cinshead . $cinsmulti . $cinsonupd);
-		usleep(1*100*1000);
+		usleep(1*1*1000);
 	}
 	if ($ahdone>0) {
 		print "  -- OSDcampaign_stats.pl: set_campaign_stats: ains: " . $ainshead . $ainsmulti . $ainsonupd . "\n\n\n" if ($osdial->{DB}>1);
 		$osdial->sql_execute($ainshead . $ainsmulti . $ainsonupd);
-		usleep(1*100*1000);
+		usleep(1*1*1000);
 	}
 	if ($shdone>0) {
 		print "  -- OSDcampaign_stats.pl: set_campaign_stats: sins: " . $sinshead . $sinsmulti . $sinsonupd . "\n\n\n" if ($osdial->{DB}>1);
 		$osdial->sql_execute($sinshead . $sinsmulti . $sinsonupd);
-		usleep(1*100*1000);
+		usleep(1*1*1000);
 	}
 	return 1;
 }
@@ -246,16 +255,36 @@ sub get_campaign_stats {
 			push @scorder, $vscid;
 		}
 	}
-	usleep(1*100*1000);
 
+	# Load in System Statuses.
+	my $statuses={};
+	while ( my $sret2 = $osdial->sql_query("SELECT status,human_answered,category FROM osdial_statuses;",'B') ) {
+		my $status   = $sret2->{status};
+		my $category = $sret2->{category};
+		$category    = 'UNDEFINED' if ($category eq '');
+		# Categorize IVR statuses.
+		$category    = 'SALE'      if ($status =~ /^VAXFER$|^VEXFER$|^VIXFER$/);
+		$category    = 'CONTACT'   if ($status =~ /^VDNC$|^VNI$|^VPLAY$|^VPU$|^VTO$/);
+		# Categorize CPA statuses.
+		$category    = 'SYSTEM'    if ($status =~ /^CPRATB$|^CPRCR$|^CPRLR$|^CPRSNC$|^CPRSRO$|^CPRSIC$|^CPRSIO$|^CPRSVC$/);
+		$category    = 'NOCONTACT' if ($status =~ /^CPRB$|^CPRNA$|^CPSHU$|^CPSAA$|^CPSFAX$/);
+		$category    = 'CONTACT'   if ($status =~ /^CPSHMN$|^CPSUNK$/);
+		$statuses->{$status}{'category'} = $category;
+		$statuses->{$status}{'human_answered'} = $category;
+	}
 
 	# Build initial data stucture for stat collection, $cdata.
 	my $statusref;
 	my $cdata;
-	my $swhere = "(active='Y' or campaign_stats_refresh='Y')";
+	my $campSQL = 'campaign_id IN(';
+	my $campSQLwhere = '';
+	my $campcnt = 0;
+	my $swhere = '1=1';
+	$swhere = "(active='Y' or campaign_stats_refresh='Y')" if ($loop%25==0);
 	$swhere = "campaign_id='" . $osdial->mres($CLOcampaign) . "'" if ($CLOcampaign);
 	while ( my $sret = $osdial->sql_query("SELECT campaign_id FROM osdial_campaigns WHERE $swhere;") ) {
 		my $campaign = uc($sret->{campaign_id});
+		$campSQL .= "'".$osdial->mres($sret->{campaign_id})."',";
 		$cdata->{$campaign}{campaign} = { 
 			'calls_today'=>0,   'answers_today'=>0,   'drops_today'=>0,   'drops_today_pct'=>0,   'drops_answers_today_pct'=>0,
 			'calls_hour'=>0,    'answers_hour'=>0,    'drops_hour'=>0,    'drops_hour_pct'=>0,
@@ -268,41 +297,36 @@ sub get_campaign_stats {
 			$cdata->{$campaign}{campaign}{"status_category_count_".$scpos} = 0;
 			$cdata->{$campaign}{campaign}{"status_category_hour_count_".$scpos++} = 0;
 		}
-		# Load in System Statuses.
-		while ( my $sret2 = $osdial->sql_query("SELECT status,human_answered,category FROM osdial_statuses;",'B') ) {
-			my $status   = $sret2->{status};
-			my $category = $sret2->{category};
-			$category    = 'UNDEFINED' if ($category eq '');
-			# Categorize IVR statuses.
-			$category    = 'SALE'      if ($status =~ /^VAXFER$|^VEXFER$|^VIXFER$/);
-			$category    = 'CONTACT'   if ($status =~ /^VDNC$|^VNI$|^VPLAY$|^VPU$|^VTO$/);
-			# Categorize CPA statuses.
-			$category    = 'SYSTEM'    if ($status =~ /^CPRATB$|^CPRCR$|^CPRLR$|^CPRSNC$|^CPRSRO$|^CPRSIC$|^CPRSIO$|^CPRSVC$/);
-			$category    = 'NOCONTACT' if ($status =~ /^CPRB$|^CPRNA$|^CPSHU$|^CPSAA$|^CPSFAX$/);
-			$category    = 'CONTACT'   if ($status =~ /^CPSHMN$|^CPSUNK$/);
-			$statusref->{$campaign}{$status}{$category} = 0;
-			$statusref->{$campaign}{$status}{$category} = 1 if ($sret2->{human_answered} eq 'Y');
-
-			usleep(1*10*1000);
+		foreach my $stat (%{$statuses}) {
+			$statusref->{$campaign}{$stat}{$statuses->{$stat}{'category'}} = 0;
+			$statusref->{$campaign}{$stat}{$statuses->{$stat}{'category'}} = 1 if ($statuses->{$stat}{human_answered} eq 'Y');
 		}
-		usleep(1*10*1000);
+		$campcnt++;
+	}
+	if ($campcnt>0) {
+		chop $campSQL;
+		$campSQL .= ') ';
+		$campSQLwhere = ' WHERE ' . $campSQL;
+		$campSQL = ' AND ' . $campSQL;
+	} else {
+		$campSQL = '';
+		$campSQLwhere = '';
 	}
 	$osdial->sql_execute("UPDATE osdial_campaigns SET campaign_stats_refresh='N';");
 
 	# Load in Custom Campaign Statuses, overriding System Statuses per Campaign.
-	while ( my $sret = $osdial->sql_query("SELECT campaign_id,status,human_answered,category FROM osdial_campaign_statuses;") ) {
+	while ( my $sret = $osdial->sql_query(sprintf('SELECT campaign_id,status,human_answered,category FROM osdial_campaign_statuses%s ORDER BY campaign_id;',$campSQLwhere)) ) {
 		my $campaign = uc($sret->{campaign_id});
 		my $status   = $sret->{status};
 		my $category = $sret->{category};
 		$category    = 'UNDEFINED' if ($category eq '');
 		$statusref->{$campaign}{$status}{$category} = 0;
 		$statusref->{$campaign}{$status}{$category} = 1 if ($sret->{human_answered} eq 'Y');
-		usleep(1*1*1000);
 	}
 
 
 	# Start campaign stat data collection
-	while (my $res = $osdial->sql_query(sprintf("SELECT campaign_id,user,status,server_ip,start_epoch FROM osdial_log WHERE call_date BETWEEN '%s' AND '%s';",$osdial->mres($today.' 00:00:00'),$osdial->mres($osdial->get_datetime($secX)) )) ) {
+	while (my $res = $osdial->sql_query(sprintf("SELECT campaign_id,user,status,server_ip,start_epoch FROM osdial_log WHERE call_date BETWEEN '%s' AND '%s'%s ORDER BY campaign_id;",$osdial->mres($today.' 00:00:00'),$osdial->mres($osdial->get_datetime($secX)),$campSQL )) ) {
 		if ($res->{campaign_id} ne "") {
 			my $agent    = $res->{user};
 			my $campaign = uc($res->{campaign_id});
@@ -348,7 +372,7 @@ sub get_campaign_stats {
 				}
 
 				# Drops
-				$cdata->{$campaign}{campaign}{drops_today}++         if ($status =~ /^DROP$|^XDROP$/);;
+				$cdata->{$campaign}{campaign}{drops_today}++         if ($status =~ /^DROP$|^XDROP$|^TIMEOT$/);;
 				$cdata->{$campaign}{campaign}{drops_today_pct} = 
 					sprintf("%.2f", (($cdata->{$campaign}{campaign}{drops_today} / $cdata->{$campaign}{campaign}{calls_today}) * 100))   if ($cdata->{$campaign}{campaign}{calls_today}>0);
 				$cdata->{$campaign}{campaign}{drops_answers_today_pct} =
@@ -372,7 +396,7 @@ sub get_campaign_stats {
 				}
 
 				# Drops
-				$cdata->{$campaign}{campaign}{drops_hour}++          if ($status =~ /^DROP$|^XDROP$/);
+				$cdata->{$campaign}{campaign}{drops_hour}++          if ($status =~ /^DROP$|^XDROP$|^TIMEOT$/);
 				$cdata->{$campaign}{campaign}{drops_hour_pct} =
 					sprintf("%.2f", (($cdata->{$campaign}{campaign}{drops_hour} / $cdata->{$campaign}{campaign}{calls_hour}) * 100)) if ($cdata->{$campaign}{campaign}{calls_hour}>0);
 
@@ -394,7 +418,7 @@ sub get_campaign_stats {
 				}
 
 				# Drops
-				$cdata->{$campaign}{campaign}{drops_halfhour}++      if ($status =~ /^DROP$|^XDROP$/);;
+				$cdata->{$campaign}{campaign}{drops_halfhour}++      if ($status =~ /^DROP$|^XDROP$|^TIMEOT$/);;
 				$cdata->{$campaign}{campaign}{drops_halfhour_pct} =
 					sprintf("%.2f", (($cdata->{$campaign}{campaign}{drops_halfhour} / $cdata->{$campaign}{campaign}{calls_halfhour}) * 100)) if ($cdata->{$campaign}{campaign}{calls_halfhour}>0);
 			}
@@ -412,7 +436,7 @@ sub get_campaign_stats {
 				}
 
 				# Drops
-				$cdata->{$campaign}{campaign}{drops_fivemin}++       if ($status =~ /^DROP$|^XDROP$/);;
+				$cdata->{$campaign}{campaign}{drops_fivemin}++       if ($status =~ /^DROP$|^XDROP$|^TIMEOT$/);;
 				$cdata->{$campaign}{campaign}{drops_fivemin_pct} =
 					sprintf("%.2f", (($cdata->{$campaign}{campaign}{drops_fivemin} / $cdata->{$campaign}{campaign}{calls_fivemin}) * 100)) if ($cdata->{$campaign}{campaign}{calls_fivemin}>0);
 			}
@@ -431,23 +455,22 @@ sub get_campaign_stats {
 				}
 
 				# Drops
-				$cdata->{$campaign}{campaign}{drops_onemin}++        if ($status =~ /^DROP$|^XDROP$/);;
-				$cdata->{$campaign}{server}{$server}{drops_onemin}++ if ($status =~ /^DROP$|^XDROP$/);;
+				$cdata->{$campaign}{campaign}{drops_onemin}++        if ($status =~ /^DROP$|^XDROP$|^TIMEOT$/);;
+				$cdata->{$campaign}{server}{$server}{drops_onemin}++ if ($status =~ /^DROP$|^XDROP$|^TIMEOT$/);;
 				$cdata->{$campaign}{campaign}{drops_onemin_pct} =
 					sprintf("%.2f", (($cdata->{$campaign}{campaign}{drops_onemin} / $cdata->{$campaign}{campaign}{calls_onemin}) * 100)) if ($cdata->{$campaign}{campaign}{calls_onemin}>0);
 
 				# AMD
-				$cdata->{$campaign}{campaign}{amd_onemin}++          if ($status =~ /^AA$|^AL$|^AM$|^CPSAA$|^CPSFAX$/);;
-				$cdata->{$campaign}{server}{$server}{amd_onemin}++   if ($status =~ /^AA$|^AL$|^AM$|^CPSAA$|^CPSFAX$/);;
+				$cdata->{$campaign}{campaign}{amd_onemin}++          if ($status =~ /^A$|^AA$|^AL$|^AM$|^CPSAA$|^CPSFAX$/);;
+				$cdata->{$campaign}{server}{$server}{amd_onemin}++   if ($status =~ /^A$|^AA$|^AL$|^AM$|^CPSAA$|^CPSFAX$/);;
 
 				# Failed Calls.
 				$cdata->{$campaign}{campaign}{failed_onemin}++       if ($status =~ /^CRC$|^CRO$|^CRF$|^CRR$|^CPRATB$|^CPRCR$|^CPRLR$|^CPRSNC$|^CPRSRO$|^CPRSIC$|^CPRSIO$|^CPRSVC$/);;
 				$cdata->{$campaign}{server}{$server}{failed_onemin}++ if ($status =~ /^CRC$|^CRO$|^CRF$|^CRR$|^CPRATB$|^CPRCR$|^CPRLR$|^CPRSNC$|^CPRSRO$|^CPRSIC$|^CPRSIO$|^CPRSVC$/);;
 			}
 		}
-
-		usleep(1*1*1000);
 	}
+	usleep(1*1*1000);
 	return $cdata;
 }
 

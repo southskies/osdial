@@ -95,6 +95,7 @@ $AGILOG=1;
 
 $DB=0;
 
+my $prog = 'AST_VDauto_dial.pl';
 
 ### begin parsing run-time options ###
 if (length($ARGV[0])>1)
@@ -208,6 +209,11 @@ use Proc::ProcessTable;
 use DBI;
 use OSDial;
 my $osdial = OSDial->new('DB'=>$DB);
+
+if ($osdial->server_process_tracker($prog,$osdial->{VARserver_ip},$$,1)) {
+	print STDERR "ERROR: Process already running!\n\n";
+	exit 1;
+}
 	
 	### connect to MySQL database defined in the conf file
 	$dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
@@ -258,11 +264,11 @@ $sthA->finish();
 
 
 
-$one_day_interval = 12;		# 1 month loops for one year 
-while($one_day_interval > 0)
-{
+#$one_day_interval = 12;		# 1 month loops for one year 
+#while($one_day_interval > 0)
+#{
 
-	$endless_loop=5760000;		# 30 days minutes at XXX seconds per loop
+	$endless_loop=(7*24*60*60)/($loop_delay/1000);	# 15 minutes at XXX seconds per loop
 	$stat_count=1;
 
 	while($endless_loop > 0)
@@ -2115,6 +2121,10 @@ while($one_day_interval > 0)
 
 		### sleep for 2 and a half seconds before beginning the loop again
 		usleep(1*$loop_delay*1000);
+		if ($osdial->server_process_tracker($prog,$osdial->{VARserver_ip},$$,1)) {
+			print STDERR "ERROR: Process already running!\n\n";
+			exit 1;
+		}
 
 	$endless_loop--;
 		if($DB){print STDERR "\nloop counter: |$endless_loop|\n";}
@@ -2124,7 +2134,7 @@ while($one_day_interval > 0)
 			{
 			unlink("$PATHhome/VDAD.kill");
 			$endless_loop=0;
-			$one_day_interval=0;
+			#$one_day_interval=0;
 			print "\nPROCESS KILLED MANUALLY... EXITING\n\n"
 			}
 		if ($endless_loop =~ /0$/)	# run every ten cycles (about 25 seconds)
@@ -2217,7 +2227,7 @@ while($one_day_interval > 0)
 			if (!$running_listen) 
 				{
 				$endless_loop=0;
-				$one_day_interval=0;
+				#$one_day_interval=0;
 				print "\nPROCESS KILLED NO LISTENER RUNNING... EXITING\n\n";
 				}
 
@@ -2230,14 +2240,14 @@ while($one_day_interval > 0)
 	}
 
 
-		if($DB){print "DONE... Exiting... Goodbye... See you later... Not really, initiating next loop...\n";}
+		#if($DB){print "DONE... Exiting... Goodbye... See you later... Not really, initiating next loop...\n";}
 
 		$event_string='HANGING UP|';
 		&event_logger;
 
-	$one_day_interval--;
+	#$one_day_interval--;
 
-}
+#}
 
 		$event_string='CLOSING DB CONNECTION|';
 		&event_logger;
@@ -2246,7 +2256,7 @@ while($one_day_interval > 0)
 	$dbhA->disconnect();
 
 
-	if($DB){print "DONE... Exiting... Goodbye... See you later... Really I mean it this time\n";}
+	if($DB){print "DONE... Exiting...\n";}
 
 
 exit;

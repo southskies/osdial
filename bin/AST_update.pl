@@ -75,6 +75,10 @@
 # 61227-1659 - added "core show channels concise" for Asterisk 1.4 compatibility
 #
 
+$|++;
+
+my $prog = 'AST_update.pl';
+
 $build = '61227-1659';
 
 # constants
@@ -207,6 +211,11 @@ use OSDial;
 use Proc::ProcessTable;
 
 my $osdial = OSDial->new('DB'=>$DB);
+
+if ($osdial->server_process_tracker($prog,$osdial->{VARserver_ip},$$,1)) {
+	print STDERR "ERROR: Process already running!\n\n";
+	exit 1;
+}
 
 $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
  or die "Couldn't connect to database: " . DBI->errstr;
@@ -1009,6 +1018,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 	$endless_loop--;
 		if($DB){print STDERR "\nloop counter: |$endless_loop|\n";}
 
+
 		### putting a blank file called "update.kill" in a directory will automatically safely kill this program
 		if (-e "$PATHhome/update.kill")
 			{
@@ -1069,6 +1079,13 @@ if (!$telnet_port) {$telnet_port = '5038';}
 			}
 		}
 
+
+		if ($endless_loop =~ /00$|25$|50$|75$/) {
+			if ($osdial->server_process_tracker($prog,$osdial->{VARserver_ip},$$,1)) {
+				print STDERR "ERROR: Process already running!\n\n";
+				exit 1;
+			}
+		}
 
 	}
 

@@ -76,6 +76,8 @@ my $VERBOSE=0;
 my $TEST=0;
 my $HELP=0;
 
+my $prog='AST_manager_listen.pl';
+
 if (scalar @ARGV) {
 	GetOptions(
 		'help!' => \$HELP,
@@ -111,6 +113,11 @@ if (scalar @ARGV) {
 }
 
 my $osdial = OSDial->new('DB'=>$DB);
+
+if ($osdial->server_process_tracker($prog,$osdial->{VARserver_ip},$$,1)) {
+	print STDERR "ERROR: Process already running!\n\n";
+	exit 1;
+}
 
 
 my $telnet_login = $osdial->{server}{ASTmgrUSERNAME};
@@ -464,6 +471,10 @@ while($one_day_interval > 0) {
 		### run a keepalive command to flush whatever is in the buffer through and to keep the connection alive
 		### Also, keep the MySQL connection alive by selecting the server_updater time for this server
 		if ($endless_loop =~ /00$|50$/) {
+			if ($osdial->server_process_tracker($prog,$osdial->{VARserver_ip},$$,1)) {
+				print STDERR "ERROR: Process already running!\n\n";
+				exit 1;
+			}
 			# Reload configuration.
 			$osdial->load_config();
 
