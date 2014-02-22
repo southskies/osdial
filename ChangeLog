@@ -1,6 +1,122 @@
+2014-02-22 04:35:32 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added "D" option to keepalive options, it uses what would be considered default for that servers profile. Create a server_keepalive_processes table to trake which keepalives are running on which server. The keepalive scripts that can only be run on one server are now aware if the script is running elsewhere, additionally, I have reduced the runtime of each script, so that its load can be more evenly shared across the cluster. (HEAD, release/3.0.1)
+
+2014-02-21 11:13:31 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix MANUAL dial log creation. (origin/release/3.0.1)
+
+2014-02-21 10:37:20 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix agent_log tracking when in MANUAL dial and call fails.
+
+2014-02-21 08:47:25 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix off by one error on columns.
+
+2014-02-21 04:32:47 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix server-to-server inbound calls, by appended the accountcode to the end of the remote server extension and parsing that accountcode upon connection.
+
+2014-02-21 03:41:50 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fixes for osdial_events.
+
+2014-02-21 03:41:14 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Redirect 34 to 31.
+
+2014-02-20 18:53:58 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add osdial_events.
+
+2014-02-14 03:09:55 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Do not allow hyphens in the carrier name.
+
+2014-02-14 02:41:14 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Remove portion of RedirectXtraCXNeW causing havok with redirects and transfers.
+
+2014-02-14 02:24:21 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Encode relogin variables.
+
+2014-02-14 01:58:38 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix Pause Code link.
+
+2014-02-14 00:24:58 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Restrict carrier and phone code setting to multitenant admin.
+
+2014-02-13 23:36:07 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix 3way calling. The zindex of many boxes is blocking buttons, we are now setting to 0 and raising on show.
+
+2014-02-13 23:34:44 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Reprioritize the listening events for better manual-dial ring detection.
+
+2014-02-13 23:33:21 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Redirect on manual, update osdial_live_agents.
+
+2014-02-13 23:31:39 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Use the original channel when matching bad causes.
+
+2014-02-13 23:30:23 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix regex on SIP parsing.
+
+2014-02-08 01:39:28 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Modified manual dialing process to provide more feedback. It will immediately respond with carrier errors, phone number issues, or even general busy congestion stuff.
+
+2014-02-07 13:46:20 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Move custchannellive decrement into successful XHR.
+
+2014-02-07 11:50:11 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix unref js bug.
+
+2014-02-07 11:42:17 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Change zIndex on ARIPanel so that it is behind main window when not visible.
+
+2014-02-07 02:26:32 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Missing osdial variable for mres. (stage/release/3.0.1)
+
+2014-02-06 22:23:45 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Typo.
+
+2014-02-06 22:13:33 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix missing variable/typo.
+
+2014-02-06 22:07:32 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Remove extra closing paren.
+
+2014-02-06 22:02:15 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add missing rtp stun variables and file modifier call.
+
+2014-02-06 21:59:14 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Missing field and osdial variable.
+
+2014-02-06 11:41:38 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* ChangeLog for release/3.0.1
+
 2014-02-06 11:40:02 -0500 Lott Caskey <lottcaskey@gmail.com> 
 
-	* Database updates for call_log, osdial_log, osdial_closer_log 3.0.1.119. (HEAD, release/3.0.1)
+	* Database updates for call_log, osdial_log, osdial_closer_log 3.0.1.119.
 
 2014-02-06 11:09:22 -0500 Lott Caskey <lottcaskey@gmail.com> 
 
@@ -120,11 +236,11 @@
 
 2013-12-28 17:17:32 -0500 Lott Caskey <lottcaskey@gmail.com> 
 
-	* Add 'R' option to Dial. (origin/release/3.0.1)
+	* Add 'R' option to Dial.
 
 2013-12-28 01:41:04 -0500 Lott Caskey <lottcaskey@gmail.com> 
 
-	* Add TIMEOT status to osdial_statuses. (stage/release/3.0.1)
+	* Add TIMEOT status to osdial_statuses.
 
 2013-12-28 01:00:43 -0500 Lott Caskey <lottcaskey@gmail.com> 
 
