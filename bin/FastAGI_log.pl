@@ -69,19 +69,22 @@ use Asterisk::AGI;
 use vars qw(@ISA);
 use Net::Server::PreFork; # any personality will do
 use Time::HiRes ('gettimeofday','usleep','sleep');
+use Data::Dumper;
 @ISA = qw(Net::Server::PreFork);
 
 
 $|++;
 
+my $prog='FastAGI_log.pl';
+
 # defaults for PreFork
-my $VARfastagi_log_min_servers = '3';
-my $VARfastagi_log_max_servers = '16';
+my $VARfastagi_log_min_servers = '5';
+my $VARfastagi_log_max_servers = '50';
 my $VARfastagi_log_min_spare_servers = '2';
-my $VARfastagi_log_max_spare_servers = '8';
+my $VARfastagi_log_max_spare_servers = '10';
 my $VARfastagi_log_max_requests = '1000';
 my $VARfastagi_log_checkfordead = '30';
-my $VARfastagi_log_checkforwait = '60';
+my $VARfastagi_log_checkforwait = '10';
 
 # default path to osdial.configuration file:
 my $PATHconf = '/etc/osdial.conf';
@@ -150,6 +153,14 @@ my $process;
 
 use OSDial;
 
+my $osd = OSDial->new('DB'=>$DB);
+
+my $ppid=$$;
+if ($osd->server_process_tracker($prog,$osd->{VARserver_ip},$ppid,1)) {
+	print STDERR "ERROR: Process already running!\n\n";
+	exit 1;
+}
+
 use DBI;
 my $dbhB = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", $VARDB_user, $VARDB_pass)
   or die "Couldn't connect to database: " . DBI->errstr;
@@ -177,7 +188,16 @@ if ($SERVERLOG =~ /Y/) {
 
 
 
+sub idle_loop_hook {
+	my $self = shift;
+	if ($osd->server_process_tracker($prog,$osd->{VARserver_ip},$ppid,1)) {
+		print STDERR "ERROR: Process already running!\n\n";
+		exit 1;
+	}
+}
+
 sub process_request {
+	my $self = shift;
 	$DB=0;
 	$process = 'begin';
 	$script = 'VDfastAGI';

@@ -30,6 +30,8 @@ use Asterisk::AGI;
 use Digest::MD5 qw(md5_hex); 
 use Email::Stuffer;
 use Email::Sender::Transport::SMTP;
+use Proc::Exists ('pexists');
+use Data::Dumper;
 
 our $VERSION = 'SVN_Version';
 
@@ -1350,6 +1352,81 @@ sub osdevent {
 	}
 	return 0;
 }
+
+
+
+sub server_process_tracker {
+	my ($self,$prog,$server_ip,$pid,$allow_multiple) = @_;
+	my $pcount=0;
+	my $ret=1;
+	my $procs = {};
+	while (my $sret = $self->sql_query(sprintf("SELECT id,name,server_ip,pid,IF(UNIX_TIMESTAMP(last_checkin)>UNIX_TIMESTAMP()-180 AND pid>0,1,0) AS is_alive FROM server_keepalive_processes WHERE name='%s' ORDER BY last_checkin DESC;",$self->mres($prog)))) {
+		if (!defined($procs->{$prog})) {
+			$procs->{$prog} = { 'id'=>$sret->{id}, 'server_ip' => $sret->{server_ip}, 'pid' => $sret->{pid}, 'is_alive' => $sret->{is_alive} };
+		}
+		$pcount++;
+	}
+	if ($pcount==0) {
+		my $sret = $self->sql_query(sprintf("SELECT id FROM server_keepalive_processes WHERE name='%s' AND server_ip='%s' ORDER BY last_checkin DESC LIMIT 1;",$self->mres($prog),$self->mres($server_ip)));
+		if (defined($sret->{ROW}) and $sret->{ROW} > 0) {
+			$self->sql_execute(sprintf("UPDATE server_keepalive_processes SET server_ip='%s',name='%s',pid='%s',last_checkin=NOW() WHERE id='%s';",$self->mres($server_ip),$self->mres($prog),$self->mres($pid),$self->mres($sret->{id})));
+		} else {
+			$self->sql_execute(sprintf("INSERT INTO server_keepalive_processes SET server_ip='%s',name='%s',pid='%s';",$self->mres($server_ip),$self->mres($prog),$self->mres($pid)));
+		}
+		$ret=0;
+	} else {
+		foreach my $name (keys %{$procs}) {
+			if ($procs->{$name}{is_alive}>0) {
+				if ($procs->{$name}{server_ip} eq $server_ip) {
+					if ($procs->{$name}{pid} eq $pid) {
+						if ($procs->{$name}{pid}>0 and pexists($procs->{$name}{pid})) {
+							$self->sql_execute(sprintf("UPDATE server_keepalive_processes SET server_ip='%s',name='%s',pid='%s',last_checkin=NOW() WHERE id='%s';",$self->mres($server_ip),$self->mres($prog),$self->mres($pid),$self->mres($procs->{$name}{id})));
+						} else {
+							$self->sql_execute(sprintf("UPDATE server_keepalive_processes SET server_ip='%s',name='%s',pid='%s',last_checkin=NOW() WHERE id='%s';",$self->mres($server_ip),$self->mres($prog),$self->mres('0'),$self->mres($procs->{$name}{id})));
+						}
+						$ret=0;
+					} else {
+						if ($procs->{$name}{pid}>0 and pexists($procs->{$name}{pid})) {
+							$self->sql_execute(sprintf("UPDATE server_keepalive_processes SET server_ip='%s',name='%s',pid='%s',last_checkin=NOW() WHERE id='%s';",$self->mres($server_ip),$self->mres($prog),$self->mres($procs->{$name}{pid}),$self->mres($procs->{$name}{id})));
+						} else {
+							$self->sql_execute(sprintf("UPDATE server_keepalive_processes SET server_ip='%s',name='%s',pid='%s',last_checkin=NOW() WHERE id='%s';",$self->mres($server_ip),$self->mres($prog),$self->mres($pid),$self->mres($procs->{$name}{id})));
+						}
+						$ret=0;
+					}
+				} else {
+					if ($allow_multiple>0) {
+						my $sret = $self->sql_query(sprintf("SELECT id FROM server_keepalive_processes WHERE name='%s' AND server_ip='%s' ORDER BY last_checkin DESC LIMIT 1;",$self->mres($prog),$self->mres($server_ip)));
+						if (defined($sret->{ROW}) and $sret->{ROW} > 0) {
+	
+							$self->sql_execute(sprintf("UPDATE server_keepalive_processes SET server_ip='%s',name='%s',pid='%s',last_checkin=NOW() WHERE id='%s';",$self->mres($server_ip),$self->mres($prog),$self->mres($pid),$self->mres($sret->{id})));
+						} else {
+							$self->sql_execute(sprintf("INSERT INTO server_keepalive_processes SET server_ip='%s',name='%s',pid='%s';",$self->mres($server_ip),$self->mres($prog),$self->mres($pid)));
+						}
+						$ret=0;
+					}
+				}
+			} else {
+				if ($procs->{$name}{server_ip} eq $server_ip) {
+					$self->sql_execute(sprintf("UPDATE server_keepalive_processes SET server_ip='%s',name='%s',pid='%s',last_checkin=NOW() WHERE id='%s';",$self->mres($server_ip),$self->mres($prog),$self->mres($pid),$self->mres($procs->{$name}{id})));
+					$ret=0;
+				} else {
+					if ($allow_multiple>0) {
+						my $sret = $self->sql_query(sprintf("SELECT id FROM server_keepalive_processes WHERE name='%s' AND server_ip='%s' ORDER BY last_checkin DESC LIMIT 1;",$self->mres($prog),$self->mres($server_ip)));
+						if (defined($sret->{ROW}) and $sret->{ROW} > 0) {
+							$self->sql_execute(sprintf("UPDATE server_keepalive_processes SET server_ip='%s',name='%s',pid='%s',last_checkin=NOW() WHERE id='%s';",$self->mres($server_ip),$self->mres($prog),$self->mres($pid),$self->mres($sret->{id})));
+						} else {
+							$self->sql_execute(sprintf("INSERT INTO server_keepalive_processes SET server_ip='%s',name='%s',pid='%s';",$self->mres($server_ip),$self->mres($prog),$self->mres($pid)));
+						}
+						$ret=0;
+					}
+				}
+			}
+		}
+	}
+	return $ret;
+}
+
+
 
 
 

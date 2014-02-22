@@ -53,6 +53,9 @@ use DBI;
 use Getopt::Long;
 use Time::HiRes ('gettimeofday','usleep','sleep');  # necessary to have perl sleep command of less than one second
 use Proc::ProcessTable;
+use OSDial;
+
+my $prog = 'AST_manager_send.pl';
 
 # constants and globals
 my $servConf;
@@ -104,6 +107,13 @@ while (my $line = <CONF>) {
 	}
 }
 $conf{VARDB_port} = '3306' unless ($conf{VARDB_port});
+
+my $osdial = OSDial->new('DB'=>$DB);
+
+if ($osdial->server_process_tracker($prog,$osdial->{VARserver_ip},$$,1)) {
+	print STDERR "ERROR: Process already running!\n\n";
+	exit 1;
+}
 
 # Connect to DB 
 my $dbhA = DBI->connect("DBI:mysql:" . $conf{VARDB_database} . ":" . $conf{VARDB_server} . ":" . $conf{VARDB_port},
@@ -270,6 +280,10 @@ while ($one_day_interval > 0) {
 
 		my $running_listen = 0;
 		if ($endless_loop =~ /0$/) {
+			if ($osdial->server_process_tracker($prog,$osdial->{VARserver_ip},$$,1)) {
+				print STDERR "ERROR: Process already running!\n\n";
+				exit 1;
+			}
 			### Grab Server values from the database
 			$servConf = getServerConfig($dbhA, $conf{VARserver_ip});
 

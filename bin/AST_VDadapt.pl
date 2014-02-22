@@ -74,7 +74,7 @@ my ($dbhA,$stmtA,$sthA,$sthArows,$rec_count,$affected_rows);
 my ($DB,$DBX,$CLOhelp,$CLOcampaign,$CLOforce,$CLOloops,$CLOdelay,$CLOtest,$CLOminlevel,$CLOoverlimitmod,$limitmod_inc,$event_ext);
 
 ### begin parsing run-time options ###
-$CLOloops = 1000000;
+$CLOloops = 900; # 15 min
 $CLOdelay = 1;
 $config->{VARadapt_min_level} = 1 unless ($config->{VARadapt_min_level});
 $CLOminlevel = $config->{VARadapt_min_level} * 1;
@@ -125,6 +125,13 @@ if (scalar @ARGV) {
 }	
 
 my $osdial = OSDial->new('DB'=>$DB);
+
+if (!$CLOforce and !$CLOtest) {
+	if ($osdial->server_process_tracker($prog,$osdial->{VARserver_ip},$$,0)) {
+		print STDERR "ERROR: Process already running!\n\n";
+		exit 1;
+	}
+}
 
 
 # Intiial connection to database.
@@ -561,6 +568,13 @@ while ( $master_loop < $CLOloops ) {
 	}
 	$diff_ratio_updater += $CLOdelay;
 	sleep($CLOdelay);
+
+	if (!$CLOforce and !$CLOtest) {
+		if ($osdial->server_process_tracker($prog,$osdial->{VARserver_ip},$$,0)) {
+			print STDERR "ERROR: Process already running!\n\n";
+			exit 1;
+		}
+	}
 
 	# Increment stat counters, reset to 0 on 15 iterations.
 	$stat_count++;

@@ -70,6 +70,7 @@ if (scalar @ARGV) {
 my $osdial = OSDial->new('DB'=>$DB);
 
 ##### list of codes for active_keepalives and what processes they correspond to
+#	D - Use the default keepalives for this Server Profile.\n";
 #	X - NO KEEPALIVE PROCESSES (use only if you want none to be keepalive)\n";
 #	1 - AST_update\n";
 #	2 - AST_send_listen\n";
@@ -81,6 +82,23 @@ my $osdial = OSDial->new('DB'=>$DB);
 #	8 - ip_relay for blind monitoring (deprecated)\n";
 #	9 - OSDcampaign_stats (If multi-server system, this must only be on one server)\n";
 
+if ($osdial->{'VARactive_keepalives'} =~ /D/) {
+	if ($osdial->{'server'}{'server_profile'} eq 'AIO') {
+		$osdial->{'VARactive_keepalives'} = '12345679';
+	} elsif ($osdial->{'server'}{'server_profile'} eq 'CONTROL') {
+		$osdial->{'VARactive_keepalives'} = '579';
+	} elsif ($osdial->{'server'}{'server_profile'} eq 'SQL') {
+		$osdial->{'VARactive_keepalives'} = '579';
+	} elsif ($osdial->{'server'}{'server_profile'} eq 'WEB') {
+		$osdial->{'VARactive_keepalives'} = 'X';
+	} elsif ($osdial->{'server'}{'server_profile'} eq 'DIALER') {
+		$osdial->{'VARactive_keepalives'} = '12346';
+	} elsif ($osdial->{'server'}{'server_profile'} eq 'ARCHIVE') {
+		$osdial->{'VARactive_keepalives'} = 'X';
+	} elsif ($osdial->{'server'}{'server_profile'} eq 'OTHER') {
+		$osdial->{'VARactive_keepalives'} = 'X';
+	}
+}
 if ($osdial->{'VARactive_keepalives'} =~ /X/) {
 	print "X in active_keepalives, exiting...\n" if ($DB);
 	exit;
