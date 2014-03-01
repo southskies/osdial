@@ -188,7 +188,7 @@ if ($ADD == "4form") {
             echo "<br><B><font color=$default_text>FORM MODIFIED: $form_name</font></B>\n";
             $fcamps = join(',',$campaigns);
             if (OSDpreg_match('/-ALL-/',$fcamps)) {
-                $fcamps='ALL';
+                $fcamps='-ALL-';
             }
             $field_name = OSDstrtoupper($field_name);
             $stmt=sprintf("UPDATE osdial_campaign_forms SET name='%s',description='%s',description2='%s',priority='%s',campaigns='%s' WHERE id='%s';",mres($form_name),mres($form_description),mres($form_description2),mres($form_priority),mres($fcamps),mres($form_id));
