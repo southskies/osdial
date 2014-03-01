@@ -1421,8 +1421,7 @@ sub callback_prompt {
 		} else {
 			stream_start_file('to-call-this-number');
 			stream_file('press-1');
-			stream_file('to-enter-a-number');
-			stream_file('press-2');
+			stream_file('vm-calldiffnum');
 			$cbnext=0;
 			$cbtime=0;
 			while ($incallback==1 and $cbnext==0) {
@@ -1448,17 +1447,14 @@ sub callback_prompt {
 			return 1;
 		}
 		if ($cbnext==1) {
-			stream_start_file('your');
-			stream_file('number');
-			stream_file('is');
+			stream_start_file('vm-num-i-have');
 			my @nums = split(//,$cbnumber);
 			foreach my $num (@nums) {
 				stream_file('digits/'.$num);
 			}
-			stream_file('if-this-is-correct-press');
+			stream_file('if-correct-press');
 			stream_file('digits/1');
-			stream_file('to-enter-a-number');
-			stream_file('press-2');
+			stream_file('vm-calldiffnum');
 			$cbnext=0;
 			$cbtime=0;
 			while ($incallback==1 and $cbnext==0) {
@@ -1485,8 +1481,8 @@ sub callback_prompt {
 		while ($cbnext==2) {
 			$cbnumber='';
 			stream_start_file('please-enter-your');
-			stream_file('number');
-			stream_file('and-prs-pound-whn-finished');
+			stream_file('telephone-number');
+			stream_file('then-press-pound');
 			$cbnext=0;
 			$cbtime=0;
 			while ($incallback==1 and $cbnext==0) {
@@ -1508,15 +1504,13 @@ sub callback_prompt {
 				return 1;
 			}
 			if ($cbnext==1) {
-				stream_start_file('you-entered');
+				stream_start_file('vm-num-i-have');
 				my @nums = split(//,$cbnumber);
 				foreach my $num (@nums) {
 					stream_file('digits/'.$num);
 				}
-				stream_file('if-this-is-correct');
-				stream_file('press-1');
-				stream_file('if-this-is-not-correct');
-				stream_file('press-2');
+				stream_file('if-correct-press');
+				stream_file('digits/1');
 				$cbnext=0;
 				$cbtime=0;
 				while ($incallback==1 and $cbnext==0) {
@@ -1529,8 +1523,9 @@ sub callback_prompt {
 						$cbnext=2;
 					} elsif ($newin =~ /[03-9\*#]/) {
 						$cbnext=3;
-					} elsif ($cbtime>10) {
-						$cbnext=3;
+					} elsif ($cbtime>4) {
+						$osdial->osdevent({event=>'INGRP_CALLBACK_INCORRECT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id}});
+						$cbnext=2;
 					}
 					$cbtime++ if (!defined($newin));
 				}
@@ -1567,7 +1562,8 @@ sub callback_prompt {
 
 		$osdial->osdevent({event=>'INGRP_CALLBACK_SCHEDULED',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id}});
 
-		stream_start_file('thank-you-for-calling');
+		stream_start_file('privacy-thankyou');
+		stream_file('goodbye');
 		sleep 5;
 		stream_start_file('sip-silence');
 	} else {
