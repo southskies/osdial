@@ -299,7 +299,7 @@ if ($xml->QuoteRequest->HealthInsuranceQuoteRequest->InsuranceProfile->Requested
 $xmlReq->params->dnc_check         = 'N';
 $xmlReq->params->duplicate_check   = 'LIST';
 $xmlReq->params->gmt_lookup_method = 'AREACODE';
-$xmlReq->params->add_to_hopper     = 'N';
+$xmlReq->params->add_to_hopper     = 'Y';
 $xmlReq->params->hopper_priority   = '50';
 $xmlReq->params->hopper_local_call_time_check    = 'N';
 $xmlReq->params->hopper_campaign_call_time_check = 'N';
