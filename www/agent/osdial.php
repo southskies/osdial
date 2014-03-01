@@ -1877,7 +1877,7 @@ $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'")
 $cnt = 0;
 foreach ($forms as $form) {
     foreach (OSDpreg_split('/,/',$form['campaigns']) as $fcamp) {
-        if ($fcamp == 'ALL' or OSDstrtoupper($fcamp) == OSDstrtoupper($VD_campaign)) {
+        if ($fcamp == '-ALL-' or OSDstrtoupper($fcamp) == OSDstrtoupper($VD_campaign)) {
             $AFforms_js .= "'" . $form['name'] . "',";
             $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', sprintf("deleted='0' AND form_id='%s'",mres($form['id'])) );
             foreach ($fields as $field) {
