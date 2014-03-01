@@ -349,7 +349,7 @@ if ($ADD == 71 or ($ADD == "3fields" and $SUB != '2fields')) {
     foreach ($forms as $form) {
         $matched=0;
         foreach ($LOG['allowed_campaigns'] as $acamp) {
-            if (OSDpreg_match('/^ALL$|^' . $acamp . '$|^' . $acamp . ',|,' . $acamp . '$|,' . $acamp . ',/',$form['campaigns'])) {
+            if (OSDpreg_match('/^-ALL-$|^' . $acamp . '$|^' . $acamp . ',|,' . $acamp . '$|,' . $acamp . ',/',$form['campaigns'])) {
                 $matched++;
             }
         }
@@ -407,7 +407,7 @@ if ($ADD == 72 or ($ADD == "3fields" and $SUB == '2fields')) {
     echo "      <td bgcolor=$oddrows align=right>Campaigns:</td>\n";
     echo '      <td bgcolor=' . $oddrows . '>' . "\n";
     if ($LOG['multicomp'] == 0 OR $LOG['multicomp_admin'] == 1) {
-        if ($form['campaigns'] == 'ALL') {
+        if ($form['campaigns'] == '-ALL-') {
             $ac = 'checked';
         }
         if ($LOG['allowed_campaignsALL']>0) {
@@ -416,7 +416,7 @@ if ($ADD == 72 or ($ADD == "3fields" and $SUB == '2fields')) {
     }
     echo "    ".helptag("aff-campaigns")."</td>";
     echo "  </tr>\n";
-    if (($LOG['allowed_campaignsALL']<1 and $form['campaigns'] != 'ALL') or $LOG['allowed_campaignsALL']>0) {
+    if (($LOG['allowed_campaignsALL']<1 and $form['campaigns'] != '-ALL-') or $LOG['allowed_campaignsALL']>0) {
         $campaigns = get_krh($link, 'osdial_campaigns', 'campaign_id,campaign_name','',sprintf('campaign_id IN %s',$LOG['allowed_campaignsSQL']),'');
         foreach ($campaigns as $camp) {
             echo "  <tr>\n";
