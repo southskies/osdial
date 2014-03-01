@@ -984,7 +984,7 @@ if ($ACTION == 'manDiaLnextCaLL') {
             foreach ($forms as $form) {
                 $fcamps = OSDpreg_split('/,/',$form['campaigns']);
                 foreach ($fcamps as $fcamp) {
-                    if ($fcamp == 'ALL' or OSDstrtoupper($fcamp) == OSDstrtoupper($campaign)) {
+                    if ($fcamp == '-ALL-' or OSDstrtoupper($fcamp) == OSDstrtoupper($campaign)) {
                         $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', sprintf("deleted='0' AND form_id='%s'",mres($form['id'])) );
                         if (is_array($fields)) {
                             foreach ($fields as $field) {
@@ -2740,7 +2740,7 @@ if ($ACTION == 'VDADcheckINCOMING') {
             foreach ($forms as $form) {
                 $fcamps = OSDpreg_split('/,/',$form['campaigns']);
                 foreach ($fcamps as $fcamp) {
-                    if ($fcamp == 'ALL' or OSDstrtoupper($fcamp) == OSDstrtoupper($campaign)) {
+                    if ($fcamp == '-ALL-' or OSDstrtoupper($fcamp) == OSDstrtoupper($campaign)) {
                         $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', sprintf("deleted='0' AND form_id='%s'",mres($form['id'])) );
                         foreach ($fields as $field) {
                             $vdlf = get_first_record($link, 'osdial_list_fields', '*', sprintf("lead_id='%s' AND field_id='%s'",mres($lead_id),mres($field['id'])) );
@@ -3356,7 +3356,7 @@ if ($ACTION == 'multicallQueueSwap') {
             foreach ($forms as $form) {
                 $fcamps = OSDpreg_split('/,/',$form['campaigns']);
                 foreach ($fcamps as $fcamp) {
-                    if ($fcamp == 'ALL' or OSDstrtoupper($fcamp) == OSDstrtoupper($campaign)) {
+                    if ($fcamp == '-ALL-' or OSDstrtoupper($fcamp) == OSDstrtoupper($campaign)) {
                         $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', sprintf("deleted='0' AND form_id='%s'",mres($form['id'])) );
                         foreach ($fields as $field) {
                             $vdlf = get_first_record($link, 'osdial_list_fields', '*', sprintf("lead_id='%s' AND field_id='%s'",mres($lead_id),mres($field['id'])) );
@@ -3832,7 +3832,7 @@ if ($ACTION == 'updateLEAD') {
         foreach ($forms as $form) {
             $fcamps = OSDpreg_split('/,/',$form['campaigns']);
             foreach ($fcamps as $fcamp) {
-                if ($fcamp == 'ALL' or OSDstrtoupper($fcamp) == OSDstrtoupper($campaign)) {
+                if ($fcamp == '-ALL-' or OSDstrtoupper($fcamp) == OSDstrtoupper($campaign)) {
                     $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', sprintf("deleted='0' AND form_id='%s'",mres($form['id'])) );
                     foreach ($fields as $field) {
                         $afvar = get_variable('AF' . $field['id']);
@@ -4282,7 +4282,7 @@ if ($ACTION == 'RepullLeadData')
     foreach ($forms as $form) {
         $fcamps = OSDpreg_split('/,/',$form['campaigns']);
         foreach ($fcamps as $fcamp) {
-            if ($fcamp == 'ALL' or OSDstrtoupper($fcamp) == OSDstrtoupper($campaign)) {
+            if ($fcamp == '-ALL-' or OSDstrtoupper($fcamp) == OSDstrtoupper($campaign)) {
                 $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', sprintf("deleted='0' AND form_id='%s'",mres($form['id'])) );
                 foreach ($fields as $field) {
                     $vdlf = get_first_record($link, 'osdial_list_fields', '*', sprintf("lead_id='%s' AND field_id='%s'",mres($lead_id),mres($field['id'])) );
