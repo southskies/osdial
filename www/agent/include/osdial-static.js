@@ -1060,13 +1060,19 @@
 				UID_test = epoch_sec + '.' + random;
 				document.osdial_form.uniqueid.value = UID_test;
 			}
-		} else if (alt_phone_dialing == 1) {
+		} else if (alt_phone_dialing >= 1) {
+			func_finish="ManualDialAltDonE";
+			if (alt_phone_dialing>1) {
+				//An Error was detected, so Skip on End.
+				func_finish="ManualDialSkip";
+			}
+			alt_phone_dialing=1;
 			if (document.osdial_form.DiaLAltPhonE.checked==true) {
 				alt_num_status = 1;
 				reselect_alt_dial = 1;
 				alt_dial_active = 1;
 				alt_dial_menu = 1;
-				var man_status = "<font color=white>Dial Alt Phone Number: <a href=\"#\" id=\"mainphonelink\" onclick=\"document.getElementById('mainphonelink').setAttribute('onclick','void(0);'); alt_dial_menu=0; ManualDialOnly('MaiNPhonE');\"><font class=\"preview_text\">MAIN PHONE</font></a> or <a href=\"#\" id=\"altphonelink\" onclick=\"document.getElementById('altphonelink').setAttribute('onclick','void(0);'); alt_dial_menu=0; ManualDialOnly('ALTPhoneE');\"><font class=\"preview_text\">ALT PHONE</font></a> or <a href=\"#\" id=\"address3link\" onclick=\"document.getElementById('address3link').setAttribute('onclick','void(0);'); alt_dial_menu=0; ManualDialOnly('AddresS3');\"><font class=\"preview_text\">ADDRESS3</font></a> or <a href=\"#\" id=\"finishleadlink\" onclick=\"document.getElementById('finishleadlink').setAttribute('onclick','void(0);'); alt_dial_menu=0; ManualDialAltDonE();\"><font class=\"preview_text_red\" style=color:" + status_preview_color + "> END</font></font></a>"; 
+				var man_status = "<font color=white>Dial Alt Phone Number: <a href=\"#\" id=\"mainphonelink\" onclick=\"document.getElementById('mainphonelink').setAttribute('onclick','void(0);'); alt_dial_menu=0; ManualDialOnly('MaiNPhonE');\"><font class=\"preview_text\">MAIN PHONE</font></a> or <a href=\"#\" id=\"altphonelink\" onclick=\"document.getElementById('altphonelink').setAttribute('onclick','void(0);'); alt_dial_menu=0; ManualDialOnly('ALTPhoneE');\"><font class=\"preview_text\">ALT PHONE</font></a> or <a href=\"#\" id=\"address3link\" onclick=\"document.getElementById('address3link').setAttribute('onclick','void(0);'); alt_dial_menu=0; ManualDialOnly('AddresS3');\"><font class=\"preview_text\">ADDRESS3</font></a> or <a href=\"#\" id=\"finishleadlink\" onclick=\"document.getElementById('finishleadlink').setAttribute('onclick','void(0);'); alt_dial_menu=0; "+func_finish+"();\"><font class=\"preview_text_red\" style=color:" + status_preview_color + "> END</font></font></a>"; 
 				document.getElementById("MainStatuSSpan").innerHTML = man_status;
 			}
 		}
@@ -1458,9 +1464,21 @@
 								document.osdial_form.DispoSelection.value = MDstatus;
 								dialedcall_send_hangup('NO','YES');
 								document.getElementById("MainStatuSSpan").innerHTML = "<font color=" + status_alert_color + "> Call Rejected: " + MDhangupcause + "&nbsp;&nbsp;Status: "+MDstatus+"</font>";
-								AutoDial_ReSume_PauSe('VDADpause','');
-								manual_dial_finished();
-								//document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><span class=ResumeButtonOff>Resume</span><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
+								setTimeout(function(){
+									alt_phone_dialing=1;
+									manual_dial_in_progress=0;
+									auto_dial_level=0;
+									MainPanelToFront();
+									buildDiv('DiaLLeaDPrevieW');
+									buildDiv('DiaLDiaLAltPhonE');
+									document.osdial_form.LeadPreview.checked=true;
+									document.osdial_form.DiaLAltPhonE.checked=true;
+									ManualDialNext("",document.osdial_form.lead_id.value,'','','lookup','');
+									setTimeout(function(){
+										alt_phone_dialing=2;
+										DialLog("");
+									}, 500);
+								}, 1000);
 							} else if ( (MDchannel.match(regMDL)) && (asterisk_version != '1.0.8') && (asterisk_version != '1.0.9') ) {
 								if (agent_log_type=="PAUSE") {
 									logTimeTrans();
@@ -1576,6 +1594,10 @@
 		all_record_count=0;
 		if (taskaltnum == 'ALTPhoneE') {
 			var manDiaLonly_num = document.osdial_form.alt_phone.value;
+			if (manDiaLonly_num=='') {
+				osdalert('ERROR: alt_phone entry is empty, not dialing!',2);
+				return;
+			}
 			lead_dial_number = document.osdial_form.alt_phone.value;
 			dialed_number = lead_dial_number;
 			dialed_label = 'ALT';
@@ -1583,12 +1605,20 @@
 		} else {
 			if (taskaltnum == 'AddresS3') {
 				var manDiaLonly_num = document.osdial_form.address3.value;
+				if (manDiaLonly_num=='') {
+					osdalert('ERROR: address3 entry is empty, not dialing!',2);
+					return;
+				}
 				lead_dial_number = document.osdial_form.address3.value;
 				dialed_number = lead_dial_number;
 				dialed_label = 'ADDR3';
 				WebFormRefresH('');
 			} else {
 				var manDiaLonly_num = document.osdial_form.phone_number.value;
+				if (manDiaLonly_num=='') {
+					osdalert('ERROR: phone_number entry is empty, not dialing!',2);
+					return;
+				}
 				lead_dial_number = document.osdial_form.phone_number.value;
 				dialed_number = lead_dial_number;
 				dialed_label = 'MAIN';
@@ -4477,7 +4507,13 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				document.getElementById("PreviewFDTimeSpan").innerHTML = "";
 			}
 
-			if (inbound_man > 0) {
+			if (dial_method!='MANUAL') {
+				manual_dial_finished();
+				alt_phone_dialing=0;
+				alt_dial_active=0;
+				document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML;
+				document.osdial_form.DiaLAltPhonE.checked=false;
+			} else if (inbound_man > 0) {
 				auto_dial_level=starting_dial_level;
 				//document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
 				document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><span class=ResumeButtonOff>Resume</span><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
@@ -4512,10 +4548,12 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 							document.getElementById("MainStatuSSpan").innerHTML = " Lead skipped, go on to next lead";
 
-							if (inbound_man > 0) {
+							if (dial_method!='MANUAL') {
+								AutoDial_ReSume_PauSe('VDADready','NEW_ID');
+							} else if (inbound_man > 0) {
 								AutoDial_ReSume_PauSe('VDADready','NEW_ID');
 							} else {
-								document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"ManualDialNext('','','','','','');\"><span class=DialNextButtonOff>Dial Next Number</span></a>";
+								document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"ManualDialNext('','','','','','');\"><span class=DialNextButton>Dial Next Number</span></a>";
 							}
 						}
 					}
