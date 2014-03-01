@@ -104,7 +104,7 @@ if ($ADD == "2form") {
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "      <td bgcolor=$evenrows align=right>Priority:</td>\n";
-        echo "      <td bgcolor=$evenrows><input type=\"text\" size=\"2\" maxlength=\"2\" name=\"form_priority\" value=\"" . $pri . "\">".helptag("aff-priority")."</td>";
+        echo "      <td bgcolor=$evenrows><input type=\"text\" size=\"5\" maxlength=\"4\" name=\"form_priority\" value=\"" . $pri . "\">".helptag("aff-priority")."</td>";
         echo "  </tr>\n";
         if ($LOG['allowed_campaignsALL'] > 0) {
             echo "  <tr>\n";
@@ -401,7 +401,7 @@ if ($ADD == 72 or ($ADD == "3fields" and $SUB == '2fields')) {
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$evenrows align=right>Priority:</td>\n";
-    echo '      <td bgcolor=' . $evenrows . '><input type="text" size="2" maxlength="2" name="form_priority" value="' . $form['priority'] . '">'.helptag("aff-priority").'</td>';
+    echo '      <td bgcolor=' . $evenrows . '><input type="text" size="5" maxlength="4" name="form_priority" value="' . $form['priority'] . '">'.helptag("aff-priority").'</td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$oddrows align=right>Campaigns:</td>\n";
@@ -465,7 +465,7 @@ if ($ADD == 72 or ($ADD == "3fields" and $SUB == '2fields')) {
         echo "      <td align=center class=tabinput><input type=text name=field_description size=20 maxlength=50 value=\"" . $field['description'] . "\"></td>\n";
         echo "      <td align=center class=tabinput><input type=text name=field_options size=20 maxlength=255 value=\"" . $field['options'] . "\"></td>\n";
         echo "      <td align=center class=tabinput><input type=text name=field_length size=2 maxlength=2 value=\"" . $field['length'] . "\"></td>\n";
-        echo "      <td align=center class=tabinput><input type=text name=field_priority size=2 maxlength=2 value=\"" . $field['priority'] . "\"></td>\n";
+        echo "      <td align=center class=tabinput><input type=text name=field_priority size=5 maxlength=4 value=\"" . $field['priority'] . "\"></td>\n";
         echo "      <td align=center><a href=$PHP_SELF?ADD=6fields&form_id=" . $form['id'] . "&field_id=" . $field['id'] . ">DELETE</a></td>\n";
         echo "      <td align=center class=tabbutton1><input type=submit value=\"Save\"></td>\n";
         echo "  </tr>\n";
@@ -484,7 +484,7 @@ if ($ADD == 72 or ($ADD == "3fields" and $SUB == '2fields')) {
     echo "      <td align=center class=tabinput><input type=text name=field_description size=20 maxlength=50 value=\"\"></td>\n";
     echo "      <td align=center class=tabinput><input type=text name=field_options size=20 maxlength=255 value=\"\"></td>\n";
     echo "      <td align=center class=tabinput><input type=text name=field_length size=2 maxlength=2 value=\"22\"></td>\n";
-    echo "      <td align=center class=tabinput><input type=text name=field_priority size=2 maxlength=2 value=\"$pri\"></td>\n";
+    echo "      <td align=center class=tabinput><input type=text name=field_priority size=5 maxlength=4 value=\"$pri\"></td>\n";
     echo "      <td align=center class=tabbutton1 colspan=2><input type=submit value=\"New\"></td>\n";
     echo "  </tr>\n";
     echo "  <tr><td colspan=7 class=tabfooter align=center>(options are a comma separated list that will appear as a drop-down)</td></tr>\n";
