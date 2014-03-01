@@ -2062,7 +2062,7 @@ if ($ADD==31) {
             echo "<table width=100% cellpadding=0 cellspacing=3>";
             echo "<tr><td align=left class=top_header_sect valign=top>Carrier Options</td></tr>";
             echo "<tr><td align=center><br /><table border=0 cellpadding=0 cellspacing=3 width=55%>";
-            if ($LOG['multicomp_admin'] > 0) {
+            if ($LOG['multicomp']==0 or $LOG['multicomp_admin'] > 0) {
                 echo "        <tr>";
                 echo "          <td align=left width=50%>Carrier:</td>";
                 echo "          <td align=left>";
