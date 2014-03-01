@@ -349,7 +349,7 @@ if ($ADD == 71 or ($ADD == "3fields" and $SUB != '2fields')) {
     foreach ($forms as $form) {
         $matched=0;
         foreach ($LOG['allowed_campaigns'] as $acamp) {
-            if (OSDpreg_match('/^-ALL-$|^' . $acamp . '$|^' . $acamp . ',|,' . $acamp . '$|,' . $acamp . ',/',$form['campaigns'])) {
+            if (OSDpreg_match('/^$|^-ALL-$|^' . $acamp . '$|^' . $acamp . ',|,' . $acamp . '$|,' . $acamp . ',/',$form['campaigns'])) {
                 $matched++;
             }
         }
