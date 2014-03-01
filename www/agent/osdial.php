@@ -3191,7 +3191,7 @@ if(isset($_SERVER['HTTP_USER_AGENT'])){
 
                                 foreach ($forms as $form) {
                                     foreach (OSDpreg_split('/,/',$form['campaigns']) as $fcamp) {
-                                        if ($fcamp == 'ALL' or OSDstrtoupper($fcamp) == OSDstrtoupper($VD_campaign)) {
+                                        if ($fcamp == '-ALL-' or OSDstrtoupper($fcamp) == OSDstrtoupper($VD_campaign)) {
                                             $cssvis='';
                                             if ($cnt > 0) {
                                                 $cssvis = 'visibility:hidden;';
@@ -3285,7 +3285,7 @@ if(isset($_SERVER['HTTP_USER_AGENT'])){
                 }
                 foreach ($forms as $form) {
                     foreach (OSDpreg_split('/,/',$form['campaigns']) as $fcamp) {
-                        if ($fcamp == 'ALL' or OSDstrtoupper($fcamp) == OSDstrtoupper($VD_campaign)) {
+                        if ($fcamp == '-ALL-' or OSDstrtoupper($fcamp) == OSDstrtoupper($VD_campaign)) {
                             echo "  <div class=AddtlFormTabExpandedItem height=29>\n";
                             echo "    <div class=AddtlFormTabExpandedButton id=AddtlFormBut" . $form['name'];
                             echo "     onclick=\"AddtlFormSelect('" . $form['name'] . "');\" onmouseover=\"AddtlFormButOver('" . $form['name'] . "');\" onmouseout=\"AddtlFormButOut('" . $form['name'] . "');\" >\n";
