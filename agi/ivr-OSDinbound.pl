@@ -1409,7 +1409,7 @@ sub callback_prompt {
 			$cbnext=1;
 		} elsif ($newin =~ /[02-9\*#]/) {
 			$cbnext=2;
-		} elsif ($cbtime>10) {
+		} elsif ($cbtime>15) {
 			$cbnext=2;
 		}
 		$cbtime++ if (!defined($newin));
@@ -1434,7 +1434,7 @@ sub callback_prompt {
 					$cbnext=2;
 				} elsif ($newin =~ /[03-9\*#]/) {
 					$cbnext=3;
-				} elsif ($cbtime>10) {
+				} elsif ($cbtime>20) {
 					$cbnext=3;
 				}
 				$cbtime++ if (!defined($newin));
@@ -1467,7 +1467,7 @@ sub callback_prompt {
 					$cbnext=2;
 				} elsif ($newin =~ /[03-9\*#]/) {
 					$cbnext=3;
-				} elsif ($cbtime>10) {
+				} elsif ($cbtime>30) {
 					$cbnext=3;
 				}
 				$cbtime++ if (!defined($newin));
@@ -1492,7 +1492,7 @@ sub callback_prompt {
 					$cbtime=0;
 				} elsif ($newin eq '#') {
 					$cbnext=1;
-				} elsif ($cbtime>10) {
+				} elsif ($cbtime>30) {
 					$cbnext=3;
 				}
 				$cbtime++ if (!defined($newin));
@@ -1523,7 +1523,7 @@ sub callback_prompt {
 						$cbnext=2;
 					} elsif ($newin =~ /[03-9\*#]/) {
 						$cbnext=3;
-					} elsif ($cbtime>4) {
+					} elsif ($cbtime>30) {
 						$osdial->osdevent({event=>'INGRP_CALLBACK_INCORRECT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id}});
 						$cbnext=2;
 					}
@@ -1564,8 +1564,7 @@ sub callback_prompt {
 
 		stream_start_file('privacy-thankyou');
 		stream_file('goodbye');
-		sleep 5;
-		stream_start_file('sip-silence');
+		stream_file('sip-silence');
 	} else {
 		$osdial->osdevent({event=>'INGRP_CALLBACK_EXIT',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$vars->{uniqueid},callerid=>$YqueryCID,group_id=>$ingroup->{group_id}});
 		$incallback=0;
