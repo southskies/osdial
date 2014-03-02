@@ -1998,6 +1998,7 @@
 			// DEACTIVATE CHANNEL-DEPENDANT BUTTONS AND VARIABLES
 			//document.osdial_form.callchannel.value = '';
 			document.getElementById("callchannel").innerHTML = '';
+			document.osdial_form.uniqueid.value = '';
 			document.osdial_form.callserverip.value = '';
 			lastcustchannel='';
 			lastcustserverip='';
@@ -4483,10 +4484,10 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				document.getElementById("PreviewFDTimeSpan").innerHTML = "";
 			}
 
+			alt_dial_active=0;
 			if (dial_method!='MANUAL') {
 				manual_dial_finished();
 				alt_phone_dialing=0;
-				alt_dial_active=0;
 				document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML;
 				document.osdial_form.DiaLAltPhonE.checked=false;
 			} else if (inbound_man > 0) {
@@ -6466,6 +6467,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		VDCL_group_id='';
 		fronter='';
 
+		document.osdial_form.uniqueid.value='';
 		document.osdial_form.lead_id.value='';
 		document.osdial_form.vendor_lead_code.value='';
 		document.osdial_form.list_id.value='';
