@@ -2035,7 +2035,7 @@ if ($ACTION == 'manDiaLlogCaLL') {
 
                 ##### update the duration and end time in the osdial_log table
                 $ol_statusSQL='';
-                if ($Lstatus=='INCALL') $ol_statusSQL = sprintf(",status='%s'",mres($status_dispo));
+                if ($Lstatus=='INCALL' or $manualVLexists<1) $ol_statusSQL = sprintf(",status='%s'",mres($status_dispo));
                 $stmt=sprintf("UPDATE osdial_log SET %scallerid='%s',end_epoch='%s',length_in_sec='%s'%s WHERE uniqueid='%s' AND server_ip='%s' AND lead_id='%s' AND user='%s' ORDER BY call_date DESC LIMIT 1;",$SQLterm,mres($MDnextCID),mres($StarTtime),mres($length_in_sec),$ol_statusSQL,mres($uniqueid),mres($server_ip),mres($lead_id),mres($user));
                 if ($DB) echo "$stmt\n";
                 $rslt=mysql_query($stmt, $link);
