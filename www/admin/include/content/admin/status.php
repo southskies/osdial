@@ -422,16 +422,16 @@ if ($ADD==331111111111111) {
         echo "  </tr>\n";
 
         $o=0;
-        $sckrh = get_krh($link,'osdial_status_categories','*','vsc_id DESC','','');
+        $sckrh = get_krh($link,'osdial_status_categories','*','vsc_id ASC','','');
 	    foreach ($sckrh as $osc) {
             $o++;
 
             $CATstatuses='';
-            $oskrh = get_krh($link,'osdial_statuses','status','status DESC',sprintf("category='%s'",mres($osc['vsc_id'])),'');
+            $oskrh = get_krh($link,'osdial_statuses','status','status ASC',sprintf("category='%s'",mres($osc['vsc_id'])),'');
 	        foreach ($oskrh as $os) {
                 $CATstatuses.=" ".$os['status'];
             }
-            $ocskrh = get_krh($link,'osdial_campaign_statuses','status','status DESC',sprintf("category='%s'",mres($osc['vsc_id'])),'');
+            $ocskrh = get_krh($link,'osdial_campaign_statuses','status','status ASC',sprintf("category='%s'",mres($osc['vsc_id'])),'');
 	        foreach ($ocskrh as $ocs) {
                 $CATstatuses.=" ".$ocs['status'];
             }
