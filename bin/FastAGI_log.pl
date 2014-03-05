@@ -1182,7 +1182,7 @@ sub process_request {
 						}
 					}
 
-					$stmtA = "DELETE FROM osdial_auto_calls WHERE uniqueid='$uniqueid' ORDER BY call_time DESC LIMIT 1;";
+					$stmtA = "DELETE FROM osdial_auto_calls WHERE uniqueid='$uniqueid' ORDER BY call_time DESC;";
 					$affected_rows = $dbhA->do($stmtA);
 					if ($AGILOG) {
 						$agi_string = "--   VDAC record deleted: |$affected_rows|   |$VD_lead_id|$uniqueid|$VD_uniqueid|$VD_callerid|$VARserver_ip|$VD_status|";
