@@ -1803,7 +1803,7 @@ if ( ($ACTION=="MonitorConf") || ($ACTION=="StopMonitorConf") ) {
             }
 
             # find and hang up all recordings going on in this conference # and extension = '$exten' 
-            $stmt=sprintf("SELECT SQL_NO_CACHE channel FROM live_sip_channels WHERE server_ip='%s' AND channel LIKE '%s%%' AND (channel LIKE '%%,1' OR channel LIKE '%%;1');",mres($server_ip),mres($channel));
+            $stmt=sprintf("SELECT SQL_NO_CACHE channel FROM live_sip_channels WHERE server_ip='%s' AND channel LIKE '%s%%' AND (channel LIKE '%%,1' OR channel LIKE '%%,2' OR channel LIKE '%%;1' OR channel LIKE '%%;2');",mres($server_ip),mres($channel));
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
             #$rec_count = intval(mysql_num_rows($rslt) / 2);
