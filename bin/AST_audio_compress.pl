@@ -296,6 +296,7 @@ foreach my $file (readdir(FILE)) {
 				$CNVfile =~ s/-all\.wav/-all.gsm/gi if ($GSM);
 				$CNVfile =~ s/-all\.wav/-all.ogg/gi if ($OGG);
 				$CNVfile =~ s/-all\.wav/-all.wav/gi if ($WAV);
+				$CNVfile =~ s/-all\.wav/-all.mp3/gi if ($MP3);
 				print "|$recording_id|$file|$CNVfile|     |$SQLfile|\n" if ($DB);
 				`$soxbin '$dir1/$file' '$dir2/mixed/$CNVfile'`;
 				unlink("$dir1/$file") if (-e "$dir2/mixed/$CNVfile");
