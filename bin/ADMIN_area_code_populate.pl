@@ -93,7 +93,7 @@ open(codefile, "$PATHhome/phone_codes_GMT.txt") || die "can't open $PATHhome/pho
 @codefile = <codefile>;
 close(codefile);
 $pc=0;
-$ins_stmt="insert into osdial_phone_codes VALUES ";
+$ins_stmt="insert into osdial_phone_codes (country_code, country, areacode, state, GMT_offset, DST, DST_range, geographic_description) VALUES ";
 foreach (@codefile) 
 {
 	@row=split(/\t/, $codefile[$pc]);
@@ -114,7 +114,7 @@ foreach (@codefile)
 			chop($ins_stmt);
 			chop($ins_stmt);
 			$affected_rows = $dbhA->do($ins_stmt) || die "can't execute query: |$ins_stmt| $!\n";
-			$ins_stmt="insert into osdial_phone_codes VALUES ";
+			$ins_stmt="insert into osdial_phone_codes (country_code, country, areacode, state, GMT_offset, DST, DST_range, geographic_description) VALUES ";
 			print STDERR "$pc\n";
 		}
 	}
@@ -124,7 +124,7 @@ foreach (@codefile)
 chop($ins_stmt);
 chop($ins_stmt);
 $affected_rows = $dbhA->do($ins_stmt);
-$ins_stmt="insert into osdial_phone_codes VALUES ";
+$ins_stmt="insert into osdial_phone_codes (country_code, country, areacode, state, GMT_offset, DST, DST_range, geographic_description) VALUES ";
 print STDERR "$pc\n";
 #### END osdial_phone_codes population from phone_codes_GMT.txt file ####
 
@@ -136,7 +136,7 @@ open(zipfile, "$PATHhome/GMT_USA_zip.txt") || die "can't open $PATHhome/GMT_USA_
 @zipfile = <zipfile>;
 close(zipfile);
 $pc=0;
-$ins_stmt="insert into osdial_postal_codes VALUES ";
+$ins_stmt="insert into osdial_postal_codes (postal_code, state, GMT_offset, DST, DST_range, country, country_code) VALUES ";
 foreach (@zipfile) 
 {
 	@row=split(/\t/, $zipfile[$pc]);
@@ -153,7 +153,7 @@ foreach (@zipfile)
 		chop($ins_stmt);
 		chop($ins_stmt);
 		$affected_rows = $dbhA->do($ins_stmt) || die "can't execute query: |$ins_stmt| $!\n";
-		$ins_stmt="insert into osdial_postal_codes VALUES ";
+		$ins_stmt="insert into osdial_postal_codes (postal_code, state, GMT_offset, DST, DST_range, country, country_code) VALUES ";
 		print STDERR "$pc\n";
 	}
 }
@@ -161,7 +161,7 @@ foreach (@zipfile)
 chop($ins_stmt);
 chop($ins_stmt);
 $affected_rows = $dbhA->do($ins_stmt);
-$ins_stmt="insert into osdial_postal_codes VALUES ";
+$ins_stmt="insert into osdial_postal_codes (postal_code, state, GMT_offset, DST, DST_range, country, country_code) VALUES ";
 print STDERR "$pc\n";
 #### END osdial_postal_codes population from GMT_USA_zip.txt file ####
 
