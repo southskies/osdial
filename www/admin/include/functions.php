@@ -540,10 +540,10 @@ function lookup_gmt($phone_code,$USarea,$state,$LOCAL_GMT_OFF_STD,$Shour,$Smin,$
             $pc_recs = mysql_num_rows($rslt);
             if ($pc_recs>0) {
                 $row=mysql_fetch_row($rslt);
-                $gmt_offset = $row[2];
+                $gmt_offset = $row[3];
                 $gmt_offset = OSDpreg_replace("/\+/","",$gmt_offset);
-                $dst = $row[3];
-                $dst_range = $row[4];
+                $dst = $row[4];
+                $dst_range = $row[5];
                 $PC_processed++;
                 $postalgmt_found++;
             }
@@ -566,10 +566,10 @@ function lookup_gmt($phone_code,$USarea,$state,$LOCAL_GMT_OFF_STD,$Shour,$Smin,$
         $pc_recs = mysql_num_rows($rslt);
         if ($pc_recs>0) {
             $row=mysql_fetch_row($rslt);
-            $gmt_offset = $row[4];
+            $gmt_offset = $row[5];
             $gmt_offset = OSDpreg_replace("/\+/","",$gmt_offset);
-            $dst = $row[5];
-            $dst_range = $row[6];
+            $dst = $row[6];
+            $dst_range = $row[7];
             $PC_processed++;
         }
     }

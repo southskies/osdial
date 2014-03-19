@@ -208,7 +208,7 @@ foreach my $phone_code (sort {$phone_codes_list->{$a} <=> $phone_codes_list->{$b
     			$reccount=$sret->{'reccount'};
 		}
 			
-		unless ($reccount) {
+		if ($reccount) {
 			my $AC_GMT_diff = ($area_GMT - $LOCAL_GMT_OFF_STD);
 			my $AC_localtime = ($secX + (3600 * $AC_GMT_diff));
 
@@ -219,7 +219,7 @@ foreach my $phone_code (sort {$phone_codes_list->{$a} <=> $phone_codes_list->{$b
 				print "     No DST Method Found.   DST: 0\n" if ($DBX);
 			}
 
-			my $stmtA = sprintf("SELECT count(*) AS reccount FROM osdial_list WHERE phone_code='%s' %s AND gmt_offset_now!='%s' %s;",$phone_code,$AC_match,$area_GMT,$XlistSQL);
+			my $stmtA = sprintf("SELECT count(*) AS reccount2 FROM osdial_list WHERE phone_code='%s' %s AND gmt_offset_now!='%s' %s;",$phone_code,$AC_match,$area_GMT,$XlistSQL);
 			print STDERR "|$stmtA|\n" if ($DBX);
     			my $reccount2=0;
 			while (my $sret = $osd->sql_query($stmtA)) {
@@ -261,7 +261,7 @@ foreach my $phone_code (sort {$phone_codes_list->{$a} <=> $phone_codes_list->{$b
     				$reccount=$sret->{'reccount'};
 			}
 				
-			unless ($reccount) {
+			if ($reccount) {
 				my $AC_GMT_diff = ($area_GMT - $LOCAL_GMT_OFF_STD);
 				my $AC_localtime = ($secX + (3600 * $AC_GMT_diff));
 					
