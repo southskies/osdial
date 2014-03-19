@@ -424,9 +424,9 @@ foreach $oWkS (@{$oBook->{Worksheet}}) {
 					while ($sthArows > $rec_count)
 						{
 						@aryA = $sthA->fetchrow_array;
-						$gmt_offset =	$aryA[2];  $gmt_offset =~ s/\+| //gi;
-						$dst =			$aryA[3];
-						$dst_range =	$aryA[4];
+						$gmt_offset =	$aryA[3];  $gmt_offset =~ s/\+| //gi;
+						$dst =			$aryA[4];
+						$dst_range =	$aryA[5];
 						$PC_processed++;
 						$rec_count++;
 						$postalgmt_found++;
@@ -450,9 +450,9 @@ foreach $oWkS (@{$oBook->{Worksheet}}) {
 					while ($sthArows > $rec_count)
 						{
 						@aryA = $sthA->fetchrow_array;
-						$gmt_offset =	$aryA[4];  $gmt_offset =~ s/\+| //gi;
-						$dst =			$aryA[5];
-						$dst_range =	$aryA[6];
+						$gmt_offset =	$aryA[5];  $gmt_offset =~ s/\+| //gi;
+						$dst =			$aryA[6];
+						$dst_range =	$aryA[7];
 						$PC_processed++;
 						$rec_count++;
 						}
@@ -470,9 +470,9 @@ foreach $oWkS (@{$oBook->{Worksheet}}) {
 					while ($sthArows > $rec_count)
 						{
 						@aryA = $sthA->fetchrow_array;
-						$gmt_offset =	$aryA[4];  $gmt_offset =~ s/\+| //gi;
-						$dst =			$aryA[5];
-						$dst_range =	$aryA[6];
+						$gmt_offset =	$aryA[5];  $gmt_offset =~ s/\+| //gi;
+						$dst =			$aryA[6];
+						$dst_range =	$aryA[7];
 						$PC_processed++;
 						$rec_count++;
 						}
@@ -490,9 +490,9 @@ foreach $oWkS (@{$oBook->{Worksheet}}) {
 					while ($sthArows > $rec_count)
 						{
 						@aryA = $sthA->fetchrow_array;
-						$gmt_offset =	$aryA[4];  $gmt_offset =~ s/\+| //gi;
-						$dst =			$aryA[5];
-						$dst_range =	$aryA[6];
+						$gmt_offset =	$aryA[5];  $gmt_offset =~ s/\+| //gi;
+						$dst =			$aryA[6];
+						$dst_range =	$aryA[7];
 						$PC_processed++;
 						$rec_count++;
 						}
@@ -510,9 +510,9 @@ foreach $oWkS (@{$oBook->{Worksheet}}) {
 					while ($sthArows > $rec_count)
 						{
 						@aryA = $sthA->fetchrow_array;
-						$gmt_offset =	$aryA[4];  $gmt_offset =~ s/\+| //gi;
-						$dst =			$aryA[5];
-						$dst_range =	$aryA[6];
+						$gmt_offset =	$aryA[5];  $gmt_offset =~ s/\+| //gi;
+						$dst =			$aryA[6];
+						$dst_range =	$aryA[7];
 						$PC_processed++;
 						$rec_count++;
 						}
