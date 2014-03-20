@@ -1,10 +1,122 @@
+2014-03-20 11:28:25 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Bump to version 3.0.2.123. (HEAD, tag: v3.0.2, master)
+
+2014-03-20 10:19:01 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Disable IAX free trial. (origin/master, origin/HEAD)
+
+2014-03-19 18:59:05 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix column position since adding id to postal and phone codes tables.
+
+2014-03-13 17:20:12 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* InnoDB does not like tables without a primary key. Update postal code population to use field names.
+
+2014-03-07 14:18:22 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Missing condition to rename the file to mp3. (stage/master)
+
+2014-03-05 20:39:43 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Hangup on second-leg of conference recording channel.
+
+2014-03-05 18:43:56 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* OSDIAL-2 Changed the hangup processing in FastAGI to delete all entries of a given uniqueid, rather than just one.
+
+2014-03-05 11:28:26 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Several missing multicall variables were missing.
+
+2014-03-05 10:15:32 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* In transfer help, change number-to-dial to Number and send-dtmf to Send DTMF.
+
+2014-03-05 10:11:28 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Statuses were being displayed in reverse order.
+
+2014-03-02 02:08:23 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Clear uniqueid on hangup. Add lead status in place of DONEM.
+
+2014-03-02 01:16:39 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix deduplicated union. Only grabe closer_log entries if uniqueid is not blank.
+
+2014-03-01 19:59:14 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Increase timeouts on callback routine.
+
+2014-03-01 13:47:19 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Use more language friendly prompts.
+
+2014-03-01 11:07:21 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add to hopper on lead insert.
+
+2014-03-01 10:49:34 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Modify manual dial routine to return to the alt_dial options on a failed manual call. Give alert if any alt number is attempted that is blank. When End is clicked after an Error, go straight to next lead or unpause, as lead has already been dispositioned.
+
+2014-03-01 06:16:52 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added script for NetQuote lead insertions for health.
+
+2014-03-01 04:48:28 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Typo.
+
+2014-03-01 04:17:58 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Only change 'ALL' to '-ALL-' in additional forms.
+
+2014-03-01 04:16:43 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Show non-assigned forms.
+
+2014-03-01 04:11:59 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix additional forms priority field length.
+
+2014-03-01 04:05:09 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix non-displayed additional forms.
+
+2014-03-01 04:01:34 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* More fixes for additional form fields.
+
+2014-03-01 01:12:58 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix carrier display on multicomp in campaigns.
+
+2014-03-01 01:01:47 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix 'ALL' campaign form fields.
+
+2014-03-01 00:54:17 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix 'ALL' campaign form fields.
+
+2014-03-01 00:50:54 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix 'ALL' field campaign types.
+
+2014-02-22 04:46:20 -0500 Lott Caskey <lottcaskey@gmail.com> 
+
+	* ChangeLog for trunk.
+
 2014-02-22 04:35:32 -0500 Lott Caskey <lottcaskey@gmail.com> 
 
-	* Added "D" option to keepalive options, it uses what would be considered default for that servers profile. Create a server_keepalive_processes table to trake which keepalives are running on which server. The keepalive scripts that can only be run on one server are now aware if the script is running elsewhere, additionally, I have reduced the runtime of each script, so that its load can be more evenly shared across the cluster. (HEAD, master)
+	* Added "D" option to keepalive options, it uses what would be considered default for that servers profile. Create a server_keepalive_processes table to trake which keepalives are running on which server. The keepalive scripts that can only be run on one server are now aware if the script is running elsewhere, additionally, I have reduced the runtime of each script, so that its load can be more evenly shared across the cluster.
 
 2014-02-21 11:13:31 -0500 Lott Caskey <lottcaskey@gmail.com> 
 
-	* Fix MANUAL dial log creation. (origin/master, origin/HEAD)
+	* Fix MANUAL dial log creation.
 
 2014-02-21 10:37:20 -0500 Lott Caskey <lottcaskey@gmail.com> 
 
@@ -84,7 +196,7 @@
 
 2014-02-07 02:26:32 -0500 Lott Caskey <lottcaskey@gmail.com> 
 
-	* Missing osdial variable for mres. (stage/master)
+	* Missing osdial variable for mres.
 
 2014-02-06 22:23:45 -0500 Lott Caskey <lottcaskey@gmail.com> 
 
