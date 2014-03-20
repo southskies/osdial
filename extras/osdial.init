@@ -102,26 +102,28 @@ start() {
 			echo "UPDATE system_settings SET company_name='$COMPANY';" | mysql osdial > /dev/null 2>&1
 		fi
 	
-		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-dialer" -o -f "/opt/osdial/.osdial-install-dialer" -o -f "/opt/osdial/.osdial-live" ]; then
-			[ "${PLACTIVE}" -gt 0 ] && (clear; /usr/bin/plymouth --hide-splash pause_progress) || :
-			dialog --clear --timeout $BINTIMEOUT --backtitle "OSDial - The OpenSource Dialer" --title "Free VoIP Trial" \
-				--form "\n                You may optionally contact\n      Call Center Service Group at 800-221-0251 (opt 2)\n   for a free trial with Binfone, a premier VoIP provider.\n\n        If you have an existing Binfone IAX extension,\n          you may also enter those credentials here.\n \n \n " 20 65 2 \
-			"Binfone User/Ext#:" 1 15 "$BINUSER" 1 35 7 6 \
-			"Binfone Password:" 2 15 "$BINPASS" 2 35 9 8 2> $TEMP
-			RET=$?
-			[ "${PLACTIVE}" -gt 0 ] && (clear; /usr/bin/plymouth --show-splash unpause_progress) || :
-			if [ "$RET" = "0" ]; then
-				set `cat $TEMP`
-				BINUSER=$1
-				BINPASS=$2
-				clear
+		if [ 0 -eq 1 ]; then
+			if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-dialer" -o -f "/opt/osdial/.osdial-install-dialer" -o -f "/opt/osdial/.osdial-live" ]; then
+				[ "${PLACTIVE}" -gt 0 ] && (clear; /usr/bin/plymouth --hide-splash pause_progress) || :
+				dialog --clear --timeout $BINTIMEOUT --backtitle "OSDial - The OpenSource Dialer" --title "Free VoIP Trial" \
+					--form "\n                You may optionally contact\n      Call Center Service Group at 800-221-0251 (opt 2)\n   for a free trial with Binfone, a premier VoIP provider.\n\n        If you have an existing Binfone IAX extension,\n          you may also enter those credentials here.\n \n \n " 20 65 2 \
+				"Binfone User/Ext#:" 1 15 "$BINUSER" 1 35 7 6 \
+				"Binfone Password:" 2 15 "$BINPASS" 2 35 9 8 2> $TEMP
+				RET=$?
+				[ "${PLACTIVE}" -gt 0 ] && (clear; /usr/bin/plymouth --show-splash unpause_progress) || :
+				if [ "$RET" = "0" ]; then
+					set `cat $TEMP`
+					BINUSER=$1
+					BINPASS=$2
+					clear
+				fi
+				if [ "$BINUSER" != "$ORIG_BINUSER" -a "$BINUSER" != "" ]; then
+					/usr/bin/perl -pi -e "s|$ORIG_BINUSER|$BINUSER|" /etc/asterisk/osdial_iax_trunks.conf
+					/usr/bin/perl -pi -e "s|$ORIG_BINPASS|$BINPASS|" /etc/asterisk/osdial_iax_trunks.conf
+					/usr/bin/perl -pi -e "s|^;||" /etc/asterisk/osdial_iax_trunks.conf
+				fi
+				/usr/sbin/asterisk -rx "iax2 reload" > /dev/null 2>&1
 			fi
-			if [ "$BINUSER" != "$ORIG_BINUSER" -a "$BINUSER" != "" ]; then
-				/usr/bin/perl -pi -e "s|$ORIG_BINUSER|$BINUSER|" /etc/asterisk/osdial_iax_trunks.conf
-				/usr/bin/perl -pi -e "s|$ORIG_BINPASS|$BINPASS|" /etc/asterisk/osdial_iax_trunks.conf
-				/usr/bin/perl -pi -e "s|^;||" /etc/asterisk/osdial_iax_trunks.conf
-			fi
-			/usr/sbin/asterisk -rx "iax2 reload" > /dev/null 2>&1
 		fi
 
 
@@ -163,9 +165,11 @@ start() {
 		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-control" -o -f "/opt/osdial/.osdial-install-control" -o -f "/opt/osdial/.osdial-sql" -o -f "/opt/osdial/.osdial-install-sql" -o -f "/opt/osdial/.osdial-live" ]; then
 			echo "OSDIAL_COMPANY=\"$COMPANY\"" >> /etc/sysconfig/osdial
 		fi
-		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-dialer" -o -f "/opt/osdial/.osdial-install-dialer" -o -f "/opt/osdial/.osdial-live" ]; then
-			echo "OSDIAL_BINUSER=\"$BINUSER\"" >> /etc/sysconfig/osdial
-			echo "OSDIAL_BINPASS=\"$BINPASS\"" >> /etc/sysconfig/osdial
+		if [ 0 -eq 1 ]; then
+			if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-dialer" -o -f "/opt/osdial/.osdial-install-dialer" -o -f "/opt/osdial/.osdial-live" ]; then
+				echo "OSDIAL_BINUSER=\"$BINUSER\"" >> /etc/sysconfig/osdial
+				echo "OSDIAL_BINPASS=\"$BINPASS\"" >> /etc/sysconfig/osdial
+			fi
 		fi
 	fi
 
