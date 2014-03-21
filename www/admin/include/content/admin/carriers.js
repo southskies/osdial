@@ -57,6 +57,72 @@ var dialplan_1 =
 	dialplan_tail;
 
 
+var dialplan_39 =
+	";\n"+
+	"; Dialplan Example for Italy\n"+
+	";------------------------------\n"+
+	"; Country code: 39\n"+
+	"; Number length: 6 to 11-digits\n"+
+	"; International Prefix: 00\n"+
+	"; Trunk Prefix: 0\n"+
+	";    Note: Trunk digit dropped for cell and toll-free,\n"+
+	";          inbound international numbers retain trunk digit.\n"+
+	dialplan_key +
+	"; Format long distance number (add default prefix, keep 0).\n"+
+	"exten => _390XXXXX,1,Goto(<DEFAULT_PREFIX>${EXTEN},1)\n"+
+	"exten => _390XXXXXX,1,Goto(<DEFAULT_PREFIX>${EXTEN},1)\n"+
+	"exten => _390XXXXXXX,1,Goto(<DEFAULT_PREFIX>${EXTEN},1)\n"+
+	"exten => _390XXXXXXXX,1,Goto(<DEFAULT_PREFIX>${EXTEN},1)\n"+
+	"exten => _390XXXXXXXXX,1,Goto(<DEFAULT_PREFIX>${EXTEN},1)\n"+
+	"exten => _390XXXXXXXXXX,1,Goto(<DEFAULT_PREFIX>${EXTEN},1)\n"+
+	"\n"+
+	"; Format long distance number (add default prefix, keep non-trunk-digit).\n"+
+	"exten => _39NXXXXXXXXX,1,Goto(<DEFAULT_PREFIX>${EXTEN},1)\n"+
+	"exten => _39NXXXXXXXXXX,1,Goto(<DEFAULT_PREFIX>${EXTEN},1)\n"+
+	"\n"+
+	"; Format long distance number (add default prefix, keep 0).\n"+
+	"exten => _0XXXXX,1,Goto(<DEFAULT_PREFIX>39${EXTEN},1)\n"+
+	"exten => _0XXXXXX,1,Goto(<DEFAULT_PREFIX>39${EXTEN},1)\n"+
+	"exten => _0XXXXXXX,1,Goto(<DEFAULT_PREFIX>39${EXTEN},1)\n"+
+	"exten => _0XXXXXXXX,1,Goto(<DEFAULT_PREFIX>39${EXTEN},1)\n"+
+	"exten => _0XXXXXXXXX,1,Goto(<DEFAULT_PREFIX>39${EXTEN},1)\n"+
+	"exten => _0XXXXXXXXXX,1,Goto(<DEFAULT_PREFIX>39${EXTEN},1)\n"+
+	"\n"+
+	"; Format long distance number (add default prefix, keep non-trunk-digit).\n"+
+	"exten => _[2-8]XXXXXXXXX,1,Goto(<DEFAULT_PREFIX>39${EXTEN},1)\n"+
+	"exten => _[2-8]XXXXXXXXXX,1,Goto(<DEFAULT_PREFIX>39${EXTEN},1)\n"+
+	"\n"+
+	"; Format long distance number (prefix dialed, add country code, keep non-trunk-digit)\n"+
+	"exten => _NNXXXXXXXXX,1,Goto(${EXTEN:0:1}39${EXTEN:1},1)\n"+
+	"exten => _NNXXXXXXXXXX,1,Goto(${EXTEN:0:1}39${EXTEN:1},1)\n"+
+	"\n"+
+	"; Format long distance number (prefix dialed, add country code, keep 0)\n"+
+	"exten => _N0XXXXX,1,Goto(${EXTEN:0:1}39${EXTEN:1},1)\n"+
+	"exten => _N0XXXXXX,1,Goto(${EXTEN:0:1}39${EXTEN:1},1)\n"+
+	"exten => _N0XXXXXXX,1,Goto(${EXTEN:0:1}39${EXTEN:1},1)\n"+
+	"exten => _N0XXXXXXXX,1,Goto(${EXTEN:0:1}39${EXTEN:1},1)\n"+
+	"exten => _N0XXXXXXXXX,1,Goto(${EXTEN:0:1}39${EXTEN:1},1)\n"+
+	"exten => _N0XXXXXXXXXX,1,Goto(${EXTEN:0:1}39${EXTEN:1},1)\n"+
+	"\n"+
+	"; Format long distance number (format correct)\n"+
+	"exten => _N39XXXXXX,1,GotoIf($[\"<STRIP_MSD>\" = \"Y\"]?setcid${EXTEN:0:1}${EXTEN:3},1:setcid${EXTEN},1)\n"+
+	"exten => _N39XXXXXXX,1,GotoIf($[\"<STRIP_MSD>\" = \"Y\"]?setcid${EXTEN:0:1}${EXTEN:3},1:setcid${EXTEN},1)\n"+
+	"exten => _N39XXXXXXXX,1,GotoIf($[\"<STRIP_MSD>\" = \"Y\"]?setcid${EXTEN:0:1}${EXTEN:3},1:setcid${EXTEN},1)\n"+
+	"exten => _N39XXXXXXXXX,1,GotoIf($[\"<STRIP_MSD>\" = \"Y\"]?setcid${EXTEN:0:1}${EXTEN:3},1:setcid${EXTEN},1)\n"+
+	"exten => _N39XXXXXXXXXX,1,GotoIf($[\"<STRIP_MSD>\" = \"Y\"]?setcid${EXTEN:0:1}${EXTEN:3},1:setcid${EXTEN},1)\n"+
+	"exten => _N39XXXXXXXXXXX,1,GotoIf($[\"<STRIP_MSD>\" = \"Y\"]?setcid${EXTEN:0:1}${EXTEN:3},1:setcid${EXTEN},1)\n"+
+	"\n"+
+	"; Format international number (add default prefix).\n"+
+	"exten => _00.,1,Goto(<DEFAULT_PREFIX>${EXTEN},1)\n"+
+	"exten => _011.,1,Goto(<DEFAULT_PREFIX>00${EXTEN:3},1)\n"+
+	"\n"+
+	"; Dial an international number (if allowed).\n"+
+	"exten => _N00.,1,GotoIf($[\"<ALLOW_INTERNATIONAL>\" = \"Y\"]?setcid${EXTEN},1)\n"+
+	"exten => _N0039.,1,Goto(${EXTEN:0:1}${EXTEN:3},1)\n"+
+	"exten => _N011.,1,Goto(${EXTEN:0:1}00${EXTEN:4},1)\n"+
+	dialplan_tail;
+
+
 var dialplan_44 =
 	";\n"+
 	"; Dialplan Example for UK\n"+
@@ -515,6 +581,7 @@ var carriers = Array(
     "","", "", "", "",
     "-- Example Dialplans by Country --","", "", "", "",
     "Dialplan -   1 - North America", "", "", "", dialplan_1,
+    "Dialplan -  39 - Italy", "", "", "", dialplan_39,
     "Dialplan -  44 - United Kingdom", "", "", "", dialplan_44,
     "Dialplan -  46 - Sweden", "", "", "", dialplan_46,
     "Dialplan -  48 - Poland", "", "", "", dialplan_48,
