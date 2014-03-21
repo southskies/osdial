@@ -6563,6 +6563,15 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			// (xxx)xxx-xxxx
 			if (phnum.length==10) resnum = '('+phnum.substring(0,3)+')'+phnum.substring(3,6)+'-'+phnum.substring(6,10);
 
+		// Italy
+		} else if (phcode=='39') {
+			if (phnum.substring(0,1)=='0') {
+				// +(39)(xxxx) xxxxxxx
+				if (phnum.length==10) resnum = '+('+phcode+')('+phnum.substring(0,4)+') '+phnum.substring(4);
+			} else {
+				// +(39)(xxx) xxxxxxx
+				if (phnum.length==10) resnum = '+('+phcode+')('+phnum.substring(0,3)+') '+phnum.substring(3);
+			}
 		// UK
 		} else if (phcode=='44') {
 			// +(44)(xxx) xxxx xxx

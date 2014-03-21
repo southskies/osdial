@@ -1,0 +1,76 @@
+;
+; Dialplan Example for Italy
+;------------------------------
+; Country code: 39
+; Number length: 6 to 11-digits
+; International Prefix: 00
+; Trunk Prefix: 0
+;    Note: Trunk digit dropped for cell and toll-free,
+;          inbound international numbers retain trunk digit.
+
+; The following tags can be used to substitute corresponding values from the carrier options.
+;   <NAME>  <PROTOCOL>  <STRIP_MSD>  <ALLOW_INTERNATIONAL>
+;   <DEFAULT_CALLERID>  <DEFAULT_AREACODE>  <DEFAULT_PREFIX>
+
+; Format long distance number (add default prefix, keep 0).
+exten => _390XXXXX,1,Goto(<DEFAULT_PREFIX>${EXTEN},1)
+exten => _390XXXXXX,1,Goto(<DEFAULT_PREFIX>${EXTEN},1)
+exten => _390XXXXXXX,1,Goto(<DEFAULT_PREFIX>${EXTEN},1)
+exten => _390XXXXXXXX,1,Goto(<DEFAULT_PREFIX>${EXTEN},1)
+exten => _390XXXXXXXXX,1,Goto(<DEFAULT_PREFIX>${EXTEN},1)
+exten => _390XXXXXXXXXX,1,Goto(<DEFAULT_PREFIX>${EXTEN},1)
+
+; Format long distance number (add default prefix, keep non-trunk-digit).
+exten => _39NXXXXXXXXX,1,Goto(<DEFAULT_PREFIX>${EXTEN},1)
+exten => _39NXXXXXXXXXX,1,Goto(<DEFAULT_PREFIX>${EXTEN},1)
+
+; Format long distance number (add default prefix, keep 0).
+exten => _0XXXXX,1,Goto(<DEFAULT_PREFIX>39${EXTEN},1)
+exten => _0XXXXXX,1,Goto(<DEFAULT_PREFIX>39${EXTEN},1)
+exten => _0XXXXXXX,1,Goto(<DEFAULT_PREFIX>39${EXTEN},1)
+exten => _0XXXXXXXX,1,Goto(<DEFAULT_PREFIX>39${EXTEN},1)
+exten => _0XXXXXXXXX,1,Goto(<DEFAULT_PREFIX>39${EXTEN},1)
+exten => _0XXXXXXXXXX,1,Goto(<DEFAULT_PREFIX>39${EXTEN},1)
+
+; Format long distance number (add default prefix, keep non-trunk-digit).
+exten => _[2-8]XXXXXXXXX,1,Goto(<DEFAULT_PREFIX>39${EXTEN},1)
+exten => _[2-8]XXXXXXXXXX,1,Goto(<DEFAULT_PREFIX>39${EXTEN},1)
+
+; Format long distance number (prefix dialed, add country code, keep non-trunk-digit)
+exten => _NNXXXXXXXXX,1,Goto(${EXTEN:0:1}39${EXTEN:1},1)
+exten => _NNXXXXXXXXXX,1,Goto(${EXTEN:0:1}39${EXTEN:1},1)
+
+; Format long distance number (prefix dialed, add country code, keep 0)
+exten => _N0XXXXX,1,Goto(${EXTEN:0:1}39${EXTEN:1},1)
+exten => _N0XXXXXX,1,Goto(${EXTEN:0:1}39${EXTEN:1},1)
+exten => _N0XXXXXXX,1,Goto(${EXTEN:0:1}39${EXTEN:1},1)
+exten => _N0XXXXXXXX,1,Goto(${EXTEN:0:1}39${EXTEN:1},1)
+exten => _N0XXXXXXXXX,1,Goto(${EXTEN:0:1}39${EXTEN:1},1)
+exten => _N0XXXXXXXXXX,1,Goto(${EXTEN:0:1}39${EXTEN:1},1)
+
+; Format long distance number (format correct)
+exten => _N39XXXXXX,1,GotoIf($["<STRIP_MSD>" = "Y"]?setcid${EXTEN:0:1}${EXTEN:3},1:setcid${EXTEN},1)
+exten => _N39XXXXXXX,1,GotoIf($["<STRIP_MSD>" = "Y"]?setcid${EXTEN:0:1}${EXTEN:3},1:setcid${EXTEN},1)
+exten => _N39XXXXXXXX,1,GotoIf($["<STRIP_MSD>" = "Y"]?setcid${EXTEN:0:1}${EXTEN:3},1:setcid${EXTEN},1)
+exten => _N39XXXXXXXXX,1,GotoIf($["<STRIP_MSD>" = "Y"]?setcid${EXTEN:0:1}${EXTEN:3},1:setcid${EXTEN},1)
+exten => _N39XXXXXXXXXX,1,GotoIf($["<STRIP_MSD>" = "Y"]?setcid${EXTEN:0:1}${EXTEN:3},1:setcid${EXTEN},1)
+exten => _N39XXXXXXXXXXX,1,GotoIf($["<STRIP_MSD>" = "Y"]?setcid${EXTEN:0:1}${EXTEN:3},1:setcid${EXTEN},1)
+
+; Format international number (add default prefix).
+exten => _00.,1,Goto(<DEFAULT_PREFIX>${EXTEN},1)
+exten => _011.,1,Goto(<DEFAULT_PREFIX>00${EXTEN:3},1)
+
+; Dial an international number (if allowed).
+exten => _N00.,1,GotoIf($["<ALLOW_INTERNATIONAL>" = "Y"]?setcid${EXTEN},1)
+exten => _N0039.,1,Goto(${EXTEN:0:1}${EXTEN:3},1)
+exten => _N011.,1,Goto(${EXTEN:0:1}00${EXTEN:4},1)
+
+; Make sure callerid is set.
+exten => _setcid.,1,GotoIf($["${LEN(${CALLERID(number)})}" = "${LEN(<DEFAULT_CALLERID>)}"]?dial${EXTEN:6},1)
+exten => _setcid.,n,Set(CALLERID(number)=<DEFAULT_CALLERID>)
+exten => _setcid.,n,Goto(dial${EXTEN:6},1)
+
+; This section is the 'prefix' dialed.
+exten => _dial9.,1,AGI(agi://127.0.0.1:4577/call_log)
+exten => _dial9.,n,Dial(<PROTOCOL>/<NAME>/${EXTEN:5},60,o)
+exten => _dial9.,n,Goto(failover${EXTEN:5},1)
