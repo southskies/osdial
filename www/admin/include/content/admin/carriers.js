@@ -261,6 +261,55 @@ var dialplan_48 =
 	dialplan_tail;
 
 
+var dialplan_57 =
+	";\n"+
+	"; Dialplan Example for Columbia\n"+
+	";------------------------------\n"+
+	"; Country code: 57\n"+
+	"; Number length: 8 or 10-digits\n"+
+	"; International Prefix: 00\n"+
+	"; Trunk Prefix: 0\n"+
+	";\n"+
+	dialplan_key +
+	"; Format long distance number (add default prefix, remove 0).\n"+
+	"exten => _570ZXXXXXXX,1,Goto(<DEFAULT_PREFIX>${EXTEN:0:2}${EXTEN:3},1)\n"+
+	"exten => _570ZXXXXXXXXX,1,Goto(<DEFAULT_PREFIX>${EXTEN:0:2}${EXTEN:3},1)\n"+
+	"\n"+
+	"; Format long distance number (add default prefix).\n"+
+	"exten => _57ZXXXXXXX,1,Goto(<DEFAULT_PREFIX>${EXTEN},1)\n"+
+	"exten => _57ZXXXXXXXXX,1,Goto(<DEFAULT_PREFIX>${EXTEN},1)\n"+
+	"\n"+
+	"; Format long distance number (add default prefix, remove 0).\n"+
+	"exten => _0ZXXXXXXX,1,Goto(<DEFAULT_PREFIX>57${EXTEN:1},1)\n"+
+	"exten => _0ZXXXXXXXXX,1,Goto(<DEFAULT_PREFIX>57${EXTEN:1},1)\n"+
+	"\n"+
+	"; Format long distance number (prefix dialed, add country code)\n"+
+	"exten => _NZXXXXXXX,1,Goto(${EXTEN:0:1}57${EXTEN:1},1)\n"+
+	"exten => _NZXXXXXXXXX,1,Goto(${EXTEN:0:1}57${EXTEN:1},1)\n"+
+	"\n"+
+	"; Format long distance number (prefix dialed, add country code, remove 0)\n"+
+	"exten => _N0ZXXXXXXX,1,Goto(${EXTEN:0:1}57${EXTEN:2},1)\n"+
+	"exten => _N0ZXXXXXXXXX,1,Goto(${EXTEN:0:1}57${EXTEN:2},1)\n"+
+	"\n"+
+	"; Format long distance number (prefix dialed, remove 0)\n"+
+	"exten => _N570ZXXXXXXX,1,Goto(${EXTEN:0:1}${EXTEN:1:2}${EXTEN:4},1)\n"+
+	"exten => _N570ZXXXXXXXXX,1,Goto(${EXTEN:0:1}${EXTEN:1:2}${EXTEN:4},1)\n"+
+	"\n"+
+	"; Format long distance number (format correct)\n"+
+	"exten => _N57ZXXXXXXX,1,GotoIf($[\"<STRIP_MSD>\" = \"Y\"]?setcid${EXTEN:0:1}0${EXTEN:3},1:setcid${EXTEN},1)\n"+
+	"exten => _N57ZXXXXXXXXX,1,GotoIf($[\"<STRIP_MSD>\" = \"Y\"]?setcid${EXTEN:0:1}0${EXTEN:3},1:setcid${EXTEN},1)\n"+
+	"\n"+
+	"; Format international number (add default prefix).\n"+
+	"exten => _00.,1,Goto(<DEFAULT_PREFIX>${EXTEN},1)\n"+
+	"exten => _011.,1,Goto(<DEFAULT_PREFIX>00${EXTEN:3},1)\n"+
+	"\n"+
+	"; Dial an international number (if allowed).\n"+
+	"exten => _N00.,1,GotoIf($[\"<ALLOW_INTERNATIONAL>\" = \"Y\"]?setcid${EXTEN},1)\n"+
+	"exten => _N0057.,1,Goto(${EXTEN:0:1}${EXTEN:3},1)\n"+
+	"exten => _N011.,1,Goto(${EXTEN:0:1}00${EXTEN:4},1)\n"+
+	dialplan_tail;
+
+
 var dialplan_61 =
 	";\n"+
 	"; Dialplan Example for Australia\n"+
@@ -585,6 +634,7 @@ var carriers = Array(
     "Dialplan -  44 - United Kingdom", "", "", "", dialplan_44,
     "Dialplan -  46 - Sweden", "", "", "", dialplan_46,
     "Dialplan -  48 - Poland", "", "", "", dialplan_48,
+    "Dialplan -  57 - Columbia", "", "", "", dialplan_57,
     "Dialplan -  61 - Australia", "", "", "", dialplan_61,
     "Dialplan -  64 - New Zealand", "", "", "", dialplan_64,
     "Dialplan -  86 - China", "", "", "", dialplan_86,
