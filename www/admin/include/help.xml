@@ -2591,7 +2591,7 @@ user[:secret[:authuser]]@carrier_name[/extension]&lt;br/&gt;
     &lt;b&gt;Name:&lt;/b&gt; This field is used as the second component of the field identifier (FORMNAME_FIELDNAME).&lt;br/&gt;
     &lt;b&gt;Description:&lt;/b&gt; This is displayed as the label for the field.&lt;br/&gt;
     &lt;b&gt;Options:&lt;/b&gt; If present, a drop-down will be displayed for this field. Options are comma-separated.&lt;br/&gt;
-    &lt;b&gt;Length:&lt;/b&gt; The width of the field.&lt;br/&gt;
+    &lt;b&gt;Length:&lt;/b&gt; The width of the field. A width between &lt;b&gt;1&lt;/b&gt; and &lt;b&gt;22&lt;/b&gt; will create a text entry field. A width of &lt;b&gt;0&lt;/b&gt; will create a resizable text entry box with initial dimensions of 2 rows by 22 columns.&lt;br/&gt;
     &lt;b&gt;Priority:&lt;/b&gt; Fields with a lower priority will be given higher placement on the field list.&lt;br/&gt;
     </item>
   </section>

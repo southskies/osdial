@@ -143,11 +143,11 @@ if ($ADD == "2form") {
 ######################
 if ($ADD == "2fields") {
     if ($LOG['modify_campaigns'] == 1) {
-        if ((OSDstrlen($field_name) < 1) or (OSDstrlen($field_description) < 1) or ($field_length > 22) or ($field_priority < 1) or (OSDpreg_match('/[^a-zA-Z0-9]/',$field_name))) {
+        if ((OSDstrlen($field_name) < 1) or (OSDstrlen($field_description) < 1) or ($field_length<0) or ($field_length > 22) or ($field_priority < 1) or (OSDpreg_match('/[^a-zA-Z0-9]/',$field_name))) {
             echo "<br><font color=red>FIELD NOT ADDED - Please go back and look at the data you entered\n";
             echo "<br>name must be between 1 and 15 characters in length, A-Z, no spaces.\n";
             echo "<br>description must be between 1 and 50 characters in length\n";
-            echo "<br>length must be between 1 and 22\n";
+            echo "<br>length must be between 0 and 22\n";
             echo "<br>priority must be greater than 1</font><br>\n";
         } else {
             $field_name = OSDstrtoupper($field_name);
@@ -218,11 +218,11 @@ if ($ADD == "4fields") {
         if ($LOG['allowed_campaignsALL'] < 1 and $frm['campaigns'] != $LOG['user_group']) {
             echo "<br><font color=red>FIELD NOT MODIFIED - These Forms / Fields belong to ALL campaigns.\n";
             echo "<br>In order to modify Forms and Fields, the Form must be assigned to a specific Campaign in your User Group.</font><br>\n";
-        } elseif (($field_id < 1) or (OSDstrlen($field_name) < 1) or (OSDstrlen($field_description) < 1) or ($field_length > 22) or ($field_priority < 1) or (OSDpreg_match('/[^a-zA-Z0-9]/',$field_name))) {
+        } elseif (($field_id < 1) or (OSDstrlen($field_name) < 1) or (OSDstrlen($field_description) < 1) or ($field_length<0) or ($field_length > 22) or ($field_priority < 1) or (OSDpreg_match('/[^a-zA-Z0-9]/',$field_name))) {
             echo "<br><font color=red>FIELD NOT MODIFIED - Please go back and look at the data you entered\n";
             echo "<br>name must be between 1 and 15 characters in length, A-Z, no spaces.\n";
             echo "<br>description must be between 1 and 50 characters in length\n";
-            echo "<br>length must be between 1 and 22\n";
+            echo "<br>length must be between 0 and 22\n";
             echo "<br>priority must be greater than 1</font><br>\n";
         } else {
             echo "<br><B><font color=$default_text>FIELD MODIFIED: $field_name</font></B>\n";
