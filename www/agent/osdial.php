@@ -326,7 +326,7 @@ if ($campaign_login_list > 0) {
         $campname = '';
         if ($show_campname_pulldown) $campname = " - $rowx[1]";
 
-        if ($VD_campaign == $rowx[0]) {
+        if (strtoupper($VD_campaign) == strtoupper($rowx[0])) {
             $camp_form_code .= "<option value=\"$rowx[0]\" SELECTED>" . mclabel($rowx[0]) . "$campname</option>\n";
         } else {
             $camp_form_code .= "<option value=\"$rowx[0]\">" . mclabel($rowx[0]) . "$campname</option>\n";
@@ -3107,12 +3107,19 @@ if(isset($_SERVER['HTTP_USER_AGENT'])){
                                             $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', sprintf("deleted='0' AND form_id='%s'",mres($form['id'])) );
                                             foreach ($fields as $field) {
                                                 $desc = OSDpreg_replace('/"/','',$field['description']);
-                                                echo "      <tr title=\"$desc\">\n";
+                                                echo "      <tr title=\"$desc\" valign=\"top\">\n";
                                                 echo "          <td width=95 align=left><div style=\"overflow:hidden;white-space:nowrap;\"><font color=$form_fc class=body_text style=\"font-size:10px;\"><label for=\"AF" . $field['id'] . "\">" . $field['description'] . ":&nbsp;</label></font></div></td>\n";
                                                 echo "          <td align=left>\n";
-                                                if (empty($field['options'])) {
+                                                if (empty($field['options']) and $field['length']==0) {
+                                                    echo "          <textarea style=\"height:32px;font-size:11px;\" cols=\"22\" rows=\"2\" name=AF" . $field['id'] . " id=AF" . $field['id'];
+                                                    echo "            onchange=\"var afv=this;";
+                                                    echo "              var aflist=document.getElementsByName('" . $form['name'] . '_' . $field['name'] . "');";
+                                                    echo "              for(var afli=0;afli<aflist.length;afli++){";
+                                                    echo "                if(afv.value!=aflist[afli].value) aflist[afli].value=afv.value;";
+                                                    echo "              };\"";
+                                                    echo "            class=cust_form></textarea>\n";
+                                                } elseif (empty($field['options'])) {
                                                     echo "          <input type=text style=\"font-size:11px;\" size=" . $field['length'] . " maxlength=255 name=AF" . $field['id'] . " id=AF" . $field['id'];
-                                                    #echo "            onclick=\"alert(document.osdial_form.AF" . $field['id'] . ".clientWidth);\"";
                                                     echo "            onchange=\"var afv=this;";
                                                     echo "              var aflist=document.getElementsByName('" . $form['name'] . '_' . $field['name'] . "');";
                                                     echo "              for(var afli=0;afli<aflist.length;afli++){";
