@@ -2903,16 +2903,13 @@ if(isset($_SERVER['HTTP_USER_AGENT'])){
                                         <tr valign=top>
                                             <td align=center>
                                                 <table width=100% align=center border=0>
-                                                    <tr align=center valign=top>
-                                                        <td align=center>
+                                                    <tr valign=top>
+                                                        <td>
                                                             <font class="body_text" color=<?php echo $form_fc; ?>><label for=SecondS>Call Duration:&nbsp;</label></font>
                                                             <font class="body_input_rev"><input type=text size=4 name=SecondS id=SecondS class="display_field_ro" value="" readonly></font>&nbsp;&nbsp;&nbsp;&nbsp;
-                                                            <span id=callchannel style="font-size:5pt;overflow:hidden;visibility:hidden;"></span>
-                                                        <!--</td>
-                                                        <td width=10% align=center><font class="body_text" color=#ABCBD4><span id=callchannel style="font-size:5pt;overflow:hidden;"></span></font></td>
-                                                        <td align=left>-->
                                                             <font class="body_text" color=<?php echo $form_fc; ?>><label for=custdatetime>Customer's Time:&nbsp;</label></font>
                                                             <font class="body_input_rev"><input type=text size=17 maxlength=22 name=custdatetime id=custdatetime class="display_field_ro" value="" readonly></font>
+                                                            <span id=callchannel style="font-size:5pt;overflow:hidden;visibility:hidden;"></span>
                                                         </td>
                                                     </tr>
                                                 </table>
