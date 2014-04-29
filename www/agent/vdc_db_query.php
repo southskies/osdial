@@ -817,7 +817,7 @@ if ($ACTION == 'manDiaLnextCaLL') {
                     $omvariable='Variable: _CALLBACK=1,_CALLBACK_USER='.$CBUSER;
                 }
                 ### insert the call action into the osdial_manager table to initiate the call
-                $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Originate','%s','Exten: %s','Context: %s','Channel: %s','Priority: 1','Callerid: %s','Timeout: %s','Account: %s','%s','','');",mres($NOW_TIME),mres($server_ip),mres($MqueryCID),mres($Ndialstring),mres($dial_context),mres($local_DEF.$conf_exten.$local_AMP.$ext_context.$Local_persist),mres($CIDstring),mres($Local_dial_timeout),mres($MqueryCID),mres($omvariable));
+                $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Originate','%s','Exten: %s','Context: %s','Channel: %s','Priority: 1','Callerid: %s','Timeout: %s','Account: %s','%s','','');",mres($NOW_TIME),mres($server_ip),mres($MqueryCID),mres($Ndialstring),mres($dial_context),mres($local_DEF . 7 . $conf_exten.$local_AMP.$ext_context.$Local_persist),mres($CIDstring),mres($Local_dial_timeout),mres($MqueryCID),mres($omvariable));
                 if ($DB) echo "$stmt\n";
                 $rslt=mysql_query($stmt, $link);
 

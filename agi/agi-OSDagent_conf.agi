@@ -37,8 +37,8 @@ my $cnftype = $ARGV[0];
 
 $osdial->agi_output("Agent Conf Handling - $extension - $cnftype");
 
-#$AGI->answer();
-#$AGI->stream_file("sip-silence");
+$AGI->answer();
+$AGI->stream_file("sip-silence");
 
 # General Conference.
 if ($cnftype eq 'genconf') {
