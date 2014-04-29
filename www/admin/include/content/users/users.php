@@ -667,17 +667,24 @@ if ($ADD==3) {
 					echo "  <td align=right>Agent2Agent Timeout Seconds: </td>\n";
 					echo "  <td align=left><input type=text name=xfer_agent2agent_wait_seconds size=5 maxlength=4 value=\"$xfer_agent2agent_wait_seconds\">".helptag("osdial_users-xfer_agent2agent_wait_seconds")."</td>\n";
 					echo "</tr>\n";
+					echo "<tr bgcolor=$oddrows>\n";
 					echo "  <td align=right>Agent2Agent Timeout Action: </td>\n";
 					echo "  <td align=left>\n";
 					echo "    <select size=1 name=xfer_agent2agent_wait_action>\n";
-					$wsel=''; if ($xfer_agent2agent_wait_action=='N') $wsel='selected';
-					echo "      <option $wsel value=N>VOICEMAIL</option>\n";
-					$wsel=''; if ($xfer_agent2agent_wait_action=='Y') $wsel='selected';
-					echo "      <option $wsel value=Y>EXTENSION</option>\n";
+                    $wsel=''; if ($xfer_agent2agent_wait_action=='HANGUP') $wsel='selected';
+                    echo "      <option $wsel value=\"HANGUP\">HANGUP</option>\n";
+                    $wsel=''; if ($xfer_agent2agent_wait_action=='MESSAGE') $wsel='selected';
+                    echo "      <option $wsel value=\"MESSAGE\">MESSAGE</option>\n";
+                    $wsel=''; if ($xfer_agent2agent_wait_action=='EXTENSION') $wsel='selected';
+                    echo "      <option $wsel value=\"EXTENSION\">EXTENSION</option>\n";
+                    $wsel=''; if ($xfer_agent2agent_wait_action=='VOICEMAIL') $wsel='selected';
+                    echo "      <option $wsel value=\"VOICEMAIL\">VOICEMAIL</option>\n";
+                    $wsel=''; if ($xfer_agent2agent_wait_action=='CALLBACK') $wsel='selected';
+                    echo "      <option $wsel value=\"CALLBACK\">CALLBACK</option>\n";
 					echo "    </select>\n";
 					echo "  ".helptag("osdial_users-xfer_agent2agent_wait_action")."</td>\n";
 					echo "</tr>\n";
-					if ($xfer_agent2agent_wait_action == "Y") {
+					if ($xfer_agent2agent_wait_action == "EXTENSION") {
 						echo "<tr bgcolor=$oddrows>\n";
 						echo "  <td align=right>Agent2Agent Timeout Extension: </td>\n";
 						echo "  <td align=left><input type=text name=xfer_agent2agent_wait_extension size=10 maxlength=15 value=\"$xfer_agent2agent_wait_extension\">".helptag("osdial_users-xfer_agent2agent_wait_extension")."</td>\n";
