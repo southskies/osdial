@@ -643,15 +643,17 @@ var carriers = Array(
 );
 
 
-if (document.osdial_form.cpt) {
-    var tmp = document.osdial_form.cpt;
-    for (var i=0; i<carriers.length; i++) {
-        var label  = carriers[i++];
-        var name   = carriers[i++];
-        var config = carriers[i++];
-        var reg    = carriers[i++];
-        var dial   = carriers[i];
-        tmp.options[tmp.length] = new Option(label,name + ':;:' + config + ':;:' + reg + ':;:' + dial);
+if (typeof(document.osdial_form)!="undefined") {
+    if (document.osdial_form.cpt) {
+        var tmp = document.osdial_form.cpt;
+        for (var i=0; i<carriers.length; i++) {
+            var label  = carriers[i++];
+            var name   = carriers[i++];
+            var config = carriers[i++];
+            var reg    = carriers[i++];
+            var dial   = carriers[i];
+            tmp.options[tmp.length] = new Option(label,name + ':;:' + config + ':;:' + reg + ':;:' + dial);
+        }
     }
 }
 
