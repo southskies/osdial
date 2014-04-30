@@ -65,7 +65,7 @@ $CLIserver_ip=0;
 $secX = time();
 
 # constants
-$DB=1;  # Debug flag, set to 0 for no debug messages, lots of output
+$DB=0;  # Debug flag, set to 0 for no debug messages, lots of output
 $US='_';
 @MT=();
 
@@ -337,23 +337,8 @@ use DBI;
 $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
 	or die "Couldn't connect to database: " . DBI->errstr;
 
-print "  Updating servers table...\n";
-$stmtA = "UPDATE servers SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
-$affected_rows = $dbhA->do($stmtA);
-if ($DB) {print "     |$affected_rows|$stmtA|\n";}
-
-print "  Updating phones table...\n";
-$stmtA = "UPDATE phones SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
-$affected_rows = $dbhA->do($stmtA);
-if ($DB) {print "     |$affected_rows|$stmtA|\n";}
-
-print "  Updating inbound_numbers table...\n";
-$stmtA = "UPDATE inbound_numbers SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
-$affected_rows = $dbhA->do($stmtA);
-if ($DB) {print "     |$affected_rows|$stmtA|\n";}
-
-print "  Updating server_updater table...\n";
-$stmtA = "UPDATE server_updater SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+print "  Updating call_log table...\n";
+$stmtA = "UPDATE call_log SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
 $affected_rows = $dbhA->do($stmtA);
 if ($DB) {print "     |$affected_rows|$stmtA|\n";}
 
@@ -362,28 +347,8 @@ $stmtA = "UPDATE conferences SET server_ip='$VARserver_ip' where server_ip='$VAR
 $affected_rows = $dbhA->do($stmtA);
 if ($DB) {print "     |$affected_rows|$stmtA|\n";}
 
-print "  Updating osdial_conferences table...\n";
-$stmtA = "UPDATE osdial_conferences SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
-$affected_rows = $dbhA->do($stmtA);
-if ($DB) {print "     |$affected_rows|$stmtA|\n";}
-
-print "  Updating osdial_remote_agents table...\n";
-$stmtA = "UPDATE osdial_remote_agents SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
-$affected_rows = $dbhA->do($stmtA);
-if ($DB) {print "     |$affected_rows|$stmtA|\n";}
-
-print "  Updating osdial_server_trunks table...\n";
-$stmtA = "UPDATE osdial_server_trunks SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
-$affected_rows = $dbhA->do($stmtA);
-if ($DB) {print "     |$affected_rows|$stmtA|\n";}
-
-print "  Updating osdial_auto_calls table...\n";
-$stmtA = "UPDATE osdial_auto_calls SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
-$affected_rows = $dbhA->do($stmtA);
-if ($DB) {print "     |$affected_rows|$stmtA|\n";}
-
-print "  Updating osdial_auto_calls table...\n";
-$stmtA = "UPDATE osdial_auto_calls SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+print "  Updating inbound_numbers table...\n";
+$stmtA = "UPDATE inbound_numbers SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
 $affected_rows = $dbhA->do($stmtA);
 if ($DB) {print "     |$affected_rows|$stmtA|\n";}
 
@@ -402,13 +367,63 @@ $stmtA = "UPDATE live_sip_channels SET server_ip='$VARserver_ip' where server_ip
 $affected_rows = $dbhA->do($stmtA);
 if ($DB) {print "     |$affected_rows|$stmtA|\n";}
 
+print "  Updating osdial_agent_log table...\n";
+$stmtA = "UPDATE osdial_agent_log SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
+print "  Updating osdial_auto_calls table...\n";
+$stmtA = "UPDATE osdial_auto_calls SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
 print "  Updating osdial_campaign_server_stats table...\n";
 $stmtA = "UPDATE osdial_campaign_server_stats SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
 $affected_rows = $dbhA->do($stmtA);
 if ($DB) {print "     |$affected_rows|$stmtA|\n";}
 
-print "  Updating osdial_carriers table...\n";
-$stmtA = "UPDATE osdial_carriers SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+print "  Updating osdial_carrier_servers table...\n";
+$stmtA = "UPDATE osdial_carrier_servers SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
+print "  Updating osdial_closer_log table...\n";
+$stmtA = "UPDATE osdial_closer_log SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
+print "  Updating osdial_companies table...\n";
+$stmtA = "UPDATE osdial_companies SET default_server_ip='$VARserver_ip' where default_server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
+print "  Updating osdial_conferences table...\n";
+$stmtA = "UPDATE osdial_conferences SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
+print "  Updating osdial_cpa_log table...\n";
+$stmtA = "UPDATE osdial_cpa_log SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
+print "  Updating osdial_events table...\n";
+$stmtA = "UPDATE osdial_events SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
+print "  Updating osdial_live_agents table (server_ip)...\n";
+$stmtA = "UPDATE osdial_live_agents SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
+print "  Updating osdial_live_agents table (call_server_ip)...\n";
+$stmtA = "UPDATE osdial_live_agents SET call_server_ip='$VARserver_ip' where call_server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
+print "  Updating osdial_log table...\n";
+$stmtA = "UPDATE osdial_log SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
 $affected_rows = $dbhA->do($stmtA);
 if ($DB) {print "     |$affected_rows|$stmtA|\n";}
 
@@ -417,8 +432,58 @@ $stmtA = "UPDATE osdial_manager SET server_ip='$VARserver_ip' where server_ip='$
 $affected_rows = $dbhA->do($stmtA);
 if ($DB) {print "     |$affected_rows|$stmtA|\n";}
 
+print "  Updating osdial_remote_agents table...\n";
+$stmtA = "UPDATE osdial_remote_agents SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
+print "  Updating osdial_server_trunks table...\n";
+$stmtA = "UPDATE osdial_server_trunks SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
+print "  Updating park_log table...\n";
+$stmtA = "UPDATE park_log SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
 print "  Updating parked_channels table...\n";
 $stmtA = "UPDATE parked_channels SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
+print "  Updating phones table...\n";
+$stmtA = "UPDATE phones SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
+print "  Updating recording_log table...\n";
+$stmtA = "UPDATE recording_log SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
+print "  Updating server_keepalive_processes table...\n";
+$stmtA = "UPDATE server_keepalive_processes SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
+print "  Updating server_performance table...\n";
+$stmtA = "UPDATE server_performance SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
+print "  Updating server_stats table...\n";
+$stmtA = "UPDATE server_stats SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
+print "  Updating server_updater table...\n";
+$stmtA = "UPDATE server_updater SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
+print "  Updating servers table...\n";
+$stmtA = "UPDATE servers SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
 $affected_rows = $dbhA->do($stmtA);
 if ($DB) {print "     |$affected_rows|$stmtA|\n";}
 
@@ -433,7 +498,7 @@ $dbhA->disconnect();
 $pids = `ps -ef | grep -E '(SCREEN|FastAGI)' | grep -v 'sbin/asterisk' | awk '{ print \$2 }'`;
 $pids =~ s/\n/ /g;
 if ($pids) {
-        $jumk = `kill -9 $pids`;
+        $jumk = `kill -9 $pids > /dev/null 2>&1`;
 }
 
 
