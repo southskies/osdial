@@ -1214,7 +1214,7 @@ if ($ADD == "3carrier") {
             } elseif ($carrier_protocol == 'IAX2') {
                 echo "document.osdial_form.carrier_protocol_config.value=carriers[7].replace(new RegExp('genericIAX','g'),'$carrier_name');\n";
             }
-            echo "document.osdial_form.carrier_dialplan.value=dialplan;\n";
+            echo "document.osdial_form.carrier_dialplan.value=dialplan_1;\n";
         }
         echo "fixChromeTableCollapse();\n";
         echo "</script>\n";
