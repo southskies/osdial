@@ -1418,6 +1418,9 @@ sub server_process_tracker {
 							$self->sql_execute(sprintf("INSERT INTO server_keepalive_processes SET server_ip='%s',name='%s',pid='%s';",$self->mres($server_ip),$self->mres($prog),$self->mres($pid)));
 						}
 						$ret=0;
+					} else {
+						$self->sql_execute(sprintf("UPDATE server_keepalive_processes SET server_ip='%s',name='%s',pid='%s',last_checkin=NOW() WHERE id='%s';",$self->mres($server_ip),$self->mres($prog),$self->mres($pid),$self->mres($procs->{$name}{id})));
+						$ret=0;
 					}
 				}
 			}
