@@ -2554,7 +2554,7 @@ flush();
                             </tr>
                             <tr>
                                 <td colspan=2 align=center>
-                                    <div style="height:320px;overflow-y:auto;">
+                                    <div style="height:330px;overflow-y:auto;">
                                         <span id="DispoSelectContent"> End-of-call Disposition Selection </span>
                                     </div>
                                 </td>
