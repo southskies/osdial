@@ -270,7 +270,7 @@ sub get_campaign_stats {
 		$category    = 'NOCONTACT' if ($status =~ /^CPRB$|^CPRNA$|^CPSHU$|^CPSAA$|^CPSFAX$/);
 		$category    = 'CONTACT'   if ($status =~ /^CPSHMN$|^CPSUNK$/);
 		$statuses->{$status}{'category'} = $category;
-		$statuses->{$status}{'human_answered'} = $category;
+		$statuses->{$status}{'human_answered'} = $sret2->{human_answered};
 	}
 
 	# Build initial data stucture for stat collection, $cdata.
