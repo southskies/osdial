@@ -45,7 +45,12 @@
 		}
     }
 
-
+// ################################################################################
+// Cancel the Callback
+    function CallBackDatE_cancel() {
+        hideDiv('CallBackSelectBox');
+        showDiv('SelectBox');
+    }
 
 // ################################################################################
 // Submitting the callback date and time to the system
