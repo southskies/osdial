@@ -2656,12 +2656,12 @@ flush();
     
     <?php load_status('Initializing GUI...<br>CallBackSelectBox<br>&nbsp;'); ?>
     <!-- Callback Window -->
-    <span style="position:absolute;left:2px;top:18px;z-index:35;visibility:hidden;" id="CallBackSelectBox">
-        <table border=1 bgcolor="<?php echo $callback_bg3; ?>" width=<?php echo $CAwidth; ?> height=480>
+    <span style="position:absolute;left:15px;top:5px;z-index:35;visibility:hidden;" id="CallBackSelectBox">
+        <table border=0 bgcolor="<?php echo $callback_bg3; ?>" width="<?php echo $CAwidth; ?>" height="480">
             <tr>
                 <td align=center valign=top>
                     <font color=<?php echo $callback_fc; ?>>
-                        Select a CallBack Date :<span id="CallBackDatE"></span><br>
+                        <b>Select a CallBack Date</b> :<span id="CallBackDatE"></span><br/><br/>
                         <input type=hidden name=CallBackDatESelectioN id="CallBackDatESelectioN">
                         <input type=hidden name=CallBackTimESelectioN id="CallBackTimESelectioN">
                         <span id="CallBackDatEPrinT">Select a Date Below</span> &nbsp;
@@ -2706,7 +2706,9 @@ flush();
                         } ?>
                         CB Comments: <input type=text name="CallBackCommenTsField" id="CallBackCommenTsField" size=50>
                         <br><br>
-                        <a href="#" onclick="CallBackDatE_submit();return false;">SUBMIT</a>
+                        <a href="#" onclick="CallBackDatE_submit();return false;"><b>SUBMIT</b></a>
+                        <span style="margin:0 10px 0 10px">&nbsp;</span>
+                        <a href="#" style="" onclick="CallBackDatE_cancel();return false;"><b>Cancel</b></a>
                         <br><br>
                         <span id="CallBackDateContent"><?php echo $CBcal; ?></span>
                         <br><br> &nbsp; 
