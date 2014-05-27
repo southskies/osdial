@@ -117,9 +117,9 @@ if ($virtivr) {
 
 	$cinfo->{campaign_id} = '';
 	$cinfo->{conf_exten} = '';
-	$cinfo->{accountcode} = '';
-	$cinfo->{uniqueid} = '';
-	$cinfo->{CIDlead_id} = 0;
+        $cinfo->{accountcode} = $AGI->{accountcode};
+        $cinfo->{uniqueid} = $AGI->{uniqueid};
+        $cinfo->{CIDlead_id} = (substr($AGI->{accountcode}, 11, 9) + 0);
 	$ivr = $osdial->sql_query("SELECT * FROM osdial_ivr WHERE id='" . $osdial->mres($ARGV[1]) . "';");
 }
 
@@ -498,6 +498,8 @@ sub xfer_to_ingroup {
 		$AGI->set_variable('CALLERID(ani)',$cidnum);
 		$AGI->set_variable('CALLERID(num)',$cidnum);
 		$AGI->set_variable('CALLERID(name)',$cidname);
+	} else {
+		$osdial->agi_output("ODOI: XXZZXX transferring call to $number|");
 	}
 
 	$AGI->set_context($osdial->{server}{ext_context});
