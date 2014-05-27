@@ -287,6 +287,7 @@ $status = get_variable("status");
 $title = get_variable("title");
 $uniqueid = get_variable("uniqueid");
 $use_internal_dnc = get_variable("use_internal_dnc");
+$use_cid_areacode_map = get_variable("use_cid_areacode_map");
 $user = get_variable("user");
 $user_group = get_variable("user_group");
 $user_abb = get_variable("user_abb");
@@ -707,6 +708,18 @@ if ($ACTION == 'manDiaLnextCaLL') {
             }
 
             $called_count++;
+
+            if ($use_cid_areacode_map == "Y") {
+                $stmt=sprintf("SELECT cid_number,cid_name FROM osdial_campaign_cid_areacodes WHERE campaign_id='%s' AND areacode='%s';",mres($campaign),mres(OSDsubstr($phone_number,0,3)));
+                $rslt=mysql_query($stmt, $link);
+                if ($DB) echo "$stmt\n";
+                $cid_ac_ct = mysql_num_rows($rslt);
+                if ($cid_ac_ct>0) {
+                    $row=mysql_fetch_row($rslt);
+                    $campaign_cid = $row[0];
+                    $campaign_cid_name = $row[1];
+                }
+            }
 
             if ($config['settings']['enable_agc_xfer_log'] > 0) {
                 #	DATETIME|campaign|lead_id|phone_number|user|type
