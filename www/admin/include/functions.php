@@ -1349,7 +1349,7 @@ function dateCalcServerLocalGMTOffset($svrGMT, $locGMT, $locisDST, $tzsecs) {
     $dcsret['svroffset'] = $svrtz->getOffset(new Date($tzsecs)) / 3600000;
     $dcsret['svrdst'] = $svrtz->inDaylightTime(new Date($tzsecs));
         
-    $locGMT = $locGMT * 1;
+    $locGMT = $locGMT * 1 - $locisDST;
     $dcsret['locsname'] = $tzoffsets[$locGMT];
     $locGMTname = $tzrefid[$dcsret['locsname']];
     if ($locisDST>0) {
