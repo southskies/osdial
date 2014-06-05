@@ -1346,6 +1346,7 @@ foreach(@campaign_id)
 				{
 				@aryA = $sthA->fetchrow_array;
 				$NEW_campaign_leads_to_call[$i] = "$aryA[0]";
+				$campaign_leads_to_call[$i] += $NEW_campaign_leads_to_call[$i];
 				if ($DB) {print "     NEW leads to call count:  $NEW_campaign_leads_to_call[$i]\n";}
 				if ($DBX) {print "     |$stmtA|\n";}
 				$rec_count++;
