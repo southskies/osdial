@@ -629,18 +629,18 @@ function report_realtime_detail() {
         $closer_campaignsSQL = OSDpreg_replace('/,$/','',$closer_campaignsSQL);
 
         #$stmtB=sprintf("FROM osdial_auto_calls WHERE campaign_id IN %s AND status NOT IN('XFER') AND ( (call_type='IN' AND campaign_id IN(%s)) OR (campaign_id='%s' AND call_type IN('OUT','OUTBALANCE')) ) ORDER BY campaign_id,call_time;",$LOG['allowed_campaignsSQL'],$closer_campaignsSQL,mres($group));
-        $stmtB=sprintf("FROM osdial_auto_calls WHERE (status NOT IN('XFER') OR channel LIKE 'Local/870_____@%%') AND ( (call_type='IN' AND campaign_id IN(%s)) OR (campaign_id='%s' AND call_type IN('OUT','OUTBALANCE')) ) ORDER BY campaign_id,call_time;",$closer_campaignsSQL,mres($group));
+        $stmtB=sprintf("FROM osdial_auto_calls AS ac LEFT JOIN osdial_live_agents AS la ON (ac.channel=la.channel) WHERE (ac.status NOT IN('XFER') OR la.conf_exten LIKE '870_____') AND ( (ac.call_type='IN' AND ac.campaign_id IN(%s)) OR (ac.campaign_id='%s' AND ac.call_type IN('OUT','OUTBALANCE')) ) ORDER BY ac.campaign_id,ac.call_time;",$closer_campaignsSQL,mres($group));
     } else {
         $groupSQL = '';
         if (!OSDpreg_match('/^XXXX/',$group)) {
-            $groupSQL = sprintf(" AND campaign_id='%s'",mres($group));
+            $groupSQL = sprintf(" AND ac.campaign_id='%s'",mres($group));
         }
 
-        $stmtB=sprintf("FROM osdial_auto_calls WHERE campaign_id IN %s AND (status NOT IN('XFER') OR channel LIKE 'Local/870_____@%%') %s ORDER BY campaign_id,call_time;", $LOG['allowed_campaignsSQL'],$groupSQL);
+        $stmtB=sprintf("FROM osdial_auto_calls AS ac LEFT JOIN osdial_live_agents AS la ON (ac.channel=la.channel) WHERE ac.campaign_id IN %s AND (ac.status NOT IN('XFER') OR la.conf_exten LIKE '870_____') %s ORDER BY ac.campaign_id,ac.call_time;", $LOG['allowed_campaignsSQL'],$groupSQL);
     }
 
-    $stmtA = "SELECT status";
-    if ($CALLSdisplay > 0) $stmtA .= ",campaign_id,phone_number,server_ip,UNIX_TIMESTAMP(call_time),call_type";
+    $stmtA = "SELECT ac.status";
+    if ($CALLSdisplay > 0) $stmtA .= ",ac.campaign_id,ac.phone_number,ac.server_ip,UNIX_TIMESTAMP(ac.call_time),ac.call_type";
 
 
     $k=0;
