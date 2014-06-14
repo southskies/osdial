@@ -348,19 +348,19 @@ function report_realtime_summary() {
             $closer_campaigns = OSDpreg_replace("/ /","','",$closer_campaigns);
             $closer_campaigns = "'$closer_campaigns'";
         
-            $stmt=sprintf("SELECT status FROM osdial_auto_calls WHERE campaign_id IN %s AND (status NOT IN('XFER') OR channel LIKE 'Local/870_____@%%') AND ( (call_type='IN' AND campaign_id IN($closer_campaigns)) OR (campaign_id='%s' AND call_type='OUT') );",$LOG['allowed_campaignsSQL'],mres($group));
+            $stmt=sprintf("SELECT ac.status FROM osdial_auto_calls AS ac LEFT JOIN osdial_live_agents AS la ON (ac.channel=la.channel) WHERE ac.campaign_id IN %s AND (ac.status NOT IN('XFER') OR la.conf_exten LIKE '870_____') AND ( (ac.call_type='IN' AND ac.campaign_id IN($closer_campaigns)) OR (ac.campaign_id='%s' AND ac.call_type='OUT') );",$LOG['allowed_campaignsSQL'],mres($group));
         } else {
             if ($group=='XXXX-ALL-ACTIVE-XXXX') { 
                 $groupSQL = '';
             } elseif ($group=='XXXX-OUTBOUND-XXXX') { 
-                $groupSQL = ' and length(closer_campaigns)<6';
+                $groupSQL = ' and length(ac.closer_campaigns)<6';
             } elseif ($group=='XXXX-INBOUND-XXXX') { 
-                $groupSQL = ' and length(closer_campaigns)>5';
+                $groupSQL = ' and length(ac.closer_campaigns)>5';
             } else {
-                $groupSQL = sprintf(" AND campaign_id='%s'",mres($group));
+                $groupSQL = sprintf(" AND ac.campaign_id='%s'",mres($group));
             }
         
-            $stmt=sprintf("SELECT status FROM osdial_auto_calls WHERE campaign_id IN %s AND (status NOT IN('XFER') OR channel LIKE 'Local/870_____@%%') %s;",$LOG['allowed_campaignsSQL'],$groupSQL);
+            $stmt=sprintf("SELECT ac.status FROM osdial_auto_calls AS ac LEFT JOIN osdial_live_agents AS la ON (ac.channel=la.channel) WHERE ac.campaign_id IN %s AND (ac.status NOT IN('XFER') OR la.conf_exten LIKE '870_____') %s;",$LOG['allowed_campaignsSQL'],$groupSQL);
         }
         $rslt=mysql_query($stmt, $link);
         
