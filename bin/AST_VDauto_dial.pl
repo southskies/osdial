@@ -588,7 +588,7 @@ $sthA->finish();
 			$DBIPgoalcalls[$user_CIPct] = ($DBIPadlevel[$user_CIPct] * $DBIPcount[$user_CIPct]);
 
 			$ivr_line_count=0;
-			$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_auto_calls WHERE campaign_id='" . $osdial->mres($DBIPcampaign[$user_CIPct]) . "';";
+			$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_auto_calls WHERE campaign_id='" . $osdial->mres($DBIPcampaign[$user_CIPct]) . "' AND status IN('XFER','CLOSER');";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
