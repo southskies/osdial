@@ -1263,12 +1263,12 @@ function report_realtime_detail() {
         $Ahtml .= $Dline;
 
 
-
+/*
         if ($agent_ready > 0) {$B='<font class="b1">'; $BG='</font>';}
         if ($agent_ready > 4) {$B='<font class="b2">'; $BG='</font>';}
         if ($agent_ready > 9) {$B='<font class="b3">'; $BG='</font>';}
         if ($agent_ready > 14) {$B='<font class="b4">'; $BG='</font>';}
-
+*/
 
         $html .= "\n<br>\n";
 
@@ -1277,7 +1277,7 @@ function report_realtime_detail() {
         $html .= " &nbsp;$NFB$B$agent_ready$BG$NFE <font color=blue>Agents waiting</font> &nbsp; &nbsp; &nbsp;\n";
         $html .= " $NFB$agent_paused$NFE <font color=blue>paused agents</font></div>\n";
 
-        $html .= "<br/><pre><font size=2>";
+        $html .= "<pre><font size=2>";
         if ($agentcount==1) {
             $Ahtml .= "<font color=$default_text>$agentcount agent logged in on all servers</font>\n";
         } else {
