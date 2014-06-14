@@ -404,15 +404,17 @@ function report_realtime_summary() {
                 $F='<font class="r4">';
                 $FG='</font>';
             }
-    
-            if ($campaign_allow_inbound > 0) {
-                $html .= "$NFB$out_total$NFE <font color=$default_text>current active calls</font>&nbsp; &nbsp; &nbsp; \n";
+    		$html .= "$NFB$out_total$NFE&nbsp; <font color=blue>Active calls</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
+
+            $html .= "$NFB$out_ring$NFE&nbsp; <font color=blue>Calls ringing</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
+            if ($out_live == 0) {
+                $html .= "<span style=margin-left:250>&nbsp;</span> \n";
+            } elseif ($out_live == 1) {
+                $html .= "$NFB<font color=red> &nbsp;$out_live </font>$NFE <font color=blue>Call is waiting for an agent</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div> \n";
             } else {
-                $html .= "$NFB$out_total$NFE <font color=$default_text>calls being placed</font> &nbsp; &nbsp; &nbsp; \n";
+                $html .= "$NFB<font color=red> &nbsp;$out_live </font>$NFE <font color=blue>Calls are waiting for agents</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div> \n";
             }
             
-            $html .= "$NFB$out_ring$NFE <font color=$default_text>calls ringing</font> &nbsp; &nbsp; &nbsp; &nbsp; \n";
-            $html .= "$NFB$F &nbsp;$out_live $FG$NFE <font color=$default_text>calls waiting for agents</font> &nbsp; &nbsp; &nbsp; \n";
         } else {
             $html .= "<font color=red>&nbsp;NO LIVE CALLS WAITING</font>&nbsp;\n";
         }
@@ -499,12 +501,31 @@ function report_realtime_summary() {
             }
     
             $html .= "\n<br/>\n";
-    
-            $html .= "$NFB$agent_total$NFE <font color=$default_text>agents logged in</font> &nbsp; &nbsp; &nbsp; &nbsp; \n";
-            $html .= "$NFB$agent_incall$NFE <font color=$default_text>agents in calls</font> &nbsp; &nbsp; &nbsp; \n";
-            $html .= "$NFB$B &nbsp;$agent_ready $BG$NFE <font color=$default_text>agents waiting</font> &nbsp; &nbsp; &nbsp; \n";
-            $html .= "$NFB$agent_paused$NFE <font color=$default_text>paused agents</font> &nbsp; &nbsp; &nbsp; \n";
-            
+          
+            $html .= "<div style='position:relative;left:0px;top:0px;text-shadow: rgba(0,0,0,0.3) 1px -1px 4px;'>$NFB$agent_total$NFE <font color=blue>&nbsp;&nbsp;Agents logged in</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
+
+            if ($agent_incall == 0) {
+            	$html .= " $NFB$agent_incall$NFE&nbsp; <font color=blue>&nbsp;No Agents in a call</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
+        	} elseif ($agent_incall == 1) {
+                $html .= " $NFB$agent_incall$NFE&nbsp; <font color=blue>Agent in a call</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
+        	} else {
+                $html .= " $NFB$agent_incall$NFE&nbsp; <font color=blue>Agents in calls</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
+        	}
+        	if ($agent_ready == 0) {
+                $html .= " &nbsp;$NFB$B$agent_ready$BG$NFE&nbsp; <font color=blue>Agents waiting</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
+        	} elseif ($agent_ready == 1) {
+          		$html .= " &nbsp;$NFB$B$agent_ready$BG$NFE&nbsp; <font color=blue>Agent waiting</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
+        	} else {
+                $html .= " &nbsp;$NFB$B$agent_ready$BG$NFE&nbsp; <font color=blue>Agents waiting</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
+        	}
+        	if ($agent_paused == 0) {
+                $html .= " $NFB$agent_paused$NFE&nbsp; <font color=blue>Paused agents</font></div>\n";
+        	} elseif ($agent_paused == 1) {
+                $html .= " $NFB$agent_paused$NFE&nbsp; <font color=blue>Paused agent</font></div>\n";
+        	} else {
+                $html .= " $NFB$agent_paused$NFE&nbsp; <font color=blue>Paused agents</font></div>\n";
+        	}
+          
             $Ahtml .= "<pre><FONT face=Fixed,monospace SIZE=1>";
             $html .= $Ahtml;
         } else {
