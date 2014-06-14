@@ -686,14 +686,17 @@ function report_realtime_detail() {
         if ($out_live > 14) {$F='<font class="r4">'; $FG='</font>';}
 
         echo "<div style='position:relative;left:10px;top:0px;text-shadow: rgba(0,0,0,0.3) 1px 1px 4px;'>&nbsp;";
-        if ($campaign_allow_inbound > 0) {
-            $html .= "$NFB$out_total$NFE <font color=blue>current active calls</font> &nbsp; &nbsp; &nbsp; \n";
+        $html .= "$NFB$out_total$NFE&nbsp; <font color=blue>Active calls</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
+
+        $html .= "$NFB$out_ring$NFE&nbsp; <font color=blue>Calls ringing</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
+        if ($out_live == 0) {
+          $html .= "<span style=margin-left:250>&nbsp;</span> \n";
+        } elseif ($out_live == 1) {
+          $html .= "$NFB<font color=red> &nbsp;$out_live </font>$NFE <font color=blue>Call is waiting for an agent</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div> \n";
         } else {
-            $html .= "$NFB$out_total$NFE <font color=blue>calls being placed</font> &nbsp; &nbsp; &nbsp; \n";
+          $html .= "$NFB<font color=red> &nbsp;$out_live </font>$NFE <font color=blue>Calls are waiting for agents</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div> \n";
         }
 
-        $html .= "$NFB$out_ring$NFE <font color=blue>calls ringing</font> &nbsp; &nbsp; &nbsp; &nbsp; \n";
-        $html .= "$NFB$F &nbsp;$out_live $FG$NFE <font color=blue>calls waiting for agents</font> &nbsp; &nbsp; &nbsp;</div> \n";
     } else {
       	echo "<div style='position:relative;left:10px;top:0px;text-shadow: rgba(0,0,0,0.3) 1px 1px 4px;'>&nbsp;";
         $html .= "<span style='text-shadow: rgba(0,0,0,0.4) 1px 1px 2px'><font color=red size=5>NO LIVE CALLS WAITING</font></span><br/>";
