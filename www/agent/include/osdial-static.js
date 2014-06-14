@@ -1196,7 +1196,7 @@
 						var CB_calls = all_CBs_array[0];
 						var loop_ct=0;
 						var conv_start=0;
-						var CB_HTML = "<table width=900><tr bgcolor=" + callback_bg2 + "><td><font class=\"log_title\">#</td><td align=\"center\"><font class=\"log_title\"> CALLBACK DATE/TIME</td><td align=\"center\"><font class=\"log_title\">NUMBER</td><td align=\"center\"><font class=\"log_title\">NAME</td><td align=\"center\"><font class=\"log_title\"> STATUS</td><td align=\"center\"><font class=\"log_title\">CAMPAIGN</td><td align=\"center\"><font class=\"log_title\">LAST CALL DATE/TIME</td><td align=\"left\"><font class=\"log_title\"> COMMENTS</td></tr>";
+						var CB_HTML = "<table width=900><tr bgcolor=" + callback_bg2 + "><td><font class=\"queue_text\">#</td><td align=\"center\"><font class=\"queue_text\"> CALLBACK DATE/TIME</td><td align=\"center\"><font class=\"queue_text\">NUMBER</td><td align=\"center\"><font class=\"queue_text\">NAME</td><td align=\"center\"><font class=\"queue_text\"> STATUS</td><td align=\"center\"><font class=\"queue_text\">CAMPAIGN</td><td align=\"center\"><font class=\"queue_text\">LAST CALL DATE/TIME</td><td align=\"left\"><font class=\"queue_text\"> COMMENTS</td></tr>";
 						while (loop_ct < CB_calls) {
 							loop_ct++;
 							loop_s = loop_ct.toString();
