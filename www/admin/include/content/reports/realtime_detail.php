@@ -695,6 +695,7 @@ function report_realtime_detail() {
         $html .= "$NFB$out_ring$NFE <font color=blue>calls ringing</font> &nbsp; &nbsp; &nbsp; &nbsp; \n";
         $html .= "$NFB$F &nbsp;$out_live $FG$NFE <font color=blue>calls waiting for agents</font> &nbsp; &nbsp; &nbsp;</div> \n";
     } else {
+      	echo "<div style='position:relative;left:10px;top:0px;text-shadow: rgba(0,0,0,0.3) 1px 1px 4px;'>&nbsp;";
         $html .= "<span style='text-shadow: rgba(0,0,0,0.4) 1px 1px 2px'><font color=red size=5>NO LIVE CALLS WAITING</font></span><br/>";
     }
 
