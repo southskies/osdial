@@ -27,6 +27,7 @@ var oac_timer = null;
 var oac_last_script = '';
 var oac_last_params = '';
 var oac_last_delay = 0;
+var ctrl_key = false;
 
 var helppopon = 0;
 
@@ -551,6 +552,32 @@ document.onkeypress = function(evt) {
 		} else {
 			document.getElementById('content').style.webkitUserSelect='none';
 		}
+	}
+}
+document.onkeyup = function(evt) {
+	var e = evt? evt : window.event;
+	if(!e) return;
+	var key = 0;
+	if (e.keyCode) {
+		key = e.keyCode;
+	} else if (typeof(e.which)!= 'undefined') {
+		key = e.which;
+	}
+	if (key==17) {
+		ctrl_key = false;
+	}
+}
+document.onkeydown = function(evt) {
+	var e = evt? evt : window.event;
+	if(!e) return;
+	var key = 0;
+	if (e.keyCode) {
+		key = e.keyCode;
+	} else if (typeof(e.which)!= 'undefined') {
+		key = e.which;
+	}
+	if (key==17) {
+		ctrl_key = true;
 	}
 }
 
