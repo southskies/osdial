@@ -302,7 +302,7 @@ function parseTimezones() {
     $tzret['tzoffsetsDST'] = array();
     $tzids = Date_TimeZone::getAvailableIDs();
     arsort($tzids);
-    $tzorder = array('^US.*','^SystemV.*','^America.*','^Europe.*','^Asia.*','^Africa.*','^Atlantic.*','^Pacific.*');
+    $tzorder = array('^SystemV.*','^US.*','^America.*','^Europe.*','^Asia.*','^Africa.*','^Atlantic.*','^Pacific.*');
     foreach ($tzorder as $tzmatch) {
         foreach ($tzids as $tzid) {
             if (preg_match('/'.$tzmatch.'/',$tzid)) {
@@ -311,37 +311,38 @@ function parseTimezones() {
                 if (!empty($tzsn)) { 
                     $tzln = $tmptz->getLongName();
                     $tzdsn = $tmptz->getDSTShortName();
+                    if (empty($tzdsn)) $tzdsn = $tzsn;
                     $tzoff = $tmptz->getRawOffset() / 3600000;
-                    $tzoffDST = $tmptz->getOffset(new Date) / 3600000;
+                    $tzoffDST = $tmptz->getOffset() / 3600000;
 
-                    if ($tzoff > -27 and $tzoff < 27 ) {
-                        $tzsep = '';
-                        if (!isset($tzret['tzoffsets'][$tzsep . $tzoff])) $tzret['tzoffsets'][$tzsep . $tzoff] = $tzsn;
-                        if (!isset($tzret['tznames'][$tzsn])) $tzret['tznames'][$tzsn] = $tzoff;
-                        if (!isset($tzret['tzalt'][$tzsn])) {
-                            if (empty($tzdsn)) $tzdsn = $tzsn;
-                            $tzret['tzalt'][$tzsn] = $tzdsn;
-                        }
-                        $tzsep = '';
-                        if ($tzoff >= 0) $tzsep = '+';
-                        if (!isset($tzret['tznames2'][$tzsn . $tzsep . $tzoff])) $tzret['tznames2'][$tzsn . $tzsep . $tzoff] = $tzoff;
-                        if (!isset($tzret['tzrefid'][$tzsn])) $tzret['tzrefid'][$tzsn] = $tzid;
-                    }
+                    if (!isset($tzret['tzalt'][$tzdsn])) $tzret['tzalt'][$tzdsn] = $tzsn;
+                    if (!isset($tzret['tzaltDST'][$tzsn])) $tzret['tzaltDST'][$tzsn] = $tzdsn;
 
-                    if ($tzoffDST > -27 and $tzoffDST < 27 ) {
-                        $tzsep = '';
-                        if (empty($tzdsn)) $tzdsn = $tzsn;
-                        if (!isset($tzret['tzoffsetsDST'][$tzsep . $tzoffDST])) $tzret['tzoffsetsDST'][$tzsep . $tzoffDST] = $tzdsn;
-                        if (!isset($tzret['tznamesDST'][$tzdsn])) $tzret['tznamesDST'][$tzdsn] = $tzoffDST;
-                        if (!isset($tzret['tzaltDST'][$tzdsn])) $tzret['tzaltDST'][$tzdsn] = $tzsn;
-                        $tzsep = '';
-                        if ($tzoffDST >= 0) $tzsep = '+';
-                        if (!isset($tzret['tznamesDST2'][$tzdsn . $tzsep . $tzoffDST])) $tzret['tznamesDST2'][$tzdsn . $tzsep . $tzoffDST] = $tzoffDST;
-                        if (!isset($tzret['tzrefidDST'][$tzdsn])) $tzret['tzrefidDST'][$tzdsn] = $tzid;
-                    }
+                    $tzsep = '';
+                    if (!isset($tzret['tzoffsets'][$tzsep . $tzoff])) $tzret['tzoffsets'][$tzsep . $tzoff] = $tzsn;
+                    if (!isset($tzret['tznames'][$tzsn])) $tzret['tznames'][$tzsn] = $tzoff;
+                    $tzsep = '';
+                    if ($tzoff >= 0) $tzsep = '+';
+                    if (!isset($tzret['tznames2'][$tzsn . $tzsep . $tzoff])) $tzret['tznames2'][$tzsn . $tzsep . $tzoff] = $tzoff;
+                    if (!isset($tzret['tzrefid'][$tzsn])) $tzret['tzrefid'][$tzsn] = $tzid;
+
+                    $tzsep = '';
+                    if (!isset($tzret['tzoffsetsDST'][$tzsep . $tzoffDST])) $tzret['tzoffsetsDST'][$tzsep . $tzoffDST] = $tzdsn;
+                    if (!isset($tzret['tznamesDST'][$tzdsn])) $tzret['tznamesDST'][$tzdsn] = $tzoffDST;
+                    $tzsep = '';
+                    if ($tzoffDST >= 0) $tzsep = '+';
+                    if (!isset($tzret['tznamesDST2'][$tzdsn . $tzsep . $tzoffDST])) $tzret['tznamesDST2'][$tzdsn . $tzsep . $tzoffDST] = $tzoffDST;
+                    if (!isset($tzret['tzrefidDST'][$tzdsn])) $tzret['tzrefidDST'][$tzdsn] = $tzid;
                 }
             }
         }
+    }
+    $tzt = $tzret['tzalt'];
+    foreach ($tzret['tzaltDST'] as $k => $v) {
+        if (!isset($tzret['tzalt'][$k])) $tzret['tzalt'][$k] = $k;
+    }
+    foreach ($tzt as $k => $v) {
+        if (!isset($tzret['tzaltDST'][$k])) $tzret['tzaltDST'][$k] = $k;
     }
     ksort($tzret['tzrefid']);
     ksort($tzret['tzrefidDST']);
@@ -366,24 +367,26 @@ function dateCalcServerLocalGMTOffset($svrGMT, $locGMT, $locisDST, $tzsecs) {
     $tzrefidDST = $tzs['tzrefidDST'];
 
     $dcsret = array();
+    $tzdate = new Date();
+    $tzdate->setFromTime($tzsecs);
 
     $svrGMT = $svrGMT * 1;
     $dcsret['svrsname'] = $tzoffsets[$svrGMT];
     $svrGMTname = $tzrefid[$dcsret['svrsname']];
     $svrtz = new Date_TimeZone($svrGMTname);
-    $dcsret['svroffset'] = $svrtz->getOffset(new Date($tzsecs)) / 3600000;
-    $dcsret['svrdst'] = $svrtz->inDaylightTime(new Date($tzsecs));
-        
-    $locGMT = $locGMT * 1;
+    $dcsret['svroffset'] = $svrtz->getOffset($tzdate) / 3600000;
+    $dcsret['svrdst'] = $svrtz->inDaylightTime($tzdate);
+
+    $locGMT = ($locGMT * 1);
     $dcsret['locsname'] = $tzoffsets[$locGMT];
     $locGMTname = $tzrefid[$dcsret['locsname']];
-    if ($locisDST>0) {
-        $dcsret['locsname'] = $tzoffsets[$locGMT];
-        $locGMTname = $tzrefidDST[$tzalt[$dcsret['locsname']]];
+    if ($locisDST!=0) {
+        $dcsret['locsname'] = $tzoffsetsDST[$locGMT];
+        $locGMTname = $tzrefidDST[$dcsret['locsname']];
     }
     $loctz = new Date_TimeZone($locGMTname);
-    $dcsret['locoffset'] = $loctz->getOffset(new Date($tzsecs)) / 3600000;
-    $dcsret['locdst'] = $loctz->inDaylightTime(new Date($tzsecs));
+    $dcsret['locoffset'] = $loctz->getOffset($tzdate) / 3600000;
+    $dcsret['locdst'] = $loctz->inDaylightTime($tzdate);
 
     return $dcsret;
 }
@@ -402,10 +405,9 @@ function dateToLocal($link, $svrip, $cnvdate, $locGMT, $fmt="", $locisDST, $addl
     if (is_numeric($svrip) and $svrip>-27 and $svrip<27 and $svrip!='first') {
         $svrGMT = $svrip * 1;
     } else {
-        $server = get_first_record($link, 'servers', '*', sprintf("server_ip='%s'", mres($svrip)));
-        if (!is_array($server)) {
-            $server = get_first_record($link, 'servers', '*', "server_profile IN ('AIO','DIALER')");
-        }
+        $svrSQL = "active='Y' AND server_profile IN ('AIO','DIALER')";
+        if ($svrip!='first') $svrSQL=sprintf("server_ip='%s'", mres($svrip));
+        $server = get_first_record($link, 'servers', '*', $svrSQL);
         if (!is_array($server)) return date($fmt, $dsecs);
         $svrGMT = $server['local_gmt'] * 1;
     }
@@ -417,14 +419,14 @@ function dateToLocal($link, $svrip, $cnvdate, $locGMT, $fmt="", $locisDST, $addl
 
     $locTZlabel = '';
     $retdate = date($fmt, $dsecs);
-    if (preg_match('/'.$dcsoff['locsname'].'|'.$tzalt[$dcsoff['locsname']].'/',$retdate)) {
+    if (preg_match('/'.$tzalt[$dcsoff['locsname']].'|'.$tzaltDST[$dcsoff['locsname']].'/',$retdate)) {
         return $retdate;
     } else {
         if ($addlocTZlabel>0) {
             if ($dcsoff['locdst']) {
-                $locTZlabel=' '.$tzalt[$dcsoff['locsname']];
+                $locTZlabel=' '.$tzaltDST[$dcsoff['locsname']];
             } else {
-                $locTZlabel=' '.$dcsoff['locsname'];
+                $locTZlabel=' '.$tzalt[$dcsoff['locsname']];
             }
         }
         return $retdate . $locTZlabel;
@@ -446,10 +448,9 @@ function dateToServer($link, $svrip, $cnvdate, $locGMT, $fmt="", $locisDST, $add
     if (is_numeric($svrip) and $svrip>-27 and $svrip<27 and $svrip!='first') {
         $svrGMT = $svrip * 1;
     } else {
-        $server = get_first_record($link, 'servers', '*', sprintf("server_ip='%s'", mres($svrip)));
-        if (!is_array($server)) {
-            $server = get_first_record($link, 'servers', '*', "server_profile IN ('AIO','DIALER')");
-        }
+        $svrSQL = "active='Y' AND server_profile IN ('AIO','DIALER')";
+        if ($svrip!='first') $svrSQL=sprintf("server_ip='%s'", mres($svrip));
+        $server = get_first_record($link, 'servers', '*', $svrSQL);
         if (!is_array($server)) return date($fmt, $dsecs);
         $svrGMT = $server['local_gmt'] * 1;
     }
@@ -460,9 +461,9 @@ function dateToServer($link, $svrip, $cnvdate, $locGMT, $fmt="", $locisDST, $add
     $svrTZlabel = '';
     if ($addsvrTZlabel>0) {
         if ($dcsoff['svrdst']) {
-            $svrTZlabel=' '.$tzalt[$dcsoff['svrsname']];
+            $svrTZlabel=' '.$tzaltDST[$dcsoff['svrsname']];
         } else {
-            $svrTZlabel=' '.$dcsoff['svrsname'];
+            $svrTZlabel=' '.$tzalt[$dcsoff['svrsname']];
         }
     }
     return date($fmt, $dsecs) . $svrTZlabel;

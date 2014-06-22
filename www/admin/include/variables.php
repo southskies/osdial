@@ -121,6 +121,9 @@ if ($webServerDST) $webServerAdjGMT = $webServerGMT - 1;
 $webClientGMT = $webServerGMT;
 $webClientDST = $webServerDST;
 $webClientAdjGMT = $webClientGMT;
+if (!empty($_COOKIE['webClientGMT'])) $webClientGMT = $_COOKIE['webClientGMT'];
+if (!empty($_COOKIE['webClientDST'])) $webClientDST = $_COOKIE['webClientDST'];
+if ($webClientDST) $webClientAdjGMT = $webClientGMT - 1;
 
 # The following creates arrays with TZ mappings.
 require_once 'Date.php';
@@ -136,7 +139,7 @@ $tzoffsets = array();
 $tzoffsetsDST = array();
 $tzids = Date_TimeZone::getAvailableIDs();
 arsort($tzids);
-$tzorder = array('^US.*','^SystemV.*','^America.*','^Europe.*','^Asia.*','^Africa.*','^Atlantic.*','^Pacific.*');
+$tzorder = array('^SystemV.*','^US.*','^America.*','^Europe.*','^Asia.*','^Africa.*','^Atlantic.*','^Pacific.*');
 foreach ($tzorder as $tzmatch) {
     foreach ($tzids as $tzid) {
         if (preg_match('/'.$tzmatch.'/',$tzid)) {
@@ -145,37 +148,38 @@ foreach ($tzorder as $tzmatch) {
             if (!empty($tzsn)) { 
                 $tzln = $tmptz->getLongName();
                 $tzdsn = $tmptz->getDSTShortName();
+                if (empty($tzdsn)) $tzdsn = $tzsn;
                 $tzoff = $tmptz->getRawOffset() / 3600000;
-                $tzoffDST = $tmptz->getOffset(new Date) / 3600000;
+                $tzoffDST = $tmptz->getOffset() / 3600000;
 
-                if ($tzoff > -27 and $tzoff < 27 ) {
-                    $tzsep = '';
-                    if (!isset($tzoffsets[$tzsep . $tzoff])) $tzoffsets[$tzsep . $tzoff] = $tzsn;
-                    if (!isset($tznames[$tzsn])) $tznames[$tzsn] = $tzoff;
-                    if (!isset($tzalt[$tzsn])) {
-                        if (empty($tzdsn)) $tzdsn = $tzsn;
-                        $tzalt[$tzsn] = $tzdsn;
-                    }
-                    $tzsep = '';
-                    if ($tzoff >= 0) $tzsep = '+';
-                    if (!isset($tznames2[$tzsn . $tzsep . $tzoff])) $tznames2[$tzsn . $tzsep . $tzoff] = $tzoff;
-                    if (!isset($tzrefid[$tzsn])) $tzrefid[$tzsn] = $tzid;
-                }
+                if (!isset($tzalt[$tzdsn])) $tzalt[$tzdsn] = $tzsn;
+                if (!isset($tzaltDST[$tzsn])) $tzaltDST[$tzsn] = $tzdsn;
 
-                if ($tzoffDST > -27 and $tzoffDST < 27 ) {
-                    $tzsep = '';
-                    if (empty($tzdsn)) $tzdsn = $tzsn;
-                    if (!isset($tzoffsetsDST[$tzsep . $tzoffDST])) $tzoffsetsDST[$tzsep . $tzoffDST] = $tzdsn;
-                    if (!isset($tznamesDST[$tzdsn])) $tznamesDST[$tzdsn] = $tzoffDST;
-                    if (!isset($tzaltDST[$tzdsn])) $tzaltDST[$tzdsn] = $tzsn;
-                    $tzsep = '';
-                    if ($tzoffDST >= 0) $tzsep = '+';
-                    if (!isset($tznamesDST2[$tzdsn . $tzsep . $tzoffDST])) $tznamesDST2[$tzdsn . $tzsep . $tzoffDST] = $tzoffDST;
-                    if (!isset($tzrefidDST[$tzdsn])) $tzrefidDST[$tzdsn] = $tzid;
-                }
+                $tzsep = '';
+                if (!isset($tzoffsets[$tzsep . $tzoff])) $tzoffsets[$tzsep . $tzoff] = $tzsn;
+                if (!isset($tznames[$tzsn])) $tznames[$tzsn] = $tzoff;
+                $tzsep = '';
+                if ($tzoff >= 0) $tzsep = '+';
+                if (!isset($tznames2[$tzsn . $tzsep . $tzoff])) $tznames2[$tzsn . $tzsep . $tzoff] = $tzoff;
+                if (!isset($tzrefid[$tzsn])) $tzrefid[$tzsn] = $tzid;
+
+                $tzsep = '';
+                if (!isset($tzoffsetsDST[$tzsep . $tzoffDST])) $tzoffsetsDST[$tzsep . $tzoffDST] = $tzdsn;
+                if (!isset($tznamesDST[$tzdsn])) $tznamesDST[$tzdsn] = $tzoffDST;
+                $tzsep = '';
+                if ($tzoffDST >= 0) $tzsep = '+';
+                if (!isset($tznamesDST2[$tzdsn . $tzsep . $tzoffDST])) $tznamesDST2[$tzdsn . $tzsep . $tzoffDST] = $tzoffDST;
+                if (!isset($tzrefidDST[$tzdsn])) $tzrefidDST[$tzdsn] = $tzid;
             }
         }
     }
+}
+$tzt = $tzalt;
+foreach ($tzaltDST as $k => $v) {
+    if (!isset($tzalt[$k])) $tzalt[$k] = $k;
+}
+foreach ($tzt as $k => $v) {
+    if (!isset($tzaltDST[$k])) $tzaltDST[$k] = $k;
 }
 ksort($tzrefid);
 ksort($tzrefidDST);
