@@ -1741,7 +1741,7 @@ if ( ($ACTION=="Monitor") || ($ACTION=="StopMonitor") ) {
                     $length_in_min = ($length_in_sec / 60);
                     $length_in_min = sprintf("%8.2f", $length_in_min);
 
-                    $stmt=sprintf("UPDATE recording_log SET end_time='%s',end_epoch='%s',length_in_sec='%s',length_in_min='%s',uniqueid='%s' WHERE filename='%s';",mres($NOW_TIME),mres($StarTtime),mres($length_in_sec),mres($length_in_min),mres($uniqueid),mres($filename));
+                    $stmt=sprintf("UPDATE recording_log SET end_time='%s',end_epoch='%s',length_in_sec='%s',length_in_min='%s' WHERE filename='%s';",mres($NOW_TIME),mres($StarTtime),mres($length_in_sec),mres($length_in_min),mres($filename));
                     if ($DB) echo "$stmt\n";
                     $rslt=mysql_query($stmt, $link);
                 }
@@ -1797,7 +1797,7 @@ if ( ($ACTION=="MonitorConf") || ($ACTION=="StopMonitorConf") ) {
                 $length_in_min = ($length_in_sec / 60);
                 $length_in_min = sprintf("%8.2f", $length_in_min);
 
-                $stmt=sprintf("UPDATE recording_log SET end_time='%s',end_epoch='%s',length_in_sec='%s',length_in_min='%s',unqiueid='%s' WHERE filename='%s';",mres($NOW_TIME),mres($StarTtime),mres($length_in_sec),mres($length_in_min),mres($uniqueid),mres($filename));
+                $stmt=sprintf("UPDATE recording_log SET end_time='%s',end_epoch='%s',length_in_sec='%s',length_in_min='%s' WHERE filename='%s';",mres($NOW_TIME),mres($StarTtime),mres($length_in_sec),mres($length_in_min),mres($filename));
                 if ($DB) echo "$stmt\n";
                 $rslt=mysql_query($stmt, $link);
             }

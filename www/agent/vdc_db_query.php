@@ -2134,7 +2134,7 @@ if ($ACTION == 'manDiaLlogCaLL') {
             if ($rslt) $rec_list = mysql_num_rows($rslt);
             while ($rec_list>$loop_count) {
                 $row=mysql_fetch_row($rslt);
-                if (OSDpreg_match("/Local\/$conf_silent_prefix$conf_exten\@/i",$row[0])) {
+                if (OSDpreg_match("/Local\/3$conf_exten\@/i",$row[0])) {
                     $rec_channels[$total_rec] = $row[0];
                     $total_rec++;
                 } else {
@@ -2157,7 +2157,7 @@ if ($ACTION == 'manDiaLlogCaLL') {
             if ($rslt) $rec_list = mysql_num_rows($rslt);
             while ($rec_list>$loop_count) {
                 $row=mysql_fetch_row($rslt);
-                if (OSDpreg_match("/Local\/$conf_silent_prefix$conf_exten\@/i",$row[0])) {
+                if (OSDpreg_match("/Local\/3$conf_exten\@/i",$row[0])) {
                     $rec_channels[$total_rec] = $row[0];
                     $total_rec++;
                 } else {
@@ -2189,7 +2189,7 @@ if ($ACTION == 'manDiaLlogCaLL') {
             $total_recFN=0;
             $loop_count=0;
             $filename=$MT;		# not necessary : and cmd_line_f LIKE \"%_$user_abb\"
-            $stmt=sprintf("SELECT SQL_NO_CACHE cmd_line_f FROM osdial_manager WHERE server_ip='%s' AND action='Originate' AND cmd_line_b='Channel: %s' ORDER BY entry_date DESC LIMIT %s;",mres($server_ip),mres($local_DEF.$conf_silent_prefix.$conf_exten.$local_AMP.$ext_context),$total_rec);
+            $stmt=sprintf("SELECT SQL_NO_CACHE cmd_line_h FROM osdial_manager WHERE server_ip='%s' AND action='Originate' AND cmd_line_b LIKE 'Channel: %s%%' AND cmd_line_h LIKE 'Variable: FILENAME=%%' ORDER BY entry_date DESC LIMIT %s;",mres($server_ip),mres($local_DEF.'3'.$conf_exten.$local_AMP),$total_rec);
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
             if ($rslt) $recFN_list = mysql_num_rows($rslt);
@@ -2208,9 +2208,9 @@ if ($ACTION == 'manDiaLlogCaLL') {
                     if ($format=='debug') echo "\n<!-- $stmt -->";
                     $rslt=mysql_query($stmt, $link);
 
-                    echo "REC_STOP|$rec_channels[$loop_count]|$filename[$loop_count]|";
-                    if (OSDstrlen($filename)>2) {
-                        $stmt=sprintf("SELECT SQL_NO_CACHE recording_id,start_epoch FROM recording_log WHERE filename='%s';",mres($filename[$loop_count]));
+                    echo "REC_STOP|".$rec_channels[$loop_count]."|".$filename[$loop_count]."|";
+                    if (OSDstrlen($filename[$loop_count])>2) {
+                        $stmt=sprintf("SELECT SQL_NO_CACHE recording_id,start_epoch FROM recording_log WHERE filename='%s' ORDER BY recording_id DESC LIMIT 1;",mres($filename[$loop_count]));
                         if ($format=='debug') echo "\n<!-- $stmt -->";
                         $rslt=mysql_query($stmt, $link);
                         if ($rslt) $fn_count = mysql_num_rows($rslt);
@@ -2223,7 +2223,7 @@ if ($ACTION == 'manDiaLlogCaLL') {
                             $length_in_min = ($length_in_sec / 60);
                             $length_in_min = sprintf("%8.2f", $length_in_min);
 
-                            $stmt=sprintf("UPDATE recording_log SET end_time='%s',end_epoch='%s',length_in_sec='%s',length_in_min='%s',uniqueid='%s' WHERE filename='%s' AND end_epoch IS NULL;",mres($NOW_TIME),mres($StarTtime),mres($length_in_sec),mres($length_in_min),mres($uniqueid),mres($filename[$loop_count]));
+                            $stmt=sprintf("UPDATE recording_log SET end_time='%s',end_epoch='%s',length_in_sec='%s',length_in_min='%s',uniqueid='%s' WHERE recording_id='%s';",mres($NOW_TIME),mres($StarTtime),mres($length_in_sec),mres($length_in_min),mres($uniqueid),mres($recording_id));
                             if ($format=='debug') echo "\n<!-- $stmt -->";
                             $rslt=mysql_query($stmt, $link);
 
