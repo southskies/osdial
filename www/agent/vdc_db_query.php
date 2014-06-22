@@ -3609,7 +3609,9 @@ if ($ACTION == 'updateDISPO') {
         $tzrefid = $tzs['tzrefid'];
         $phoneGMTname = $tzrefid[$tzoffsets[$phone_gmt]];
         $phonetz = new Date_TimeZone($phoneGMTname);
-        $phoneDST = $phonetz->inDaylightTime(new Date(time()));
+        $phonetime = new Date();
+        $phonetime->setFromTime(time());
+        $phoneDST = $phonetz->inDaylightTime($phonetime);
         $phoneDST = $phoneDST * 1;
 
         $random = (rand(1000000, 9999999) + 10000000);
