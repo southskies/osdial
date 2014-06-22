@@ -654,27 +654,34 @@ sub stream_and_get_dtmf {
 			$osdial->osdevent({event=>$ivrpre.'GET_DTMF',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$cinfo->{uniqueid},callerid=>$cinfo->{accountcode},lead_id=>$cinfo->{CIDlead_id},campaign_id=>$cinfo->{campaign_id},data1=>"".$int_digit});
 		}
 
-		my $loop = 0;
-		while (length($total_digits) < $dcount and $loop < $waitloops) {
-			my $digit = $AGI->wait_for_digit($waittimeout);
-			if ($digit>0) {
-				$digit = chr($digit);
-				$digit =~ s/$valid_pat//g;
-				if ($digit ne '') {
-					if ($exit_digit ne '' and $exit_digit eq $digit) {
-						$dcount = length($total_digits);
-						$orig_dcount = length($total_digits);
-					} else {
-						$total_digits .= $digit;
+		if ($interrupt_digit>-1) {
+			my $loop = 0;
+			while (length($total_digits) < $dcount and $loop < $waitloops) {
+				my $digit = $AGI->wait_for_digit($waittimeout);
+				if ($digit>0) {
+					$digit = chr($digit);
+					$digit =~ s/$valid_pat//g;
+					if ($digit ne '') {
+						if ($exit_digit ne '' and $exit_digit eq $digit) {
+							$dcount = length($total_digits);
+							$orig_dcount = length($total_digits);
+						} else {
+							$total_digits .= $digit;
+						}
+						$osdial->agi_output("    digit |$digit|   total_digits |$total_digits|") if ($DB);
+						$osdial->osdevent({event=>$ivrpre.'GET_DTMF',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$cinfo->{uniqueid},callerid=>$cinfo->{accountcode},lead_id=>$cinfo->{CIDlead_id},campaign_id=>$cinfo->{campaign_id},data1=>"".$digit});
 					}
-					$osdial->agi_output("    digit |$digit|   total_digits |$total_digits|") if ($DB);
-					$osdial->osdevent({event=>$ivrpre.'GET_DTMF',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$cinfo->{uniqueid},callerid=>$cinfo->{accountcode},lead_id=>$cinfo->{CIDlead_id},campaign_id=>$cinfo->{campaign_id},data1=>"".$digit});
+					$loop=0;
+				} elsif ($digit==-1) {
+					$loop = $waitloops;
+					$rpt = $rptloops;
+				} else {
+					$loop++;
 				}
-				$loop=0;
-			} else {
-				$loop++;
+				$loop = $waitloops if (length($total_digits) >= $dcount);
 			}
-			$loop = $waitloops if (length($total_digits) >= $dcount);
+		} elsif ($interrupt_digit==-1) {
+					$rpt = $rptloops;
 		}
 
 		if (length($total_digits) >= $dcount) {
@@ -722,7 +729,7 @@ sub stream_file_tts {
 			}
 			foreach my $tts_file (@tts_files) {
 				$retintdigit = $AGI->stream_file($tts_file,$valid_pat);
-				return $retintdigit if (chr($retintdigit) =~ /$valid_pat/);
+				return $retintdigit if ($retintdigit==0 or $retintdigit==-1 or chr($retintdigit) =~ /$valid_pat/);
 			}
 		}
 	} else {
