@@ -1272,12 +1272,30 @@ function report_realtime_detail() {
 
         $html .= "\n<br>\n";
 
-        $html .= "<div style='position:relative;left:0px;top:0px;text-shadow: rgba(0,0,0,0.3) 1px -1px 4px;'>$NFB$agent_total$NFE <font color=blue>Agents logged in</font> &nbsp; &nbsp; &nbsp; &nbsp; \n";
-        $html .= " $NFB$agent_incall$NFE <font color=blue>Agents in calls</font> &nbsp; &nbsp; &nbsp; \n";
-        $html .= " &nbsp;$NFB$B$agent_ready$BG$NFE <font color=blue>Agents waiting</font> &nbsp; &nbsp; &nbsp;\n";
-        $html .= " $NFB$agent_paused$NFE <font color=blue>paused agents</font></div>\n";
+        $html .= "<div style='position:relative;left:0px;top:0px;text-shadow: rgba(0,0,0,0.3) 1px -1px 4px;'>$NFB$agent_total$NFE <font color=blue>Agents logged in</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
+        if ($agent_incall == 0) {
+                $html .= " $NFB$agent_incall$NFE&nbsp; <font color=blue>&nbsp;No Agents in a call</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
+        } elseif ($agent_incall == 1) {
+                $html .= " $NFB$agent_incall$NFE&nbsp; <font color=blue>Agent in a call</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
+        } else {
+                $html .= " $NFB$agent_incall$NFE&nbsp; <font color=blue>Agents in calls</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
+        }
+        if ($agent_ready == 0) {
+                $html .= " &nbsp;$NFB$B$agent_ready$BG$NFE&nbsp; <font color=blue>Agents waiting</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
+        } elseif ($agent_ready == 1) {
+          $html .= " &nbsp;$NFB$B$agent_ready$BG$NFE&nbsp; <font color=blue>Agent waiting</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
+        } else {
+                $html .= " &nbsp;$NFB$B$agent_ready$BG$NFE&nbsp; <font color=blue>Agents waiting</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
+        }
+        if ($agent_paused == 0) {
+                $html .= " $NFB$agent_paused$NFE&nbsp; <font color=blue>Paused agents</font></div>\n";
+        } elseif ($agent_paused == 1) {
+                $html .= " $NFB$agent_paused$NFE&nbsp; <font color=blue>Paused agent</font></div>\n";
+        } else {
+                $html .= " $NFB$agent_paused$NFE&nbsp; <font color=blue>Paused agents</font></div>\n";
+        }
 
-        $html .= "<br/><pre><font size=2>";
+        $html .= "<pre><font size=2>";
         if ($agentcount==1) {
             $Ahtml .= "<font color=$default_text>$agentcount agent logged in on all servers</font>\n";
         } else {
