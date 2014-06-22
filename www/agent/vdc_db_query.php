@@ -2194,7 +2194,7 @@ if ($ACTION == 'manDiaLlogCaLL') {
             if ($rslt) $recFN_list = mysql_num_rows($rslt);
             while ($recFN_list>$loop_count) {
                 $row=mysql_fetch_row($rslt);
-                $filename[$total_recFN] = OSDpreg_replace("/Callerid: /i","",$row[0]);
+                $filename[$total_recFN] = OSDpreg_replace("/Variable: FILENAME=/i","",$row[0]);
                 if ($format=='debug') echo "\n<!-- $row[0] -->";
                 $total_recFN++;
                 $loop_count++; 
