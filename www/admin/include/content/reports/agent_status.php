@@ -221,6 +221,10 @@ function report_agent_status() {
                 $stmt=sprintf("UPDATE osdial_conferences SET extension='' WHERE extension='%s' AND server_ip='%s';",mres($extension),mres($server_ip));
                 $rslt=mysql_query($stmt, $link);
 
+                $queryCID = "ULGH3459$STARTtime";
+                $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Command','%s','Command: %s','','','','','','','','','');",mres(date('Y-m-d H:i:s')),mres($server_ip),mres($queryCID),mres('meetme kick '.$conf_exten.' all'));
+                $rslt=mysql_query($stmt, $link);
+
                 $table .= "<center>Agent has been emergency logged out.<br>Please, make sure they close their web browser</center><br>\n";
                 if ($close_after_emergency_logout == "Y") {
                     $table .= "\n\n<script language=\"javascript\">\n";
