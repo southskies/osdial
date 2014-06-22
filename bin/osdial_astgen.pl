@@ -1050,7 +1050,7 @@ sub gen_phones {
 			if ($sret->{voicemail_id} ne "") {
 				$ephn .= procexten("osdial",$sret->{dialplan_number},"1","Dial",$dext.",30,o");
 				$ephn .= procexten("osdial",$sret->{dialplan_number},"2","GotoIf","\$[\"\${DIALSTATUS}\" = \"NOANSWER\"|\"\${DIALSTATUS}\" = \"BUSY\"|\"\${DIALSTATUS}\" = \"CONGESTION\"|\"\${DIALSTATUS}\" = \"CHANUNAVAIL\"]?3:4");
-				$ephn .= procexten("osdial",$sret->{dialplan_number},"3","Voicemail",$sret->{voicemail_id}."\@osdial");
+				$ephn .= procexten("osdial",$sret->{dialplan_number},"3","Voicemail",$sret->{voicemail_id}."\@osdial,su");
 				$ephn .= procexten("osdial",$sret->{dialplan_number},"4","Hangup","");
 			} else {
 				$ephn .= procexten("osdial",$sret->{dialplan_number},"1","Dial",$dext.",60,o");
@@ -1176,11 +1176,11 @@ sub gen_osdial_extensions {
 	$oeout .= ";     don't forget to set GUI variable \$voicemail_dump_exten to this extension\n";
 	$oeout .= procexten("osdial-Patterns","_85026666666666.","1","AGI","agi-OSDvmail_finder.agi,\${EXTEN:14},85027777777777");
 	$oeout .= procexten("osdial-Patterns","_85027777777777.","1","Wait","2");
-	$oeout .= procexten("osdial-Patterns","_85027777777777.","2","Voicemail","\${EXTEN:14}\@osdial,u");
+	$oeout .= procexten("osdial-Patterns","_85027777777777.","2","Voicemail","\${EXTEN:14}\@osdial,su");
 	$oeout .= procexten("osdial-Patterns","_85027777777777.","3","Hangup","");
 	$oeout .= ";\n; Other Voicemail Reroutes\n";
 	$oeout .= procexten("osdial-Patterns","_8502XXXX","1","AGI","agi-OSDvmail_finder.agi,\${EXTEN:4},8503XXXX");
-	$oeout .= procexten("osdial-Patterns","_8503XXXX","1","Voicemail","\${EXTEN:4}\@osdial");
+	$oeout .= procexten("osdial-Patterns","_8503XXXX","1","Voicemail","\${EXTEN:4}\@osdial,su");
 	$oeout .= ";\n; Fix CXFER.\n";
 	$oeout .= procexten("osdial-Patterns","_860XXXX*.","1","AGI","agi-OSDfixCXFER.agi");
 	$oeout .= procexten("osdial-Patterns","_7860XXXX*.","1","AGI","agi-OSDfixCXFER.agi");
@@ -1460,7 +1460,7 @@ sub gen_carriers {
 				} elsif ($dids->{$did}{did_action} eq 'EXTENSION') {
 					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Goto",$dids->{$did}{extension_context}.",".$dids->{$did}{extension}.",1");
 				} elsif ($dids->{$did}{did_action} eq 'VOICEMAIL') {
-					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Voicemail",$dids->{$did}{voicemail});
+					$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Voicemail",$dids->{$did}{voicemail}.',su');
 				}
 				$dialplan .= procexten($context,$didmatch.$dids->{$did}{did},$prio++,"Hangup","");
 			}
