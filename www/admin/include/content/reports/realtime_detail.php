@@ -1263,12 +1263,12 @@ function report_realtime_detail() {
         $Ahtml .= $Dline;
 
 
-
+/*
         if ($agent_ready > 0) {$B='<font class="b1">'; $BG='</font>';}
         if ($agent_ready > 4) {$B='<font class="b2">'; $BG='</font>';}
         if ($agent_ready > 9) {$B='<font class="b3">'; $BG='</font>';}
         if ($agent_ready > 14) {$B='<font class="b4">'; $BG='</font>';}
-
+*/
 
         $html .= "\n<br>\n";
 
