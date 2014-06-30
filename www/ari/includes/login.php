@@ -111,6 +111,7 @@ class Login {
               $parts = preg_split('/\s/',$line);
               if (isset($parts[1])) {
                 $include_filename = trim($parts[1]);
+                $include_filename = preg_replace('/(\"|\')/','',$include_filename);
               }
 
               if ($include_filename) {
