@@ -523,12 +523,17 @@ sub xfer_to_ingroup {
 sub hangup_and_dispo {
 	my ($stream, $status) = @_;;
 
+	update_status($status);
+	$stream =~ s/\..*$//;
+	stream_file_tts($stream) if ($stream);
+	$osdial->osdevent({event=>$ivrpre.'HANGUP',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$cinfo->{uniqueid},callerid=>$cinfo->{accountcode},lead_id=>$cinfo->{CIDlead_id},campaign_id=>$cinfo->{campaign_id},data1=>"".$stream,data2=>"".$status});
+
 	if ($virtivr) {
 		my $tepoch = time();
 		my $tdate = $osdial->get_datetime($tepoch);
 		my $call_length = $tepoch - $cinfo->{start_epoch};
 
-		$affected_rows = $osdial->sql_execute("UPDATE osdial_log SET end_epoch='$tepoch' WHERE uniqueid='" . $AGI->{uniqueid} . " AND server_ip='".$osdial->{VARserver_ip}."';");
+		$affected_rows = $osdial->sql_execute("UPDATE osdial_log SET end_epoch='$tepoch' WHERE uniqueid='" . $AGI->{uniqueid} . "' AND server_ip='".$osdial->{VARserver_ip}."';");
 		if ($affected_rows<1) {
 			$affected_rows = $osdial->sql_execute("UPDATE osdial_closer_log SET end_epoch='$tepoch' WHERE uniqueid='" . $AGI->{uniqueid} . "' AND server_ip='".$osdial->{VARserver_ip}."';");
 			$osdial->agi_output("--    ODOI osdial_closer_log update: |$affected_rows");
@@ -545,11 +550,6 @@ sub hangup_and_dispo {
 			$osdial->agi_output("--    ODOI osdial_dnc insert: |$affected_rows");
 		}
 	}
-
-	update_status($status);
-	$stream =~ s/\..*$//;
-	stream_file_tts($stream) if ($stream);
-	$osdial->osdevent({event=>$ivrpre.'HANGUP',server_ip=>$osdial->{'VARserver_ip'},uniqueid=>$cinfo->{uniqueid},callerid=>$cinfo->{accountcode},lead_id=>$cinfo->{CIDlead_id},campaign_id=>$cinfo->{campaign_id},data1=>"".$stream,data2=>"".$status});
 
 	$AGI->hangup();
 
