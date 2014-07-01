@@ -134,13 +134,13 @@ if ($osd->sql_execute($stmt)) {
 my $drop_timer=0;
 my $drop_seconds=0;
 
-my $agent_call_order='';
-$agent_call_order = 'order by user_level desc,last_call_finish' if ($campaign->{next_agent_call} =~ /overall_user_level/i);
-$agent_call_order = 'order by last_call_time' if ($campaign->{next_agent_call} =~ /oldest_call_start/i);
-$agent_call_order = 'order by last_call_finish' if ($campaign->{next_agent_call} =~ /oldest_call_finish/i);
-$agent_call_order = 'order by random_id' if ($campaign->{next_agent_call} =~ /random/i);
-$agent_call_order = 'order by campaign_weight desc,last_call_finish' if ($campaign->{next_agent_call} =~ /campaign_rank/i);
-$agent_call_order = 'order by calls_today,last_call_finish' if ($campaign->{next_agent_call} =~ /fewest_calls/i);
+my $agent_call_order='order by IF(extension LIKE \'R/va%\',1,0)';
+$agent_call_order = 'order by IF(extension LIKE \'R/va%\',1,0),user_level desc,last_call_finish' if ($campaign->{next_agent_call} =~ /overall_user_level/i);
+$agent_call_order = 'order by IF(extension LIKE \'R/va%\',1,0),last_call_time' if ($campaign->{next_agent_call} =~ /oldest_call_start/i);
+$agent_call_order = 'order by IF(extension LIKE \'R/va%\',1,0),last_call_finish' if ($campaign->{next_agent_call} =~ /oldest_call_finish/i);
+$agent_call_order = 'order by IF(extension LIKE \'R/va%\',1,0),random_id' if ($campaign->{next_agent_call} =~ /random/i);
+$agent_call_order = 'order by IF(extension LIKE \'R/va%\',1,0),campaign_weight desc,last_call_finish' if ($campaign->{next_agent_call} =~ /campaign_rank/i);
+$agent_call_order = 'order by IF(extension LIKE \'R/va%\',1,0),calls_today,last_call_finish' if ($campaign->{next_agent_call} =~ /fewest_calls/i);
 
 $osd->osdevent({event=>'CAMP_AUTO_START',server_ip=>$osd->{'VARserver_ip'},uniqueid=>$osd->AGI->{uniqueid},callerid=>$osd->AGI->{accountcode},lead_id=>$CIDlead_id,campaign_id=>$oac->{campaign_id}});
 
@@ -278,7 +278,7 @@ while ($drop_timer <= $campaign->{drop_call_seconds}) {
 	$ivr_active = $oires->{active};
 	if ($ivr_active>0) {
 		$method='LO';
-		$agent_call_order='ORDER BY user,INET_ATON(server_ip)';
+		$agent_call_order='ORDER BY IF(extension LIKE \'R/va%\',1,0),user,INET_ATON(server_ip)';
 		$BDtsSQLdate = $osd->get_datetime($secX - 15);
 	}
 

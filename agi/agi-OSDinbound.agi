@@ -626,20 +626,20 @@ while ($drop_timer <= $DROP_TIME) {
 
 	$rec_countCUSTDATA=0;
 	$rec_countWAIT=0;
-	my $agent_call_order='ORDER BY last_call_finish';
-	$agent_call_order='ORDER BY user_level desc,last_call_finish' if ($ingroup->{next_agent_call} =~ /overall_user_level/i);
-	$agent_call_order='ORDER BY last_call_time' if ($ingroup->{next_agent_call} =~ /oldest_call_start/i);
-	$agent_call_order='ORDER BY last_call_finish' if ($ingroup->{next_agent_call} =~ /oldest_call_finish/i);
-	$agent_call_order='ORDER BY random_id' if ($ingroup->{next_agent_call} =~ /random/i);
-	$agent_call_order='ORDER BY campaign_weight desc,last_call_finish' if ($ingroup->{next_agent_call} =~ /campaign_rank/i);
-	$agent_call_order='ORDER BY osdial_live_agents.calls_today,osdial_live_agents.last_call_finish' if ($ingroup->{next_agent_call} =~ /fewest_calls_campaign/i);
+	my $agent_call_order='ORDER BY IF(extension LIKE \'R/va%\',1,0),last_call_finish';
+	$agent_call_order='ORDER BY IF(extension LIKE \'R/va%\',1,0),user_level desc,last_call_finish' if ($ingroup->{next_agent_call} =~ /overall_user_level/i);
+	$agent_call_order='ORDER BY IF(extension LIKE \'R/va%\',1,0),last_call_time' if ($ingroup->{next_agent_call} =~ /oldest_call_start/i);
+	$agent_call_order='ORDER BY IF(extension LIKE \'R/va%\',1,0),last_call_finish' if ($ingroup->{next_agent_call} =~ /oldest_call_finish/i);
+	$agent_call_order='ORDER BY IF(extension LIKE \'R/va%\',1,0),random_id' if ($ingroup->{next_agent_call} =~ /random/i);
+	$agent_call_order='ORDER BY IF(extension LIKE \'R/va%\',1,0),campaign_weight desc,last_call_finish' if ($ingroup->{next_agent_call} =~ /campaign_rank/i);
+	$agent_call_order='ORDER BY IF(extension LIKE \'R/va%\',1,0),osdial_live_agents.calls_today,osdial_live_agents.last_call_finish' if ($ingroup->{next_agent_call} =~ /fewest_calls_campaign/i);
 	if ($ingroup->{next_agent_call} =~ /inbound_group_rank/i)	{
 		$aco_sub=1;
-		$agent_call_order='ORDER BY group_weight desc';
+		$agent_call_order='ORDER BY IF(extension LIKE \'R/va%\',1,0),group_weight desc';
 	}
 	if ($ingroup->{next_agent_call} =~ /fewest_calls/i) {
 		$aco_sub=1;
-		$agent_call_order='ORDER BY osdial_live_inbound_agents.calls_today,osdial_live_inbound_agents.last_call_finish';
+		$agent_call_order='ORDER BY IF(extension LIKE \'R/va%\',1,0),osdial_live_inbound_agents.calls_today,osdial_live_inbound_agents.last_call_finish';
 	}
 
 
