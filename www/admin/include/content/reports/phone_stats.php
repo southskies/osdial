@@ -128,7 +128,7 @@ function report_phone_stats() {
     if (!$LOG['view_reports']) {
         $table .= "<center><font color=red>You do not have permission to view this page</font></center>\n";
     } elseif($phone_extension) {
-        $query_date_BEGIN = "$start_date 00:00:00";
+        $query_date_BEGIN = "$begin_date 00:00:00";
         $query_date_BEGIN = dateToServer($link,'first',$query_date_BEGIN,$webClientAdjGMT,'',$webClientDST,0);
         $query_date_END = "$end_date 23:59:59";
         $query_date_END = dateToServer($link,'first',$query_date_END,$webClientAdjGMT,'',$webClientDST,0);
@@ -173,7 +173,7 @@ function report_phone_stats() {
 
 
 
-        $stmt=sprintf("SELECT number_dialed,channel_group,start_time,length_in_min FROM call_log WHERE extension='%s' AND server_ip='%s' AND start_time>='%s' AND start_time<='%s' LIMIT 1000;",mres($company_prefix.$phone_extension),mres($phone_server_ip),mres($query_date_BEGIN),mres($query_date_END));
+        $stmt=sprintf("SELECT number_dialed,channel_group,start_time,length_in_sec FROM call_log WHERE extension='%s' AND server_ip='%s' AND start_time>='%s' AND start_time<='%s' LIMIT 1000;",mres($company_prefix.$phone_extension),mres($phone_server_ip),mres($query_date_BEGIN),mres($query_date_END));
         $rslt=mysql_query($stmt, $link);
         $statuses_to_print = mysql_num_rows($rslt);
         
@@ -193,8 +193,8 @@ function report_phone_stats() {
         while ($statuses_to_print > $o) {
             $row=mysql_fetch_row($rslt);
             $total_calls += $row[0];
-            $total_seconds += $row[2];
-            $call_seconds = $row[2];
+            $total_seconds += $row[3];
+            $call_seconds = $row[3];
 
             $table .= "  <tr " . bgcolor($o) . " class=\"row font1\" style=\"white-space:nowrap;\">\n";
             $table .= "    <td>$row[0]</td>\n";
