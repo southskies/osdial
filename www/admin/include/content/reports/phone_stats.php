@@ -192,7 +192,7 @@ function report_phone_stats() {
         $o=0;
         while ($statuses_to_print > $o) {
             $row=mysql_fetch_row($rslt);
-            $total_calls += $row[0];
+            $total_calls++;
             $total_seconds += $row[3];
             $call_seconds = $row[3];
 
