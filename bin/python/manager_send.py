@@ -343,9 +343,11 @@ def user_main(args):
     return errcode
 
 if __name__ == '__main__':
+    sys.path.insert(0, '%s/python' % os.path.dirname(os.path.realpath(__file__)))
     try:
-        import manager_send
-        manager_send.user_main(sys.argv[1:])
+        libname = re.sub('(^osdial_|\..*$)','',os.path.basename(__file__))
+        thislib = __import__(libname)
+        thislib.user_main(sys.argv[1:])
     except KeyboardInterrupt, e:
         print >> sys.stderr, "\n\nExiting on user cancel."
         sys.exit(1)
