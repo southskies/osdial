@@ -1322,7 +1322,20 @@ sub gen_carriers {
 		} elsif ($carriers->{$carrier}{protocol} eq "IAX2") {
 			$iax_config .= $carriers->{$carrier}{protocol_config} . "\n\n";
 			foreach my $regstr (split/\n/,$carriers->{$carrier}{registrations}) {
-				$iax_registrations .= 'register => ' . $regstr . "\n\n" if ($regstr ne '');
+				if ($regstr ne '') {
+					$iax_registrations .= 'register => ' . $regstr . "\n\n";
+					if ($regstr =~ /\@/) {
+						$regstr =~ s/\@.*$//;
+						my ($iaxuser,$iaxpass) = split(/\:/,$regstr,2);
+						if ($iax_config !~ /^\[$iaxuser\]$/m) {
+							$iax_config .= "[".$iaxuser."]\n";
+							$iax_config .= "secret=$iaxpass\n" if ($iaxpass ne "");
+							$iax_config .= "type=friend\n";
+							$iax_config .= "host=dynamic\n";
+							$iax_config .= "context=".$context."\n\n";
+						}
+					}
+				}
 			}
 		}
 
