@@ -527,6 +527,7 @@ if ($ACTION == 'manDiaLnextCaLL') {
         }
         $calls_today++;
 
+        $queueHopper=0;
         ### check if this is a hopper list lead, if it is, skip the grabbing of a new lead and update the hopper table.
         if ( (OSDstrlen($callback_id)==0) and (OSDstrlen($lead_id)>0) ) {
             $affected_rows=1;
@@ -543,64 +544,54 @@ if ($ACTION == 'manDiaLnextCaLL') {
             $stmt=sprintf("UPDATE osdial_callbacks SET status='INACTIVE' WHERE callback_id='%s';",mres($callback_id));
             if ($DB) echo "$stmt\n";
             $rslt=mysql_query($stmt, $link);
-        } else {
-            if (OSDstrlen($phone_number)>3) {
-                if ($use_internal_dnc=='Y') {
-                    $dncs=0;
-                    $dncsskip=0;
+        } else if (OSDstrlen($phone_number)>3) {
+            if ($use_internal_dnc=='Y') {
+                $dncs=0;
+                $dncsskip=0;
 
-                    if ($config['settings']['enable_multicompany'] > 0) {
-                        $dnc_method='';
-                        $stmt=sprintf("SELECT id,dnc_method FROM osdial_companies WHERE id='%s';",mres(((OSDsubstr($user,0,3) * 1) - 100)));
-                        $rslt=mysql_query($stmt, $link);
-                        if ($DB) echo "$stmt\n";
-                        $row=mysql_fetch_row($rslt);
-                        $comp_id=$row[0];
-                        $dnc_method=$row[1];
+                if ($config['settings']['enable_multicompany'] > 0) {
+                    $dnc_method='';
+                    $stmt=sprintf("SELECT id,dnc_method FROM osdial_companies WHERE id='%s';",mres(((OSDsubstr($user,0,3) * 1) - 100)));
+                    $rslt=mysql_query($stmt, $link);
+                    if ($DB) echo "$stmt\n";
+                    $row=mysql_fetch_row($rslt);
+                    $comp_id=$row[0];
+                    $dnc_method=$row[1];
 
-                        if (OSDpreg_match('/COMPANY|BOTH/',$dnc_method)) {
-                            $stmt=sprintf("SELECT SQL_NO_CACHE count(*) FROM osdial_dnc_company WHERE company_id='%s' AND phone_number='%s';",mres($comp_id),mres($phone_number));
-                            $rslt=mysql_query($stmt, $link);
-                            if ($DB) echo "$stmt\n";
-                            $row=mysql_fetch_row($rslt);
-                            $dncs+=$row[0];
-                        }
-
-                        if (OSDpreg_match('/COMPANY/',$dnc_method)) $dncsskip++;
-                    }
-
-                    if ($dncsskip==0) {
-                        $stmt=sprintf("SELECT SQL_NO_CACHE count(*) FROM osdial_dnc WHERE phone_number='%s';",mres($phone_number));
+                    if (OSDpreg_match('/COMPANY|BOTH/',$dnc_method)) {
+                        $stmt=sprintf("SELECT SQL_NO_CACHE count(*) FROM osdial_dnc_company WHERE company_id='%s' AND phone_number='%s';",mres($comp_id),mres($phone_number));
                         $rslt=mysql_query($stmt, $link);
                         if ($DB) echo "$stmt\n";
                         $row=mysql_fetch_row($rslt);
                         $dncs+=$row[0];
                     }
 
-                    if ($dncs > 0) {
-                        echo "DNC NUMBER\n";
-                        exit;
-                    }
+                    if (OSDpreg_match('/COMPANY/',$dnc_method)) $dncsskip++;
                 }
-                if ($stage=='lookup') {
-                    $stmt=sprintf("SELECT SQL_NO_CACHE lead_id FROM osdial_list JOIN osdial_lists ON (osdial_list.list_id=osdial_lists.list_id) WHERE campaign_id='%s' AND phone_number='%s' ORDER BY modify_date DESC LIMIT 1;",mres($campaign),mres($phone_number));
+
+                if ($dncsskip==0) {
+                    $stmt=sprintf("SELECT SQL_NO_CACHE count(*) FROM osdial_dnc WHERE phone_number='%s';",mres($phone_number));
                     $rslt=mysql_query($stmt, $link);
                     if ($DB) echo "$stmt\n";
-                    $man_leadID_ct = mysql_num_rows($rslt);
-                    if ($man_leadID_ct > 0) {
-                        $row=mysql_fetch_row($rslt);
-                        $affected_rows=1;
-                        $lead_id =$row[0];
-                        $CBleadIDset=1;
-                    } else {
-                        ### insert a new lead in the system with this phone number
-                        $stmt=sprintf("INSERT INTO osdial_list SET phone_code='%s',phone_number='%s',list_id='%s',status='QUEUE',user='%s',called_since_last_reset='Y',entry_date='%s',last_local_call_time='%s';",mres($phone_code),mres($phone_number),mres($list_id),mres($user),mres($ENTRYdate),mres($NOW_TIME));
-                        if ($DB) echo "$stmt\n";
-                        $rslt=mysql_query($stmt, $link);
-                        $affected_rows = mysql_affected_rows($link);
-                        $lead_id = mysql_insert_id($link);
-                        $CBleadIDset=1;
-                    }
+                    $row=mysql_fetch_row($rslt);
+                    $dncs+=$row[0];
+                }
+
+                if ($dncs > 0) {
+                    echo "DNC NUMBER\n";
+                    exit;
+                }
+            }
+            if ($stage=='lookup') {
+                $stmt=sprintf("SELECT SQL_NO_CACHE lead_id FROM osdial_list JOIN osdial_lists ON (osdial_list.list_id=osdial_lists.list_id) WHERE campaign_id='%s' AND phone_number='%s' ORDER BY modify_date DESC LIMIT 1;",mres($campaign),mres($phone_number));
+                $rslt=mysql_query($stmt, $link);
+                if ($DB) echo "$stmt\n";
+                $man_leadID_ct = mysql_num_rows($rslt);
+                if ($man_leadID_ct > 0) {
+                    $row=mysql_fetch_row($rslt);
+                    $affected_rows=1;
+                    $lead_id =$row[0];
+                    $CBleadIDset=1;
                 } else {
                     ### insert a new lead in the system with this phone number
                     $stmt=sprintf("INSERT INTO osdial_list SET phone_code='%s',phone_number='%s',list_id='%s',status='QUEUE',user='%s',called_since_last_reset='Y',entry_date='%s',last_local_call_time='%s';",mres($phone_code),mres($phone_number),mres($list_id),mres($user),mres($ENTRYdate),mres($NOW_TIME));
@@ -611,56 +602,155 @@ if ($ACTION == 'manDiaLnextCaLL') {
                     $CBleadIDset=1;
                 }
             } else {
-                $stmt=sprintf("SELECT manual_dial_new_limit FROM osdial_users WHERE user='%s';",mres($user));
-                $rslt=mysql_query($stmt, $link);
+                ### insert a new lead in the system with this phone number
+                $stmt=sprintf("INSERT INTO osdial_list SET phone_code='%s',phone_number='%s',list_id='%s',status='QUEUE',user='%s',called_since_last_reset='Y',entry_date='%s',last_local_call_time='%s';",mres($phone_code),mres($phone_number),mres($list_id),mres($user),mres($ENTRYdate),mres($NOW_TIME));
                 if ($DB) echo "$stmt\n";
-                $mdn_user_ct = mysql_num_rows($rslt);
-                if ($mdn_user_ct > 0) {
-                    $row=mysql_fetch_row($rslt);
-                    $mdn_limit =$row[0];
-                }
-                $stmt=sprintf("SELECT SQL_NO_CACHE manual_dial_new_today FROM osdial_campaign_agent_stats WHERE user='%s' AND campaign_id='%s';",mres($user),mres($campaign));
                 $rslt=mysql_query($stmt, $link);
-                if ($DB) echo "$stmt\n";
-                $mdn_user_ct = mysql_num_rows($rslt);
-                if ($mdn_user_ct > 0) {
-                    $row=mysql_fetch_row($rslt);
-                    $mdn_today =$row[0];
-                }
-                ### grab the next lead in the hopper for this campaign and reserve it for the user
-                if ($mdn_limit < 0 or $mdn_today <= $mdn_limit) {
-                    $stmt=sprintf("UPDATE osdial_hopper SET status='QUEUE',user='%s' WHERE campaign_id='%s' AND status IN ('API','READY') ORDER BY status DESC, priority DESC, hopper_id LIMIT 1;",mres($user),mres($campaign));
-                    if ($DB) echo "$stmt\n";
-                    $rslt=mysql_query($stmt, $link);
-                    $affected_rows = mysql_affected_rows($link);
-                } else {
-                    $stmt=sprintf("SELECT SQL_NO_CACHE hopper_id FROM osdial_hopper AS oh,osdial_list AS ol WHERE oh.lead_id=ol.lead_id AND oh.campaign_id='%s' AND oh.status IN('API','READY') AND ol.status!='NEW' ORDER BY oh.status DESC,oh.priority DESC,hopper_id LIMIT 1;",mres($campaign));
-                    $rslt=mysql_query($stmt, $link);
-                    if ($DB) echo "$stmt\n";
-                    $mdn_hopper_ct = mysql_num_rows($rslt);
-                    if ($mdn_hopper_ct > 0) {
-                        $row=mysql_fetch_row($rslt);
-                        $hopper_id =$row[0];
-
-                        $stmt=sprintf("UPDATE osdial_hopper SET status='QUEUE',user='%s' WHERE hopper_id='%s';",mres($user),mres($hopper_id));
-                        if ($DB) echo "$stmt\n";
-                        $rslt=mysql_query($stmt, $link);
-                        $affected_rows = mysql_affected_rows($link);
-                    }
-                }
+                $affected_rows = mysql_affected_rows($link);
+                $lead_id = mysql_insert_id($link);
+                $CBleadIDset=1;
             }
+        } else {
+            $queueHopper=1;
         }
 
-        if ($affected_rows > 0) {
+        if ($affected_rows > 0 or $queueHopper > 0) {
             if (!$CBleadIDset) {
-                ##### grab the lead_id of the reserved user in osdial_hopper
-                $stmt=sprintf("SELECT SQL_NO_CACHE lead_id FROM osdial_hopper WHERE campaign_id='%s' AND status='QUEUE' AND user='%s' LIMIT 1;",mres($campaign),mres($user));
-                $rslt=mysql_query($stmt, $link);
-                if ($DB) echo "$stmt\n";
-                $hopper_leadID_ct = mysql_num_rows($rslt);
-                if ($hopper_leadID_ct > 0) {
-                    $row=mysql_fetch_row($rslt);
-                    $lead_id =$row[0];
+                $dncs=1;
+                while ($dncs>0) {
+                    $lead_id=0;
+                    $hopper_id=0;
+                    if ($queueHopper>0) {
+                        $stmt=sprintf("SELECT manual_dial_new_limit FROM osdial_users WHERE user='%s';",mres($user));
+                        $rslt=mysql_query($stmt, $link);
+                        if ($DB) echo "$stmt\n";
+                        $mdn_user_ct = mysql_num_rows($rslt);
+                        if ($mdn_user_ct > 0) {
+                            $row=mysql_fetch_row($rslt);
+                            $mdn_limit =$row[0];
+                        }
+                        $stmt=sprintf("SELECT SQL_NO_CACHE manual_dial_new_today FROM osdial_campaign_agent_stats WHERE user='%s' AND campaign_id='%s';",mres($user),mres($campaign));
+                        $rslt=mysql_query($stmt, $link);
+                        if ($DB) echo "$stmt\n";
+                        $mdn_user_ct = mysql_num_rows($rslt);
+                        if ($mdn_user_ct > 0) {
+                            $row=mysql_fetch_row($rslt);
+                            $mdn_today =$row[0];
+                        }
+                        ### grab the next lead in the hopper for this campaign and reserve it for the user
+                        if ($mdn_limit < 0 or $mdn_today <= $mdn_limit) {
+                            $stmt=sprintf("UPDATE osdial_hopper SET status='QUEUE',user='%s' WHERE campaign_id='%s' AND status IN ('API','READY') ORDER BY status DESC, priority DESC, hopper_id LIMIT 1;",mres($user),mres($campaign));
+                            if ($DB) echo "$stmt\n";
+                            $rslt=mysql_query($stmt, $link);
+                            $affected_rows = mysql_affected_rows($link);
+                        } else {
+                            $stmt=sprintf("SELECT SQL_NO_CACHE hopper_id FROM osdial_hopper AS oh,osdial_list AS ol WHERE oh.lead_id=ol.lead_id AND oh.campaign_id='%s' AND oh.status IN('API','READY') AND ol.status!='NEW' ORDER BY oh.status DESC,oh.priority DESC,hopper_id LIMIT 1;",mres($campaign));
+                            $rslt=mysql_query($stmt, $link);
+                            if ($DB) echo "$stmt\n";
+                            $mdn_hopper_ct = mysql_num_rows($rslt);
+                            if ($mdn_hopper_ct > 0) {
+                                $row=mysql_fetch_row($rslt);
+                                $hopper_id =$row[0];
+
+                                $stmt=sprintf("UPDATE osdial_hopper SET status='QUEUE',user='%s' WHERE hopper_id='%s';",mres($user),mres($hopper_id));
+                                if ($DB) echo "$stmt\n";
+                                $rslt=mysql_query($stmt, $link);
+                                $affected_rows = mysql_affected_rows($link);
+                            }
+                        }
+                    }
+                    ##### grab the lead_id of the reserved user in osdial_hopper
+                    $stmt=sprintf("SELECT SQL_NO_CACHE oh.hopper_id,oh.lead_id,ol.phone_number,ol.status,ol.called_count,ol.called_since_last_reset,ol.gmt_offset_now FROM osdial_hopper AS oh LEFT JOIN osdial_list AS ol ON (oh.lead_id=ol.lead_id) WHERE oh.campaign_id='%s' AND oh.status='QUEUE' AND oh.user='%s' LIMIT 1;",mres($campaign),mres($user));
+                    $rslt=mysql_query($stmt, $link);
+                    if ($DB) echo "$stmt\n";
+                    $hopper_leadID_ct = mysql_num_rows($rslt);
+                    if ($hopper_leadID_ct > 0) {
+                        $row=mysql_fetch_row($rslt);
+                        $hopper_id =$row[0];
+                        $lead_id =$row[1];
+                        $phone_number =$row[2];
+                        $dispo =$row[3];
+                        $ccount =$row[4];
+                        $cslr =$row[5];
+                        $gmt_offset_now =$row[6];
+                        $ccount++;
+
+                        $dncs=0;
+                        if ($use_internal_dnc=='Y') {
+                            $dncsskip=0;
+
+                            if ($config['settings']['enable_multicompany'] > 0) {
+                                $dnc_method='';
+                                $stmt=sprintf("SELECT id,dnc_method FROM osdial_companies WHERE id='%s';",mres(((OSDsubstr($user,0,3) * 1) - 100)));
+                                $rslt=mysql_query($stmt, $link);
+                                if ($DB) echo "$stmt\n";
+                                $row=mysql_fetch_row($rslt);
+                                $comp_id=$row[0];
+                                $dnc_method=$row[1];
+
+                                if (OSDpreg_match('/COMPANY|BOTH/',$dnc_method)) {
+                                    $stmt=sprintf("SELECT SQL_NO_CACHE count(*) FROM osdial_dnc_company WHERE company_id='%s' AND phone_number='%s';",mres($comp_id),mres($phone_number));
+                                    $rslt=mysql_query($stmt, $link);
+                                    if ($DB) echo "$stmt\n";
+                                    $row=mysql_fetch_row($rslt);
+                                    $dncs+=$row[0];
+                                }
+
+                                if (OSDpreg_match('/COMPANY/',$dnc_method)) $dncsskip++;
+                            }
+
+                            if ($dncsskip==0) {
+                                $stmt=sprintf("SELECT SQL_NO_CACHE count(*) FROM osdial_dnc WHERE phone_number='%s';",mres($phone_number));
+                                $rslt=mysql_query($stmt, $link);
+                                if ($DB) echo "$stmt\n";
+                                $row=mysql_fetch_row($rslt);
+                                $dncs+=$row[0];
+                            }
+                        }
+                        if ($dncs > 0) {
+                            $LLCT_DATE_offset = ($config['server']['local_gmt'] - $gmt_offset_now);
+                            $LLCT_DATE = date("Y-m-d H:i:s", mktime(date("H")-$LLCT_DATE_offset,date("i"),date("s"),date("m"),date("d"),date("Y")));
+                            if (OSDpreg_match('/Y/',$cslr)) {
+                                $cslr = OSDpreg_replace('/Y/','',$cslr);
+                                if (OSDstrlen($cslr) < 1) $cslr = 0;
+                                $cslr++;
+                                $cslr = "Y$cslr";
+                            } else {
+                                $cslr = 'Y';
+                            }
+
+                            $stmt=sprintf("UPDATE osdial_list SET status='DNCL',called_since_last_reset='%s',called_count='%s',user='%s',last_local_call_time='%s' WHERE lead_id='%s';",mres($cslr),mres($ccount),mres($user),mres($LLCT_DATE),mres($lead_id));
+                            if ($DB) echo "$stmt\n";
+                            $rslt=mysql_query($stmt, $link);
+
+                            $stmt=sprintf("UPDATE osdial_agent_log SET lead_id='%s',comments='MANUAL',prev_status='%s',lead_called_count='%s',status='%s' WHERE agent_log_id='%s';",mres($lead_id),mres($dispo),mres($ccount),mres('DNCL'),mres($agent_log_id));
+                            if ($format=='debug') echo "\n<!-- $stmt -->";
+                            $rslt=mysql_query($stmt, $link);
+
+                            if ($mdnFlag=="fast" || $preview=="NO") {
+                                $pause_sec=0;
+                                $stmt=sprintf("SELECT pause_epoch FROM osdial_agent_log WHERE agent_log_id='%s';",mres($agent_log_id));
+                                if ($DB) echo "$stmt\n";
+                                $rslt=mysql_query($stmt, $link);
+                                $VDpr_ct = mysql_num_rows($rslt);
+                                if ($VDpr_ct > 0) {
+                                    $row=mysql_fetch_row($rslt);
+                                    $pause_sec = ($StarTtime - $row[0]);
+                                }
+                                $stmt=sprintf("UPDATE osdial_agent_log SET pause_sec='%s',wait_epoch='%s',wait_sec='0',talk_epoch='%s',talk_sec='0',dispo_epoch='%s',dispo_sec='0' WHERE agent_log_id='%s';",mres($pause_sec),mres($StarTtime),mres($StarTtime),mres($StarTtime),mres($agent_log_id));
+                                if ($format=='debug') echo "\n<!-- $stmt -->";
+                                $rslt=mysql_query($stmt, $link);
+                            }
+
+                            ### delete the lead from the hopper
+                            $stmt=sprintf("DELETE FROM osdial_hopper WHERE hopper_id='%s';",mres($hopper_id));
+                            if ($DB) echo "$stmt\n";
+                            $rslt=mysql_query($stmt, $link);
+                        }
+                    } else {
+                        echo "HOPPER EMPTY\n";
+                        exit;
+                    }
                 }
             }
 
