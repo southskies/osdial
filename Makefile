@@ -134,7 +134,7 @@ install-docs: .osdial.config
 	@install -d -m 755 $(DESTDIR)$(PATHsounds)
 	@install -p -m 755 ./bin/* $(DESTDIR)$(PATHhome) 2>/dev/null || :
 	@install -p -m 755 ./bin/python/* $(DESTDIR)$(PATHhome)/python
-	@for i in `ls $(DESTDIR)$(PATHhome)/python/*.py | grep -v osdial_baseexec`; do ln -sf $(DESTDIR)$(PATHhome)/osdial_`basename $$i '.py'` $(DESTDIR)$(PATHhome)/python/`basename $$i`; done
+	@for i in `ls $(DESTDIR)$(PATHhome)/python/*.py | grep -v osdial_baseexec`; do ln -sf $(DESTDIR)$(PATHhome)/python/`basename $$i` $(DESTDIR)$(PATHhome)/osdial_`basename $$i '.py'`; done
 	@install -p -m 644 ./extras/osdial.cron $(DESTDIR)$(PATHhome)
 	@#install -p -m 755 ./extras/ip_relay/ip_relay $(DESTDIR)$(PATHhome)
 	@install -p -m 755 ./extras/perl/Asterisk.pm $(DESTDIR)$(PATHhome)/libs
