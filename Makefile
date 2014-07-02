@@ -125,6 +125,7 @@ install-docs: .osdial.config
 	@install -d -m 755 $(DESTDIR)$(PATHhome)/libs/Asterisk
 	@install -d -m 755 $(DESTDIR)$(PATHhome)/LEADS_IN
 	@install -d -m 755 $(DESTDIR)$(PATHhome)/LEADS_IN/DONE
+	@install -d -m 755 $(DESTDIR)$(PATHhome)/python
 	@install -d -m 755 $(DESTDIR)$(PATHmonitor)
 	@install -d -m 755 $(DESTDIR)$(PATHDONEmonitor)
 	@install -d -m 755 $(DESTDIR)$(PATHDONEmonitor)/ORIG
@@ -132,6 +133,7 @@ install-docs: .osdial.config
 	@install -d -m 755 $(DESTDIR)/etc/openvpn
 	@install -d -m 755 $(DESTDIR)$(PATHsounds)
 	@install -p -m 755 ./bin/* $(DESTDIR)$(PATHhome)
+	@for i in `ls $(DESTDIR)$(PATHhome)/python/*.py | grep -v osdial_baseexec`; do ln -sf $(DESTDIR)$(PATHhome)/osdial_`basename $i '.py'` $(DESTDIR)$(PATHhome)/python/`basename $i`; done
 	@install -p -m 644 ./extras/osdial.cron $(DESTDIR)$(PATHhome)
 	@#install -p -m 755 ./extras/ip_relay/ip_relay $(DESTDIR)$(PATHhome)
 	@install -p -m 755 ./extras/perl/Asterisk.pm $(DESTDIR)$(PATHhome)/libs
