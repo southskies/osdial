@@ -210,7 +210,7 @@ echo "<font class=top_header_sect color=$default_text size=+1>\n";
             echo "  </tr>\n";
 
 	        $o=0;
-            $sekrh = get_krh($link,'osdial_statuses_extended','*','status DESC',sprintf("parents='%s'",mres($parents)),'');
+            $sekrh = get_krh($link,'osdial_statuses_extended','*','status ASC',sprintf("parents='%s'",mres($parents)),'');
 	        foreach ($sekrh as $st) {
 		        $o++;
                 echo "  <form action=$PHP_SELF method=POST>\n";
@@ -268,7 +268,7 @@ echo "<font class=top_header_sect color=$default_text size=+1>\n";
 	        }
 
 	        $o=0;
-            $skrh = get_krh($link,'osdial_statuses','*','status DESC','','');
+            $skrh = get_krh($link,'osdial_statuses','*','status ASC','','');
 	        foreach ($skrh as $st) {
 		        $o++;
                 echo "  <form action=$PHP_SELF method=POST>\n";
