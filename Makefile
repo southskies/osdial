@@ -115,7 +115,7 @@ install-docs: .osdial.config
 	@install -p -m 644 ./.osdial.config $(DESTDIR)/etc/osdial.conf
 	@echo "Creating log directory $(DESTDIR)$(PATHlogs)..."
 	@install -d -m 777 $(DESTDIR)$(PATHlogs)
-	#(cd perl; perl Makefile.PL INSTALLDIRS="vendor"; make; make install)
+	@#(cd perl; perl Makefile.PL INSTALLDIRS="vendor"; make; make install)
 
 .install-base: .install-common
 	@echo "Installing OSDial base components..."
@@ -132,8 +132,9 @@ install-docs: .osdial.config
 	@install -d -m 755 $(DESTDIR)$(PATHagi)
 	@install -d -m 755 $(DESTDIR)/etc/openvpn
 	@install -d -m 755 $(DESTDIR)$(PATHsounds)
-	@install -p -m 755 ./bin/* $(DESTDIR)$(PATHhome)
-	@for i in `ls $(DESTDIR)$(PATHhome)/python/*.py | grep -v osdial_baseexec`; do ln -sf $(DESTDIR)$(PATHhome)/osdial_`basename $i '.py'` $(DESTDIR)$(PATHhome)/python/`basename $i`; done
+	@install -p -m 755 ./bin/* $(DESTDIR)$(PATHhome) 2>/dev/null || :
+	@install -p -m 755 ./bin/python/* $(DESTDIR)$(PATHhome)/python
+	@for i in `ls $(DESTDIR)$(PATHhome)/python/*.py | grep -v osdial_baseexec`; do ln -sf $(DESTDIR)$(PATHhome)/osdial_`basename $$i '.py'` $(DESTDIR)$(PATHhome)/python/`basename $$i`; done
 	@install -p -m 644 ./extras/osdial.cron $(DESTDIR)$(PATHhome)
 	@#install -p -m 755 ./extras/ip_relay/ip_relay $(DESTDIR)$(PATHhome)
 	@install -p -m 755 ./extras/perl/Asterisk.pm $(DESTDIR)$(PATHhome)/libs
@@ -142,12 +143,12 @@ install-docs: .osdial.config
 	@install -p -m 644 ./extras/gmt/phone_codes_GMT.txt $(DESTDIR)$(PATHhome)
 	@install -p -m 644 ./extras/sql/* $(DESTDIR)$(PATHhome)/sql
 	@install -p -m 755 ./agi/* $(DESTDIR)$(PATHagi)
-	#@install -p -m 644 ./sounds/*.wav   $(DESTDIR)$(PATHsounds)
+	@#install -p -m 644 ./sounds/*.wav   $(DESTDIR)$(PATHsounds)
 	@install -p -m 644 ./sounds/*.gsm   $(DESTDIR)$(PATHsounds)
 	@install -p -m 644 ./sounds/*.g729  $(DESTDIR)$(PATHsounds)
 	@install -p -m 644 ./sounds/*.ulaw  $(DESTDIR)$(PATHsounds)
-	#@install -p -m 644 ./sounds/*.sln   $(DESTDIR)$(PATHsounds)
-	#@install -p -m 644 ./sounds/*.sln16 $(DESTDIR)$(PATHsounds)
+	@#install -p -m 644 ./sounds/*.sln   $(DESTDIR)$(PATHsounds)
+	@#install -p -m 644 ./sounds/*.sln16 $(DESTDIR)$(PATHsounds)
 	@install -p -m 644 ./extras/openvpn/* $(DESTDIR)/etc/openvpn
 	@[ -d $(DESTDIR)/var/lib/mysql/osdial ] && /usr/bin/perl $(DESTDIR)$(PATHhome)/sql/upgrade_sql.pl || :
 
@@ -216,7 +217,7 @@ install-docs: .osdial.config
 	@install -p -m 644 ./www/admin/include/content/filters/* $(DESTDIR)$(PATHweb)/admin/include/content/filters
 	@install -p -m 644 ./www/admin/include/content/ingroups/* $(DESTDIR)$(PATHweb)/admin/include/content/ingroups
 	@install -p -m 644 ./www/admin/include/content/lists/* $(DESTDIR)$(PATHweb)/admin/include/content/lists
-	#@install -p -m 644 ./www/admin/include/content/remoteagent/* $(DESTDIR)$(PATHweb)/admin/include/content/remoteagent
+	@#install -p -m 644 ./www/admin/include/content/remoteagent/* $(DESTDIR)$(PATHweb)/admin/include/content/remoteagent
 	@install -p -m 644 ./www/admin/include/content/reports/* $(DESTDIR)$(PATHweb)/admin/include/content/reports
 	@install -p -m 644 ./www/admin/include/content/scripts/* $(DESTDIR)$(PATHweb)/admin/include/content/scripts
 	@install -p -m 644 ./www/admin/include/content/usergroups/* $(DESTDIR)$(PATHweb)/admin/include/content/usergroups
@@ -225,7 +226,7 @@ install-docs: .osdial.config
 	@install -p -m 644 ./www/ari/*.log $(DESTDIR)$(PATHweb)/ari
 	@install -p -m 644 ./www/ari/*.php $(DESTDIR)$(PATHweb)/ari
 	@install -p -m 4750 ./www/ari/bin/* $(DESTDIR)$(PATHweb)/ari/bin
-	#@chown asterisk:apache $(DESTDIR)$(PATHweb)/ari/bin/*
+	@#chown asterisk:apache $(DESTDIR)$(PATHweb)/ari/bin/*
 	@install -p -m 644 ./www/ari/includes/*.php $(DESTDIR)$(PATHweb)/ari/includes
 	@install -p -m 644 ./www/ari/misc/*.php $(DESTDIR)$(PATHweb)/ari/misc
 	@install -p -m 644 ./www/ari/modules/*.module $(DESTDIR)$(PATHweb)/ari/modules
@@ -248,24 +249,24 @@ install-asterisk-sample-config:
 	@install -d -m 755 $(DESTDIR)$(PATHdocs)/conf_examples
 	@install -d -m 755 $(DESTDIR)$(PATHdocs)/dialplan_examples
 	@install -d -m 755 $(DESTDIR)$(PATHdocs)/api
-	#@install -d -m 755 $(DESTDIR)$(PATHdocs)/extras
+	@#install -d -m 755 $(DESTDIR)$(PATHdocs)/extras
 	@install -p -m 644 ./docs/*.txt $(DESTDIR)$(PATHdocs)
 	@install -p -m 644 ./docs/copyright $(DESTDIR)$(PATHdocs)
 	@install -p -m 644 ./docs/conf_examples/*.conf $(DESTDIR)$(PATHdocs)/conf_examples
 	@install -p -m 644 ./docs/conf_examples/*.osdial $(DESTDIR)$(PATHdocs)/conf_examples
 	@install -p -m 644 ./docs/dialplan_examples/*.txt $(DESTDIR)$(PATHdocs)/dialplan_examples
 	@install -p -m 644 ./docs/api/* $(DESTDIR)$(PATHdocs)/api
-	##@install -p -m 644 ./extras/firewall.sh $(DESTDIR)$(PATHdocs)
-	##@install -p -m 644 ./extras/osdial-template-example.tgz $(DESTDIR)$(PATHdocs)
-	##@install -p -m 644 ./extras/httpd-osdial.conf $(DESTDIR)$(PATHdocs)
-	##@install -p -m 644 ./extras/httpd-osdial-archive.conf $(DESTDIR)$(PATHdocs)
-	##@install -p -m 644 ./extras/httpd-osdial-ari.conf $(DESTDIR)$(PATHdocs)
-	##@install -p -m 644 ./extras/httpd-osdial-psi.conf $(DESTDIR)$(PATHdocs)
-	##@install -p -m 644 ./extras/my.cnf $(DESTDIR)$(PATHdocs)
-	##@install -p -m 644 ./extras/osdial.conf $(DESTDIR)$(PATHdocs)
-	##@install -p -m 644 ./extras/osdial.cron $(DESTDIR)$(PATHdocs)
-	##@install -p -m 644 ./extras/php.ini $(DESTDIR)$(PATHdocs)
-	#@install -p ./extras $(DESTDIR)$(PATHdocs)
+	@##install -p -m 644 ./extras/firewall.sh $(DESTDIR)$(PATHdocs)
+	@##install -p -m 644 ./extras/osdial-template-example.tgz $(DESTDIR)$(PATHdocs)
+	@##install -p -m 644 ./extras/httpd-osdial.conf $(DESTDIR)$(PATHdocs)
+	@##install -p -m 644 ./extras/httpd-osdial-archive.conf $(DESTDIR)$(PATHdocs)
+	@##install -p -m 644 ./extras/httpd-osdial-ari.conf $(DESTDIR)$(PATHdocs)
+	@##install -p -m 644 ./extras/httpd-osdial-psi.conf $(DESTDIR)$(PATHdocs)
+	@##install -p -m 644 ./extras/my.cnf $(DESTDIR)$(PATHdocs)
+	@##install -p -m 644 ./extras/osdial.conf $(DESTDIR)$(PATHdocs)
+	@##install -p -m 644 ./extras/osdial.cron $(DESTDIR)$(PATHdocs)
+	@##install -p -m 644 ./extras/php.ini $(DESTDIR)$(PATHdocs)
+	@#install -p ./extras $(DESTDIR)$(PATHdocs)
 	@cp -a ./extras $(DESTDIR)$(PATHdocs)
 	@install -p -m 644 ./AUTHORS $(DESTDIR)$(PATHdocs)
 	@install -p -m 644 ./ChangeLog $(DESTDIR)$(PATHdocs)
