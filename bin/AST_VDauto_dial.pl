@@ -675,11 +675,15 @@ $sthA->finish();
 				}
 
 			$ivr_goal=0;
-			if ($ivr_active>0 and $ivr_virtual_agents>0) {
-				$ivr_attempt=($DBIPadlevel[$user_CIPct]*$ivr_virtual_agents)-$ivr_line_count;
-				$ivr_goal=$ivr_attempt;
-				$ivr_goal=$DBIPadlevel[$user_CIPct] * $DBIPivr_exten[$user_CIPct] if ($DBIPivr_exten[$user_CIPcr]<$ivr_virtual_agents);
-				$DBIPgoalcalls[$user_CIPct] = $ivr_goal;
+			if ($ivr_active>0) {
+				if ($ivr_virtual_agents>0) {
+					$ivr_attempt=($DBIPadlevel[$user_CIPct]*$ivr_virtual_agents)-$ivr_line_count;
+					$ivr_goal=$ivr_attempt;
+					$ivr_goal=$DBIPadlevel[$user_CIPct] * $DBIPivr_exten[$user_CIPct] if ($DBIPivr_exten[$user_CIPcr]<$ivr_virtual_agents);
+					$DBIPgoalcalls[$user_CIPct] = $ivr_goal;
+				} else {
+					$DBIPgoalcalls[$user_CIPct] = 0;
+				}
 			}
 
 
