@@ -898,7 +898,7 @@ if ($ADD == "3carrier") {
             echo "      <textarea name=carrier_registrations id=carrier_registrations rows=\"$regcnt\" cols=100 wrap=off style=\"font-size:9px;\">" . $carrier_registrations . "</textarea>\n";
             echo "      ".helptag("carrier_servers-registrations")."<br>\n";
             echo "      <span style=\"color:$default_text;font-size:10pt;font-style:italic;\">user[:secret[:authuser]]@carrier_name[/extension]<br/>\n";
-            echo "      user[:secret[:authuser]]@host[:port][/extension]</span>\n";
+            echo "      user[:secret[:authuser]]@host[:port][/extension]</span><br/><br/>\n";
             echo "    </td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows valign=top>\n";
@@ -1005,7 +1005,7 @@ if ($ADD == "3carrier") {
             echo "      <textarea name=carrier_registrations id=carrier_registrations rows=\"$regcnt\" cols=100 wrap=off style=\"font-size:9px;\">" . $gfr['registrations'] . "</textarea>\n";
             echo "      ".helptag("carriers-registrations")."<br>\n";
             echo "      <span style=\"color:$default_text;font-size:10pt;font-style:italic;\">user[:secret[:authuser]]@carrier_name[/extension]<br/>\n";
-            echo "      user[:secret[:authuser]]@host[:port][/extension]</span>\n";
+            echo "      user[:secret[:authuser]]@host[:port][/extension]</span><br/><br/>\n";
             echo "    </td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows valign=top>\n";
