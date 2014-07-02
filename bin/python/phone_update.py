@@ -6,7 +6,8 @@
 import sys, os, re, time, pprint, gc
 import pystrix, threading, argparse
 
-import MySQLdb, logging, pystrix
+import MySQLdb, logging
+import asterisk.manager
 
 from osdial import OSDial
 
@@ -81,73 +82,62 @@ def phoneupdate_process(logger):
     CIDdate = time.strftime('%y%m%d%H%M%S', time.gmtime(time.time()))
     now_date = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(time.time()))
 
-    logger.info(" - Scanning SIP phones")
-    osdial.sql().execute("SELECT SQL_NO_CACHE extension,phone_ip FROM phones WHERE server_ip=%s AND protocol='SIP';", (osdial.VARserver_ip))
+    logger.info(" - Scanning SIP/IAX2 phones")
+    osdial.sql().execute("SELECT SQL_NO_CACHE extension,phone_ip,protocol FROM phones WHERE server_ip=%s AND protocol IN ('SIP','IAX2');", (osdial.VARserver_ip))
     phcnt = osdial.sql().rowcount
     phones = []
     if phcnt > 0:
         for row in osdial.sql().fetchall():
-            phones.append({"extension":row['extension'],"phone_ip":row['phone_ip']})
+            phones.append({"extension":row['extension'],"phone_ip":row['phone_ip'],"protocol":row['protocol']})
 
+        ami = asterisk.manager.Manager()
         try:
-            ami = pystrix.ami.Manager(logger=logger,aggregate_timeout=0)
-            ami.connect(osdial.server['telnet_host'], osdial.server['telnet_port'])
-            action_id = '~U'+str(time.time())+"~Challenge"
-            challenge_response = ami.send_action(pystrix.ami.core.Challenge(), action_id=action_id, ActionID=action_id)
-            if challenge_response and challenge_response.success:
-                action = pystrix.ami.core.Login(osdial.server['ASTmgrUSERNAME'], osdial.server['ASTmgrSECRET'], challenge=challenge_response.result['Challenge'])
-                action_id = '~U'+str(time.time())+"~Login"
-                ami.send_action(action, action_id=action_id, ActionID=action_id)
-            else:
-                raise ConnectionError("Asterisk did not provide an MD5 challenge token" + (challenge_response is None and ': timed out' or ''))
-        except pystrix.ami.ManagerSocketError as e:
-            raise ConnectionError("Unable to connect to Asterisk server: %(error)s" % {'error': str(e), })
-        except pystrix.ami.core.ManagerAuthError as reason:
-            raise ConnectionError("Unable to authenticate to Asterisk server: %(reason)s" % {'reason': reason, })
-        except pystrix.ami.ManagerError as reason:
-            raise ConnectionError("An unexpected Asterisk error occurred: %(reason)s" % {'reason': reason, })
+            try:
+                ami.connect(osdial.server['telnet_host'], port=osdial.server['telnet_port'])
+                ami.login(osdial.server['ASTmgrUSERNAME'], osdial.server['ASTmgrSECRET'])
     
-        gotEvent = False
-        eventdata = []
-        logger.info(" - Sending AMI request for SIP peer info")
-        ami.register_callback('PeerEntry', handle_data)
-        ami.register_callback('PeerlistComplete', handle_data)
-        action = pystrix.ami.core.SIPpeers()
-        action_id = '~U'+str(time.time())+"~SIPshowpeer"
-        res =  ami.send_action(action, action_id=action_id, ActionID=action_id)
+                for phone in phones:
+                    response = None
+                    phonehdr = {}
+                    logger.info(" - Sending AMI request for SIP/IAX2 peer info")
+                    if phone['protocol'] == "SIP":
+                        response = ami.sipshowpeer(phone['extension'])
+                    elif phone['protocol'] == "IAX2":
+                        response = ami.command("iax2 show peer %s" % (phone['extension']))
 
-        while gotEvent is False:
-            time.sleep(0.1)
+                    if re.search('Success|Follows',response['Response']):
+                        for phdr in response.response:
+                            if re.search(': ', phdr):
+                                [k,v] = re.split(': ', re.sub('\r|\n','',phdr), maxsplit=1)
+                                phonehdr[re.sub('\W','',k)] = v
 
-        for phone in phones:
-            for event in eventdata:
-                if event['ObjectName'] == phone['extension']:
-                    osdial.sql().execute("UPDATE phones SET picture=%s WHERE server_ip=%s AND extension=%s;", (event['Status'],osdial.VARserver_ip,phone['extension']))
-                    if event['Channeltype'] == 'SIP':
-                        if event['IPaddress'] != "-none-":
-                            """
-                            osdial.sql().execute("UPDATE phones SET phone_ip=%s WHERE server_ip=%s AND extension=%s;", (event['IPaddress'],osdial.VARserver_ip,phone['extension']))
-                            """
+                        osdial.sql().execute("UPDATE phones SET picture=%s WHERE server_ip=%s AND extension=%s;", (phonehdr['Status'],osdial.VARserver_ip,phone['extension']))
+                        if phone['protocol'] == "SIP":
+                            logger.debug("SIP/IAX2 peer headers differ, put SIP specific updates here.")
+                        elif phone['protocol'] == "IAX2":
+                            logger.debug("SIP/IAX2 peer headers differ, put IAX2 specific updates here.")
 
 
-        action = pystrix.ami.core.Logoff()
-        action_id = '~U'+str(time.time())+"~Logoff"
-        response = ami.send_action(action, action_id=action_id, ActionID=action_id)
+                ami.logoff()
+            except asterisk.manager.ManagerSocketException as err:
+                errno, reason = err
+                print ("Error connecting to the manager: %s" % reason)
+                sys.exit(1)
+            except asterisk.manager.ManagerAuthException as reason:
+                print ("Error logging in to the manager: %s" % reason)
+                sys.exit(1)
+            except asterisk.manager.ManagerException as reason:
+                print ("Error: %s" % reason)
+                sys.exit(1)
 
-        ami.close()
-        ami = None
+        finally:
+            # remember to clean up
+            ami.close()
 
     osdial.close()
     osdial = None
     sys.exit(0)
 
-def handle_data(event, manager):
-    global gotEvent
-    global evendata
-    if event['Event'] == 'PeerEntry':
-        eventdata.append(event)
-    elif event['Event'] == 'PeerlistComplete':
-        gotEvent = True
 
 def user_main(args):
     errcode = main(args)
