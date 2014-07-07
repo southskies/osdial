@@ -250,6 +250,150 @@ if ($xml['function'] == "version") {
     }
 
 
+# Function to update a lead.
+} elseif ($xml['function'] == "update_lead" and $xml['mode'] == "admin") {
+    $status = '';
+    $reason = '';
+
+    # Authenticate connection first.
+    $LOG = osdial_authenticate($xml['user'],$xml['pass']);
+    if ($LOG['admin_api_access'] < 1 or $LOG['modify_leads'] < 1 or $LOG['user_level'] < 8) {
+        $status = "ERROR";
+        $reason = "Access Denied.";
+        $vdreason = "update_lead USER DOES NOT HAVE PERMISSION TO MODIFY LEADS IN THE SYSTEM";
+    } else {
+        if ($xml['debug'] > 0)
+            $debug .= sprintf("AUTH: Success. user=%s, pass=%s, admin_api_access=%s, modify_leads=%s, user_level=%s\n", $xml['user'], $xml['pass'], $LOG['admin_api_access'], $LOG['modify_leads'], $LOG['user_level']);
+    }
+    # Validate Company Access.
+    if ($status != "ERROR") {
+        if ($config['settings']['enable_multicompany'] > 0) {
+            $comp = get_first_record($link, 'osdial_companies', '*', sprintf("id='%s'",((OSDsubstr($xml['user'],0,3) * 1) - 100) ));
+            if ($comp['api_access'] < 1) {
+                $status = "ERROR";
+                $reason = "Access Denied.";
+                $vdreason = "update_lead USER DOES NOT HAVE PERMISSION TO MODIFY LEADS IN THE SYSTEM";
+            } else {
+                if ($xml['debug'] > 0)
+                    $debug .= sprintf("COMPANY AUTH: Success. company_id=%s, api_access=%s\n", $comp['id'], $comp['api_access']);
+            }
+        }
+    }
+
+    # Validate fields.
+    if ($xml->params->phone_code) {
+        $xml->params->phone_code = OSDpreg_replace('/[^0-9]/',"",$xml->params->phone_code);
+        if ($xml->params->phone_code == "") $xml->params->phone_code = 1;
+    }
+    if ($xml->params->phone_number) $xml->params->phone_number = OSDpreg_replace('/[^0-9]/',"",$xml->params->phone_number);
+    if ($xml->params->alt_phone) $xml->params->alt_phone = OSDpreg_replace('/[^0-9]/',"",$xml->params->alt_phone);
+    if ($xml->params->cost) $xml->params->cost = OSDpreg_replace('/[^0-9\.]/',"",$xml->params->cost);
+
+    # DOB validation
+    if (OSDstrlen($xml->params->date_of_birth) > 1 and $status != "ERROR") {
+        $dm = Array();
+        if (preg_match('/(19[0-9][0-9]|20[0-9][0-9])-(0[1-9]|[1-9]|1[012])-(0[1-9]|[1-9]|[12][0-9]|3[01])([ |T].*|$)/ix', $xml->params->date_of_birth, $dm)) {
+            $xml->params->date_of_birth = date('Y-m-d',strtotime($dm[1] . '-' . $dm[2] . '-' . $dm[3]));
+        } else {
+            $status = "ERROR";
+            $reason = "Invalid Date of Birth format, should be YYYY-MM-DD or ISO-8601 (2010-01-01T00:00:00).";
+            $vdreason = "update_lead DATE OF BIRTH FORMAT SHOULD BE YYYY-MM-DD";
+        }
+    }
+
+    # post_date validation
+    if (OSDstrlen($xml->params->post_date) > 1 and $status != "ERROR") {
+        $dm = Array();
+        if (preg_match('/(19[0-9][0-9]|20[0-9][0-9])-(0[1-9]|[1-9]|1[012])-(0[1-9]|[1-9]|[12][0-9]|3[01])$/ix', $xml->params->post_date, $dm)) {
+            $xml->params->post_date = date('Y-m-d H:i:s',strtotime($dm[1] . '-' . $dm[2] . '-' . $dm[3]));
+        } elseif (preg_match('/(19[0-9][0-9]|20[0-9][0-9])-(0[1-9]|[1-9]|1[012])-(0[1-9]|[1-9]|[12][0-9]|3[01])[ |T](.*)/ix', $xml->params->post_date, $dm)) {
+            $xml->params->post_date = date('Y-m-d H:i:s',strtotime($dm[1] . '-' . $dm[2] . '-' . $dm[3] . ' ' . $dm[4]));
+        } else {
+            $status = "ERROR";
+            $reason = "Invalid Date of Birth format, should be YYYY-MM-DD or ISO-8601 (2010-01-01T00:00:00).";
+            $vdreason = "update_lead DATE OF BIRTH FORMAT SHOULD BE YYYY-MM-DD";
+        }
+    }
+
+    # Last name length check.
+    if (OSDstrlen($xml->params->lead_id) < 1 and $status != "ERROR") {
+        $status = "ERROR";
+        $reason = "Lead ID must be defined...";
+        $vdreason = "update_lead LEAD_ID MISSING";
+    }
+
+    if ($status != "ERROR") {
+        if ($xml['test'] < 1) {
+            $upd =  sprintf("UPDATE osdial_list SET modify_date=NOW(),",mres($xml->params->lead_id));
+            $flds = ['status', 'called_since_last_reset', 'user', 'vendor_lead_code', 'source_id', 'list_id',
+                'gmt_offset_now', 'phone_code', 'phone_number', 'title', 'first_name', 'middle_initial', 'last_name', 'address1', 'address2', 'address3',
+                'city', 'state', 'province', 'postal_code', 'country_code', 'gender', 'date_of_birth', 'alt_phone', 'email', 'custom1', 'comments', 'custom2',
+                'external_key', 'cost', 'post_date'];
+
+            foreach ($flds as $fld) {
+                if ($xml->params->{$fld}) {
+                    $upd .= sprintf("%s='%s',",$fld,mres($xml->params->{$fld}));
+                }
+            }
+            $upd = OSDpreg_replace('/,$/','',$upd);
+
+            $upd .= sprintf(" WHERE lead_id='%s';",$xml->params->lead_id);
+
+            if ($xml['debug'] > 0) $debug .= "LEAD UPDATE: " . $upd . "\n";
+            $rslt=mysql_query($upd, $link);
+            $updres = mysql_affected_rows($link);
+            if ($updres < 1) {
+                $status = "ERROR";
+                $reason = "Lead update failure.";
+                $vdreason = "update_lead LEAD HAS NOT BEEN MODIFIED";
+            } else {
+                foreach ($xml->params->additional_fields->additional_field as $af) {
+                    $form = get_first_record($link, 'osdial_campaign_forms', '*', sprintf("name='%s'", mres($af['form'])) );
+                    $field = get_first_record($link, 'osdial_campaign_fields', '*', sprintf("form_id='%s' AND name='%s'", mres($form['id']), mres($af['field'])) );
+                    $afins = sprintf("INSERT INTO osdial_list_fields (lead_id,field_id,value) VALUES ('%s','%s','%s') ON DUPLICATE KEY UPDATE value=VALUES(value);", mres($xml->params->lead_id), mres($field['id']), mres($af) );
+                    if ($xml['debug'] > 0) $debug .= "AF INSERT/UPDATE: " . $afins . "\n";
+                    $rslt=mysql_query($afins, $link);
+                    $afinsres = mysql_affected_rows($link);
+                    if ($afinsres > 0) {
+                        $af_ids[] = mysql_insert_id($link);
+                        $af_id_stats[$af_count] = 1;
+                        $af_success++;
+                    } else {
+                        $af_id_stats[$af_count] = 0;
+                        $af_failed++;
+                    }
+                    $af_count++;
+                 }
+            }
+        }
+    }
+
+    # Finally, setup the result set.
+    if ($status != "ERROR") {
+        $result->result['records'] = '1';
+        $result->result->addChild("record");
+        $result->result->record[0]['id'] = '0';
+        $result->result->record[0]->phone_number = (string)$xml->params->phone_number;
+        $result->result->record[0]->lead_id = $lead_id;
+        $result->result->record[0]->addition_fields['total'] = $af_count;
+        $result->result->record[0]->addition_fields['success'] = $af_success;
+        $result->result->record[0]->addition_fields['failed'] = $af_failed;
+        $afc=0;
+        foreach ($af_ids as $af_id) {
+            $result->result->record[0]->addition_fields->addChild("field");
+            $result->result->record[0]->addition_fields->field[$afc]['id'] = $af_id;
+            $result->result->record[0]->addition_fields->field[$afc]['success'] = $af_id_stats[$afc];
+            $afc++;
+        }
+        $status = "SUCCESS";
+        $reason = "Lead updated.";
+        $vdreason = sprintf("update_lead LEAD HAS BEEN MODIFIED - %s|%s|%s",$xml->params->phone_number,$lead_id,$xml['user']);
+    }
+    $result->status['code'] = $status;
+    $result->status = $reason;
+
+
+
 # Function to add a new lead.
 } elseif ($xml['function'] == "add_lead" and $xml['mode'] == "admin") {
     $status = '';
