@@ -4,9 +4,9 @@
 #
 
 import sys, os, re, time, pprint, gc
-import pystrix, threading, argparse
+import argparse
 
-import MySQLdb, logging, pystrix
+import MySQLdb, logging
 
 from osdial import OSDial
 
@@ -17,7 +17,7 @@ opt = {'verbose':False,'loglevel':False,'debug':False,'test':False,'daemon':Fals
 logger = None
 
 def main(argv):
-    parser = argparse.ArgumentParser(description='osdial_keepalive - keeps required subsystems running.')
+    parser = argparse.ArgumentParser(description='osdial_clear_auto_calls - clears expired auto call entries.')
     parser.add_argument('-v', '--verbose', action='count', default=0, help='Increases verbosity.', dest='verbose')
     parser.add_argument('--version', action='version', version='%(prog)s %(ver)s' % {'prog':PROGNAME,'ver':VERSION})
     parser.add_argument('--debug', action='store_true', help='Run in debug mode.',dest='debug')
@@ -35,24 +35,28 @@ def main(argv):
         FORMAT = '%(asctime)s|%(filename)s:%(lineno)d|%(levelname)s|%(message)s'
         logger = logging.getLogger()
         logdeflvl = logging.ERROR
-        if opt.has_key('loglevel') and not opt['loglevel'] is None:
-            logstr2err={'CRITICAL':logging.CRITICAL,'ERROR':logging.ERROR,'WARNING':logging.WARNING,'INFO':logging.INFO,'DEBUG':logging.DEBUG}
-            logdeflvl = logstr2err[opt['loglevel']]
-        logger.setLevel(logdeflvl)
-
-        handler = logging.FileHandler('%s/maintenance.%s' % (osdspt.PATHlogs, time.strftime('%Y-%m-%d', time.gmtime())) )
-        handler.setLevel(logdeflvl)
+        logstr2err={'CRITICAL':logging.CRITICAL,'ERROR':logging.ERROR,'WARNING':logging.WARNING,'INFO':logging.INFO,'DEBUG':logging.DEBUG}
+        if opt['verbose']:
+            logdeflvl = logging.INFO
+        elif opt['debug']:
+            logdeflvl = logging.DEBUG
+        elif opt['loglevel']:
+            if logstr2err.has_key(opt['loglevel']):
+                logdeflvl = logstr2err[opt['loglevel']]
         formatter = logging.Formatter(FORMAT)
+
+        handler = logging.FileHandler('%s/maintenance.%s' % (osdspt.PATHlogs, time.strftime('%Y-%m-%d', time.localtime())) )
+        handler.setLevel(logdeflvl)
         handler.setFormatter(formatter)
         logger.addHandler(handler)
 
-        if opt['verbose']:
+        if opt['verbose'] or opt['debug']:
             handler = logging.StreamHandler()
-            handler.setLevel(logging.INFO)
-            formatter = logging.Formatter(FORMAT)
+            handler.setLevel(logdeflvl)
             handler.setFormatter(formatter)
             logger.addHandler(handler)
-        
+
+        logger.setLevel(logdeflvl)
 
         sptres = osdspt.server_process_tracker(PROGNAME, osdspt.VARserver_ip, os.getpid(), True)
         osdspt.close()
@@ -74,8 +78,8 @@ def clearautocall_process(logger):
     The routine responsible for clearing the osdial_auto_calls table.
     """
     osdial = OSDial()
-    time1 = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(time.time() - 300))
-    time2 = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(time.time() - 600))
+    time1 = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time() - 300))
+    time2 = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time() - 600))
     logger.info(" - clearing expired osdial_auto_calls entries")
     osdial.sql().execute("DELETE FROM osdial_auto_calls WHERE (channel IS NULL AND last_update_time < %s) OR last_update_time < %s AND server_ip=%s;",(time1,time2,osdial.VARserver_ip))
 

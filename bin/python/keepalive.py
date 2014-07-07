@@ -4,9 +4,9 @@
 #
 
 import sys, os, re, time, pprint, gc, psutil, subprocess
-import pystrix, threading, argparse
+import argparse
 
-import MySQLdb, logging, pystrix
+import MySQLdb, logging
 
 from osdial import OSDial
 
@@ -35,24 +35,28 @@ def main(argv):
         FORMAT = '%(asctime)s|%(filename)s:%(lineno)d|%(levelname)s|%(message)s'
         logger = logging.getLogger()
         logdeflvl = logging.ERROR
-        if opt.has_key('loglevel') and not opt['loglevel'] is None:
-            logstr2err={'CRITICAL':logging.CRITICAL,'ERROR':logging.ERROR,'WARNING':logging.WARNING,'INFO':logging.INFO,'DEBUG':logging.DEBUG}
-            logdeflvl = logstr2err[opt['loglevel']]
-        logger.setLevel(logdeflvl)
-
-        handler = logging.FileHandler('%s/maintenance.%s' % (osdspt.PATHlogs, time.strftime('%Y-%m-%d', time.gmtime())) )
-        handler.setLevel(logdeflvl)
+        logstr2err={'CRITICAL':logging.CRITICAL,'ERROR':logging.ERROR,'WARNING':logging.WARNING,'INFO':logging.INFO,'DEBUG':logging.DEBUG}
+        if opt['verbose']:
+            logdeflvl = logging.INFO
+        elif opt['debug']:
+            logdeflvl = logging.DEBUG
+        elif opt['loglevel']:
+            if logstr2err.has_key(opt['loglevel']):
+                logdeflvl = logstr2err[opt['loglevel']]
         formatter = logging.Formatter(FORMAT)
+
+        handler = logging.FileHandler('%s/maintenance.%s' % (osdspt.PATHlogs, time.strftime('%Y-%m-%d', time.localtime())) )
+        handler.setLevel(logdeflvl)
         handler.setFormatter(formatter)
         logger.addHandler(handler)
 
-        if opt['verbose']:
+        if opt['verbose'] or opt['debug']:
             handler = logging.StreamHandler()
-            handler.setLevel(logging.INFO)
-            formatter = logging.Formatter(FORMAT)
+            handler.setLevel(logdeflvl)
             handler.setFormatter(formatter)
             logger.addHandler(handler)
-        
+
+        logger.setLevel(logdeflvl)
 
         sptres = osdspt.server_process_tracker(PROGNAME, osdspt.VARserver_ip, os.getpid(), True)
         osdspt.close()

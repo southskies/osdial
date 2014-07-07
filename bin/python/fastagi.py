@@ -326,7 +326,7 @@ class FastAGIServer(threading.Thread):
                       self.logger.info("%s|%s|vars:%s = %s", threadid, stage, var, vars[var])
 
                   if cnt > 0:
-                      osdial.sql().execute("UPDATE call_log SET end_time=%s,end_epoch=%s,length_in_sec=%s,length_in_min=%s,channel=%s,isup_result=%s WHERE uniqueid=%s AND server_ip=%s;", (time.strftime('%Y-%m-%d %H:%M:%S',time.gmtime(CLend_epoch)), CLend_epoch, (CLend_epoch-CLstart_epoch), ((CLend_epoch-CLstart_epoch)/60), vars['agi_channel'], vars['hangup_cause'], vars['agi_uniqueid'], osdial.VARserver_ip ))
+                      osdial.sql().execute("UPDATE call_log SET end_time=%s,end_epoch=%s,length_in_sec=%s,length_in_min=%s,channel=%s,isup_result=%s WHERE uniqueid=%s AND server_ip=%s;", (time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(CLend_epoch)), CLend_epoch, (CLend_epoch-CLstart_epoch), ((CLend_epoch-CLstart_epoch)/60), vars['agi_channel'], vars['hangup_cause'], vars['agi_uniqueid'], osdial.VARserver_ip ))
                       self.logger.info("%s|%s|call_log update|%s", threadid, stage, osdial.sql()._executed)
   
                       osdial.sql().execute("UPDATE call_log SET answer_time=IF(answer_time='0000-00-00 00-00-00',end_time,answer_time),answer_epoch=IF(answer_epoch IS NULL,end_epoch,answer_epoch) WHERE uniqueid=%s AND server_ip=%s;", (vars['agi_uniqueid'], osdial.VARserver_ip))
@@ -347,7 +347,7 @@ class FastAGIServer(threading.Thread):
                       else:
                           talked_sec = (time.time() - parked_time)
                           parked_sec = (grab_time - parked_time)
-                      osdial.sql().execute("UPDATE park_log SET status='HUNGUP',hangup_time=%s,parked_sec=%s,talked_sec=%s WHERE uniqueid=%s AND server_ip=%s;", (time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime()), parked_sec, talked_sec, vars['agi_uniqueid'], osdial.VARserver_ip))
+                      osdial.sql().execute("UPDATE park_log SET status='HUNGUP',hangup_time=%s,parked_sec=%s,talked_sec=%s WHERE uniqueid=%s AND server_ip=%s;", (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), parked_sec, talked_sec, vars['agi_uniqueid'], osdial.VARserver_ip))
                   # End Park
   
                   lead_status = ''
@@ -509,13 +509,13 @@ class FastAGIServer(threading.Thread):
                                   osdial.sql().execute("DELETE FROM osdial_live_agents WHERE uniqueid=%s LIMIT 1;", (vars['agi_uniqueid']))
                                   self.logger.info("%s|%s|osdial_live_agents delete|%s", threadid, stage, osdial.sql()._executed)
                               else:
-                                  CIDdate = re.sub('[ \-:]','',time.strftime('%y-%m-%d %H:%M:%S', time.gmtime()))
+                                  CIDdate = re.sub('[ \-:]','',time.strftime('%y-%m-%d %H:%M:%S', time.localtime()))
                                   KqueryCID = 'ULGH3956' + CIDdate
-                                  osdial.sql().execute("INSERT INTO osdial_manager SET entry_date=%s,status='NEW',response='N',server_ip=%s,action='Command',callerid=%s,cmd_line_b=%s;", (time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime()), liveagents['server_ip'],KqueryCID,'Command: meetme kick '+liveagents['conf_exten']+' all'))
+                                  osdial.sql().execute("INSERT INTO osdial_manager SET entry_date=%s,status='NEW',response='N',server_ip=%s,action='Command',callerid=%s,cmd_line_b=%s;", (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), liveagents['server_ip'],KqueryCID,'Command: meetme kick '+liveagents['conf_exten']+' all'))
                                   self.logger.info("%s|%s|osdial_manager insert|%s", threadid, stage, osdial.sql()._executed)
   
                                   alog_calls = 0
-                                  osdial.sql().execute("SELECT COUNT(*) as cnt FROM osdial_agent_log WHERE user=%s AND event_time>=%s AND event_time<=%s;", (liveagents['user'],time.strftime('%Y-%m-%d 00:00:00', time.gmtime()),time.strftime('%Y-%m-%d 23:59:59', time.gmtime())))
+                                  osdial.sql().execute("SELECT COUNT(*) as cnt FROM osdial_agent_log WHERE user=%s AND event_time>=%s AND event_time<=%s;", (liveagents['user'],time.strftime('%Y-%m-%d 00:00:00', time.localtime()),time.strftime('%Y-%m-%d 23:59:59', time.localtime())))
                                   for row in osdial.sql().fetchall():
                                       alog_calls = int(row['cnt'] or 0)
                                   osdial.sql().execute("UPDATE osdial_live_agents SET status='READY',lead_id=0,uniqueid='',callerid='',channel='',calls_today=%s,last_call_finish=NOW() WHERE live_agent_id=%s;", (alog_calls,liveagents['live_agent_id']))
@@ -613,7 +613,7 @@ class FastAGIServer(threading.Thread):
                                           autocalls[col] = row[col]
   
                           if odlcnt < 1 or re.search('^Y\d\d\d\d',vars['agi_accountcode']):
-                              osdial.sql().execute("SELECT start_epoch,status,closecallid,user,term_reason,length_in_sec,queue_seconds,comments,call_date,uniqueid,lead_id,campaign_id FROM osdial_closer_log WHERE lead_id=%s AND call_date>%s AND end_epoch IS NULL ORDER BY call_date ASC LIMIT 1;", (autocalls['lead_id'],time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(time.time() - 21600))))
+                              osdial.sql().execute("SELECT start_epoch,status,closecallid,user,term_reason,length_in_sec,queue_seconds,comments,call_date,uniqueid,lead_id,campaign_id FROM osdial_closer_log WHERE lead_id=%s AND call_date>%s AND end_epoch IS NULL ORDER BY call_date ASC LIMIT 1;", (autocalls['lead_id'],time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time() - 21600))))
                               odclcnt = osdial.sql().rowcount
                               if odclcnt > 0:
                                   for row in osdial.sql().fetchall():
@@ -913,24 +913,27 @@ def main(argv):
         FORMAT = '%(asctime)s|%(filename)s:%(lineno)d|%(levelname)s|%(message)s'
         logger = logging.getLogger()
         logdeflvl = logging.ERROR
-        if opt.has_key('loglevel') and not opt['loglevel'] is None:
-            logstr2err={'CRITICAL':logging.CRITICAL,'ERROR':logging.ERROR,'WARNING':logging.WARNING,'INFO':logging.INFO,'DEBUG':logging.DEBUG}
-            logdeflvl = logstr2err[opt['loglevel']]
-        logger.setLevel(logdeflvl)
-
-        handler = logging.FileHandler('%s/FASTagiout.%s' % (osdspt.PATHlogs, time.strftime('%Y-%m-%d', time.gmtime())) )
-        handler.setLevel(logdeflvl)
+        if opt['verbose']:
+            logdeflvl = logging.INFO
+        elif opt['debug']:
+            logdeflvl = logging.DEBUG
+        elif opt['loglevel']:
+            if logstr2err.has_key(opt['loglevel']):
+                logdeflvl = logstr2err[opt['loglevel']]
         formatter = logging.Formatter(FORMAT)
+
+        handler = logging.FileHandler('%s/FASTagiout.%s' % (osdspt.PATHlogs, time.strftime('%Y-%m-%d', time.localtime())) )
+        handler.setLevel(logdeflvl)
         handler.setFormatter(formatter)
         logger.addHandler(handler)
 
-        if opt['verbose']:
+        if opt['verbose'] or opt['debug']:
             handler = logging.StreamHandler()
-            handler.setLevel(logging.INFO)
-            formatter = logging.Formatter(FORMAT)
+            handler.setLevel(logdeflvl)
             handler.setFormatter(formatter)
             logger.addHandler(handler)
-        
+
+        logger.setLevel(logdeflvl)
 
         sptres = osdspt.server_process_tracker(PROGNAME, osdspt.VARserver_ip, os.getpid(), True)
         osdspt.close()
