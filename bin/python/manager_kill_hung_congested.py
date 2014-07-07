@@ -4,9 +4,9 @@
 #
 
 import sys, os, re, time, pprint, gc
-import pystrix, threading, argparse
+import argparse
 
-import MySQLdb, logging, pystrix
+import MySQLdb, logging
 
 from osdial import OSDial
 
@@ -17,7 +17,7 @@ opt = {'verbose':False,'loglevel':False,'debug':False,'test':False,'daemon':Fals
 logger = None
 
 def main(argv):
-    parser = argparse.ArgumentParser(description='osdial_keepalive - keeps required subsystems running.')
+    parser = argparse.ArgumentParser(description='osdial_manager_kill_hung_congested - sends hangup to channels marked as congested.')
     parser.add_argument('-v', '--verbose', action='count', default=0, help='Increases verbosity.', dest='verbose')
     parser.add_argument('--version', action='version', version='%(prog)s %(ver)s' % {'prog':PROGNAME,'ver':VERSION})
     parser.add_argument('--debug', action='store_true', help='Run in debug mode.',dest='debug')
@@ -35,24 +35,28 @@ def main(argv):
         FORMAT = '%(asctime)s|%(filename)s:%(lineno)d|%(levelname)s|%(message)s'
         logger = logging.getLogger()
         logdeflvl = logging.ERROR
-        if opt.has_key('loglevel') and not opt['loglevel'] is None:
-            logstr2err={'CRITICAL':logging.CRITICAL,'ERROR':logging.ERROR,'WARNING':logging.WARNING,'INFO':logging.INFO,'DEBUG':logging.DEBUG}
-            logdeflvl = logstr2err[opt['loglevel']]
-        logger.setLevel(logdeflvl)
-
-        handler = logging.FileHandler('%s/maintenance.%s' % (osdspt.PATHlogs, time.strftime('%Y-%m-%d', time.gmtime())) )
-        handler.setLevel(logdeflvl)
+        logstr2err={'CRITICAL':logging.CRITICAL,'ERROR':logging.ERROR,'WARNING':logging.WARNING,'INFO':logging.INFO,'DEBUG':logging.DEBUG}
+        if opt['verbose']:
+            logdeflvl = logging.INFO
+        elif opt['debug']:
+            logdeflvl = logging.DEBUG
+        elif opt['loglevel']:
+            if logstr2err.has_key(opt['loglevel']):
+                logdeflvl = logstr2err[opt['loglevel']]
         formatter = logging.Formatter(FORMAT)
+
+        handler = logging.FileHandler('%s/maintenance.%s' % (osdspt.PATHlogs, time.strftime('%Y-%m-%d', time.localtime())) )
+        handler.setLevel(logdeflvl)
         handler.setFormatter(formatter)
         logger.addHandler(handler)
 
-        if opt['verbose']:
+        if opt['verbose'] or opt['debug']:
             handler = logging.StreamHandler()
-            handler.setLevel(logging.INFO)
-            formatter = logging.Formatter(FORMAT)
+            handler.setLevel(logdeflvl)
             handler.setFormatter(formatter)
             logger.addHandler(handler)
-        
+
+        logger.setLevel(logdeflvl)
 
         sptres = osdspt.server_process_tracker(PROGNAME, osdspt.VARserver_ip, os.getpid(), True)
         osdspt.close()
@@ -77,8 +81,8 @@ def killcongest_process(logger):
     osdial = OSDial()
 
     for repeat in range(4):
-        CIDdate = time.strftime('%y%m%d%H%M%S', time.gmtime())
-        nowdate = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())
+        CIDdate = time.strftime('%y%m%d%H%M%S', time.localtime())
+        nowdate = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
         logger.info(" - Searching for congested channels")
         osdial.sql().execute("SELECT SQL_NO_CACHE channel FROM live_sip_channels WHERE server_ip=%s AND extension='CONGEST' AND channel LIKE %s LIMIT 100;", (osdial.VARserver_ip, 'Local%'))
         cong_channels = []
