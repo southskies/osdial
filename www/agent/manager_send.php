@@ -1840,7 +1840,7 @@ if ($ACTION=="VolumeControl") {
         if (OSDpreg_match('/MUTING|UNMUTE/',$stage)) {
             $vol_cmd='mute';
             if (OSDpreg_match('/UNMUTE/',$stage)) $vol_cmd='unmute';
-            $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Command','%s','Command: %s','','','','','','','','','');",mres($NOW_TIME),mres($server_ip),mres($queryCID),mres('meetme '.$vol_cmd.' '.$exten.' '.$participant_number));
+            $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Command','%s','Command: %s','','','','','','','','%s','%s');",mres($NOW_TIME),mres($server_ip),mres($queryCID),mres('meetme '.$vol_cmd.' '.$exten.' '.$participant_number),mres($channel),mres($exten));
         } elseif (OSDpreg_match('/UP|DOWN/',$stage)) {
             $vol_cmd='T';
             if (OSDpreg_match('/DOWN/',$stage)) $vol_cmd='t';
