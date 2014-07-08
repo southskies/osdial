@@ -1298,14 +1298,20 @@ if ($ADD==31) {
 
 
             $Thopper = get_first_record($link, 'osdial_hopper', 'count(*) AS count', sprintf("campaign_id='%s' AND status IN ('API')",mres($campaign_id)) );
-            echo "<font>This campaign has " . $Thopper['count'] . " API leads in the dial hopper<br><br>";
-
+          	$APILeads = $Thopper['count'];
+            echo "<font>This campaign has " . $APILeads . " API leads and ";
+			
             $Thopper = get_first_record($link, 'osdial_hopper', 'count(*) AS count', sprintf("campaign_id='%s' AND status IN ('READY')",mres($campaign_id)) );
-            echo "<font>This campaign has " . $Thopper['count'] . " READY leads in the dial hopper<br><br>";
-
-            echo "<span class=no-ul><a href=\"$PHP_SELF?ADD=999999&SUB=28&group=$campaign_id\">Click here to see what leads are in the hopper right now</a></span><br><br>";
-            echo "<span class=no-ul><a href=\"$PHP_SELF?ADD=81&campaign_id=$campaign_id\">Click here to see all CallBack Holds in this campaign</a></span><br><br>";
-            if ($LOG['view_agent_realtime']) echo "<span class=no-ul><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12&group=$campaign_id\">Click here to see a Time On Dialer report for this campaign</a></span></font><br><br><br />";
+          	$RdyLeads = $Thopper['count'];
+            echo "<font>" . $RdyLeads . " READY leads in the dial hopper<br><br>";
+			
+          	echo "See the ";
+            if ($APILeads+$RdyLeads > 0) {
+                echo "<span class=no-ul><a href=\"$PHP_SELF?ADD=999999&SUB=28&group=$campaign_id\" target=_blank>leads in the hopper</a></span> / ";
+            }
+            echo "<span class=no-ul><a href=\"$PHP_SELF?ADD=81&campaign_id=$campaign_id\" target=_blank>CallBack Holds</a></span> / ";
+            if ($LOG['view_agent_realtime']) echo "<span class=no-ul><a href=\"$PHP_SELF?useOAC=1&ADD=999999&SUB=12&group=$campaign_id\" target=_blank>Time On Dialer</a></span></font> ";
+            echo "for this campaign<br><br><br />";
             
             echo "</b></center>";
             echo "</td></tr>";
