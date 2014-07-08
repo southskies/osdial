@@ -17,7 +17,7 @@ opt = {'verbose':False,'loglevel':False,'debug':False,'test':False,'daemon':Fals
 logger = None
 
 def main(argv):
-    parser = argparse.ArgumentParser(description='osdial_vm_update - updates voicemail counts.')
+    parser = argparse.ArgumentParser(description='osdial_adjust_gmtnow_on_leads - updates GMT offset on leads.')
     parser.add_argument('-v', '--verbose', action='count', default=0, help='Increases verbosity.', dest='verbose')
     parser.add_argument('--version', action='version', version='%(prog)s %(ver)s' % {'prog':PROGNAME,'ver':VERSION})
     parser.add_argument('--debug', action='store_true', help='Run in debug mode.',dest='debug')
@@ -32,10 +32,10 @@ def main(argv):
         opt[arg] = newargs[arg]
 
     try:
-        if os.geteuid() == 0:
+        if os.getuid() == 0:
             astpwd = pwd.getpwnam('asterisk');
-            os.setegid(astpwd.pw_gid)
-            os.seteuid(astpwd.pw_uid)
+            os.setgid(astpwd.pw_gid)
+            os.setuid(astpwd.pw_uid)
     except KeyError, e:
         pass
 
