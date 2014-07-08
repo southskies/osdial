@@ -30,10 +30,10 @@ def main(argv):
         opt[arg] = newargs[arg]
 
     try:
-        if os.geteuid() == 0:
+        if os.getuid() == 0:
             astpwd = pwd.getpwnam('asterisk');
-            os.setegid(astpwd.pw_gid)
-            os.seteuid(astpwd.pw_uid)
+            os.setgid(astpwd.pw_gid)
+            os.setuid(astpwd.pw_uid)
     except KeyError, e:
         pass
 
