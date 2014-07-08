@@ -10,6 +10,7 @@ osdial - Main object class
 import sys, os, re, pprint
 from osdial.sql import OSDialSQL
 from asterisk.agi import AGI as OSDAGI
+import time, datetime
 
 class OSDial(object):
     vars = {}
@@ -154,3 +155,41 @@ class OSDial(object):
                             self.sql().execute("UPDATE server_keepalive_processes SET server_ip=%s,name=%s,pid=%s,last_checkin=NOW() WHERE id=%s;", (server_ip, prog, pid, procs[name]['id']))
                             ret = False
         return ret
+
+    def nth_weekday_of_month_year(self, year, month, week_day, nth_week):
+        temp = datetime.date(year, month, 1)
+        adj = (week_day - temp.weekday()) % 7
+        temp += datetime.timedelta(days=adj)
+        temp += datetime.timedelta(weeks=nth_week-1)
+        if temp.month != month:
+            return False
+        return temp
+
+    def dstcalc(self, method, intime):
+        nth_map = {'F':1,'S':2,'T':3,'L':5}
+        day_map = {'M':0,'S':6}
+        month_map = {'F':2,'M':3,'A':4,'S':9,'O':10,'N':11}
+
+        (start,end) = method.split('-')
+        (start_nth,start_day,start_month) = (start[0:1],start[1:2],start[2:3])
+        (end_nth,end_day,end_month) = (end[0:1],end[1:2],end[2:3])
+
+        start_year = time.localtime(intime).tm_year
+        end_year = time.localtime(intime).tm_year
+        if month_map[end_month] < month_map[start_month]:
+            end_year += 1
+
+        dst_start_date = self.nth_weekday_of_month_year(start_year, month_map[start_month], day_map[start_day], nth_map[start_nth])
+        if not dst_start_date:
+            dst_start_date = self.nth_weekday_of_month_year(start_year, month_map[start_month], day_map[start_day], nth_map[start_nth]-1)
+        dst_start_time = time.mktime(time.strptime("%s 02:00:00" % dst_start_date, '%Y-%m-%d %H:%M:%S'))
+
+        dst_end_date = self.nth_weekday_of_month_year(end_year, month_map[end_month], day_map[end_day], nth_map[end_nth])
+        if not dst_end_date:
+            dst_end_date = self.nth_weekday_of_month_year(end_year, month_map[end_month], day_map[end_day], nth_map[end_nth]-1)
+        dst_end_time = time.mktime(time.strptime("%s 02:00:00" % dst_end_date, '%Y-%m-%d %H:%M:%S'))
+
+        dstval = 0
+        if intime >= dst_start_time and intime <= dst_end_time:
+            dstval = 1
+        return dstval

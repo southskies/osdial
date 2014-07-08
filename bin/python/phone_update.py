@@ -3,7 +3,7 @@
 # Copyright (C) 2014  Lott Caskey  <lottcaskey@gmail.com>
 #
 
-import sys, os, re, time, pprint, gc
+import sys, os, pwd, re, time, pprint, gc
 import argparse
 
 import MySQLdb, logging
@@ -23,18 +23,26 @@ def main(argv):
     parser.add_argument('--version', action='version', version='%(prog)s %(ver)s' % {'prog':PROGNAME,'ver':VERSION})
     parser.add_argument('--debug', action='store_true', help='Run in debug mode.',dest='debug')
     parser.add_argument('-t', '--test', action='store_true', help='Run in test mode.',dest='test')
-    parser.add_argument('-d', '--daemon', action='store_true', help='Puts process in daemon mode.',dest='daemon')
+    #parser.add_argument('-d', '--daemon', action='store_true', help='Puts process in daemon mode.',dest='daemon')
     parser.add_argument('-l', '--logLevel', action='store', default='ERROR', choices=['CRITICAL','ERROR','WARNING','INFO','DEBUG'], help='Sets the level of output verbosity.', dest='loglevel')
     opts = parser.parse_args(args=argv)
     newargs = vars(opts)
     for arg in newargs:
         opt[arg] = newargs[arg]
 
+    try:
+        if os.geteuid() == 0:
+            astpwd = pwd.getpwnam('asterisk');
+            os.setegid(astpwd.pw_gid)
+            os.seteuid(astpwd.pw_uid)
+    except KeyError, e:
+        pass
+
     osdspt = None
     try:
         osdspt = OSDial()
         FORMAT = '%(asctime)s|%(filename)s:%(lineno)d|%(levelname)s|%(message)s'
-        logger = logging.getLogger()
+        logger = logging.getLogger('phoneupdate')
         logdeflvl = logging.ERROR
         logstr2err={'CRITICAL':logging.CRITICAL,'ERROR':logging.ERROR,'WARNING':logging.WARNING,'INFO':logging.INFO,'DEBUG':logging.DEBUG}
         if opt['verbose']:
@@ -59,35 +67,32 @@ def main(argv):
 
         logger.setLevel(logdeflvl)
 
-        sptres = osdspt.server_process_tracker(PROGNAME, osdspt.VARserver_ip, os.getpid(), True)
         osdspt.close()
         osdspt = None
-        if sptres is True:
-            logger.error("Error process already running!")
-            sys.exit(1)
     except MySQLdb.OperationalError, e:
         logger.error("Could not connect to MySQL! %s", e)
         sys.exit(1)
     gc.collect()
 
     logger.info("Starting phoneupdate_process()")
-    phoneupdate_process(logger)
+    phoneupdate_process()
 
 gotEvent = False
 eventdata = []
-def phoneupdate_process(logger):
+def phoneupdate_process():
     global gotEvent
     global eventdata
     """
     This routine verifies the registered IP of the phone against the database.
     """
     osdial = OSDial()
+    logger = logging.getLogger('phoneupdate')
 
     CIDdate = time.strftime('%y%m%d%H%M%S', time.localtime(time.time()))
     now_date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
 
     logger.info(" - Scanning SIP/IAX2 phones")
-    osdial.sql().execute("SELECT SQL_NO_CACHE extension,phone_ip,protocol FROM phones WHERE server_ip=%s AND protocol IN ('SIP','IAX2');", (osdial.VARserver_ip))
+    osdial.sql().execute("SELECT extension,phone_ip,protocol FROM phones WHERE server_ip=%s AND protocol IN ('SIP','IAX2');", (osdial.VARserver_ip))
     phcnt = osdial.sql().rowcount
     phones = []
     if phcnt > 0:
@@ -125,14 +130,11 @@ def phoneupdate_process(logger):
                 ami.logoff()
             except asterisk.manager.ManagerSocketException as err:
                 errno, reason = err
-                print ("Error connecting to the manager: %s" % reason)
-                sys.exit(1)
+                logger.info("Error connecting to the manager: %s", reason)
             except asterisk.manager.ManagerAuthException as reason:
-                print ("Error logging in to the manager: %s" % reason)
-                sys.exit(1)
+                logger.info("Error logging in to the manager: %s", reason)
             except asterisk.manager.ManagerException as reason:
-                print ("Error: %s" % reason)
-                sys.exit(1)
+                logger.info("Error: %s", reason)
 
         finally:
             # remember to clean up

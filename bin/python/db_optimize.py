@@ -3,7 +3,7 @@
 # Copyright (C) 2014  Lott Caskey  <lottcaskey@gmail.com>
 #
 
-import sys, os, re, time, pprint, gc
+import sys, os, pwd, re, time, pprint, gc
 import argparse
 
 import MySQLdb, logging
@@ -25,18 +25,26 @@ def main(argv):
     parser.add_argument('--version', action='version', version='%(prog)s %(ver)s' % {'prog':PROGNAME,'ver':VERSION})
     parser.add_argument('--debug', action='store_true', help='Run in debug mode.',dest='debug')
     parser.add_argument('-t', '--test', action='store_true', help='Run in test mode.',dest='test')
-    parser.add_argument('-d', '--daemon', action='store_true', help='Puts process in daemon mode.',dest='daemon')
+    #parser.add_argument('-d', '--daemon', action='store_true', help='Puts process in daemon mode.',dest='daemon')
     parser.add_argument('-l', '--logLevel', action='store', default='ERROR', choices=['CRITICAL','ERROR','WARNING','INFO','DEBUG'], help='Sets the level of output verbosity.', dest='loglevel')
     opts = parser.parse_args(args=argv)
     newargs = vars(opts)
     for arg in newargs:
         opt[arg] = newargs[arg]
 
+    try:
+        if os.geteuid() == 0:
+            astpwd = pwd.getpwnam('asterisk');
+            os.setegid(astpwd.pw_gid)
+            os.seteuid(astpwd.pw_uid)
+    except KeyError, e:
+        pass
+
     osdspt = None
     try:
         osdspt = OSDial()
         FORMAT = '%(asctime)s|%(filename)s:%(lineno)d|%(levelname)s|%(message)s'
-        logger = logging.getLogger()
+        logger = logging.getLogger('dbopt')
         logdeflvl = logging.ERROR
         logstr2err={'CRITICAL':logging.CRITICAL,'ERROR':logging.ERROR,'WARNING':logging.WARNING,'INFO':logging.INFO,'DEBUG':logging.DEBUG}
         if opt['verbose']:
@@ -61,26 +69,23 @@ def main(argv):
 
         logger.setLevel(logdeflvl)
 
-        sptres = osdspt.server_process_tracker(PROGNAME, osdspt.VARserver_ip, os.getpid(), True)
         osdspt.close()
         osdspt = None
-        if sptres is True:
-            logger.error("Error process already running!")
-            sys.exit(1)
     except MySQLdb.OperationalError, e:
         logger.error("Could not connect to MySQL! %s", e)
         sys.exit(1)
     gc.collect()
 
     logger.info("Starting dboptimize_process()")
-    dboptimize_process(logger)
+    dboptimize_process()
 
 
-def dboptimize_process(logger):
+def dboptimize_process():
     """
     The routine responsible for nightly database optimization.
     """
     osdial = OSDial()
+    logger = logging.getLogger('dbopt')
     optimizes = ['osdial_manager','osdial_auto_calls','osdial_live_agents','osdial_campaign_stats','osdial_campaign_server_stats',
                 'osdial_dnc','osdial_callbacks','osdial_conferences','osdial_hopper']
     deletes = ['osdial_campaign_stats','osdial_campaign_server_stats','osdial_campaign_agent_stats','osdial_live_inbound_agents']
@@ -88,7 +93,6 @@ def dboptimize_process(logger):
     for opttab in optimizes:
         logger.info(" - Optimizing Table "+opttab)
         osdial.sql().execute("OPTIMIZE TABLE "+opttab+";")
-        time.sleep(2)
     for deltab in deletes:
         logger.info(" - Clear Table "+deltab)
         osdial.sql().execute("DELETE FROM "+deltab+";")
