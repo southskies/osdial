@@ -3,7 +3,7 @@
 # Copyright (C) 2014  Lott Caskey  <lottcaskey@gmail.com>
 #
 
-import sys, os, re, time, pprint, gc
+import sys, os, pwd, re, time, pprint, gc
 import pystrix, threading, argparse
 
 import MySQLdb, logging
@@ -33,7 +33,7 @@ class FastAGIServer(threading.Thread):
     def _call_log_handler(self, agi, args, kwargs, match, path):
         threadname = threading.current_thread().name
         threadid = re.sub('\D','',threading.current_thread().name)
-        self.logger = logging.getLogger()
+        self.logger = logging.getLogger('fastagi.calllog')
         osdial = None
         self.logger.debug("%s - Started.", threadname)
         try:
@@ -901,17 +901,26 @@ def main(argv):
     parser.add_argument('--version', action='version', version='%(prog)s %(ver)s' % {'prog':PROGNAME,'ver':VERSION})
     parser.add_argument('--debug', action='store_true', help='Turns on debug mode.',dest='daemon')
     parser.add_argument('-d', '--daemon', action='store_true', help='Puts process in daemon mode.',dest='daemon')
-    parser.add_argument('-l', '--logLevel', action='store', default='ERROR', choices=['CRITICAL','ERROR','WARNING','INFO','DEBUG'], help='Sets the level of output verbosity.', dest='loglevel')
+    parser.add_argument('-l', '--logLevel', action='store', default='INFO', choices=['CRITICAL','ERROR','WARNING','INFO','DEBUG'], help='Sets the level of output verbosity.', dest='loglevel')
     opts = parser.parse_args(args=argv)
     newargs = vars(opts)
     for arg in newargs:
         opt[arg] = newargs[arg]
 
+    try:
+        if os.geteuid() == 0:
+            astpwd = pwd.getpwnam('asterisk');
+            os.setegid(astpwd.pw_gid)
+            os.seteuid(astpwd.pw_uid)
+    except KeyError, e:
+        pass
+
     osdspt = None
     try:
         osdspt = OSDial()
         FORMAT = '%(asctime)s|%(filename)s:%(lineno)d|%(levelname)s|%(message)s'
-        logger = logging.getLogger()
+        logger = logging.getLogger('fastagi')
+        logstr2err={'CRITICAL':logging.CRITICAL,'ERROR':logging.ERROR,'WARNING':logging.WARNING,'INFO':logging.INFO,'DEBUG':logging.DEBUG}
         logdeflvl = logging.ERROR
         if opt['verbose']:
             logdeflvl = logging.INFO

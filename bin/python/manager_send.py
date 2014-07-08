@@ -3,7 +3,7 @@
 # Copyright (C) 2014  Lott Caskey  <lottcaskey@gmail.com>
 #
 
-import sys, os, re, time, pprint, gc
+import sys, os, pwd, re, time, pprint, gc
 import argparse
 
 import MySQLdb
@@ -20,9 +20,10 @@ PROGNAME = 'osdial_manager_send'
 VERSION = '0.1'
 opt = {'verbose':False,'loglevel':False,'sendonlyone':False,'debug':False,'test':False,'daemon':False}
 
-def send_action_child(logger, SACinput, SACoutput):
+def send_action_child(SACinput, SACoutput):
     mydata = SACinput.get()
     returnsql = None
+    logger = logging.getLogger('child')
 
     ami = asterisk.manager.Manager()
     try:
@@ -91,12 +92,14 @@ def send_action_child(logger, SACinput, SACoutput):
             logger.warning("AMI closure failed. %s" % type(e))
 
 
-def manager_send(logger,send_logger):
+def manager_send():
     """
     The routine responsible for monitoring osdial_manager for new entries and
     relaying those to Asterisk via AMI.
     """
     osdial = None
+    logger = logging.getLogger('manager')
+    send_logger = logging.getLogger('child')
     try:
         osdial = OSDial()
         while True:
@@ -152,10 +155,11 @@ def manager_send(logger,send_logger):
                             SACinput.put(data)
                             logger.debug("Starting send_action_child process.")
                             send_logger.debug("Starting send_action_child process.")
-                            p = Process(target=send_action_child, args=(send_logger, SACinput, SACoutput))
+                            p = Process(target=send_action_child, args=(SACinput, SACoutput))
                             procs.append(p)
                             p.start()
                     for p in procs:
+                        p.join()
                         if not SACoutput.empty():
                             data = SACoutput.get()
                             if data:
@@ -178,11 +182,22 @@ def main(argv):
     parser.add_argument('--debug', action='store_true', help='Run in debug mode.',dest='debug')
     parser.add_argument('-t', '--test', action='store_true', help='Run in test mode.',dest='test')
     parser.add_argument('-d', '--daemon', action='store_true', help='Puts process in daemon mode.',dest='daemon')
-    parser.add_argument('-l', '--logLevel', action='store', default='ERROR', choices=['CRITICAL','ERROR','WARNING','INFO','DEBUG'], help='Sets the level of output verbosity.', dest='loglevel')
+    parser.add_argument('-l', '--logLevel', action='store', default='INFO', choices=['CRITICAL','ERROR','WARNING','INFO','DEBUG'], help='Sets the level of output verbosity.', dest='loglevel')
     opts = parser.parse_args(args=argv)
     newargs = vars(opts)
     for arg in newargs:
         opt[arg] = newargs[arg]
+
+    try:
+        if os.geteuid() == 0:
+            astpwd = pwd.getpwnam('asterisk');
+            os.setegid(astpwd.pw_gid)
+            os.seteuid(astpwd.pw_uid)
+    except KeyError, e:
+        pass
+
+    if opt['daemon']:
+        daemonize()
 
     osdspt = None
     try:
@@ -234,8 +249,24 @@ def main(argv):
 
     logger.info("Starting manager_send()")
     while True:
-        manager_send(logger, send_logger)
+        manager_send()
         time.sleep(0.05)
+
+def daemonize():
+    if os.fork() != 0:
+        os._exit(0)
+
+    os.setsid()
+
+    if os.fork() != 0:
+        os._exit(0)
+
+    os.chdir("/")
+    os.umask(022)
+    [os.close(i) for i in xrange(3)]
+    os.open(os.devnull, os.O_RDWR)
+    os.dup2(0, 1)
+    os.dup2(0, 2)
 
 def user_main(args):
     errcode = main(args)

@@ -3,7 +3,7 @@
 # Copyright (C) 2014  Lott Caskey  <lottcaskey@gmail.com>
 #
 
-import sys, os, re, time, pprint, gc, psutil, subprocess
+import sys, os, pwd, re, time, pprint, gc, psutil, subprocess
 import argparse
 
 import MySQLdb, logging
@@ -22,18 +22,26 @@ def main(argv):
     parser.add_argument('--version', action='version', version='%(prog)s %(ver)s' % {'prog':PROGNAME,'ver':VERSION})
     parser.add_argument('--debug', action='store_true', help='Run in debug mode.',dest='debug')
     parser.add_argument('-t', '--test', action='store_true', help='Run in test mode.',dest='test')
-    parser.add_argument('-d', '--daemon', action='store_true', help='Puts process in daemon mode.',dest='daemon')
+    #parser.add_argument('-d', '--daemon', action='store_true', help='Puts process in daemon mode.',dest='daemon')
     parser.add_argument('-l', '--logLevel', action='store', default='ERROR', choices=['CRITICAL','ERROR','WARNING','INFO','DEBUG'], help='Sets the level of output verbosity.', dest='loglevel')
     opts = parser.parse_args(args=argv)
     newargs = vars(opts)
     for arg in newargs:
         opt[arg] = newargs[arg]
 
+    try:
+        if os.geteuid() == 0:
+            astpwd = pwd.getpwnam('asterisk');
+            os.setegid(astpwd.pw_gid)
+            os.seteuid(astpwd.pw_uid)
+    except KeyError, e:
+        pass
+
     osdspt = None
     try:
         osdspt = OSDial()
         FORMAT = '%(asctime)s|%(filename)s:%(lineno)d|%(levelname)s|%(message)s'
-        logger = logging.getLogger()
+        logger = logging.getLogger('keepalive')
         logdeflvl = logging.ERROR
         logstr2err={'CRITICAL':logging.CRITICAL,'ERROR':logging.ERROR,'WARNING':logging.WARNING,'INFO':logging.INFO,'DEBUG':logging.DEBUG}
         if opt['verbose']:
@@ -58,36 +66,34 @@ def main(argv):
 
         logger.setLevel(logdeflvl)
 
-        sptres = osdspt.server_process_tracker(PROGNAME, osdspt.VARserver_ip, os.getpid(), True)
         osdspt.close()
         osdspt = None
-        if sptres is True:
-            logger.error("Error process already running!")
-            sys.exit(1)
     except MySQLdb.OperationalError, e:
         logger.error("Could not connect to MySQL! %s", e)
         sys.exit(1)
     gc.collect()
 
     logger.info("Starting keepalive_process()")
-    keepalive_process(logger)
+    keepalive_process()
 
 
-def keepalive_process(logger):
+def keepalive_process():
     """
     The routine responsible for keeping required osdial subsystems running.
     """
     osdial = OSDial()
 
-    perl_running = {}
-    perl_keepalives = {'1':'AST_update.pl',
-                  '2':'AST_manager_send.pl',
-                  '3':'AST_manager_listen.pl',
-                  '4':'AST_VDauto_dial.pl',
-                  '5':'AST_VDremote_agents.pl',
-                  '6':'AST_VDadapt.pl',
-                  '7':'FastAGI_log.pl',
-                  '8':'AST_VDauto_dial_FILL.pl',
+    logger = logging.getLogger('keepalive')
+
+    running = {}
+    keepalives = {'1':'AST_update.pl',
+                  '2':'osdial_manager_send',
+                  'L':'osdial_manager_listen',
+                  '3':'AST_VDauto_dial.pl',
+                  '4':'AST_VDremote_agents.pl',
+                  '5':'AST_VDadapt.pl',
+                  '6':'osdial_fastagi',
+                  '7':'AST_VDauto_dial_FILL.pl',
                   '9':'OSDcampaign_stats.pl' }
 
     """
@@ -117,34 +123,46 @@ def keepalive_process(logger):
         sys.exit(1)
 
     """
+    Add osdial_manager_listen as L if osdial_manager_send (2) is selected.
+    """
+    if re.search('2',osdial.VARactive_keepalives):
+            osdial.VARactive_keepalives += 'L' 
+
+    """
     Scan and prune running processes
     """
     for proc in psutil.process_iter():
-        if proc.ppid != 1 and (re.search('\/usr\/bin\/perl|\/usr\/bin\/python',proc.exe) or (len(proc.cmdline) > 0 and re.search('\/usr\/bin\/perl|\/usr\/bin\/python',proc.cmdline[0]))):
-            for kaprog in perl_keepalives.values():
-                if not perl_running.has_key(kaprog):
-                    perl_running[kaprog] = 0
-                if re.search("%s" % kaprog,"%s" % proc.cmdline):
-                    perl_running[kaprog] += 1
-                    logger.info("IS RUNNING:%6d" % (proc.pid))
-                    if perl_running[kaprog] > 0:
-                        if re.search('AST_update.pl|AST_manager_listen.pl|AST_manager_send.pl',kaprog):
-                            logger.info("Detected second instance of %s, killing pid %6d" % (kaprog, proc.pid))
-                            if proc.is_running() and opt['test'] is False:
-                                proc.kill()
+        try:
+            if (proc.ppid != 1 and (re.search('/usr/bin/perl',proc.exe) or (len(proc.cmdline) > 0 and re.search('/usr/bin/perl',proc.cmdline[0])))) or (re.search('/usr/bin/python',proc.exe) or (len(proc.cmdline) > 0 and re.search('/usr/bin/python',proc.cmdline[0]))):
+                for kaprog in keepalives.values():
+                    if not running.has_key(kaprog):
+                        running[kaprog] = 0
+                    if re.search("%s" % kaprog,"%s" % proc.cmdline):
+                        running[kaprog] += 1
+                        logger.info("IS RUNNING:%6d" % (proc.pid))
+                        if running[kaprog] > 1:
+                            if re.search('AST_update.pl|AST_manager_listen.pl|AST_manager_send.pl|osdial_manager_listen|osdial_manager_send',kaprog):
+                                logger.info("Detected second instance of %s, killing pid %6d" % (kaprog, proc.pid))
+                                if proc.is_running() and opt['test'] is False:
+                                    proc.kill()
+        except psutil.AccessDenied, e:
+            pass
 
 
     """
     Start keepalives
     """
-    for kaval in perl_keepalives.keys():
+    for kaval in keepalives.keys():
         if re.search("%s" % kaval, "%s" % osdial.VARactive_keepalives):
-            if perl_running[perl_keepalives[kaval]] < 1:
-                logger.info("Starting %s." % (perl_keepalives[kaval]))
-                screenid = "%s" % perl_keepalives[kaval]
+            if running[keepalives[kaval]] < 1:
+                logger.info("Starting %s." % (keepalives[kaval]))
+                screenid = "%s" % keepalives[kaval]
                 screenid = re.sub('AST|VD|OSD|_|\.pl$','',screenid)
                 if opt['test'] is False:
-                    retval = subprocess.call('/usr/bin/screen -d -m -S OSD%s %s/%s' % (screenid, osdial.PATHhome, perl_keepalives[kaval]), shell=True)
+                    if re.search('osdial_manager_listen|osdial_manager_send|osdial_fastagi',keepalives[kaval]):
+                        retval = subprocess.call('%s/%s -d' % (osdial.PATHhome, keepalives[kaval]), shell=True)
+                    else:
+                        retval = subprocess.call('/usr/bin/screen -d -m -S OSD%s %s/%s' % (screenid, osdial.PATHhome, keepalives[kaval]), shell=True)
 
     osdial.close()
     osdial = None

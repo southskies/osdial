@@ -3,7 +3,7 @@
 # Copyright (C) 2014  Lott Caskey  <lottcaskey@gmail.com>
 #
 
-import sys, os, re, time, pprint, gc
+import sys, os, pwd, re, time, pprint, gc
 import argparse
 
 import MySQLdb, logging
@@ -22,18 +22,26 @@ def main(argv):
     parser.add_argument('--version', action='version', version='%(prog)s %(ver)s' % {'prog':PROGNAME,'ver':VERSION})
     parser.add_argument('--debug', action='store_true', help='Run in debug mode.',dest='debug')
     parser.add_argument('-t', '--test', action='store_true', help='Run in test mode.',dest='test')
-    parser.add_argument('-d', '--daemon', action='store_true', help='Puts process in daemon mode.',dest='daemon')
+    #parser.add_argument('-d', '--daemon', action='store_true', help='Puts process in daemon mode.',dest='daemon')
     parser.add_argument('-l', '--logLevel', action='store', default='ERROR', choices=['CRITICAL','ERROR','WARNING','INFO','DEBUG'], help='Sets the level of output verbosity.', dest='loglevel')
     opts = parser.parse_args(args=argv)
     newargs = vars(opts)
     for arg in newargs:
         opt[arg] = newargs[arg]
 
+    try:
+        if os.geteuid() == 0:
+            astpwd = pwd.getpwnam('asterisk');
+            os.setegid(astpwd.pw_gid)
+            os.seteuid(astpwd.pw_uid)
+    except KeyError, e:
+        pass
+
     osdspt = None
     try:
         osdspt = OSDial()
         FORMAT = '%(asctime)s|%(filename)s:%(lineno)d|%(levelname)s|%(message)s'
-        logger = logging.getLogger()
+        logger = logging.getLogger('cleanup')
         logdeflvl = logging.ERROR
         logstr2err={'CRITICAL':logging.CRITICAL,'ERROR':logging.ERROR,'WARNING':logging.WARNING,'INFO':logging.INFO,'DEBUG':logging.DEBUG}
         if opt['verbose']:
@@ -58,32 +66,29 @@ def main(argv):
 
         logger.setLevel(logdeflvl)
 
-        sptres = osdspt.server_process_tracker(PROGNAME, osdspt.VARserver_ip, os.getpid(), True)
         osdspt.close()
         osdspt = None
-        if sptres is True:
-            logger.error("Error process already running!")
-            sys.exit(1)
     except MySQLdb.OperationalError, e:
         logger.error("Could not connect to MySQL! %s", e)
         sys.exit(1)
     gc.collect()
 
     logger.info("Starting cleanupagentlog_process()")
-    cleanupagentlog_process(logger)
+    cleanupagentlog_process()
 
 
-def cleanupagentlog_process(logger):
+def cleanupagentlog_process():
     """
     The routine responsible for cleaning up malformed entries in the agent log.
     """
     osdial = OSDial()
+    logger = logging.getLogger('cleanup')
 
     lastdate = time.strftime('%Y-%m-%d 00:00:00', time.localtime(time.time() - (60*60*24*2)))
 
-    time_recalc(logger, osdial, "pause", "wait", lastdate)
-    time_recalc(logger, osdial, "wait", "talk", lastdate)
-    time_recalc(logger, osdial, "talk", "dispo", lastdate)
+    time_recalc(osdial, "pause", "wait", lastdate)
+    time_recalc(osdial, "wait", "talk", lastdate)
+    time_recalc(osdial, "talk", "dispo", lastdate)
 
     logger.info(" - cleaning up dispo time")
     osdial.sql().execute("SELECT count(*) as dcnt FROM osdial_agent_log WHERE event_time>=%s AND dispo_sec>43999;", (lastdate))
@@ -99,9 +104,10 @@ def cleanupagentlog_process(logger):
     sys.exit(0)
 
 
-def time_recalc(logger, osdial, type1, type2, lastdate):
+def time_recalc(osdial, type1, type2, lastdate):
+    logger = logging.getLogger('cleanup.recalc')
     logger.info(" - cleaning up "+type1+" time")
-    osdial.sql().execute("SELECT SQL_NO_CACHE agent_log_id,"+type1+"_epoch,"+type2+"_epoch FROM osdial_agent_log WHERE event_time>=%s AND "+type1+"_sec>43999;", (lastdate))
+    osdial.sql().execute("SELECT agent_log_id,"+type1+"_epoch,"+type2+"_epoch FROM osdial_agent_log WHERE event_time>=%s AND "+type1+"_sec>43999;", (lastdate))
     alcnt = osdial.sql().rowcount
     if alcnt > 0:
         agent_log_id = []
