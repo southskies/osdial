@@ -1,10 +1,410 @@
+2014-07-08 19:07:00 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* OSDIAL-44 Python add areacode_populate. (HEAD, origin/master, origin/HEAD, master)
+
+2014-07-08 19:05:49 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Update phone/postal data.
+
+2014-07-08 17:27:55 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* OSDIAL-44 Python cleanup. Add audio_archive, audio_compress, sort_recordings.
+
+2014-07-08 17:25:52 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge pull request #26 in OSDIAL/osdial from sszmidt-edit-ece5a161741 to master
+
+2014-07-08 17:24:45 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge pull request #27 in OSDIAL/osdial from sszmidt-edit-6d521561741 to master
+
+2014-07-08 10:12:02 -0400 Steve Szmidt <sszmidt@osdial.com> 
+
+	* Updated List Statuses appearance and made links open new tabs. (origin/sszmidt-edit-6d521561741)
+
+2014-07-08 09:24:05 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* OSDIAL-44 Python modifications.
+
+2014-07-08 09:12:12 -0400 Steve Szmidt <sszmidt@osdial.com> 
+
+	* Update copyright notice (origin/sszmidt-edit-ece5a161741)
+
+2014-07-07 17:56:00 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* OSDIAL-46 Added update_lead function to API.
+
+2014-07-07 17:51:31 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* OSDIAL-44 Fix Makefile, cleanup various py files, fix verbose/debug logging, convery pystrix to asterisk.manager.
+
+2014-07-07 17:49:57 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add missing channel/exten to cmd_line_j and cmd_line_k.
+
+2014-07-02 18:29:57 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* IVR condition allowed for the ivr_reserve agents to get counted as live agents when the virtual_agent count was 0. This fix prevents the system from dialing when there are no virtual_agents and a number of reserve_agents.
+
+2014-07-02 18:25:25 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* OSDIAL-44 Switch to pyst library.
+
+2014-07-02 14:46:21 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* OSDIAL-44 Several example replacement Python scripts.
+
+2014-07-02 02:06:48 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* OSDIAL-44 Fix Makefile3.
+
+2014-07-02 02:04:16 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* OSDIAL-44 Fix Makefile2.
+
+2014-07-02 01:58:26 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* OSDIAL-44 Fix Makefile
+
+2014-07-02 01:38:36 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* OSDIAL-44 Add python programs to Makefile.
+
+2014-07-02 01:20:09 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge pull request #25 in OSDIAL/osdial from feature/OSDIAL-44-initial-python-progs to master
+
+2014-07-02 01:18:44 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* OSDIAL-44 initial python programs (origin/feature/OSDIAL-44-initial-python-progs)
+
+2014-07-01 23:48:49 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge pull request #24 in OSDIAL/osdial from feature/OSDIAL-44-create-python-interface-library to master
+
+2014-07-01 23:47:29 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* OSDIAL-44 Initial Python library. (origin/feature/OSDIAL-44-create-python-interface-library)
+
+2014-07-01 22:58:19 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* OSDIAL-5 Correct the sort order of statuses and extended statuses.
+
+2014-07-01 22:53:01 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* OSDIAL-4 Added two breaks after the registration syntax.
+
+2014-07-01 22:42:27 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* OSDIAL-32 Restructured manual dial hopper queue process so that the preview and dial next call routines are in a while loop, testing that each queued lead is not in the DNC, adding appropriate log entries, and alerting the agent interface of a DNC error that can't be overcome or that we have depleted the hopper.
+
+2014-07-01 20:26:45 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* OSDIAL-42 Modify IAX2 carrier protocol generation to create a user context matching each given registration so that inbound calls are properly authenticated.
+
+2014-07-01 16:40:29 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix call count.
+
+2014-07-01 16:33:11 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix phone seconds formatting and date selection.
+
+2014-07-01 10:47:34 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Malformed SQL was causing the hangup_and_dispo routine to bail before completion. (stage/master)
+
+2014-07-01 10:05:43 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Sort the virtual agents to the bottom of the next_agent_call list.
+
+2014-07-01 08:30:48 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge pull request #23 in OSDIAL/osdial from lottc-edit-7b7c6e1f641 to master
+
+2014-07-01 08:29:31 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Modify openvpn configs to auto-fallback to a TCP connection.
+
+2014-07-01 08:27:17 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Modify openvpn configs to auto-fallback to a TCP connection.
+
+2014-06-30 18:00:33 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge pull request #21 in OSDIAL/osdial from lottc-edit-c3f5acee641 to master
+
+2014-06-30 17:59:38 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix voicemail include parsing and login for ARI. (origin/lottc-edit-c3f5acee641)
+
+2014-06-23 13:46:47 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge pull request #19 in OSDIAL/osdial from lottc-edit-5e7c5d9c641 to master
+
+2014-06-23 13:46:09 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add missing event level and exclude RTCP events.
+
+2014-06-22 15:46:26 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge pull request #18 in OSDIAL/osdial from bugfix/unavail_vbox_msg to master
+
+2014-06-22 15:44:02 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add 's' and 'u' flags to Voicemail calls, 's' forgoes the instructions if a message exists and 'u' plays the unavailable if it exists. (origin/bugfix/unavail_vbox_msg)
+
+2014-06-22 14:27:25 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge pull request #16 in OSDIAL/osdial from sszmidt-edit-8869c7c9641 to master
+
+2014-06-22 14:27:04 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge pull request #15 in OSDIAL/osdial from sszmidt-edit-abdf43c9641 to master
+
+2014-06-22 14:26:41 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge pull request #14 in OSDIAL/osdial from sszmidt-edit-243711c9641 to master
+
+2014-06-22 14:26:16 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge pull request #17 in OSDIAL/osdial from lottc-edit-d4d93d4c641 to master
+
+2014-06-22 14:25:41 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* PR fix.
+
+2014-06-22 11:20:37 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Cleanup stream_and_get_dtmf to better handle failed results.
+
+2014-06-22 09:32:14 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add functionality to emergency logout agent from realtime when Ctrl is pressed when the agent session is clicked.
+
+2014-06-22 09:29:16 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Send meetme kick all to agents conference on emergency logout.
+
+2014-06-22 01:52:29 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Must parse out filename from variable instead of callerid.
+
+2014-06-22 01:25:47 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix recording_log updates and hangup routine.
+
+2014-06-21 23:33:47 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added uniquid pass to to MonitorConf call.
+
+2014-06-21 22:11:35 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Final fixes for datetime browser offsets and DST.
+
+2014-06-14 18:25:49 -0400 Steve Szmidt <sszmidt@osdial.com> 
+
+	* Appearance update.
+
+2014-06-14 17:07:36 -0400 Steve Szmidt <sszmidt@osdial.com> 
+
+	* Updated appearance.
+
+2014-06-14 16:28:47 -0400 Steve Szmidt <sszmidt@osdial.com> 
+
+	* Updated appearance.
+
+2014-06-14 16:24:38 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge pull request #13 in OSDIAL/osdial from sszmidt-edit-48b070c9641 to master
+
+2014-06-14 16:17:25 -0400 Steve Szmidt <sszmidt@osdial.com> 
+
+	* Updated appearance.
+
+2014-06-14 16:07:01 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix changes.
+
+2014-06-14 16:06:27 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Update Changes for Perl library.
+
+2014-06-14 15:17:18 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Double sip-silence length so that the g729 version will work.
+
+2014-06-14 12:47:14 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge pull request #12 in OSDIAL/osdial from lottc-edit-59c664b9641 to master
+
+2014-06-14 12:47:02 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix auto dial in-use line counts on virtual agents.
+
+2014-06-14 12:41:14 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge pull request #11 in OSDIAL/osdial from lottc-edit-e92f04b9641 to master
+
+2014-06-14 12:41:03 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix realtime summary to show correct out_total count for virtual agents.
+
+2014-06-14 12:34:58 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge pull request #10 in OSDIAL/osdial from lottc-edit-c9cba3b9641 to master
+
+2014-06-14 12:34:16 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix realtime detail to correctly count virtual agent channels in out_total.
+
+2014-06-14 12:15:30 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge pull request #7 in OSDIAL/osdial from sszmidt-edit-4bff535b541 to master
+
+2014-06-14 12:14:20 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge pull request #6 in OSDIAL/osdial from sszmidt-edit-51edc25b541 to master
+
+2014-06-14 12:10:10 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge pull request #8 in OSDIAL/osdial from sszmidt-edit-ac10f569641 to master
+
+2014-06-14 12:09:37 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge pull request #9 in OSDIAL/osdial from lottc-edit-898d32b9641 to master
+
+2014-06-14 12:09:16 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Trivial PR.
+
+2014-04-30 20:19:54 -0400 Steve Szmidt <sszmidt@osdial.com> 
+
+	* Add CallBackSelect_cancel function.
+
+2014-04-30 20:16:36 -0400 Steve Szmidt <sszmidt@osdial.com> 
+
+	* Minor code cleanup, adding bold to heading and submit and a new cancel button to return to Dispo screen.
+
+2014-06-13 13:55:47 -0400 Steve Szmidt <sszmidt@osdial.com> 
+
+	* Adding missing style sheet formatting when not live calls.
+
+2014-06-05 17:31:22 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix lead count on 2+ NEW campaigns.
+
+2014-06-05 16:52:05 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix display of local DST.
+
+2014-05-27 18:28:25 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Use uniqueid, accountcode, and CIDlead_id in non-virtagent.
+
+2014-05-27 18:07:08 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add Norvax as a lead vendor import.
+
+2014-05-27 18:05:42 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix the CID areacode map feature when using ManualDialNext with LeadPreview disabled.
+
+2014-05-01 13:39:10 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Incorrect assignment of human_answered variable for category stats tally. Caused Answered and DropPct to not get calculated.
+
+2014-04-30 20:36:26 -0400 Steve Szmidt <sszmidt@osdial.com> 
+
+	* Increase option window to remove scrollbar.
+
+2014-04-30 20:26:27 -0400 Steve Szmidt <sszmidt@osdial.com> 
+
+	* Change heading from white on white to navy on white.
+
+2014-04-30 12:49:39 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add server_process_keepalive checking to ensure it only runs on 1 server no sooner than 3 minutes apart.
+
+2014-04-30 12:47:20 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* If process is stale, name matches, and server ip does not match, replace process info.
+
+2014-04-30 11:59:51 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix broken/add missing SQL statements for updating the server_ip.
+
+2014-04-30 06:57:51 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Rename to 57-Columbia.txt.
+
+2014-04-30 06:48:13 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add check for conference in leave_3way with 2 channels, outgoing and monitoring, if found, hangup monitor channel. Cleanup AST_conf_update.pl source.
+
+2014-04-30 04:36:00 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Fix javascript errors in carriers.
+
+2014-04-29 17:48:53 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge pull request #3 in OSDIAL/osdial from sszmidt-edit-34e147fa541 to master
+
+2014-04-29 17:46:33 -0400 Steve Szmidt <sszmidt@osdial.com> 
+
+	* Realigned the local date & time.
+
+2014-04-29 17:30:32 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add HANGUP, VOICEMAIL, MESSAGE, EXTENSION, CALLBACK to wait actions. Fix tr row bgcolor.
+
+2014-04-29 16:45:30 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge branch 'master'
+
+2014-04-29 16:41:02 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Answer and play sip-silence on conference. Forward 90009 through loopback. Use prefix 7 on conf_exten on man dial next.
+
+2014-04-24 11:46:40 -0400 Steve Szmidt <sszmidt@osdial.com> 
+
+	* Merge pull request #2 in OSDIAL/osdial from sszmidt-edit-59ff1649541 to master
+
+2014-04-24 11:37:01 -0400 Steve Szmidt <sszmidt@osdial.com> 
+
+	* Change from WebSIP to SIP.
+
+2014-04-24 11:32:22 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Merge pull request #1 in OSDIAL/osdial from lottc-edit-e416b349541 to master
+
+2014-04-24 10:54:50 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Changed default from WebSIP to SIP.
+
+2014-04-23 19:43:30 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add textarea option to additional form fields. Increased field size from varchar(255) to 'text'. Update version number to 3.0.2.124. Update error messages in form administration. Added help, indicating to set the field length to '0' to get a textarea. Added JS and PHP field creation definition for textarea fields. Fixed campaign selection ReLogin in agent interface, if campaign name had mixed case, selection box would be empty.
+
+2014-04-23 18:27:16 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Added Columbia to dialplan configuration samples.
+
+2014-03-21 01:50:57 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* Add Italy to dialplan and phone formatting.
+
+2014-03-20 11:31:19 -0400 Lott Caskey <lottcaskey@gmail.com> 
+
+	* ChangeLog
+
 2014-03-20 11:28:25 -0400 Lott Caskey <lottcaskey@gmail.com> 
 
-	* Bump to version 3.0.2.123. (HEAD, tag: v3.0.2, master)
+	* Bump to version 3.0.2.123. (tag: v3.0.2)
 
 2014-03-20 10:19:01 -0400 Lott Caskey <lottcaskey@gmail.com> 
 
-	* Disable IAX free trial. (origin/master, origin/HEAD)
+	* Disable IAX free trial.
 
 2014-03-19 18:59:05 -0400 Lott Caskey <lottcaskey@gmail.com> 
 
@@ -16,7 +416,7 @@
 
 2014-03-07 14:18:22 -0500 Lott Caskey <lottcaskey@gmail.com> 
 
-	* Missing condition to rename the file to mp3. (stage/master)
+	* Missing condition to rename the file to mp3.
 
 2014-03-05 20:39:43 -0500 Lott Caskey <lottcaskey@gmail.com> 
 
