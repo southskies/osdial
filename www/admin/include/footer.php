@@ -35,7 +35,7 @@ if (OSDpreg_match("/^Sli/",$config['settings']['admin_template'])) {
     echo "    <td width=\"33%\">&nbsp;</td>\n";
     echo "    <td width=\"33%\">&nbsp;</td>\n";
 } else {
-    echo "    <td height=\"15\" align=\"left\" width=\"33%\"><font color=\"#1A4349\">&nbsp;&nbsp;Copyright &#169; 2009-2013 Call Center Service Group, LC</font></td>\n";
+    echo "    <td height=\"15\" align=\"left\" width=\"33%\"><font color=\"#1A4349\">&nbsp;&nbsp;Copyright &#169; 2009-2014 Call Center Service Group, LC</font></td>\n";
 #
 # ===================================================================================================================================================
 # NOTICE: NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE
