@@ -93,6 +93,7 @@ def dboptimize_process():
     for opttab in optimizes:
         logger.info(" - Optimizing Table "+opttab)
         osdial.sql().execute("OPTIMIZE TABLE "+opttab+";")
+        rows = osdial.sql().fetchall()
     for deltab in deletes:
         logger.info(" - Clear Table "+deltab)
         osdial.sql().execute("DELETE FROM "+deltab+";")

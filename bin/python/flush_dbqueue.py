@@ -105,6 +105,7 @@ def flushdbqueue_process():
     for opttab in optimizes:
         logger.info(" - Optimizing Table "+opttab)
         osdial.sql().execute("OPTIMIZE TABLE "+opttab+";")
+        rows = osdial.sql().fetchall()
 
     osdial.close()
     osdial = None
