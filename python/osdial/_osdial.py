@@ -7,15 +7,31 @@
 osdial - Main object class
 """
 
-import sys, os, re, pprint
+import sys, os, pwd, re, pprint
 from osdial.sql import OSDialSQL
 from asterisk.agi import AGI as OSDAGI
 import time, datetime
+import mimetypes
+
+mimetypes.init()
+mimetypes.add_type('audio/G722','.g722',True)
+mimetypes.add_type('audio/G729','.g729',True)
+mimetypes.add_type('audio/GSM','.gsm',True)
+mimetypes.add_type('audio/ogg','.ogg',True)
+mimetypes.add_type('audio/PCMU','.ulaw',True)
+mimetypes.add_type('audio/PCMA','.alaw',True)
+mimetypes.add_type('audio/siren7','.siren7',True)
+mimetypes.add_type('audio/siren14','.siren14',True)
+mimetypes.add_type('audio/sln','.sln',True)
+mimetypes.add_type('audio/sln-16','.sln16',True)
+mimetypes.add_type('audio/mpeg','.mp3',True)
+mimetypes.add_type('audio/x-wav','.wav',True)
 
 class OSDial(object):
     vars = {}
     _agi = None
     _sql = None
+    _sql_max_packet = 0
 
     def __init__(self, option={}):
         for opt in option:
@@ -40,6 +56,8 @@ class OSDial(object):
                 self.vars[key] = data
 
     def _loadSQLConfig(self):
+        self.sql_max_packet()
+
         self.sql().execute("SELECT * FROM system_settings LIMIT 1;")
         for row in self.sql().fetchall():
             self.vars['settings'] = {}
@@ -95,6 +113,12 @@ class OSDial(object):
             return True
         except OSError:
             return False
+
+    def sql_max_packet(self):
+        self.sql().execute("SHOW variables LIKE 'max_allowed_packet';")
+        self._sql_max_packet = 0
+        for row in self.sql().fetchall():
+            self._sql_max_packet = row['Value']
 
     def server_process_tracker(self, prog, server_ip, pid, allow_multiple):
         pcount = 0
@@ -197,3 +221,117 @@ class OSDial(object):
         if intime >= dst_start_time and intime <= dst_end_time:
             dstval = 1
         return dstval
+
+
+    def media_get_filedata(self, filename):
+        self.sql().execute("SELECT filedata FROM osdial_media_data WHERE filename=%s;", (filename))
+        filedata = ""
+        for row in self.sql().fetchall():
+            filedata += row['filedata']
+        return filedata
+
+    def media_delete_filedata(self, filename):
+        self.sql().execute("DELETE FROM osdial_media_data WHERE filename=%s;", (filename))
+
+
+    def media_add_files(self, mdir, pattern, updatedata):
+        if not mdir:
+            mdir = '.'
+        if not pattern:
+            pattern = '.*'
+        files = []
+        if not os.path.isdir(mdir):
+            return files
+        for mfile in os.listdir(mdir):
+            if not re.search('^.$|^..$',mfile) and re.search(pattern,mfile) and not os.path.isdir("%s/%s" % (mdir, mfile)):
+                fullfile = "%s/%s" % (mdir, mfile)
+                mime = re.sub('.*\.','.',"%s" % mfile)
+                extension = re.sub('.*/|\..*$','',"%s" % mfile)
+                if not re.search('^\d+$',extension):
+                    extension = ''
+                files.append(self.media_add_file(fullfile, mimetypes.types_map[mime], mfile, extension, updatedata))
+        return files
+                
+    def media_add_file(self, fullfile, mimetype, description, extension, updatedata):
+        mfile = re.sub('.*/','',"%s" % fullfile)
+        if not mimetype:
+            mimetype = mimetypes.types_map[re.sub('.*\.','.',mfile)]
+        if not extension:
+            extension = re.sub('.*/|\..*$','',"%s" % mfile)
+            if not re.search('^\d+$',extension):
+                extension = ''
+        if not os.path.exists(fullfile):
+            return '!%s' % mfile
+        fncnt = 0
+        self.sql().execute("SELECT count(*) fncnt FROM osdial_media WHERE filename=%s;", (mfile))
+        for row in self.sql().fetchall():
+            fncnt = row['fncnt']
+        if fncnt == 0:
+            self.sql().execute("INSERT INTO osdial_media SET filename=%s,mimetype=%s,description=%s,extension=%s;", (mfile, mimetype, description, extension))
+        else:
+            fncnt = 0
+            self.sql().execute("SELECT count(*) fncnt FROM osdial_media_data WHERE filename=%s;", (mfile))
+            for row in self.sql().fetchall():
+                fncnt = row['fncnt']
+            if fncnt:
+                if updatedata:
+                    self.media_delete_filedata(mfile)
+                else:
+                    return '*%s' % mfile
+        
+        datafile = open(fullfile, 'rb')
+        readsize = int(self._sql_max_packet) - 120000
+        data = datafile.read(readsize)
+        while data is not None:
+            self.sql().execute("INSERT INTO osdial_media_data SET filename=%s,filedata=%s;", (mfile,data))
+            data = datafile.read(readsize)
+        datafile.close()
+        if updatedata:
+            return '=%s' % mfile
+        return '+%s' % mfile
+
+
+    def media_save_file(self, mdir, mfile, overwrite):
+        if not mdir:
+            mdir = '.'
+        astpwd = pwd.getpwnam('asterisk');
+        if not os.path.isdir(mdir):
+            os.makedirs(mdir, 0777)
+            os.chown(mdir, astpwd.pw_uid, astpwd.pw_gid)
+        os.chmod(mdir, 0777)
+        fullfile = "%s/%s" % (mdir, mfile)
+        if os.path.exists(fullfile) and overwrite is False:
+            return "*%s" % mfile
+        filedata = self.media_get_filedata(mfile)
+        if not filedata:
+            return "!%s" % mfile
+            
+        outfile = open(fullfile, "wb")
+        outfile.write(filedata)
+        outfile.close()
+        os.chown(fullfile, astpwd.pw_uid, astpwd.pw_gid)
+        os.chmod(fullfile, 0666)
+        if overwrite:
+            return "=%s" % mfile
+        return "+%s" % mfile
+
+
+    def media_save_files(self, mdir, pattern, overwrite):
+        if not mdir:
+            mdir = '.'
+        if not pattern:
+            pattern = '.*'
+        astpwd = pwd.getpwnam('asterisk');
+        if not os.path.isdir(mdir):
+            os.makedirs(mdir, 0777)
+            os.chown(mdir, astpwd.pw_uid, astpwd.pw_gid)
+        os.chmod(mdir, 0777)
+        files = []
+        self.sql().execute("SELECT * FROM osdial_media;")
+        for row in self.sql().fetchall():
+            if re.search(pattern,row['filename']):
+                files.append(self.media_save_file(mdir, row['filename'], overwrite))
+                os.chmod("%s/%s" % (mdir,row['filename']), 0666)
+        return files
+
+
