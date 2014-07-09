@@ -92,10 +92,10 @@ def confupdate_process():
 
     logger.info(" - Looking for expired (2hrs) conference entries from 3way calls")
     osdial.sql().execute("SELECT conf_exten FROM osdial_conferences WHERE server_ip=%s AND leave_3way='1' AND leave_3way_datetime<%s;", (osdial.VARserver_ip, two_hours_ago))
-    occnt = osdial.sql().rowcount
-    if occnt > 0:
+    rows = osdial.sql().fetchall()
+    if rows is not None:
         exp_confs = []
-        for row in osdial.sql().fetchall():
+        for row in rows:
             exp_confs.append(row['conf_exten'])
         for conf in exp_confs:
             queryCID = "ULGC32%s" % CIDdate
@@ -115,11 +115,14 @@ def confupdate_process():
     
             logger.info(" - Scanning conference channels marked as leave_3way")
             osdial.sql().execute("SELECT extension,conf_exten FROM osdial_conferences WHERE server_ip=%s AND leave_3way='1';", (osdial.VARserver_ip))
-            occnt = osdial.sql().rowcount
             confs = []
+            occnt = 0
+            rows = osdial.sql().fetchall()
+            if rows is not None:
+                occnt = len(rows)
 
             if occnt > 0:
-                for row in osdial.sql().fetchall():
+                for row in rows:
                     confs.append({"extension":row['extension'],"conf_exten":row['conf_exten']})
 
                 for conf in confs:
@@ -179,11 +182,14 @@ def confupdate_process():
 
             logger.info(" - Scanning conference channels")
             osdial.sql().execute("SELECT extension,conf_exten FROM osdial_conferences WHERE server_ip=%s AND extension IS NOT NULL AND extension!='';", (osdial.VARserver_ip))
-            occnt = osdial.sql().rowcount
+            occnt = 0
             confs = []
+            rows = osdial.sql().fetchall()
+            if rows is not None:
+                occnt = len(rows)
 
             if occnt > 0:
-                for row in osdial.sql().fetchall():
+                for row in rows:
                     confs.append({"extension":row['extension'],"conf_exten":row['conf_exten']})
 
                 for conf in confs:

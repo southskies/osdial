@@ -144,7 +144,8 @@ def archiverecordings_process():
                 (pcmp,pdat,puid,pext,pcnl) = SQLfile.split('_')
 
                 osdial.sql().execute("SELECT * FROM call_log WHERE server_ip=%s AND uniqueid=%s LIMIT 1;", (osdial.VARserver_ip,puid))
-                for row in osdial.sql().fetchall():
+                rows = osdial.sql().fetchall()
+                for row in rows:
                     clstart = row['start_time']
                     clstart_epoch = row['start_epoch']
                     clend = row['end_time']
@@ -170,7 +171,8 @@ def archiverecordings_process():
                     osdial.sql().execute("INSERT INTO osdial_list SET entry_date=%s,modify_date=%s,status=%s,user=%s,vendor_lead_code=%s,custom1=%s,custom2=%s,external_key=%s,source_id=%s,phone_code='1',phone_number=%s,list_id=%s,comments=%s;", (clstart,clend,pcmp,pcmp,pext,pext,pext,"%s:%s" % (osdial.VARserver_ip,puid),psid,pcnl,plist,pcom))
 
                     osdial.sql().execute("SELECT lead_id FROM osdial_list WHERE external_key=%s LIMIT 1;", ("%s:%s" % (osdial.VARserver_ip,puid)))
-                    for row2 in osdial.sql().fetchall():
+                    rows2 = osdial.sql().fetchall()
+                    for row2 in rows2:
                         plead = row2['lead_id']
 
                     osdial.sql().execute("INSERT INTO recording_log SET channel=%s,server_ip=%s,extension=%s,start_time=%s,start_epoch=%s,end_time=%s,end_epoch=%s,length_in_sec=%s,length_in_min=%s,filename=%s,lead_id=%s,user=%s,uniqueid=%s;", (pcnl,osdial.VARserver_ip,pext,clstart,clstart_epoch,clend,clend_epoch,cllensec,cllenmin,SQLfile,plead,pcmp,puid))
@@ -179,9 +181,9 @@ def archiverecordings_process():
             start_date = None
             dnt = True
             osdial.sql().execute("SELECT recording_id,start_time FROM recording_log WHERE filename=%s ORDER BY recording_id DESC LIMIT 1;", (SQLfile))
-            scnt = osdial.sql().rowcount
-            if scnt:
-                for row in osdial.sql().fetchall():
+            rows = osdial.sql().fetchall()
+            if rows is not None:
+                for row in rows:
                     recording_id = row['recording_id']
                     start_date = re.sub('\s.*','',str(row['start_time']))
                     dnt = True

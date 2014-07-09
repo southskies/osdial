@@ -93,10 +93,10 @@ def phoneupdate_process():
 
     logger.info(" - Scanning SIP/IAX2 phones")
     osdial.sql().execute("SELECT extension,phone_ip,protocol FROM phones WHERE server_ip=%s AND protocol IN ('SIP','IAX2');", (osdial.VARserver_ip))
-    phcnt = osdial.sql().rowcount
     phones = []
-    if phcnt > 0:
-        for row in osdial.sql().fetchall():
+    rows = osdial.sql().fetchall()
+    if rows is not None:
+        for row in rows:
             phones.append({"extension":row['extension'],"phone_ip":row['phone_ip'],"protocol":row['protocol']})
 
         ami = asterisk.manager.Manager()

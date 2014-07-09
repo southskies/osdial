@@ -91,8 +91,8 @@ def killcongest_process():
         logger.info(" - Searching for congested channels")
         osdial.sql().execute("SELECT channel FROM live_sip_channels WHERE server_ip=%s AND extension='CONGEST' AND channel LIKE %s LIMIT 100;", (osdial.VARserver_ip, 'Local%'))
         cong_channels = []
-        lsccnt = osdial.sql().rowcount
-        for row in osdial.sql().fetchall():
+        rows = osdial.sql().fetchall()
+        for row in rows:
             cong_channels.append(row['channel'])
         ccnt = 0
         for channel in cong_channels:
