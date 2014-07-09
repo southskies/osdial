@@ -215,6 +215,11 @@ function report_agent_status() {
     
                 $table .= "<center>Agent was changed to $group campaign.</center><br>\n";
             } elseif ($stage == "log_agent_out" and $LOG['change_agent_campaign'] > 0) {
+                $stmt=sprintf("SELECT channel FROM osdial_live_agents WHERE user='%s' LIMIT 1;",mres($company_prefix.$agent));
+                $rslt=mysql_query($stmt, $link);
+                $row=mysql_fetch_row($rslt);
+                $custchannel = $row[0];
+
                 $stmt=sprintf("DELETE FROM osdial_live_agents WHERE user='%s';",mres($company_prefix.$agent));
                 $rslt=mysql_query($stmt, $link);
 
@@ -224,6 +229,12 @@ function report_agent_status() {
                 $queryCID = "ULGH3459$STARTtime";
                 $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Command','%s','Command: %s','','','','','','','','','');",mres(date('Y-m-d H:i:s')),mres($server_ip),mres($queryCID),mres('meetme kick '.$conf_exten.' all'));
                 $rslt=mysql_query($stmt, $link);
+
+                if (!empty($custchannel)) {
+                    $queryCID = "ULGH3460$STARTtime";
+                    $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Hangup','%s','Channel: %s','','','','','','','','','');",mres(date('Y-m-d H:i:s')),mres($server_ip),mres($queryCID),mres($custchannel));
+                    $rslt=mysql_query($stmt, $link);
+                }
 
                 $table .= "<center>Agent has been emergency logged out.<br>Please, make sure they close their web browser</center><br>\n";
                 if ($close_after_emergency_logout == "Y") {
