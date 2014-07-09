@@ -93,7 +93,8 @@ def cleanupagentlog_process():
     logger.info(" - cleaning up dispo time")
     osdial.sql().execute("SELECT count(*) as dcnt FROM osdial_agent_log WHERE event_time>=%s AND dispo_sec>43999;", (lastdate))
     baddispocount = 0
-    for row in osdial.sql().fetchall():
+    rows = osdial.sql().fetchall()
+    for row in rows:
         baddispocount = row['dcnt']
     osdial.sql().execute("UPDATE osdial_agent_log SET dispo_sec='0' WHERE event_time>=%s AND dispo_sec>43999;", (lastdate))
     if baddispocount > 0:
@@ -108,15 +109,17 @@ def time_recalc(osdial, type1, type2, lastdate):
     logger = logging.getLogger('cleanup.recalc')
     logger.info(" - cleaning up "+type1+" time")
     osdial.sql().execute("SELECT agent_log_id,"+type1+"_epoch,"+type2+"_epoch FROM osdial_agent_log WHERE event_time>=%s AND "+type1+"_sec>43999;", (lastdate))
-    alcnt = osdial.sql().rowcount
-    if alcnt > 0:
+    alcnt = 0
+    rows = osdial.sql().fetchall()
+    if rows is not None:
         agent_log_id = []
         type1_epoch = []
         type2_epoch = []
-        for row in osdial.sql().fetchall():
+        for row in rows:
             agent_log_id.append(row['agent_log_id'])
             type1_epoch.append(row[type1+'_epoch'])
             type2_epoch.append(row[type2+'_epoch'])
+            alcnt += 1
         for idx in range(len(agent_log_id)):
             type1_sec = type2_epoch[idx] - type1_epoch[idx]
             if type1_sec < 0 or type1_sec > 43999:

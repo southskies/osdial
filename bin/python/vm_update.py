@@ -88,9 +88,9 @@ def vmupdate_process():
     logger.info(" - Scanning phones table")
     osdial.sql().execute("SELECT extension,voicemail_id,messages,old_messages FROM phones WHERE server_ip=%s AND voicemail_id!='';", (osdial.VARserver_ip))
     phones = []
-    phcnt = osdial.sql().rowcount
-    if phcnt > 0:
-        for row in osdial.sql().fetchall():
+    rows = osdial.sql().fetchall()
+    if rows is not None:
+        for row in rows:
             phones.append({"extension":row['extension'],"voicemail_id":"%s@osdial" % row['voicemail_id'],
                            "messages":int(row['messages']),"old_messages":int(row['old_messages'])})
 

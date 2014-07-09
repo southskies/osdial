@@ -309,7 +309,6 @@ class FastAGIServer(threading.Thread):
                       osdial.sql().execute("SELECT uniqueid,start_epoch,channel,end_epoch,channel_group FROM call_log WHERE (end_epoch IS NULL OR end_epoch=0) AND caller_code=%s AND channel NOT LIKE 'Local/%%' AND server_ip=%s;", (vars['agi_accountcode'],osdial.VARserver_ip))
                   else:
                       osdial.sql().execute("SELECT uniqueid,start_epoch,channel,end_epoch,channel_group FROM call_log WHERE uniqueid=%s AND server_ip=%s;", (vars['agi_uniqueid'],osdial.VARserver_ip))
-                  cnt = osdial.sql().rowcount
                   CLstart_epoch = 0
                   CLend_epoch = 0
                   for row in osdial.sql().fetchall():
@@ -321,6 +320,7 @@ class FastAGIServer(threading.Thread):
                       if CLend_epoch < 10000:
                           CLend_epoch = time.time()
                       channel_group = row['channel_group']
+                      cnt += 1
   
                   for var in vars:
                       self.logger.info("%s|%s|vars:%s = %s", threadid, stage, var, vars[var])
@@ -465,13 +465,16 @@ class FastAGIServer(threading.Thread):
                   else:
                       # Find and delete osdial_auto_calls
                       osdial.sql().execute("SELECT lead_id,callerid,campaign_id,alt_dial,stage,UNIX_TIMESTAMP(call_time) AS start_epoch,uniqueid,status FROM osdial_auto_calls WHERE channel=%s AND (uniqueid=%s OR callerid=%s) LIMIT 1;", (vars['agi_channel'],vars['agi_uniqueid'],vars['agi_accountcode']))
-                      accnt = osdial.sql().rowcount
+                      accnt = 0
                       autocalls = {'lead_id':0,'callerid':'','campaign_id':'','alt_dial':'','stage':'','start_epoch':0,'uniqueid':'','status':'','user':'','comments':'','term_reason':'','closecallid':0}
                       olog = {'start_epoch':0,'end_epoch':0}
                       liveagents = {'live_agent_id':0,'user':'','extension':'','uniqueid':'','last_call_time':'','server_ip':'','conf_exten':''}
                       company_id = ''
+                      rows = osdial.sql().fetchall()
+                      if rows is not None:
+                          accnt = len(rows)  
                       if accnt > 0:
-                          for row in osdial.sql().fetchall():
+                          for row in rows:
                               for col in row:
                                   autocalls[col] = row[col]
   
@@ -485,9 +488,12 @@ class FastAGIServer(threading.Thread):
                                   olog[col] = row[col]
   
                           osdial.sql().execute("SELECT live_agent_id,user,extension,uniqueid,last_call_time,server_ip,conf_exten FROM osdial_live_agents WHERE uniqueid=%s AND (extension LIKE 'R/va%%' OR extension LIKE 'R/tmp%%') LIMIT 1;",(vars['agi_uniqueid']))
-                          lacnt = osdial.sql().rowcount
+                          lacnt = 0
+                          rows = osdial.sql().fetchall()
+                          if rows is not None:
+                              lacnt = len(rows)  
                           if lacnt > 0:
-                              for row in osdial.sql().fetchall():
+                              for row in rows:
                                   for col in row:
                                       liveagents[col] = row[col]
   
@@ -527,17 +533,23 @@ class FastAGIServer(threading.Thread):
                                   acct_method = row['acct_method']
   
                               osdial.sql().execute("SELECT status,comments FROM osdial_list WHERE lead_id=%s LIMIT 1;",(autocalls['lead_id']))
-                              lcnt = osdial.sql().rowcount
+                              lcnt = 0
+                              rows = osdial.sql().fetchall()
+                              if rows is not None:
+                                  lcnt = len(rows)
                               if lcnt > 0:
-                                  for row in osdial.sql().fetchall():
+                                  for row in rows:
                                       lead_status = row['status']
                                       lead_comments = row['comments']
   
                                   alog_id = 0
                                   osdial.sql().execute("SELECT agent_log_id FROM osdial_agent_log WHERE server_ip=%s AND uniqueid=%s AND lead_id=%s;",(osdial.VARserver_ip,liveagents['uniqueid'],autocalls['lead_id']))
-                                  alcnt = osdial.sql().rowcount
+                                  alcnt = 0
+                                  rows = osdial.sql().fetchall()
+                                  if rows is not None:
+                                      alcnt = len(rows)
                                   if alcnt > 0:
-                                      for row in osdial.sql().fetchall():
+                                      for row in rows:
                                           alog_id = int(row['agent_log_id'] or 0)
                                       osdial.sql().execute("UPDATE osdial_agent_log SET status=%s WHERE server_ip=%s AND uniqueid=%s AND lead_id=%s;",(lead_status,osdial.VARserver_ip,liveagents['uniqueid'],autocalls['lead_id']))
                                       self.logger.info("%s|%s|osdial_agent_log update|%s", threadid, stage, osdial.sql()._executed)
@@ -584,9 +596,11 @@ class FastAGIServer(threading.Thread):
                                   if qm_stage < 0.25:
                                       qm_stage = 0
                                   qsql().execute("SELECT agent FROM queue_log WHERE call_id=%s AND verb='CONNECT';", (autocalls['callerid']))
-                                  qcnt = qsql().rowcount
+                                  qcnt = 0
+                                  qrecs = qsql().fetchall()
+                                  if qrecs is not None:
+                                      qcnt = len(qrecs)
                                   if qcnt > 0:
-                                      qrecs = qsql().fetchall()
                                       for qrec in qrecs:
                                           qm_agent = qrec['agent']
                                   if qcnt < 1:
@@ -606,17 +620,23 @@ class FastAGIServer(threading.Thread):
                           odclcnt = 0
                           if not re.search('^Y\d\d\d\d',vars['agi_accountcode']):
                               osdial.sql().execute("SELECT start_epoch,status,user,term_reason,comments FROM osdial_log FORCE INDEX(lead_id) WHERE lead_id=%s AND uniqueid LIKE %s AND server_ip=%s LIMIT 1;", (autocalls['lead_id'],re.sub('\.\d+$','',vars['agi_uniqueid']) + '%',osdial.VARserver_ip))
-                              odlcnt = osdial.sql().rowcount
+                              odlcnt = 0
+                              rows = osdial.sql().fetchall()
+                              if rows is not None:
+                                  odlcnt = len(rows)
                               if odlcnt > 0:
-                                  for row in osdial.sql().fetchall():
+                                  for row in rows:
                                       for col in row:
                                           autocalls[col] = row[col]
   
                           if odlcnt < 1 or re.search('^Y\d\d\d\d',vars['agi_accountcode']):
                               osdial.sql().execute("SELECT start_epoch,status,closecallid,user,term_reason,length_in_sec,queue_seconds,comments,call_date,uniqueid,lead_id,campaign_id FROM osdial_closer_log WHERE lead_id=%s AND call_date>%s AND end_epoch IS NULL ORDER BY call_date ASC LIMIT 1;", (autocalls['lead_id'],time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time() - 21600))))
-                              odclcnt = osdial.sql().rowcount
+                              odclcnt = 0
+                              rows = osdial.sql().fetchall()
+                              if rows is not None:
+                                  odclcnt = len(rows)
                               if odclcnt > 0:
-                                  for row in osdial.sql().fetchall():
+                                  for row in rows:
                                       for col in row:
                                           autocalls[col] = row[col]
   
@@ -687,9 +707,12 @@ class FastAGIServer(threading.Thread):
                                       waitsec = (talkepoch - waitepoch)
                                       talksec = (dispoepoch - talkepoch)
                                       osdial.sql().execute("SELECT agent_log_id FROM osdial_agent_log WHERE server_ip=%s AND uniqueid=%s AND lead_id=%s;", (osdial.VARserver_ip,autocalls['uniqueid'],autocalls['lead_id']))
-                                      alcnt = osdial.sql().rowcount
+                                      alcnt = 0
+                                      rows = osdial.sql().fetchall()
+                                      if rows is not None:
+                                          alcnt = len(rows)
                                       if alcnt > 0:
-                                          for row in osdial.sql().fetchall():
+                                          for row in rows:
                                               alog_id = int(row['agent_log_id'] or 0)
                                           osdial.sql().execute("UPDATE osdial_agent_log SET status=%s WHERE server_ip=%s AND uniqueid=%s AND lead_id=%s;", (autocalls['status'],osdial.VARserver_ip,autocalls['uniqueid'],autocalls['lead_id']))
                                       else:
@@ -699,9 +722,12 @@ class FastAGIServer(threading.Thread):
   
                                       acct_method = 'NONE'
                                       osdial.sql().execute("SELECT acct_method FROM osdial_companies WHERE id=%s LIMIT 1;", (company_id))
-                                      ccnt = osdial.sql().rowcount
+                                      ccnt = 0
+                                      rows = osdial.sql().fetchall()
+                                      if rows is not None:
+                                          ccnt = len(rows)
                                       if ccnt > 0:
-                                          for row in osdial.sql().fetchall():
+                                          for row in rows:
                                               acct_method = row['acct_method']
   
                                       if not re.search('^$|^NONE$|^RANGE$', acct_method):
@@ -731,17 +757,23 @@ class FastAGIServer(threading.Thread):
                           altdial['auto_alt_dial'] = 'NONE'
                           altdial['auto_alt_dial_statuses'] = ''
                           osdial.sql().execute("SELECT auto_alt_dial,auto_alt_dial_statuses,use_internal_dnc FROM osdial_campaigns WHERE campaign_id=%s LIMIT 1;", (autocalls['campaign_id']))
-                          cacnt = osdial.sql().rowcount
+                          cacnt = 0
+                          rows = osdial.sql().fetchall()
+                          if rows is not None:
+                              cacnt = len(rows)
                           if cacnt > 0:
-                              for row in osdial.sql().fetchall():
+                              for row in rows:
                                   for col in row:
                                       altdial[col] = row[col]
   
                           if re.search(' '+autocalls['status']+' | '+lead_status+' ', altdial['auto_alt_dial_statuses']):
                               osdial.sql().execute("SELECT alt_phone,address3,gmt_offset_now,state,list_id FROM osdial_list WHERE lead_id=%s LIMIT 1;", (autocalls['lead_id']))
-                              licnt = osdial.sql().rowcount
+                              licnt = 0
+                              rows = osdial.sql().fetchall()
+                              if rows is not None:
+                                  licnt = len(rows)
                               if licnt > 0:
-                                  for row in osdial.sql().fetchall():
+                                  for row in rows:
                                       for col in row:
                                           altdial[col] = row[col]
                                   altdial['alt_phone'] = re.sub('\D','',altdial['alt_phone'])
@@ -749,9 +781,12 @@ class FastAGIServer(threading.Thread):
                                   
                               if int(osdial.settings['enable_multicompany'] or 0) > 0:
                                   osdial.sql().execute("SELECT dnc_method FROM osdial_companies WHERE id=%s;", (company_id))
-                                  cocnt = osdial.sql().rowcount
+                                  cocnt = 0
+                                  rows = osdial.sql().fetchall()
+                                  if rows is not None:
+                                      cocnt = len(rows)
                                   if cocnt > 0:
-                                      for row in osdial.sql().fetchall():
+                                      for row in rows:
                                           altdial['dnc_method'] = row['dnc_method']
   
                               # alt_phone
@@ -763,17 +798,23 @@ class FastAGIServer(threading.Thread):
                                           if int(osdial.settings['enable_multicompany'] or 0) > 0:
                                               if re.search('COMPANY|BOTH',altdial['dnc_method']):
                                                   osdial.sql().execute("SELECT count(*) AS cnt FROM osdial_dnc_company WHERE company_id=%s AND (phone_number=%s OR phone_number=%s);", (company_id, altdial['alt_phone'],re.sub('^(\d\d\d).*','\g<1>XXXXXXX',altdial['alt_phone'])))
-                                                  odccnt = osdial.sql().rowcount
+                                                  odccnt = 0
+                                                  rows = osdial.sql().fetchall()
+                                                  if rows is not None:
+                                                      odccnt = len(rows)
                                                   if odccnt > 0:
-                                                      for row in osdial.sql().fetchall():
+                                                      for row in rows:
                                                           alt_dnc_count += int(row['cnt'] or 0)
                                               if re.search('COMPANY', altdial['dnc_method']):
                                                   dncsskip += 1
                                           if dncsskip == 0:
                                               osdial.sql().execute("SELECT count(*) AS cnt FROM osdial_dnc WHERE (phone_number=%s OR phone_number=%s);", (altdial['alt_phone'],re.sub('^(\d\d\d).*','\g<1>XXXXXXX',altdial['alt_phone'])))
-                                              odcnt = osdial.sql().rowcount
+                                              odcnt = 0
+                                              rows = osdial.sql().fetchall()
+                                              if rows is not None:
+                                                  odcnt = len(rows)
                                               if odcnt > 0:
-                                                  for row in osdial.sql().fetchall():
+                                                  for row in rows:
                                                       alt_dnc_count += int(row['cnt'] or 0)
                                       if alt_dnc_count < 1:
                                           osdial.sql().execute("INSERT INTO osdial_hopper SET lead_id=%s,campaign_id=%s,status='HOLD',list_id=%s,gmt_offset_now=%s,state=%s,alt_dial='ALT',user='',priority='25';", (autocalls['lead_id'],autocalls['campaign_id'],altdial['list_id'],altdial['gmt_offset_now'],altdial['state']))
@@ -789,17 +830,23 @@ class FastAGIServer(threading.Thread):
                                           if int(osdial.settings['enable_multicompany'] or 0) > 0:
                                               if re.search('COMPANY|BOTH',altdial['dnc_method']):
                                                   osdial.sql().execute("SELECT count(*) AS cnt FROM osdial_dnc_company WHERE company_id=%s AND (phone_number=%s OR phone_number=%s);", (company_id, altdial['address3'],re.sub('^(\d\d\d).*','\g<1>XXXXXXX',altdial['address3'])))
-                                                  odccnt = osdial.sql().rowcount
+                                                  odccnt = 0
+                                                  rows = osdial.sql().fetchall()
+                                                  if rows is not None:
+                                                      odccnt = len(rows)
                                                   if odccnt > 0:
-                                                      for row in osdial.sql().fetchall():
+                                                      for row in rows:
                                                           addr3_dnc_count += int(row['cnt'] or 0)
                                               if re.search('COMPANY', altdial['dnc_method']):
                                                   dncsskip += 1
                                           if dncsskip == 0:
                                               osdial.sql().execute("SELECT count(*) AS cnt FROM osdial_dnc WHERE (phone_number=%s OR phone_number=%s);", (altdial['address3'],re.sub('^(\d\d\d).*','\g<1>XXXXXXX',altdial['address3'])))
-                                              odcnt = osdial.sql().rowcount
+                                              odcnt = 0
+                                              rows = osdial.sql().fetchall()
+                                              if rows is not None:
+                                                  odcnt = len(rows)
                                               if odcnt > 0:
-                                                  for row in osdial.sql().fetchall():
+                                                  for row in rows:
                                                       addr3_dnc_count += int(row['cnt'] or 0)
                                       if addr3_dnc_count < 1:
                                           osdial.sql().execute("INSERT INTO osdial_hopper SET lead_id=%s,campaign_id=%s,status='HOLD',list_id=%s,gmt_offset_now=%s,state=%s,alt_dial='ADDR3',user='',priority='25';", (autocalls['lead_id'],autocalls['campaign_id'],altdial['list_id'],altdial['gmt_offset_now'],altdial['state']))
@@ -814,9 +861,12 @@ class FastAGIServer(threading.Thread):
                                       cur_aff = (int(re.sub('\D','',autocalls['alt_dial']) or 0) * 1)
                                   while cur_aff < 10:
                                       osdial.sql().execute("SELECT value FROM osdial_list_fields WHERE field_id=(SELECT id FROM osdial_campaign_fields WHERE name=%s LIMIT 1) AND lead_id=%s;", ("AFFAP" + cur_aff, autocalls['lead_id']))
-                                      olfcnt = osdial.sql().rowcount
+                                      olfcnt = 0
+                                      rows = osdial.sql().fetchall()
+                                      if rows is not None:
+                                          olfcnt = len(rows)
                                       if olfcnt > 0:
-                                          for row in osdial.sql().fetchall():
+                                          for row in rows:
                                               aff_number = re.sub('\D','',row['value'])
                                       aff_dnc_count = 0
                                       if len(aff_number) > 5:
@@ -825,17 +875,23 @@ class FastAGIServer(threading.Thread):
                                               if int(osdial.settings['enable_multicompany'] or 0) > 0:
                                                   if re.search('COMPANY|BOTH',altdial['dnc_method']):
                                                       osdial.sql().execute("SELECT count(*) AS cnt FROM osdial_dnc_company WHERE company_id=%s AND (phone_number=%s OR phone_number=%s);", (company_id, aff_number,re.sub('^(\d\d\d).*','\g<1>XXXXXXX',aff_number)))
-                                                      odccnt = osdial.sql().rowcount
+                                                      odccnt = 0
+                                                      rows = osdial.sql().fetchall()
+                                                      if rows is not None:
+                                                          odccnt = len(rows)
                                                       if odccnt > 0:
-                                                          for row in osdial.sql().fetchall():
+                                                          for row in rows:
                                                               aff_dnc_count += int(row['cnt'] or 0)
                                                   if re.search('COMPANY', altdial['dnc_method']):
                                                       dncsskip += 1
                                               if dncsskip == 0:
                                                   osdial.sql().execute("SELECT count(*) AS cnt FROM osdial_dnc WHERE (phone_number=%s OR phone_number=%s);", (aff_number,re.sub('^(\d\d\d).*','\g<1>XXXXXXX',aff_number)))
-                                                  odcnt = osdial.sql().rowcount
+                                                  odcnt = 0
+                                                  rows = osdial.sql().fetchall()
+                                                  if rows is not None:
+                                                      odcnt = len(rows)
                                                   if odcnt > 0:
-                                                      for row in osdial.sql().fetchall():
+                                                      for row in rows:
                                                           aff_dnc_count += int(row['cnt'] or 0)
                                           if aff_dnc_count < 1:
                                               osdial.sql().execute("INSERT INTO osdial_hopper SET lead_id=%s,campaign_id=%s,status='HOLD',list_id=%s,gmt_offset_now=%s,state=%s,alt_dial=%s,user='',priority='25';", (autocalls['lead_id'],autocalls['campaign_id'],altdial['list_id'],altdial['gmt_offset_now'],altdial['state'], "AFFAP" + cur_aff))

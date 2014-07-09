@@ -110,17 +110,18 @@ def manager_send():
             osdial.sql().execute("SELECT count(*) AS cnt FROM osdial_manager WHERE server_ip=%s AND status='NEW';", (osdial.VARserver_ip))
             new_actions = 0
             queue_actions = 0
-            for row in osdial.sql().fetchall():
-                new_actions = row['cnt']
+            rows = osdial.sql().fetchall()
+            if rows is not None:
+                for row in rows:
+                    new_actions = row['cnt']
             if new_actions:
                 logger.info("%s NEW actions to send on %s.", new_actions, osdial.VARserver_ip)
-                osdial.sql().execute("UPDATE osdial_manager SET status='QUEUE' WHERE server_ip=%s AND status='NEW' ORDER BY man_id ASC;", (osdial.VARserver_ip))
-                queue_actions = osdial.sql().rowcount
+                queue_actions = osdial.sql().execute("UPDATE osdial_manager SET status='QUEUE' WHERE server_ip=%s AND status='NEW' ORDER BY man_id ASC;", (osdial.VARserver_ip))
             if queue_actions:
                 logger.info("%s rows changed to QUEUE on %s.", queue_actions, osdial.VARserver_ip)
                 osdial.sql().execute("SELECT * FROM osdial_manager WHERE server_ip=%s AND status='QUEUE' ORDER BY man_id ASC;", (osdial.VARserver_ip)) 
-                if osdial.sql().rowcount:
-                    rows = osdial.sql().fetchall()
+                rows = osdial.sql().fetchall()
+                if rows is not None:
                     for row in rows:
                         osdial.sql().execute("UPDATE osdial_manager SET status='SENT' WHERE man_id=%s AND status='QUEUE';", (row['man_id']))
                         logger.info("Processing QUEUEd entry %s, marking as SENT and sending to the AMI on %s.|%s|%s|%s|%s", row['man_id'], osdial.VARserver_ip, row['uniqueid'], row['channel'], row['action'], row['callerid'])
@@ -129,8 +130,10 @@ def manager_send():
                             logger.info("Checking for DEAD call before sending|%s|%s", row['uniqueid'], row['callerid'])
                             osdial.sql().execute("SELECT count(*) AS cnt FROM osdial_manager WHERE server_ip=%s AND callerid=%s AND status='DEAD';", (osdial.VARserver_ip, row['callerid']))
                             dead_count = 0
-                            for row2 in osdial.sql().fetchall():
-                                dead_count = row2['cnt']
+                            rows2 = osdial.sql().fetchall()
+                            if rows2 is not None:
+                                for row2 in rows2:
+                                    dead_count = row2['cnt']
                             if dead_count:
                                 logger.info("Not sending as command is already marked as DEAD|%s|%s", row['uniqueid'], row['callerid'])
                                 send_command = False
