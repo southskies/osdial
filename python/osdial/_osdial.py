@@ -75,6 +75,12 @@ class OSDial(object):
         for row in self.sql().fetchall():
             self.vars['configuration'][row['name']] = row['data']
 
+
+    def reload(self):
+        self._loadConfig()
+        self._loadSQLConfig()
+        
+
     def close(self):
         if not self._sql is None:
             self._sql.close()
@@ -334,4 +340,16 @@ class OSDial(object):
                 os.chmod("%s/%s" % (mdir,row['filename']), 0666)
         return files
 
+    def osdevent(self, opts):
+        self.event(opts)
+
+    def event(self, opts):
+        flds = []
+        vals = []
+        for opt in opts.keys():
+            flds.append(opt)
+            vals.append(opts[opt])
+        insstr = "INSERT INTO osdial_events (%s) VALUES (%s);" % (",".join(flds),("%s,"[:3]*len(flds)).rstrip(','))
+        self.sql().execute(insstr, (vals))
+        
 

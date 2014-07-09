@@ -4,6 +4,9 @@
 #
 
 import sys, MySQLdb, MySQLdb.cursors
+from warnings import filterwarnings
+import MySQLdb as Database
+filterwarnings('ignore', category = Database.Warning)
 
 class OSDialSQL(object):
     osdial = None
