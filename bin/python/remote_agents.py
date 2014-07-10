@@ -181,10 +181,8 @@ def remoteagent_process():
                         logger.debug("LISTEN RUNNING: |%s|", proc.pid)
                         running_listen = True
                 except psutil.AccessDenied, e:
-                    running_listen = True
                     pass
                 except psutil.NoSuchProcess, e:
-                    running_listen = True
                     pass
 
             if not running_listen:
@@ -302,8 +300,8 @@ def remoteagent_process():
                         qopts['db'] = osdial.settings['queuemetrics_dbname']
                         qsql = OSDialSQL2(None, qopts)
                         qsql().execute("INSERT INTO queue_log SET partition='P001',time_id=%s,call_id='NONE',queue=%s',agent=%s,verb='AGENTLOGIN',data1=%s,serverid=%s;", (times['nowdate_epoch'],user['campaign_id'],"Agent/%s" % user['user'],user['user'],osdial.settings['queuemetrics_log_id']))
-                        qsql.execute("INSERT INTO queue_log SET partition='P001',time_id=%s,call_id='NONE',queue=%s,agent=%s,verb='PAUSEALL',serverid=%s;", (times['nowdate_epoch'],user['campaign_id'],"Agent/%s" % user['user'],osdial.settings['queuemetrics_log_id']))
-                        qsql.execute("INSERT INTO queue_log SET partition='P001',time_id=%s,call_id='NONE',queue=%s,agent=%s,verb='UNPAUSEALL',serverid=%s;", (times['nowdate_epoch'],user['campaign_id'],"Agent/%s" % user['user'],osdial.settings['queuemetrics_log_id']))
+                        qsql().execute("INSERT INTO queue_log SET partition='P001',time_id=%s,call_id='NONE',queue=%s,agent=%s,verb='PAUSEALL',serverid=%s;", (times['nowdate_epoch'],user['campaign_id'],"Agent/%s" % user['user'],osdial.settings['queuemetrics_log_id']))
+                        qsql().execute("INSERT INTO queue_log SET partition='P001',time_id=%s,call_id='NONE',queue=%s,agent=%s,verb='UNPAUSEALL',serverid=%s;", (times['nowdate_epoch'],user['campaign_id'],"Agent/%s" % user['user'],osdial.settings['queuemetrics_log_id']))
                     except:
                         pass
                     if not qsql is None:
@@ -374,17 +372,17 @@ def remoteagent_process():
                             qopts['passwd'] = osdial.settings['queuemetrics_pass']
                             qopts['db'] = osdial.settings['queuemetrics_dbname']
                             qsql = OSDialSQL2(None, qopts)
-                            qsql.execute("INSERT INTO queue_log SET partition='P001',time_id=%s,call_id='NONE',queue='NONE',agent=%s,verb='PAUSEALL',serverid=%s;", (times['nowdate_epoch'],"Agent/%s" % user['user'],osdial.settings['queuemetrics_log_id']))
+                            qsql().execute("INSERT INTO queue_log SET partition='P001',time_id=%s,call_id='NONE',queue='NONE',agent=%s,verb='PAUSEALL',serverid=%s;", (times['nowdate_epoch'],"Agent/%s" % user['user'],osdial.settings['queuemetrics_log_id']))
                             logintime = 0
-                            qsql.execute("SELECT time_id FROM queue_log WHERE agent=%s AND verb='AGENTLOGIN' ORDER BY time_id DESC LIMIT 1;", ("Agent/%s" % user['user']))
-                            for row in qsql.fetchall():
+                            qsql().execute("SELECT time_id FROM queue_log WHERE agent=%s AND verb='AGENTLOGIN' ORDER BY time_id DESC LIMIT 1;", ("Agent/%s" % user['user']))
+                            for row in qsql().fetchall():
                                 logintime = row['time_id']
                             time_logged_in = (times['nowdate_epoch'] - logintime)
                             if not time_logged_in:
                                 time_logged_in = 0
                             elif time_logged_in > 1000000:
                                 time_logged_in = 1
-                            qsql.execute("INSERT INTO queue_log SET partition='P001',time_id=%s,call_id='NONE',queue=%s,agent=%s,verb='AGENTLOGOFF',data1=%s,data2=%s,serverid=%s;", (times['nowdate_epoch'],user['campaign_id'],"Agent/%s" % user['user'],user['user'],time_logged_in,osdial.settings['queuemetrics_log_id']))
+                            qsql().execute("INSERT INTO queue_log SET partition='P001',time_id=%s,call_id='NONE',queue=%s,agent=%s,verb='AGENTLOGOFF',data1=%s,data2=%s,serverid=%s;", (times['nowdate_epoch'],user['campaign_id'],"Agent/%s" % user['user'],user['user'],time_logged_in,osdial.settings['queuemetrics_log_id']))
                         except:
                             pass
                         if not qsql is None:
@@ -444,8 +442,8 @@ def remoteagent_process():
                             qopts['passwd'] = osdial.settings['queuemetrics_pass']
                             qopts['db'] = osdial.settings['queuemetrics_dbname']
                             qsql = OSDialSQL2(None, qopts)
-                            qsql.execute("INSERT INTO queue_log SET partition='P001',time_id=%s,call_id='NONE',queue='NONE',agent=%s,verb='PAUSEALL',serverid=%s;", (times['nowdate_epoch'],"Agent/%s" % user['user'],osdial.settings['queuemetrics_log_id']))
-                            qsql.execute("INSERT INTO queue_log SET partition='P001',time_id=%s,call_id='NONE',queue=%s,agent=%s,verb='AGENTLOGOFF',data1=%s,serverid=%s;", (times['nowdate_epoch'],user['campaign_id'],"Agent/%s" % user['user'],user['user'],osdial.settings['queuemetrics_log_id']))
+                            qsql().execute("INSERT INTO queue_log SET partition='P001',time_id=%s,call_id='NONE',queue='NONE',agent=%s,verb='PAUSEALL',serverid=%s;", (times['nowdate_epoch'],"Agent/%s" % user['user'],osdial.settings['queuemetrics_log_id']))
+                            qsql().execute("INSERT INTO queue_log SET partition='P001',time_id=%s,call_id='NONE',queue=%s,agent=%s,verb='AGENTLOGOFF',data1=%s,serverid=%s;", (times['nowdate_epoch'],user['campaign_id'],"Agent/%s" % user['user'],user['user'],osdial.settings['queuemetrics_log_id']))
                         except:
                             pass
                         if not qsql is None:
