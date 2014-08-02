@@ -51,10 +51,11 @@ my $AGI = $osdial->AGI();
 my $CIDlead_id = (substr($AGI->{'accountcode'}, 11, 9) + 0);
 $osdial->agi_output("+++++ VD amd START: |$CIDlead_id|");
 
+my $endsecs = time();
 
 # AMD says it's a machine so modify statuses and hangup call something will go here later for leaving a message on AMs.
 
-my $affected_rows = $osdial->sql_execute("UPDATE osdial_log SET status='AL',end_epoch=NOW(),length_in_sec=NOW()-start_epoch WHERE lead_id='$CIDlead_id' ORDER BY call_date DESC LIMIT 1;");
+my $affected_rows = $osdial->sql_execute("UPDATE osdial_log SET status='AL',end_epoch='$endsecs',length_in_sec=$endsecs-start_epoch WHERE lead_id='$CIDlead_id' ORDER BY call_date DESC LIMIT 1;");
 $osdial->agi_output("--    OSD osdial_log AL update: |$affected_rows|");
 
 my $affected_rows = $osdial->sql_execute("UPDATE osdial_list set status='AL' where lead_id='$CIDlead_id';");
