@@ -51,10 +51,13 @@ my $osdial = OSDial->new(DB=>$DB);
 $osdial->AGI($prog);
 my $AGI = $osdial->AGI();
 
+my $nowsecs = time();
+my $nowdate = $osdial->get_datetime();
+
 my $accountcode = $AGI->{'accountcode'};
 my $CIDlead_id = (substr($accountcode, 11, 9) + 0);
 
-$osdial->agi_output("+++++ OSD amd START : |$CIDlead_id|$accountcode|",1);
+$osdial->agi_output("+++++ OSD amd START : |$CIDlead_id|$accountcode|$nowsecs|$nowdate|",1);
 
 ########## FIND osdial_auto_calls record ##########
 my $acret = $osdial->sql_query(sprintf("SELECT * FROM osdial_auto_calls WHERE callerid='%s' ORDER BY auto_call_id DESC LIMIT 1;",$osdial->mres($accountcode)));
@@ -102,13 +105,14 @@ if ($AMDSTATUS =~ /PERSON|HUMAN|NOTSURE|HANGUP/) {
 	my $affected_rows = $osdial->sql_execute(sprintf("DELETE FROM osdial_auto_calls WHERE callerid='%s' ORDER BY auto_call_id DESC LIMIT 1;",$osdial->mres($accountcode)));
 	$osdial->agi_output("--    VDAC record deleted: |$affected_rows|$CIDlead_id|");
 
+	my $endsecs = time();
 	########## FIND AND UPDATE osdial_log ##########
 	my $sret = $osdial->sql_query(sprintf("SELECT count(*) AS count FROM osdial_log WHERE uniqueid='%s' AND server_ip='%s' AND lead_id='%s' ORDER BY call_date DESC LIMIT 1;",$osdial->mres($AGI->{uniqueid}),$osdial->mres($osdial->{VARserver_ip}),$osdial->mres($CIDlead_id)));
 	if ($sret->{'count'} == 0) {
 		$osdial->agi_output("no VDL record found: $CIDlead_id");
-		$osdial->sql_execute(sprintf("INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,length_in_sec,end_epoch,server_ip,callerid) VALUES('%s','%s','%s',NOW(),NOW(),'AA','%s','%s','VDAD','N','3',NOW()+3,'%s','%s');",$osdial->mres($AGI->{uniqueid}),$osdial->mres($CIDlead_id),$osdial->mres($acret->{campaign_id}),$osdial->mres($acret->{phone_code}),$osdial->mres($acret->{phone_number}),$osdial->mres($osdial->{VARserver_ip}),$osdial->mres($accountcode)));
+		$osdial->sql_execute(sprintf("INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,length_in_sec,end_epoch,server_ip,callerid) VALUES('%s','%s','%s','%s','%s','AA','%s','%s','VDAD','N','%s','%s','%s','%s');",$osdial->mres($AGI->{uniqueid}),$osdial->mres($CIDlead_id),$osdial->mres($acret->{campaign_id}),$osdial->mres(),$osdial->mres(),$osdial->mres($acret->{phone_code}),$osdial->mres($acret->{phone_number}),$osdial->mres(($endsecs-$nowsecs)),$osdial->mres($endsecs),$osdial->mres($osdial->{VARserver_ip}),$osdial->mres($accountcode)));
 	} else {
-		$osdial->sql_execute(sprintf("UPDATE osdial_log SET status='AA',end_epoch=NOW(),length_in_sec=NOW()-start_epoch WHERE uniqueid='%s' AND server_ip='%s' AND lead_id='%s' ORDER BY call_date DESC LIMIT 1;",$osdial->mres($AGI->{'uniqueid'}),$osdial->mres($osdial->{VARserver_ip}),$osdial->mres($CIDlead_id)));
+		$osdial->sql_execute(sprintf("UPDATE osdial_log SET status='AA',end_epoch='%s',length_in_sec=%s-start_epoch WHERE uniqueid='%s' AND server_ip='%s' AND lead_id='%s' ORDER BY call_date DESC LIMIT 1;",$osdial->mres($endsecs),$endsecs,$osdial->mres($AGI->{'uniqueid'}),$osdial->mres($osdial->{VARserver_ip}),$osdial->mres($CIDlead_id)));
 	}
 
 
@@ -124,9 +128,11 @@ if ($AMDSTATUS =~ /PERSON|HUMAN|NOTSURE|HANGUP/) {
 		$osdial->agi_output("--    OSD osdial_list AM update: |$affected_rows|");
 
 		if ($sret->{amd_send_to_vmx} =~ /Y/) {
-			$osdial->agi_output("exiting the AMD app, transferring call to " . $sret->{am_message_exten});
+			my $amdexten = $lead->{am_message_exten};
+			$osdial->agi_output("exiting the AMD app, transfering call to 8319/" . $amdexten);
+			$AGI->set_variable('AMDEXTEN',$amdexten);
 			$AGI->set_context($osdial->{server}{ext_context});
-			$AGI->set_extension($sret->{am_message_exten});
+			$AGI->set_extension('8319');
 			$AGI->set_priority(1);
 		} else {
 			my $lead = $osdial->sql_query(sprintf("SELECT * FROM osdial_list WHERE lead_id='%s';",$osdial->mres($CIDlead_id)));
