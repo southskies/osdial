@@ -991,6 +991,10 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
                     $submit_method=1;
                 } elseif ($submit_method=='WEBFORM2') {
                     $submit_method=2;
+                } elseif ($submit_method=='PASSBACK1') {
+                    $submit_method=3;
+                } elseif ($submit_method=='PASSBACK2') {
+                    $submit_method=4;
                 } else {
                     $submit_method=0;
                 }
@@ -1763,6 +1767,8 @@ if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
             $PMMscripttext = OSDpreg_replace('/\{\{DISPO_NORMAL:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="document.getElementById(\'HotKeyDispo\').innerHTML=\'$1 - $2\';showDiv(\'HotKeyActionBox\');document.osdial_form.DispoSelection.value=\'$1\';CustomerData_update();submit_method_tmp=submit_method;submit_method=0;HKdispo_display=3;HKfinish=1;dialedcall_send_hangup(\'NO\',\'YES\',\'\');">',$PMMscripttext);
             $PMMscripttext = OSDpreg_replace('/\{\{DISPO_WEBFORM1:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="document.getElementById(\'HotKeyDispo\').innerHTML=\'$1 - $2\';showDiv(\'HotKeyActionBox\');document.osdial_form.DispoSelection.value=\'$1\';CustomerData_update();submit_method_tmp=submit_method;submit_method=1;HKdispo_display=3;HKfinish=1;dialedcall_send_hangup(\'NO\',\'YES\',\'\');">',$PMMscripttext);
             $PMMscripttext = OSDpreg_replace('/\{\{DISPO_WEBFORM2:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="document.getElementById(\'HotKeyDispo\').innerHTML=\'$1 - $2\';showDiv(\'HotKeyActionBox\');document.osdial_form.DispoSelection.value=\'$1\';CustomerData_update();submit_method_tmp=submit_method;submit_method=2;HKdispo_display=3;HKfinish=1;dialedcall_send_hangup(\'NO\',\'YES\',\'\');">',$PMMscripttext);
+            $PMMscripttext = OSDpreg_replace('/\{\{DISPO_PASSBACK1:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="document.getElementById(\'HotKeyDispo\').innerHTML=\'$1 - $2\';showDiv(\'HotKeyActionBox\');document.osdial_form.DispoSelection.value=\'$1\';CustomerData_update();submit_method_tmp=submit_method;submit_method=3;HKdispo_display=3;HKfinish=1;dialedcall_send_hangup(\'NO\',\'YES\',\'\');">',$PMMscripttext);
+            $PMMscripttext = OSDpreg_replace('/\{\{DISPO_PASSBACK2:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="document.getElementById(\'HotKeyDispo\').innerHTML=\'$1 - $2\';showDiv(\'HotKeyActionBox\');document.osdial_form.DispoSelection.value=\'$1\';CustomerData_update();submit_method_tmp=submit_method;submit_method=4;HKdispo_display=3;HKfinish=1;dialedcall_send_hangup(\'NO\',\'YES\',\'\');">',$PMMscripttext);
 
             $MMscripttext[$e] = urlencode($PMMscripttext);
             $MMscriptids .= "'$MMscriptid[$e]',";

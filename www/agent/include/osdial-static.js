@@ -1031,7 +1031,11 @@
                               	alt_dial_menu=0;
                                 reselect_alt_dial=0;
                                 showDiv('DispoSelectBox');
-                                DispoSelectContent_create('XFER','');
+				if (submit_method == 3 || submit_method == 4) {
+                                	DispoSelectContent_create('XFER','');
+				} else {
+                                	DispoSelectContent_create('XFER','');
+				}
                         } else {
                                 dialedcall_send_hangup();
                         }
@@ -2213,24 +2217,29 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 	//if (VD_statuses_ct_half > 12) scroll="overflow-y:scroll;";
 	//var dispo_HTML = "<br><table frame=border cellpadding=5 cellspacing=5 width=620><tr><td colspan=2 align=center><font color=" + dispo_fc + "><b>Call Dispositions</b></td></tr><tr><td colspan=2 align=center><div style=\"height:320;" + scroll + "\"><table cellpadding=5 cellspacing=5><tr><td bgcolor=\"" + dispo_bg + "\" height=320 width=300 valign=top><font class=\"log_text\"><div id=DispoSelectA>";
 	var dispo_HTML = "<table cellpadding=5 cellspacing=5><tr><td bgcolor=\"" + dispo_bg + "\" height=320 width=300 valign=top><font class=\"log_text\"><div id=DispoSelectA>";
-	var loop_ct = 0;
-	while (loop_ct < VD_statuses_ct) {
-		if (taskDSgrp == VARstatuses[loop_ct]) {
-			dispo_HTML = dispo_HTML + "<font size=3 style=\"BACKGROUND-COLOR: " + dispo_bg2 + "\"><b><a href=\"#\" onclick=\"DispoMaximize(); DispoSelect_submit();return false;\">" + VARstatuses[loop_ct] + " - " + VARstatusnames[loop_ct] + "</a></b></font><BR><BR>";
-		} else {
-			dispo_HTML = dispo_HTML + "<a href=\"#\" onclick=\"DispoMaximize(); DispoSelectContent_create('" + VARstatuses[loop_ct] + "','ADD');return false;\">" + VARstatuses[loop_ct] + " - " + VARstatusnames[loop_ct] + "</a><font size=-2><BR><BR></font>";
-		}
-		if (loop_ct == VD_statuses_ct_half) {
-			dispo_HTML = dispo_HTML + "</div></font></td><td bgcolor=\"" + dispo_bg + "\" height=320 width=300 valign=top><font class=\"log_text\"><div id=DispoSelectB>";
-		}
-		loop_ct++;
-	}
-	dispo_HTML = dispo_HTML + "</td></tr></table>";
-	if (taskDSstage == 'ReSET') {
+	if (taskDSstage == 'PASSBACK') {
+		dispo_HTML = dispo_HTML + "</div></font></td><td bgcolor=\"" + dispo_bg + "\" height=320 width=300 valign=top><font class=\"log_text\"><div id=DispoSelectB>";
 		document.osdial_form.DispoSelection.value = '';
 	} else {
-		document.osdial_form.DispoSelection.value = taskDSgrp;
+		var loop_ct = 0;
+		while (loop_ct < VD_statuses_ct) {
+			if (taskDSgrp == VARstatuses[loop_ct]) {
+				dispo_HTML = dispo_HTML + "<font size=3 style=\"BACKGROUND-COLOR: " + dispo_bg2 + "\"><b><a href=\"#\" onclick=\"DispoMaximize(); DispoSelect_submit();return false;\">" + VARstatuses[loop_ct] + " - " + VARstatusnames[loop_ct] + "</a></b></font><BR><BR>";
+			} else {
+				dispo_HTML = dispo_HTML + "<a href=\"#\" onclick=\"DispoMaximize(); DispoSelectContent_create('" + VARstatuses[loop_ct] + "','ADD');return false;\">" + VARstatuses[loop_ct] + " - " + VARstatusnames[loop_ct] + "</a><font size=-2><BR><BR></font>";
+			}
+			if (loop_ct == VD_statuses_ct_half) {
+				dispo_HTML = dispo_HTML + "</div></font></td><td bgcolor=\"" + dispo_bg + "\" height=320 width=300 valign=top><font class=\"log_text\"><div id=DispoSelectB>";
+			}
+			loop_ct++;
+		}
+		if (taskDSstage == 'ReSET') {
+			document.osdial_form.DispoSelection.value = '';
+		} else {
+			document.osdial_form.DispoSelection.value = taskDSgrp;
+		}
 	}
+	dispo_HTML = dispo_HTML + "</td></tr></table>";
 	document.getElementById("DispoSelectContent").innerHTML = dispo_HTML;
 }
 
@@ -2292,7 +2301,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 			if (submit_method == 2) {
 				window.open(wf2_enc_address, 'webform2', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
-			} else {
+			} else if (submit_method == 1) {
 				window.open(wf_enc_address, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
 			}
 			submit_method = submit_method_tmp;
@@ -3126,7 +3135,17 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				}
 				CustomerData_update();
 				showDiv('DispoSelectBox');
-				DispoSelectContent_create('','ReSET');
+				if (submit_method == 3 || submit_method == 4) {
+					WebFormRefresH();
+					if (submit_method == 4) {
+						window.open(wf2_enc_address, 'webform2', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+					} else if (submit_method == 3) {
+						window.open(wf_enc_address, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+					}
+						DispoSelectContent_create('','PASSBACK');
+				} else {
+					DispoSelectContent_create('','ReSET');
+				}
 				WaitingForNextStep=1;
 				open_dispo_screen=0;
 				LIVE_default_xfer_group = default_xfer_group;
@@ -5337,12 +5356,12 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			document.getElementById("CusTInfOSpaN").innerHTML = "";
 			document.getElementById("CusTInfOSpaN").style.backgroundColor = panel_bgcolor;
 
-			if (submit_method > 0) {
+			if (submit_method == 1 || submit_method == 2) {
 				LeaDDispO = DispoChoice;
 				WebFormRefresH();
 				if (submit_method == 2) {
 					window.open(wf2_enc_address, 'webform2', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
-				} else {
+				} else if (submit_method == 1) {
 					window.open(wf_enc_address, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
 				}
 			}
@@ -7368,3 +7387,72 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			delete xmlhttp;
 		}
 	}
+
+// ################################################################################
+// passbackCancel() - Cancel the passback and display the disposition options.
+	function passbackCancel() {
+		if (_passbackKeepaliveCheckID)
+			clearTimeout(_passbackKeepaliveCheckID);
+		_passbackCancelPending=false;
+		hideDiv('DispoSelectBox');
+		showDiv('DispoSelectBox');
+		extendedStatusesBypass = 0;
+		DispoSelectContent_create('','ReSET');
+	}
+
+
+// ################################################################################
+// passbackDisposition(disposition, agentPauseAfter) - Disposition the lead and
+// pause after disposition screen if agentPauseAfter is true.
+	function passbackDisposition(dispo, agentPauseAfter) {
+		document.osdial_form.DispoSelection.value = dispo;
+		DispoChoice = document.osdial_form.DispoSelection.value;
+		if (agentPauseAfter && agentPauseAfter > 0)
+			document.osdial_form.DispoSelectStop.checked = true;
+		LeaDDispO = DispoChoice;
+		WebFormRefresH();
+		submit_method = submit_method_tmp;
+		extendedStatusesBypass = 1;
+		DispoSelect_submit();
+	}
+
+// ################################################################################
+// passbackKeepalive(window, timeoutsecs) - Call from external window, cancels the
+// the passback if window is unresponsive.
+	function passbackKeepalive(kwin,ktimeout) {
+		_passbackKeepaliveTimeout = ktimeout;
+		_passbackKeepaliveID = undefined;
+		kwin._passbackKAfunction = function(){};
+		kwin._passbackKAfunction = function(){
+			_passbackKeepaliveID = setTimeout(kwin._passbackKAfunction, 1000);
+			if (!kwin || !kwin.opener || !kwin.opener._passbackKeepaliveUpdate(_passbackKeepaliveID)) {
+				clearTimeout(_passbackKeepaliveID);
+				_passbackCancelPending=true;
+				passbackCancel();
+			}
+		}
+		_passbackKeepaliveID = kwin.setTimeout(kwin._passbackKAfunction, 1000);
+		_passbackKeepaliveCheckID = setTimeout("_passbackKAcheckfunction()", _passbackKeepaliveTimeout*1000);
+	}
+
+	function _passbackKeepaliveUpdate(inval) {
+		if (!_passbackCancelPending) {
+			_passbackRemoteKAID = inval;
+			if (_passbackRemoteKAID)
+				return true;
+		}
+		_passbackRemoteKAID = null;
+		return false;
+	}
+
+	function _passbackKAcheckfunction() {
+		if (_passbackRemoteKAID) {
+			_passbackKeepaliveCheckID = setTimeout("_passbackKAcheckfunction()", _passbackKeepaliveTimeout*1000);
+		} else {
+			if (_passbackKeepaliveCheckID)
+				clearTimeout(_passbackKeepaliveCheckID);
+			_passbackCancelPending=true;
+			passbackCancel();
+		}
+	}
+
