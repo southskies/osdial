@@ -2217,7 +2217,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 	//if (VD_statuses_ct_half > 12) scroll="overflow-y:scroll;";
 	//var dispo_HTML = "<br><table frame=border cellpadding=5 cellspacing=5 width=620><tr><td colspan=2 align=center><font color=" + dispo_fc + "><b>Call Dispositions</b></td></tr><tr><td colspan=2 align=center><div style=\"height:320;" + scroll + "\"><table cellpadding=5 cellspacing=5><tr><td bgcolor=\"" + dispo_bg + "\" height=320 width=300 valign=top><font class=\"log_text\"><div id=DispoSelectA>";
 	var dispo_HTML = "<table cellpadding=5 cellspacing=5><tr><td bgcolor=\"" + dispo_bg + "\" height=320 width=300 valign=top><font class=\"log_text\"><div id=DispoSelectA>";
-	if (taskDSstage == 'PASSBACK') {
+	if (submit_method == 3 || submit_method == 4) {
 		dispo_HTML = dispo_HTML + "</div></font></td><td bgcolor=\"" + dispo_bg + "\" height=320 width=300 valign=top><font class=\"log_text\"><div id=DispoSelectB>";
 		document.osdial_form.DispoSelection.value = '';
 	} else {
@@ -2233,11 +2233,11 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			}
 			loop_ct++;
 		}
-		if (taskDSstage == 'ReSET') {
-			document.osdial_form.DispoSelection.value = '';
-		} else {
-			document.osdial_form.DispoSelection.value = taskDSgrp;
-		}
+	}
+	if (taskDSstage == 'ReSET') {
+		document.osdial_form.DispoSelection.value = '';
+	} else {
+		document.osdial_form.DispoSelection.value = taskDSgrp;
 	}
 	dispo_HTML = dispo_HTML + "</td></tr></table>";
 	document.getElementById("DispoSelectContent").innerHTML = dispo_HTML;
@@ -3166,10 +3166,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 					} else if (submit_method == 3) {
 						window.open(wf_enc_address, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
 					}
-						DispoSelectContent_create('','PASSBACK');
-				} else {
-					DispoSelectContent_create('','ReSET');
 				}
+				DispoSelectContent_create('','ReSET');
 				WaitingForNextStep=1;
 				open_dispo_screen=0;
 				LIVE_default_xfer_group = default_xfer_group;
