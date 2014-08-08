@@ -236,3 +236,7 @@ var XDnextCID='';
 var XfeR_channel='';
 var xferchannellive=0;
 var xmlhttp=false;
+var _passbackRemoteKAID;
+var _passbackCancelPending=false;
+var _passbackKeepaliveCheckID;
+var _passbackKeepaliveTimeout=0;
