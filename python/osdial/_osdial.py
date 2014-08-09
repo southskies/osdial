@@ -231,9 +231,8 @@ class OSDial(object):
 
     def media_get_filedata(self, filename):
         self.sql().execute("SELECT filedata FROM osdial_media_data WHERE filename=%s;", (filename))
-        filedata = ""
-        for row in self.sql().fetchall():
-            filedata += row['filedata']
+        rows = self.sql().fetchall()
+        filedata = "".join([row['filedata'] for row in rows])
         return filedata
 
     def media_delete_filedata(self, filename):
