@@ -2470,8 +2470,10 @@ flush();
                         <input type=hidden name=DispoSelection><br>
                         <input type=checkbox name=DispoSelectStop size=1 value="0">
                         PAUSE <?php echo (($inbound_man>0)?"INBOUND CALLS":"AGENT DIALING") ?> <br>
+                        <?php if ($submit_method != 3 and $submit_method != 4) { ?>
                         <a href="#" onclick="DispoMaximize();DispoSelectContent_create('','ReSET');return false;">CLEAR FORM</a>
                         &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; 
+                        <?php } ?>
                         <a href="#" onclick="DispoMaximize();DispoSelect_submit();return false;"><b>SUBMIT</b></a>
                         <?php if ($submit_method < 1) {
                             echo "<br><br>\n";
