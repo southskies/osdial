@@ -6200,31 +6200,31 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			for (var i=0; i<AFids.length; i++) {
 				var SCt='';
 				if (AFoptions[i] && AFoptions[i] != '') {
-					SCt += "<select name=" + AFnames[i] + ' id=' + AFnames[i];
+					SCt += "<select name=" + AFnames[i];
 					SCt += " onfocus=\"this.value=document.getElementById('" + AFids[i] + "').value;\"";
 					SCt += " onchange=\"var afv=this; document.getElementById('" + AFids[i] + "').value=afv.value;";
 					SCt += " var aflist=document.getElementsByName('" + AFnames[i] + "');";
-					//SCt += " for(var afli=0;afli<aflist.length;afli%2B%2B)";
-					SCt += " for(var afli=0;afli<aflist.length;afli++)";
+					SCt += " for(var afli=0;afli<aflist.length;afli&#43;&#43;)";
 					SCt += " {if(afv.value!=aflist[afli].value) aflist[afli].value=afv.value;};\">";
-					for (var option in AFoptions[i].split(',')) {
-						SCt += "<option>" + option + "</option>";
+					var options = AFoptions[i].split(',');
+					for (var option in options) {
+						SCt += "<option>" + options[option] + "</option>";
 					}
 					SCt += "</select>";
 				} else if (AFlengths[i] && AFlengths[i]=='0') {
-					SCt += "<textarea style=\"height:32px;font-size:11px;\" cols=\"22\" rows=\"2\" name="+AFnames[i]+' id='+AFnames[i];
+					SCt += "<textarea style=\"height:32px;font-size:11px;\" cols=\"22\" rows=\"2\" name="+AFnames[i];
 					SCt += " onfocus=\"this.value=document.getElementById('" + AFids[i] + "').value;\"";
 					SCt += " onchange=\"var afv=this; document.getElementById('" + AFids[i] + "').value=afv.value;";
 					SCt += " var aflist=document.getElementsByName('" + AFnames[i] + "');";
-					SCt += " for(var afli=0;afli<aflist.length;afli++)";
+					SCt += " for(var afli=0;afli<aflist.length;afli&#43;&#43;)";
 					SCt += " {if(afv.value!=aflist[afli].value) aflist[afli].value=afv.value;};\"";
 					SCt += ' class=cust_form></textarea>';
 				} else {
-					SCt += "<input type=text size="+AFlengths[i]+" maxlength=255 name="+AFnames[i]+' id='+AFnames[i];
+					SCt += "<input type=text size="+AFlengths[i]+" maxlength=255 name="+AFnames[i];
 					SCt += " onfocus=\"this.value=document.getElementById('" + AFids[i] + "').value;\"";
 					SCt += " onchange=\"var afv=this; document.getElementById('" + AFids[i] + "').value=afv.value;";
 					SCt += " var aflist=document.getElementsByName('" + AFnames[i] + "');";
-					SCt += " for(var afli=0;afli<aflist.length;afli++)";
+					SCt += " for(var afli=0;afli<aflist.length;afli&#43;&#43;)";
 					SCt += " {if(afv.value!=aflist[afli].value) aflist[afli].value=afv.value;};\"";
 					SCt += ' class=cust_form value=\"\">';
 				}
