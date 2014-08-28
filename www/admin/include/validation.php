@@ -256,6 +256,7 @@
 	$web_form2_extwindow = OSDpreg_replace("/[^NY]/","",$web_form2_extwindow);
 	$use_custom2_callerid = OSDpreg_replace("/[^NY]/","",$use_custom2_callerid);
 	$use_cid_areacode_map = OSDpreg_replace("/[^NY]/","",$use_cid_areacode_map);
+	$lead_transfer_active = OSDpreg_replace("/[^NY]/","",$lead_transfer_active);
 	
 	### ALPHA-NUMERIC ONLY ###
 	#$user_start = OSDpreg_replace("/[^0-9a-zA-Z]/","",$user_start);
@@ -384,6 +385,7 @@
 	$default_xfer_group = OSDpreg_replace("/[\s\'\"]/","",$default_xfer_group);
 	$xfer_cid_mode = OSDpreg_replace("/[^-\_0-9a-zA-Z]/","",$xfer_cid_mode);
 	$carrier_name = OSDpreg_replace("/[^-\_0-9a-zA-Z]/","",$carrier_name);
+	$lead_transfer_id = OSDpreg_replace("/[^-\_0-9a-zA-Z]/","",$lead_transfer_id);
 	
 	### ALPHA-NUMERIC and spaces
 	$lead_order = OSDpreg_replace("/[^ 0-9a-zA-Z]/","",$lead_order);
@@ -425,6 +427,7 @@
 	$campaign_cid_name = OSDpreg_replace("/[^ \.\,-\_0-9a-zA-Z]/","",$campaign_cid_name);
 	$outbound_cid_name = OSDpreg_replace("/[^ \.\,-\_0-9a-zA-Z]/","",$outbound_cid_name);
 	$cid_name = OSDpreg_replace("/[^ \.\,-\_0-9a-zA-Z]/","",$cid_name);
+	$lead_transfer_description = OSDpreg_replace("/[^ \.\,-\_0-9a-zA-Z]/","",$lead_transfer_description);
 	
 	### ALPHA-NUMERIC and underscore and dash and slash and at and dot
 	$call_out_number_group = OSDpreg_replace("/[^-\.\:\/\@\_0-9a-zA-Z]/","",$call_out_number_group);

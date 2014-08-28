@@ -848,6 +848,20 @@ if (OSDstrlen($lists_hh) > 1) {
         $list_deleteall_color=$inactivemenu3_color;
         $list_deleteall_class='rounded-menu3';
     }
+    if (OSDpreg_match('/^(10lx|31lx|41lx)$/',$ADD)) {
+        $list_transfers_color=$activemenu2_color;
+        $list_transfers_class='rounded-menu2select';
+    } else {
+        $list_transfers_color=$inactivemenu2_color;
+        $list_transfers_class='rounded-menu2';
+    }
+    if (OSDpreg_match('/^(31lx|41lx)$/',$ADD)) {
+        $list_lxmodify_color=$activemenu3_color;
+        $list_lxmodify_class='rounded-menu3select';
+    } else {
+        $list_lxmodify_color=$inactivemenu3_color;
+        $list_lxmodify_class='rounded-menu3';
+    }
     echo "<tr>";
     echo "  <td colspan=12 $settings_menucols2>";
     echo "    <table border=0 cellpadding=0 cellspacing=0 width=100%>";
@@ -866,6 +880,9 @@ if (OSDstrlen($lists_hh) > 1) {
         echo "        <td class=$list_search_class align=center bgcolor=$list_search_color><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=999999&SUB=26\"> Lead Search </a></span></td>";
     } elseif ($LOG['view_lead_search']) {
         echo "        <td align=center bgcolor=$list_search_color><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=999999&SUB=27\"> Lead Search </a></span></td>";
+    }
+    if ($LOG['user_level'] > 7 && $LOG['modify_leads'] > 0 && $LOG['modify_lists'] > 0 && $LOG['load_leads'] > 0) {
+        echo "        <td class=$list_transfers_class align=center bgcolor=$list_transfers_color><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=10lx\"> Lead Transfers </a></span></td>";
     }
     echo "        <td bgcolor=$inactivemenu2_color class='rounded-menu2' width=200>&nbsp;</td>";
     echo "        <td class='narrow-space' bgcolor=$bgmenu_color width=3>&nbsp;</td>";
@@ -887,6 +904,18 @@ if (OSDstrlen($lists_hh) > 1) {
         echo "        </td>";
         echo "      </tr>";
     } 
+    if (OSDpreg_match('/^(31lx|41lx)$/',$ADD)) {
+        echo "      <tr>";
+        echo "        <td colspan=$settings_menucols2>";
+        echo "          <table cellpadding=0 cellspacing=0 width=100% border=0>";
+        echo "            <tr class=no-ul height=25>";
+        echo "              <td align=center bgcolor=$list_lxmodify_color class=$list_lxmodify_class><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=31lx&lead_transfer_id=$lead_transfer_id\"> Modify Lead Transfer Policy</a></span></td>";
+        echo "              <td bgcolor=$inactivemenu3_color class='rounded-menu3' width=400>&nbsp;</td>";
+        echo "            </tr>";
+        echo "          </table>";
+        echo "        </td>";
+        echo "      </tr>";
+    }
     echo "    </table>";
     echo "  </td>";
     echo "</tr>";
