@@ -176,6 +176,11 @@ if ($ADD==611)			{$hh='lists';	$title = "Delete List";}
 if ($ADD==811)			{$hh='lists';	$title = "CallBacks Within List";}
 if ($ADD==311)			{$hh='lists';	$title = "Modify List";}
 
+# Lead Transfers
+if ($ADD=='10lx')			{$hh='lists';	$sh='transfers';       $title = "Lead Transfer Policies";}
+if ($ADD=='41lx')			{$hh='lists';	$sh='transfers';       $title = "Modify Lead Transfer Policy";}
+if ($ADD=='31lx')			{$hh='lists';	$sh='transfers';       $title = "Modify Lead Transfer Policy";}
+
 # Ingroups
 if ($ADD==1000)			{$hh='ingroups';	$title = "In-Groups";}
 if ($ADD==1001)			{$hh='ingroups';	$title = "In-Groups A2A";}
