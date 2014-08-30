@@ -2608,6 +2608,48 @@ user[:secret[:authuser]]@carrier_name[/extension]&lt;br/&gt;
     </item>
   </section>
 
+  <section pathId="osdial_lead_transfers" sectionId="41" title="Lead Transfers">
+    <item pathId="policies" sectionId="1" title="Lead Transfer Policies">
+    Lead Transfers allow for the move or copy of a lead to different list based on given rules. The lead is evaluated against these given rules shortly after contact has been made and has been properly dispositioned.
+    &lt;br&gt;&lt;br&gt;
+    A Lead Transfer Policy is a collection of rules that specify which conditions must be met and the destination list to move or copy the lead into. The Lead Transfer Policy can then be assigned by modifying each desired List and selecting the policy.
+    &lt;br&gt;&lt;br&gt;
+    The following fields are required to create or modify a Lead Transfer Policy:
+    &lt;br&gt;&lt;ul&gt;
+      &lt;li&gt;ID - A short alphanumeric ID to identify the policy.&lt;/li&gt;
+      &lt;li&gt;DESCRIPTION - A longer phrase describing the policy.&lt;/li&gt;
+      &lt;li&gt;ACTIVE - Set to Y to start or N to stop using it, applies to all assigned lists.&lt;/li&gt;
+    &lt;/ul&gt;
+    After adding a policy, the UPDATE, DELETE, and EDIT POLICY options become available.
+    EDIT POLICY will display the rules entry screen for the policy.
+    </item>
+
+    <item pathId="rules" sectionId="2" title="Lead Transfer Policy Rules">
+    The top section allows for updating the ID, Description, and/or Active fields of the Lead Transfer Policy. The section below for adding and modifying the rules that comprise the policy.
+    &lt;br&gt;&lt;br&gt;
+    To create a new rule, locate the selection boxes at the bottom of the form, set the method and destination options, then click NEW.
+    &lt;br&gt;&lt;ul&gt;
+      &lt;li&gt;Method Options
+        &lt;ul&gt;&lt;li&gt;Transfer Method:
+          &lt;ul&gt;&lt;li&gt;MOVE- Lead will be transferred directly to destination list.&lt;/li&gt;
+          &lt;li&gt;COPY- Lead remains in original list its data is added to the destination list with a new Lead ID.&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;
+        &lt;li&gt;New Status for Original: (Optional) COPY only. Changes status of original lead to value selected.&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;
+      &lt;li&gt;Destination Options
+        &lt;ul&gt;&lt;li&gt;Destination List: List ID to move or copy the lead too.&lt;/li&gt;
+        &lt;li&gt;Destination Status: (Optional) Changes status of destination lead.&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+    After adding new rule, conditions must be added. When evaluated, all conditions within this rule must be satisfied for lead to transfer.
+    &lt;br&gt;&lt;ul&gt;
+      &lt;li&gt;Conditions:
+        &lt;ul&gt;&lt;li&gt;called_count: times called is equal or greater than the given value.&lt;/li&gt;
+        &lt;li&gt;status: status matches any in given list.&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+    Notes: On all transferred leads, the Called Since Last Reset flag is cleared. On copied leads, the new leads start with a Called Count of 0. Additional conditions may be added in the future.
+    </item>
+
+  </section>
+
+
   </chapter>
  </topic>
  <topic pathId="advanced" sectionId="5" title="Advanced Topics">
