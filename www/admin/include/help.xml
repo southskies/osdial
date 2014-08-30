@@ -2646,7 +2646,6 @@ user[:secret[:authuser]]@carrier_name[/extension]&lt;br/&gt;
     &lt;/ul&gt;
     Notes: On all transferred leads, the Called Since Last Reset flag is cleared. On copied leads, the new leads start with a Called Count of 0. Additional conditions may be added in the future.
     </item>
-
   </section>
 
 
