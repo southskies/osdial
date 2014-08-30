@@ -103,7 +103,7 @@ def leadtransfers_process():
         lists[str(row['list_id'])] = row
 
 
-    nowdate = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()-86400))
+    nowdate = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()-900))
     logs = []
     osdial.sql().execute("SELECT * FROM osdial_log WHERE call_date>=%s AND end_epoch>%s AND server_ip=%s AND processed=%s;", (nowdate,0,osdial.VARserver_ip,'N'))
     for row in osdial.sql().fetchall():
@@ -152,6 +152,12 @@ def leadtransfers_process():
                                     matches_called_count=True
                                 else:
                                     matches_called_count=False
+                            else:
+                                matches_status=False
+                                matches_called_count=False
+                        else:
+                            matches_status=False
+                            matches_called_count=False
                         if matches_status and matches_called_count:
                             if lx['action'] == 'COPY':
                                 newlead = values['lead']
@@ -170,6 +176,7 @@ def leadtransfers_process():
                                     if not newlead['date_of_birth']:
                                         newlead['date_of_birth'] = '0000-00-00 00:00:00'
                                     newlead['called_since_last_reset'] = 'N'
+                                    newlead['called_count'] = '0'
 
                                     flds = []
                                     stmt = "INSERT INTO osdial_list SET "
