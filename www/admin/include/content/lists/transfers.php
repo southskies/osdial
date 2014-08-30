@@ -208,7 +208,7 @@ if ($ADD=="31lx") {
         }
         $lead_transfer_id=strtoupper($lead_transfer_id);
         $lx=get_first_record($link, 'osdial_lead_transfers', '*', sprintf("id='%s'",mres($lead_transfer_id)));
-        echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY LEAD TRANSFER POLICY RULES</font><br><br>\n";
+        echo "<center><br><font class=top_header color=$default_text size=+1>MODIFY LEAD TRANSFER POLICY RULES</font>".helptag("osdial_lead_transfers-rules")."<br><br>\n";
         echo "<table class=shadedtable width=$section_width cellspacing=3>\n";
         echo "  <tr bgcolor=$oddrows valign=middle>\n";
         echo "    <td align=center colspan=3><br>\n";
@@ -526,7 +526,7 @@ if ($ADD=="10lx") {
             }
         }
 
-        echo "<center><br><font class=top_header color=$default_text size=+1>LEAD TRANSFER POLICIES</font><br><br>";
+        echo "<center><br><font class=top_header color=$default_text size=+1>LEAD TRANSFER POLICIES</font>".helptag("osdial_lead_transfers-policies")."<br><br>";
         echo "<table class=shadedtable width=$section_width cellspacing=0 cellpadding=1 style=\"white-space:nowrap;\">\n";
         echo "  <tr class=tabheader>\n";
         echo "    <td>ID</td>\n";

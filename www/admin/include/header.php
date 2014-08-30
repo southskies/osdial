@@ -910,7 +910,7 @@ if (OSDstrlen($lists_hh) > 1) {
         echo "          <table cellpadding=0 cellspacing=0 width=100% border=0>";
         echo "            <tr class=no-ul height=25>";
         echo "              <td align=center bgcolor=$list_lxmodify_color class=$list_lxmodify_class><span class=\"font2 fgnavy\"><a href=\"$PHP_SELF?ADD=31lx&lead_transfer_id=$lead_transfer_id\"> Modify Lead Transfer Policy</a></span></td>";
-        echo "              <td bgcolor=$inactivemenu3_color class='rounded-menu3' width=400>&nbsp;</td>";
+        echo "              <td bgcolor=$inactivemenu3_color class='rounded-menu3' width=750>&nbsp;</td>";
         echo "            </tr>";
         echo "          </table>";
         echo "        </td>";
