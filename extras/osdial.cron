@@ -79,6 +79,9 @@
 ### (dialer) Process to increase Asterisk performance by placing sounds on RAMFS.
 */15 * * * * /opt/osdial/bin/osdial-astsnds-ramfs.sh > /dev/null 2>&1
 
+### (dialer) Lead Transfers
+* * * * * /opt/osdial/bin/osdial_lead_transfers > /dev/null 2>&1
+
 ### (archive) Compress wav files to mp3
 * * * * * /opt/osdial/bin/AST_audio_compress.pl > /dev/null 2>&1
 

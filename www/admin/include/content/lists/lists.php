@@ -157,7 +157,7 @@ if ($ADD==411) {
         } else {
             echo "<br><B><font color=$default_text>LIST MODIFIED: $list_id</font></B>\n";
 
-            $stmt=sprintf("UPDATE osdial_lists SET list_name='%s',campaign_id='%s',active='%s',list_description='%s',list_changedate='%s',scrub_dnc='%s',cost='%s',web_form_address='%s',web_form_address2='%s',list_script='%s' WHERE list_id='%s';",mres($list_name),mres($campaign_id),mres($active),mres($list_description),mres($SQLdate),mres($scrub_dnc),mres($cost),mres($web_form_address),mres($web_form_address2),mres($script_id),mres($list_id));
+            $stmt=sprintf("UPDATE osdial_lists SET list_name='%s',campaign_id='%s',active='%s',list_description='%s',list_changedate='%s',scrub_dnc='%s',cost='%s',web_form_address='%s',web_form_address2='%s',list_script='%s',lead_transfer_id='%s' WHERE list_id='%s';",mres($list_name),mres($campaign_id),mres($active),mres($list_description),mres($SQLdate),mres($scrub_dnc),mres($cost),mres($web_form_address),mres($web_form_address2),mres($script_id),mres($lead_transfer_id),mres($list_id));
             $rslt=mysql_query($stmt, $link);
 
             if ($reset_list == 'Y') {
@@ -275,6 +275,7 @@ if ($ADD==311) {
         $web_form_address = $row[11];
         $web_form_address2 = $row[12];
         $script_id = $row[13];
+        $lead_transfer_id = $row[14];
 
         # grab names of global statuses and statuses in the selected campaign
         $stmt="SELECT * FROM osdial_statuses ORDER BY status;";
@@ -345,6 +346,27 @@ if ($ADD==311) {
         echo "<tr bgcolor=$oddrows><td align=right>Script: </td><td align=left><select size=1 name=script_id>\n";
         echo get_scripts($link, $script_id);
         echo "</select>".helptag("osdial_lists-list_script")."</td></tr>\n";
+
+        echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=31lx&lead_transfer_id=$lead_transfer_id\">Lead Transfer Policy</a>: </td><td align=left><select size=1 name=lead_transfer_id>\n";
+        echo "<option value=\"\">NONE</option>\n";
+
+        $stmt=sprintf("SELECT * FROM osdial_lead_transfers WHERE id LIKE '%s%%' AND active='Y' ORDER BY id;",$LOG['company_prefix']);
+        $rslt=mysql_query($stmt, $link);
+        $lx_to_print = mysql_num_rows($rslt);
+        $lx_list='';
+
+        $o=0;
+        while ($lx_to_print > $o) {
+            $rowx=mysql_fetch_row($rslt);
+            $lx_sel = '';
+            if ($lead_transfer_id==$rowx[0]) {
+                $lx_sel="selected";
+            }
+            $lx_list .= "<option value=\"$rowx[0]\" $lx_sel>" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
+            $o++;
+        }
+        echo "$lx_list";
+        echo "</select>".helptag("osdial_lists-lead_transfer_id")."</td></tr>\n";
 
         echo "<tr class=tabfooter>";
         echo "<td align=center class=tabbutton>";

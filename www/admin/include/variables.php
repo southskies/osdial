@@ -637,6 +637,12 @@ $login_campaign = get_variable("login_campaign");
 $login_pass = get_variable("login_pass");
 $login_user = get_variable("login_user");
 
+$old_lead_transfer_id = get_variable('old_lead_transfer_id');
+$lead_transfer_id = get_variable('lead_transfer_id');
+$lead_transfer_description = get_variable('lead_transfer_description');
+$lead_transfer_active = get_variable('lead_transfer_active');
+$lead_transfer_container = get_variable('lead_transfer_container');
+
 $manual_dial_allow_skip = get_variable("manual_dial_allow_skip");
 $manual_dial_list_id = get_variable("manual_dial_list_id");
 $manual_preview_default = get_variable("manual_preview_default");
