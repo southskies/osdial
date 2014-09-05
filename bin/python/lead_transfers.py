@@ -119,10 +119,10 @@ def leadtransfers_process():
 
         osdial.sql().execute("SELECT * FROM osdial_list WHERE lead_id=%s;", (log['lead_id']))
         for row in osdial.sql().fetchall():
-            values['lead_called_count'] = row['called_count']
+            values['lead_called_count'] = int('0%s' % row['called_count'])
             if row['called_since_last_reset']=='Y':
                 row['called_since_last_reset']=1
-            values['lead_called_since_last_reset'] = int(re.sub('\D','',row['called_since_last_reset']))
+            values['lead_called_since_last_reset'] = int(re.sub('\D','','0%s' % row['called_since_last_reset']))
             values['lead_list_id'] = str(row['list_id'])
             values['lead'] = row
 
@@ -143,21 +143,14 @@ def leadtransfers_process():
                         for cond in lx['conds']:
                             if cond['condition']=='status':
                                 statuses = re.split('&',cond['value'])
-                                if values['log_status'] in statuses:
-                                    matches_status=True
-                                else:
+                                if not values['log_status'] in statuses:
                                     matches_status=False
                             elif cond['condition']=='called_count':
-                                if values['lead_called_count'] >= cond['value']:
-                                    matches_called_count=True
-                                else:
+                                if not int(values['lead_called_count']) >= int(cond['value']):
                                     matches_called_count=False
                             else:
                                 matches_status=False
                                 matches_called_count=False
-                        else:
-                            matches_status=False
-                            matches_called_count=False
                         if matches_status and matches_called_count:
                             if lx['action'] == 'COPY':
                                 newlead = values['lead']
@@ -194,7 +187,7 @@ def leadtransfers_process():
                                     if lx['dest_status']:
                                         lead['status'] = lx['dest_status']
                                     lead['called_since_last_reset'] = 'N'
-                                    sts = osdial.sql().execute("UPDATE osdial_list SET list_id=%s,status=%s,called_since_last_reset=%s WHERE lead_id=%s;", (lead['list_id'], lead['status'],lead['called_since_last_reset']))
+                                    sts = osdial.sql().execute("UPDATE osdial_list SET list_id=%s,status=%s,called_since_last_reset=%s WHERE lead_id=%s;", (lead['list_id'], lead['status'],lead['called_since_last_reset'],lead['lead_id']))
 
         sts = osdial.sql().execute("UPDATE osdial_log SET processed=%s WHERE id=%s;", ('Y', values['log_id']))
 
