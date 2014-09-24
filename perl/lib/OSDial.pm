@@ -457,7 +457,7 @@ sub tts_generate {
 			open(TXT, '>'.$cachedir.'/'.$base.'.txt');
 			print TXT $phrase . "\n";
 			close(TXT);
-			system("/usr/bin/text2wave -eval \"($voice)\" -F 8000 -o $cachedir/$base.wav $cachedir/$base.txt");
+			system("/usr/bin/text2wave -eval \"($voice)\" -F 8000 -o $cachedir/$base.wav $cachedir/$base.txt 2>/dev/null");
 			unlink($cachedir.'/'.$base.'.txt');
 		} else {
 			$self->debug(1,'tts_generate','%s/%s.wav already exists.',$cachedir,$base);
@@ -471,7 +471,7 @@ sub tts_generate {
 				}
 				if (! -f $sdir1.'/tts/'.$base.'.wav') {
 					$self->debug(1,'tts_generate','Copying %s/%s.wav to %s/tts.',$cachedir,$base,$sdir1);
-					system('/bin/cp -au '.$cachedir.'/'.$base.'.wav '.$sdir1.'/tts') unless (-f $sdir1.'/tts/'.$base.'.wav');
+					system('/bin/cp -au '.$cachedir.'/'.$base.'.wav '.$sdir1.'/tts') unless (-f $sdir1.'/tts/'.$base.'.wav 2>/dev/null');
 				}
 			}
 			if (-d $sdir2 and -w $sdir2) {
@@ -481,7 +481,7 @@ sub tts_generate {
 				}
 				if (! -f $sdir2.'/tts/'.$base.'.wav') {
 					$self->debug(1,'tts_generate','Copying %s/%s.wav to %s/tts.',$cachedir,$base,$sdir2);
-					system('/bin/cp -au '.$cachedir.'/'.$base.'.wav '.$sdir2.'/tts') unless (-f $sdir2.'/tts/'.$base.'.wav');
+					system('/bin/cp -au '.$cachedir.'/'.$base.'.wav '.$sdir2.'/tts') unless (-f $sdir2.'/tts/'.$base.'.wav 2>/dev/null');
 				}
 			}
 		}

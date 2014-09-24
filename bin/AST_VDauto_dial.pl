@@ -287,6 +287,9 @@ $sthA->finish();
 		@DBlive_status=@MT;
 		@DBcampaigns=@MT;
 		@DBIPivr_exten=@MT;
+		@DBIPivr_extenACTIVE=@MT;
+		@DBIPnon_ivr_exten=@MT;
+		@DBIPnon_ivr_extenACTIVE=@MT;
 		@DBIPaddress=@MT;
 		@DBIPcampaign=@MT;
 		@DBIPactive=@MT;
@@ -325,7 +328,7 @@ $sthA->finish();
 		$user_campaigns_counter = 0;
 		$user_campaignIP = '|';
 		$user_CIPct = 0;
-		$active_agents = "'READY','QUEUE','INCALL','DONE'";
+		$active_agents = "'READY','QUEUE','INCALL'";
 		$lists_update = '';
 		$LUcount=0;
 		$campaigns_update = '';
@@ -398,7 +401,7 @@ $sthA->finish();
 		chop($user_campaignsSQL);
 
 		### see how many total VDAD calls are going on right now for max limiter
-		$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_auto_calls WHERE server_ip='$server_ip' AND status IN('SENT','RINGING','LIVE','XFER','CLOSER');";
+		$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_auto_calls WHERE server_ip='$server_ip' AND status!='PAUSED';";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows=$sthA->rows;
@@ -458,12 +461,19 @@ $sthA->finish();
 				if ( ($DBlive_campaign[$user_counter] =~ /$DBIPcampaign[$user_CIPct]/i) && (length($DBlive_campaign[$user_counter]) == length($DBIPcampaign[$user_CIPct])) && ($DBlive_server_ip[$user_counter] =~ /$DBIPaddress[$user_CIPct]/i) )
 					{
 					$DBIPcount[$user_CIPct]++;
-					$DBIPivr_exten[$user_CIPct] = ($DBIPivr_exten[$user_CIPct] + 0);
-					if ($ivr_active>0) {
-						my $cnf_base = $DBlive_conf_exten[$user_counter];
-						$cnf_base =~ s/^87...(...)$/$1/;
-						$DBIPivr_exten[$user_CIPct]++ if ($cnf_base <= $ivr_virtual_agents);
+
+					$DBIPivr_extenACTIVE[$user_CIPct] = ($DBIPivr_extenACTIVE[$user_CIPct] + 0);
+					$DBIPnon_ivr_exten[$user_CIPct] = ($DBIPnon_ivr_exten[$user_CIPct] + 0);
+					$DBIPnon_ivr_extenACTIVE[$user_CIPct] = ($DBIPnon_ivr_extenACTIVE[$user_CIPct] + 0);
+					my $cnf_base = $DBlive_conf_exten[$user_counter];
+					if ($cnf_base =~ /^87......$/) {
+						$DBIPivr_exten[$user_CIPct]++;
+						$DBIPivr_extenACTIVE[$user_CIPct]++ if ($DBlive_status[$user_counter] =~ /READY/);
+					} else {
+						$DBIPnon_ivr_exten[$user_CIPct]++;
+						$DBIPnon_ivr_extenACTIVE[$user_CIPct]++ if ($DBlive_status[$user_counter] =~ /READY/);
 					}
+
 					$DBIPACTIVEcount[$user_CIPct] = ($DBIPACTIVEcount[$user_CIPct] + 0);
 					$DBIPINCALLcount[$user_CIPct] = ($DBIPINCALLcount[$user_CIPct] + 0);
 					if ($DBlive_status[$user_counter] =~ /READY|DONE/) 
@@ -554,11 +564,18 @@ $sthA->finish();
 						if ($omit_phone_code =~ /Y/) {$DBIPomitcode[$user_CIPct] = 1;}
 						else {$DBIPomitcode[$user_CIPct] = 0;}
 					$available_only_ratio_tally =	"$aryA[9]";
-						if ($available_only_ratio_tally =~ /Y/) 
-							{
-							$DBIPcount[$user_CIPct] = $DBIPACTIVEcount[$user_CIPct];
-							$active_only=1;
-							}
+					if ($available_only_ratio_tally =~ /Y/) {
+						$DBIPcount[$user_CIPct] = $DBIPnon_ivr_extenACTIVE[$user_CIPct];
+						my $tmpagents = $DBIPivr_extenACTIVE[$user_CIPct];
+						$tmpagents = $ivr_virtual_agents if ($DBIPivr_extenACTIVE[$user_CIPct]>$ivr_virtual_agents);
+						$DBIPcount[$user_CIPct] += $tmpagents;
+						$active_only=1;
+					} else {
+						$DBIPcount[$user_CIPct] = $DBIPnon_ivr_exten[$user_CIPct];
+						my $tmpagents = $DBIPivr_exten[$user_CIPct];
+						$tmpagents = $ivr_virtual_agents if ($DBIPivr_exten[$user_CIPct]>$ivr_virtual_agents);
+						$DBIPcount[$user_CIPct] += $tmpagents;
+					}
 					$DBIPautoaltdial[$user_CIPct] =	"$aryA[10]";
 					$DBIPcampaign_allow_inbound[$user_CIPct] =	"$aryA[11]";
 					$DBIPanswers_per_hour_limit[$user_CIPct] =	($aryA[12] * 1);
@@ -671,21 +688,10 @@ $sthA->finish();
 					}
 				$sthA->finish();
 
-				$DBIPgoalcalls[$user_CIPct] = ($DBIPgoalcalls[$user_CIPct] + $tally_xfer_line_counter);
+				#$DBIPgoalcalls[$user_CIPct] = ($DBIPgoalcalls[$user_CIPct] + $tally_xfer_line_counter);
 				}
 
-			$ivr_goal=0;
-			if ($ivr_active>0) {
-				if ($ivr_virtual_agents>0) {
-					$ivr_attempt=($DBIPadlevel[$user_CIPct]*$ivr_virtual_agents)-$ivr_line_count;
-					$ivr_goal=$ivr_attempt;
-					$ivr_goal=$DBIPadlevel[$user_CIPct] * $DBIPivr_exten[$user_CIPct] if ($DBIPivr_exten[$user_CIPcr]<$ivr_virtual_agents);
-				} else {
-					$ivr_goal = 0;
-				}
-				$DBIPgoalcalls[$user_CIPct] += $ivr_goal;
-			}
-
+			$ivr_goal=$DBIPivr_exten[$user_CIPct];
 
 			if ($DBIPactive[$user_CIPct] =~ /N/) {$DBIPgoalcalls[$user_CIPct] = 0;}
 			$DBIPgoalcalls[$user_CIPct] = 0 if ($DBIPgoalcalls[$user_CIPct] < 0);
@@ -711,7 +717,7 @@ $sthA->finish();
 				$campaign_query = "( (call_type='IN' AND campaign_id IN($DBIPclosercamp[$user_CIPct])) OR (campaign_id='" . $osdial->mres($DBIPcampaign[$user_CIPct]) . "' AND call_type IN('OUT','OUTBALANCE')) )";
 				}
 			else {$campaign_query = "(campaign_id='" . $osdial->mres($DBIPcampaign[$user_CIPct]) . "' AND call_type IN('OUT','OUTBALANCE'))";}
-			$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_auto_calls WHERE $campaign_query AND server_ip='$DBIPaddress[$user_CIPct]' AND status IN('SENT','RINGING','LIVE','XFER','CLOSER');";
+			$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_auto_calls WHERE $campaign_query AND server_ip='$DBIPaddress[$user_CIPct]' AND status!='PAUSED';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;

@@ -729,7 +729,7 @@ sub stream_file_tts {
 			}
 			foreach my $tts_file (@tts_files) {
 				$retintdigit = $AGI->stream_file($tts_file,$valid_pat);
-				return $retintdigit if ($retintdigit==0 or $retintdigit==-1 or chr($retintdigit) =~ /$valid_pat/);
+				return $retintdigit if ($retintdigit!=0 and ($retintdigit==-1 or chr($retintdigit) =~ /$valid_pat/));
 			}
 		}
 	} else {

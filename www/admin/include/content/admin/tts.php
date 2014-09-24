@@ -20,27 +20,39 @@
 
 
 $fest_voices = array();
-if (file_exists("/usr/share/festival/lib/voices/us/nitech_us_clb_arctic_hts")) $fest_voices[] = "voice_nitech_us_clb_arctic_hts";
-if (file_exists("/usr/share/festival/lib/voices/us/nitech_us_awb_arctic_hts")) $fest_voices[] = "voice_nitech_us_awb_arctic_hts";
+if (file_exists("/usr/share/festival/lib/voices/us/cmu_us_rms_cg")) $fest_voices[] = "voice_cmu_us_rms_cg";
+if (file_exists("/usr/share/festival/lib/voices/us/cmu_us_slt_arctic_hts")) $fest_voices[] = "voice_cmu_us_slt_arctic_hts";
+if (file_exists("/usr/share/festival/lib/voices/us/cmu_us_awb_cg")) $fest_voices[] = "voice_cmu_us_awb_cg";
 if (file_exists("/usr/share/festival/lib/voices/us/nitech_us_rms_arctic_hts")) $fest_voices[] = "voice_nitech_us_rms_arctic_hts";
-if (file_exists("/usr/share/festival/lib/voices/us/nitech_us_jmk_arctic_hts")) $fest_voices[] = "voice_nitech_us_jmk_arctic_hts";
-if (file_exists("/usr/share/festival/lib/voices/us/nitech_us_bdl_arctic_hts")) $fest_voices[] = "voice_nitech_us_bdl_arctic_hts";
 if (file_exists("/usr/share/festival/lib/voices/us/nitech_us_slt_arctic_hts")) $fest_voices[] = "voice_nitech_us_slt_arctic_hts";
+if (file_exists("/usr/share/festival/lib/voices/us/nitech_us_awb_arctic_hts")) $fest_voices[] = "voice_nitech_us_awb_arctic_hts";
+if (file_exists("/usr/share/festival/lib/voices/us/nitech_us_bdl_arctic_hts")) $fest_voices[] = "voice_nitech_us_bdl_arctic_hts";
+if (file_exists("/usr/share/festival/lib/voices/us/nitech_us_clb_arctic_hts")) $fest_voices[] = "voice_nitech_us_clb_arctic_hts";
+if (file_exists("/usr/share/festival/lib/voices/us/nitech_us_jmk_arctic_hts")) $fest_voices[] = "voice_nitech_us_jmk_arctic_hts";
 if (file_exists("/usr/share/festival/lib/voices/english/kal_diphone")) $fest_voices[] = "voice_kal_diphone";
 if (file_exists("/usr/share/festival/lib/voices/english/ked_diphone")) $fest_voices[] = "voice_ked_diphone";
+if (file_exists("/usr/share/festival/lib/voices/english/rab_diphone")) $fest_voices[] = "voice_rab_diphone";
+if (file_exists("/usr/share/festival/lib/voices/spanish/cstr_upc_upm_spanish_hts")) $fest_voices[] = "voice_cstr_upc_upm_spanish_hts";
 if (file_exists("/usr/share/festival/lib/voices/es/JuntaDeAndalucia_es_pa_diphone")) $fest_voices[] = "voice_JuntaDeAndalucia_es_pa_diphone";
 if (file_exists("/usr/share/festival/lib/voices/es/JuntaDeAndalucia_es_sf_diphone")) $fest_voices[] = "voice_JuntaDeAndalucia_es_sf_diphone";
+if (file_exists("/usr/share/festival/lib/voices/spanish/el_diphone")) $fest_voices[] = "voice_el_diphone";
 $fest_types = array();
-$fest_types['voice_nitech_us_awb_arctic_hts'] = 'Scottish-accent US English male speaker "AWB"';
-$fest_types['voice_nitech_us_bdl_arctic_hts'] = 'US English male speaker "BDL"';
-$fest_types['voice_nitech_us_clb_arctic_hts'] = 'US English female speaker "CLB"';
-$fest_types['voice_nitech_us_jmk_arctic_hts'] = 'Canadian-accent US English male speaker "JMK"';
-$fest_types['voice_nitech_us_rms_arctic_hts'] = 'US English male speaker "RMS"';
-$fest_types['voice_nitech_us_slt_arctic_hts'] = 'US English female speaker "SLT"';
-$fest_types['voice_kal_diphone'] = 'American English male speaker "Kevin"';
-$fest_types['voice_ked_diphone'] = 'American English male speaker "Kurt"';
+$fest_types['voice_cmu_us_rms_cg'] = 'US English male speaker "RMS" (clustergen)';
+$fest_types['voice_cmu_us_slt_arctic_hts'] = 'US English female speaker "SLT" (clustergen)';
+$fest_types['voice_cmu_us_awb_cg'] = 'Scottish-accent US English male speaker "AWB" (clustergen)';
+$fest_types['voice_nitech_us_rms_arctic_hts'] = 'US English male speaker "RMS" (nitech)';
+$fest_types['voice_nitech_us_slt_arctic_hts'] = 'US English female speaker "SLT" (nitech)';
+$fest_types['voice_nitech_us_awb_arctic_hts'] = 'Scottish-accent US English male speaker "AWB" (nitech)';
+$fest_types['voice_nitech_us_bdl_arctic_hts'] = 'US English male speaker "BDL" (nitech)';
+$fest_types['voice_nitech_us_clb_arctic_hts'] = 'US English female speaker "CLB" (nitech)';
+$fest_types['voice_nitech_us_jmk_arctic_hts'] = 'Canadian-accent US English male speaker "JMK" (nitech)';
+$fest_types['voice_kal_diphone'] = 'American English male speaker "Kevin" (diphone)';
+$fest_types['voice_ked_diphone'] = 'American English male speaker "Kurt" (diphone)';
+$fest_types['voice_rab_diphone'] = 'British English male speaker (diphone)';
+$fest_types['voice_cstr_upc_upm_spanish_hts'] = 'Female Spanish voice (hts)';
 $fest_types['voice_JuntaDeAndalucia_es_pa_diphone'] = 'Male Spanish voice "PAL"';
 $fest_types['voice_JuntaDeAndalucia_es_sf_diphone'] = 'Female Spanish voice "SFL"';
+$fest_types['voice_el_diphone'] = 'Male Spanish voice (diphone)';
 
 
 
