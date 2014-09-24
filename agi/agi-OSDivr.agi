@@ -642,7 +642,7 @@ sub stream_and_get_dtmf {
 
 		$total_digits = '';
 		$stream =~ s/\..*$//;
-		my $interrupt_digit = stream_file_tts($stream,'0123456789#*');
+		my $interrupt_digit = stream_file_tts($stream,$valid_digits);
 		if ($interrupt_digit>0) {
 			my $int_digit=chr($interrupt_digit);
 			if (!$int_digit =~ /$valid_pat/) {
@@ -729,7 +729,9 @@ sub stream_file_tts {
 			}
 			foreach my $tts_file (@tts_files) {
 				$retintdigit = $AGI->stream_file($tts_file,$valid_pat);
-				return $retintdigit if ($retintdigit!=0 and ($retintdigit==-1 or chr($retintdigit) =~ /$valid_pat/));
+				unless ($retintdigit==0) {
+					return $retintdigit if ($retintdigit<0 or ($valid_pat ne '' and chr($retintdigit) =~ /[$valid_pat]/));
+				}
 			}
 		}
 	} else {
