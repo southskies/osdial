@@ -461,10 +461,10 @@ if ($ADD==20)
             $stmtA=sprintf("INSERT INTO osdial_pause_codes (pause_code,pause_code_name,billable,campaign_id) SELECT pause_code,pause_code_name,billable,'%s' FROM osdial_pause_codes WHERE campaign_id='%s';",mres($campaign_id),mres($source_campaign_id));
             $rslt=mysql_query($stmtA, $link);
 
-            $screc = get_first_record($link, 'osdial_campaigns', '*', sprintf("campaign_id LIKE '%s'",mres($source_campaign_id)));
-            $ccivr = get_first_record($link, 'osdial_ivr', '*', sprintf("id LIKE '%s'",mres($screc['ivr_id'])));
+            $screc = get_first_record($link, 'osdial_campaigns', '*', sprintf("campaign_id='%s'",mres($source_campaign_id)));
+            $ccivr = get_first_record($link, 'osdial_ivr', '*', sprintf("id='%s'",mres($screc['ivr_id'])));
             if (is_array($ccivr)) {
-                $stmtA=sprintf("INSERT INTO osdial_ivr (name,announcement,repeat_loops,wait_loops,wait_timeout,answered_status,virtual_agents,status,timeout_action,reserve_agents,allow_inbound) VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');",mres($ccivr['name']),mres($ccivr['announcement']),mres($ccivr['repeat_loops']),mres($ccivr['wait_loops']),mres($ccivr['wait_timeout']),mres($ccivr['answered_status']),mres($ccivr['virtual_agents']),mres($ccivr['status']),mres($ccivr['timeout_action']),mres($ccivr['reserve_agents']),mres($ccivr['allow_inbound']));
+                $stmtA=sprintf("INSERT INTO osdial_ivr (name,announcement,repeat_loops,wait_loops,wait_timeout,answered_status,virtual_agents,status,timeout_action,reserve_agents,allow_inbound) VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');",mres($ccivr['name']),mres($ccivr['announcement']),mres($ccivr['repeat_loops']),mres($ccivr['wait_loops']),mres($ccivr['wait_timeout']),mres($ccivr['answered_status']),mres($ccivr['virtual_agents']),mres($ccivr['status']),mres($ccivr['timeout_action']),mres($ccivr['reserve_agents']),mres($ccivr['allow_inbound']));
                 $rslt=mysql_query($stmtA, $link);
                 $new_ivr_id =  mysql_insert_id($link);
 
