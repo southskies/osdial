@@ -468,6 +468,9 @@ if ($ADD==20)
                 $rslt=mysql_query($stmtA, $link);
                 $new_ivr_id =  mysql_insert_id($link);
 
+                $stmtA=sprintf("UPDATE osdial_campaigns SET ivr_id='%s' WHERE campaign_id='%s';",mres($new_ivr_id),mres($campaign_id));
+                $rslt=mysql_query($stmtA, $link);
+
                 $ccivropts = get_krh($link, 'osdial_ivr_options', '*','parent_id ASC',sprintf("ivr_id='%s'",mres($ccivr['id'])),'');
                 if (is_array($ccivropts)) {
                     $ccidmap = Array();
