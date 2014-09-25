@@ -699,7 +699,11 @@ function report_realtime_detail() {
 
     } else {
       	echo "<div style='position:relative;left:10px;top:0px;text-shadow: rgba(0,0,0,0.3) 1px 1px 4px;'>&nbsp;";
-        $html .= "<span style='text-shadow: rgba(0,0,0,0.4) 1px 1px 2px'><font color=red size=5>NO LIVE CALLS WAITING</font></span><br/>";
+        $html .= "<span style='text-shadow: rgba(0,0,0,0.4) 1px 1px 2px'><font color=red size=5>&nbsp;";
+        if ($DIALmethod!='MANUAL') {
+            $html .= "NO LIVE CALLS WAITING";
+        }
+        $html .= "</font></span><br/>";
     }
 
 
