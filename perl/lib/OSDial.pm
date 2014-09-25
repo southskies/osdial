@@ -25,6 +25,8 @@ use 5.008000;
 use strict;
 use warnings;
 
+$|++;
+
 use DBI;
 use Asterisk::AGI;
 use Digest::MD5 qw(md5_hex); 
@@ -32,6 +34,10 @@ use Email::Stuffer;
 use Email::Sender::Transport::SMTP;
 use Proc::Exists ('pexists');
 use Data::Dumper;
+use Text::Unaccent;
+use Text::Unidecode qw(unidecode);
+use Encode qw(encode decode);
+use HTML::Entities qw(decode_entities);
 
 our $VERSION = 'SVN_Version';
 
@@ -441,7 +447,7 @@ sub tts_osdial_parse {
 
 sub tts_generate {
 	my ($self,$phrase,$voice) = @_;
-	$voice = 'voice_nitech_us_rms_arctic_hts' unless ($voice);
+	$voice = 'voice_cmu_us_slt_arctic_hts' unless ($voice);
 	my $cachedir = "/opt/osdial/tts";
 	my $sdir1 = "/mnt/ramdisk/sounds";
 	my $sdir2 = "/var/lib/asterisk/sounds";
@@ -454,34 +460,43 @@ sub tts_generate {
 		my $hash = md5_hex($voice.':'.$phrase);
 		my $base = 'tts-'.$hash; 
 		if (! -f $cachedir.'/'.$base.'.wav') {
+			my $PID = $$;
+			mkdir("/tmp/osdial_tts_gen.$PID");
+			chdir("/tmp/osdial_tts_gen.$PID");
+			$phrase = decode('LATIN1', decode_entities($phrase));
+			$phrase = decode('UTF-16be',unidecode(unac_string_utf16(encode('UTF-16be', $phrase)))) . "\n";
 			open(TXT, '>'.$cachedir.'/'.$base.'.txt');
-			print TXT $phrase . "\n";
+			print TXT $phrase;
 			close(TXT);
-			system("/usr/bin/text2wave -eval \"($voice)\" -F 8000 -o $cachedir/$base.wav $cachedir/$base.txt 2>/dev/null");
+			$self->agi_output("TTSCMD: /usr/bin/text2wave -eval \"($voice)\" -F 8000 -o $cachedir/$base.wav $cachedir/$base.txt");
+			my $cmd = `/usr/bin/text2wave -eval "($voice)" -F 8000 -o $cachedir/$base.wav $cachedir/$base.txt 2>&1`;
+			$self->agi_output('TTSRES: '.$cmd);
 			unlink($cachedir.'/'.$base.'.txt');
+			chdir("/tmp/");
+			$cmd = `/bin/rm -rf /tmp/osdial_tts_gen.$PID`;
 		} else {
 			$self->debug(1,'tts_generate','%s/%s.wav already exists.',$cachedir,$base);
 		}
 
 		if(-f $cachedir.'/'.$base.'.wav') {
-			if (-d $sdir1 and -w $sdir1) {
+			if (-d $sdir1) {
 				if (! -d $sdir1.'/tts') {
 					$self->debug(1,'tts_generate','Making directory %s/tts.',$sdir1);
 					mkdir($sdir1.'/tts',oct('0777'));
 				}
 				if (! -f $sdir1.'/tts/'.$base.'.wav') {
 					$self->debug(1,'tts_generate','Copying %s/%s.wav to %s/tts.',$cachedir,$base,$sdir1);
-					system('/bin/cp -au '.$cachedir.'/'.$base.'.wav '.$sdir1.'/tts') unless (-f $sdir1.'/tts/'.$base.'.wav 2>/dev/null');
+					my $cmd = `/bin/cp -au $cachedir/$base.wav $sdir1/tts` unless (-f $sdir1.'/tts/'.$base.'.wav');
 				}
 			}
-			if (-d $sdir2 and -w $sdir2) {
+			if (-d $sdir2) {
 				if (! -d $sdir2.'/tts') {
 					$self->debug(1,'tts_generate','Making directory %s/tts.',$sdir2);
 					mkdir($sdir2.'/tts',oct('0777'));
 				}
 				if (! -f $sdir2.'/tts/'.$base.'.wav') {
 					$self->debug(1,'tts_generate','Copying %s/%s.wav to %s/tts.',$cachedir,$base,$sdir2);
-					system('/bin/cp -au '.$cachedir.'/'.$base.'.wav '.$sdir2.'/tts') unless (-f $sdir2.'/tts/'.$base.'.wav 2>/dev/null');
+					my $cmd = `/bin/cp -au $cachedir/$base.wav $sdir2/tts` unless (-f $sdir2.'/tts/'.$base.'.wav');
 				}
 			}
 		}
