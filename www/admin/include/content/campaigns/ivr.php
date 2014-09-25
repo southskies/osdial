@@ -980,14 +980,14 @@ if ($ADD == "3menu") {
             $cnt++;
         }
     }
-    echo '  <form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
+    echo '  <form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data" name="newkey">';
     echo '  <input type="hidden" name="ADD" value="2keys">';
     echo '  <input type="hidden" name="oivr_id" value="' . $oivr['id'] . '">';
     echo '  <input type="hidden" name="campaign_id" value="' . $campaign_id . '">';
     echo "  <tr class=tabfooter>\n";
     echo "      <td align=center class=tabinput>\n";
     echo "        <select name=\"oivr_opt_keypress\">\n";
-    echo "          <option value=\"\" selected> - SELECT DIGIT -</option>\n";
+    echo "          <option value=\"\" selected> - SELECT DIGIT - </option>\n";
     $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',sprintf("ivr_id='%s' AND parent_id='%s'",mres($oivr_id),mres($oivr_opt_parent_id)),'');
     $tkey = '';
     if (is_array($keys)) {
@@ -1009,6 +1009,12 @@ if ($ADD == "3menu") {
     if ( ! OSDpreg_match('/\*/', $tkey) ) { echo ' <option value="*"> - * -</option>'; }
     if ( ! OSDpreg_match('/i/', $tkey) ) { echo ' <option value="i"> - Invalid -</option>'; }
     echo "      </select>\n";
+    echo "      <script language=\"Javascript\">\n";
+    echo "        if (document.newkey.oivr_opt_keypress.options.length>1) {\n";
+    echo "          document.newkey.oivr_opt_keypress.options[0].text=' - SELECT DIGIT ('+document.newkey.oivr_opt_keypress.options[1].value+') - ';\n";
+    echo "          document.newkey.oivr_opt_keypress.options[0].value=document.newkey.oivr_opt_keypress.options[1].value;\n";
+    echo "        }\n";
+    echo "      </script>\n";
     echo "    </td>\n";
     echo "    <td align=center class=tabinput>\n";
     echo "      <select name=\"oivr_opt_action\">\n";
@@ -1579,7 +1585,7 @@ if ($ADD == "3keys") {
             echo "  </form>";
             $cnt++;
         }
-        echo '  <form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
+        echo '  <form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data" name="newkey">';
         echo '  <input type="hidden" name="ADD" value="2keys">';
         echo '  <input type="hidden" name="oivr_id" value="' . $oivr['id'] . '">';
         echo '  <input type="hidden" name="oivr_opt_parent_id" value="' . $oivr_opt_id . '">';
@@ -1587,7 +1593,7 @@ if ($ADD == "3keys") {
         echo "  <tr class=tabfooter>\n";
         echo "      <td align=center class=tabinput>\n";
         echo "        <select name=\"oivr_opt_keypress\">\n";
-        echo "          <option value=\"\" selected> - SELECT DIGIT -</option>\n";
+        echo "          <option value=\"\" selected> - SELECT DIGIT - </option>\n";
         $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',sprintf("ivr_id='%s' AND parent_id='%s'",mres($oivr['id']),mres($oivr_opt_id)),'');
         $tkey = '';
         foreach ($keys as $key) {
@@ -1607,6 +1613,12 @@ if ($ADD == "3keys") {
         if ( ! OSDpreg_match('/\*/', $tkey) ) { echo ' <option value="*"> - * -</option>'; }
         if ( ! OSDpreg_match('/i/', $tkey) ) { echo ' <option value="i"> - Invalid -</option>'; }
         echo "      </select>\n";
+        echo "      <script language=\"Javascript\">\n";
+        echo "        if (document.newkey.oivr_opt_keypress.options.length>1) {\n";
+        echo "          document.newkey.oivr_opt_keypress.options[0].text=' - SELECT DIGIT ('+document.newkey.oivr_opt_keypress.options[1].value+') - ';\n";
+        echo "          document.newkey.oivr_opt_keypress.options[0].value=document.newkey.oivr_opt_keypress.options[1].value;\n";
+        echo "        }\n";
+        echo "      </script>\n";
         echo "    </td>\n";
         echo "    <td align=center class=tabinput>\n";
         echo "      <select name=\"oivr_opt_action\">\n";
