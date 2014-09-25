@@ -2010,9 +2010,9 @@ if ($ADD==31) {
 			
 			echo "      <table align=center border=0 width=100% class=tablefont>";
 			echo "        <tr><td align=left width=22%>Transfer-Conf DTMF 1: </td><td width=28% align=left><input type=text name=xferconf_a_dtmf size=20 maxlength=50 value=\"$xferconf_a_dtmf\">".helptag("osdial_campaigns-xferconf_a_dtmf")."</td>";
-			echo "          <td align=left width=25%>Transfer-Conf Number 1: </td><td align=left width=25%><input type=text name=xferconf_a_number size=20 maxlength=50 value=\"$xferconf_a_number\">".helptag("osdial_campaigns-xferconf_a_dtmf")."</td></tr>";
+			echo "          <td align=left width=25%>Transfer-Conf Number 1: </td><td align=left width=25%><input type=text name=xferconf_a_number size=20 maxlength=50 value=\"$xferconf_a_number\">".helptag("osdial_campaigns-xferconf_a_number")."</td></tr>";
 			echo "        <tr><td align=left>Transfer-Conf DTMF 2: </td><td align=left><input type=text name=xferconf_b_dtmf size=20 maxlength=50 value=\"$xferconf_b_dtmf\">".helptag("osdial_campaigns-xferconf_a_dtmf")."</td>";
-			echo "          <td align=left>Transfer-Conf Number 2: </td><td align=left><input type=text name=xferconf_b_number size=20 maxlength=50 value=\"$xferconf_b_number\">".helptag("osdial_campaigns-xferconf_a_dtmf")."</td></tr>";
+			echo "          <td align=left>Transfer-Conf Number 2: </td><td align=left><input type=text name=xferconf_b_number size=20 maxlength=50 value=\"$xferconf_b_number\">".helptag("osdial_campaigns-xferconf_a_number")."</td></tr>";
 			echo "      </table>";
 			echo "    </td>";
 			echo "  </tr>";
