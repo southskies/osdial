@@ -416,7 +416,11 @@ function report_realtime_summary() {
             }
             
         } else {
-            $html .= "<font color=red>&nbsp;NO LIVE CALLS WAITING</font>&nbsp;\n";
+            $html .= "<font color=red>&nbsp;";
+            if ($DIALmethod!='MANUAL') {
+                $html .= "NO LIVE CALLS WAITING";
+            }
+            $html .= "</font>&nbsp;\n";
         }
         
         
@@ -529,7 +533,7 @@ function report_realtime_summary() {
             $Ahtml .= "<pre><FONT face=Fixed,monospace SIZE=1>";
             $html .= $Ahtml;
         } else {
-            $html .= "<font color=red>&bull;&nbsp;&nbsp;NO AGENTS ON CALLS</font><br/>\n";
+            $html .= "<font color=red>&nbsp;&nbsp;NO AGENTS ON CALLS</font><br/>\n";
             $Ahtml .= "<pre><font face=\"Fixed,monospace\" size=1>";
             $html .= $Ahtml; 
         }
