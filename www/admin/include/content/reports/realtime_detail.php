@@ -476,7 +476,7 @@ function report_realtime_detail() {
             $html .= "<td align=right><font size=2><b>Dial Timeout:</b></td><td align=left><font size=2>&nbsp; $DIALtimeout&nbsp;&nbsp;</td>";
             $html .= "<td align=right><font size=2><b>Taper Time:</b></td><td align=left><font size=2>&nbsp; $TAPERtime&nbsp;&nbsp;</td>";
             $html .= "<td align=right><font size=2><b>Local Time:</b></td><td align=left><font size=2>&nbsp; $CALLtime&nbsp;&nbsp;</td>";
-            $html .= "<td align=right><font size=2><b>Avail Only:</b></td><td align=left><font size=2>&nbsp; $ADAavailonly&nbsp;&nbsp;</td>";
+            $html .= "<td align=right colspan=2><font size=2>&nbsp;</font></td>";
             $html .= "</tr>";
 
             $html .= "<tr bgcolor=\"#cccccc\">";
@@ -534,7 +534,7 @@ function report_realtime_detail() {
         $html .= "</tr>";
 */
         $html .= "<tr>";
-        $html .= "<td align=right><font size=2 color=$default_text><b>Order:</b></td><td align=left colspan=7><font size=2>&nbsp; $DIALorder&nbsp;&nbsp;</td>";
+        $html .= "<td align=right><font size=2 color=$default_text><b>Order:</b></td><td align=left><font size=2>&nbsp; $DIALorder&nbsp;&nbsp;</td><td colspan=2><font size=2>&nbsp;</font></td><td align=right><font size=2 color=$default_text><b>Avail Only:</b></font></td><td align=left colspan=3><font size=2>&nbsp; $ADAavailonly&nbsp;&nbsp;</td>";
         $html .= "</tr><tr>";
         if ( (!OSDpreg_match('/NULL/',$VSCcat1)) and (OSDstrlen($VSCcat1)>0) ) {
             $html .= "<td align=right><font size=2 color=$default_text><b>".get_status_category_ucwords($VSCcat1).":</b></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1tally&nbsp;&nbsp;</td>\n";
