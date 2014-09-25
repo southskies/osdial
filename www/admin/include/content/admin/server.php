@@ -372,7 +372,10 @@ if ($ADD==311111111111) {
             if (!empty($row[0]) and !empty($row[23])) {
                 $compurl='http://'.$row[0].'.'.$row[23].'/';
             } else {
-                $compurl='http://'.$row[2].'/';
+                # If loopback, use the IP that the client browser accessed the GUI with.
+                $compip = $row[2];
+                if ($compip=='127.0.0.1') $compip = $ip;
+                $compurl='http://'.$compip.'/';
             }
             echo "<tr bgcolor=$oddrows><td align=right>Computed Web URL: </td><td align=left><b>$compurl</b></td></tr>\n";
             echo "<tr bgcolor=$oddrows><td align=right>Web URL: </td><td align=left><input type=text name=web_url size=30 maxlength=255 value=\"$row[25]\">".helptag("servers-web_url")."</td></tr>\n";

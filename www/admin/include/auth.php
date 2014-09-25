@@ -32,6 +32,7 @@ if ($session_expiry>0 and $config['settings']['admin_session_lockout']>0) $sessi
 
 # If $osdial_skip_auth is not set, this script will attempt to use Basic authentication.
 # If $osdial_skip_auth is set, it is assumed that the autorization is occuring elsewhere...like the API.
+$ip='';
 if (!isset($osdial_skip_auth)) {
     $failexit=0;
     $fps = "";
