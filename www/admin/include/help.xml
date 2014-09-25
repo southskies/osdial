@@ -1540,7 +1540,7 @@ The OSDial basic web-based lead loader is designed simply to take a lead file, t
     </item>
 
     <item pathId="server_ip" sectionId="3" title="Server IP Address">
-  The field where you put the Network IP address of the Asterisk server.
+  The field where you put the Network IP address of the Asterisk server. The default setting for the Server IP is to use the loopback device at "127.0.0.1". If you want to change the value of the Server IP, it is recommended that you do so by logging in to the console as the "root" user and running "/opt/osdial/bin/ADMIN_update_server_ip.pl", which will update the correct system files and any database entries containing the old Server IP address (including this field).
     </item>
 
     <item pathId="active" sectionId="4" title="Active">
