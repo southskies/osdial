@@ -533,8 +533,8 @@
   This menu allows you to define whether a message is left on an answering machine when it is detected. the call will be immediately forwarded to the Answering-Machine-Message extension if AMD is active and it is determined that the call is an answering machine.  If set to CUSTOM1 or CUSTOM2, the filename given in that field will be used for the message.
     </item>
 
-    <item pathId="xferconf_a_dtmf" sectionId="55" title="Xfer-Conf DTMF">
-  These four fields allow for you to have two sets of Transfer Conference and DTMF presets. When the call or campaign is loaded, the agent.php script will show two buttons on the transfer-conference frame and auto-populate the Number and the Send DTMF fields when pressed. If you want to allow Consultative Transfers, a fronter to a closer, you can place CXFER as one of the Number presets and the proper dial string will be sent to do a Local Consultative Transfer, then the agent can just LEAVE-3WAY-CALL and move on to their next call. If you want to allow Blind transfers of customers to a OSDial AGI script for logging or an IVR, then place AXFER in the Number field. You can also specify an custom extension after the AXFER or CXFER, for instance if you want to do Internal Consultative transfers instead of Local you would put CXFER90009 in the Number field.
+    <item pathId="xferconf_a_dtmf" sectionId="55" title="Transfer-Conf DTMF">
+  The Transfer-Conf DTMF fields allow for you to have two sets of DTMF presets. When the call or campaign is loaded, the agent screen will show two buttons on the transfer-conference frame and auto-populate the Send DTMF fields when pressed. This allows your agent to send a complex set of touch-tone sequences to a remote phone system without your agents needing to remember them. An example of this might be a numeric pin needed to access a remote recording or conference bridge service.
     </item>
 
     <item pathId="alt_number_dialing" sectionId="56" title="Agent Alt Num Dialing">
@@ -705,7 +705,10 @@
       &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;b&gt;TAPERED SHIFT&lt;/b&gt; allows for running over the dropped percentage in the start and gradually gets more strict and end of the shift (set in 'Latest Server Time').&lt;br&gt;
 
     </item>
-    	
+
+    <item pathId="xferconf_a_number" sectionId="95" title="Transfer-Conf Number">
+  The Transfer-Conf Number fields allow for you to have two sets of Dial presets. When the call or campaign is loaded, the agent screen will show two buttons on the transfer-conference frame and auto-populate the Number fields when pressed. If you want to allow Consultative Transfers, a fronter to a closer, you can place CXFER as one of the Number presets and the proper dial string will be sent to do a Local Consultative Transfer, then the agent can just LEAVE-3WAY-CALL and move on to their next call. If you want to allow Blind transfers of customers to a OSDial AGI script for logging or an IVR, then place AXFER in the Number field. You can also specify an custom extension after the AXFER or CXFER, for instance if you want to do Internal Consultative transfers instead of Local you would put CXFER90009 in the Number field.
+    </item>
   </section>
 
 
@@ -830,8 +833,8 @@
   This menu allows you to choose whether you want to allow users to be able to switch between FORM and SCRIPT tabs.
     </item>
 
-    <item pathId="xferconf_a_dtmf" sectionId="13" title="Xfer-Conf DTMF">
-  These four fields allow for you to have two sets of Transfer Conference and DTMF presets. When the call or campaign is loaded, the agent.php script will show two buttons on the transfer-conference frame and auto-populate the Number and the Send DTMF fields when pressed. If you want to allow Consultative Transfers, a fronter to a closer, you can place CXFER as one of the Number presets and the proper dial string will be sent to do a Local Consultative Transfer, then the agent can just LEAVE-3WAY-CALL and move on to their next call. If you want to allow Blind transfers of customers to a OSDial AGI script for logging or an IVR, then place AXFER in the Number field. You can also specify an custom extension after the AXFER or CXFER, for instance if you want to do Internal Consultative transfers instead of Local you would put CXFER90009 in the Number field.
+    <item pathId="xferconf_a_dtmf" sectionId="13" title="Transfer-Conf DTMF">
+  The Transfer-Conf DTMF fields allow for you to have two sets of DTMF presets. When the call or campaign is loaded, the agent screen will show two buttons on the transfer-conference frame and auto-populate the Send DTMF fields when pressed. This allows your agent to send a complex set of touch-tone sequences to a remote phone system without your agents needing to remember them. An example of this might be a numeric pin needed to access a remote recording or conference bridge service.
     </item>
 
     <item pathId="drop_trigger" sectionId="14" title="Drop Trigger">
@@ -966,6 +969,9 @@
     The audio file language set to use on calls into this ingroup.
     </item>
 
+    <item pathId="xferconf_a_number" sectionId="47" title="Transfer-Conf Number">
+  The Transfer-Conf Number fields allow for you to have two sets of Dial presets. When the call or campaign is loaded, the agent screen will show two buttons on the transfer-conference frame and auto-populate the Number fields when pressed. If you want to allow Consultative Transfers, a fronter to a closer, you can place CXFER as one of the Number presets and the proper dial string will be sent to do a Local Consultative Transfer, then the agent can just LEAVE-3WAY-CALL and move on to their next call. If you want to allow Blind transfers of customers to a OSDial AGI script for logging or an IVR, then place AXFER in the Number field. You can also specify an custom extension after the AXFER or CXFER, for instance if you want to do Internal Consultative transfers instead of Local you would put CXFER90009 in the Number field.
+    </item>
   </section>
 
 

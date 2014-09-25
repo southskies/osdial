@@ -415,11 +415,11 @@ if ($ADD==3111) {
 
         echo "<tr bgcolor=$oddrows><td align=right>Transfer-Conf DTMF 1: </td><td align=left><input type=text name=xferconf_a_dtmf size=20 maxlength=50 value=\"$xferconf_a_dtmf\">".helptag("osdial_inbound_groups-xferconf_a_dtmf")."</td></tr>\n";
 
-        echo "<tr bgcolor=$oddrows><td align=right>Transfer-Conf Number 1: </td><td align=left><input type=text name=xferconf_a_number size=20 maxlength=50 value=\"$xferconf_a_number\">".helptag("osdial_inbound_groups-xferconf_a_dtmf")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Transfer-Conf Number 1: </td><td align=left><input type=text name=xferconf_a_number size=20 maxlength=50 value=\"$xferconf_a_number\">".helptag("osdial_inbound_groups-xferconf_a_number")."</td></tr>\n";
 
         echo "<tr bgcolor=$oddrows><td align=right>Transfer-Conf DTMF 2: </td><td align=left><input type=text name=xferconf_b_dtmf size=20 maxlength=50 value=\"$xferconf_b_dtmf\">".helptag("osdial_inbound_groups-xferconf_a_dtmf")."</td></tr>\n";
 
-        echo "<tr bgcolor=$oddrows><td align=right>Transfer-Conf Number 2: </td><td align=left><input type=text name=xferconf_b_number size=20 maxlength=50 value=\"$xferconf_b_number\">".helptag("osdial_inbound_groups-xferconf_a_dtmf")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Transfer-Conf Number 2: </td><td align=left><input type=text name=xferconf_b_number size=20 maxlength=50 value=\"$xferconf_b_number\">".helptag("osdial_inbound_groups-xferconf_a_number")."</td></tr>\n";
 
         echo "<tr bgcolor=$oddrows><td align=right>Default Transfer Group: </td><td align=left><select size=1 name=default_xfer_group>";
         echo "$Xgroups_menu";
