@@ -293,7 +293,7 @@ function report_realtime_summary() {
         $html .= "</tr>";
 
         $html .= "<tr>";
-        $html .= "<td align=right><font size=2 color=$default_text><b>Order:</b></td><td align=left><font size=2>&nbsp; $DIALorder&nbsp;&nbsp;</td>";
+        $html .= "<td align=right><font size=2 color=$default_text><b>Order:</b></td><td align=left colspan=7><font size=2>&nbsp; $DIALorder&nbsp;&nbsp;</td>";
         $html .= "</tr>";
         $html .= "<tr>";
         if (!OSDpreg_match('/NULL/',$VSCcat1) and OSDstrlen($VSCcat1)>0) {
