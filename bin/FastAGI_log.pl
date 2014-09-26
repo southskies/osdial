@@ -434,8 +434,9 @@ sub process_request {
 				my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				my $sthArows=$sthA->rows;
-				my @aryA = $sthA->fetchrow_array;
-				$is_client_phone = $aryA[0];
+				while (my @aryA = $sthA->fetchrow_array) {
+					$is_client_phone = $aryA[0];
+				}
 				$sthA->finish();
 
 				if ($is_client_phone<1) {
@@ -458,8 +459,9 @@ sub process_request {
 				my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				my $sthArows=$sthA->rows;
-				my @aryA = $sthA->fetchrow_array;
-				$is_client_phone = $aryA[0];
+				while (my @aryA = $sthA->fetchrow_array) {
+					$is_client_phone = $aryA[0];
+				}
 				$sthA->finish();
 
 				if ($is_client_phone<1) {
@@ -482,8 +484,9 @@ sub process_request {
 				my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				my $sthArows=$sthA->rows;
-				my @aryA = $sthA->fetchrow_array;
-				$is_client_phone = $aryA[0];
+				while (my @aryA = $sthA->fetchrow_array) {
+					$is_client_phone = $aryA[0];
+				}
 				$sthA->finish();
 
 				if ($is_client_phone<1) {
@@ -506,9 +509,10 @@ sub process_request {
 				my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				my $sthArows=$sthA->rows;
-				my @aryA = $sthA->fetchrow_array;
-				$is_client_phone = $aryA[0];
-				my $phone_ext = $aryA[1];
+				while (my @aryA = $sthA->fetchrow_array) {
+					$is_client_phone = $aryA[0];
+					$phone_ext = $aryA[1];
+				}
 				$sthA->finish();
 			
 				if ($is_client_phone<1) {
@@ -530,8 +534,7 @@ sub process_request {
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				my $sthArows=$sthA->rows;
 				my $rec_count=0;
-				if ($sthArows > 0) {
-					my @aryA = $sthA->fetchrow_array;
+				while (my @aryA = $sthA->fetchrow_array) {
 					my $cmd_line_b = $aryA[0];
 					my $cmd_line_d = $aryA[1];
 					if ($accountcode =~ /^DC/) {
@@ -674,9 +677,13 @@ sub process_request {
 			$stmtA = sprintf("SELECT COUNT(*) AS cnt FROM call_log WHERE uniqueid='%s' AND server_ip='%s';",$osdial->mres($uniqueid),$osdial->mres($VARserver_ip));
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-			@aryA = $sthA->fetchrow_array;
+			my $cnt = 0;
+			while (my @aryA = $sthA->fetchrow_array) {
+				$cnt = $aryA[0];
+			}
+			$sthA->finish();
 
-			if ($aryA[0] == 0) {
+			if ($cnt==0) {
 				$stmtA = sprintf("INSERT INTO call_log SET uniqueid='%s',channel='%s',channel_group='%s',type='%s',server_ip='%s',extension='%s',number_dialed='%s',start_time='%s',start_epoch='%s',end_time='',end_epoch='',length_in_sec='',length_in_min='',caller_code='%s',carrier_id='%s',cid_name='%s',cid_number='%s',dnid='%s',language='%s';",$osdial->mres($uniqueid),$osdial->mres($channel),$osdial->mres($channel_group),$osdial->mres($type),$osdial->mres($VARserver_ip),$osdial->mres($extension),$osdial->mres($number_dialed),$osdial->mres($now_date),$osdial->mres($now_date_epoch),$osdial->mres($accountcode),$osdial->mres($carrierid),$osdial->mres($calleridname),$osdial->mres($callerid),$osdial->mres($dnid),$osdial->mres($language));
 
 				if ($AGILOG) {
@@ -684,7 +691,7 @@ sub process_request {
 					&agi_output;
 				}
 				my $affected_rows = $dbhA->do($stmtA);
-#				$osdial->osdevent({'event'=>'CALL_START','uniqueid'=>$uniqueid,'server_ip'=>$VARserver_ip,'callerid'=>$accountcode});
+	#			$osdial->osdevent({'event'=>'CALL_START','uniqueid'=>$uniqueid,'server_ip'=>$VARserver_ip,'callerid'=>$accountcode});
 			}
 
 			$dbhA->disconnect();
@@ -739,8 +746,7 @@ sub process_request {
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
 			$rec_count=0;
-			while ($sthArows > $rec_count) {
-				@aryA = $sthA->fetchrow_array;
+			while (my @aryA = $sthA->fetchrow_array) {
 				$uniqueid = $aryA[0];
 				$start_time = $aryA[1];
 				if ($accountcode =~ /^M/) {
@@ -790,8 +796,7 @@ sub process_request {
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
 			$rec_count=0;
-			if ($sthArows > 0) {
-				@aryA = $sthA->fetchrow_array;
+			while (my @aryA = $sthA->fetchrow_array) {
 				$parked_time = $aryA[0];
 				$grab_time = $aryA[1];
 				if ($AGILOG) {
@@ -864,8 +869,7 @@ sub process_request {
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					$sthArows=$sthA->rows;
-					if ($sthArows > 0) {
-						@aryA = $sthA->fetchrow_array;
+					while (my @aryA = $sthA->fetchrow_array) {
 						$cpa_result             = $aryA[0];
 						$cpa_detailed_result    = $aryA[1];
 						$cpa_result = "License-Reject" if ($cpa_detailed_result =~ /license/i);
@@ -1021,8 +1025,7 @@ sub process_request {
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
 				$rec_countCUSTDATA=0;
-				if ($sthArows > 0) {
-					@aryA = $sthA->fetchrow_array;
+				while (my @aryA = $sthA->fetchrow_array) {
 					$VD_lead_id = $aryA[0];
 					$VD_callerid = $aryA[1];
 					$VD_campaign_id = $aryA[2];
@@ -1047,8 +1050,7 @@ sub process_request {
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					$sthArows=$sthA->rows;
-					if ($sthArows > 0) {
-						@aryA = $sthA->fetchrow_array;
+					while (my @aryA = $sthA->fetchrow_array) {
 						$OLstart_epoch = $aryA[0] if (length($aryA[0])>5);
 						$OLend_epoch = $aryA[1] if (length($aryA[1])>5);
 					}
@@ -1058,8 +1060,7 @@ sub process_request {
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					$sthArows=$sthA->rows;
-					if ($sthArows > 0) {
-						@aryA = $sthA->fetchrow_array;
+					while (my @aryA = $sthA->fetchrow_array) {
 						$OLAid = $aryA[0];
 						$OLAuser = $aryA[1];
 						$OLAext = $aryA[2];
@@ -1067,7 +1068,10 @@ sub process_request {
 						$OLAlct = $aryA[4];
 						$OLAserver = $aryA[5];
 						$OLAconf = $aryA[6];
+					}
+					$sthA->finish();
 
+					if ($sthArows>0) {
 						my $pauseepoch = $VD_start_epoch;
 						my $waitepoch = $VD_start_epoch;
 						my $talkepoch = $VD_start_epoch;
@@ -1093,10 +1097,10 @@ sub process_request {
 							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 							$sthArows=$sthA->rows;
-							if ($sthArows > 0) {
-								@aryA = $sthA->fetchrow_array;
+							while (my @aryA = $sthA->fetchrow_array) {
 								$OLAcalls = $aryA[0];
 							}
+							$sthA->finish();
 							$stmtA = "UPDATE osdial_live_agents SET status='READY',lead_id='0',uniqueid='',callerid='',channel='',calls_today='$OLAcalls',last_call_finish=NOW() WHERE live_agent_id='$OLAid';";
 							$affected_rows = $dbhA->do($stmtA);
 						}
@@ -1112,8 +1116,7 @@ sub process_request {
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 						$sthArows=$sthA->rows;
-						if ($sthArows > 0) {
-							@aryA = $sthA->fetchrow_array;
+						while (my @aryA = $sthA->fetchrow_array) {
 							$acct_method=$aryA[0];
 						}
 						$sthA->finish();
@@ -1122,18 +1125,22 @@ sub process_request {
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 						$sthArows=$sthA->rows;
-						if ($sthArows > 0) {
-							@aryA = $sthA->fetchrow_array;
+						while (my @aryA = $sthA->fetchrow_array) {
 							$lstat = $aryA[0];
 							$lcomm = $aryA[1];
+						}
+						$sthA->finish();
 
+						if ($sthArows > 0) {
 							$stmtA = "SELECT agent_log_id FROM osdial_agent_log WHERE server_ip='$VARserver_ip' AND uniqueid='$OLAuniqueid' AND lead_id='$VD_lead_id';";
 							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 							$sthArows=$sthA->rows;
-							if ($sthArows > 0) {
-								@aryA = $sthA->fetchrow_array;
+							while (my @aryA = $sthA->fetchrow_array) {
 								$logid = $aryA[0];
+							}
+							$sthA->finish();
+							if ($sthArows > 0) {
 								$stmtA = "UPDATE osdial_agent_log SET status='" . $osdial->mres($lstat) . "' WHERE server_ip='$VARserver_ip' AND uniqueid='$OLAuniqueid' AND lead_id='$VD_lead_id';";
 								my $affected_rows = $dbhA->do($stmtA);
 
@@ -1144,8 +1151,10 @@ sub process_request {
 								$stmtA = "SELECT LAST_INSERT_ID();";
 								$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 								$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-								@aryA = $sthA->fetchrow_array;
-								$logid=$aryA[0];
+								while (my @aryA = $sthA->fetchrow_array) {
+									$logid=$aryA[0];
+								}
+								$sthA->finish();
 							}
 
 							if ($acct_method !~ /^$|^NONE$|^RANGE$/) {
@@ -1196,8 +1205,7 @@ sub process_request {
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					$sthArows=$sthA->rows;
 					$rec_count=0;
-					while ($sthArows > $rec_count) {
-						@aryA = $sthA->fetchrow_array;
+					while (my @aryA = $sthA->fetchrow_array) {
 						$enable_queuemetrics_logging = $aryA[0];
 						$queuemetrics_server_ip = $aryA[1];
 						$queuemetrics_dbname = $aryA[2];
@@ -1227,8 +1235,7 @@ sub process_request {
 						$sthB->execute or die "executing: $stmtB ", $dbhB->errstr;
 						$sthBrows=$sthB->rows;
 						$rec_count=0;
-						while ($sthBrows > $rec_count) {
-							@aryB = $sthB->fetchrow_array;
+						while (my @aryB = $sthB->fetchrow_array) {
 							$VD_agent = $aryB[0];
 							$rec_count++;
 						}
@@ -1262,8 +1269,7 @@ sub process_request {
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 						$sthArows=$sthA->rows;
-						if ($sthArows > 0) {
-							@aryA = $sthA->fetchrow_array;
+						while (my @aryA = $sthA->fetchrow_array) {
 							$VD_start_epoch = $aryA[0];
 							$VD_status = $aryA[1];
 							$VD_user = $aryA[2];
@@ -1303,8 +1309,7 @@ sub process_request {
 						$sthArows=$sthA->rows;
 						$epc_countCUSTDATA=0;
 						$VD_closecallid='';
-						if ($sthArows > 0) {
-							@aryA = $sthA->fetchrow_array;
+						while (my @aryA = $sthA->fetchrow_array) {
 							$VD_start_epoch = $aryA[0];
 							$VD_status = $aryA[1];
 							$VD_closecallid = $aryA[2];
@@ -1423,9 +1428,11 @@ sub process_request {
 								$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 								$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 								$sthArows=$sthA->rows;
-								if ($sthArows > 0) {
-									@aryA = $sthA->fetchrow_array;
+								while (my @aryA = $sthA->fetchrow_array) {
 									$logid = $aryA[0];
+								}
+								$sthA->finish();
+								if ($sthArows > 0) {
 									$stmtA = "UPDATE osdial_agent_log SET status='" . $osdial->mres($VD_status) . "' WHERE server_ip='$VARserver_ip' AND uniqueid='$VD_uniqueid' AND lead_id='$VD_lead_id';";
 									my $affected_rows = $dbhA->do($stmtA);
 								} else {
@@ -1435,8 +1442,10 @@ sub process_request {
 									$stmtA = "SELECT LAST_INSERT_ID();";
 									$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 									$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-									@aryA = $sthA->fetchrow_array;
-									$logid=$aryA[0];
+									while (my @aryA = $sthA->fetchrow_array) {
+										$logid=$aryA[0];
+									}
+									$sthA->finish();
 								}
 
 								my $company_id='';
@@ -1450,8 +1459,7 @@ sub process_request {
 								$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 								$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 								$sthArows=$sthA->rows;
-								if ($sthArows > 0) {
-									@aryA = $sthA->fetchrow_array;
+								while (my @aryA = $sthA->fetchrow_array) {
 									$acct_method=$aryA[0];
 								}
 								$sthA->finish();
@@ -1510,8 +1518,7 @@ sub process_request {
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					$sthArows=$sthA->rows;
 					$epc_countCAMPDATA=0;
-					while ($sthArows > $epc_countCAMPDATA) {
-						@aryA = $sthA->fetchrow_array;
+					while (my @aryA = $sthA->fetchrow_array) {
 						$VD_auto_alt_dial = $aryA[0];
 						$VD_auto_alt_dial_statuses = $aryA[1];
 						$VD_use_internal_dnc = $aryA[2];
@@ -1530,8 +1537,7 @@ sub process_request {
 							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 							$sthArows=$sthA->rows;
 							$epc_countCAMPDATA=0;
-							while ($sthArows > $epc_countCAMPDATA) {
-								@aryA = $sthA->fetchrow_array;
+							while (my @aryA = $sthA->fetchrow_array) {
 								$VD_alt_phone = $aryA[0];
 								$VD_alt_phone =~ s/\D//gi;
 								$VD_gmt_offset_now = $aryA[1];
@@ -1554,7 +1560,7 @@ sub process_request {
 										}
 										$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 										$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-										if (@aryA = $sthA->fetchrow_array) {
+										while (my @aryA = $sthA->fetchrow_array) {
 											$comp_id = $aryA[0];
 											$dnc_method = $aryA[1];
 										}
@@ -1567,7 +1573,9 @@ sub process_request {
 											}
 											$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 											$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-											$VD_alt_dnc_count += $aryA[0] if (@aryA = $sthA->fetchrow_array);
+											while (my @aryA = $sthA->fetchrow_array) {
+												$VD_alt_dnc_count += $aryA[0];
+											}
 											$sthA->finish();
 										}
 										$dncsskip++ if ($dnc_method =~ /COMPANY/);
@@ -1580,7 +1588,9 @@ sub process_request {
 										}
 										$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 										$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-										$VD_alt_dnc_count += $aryA[0] if (@aryA = $sthA->fetchrow_array);
+										while (my @aryA = $sthA->fetchrow_array) {
+											$VD_alt_dnc_count += $aryA[0];
+										}
 										$sthA->finish();
 									}
 								}
@@ -1606,8 +1616,7 @@ sub process_request {
 							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 							$sthArows=$sthA->rows;
 							$epc_countCAMPDATA=0;
-							while ($sthArows > $epc_countCAMPDATA) {
-								@aryA = $sthA->fetchrow_array;
+							while (my @aryA = $sthA->fetchrow_array) {
 								$VD_address3 = $aryA[0];
 								$VD_address3 =~ s/\D//gi;
 								$VD_gmt_offset_now = $aryA[1];
@@ -1630,7 +1639,7 @@ sub process_request {
 										}
 										$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 										$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-										if (@aryA = $sthA->fetchrow_array) {
+										while (my @aryA = $sthA->fetchrow_array) {
 											$comp_id = $aryA[0];
 											$dnc_method = $aryA[1];
 										}
@@ -1643,7 +1652,9 @@ sub process_request {
 											}
 											$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 											$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-											$VD_addr3_dnc_count += $aryA[0] if (@aryA = $sthA->fetchrow_array);
+											while (my @aryA = $sthA->fetchrow_array) {
+												$VD_addr3_dnc_count += $aryA[0];
+											}
 											$sthA->finish();
 										}
 										$dncsskip++ if ($dnc_method =~ /COMPANY/);
@@ -1656,7 +1667,9 @@ sub process_request {
 										}
 										$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 										$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-										$VD_addr3_dnc_count += $aryA[0] if (@aryA = $sthA->fetchrow_array);
+										while (my @aryA = $sthA->fetchrow_array) {
+											$VD_addr3_dnc_count += $aryA[0];
+										}
 										$sthA->finish();
 									}
 								}
@@ -1680,8 +1693,7 @@ sub process_request {
 								$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 								$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 								$sthArows=$sthA->rows;
-								if ($sthArows > 0) {
-									@aryA = $sthA->fetchrow_array;
+								while (my @aryA = $sthA->fetchrow_array) {
 									$aff_number = $aryA[0];
 									$aff_number =~ s/\D//gi;
 								}
@@ -1698,8 +1710,7 @@ sub process_request {
 									$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 									$sthArows=$sthA->rows;
 									$epc_countCAMPDATA=0;
-									while ($sthArows > $epc_countCAMPDATA) {
-										@aryA = $sthA->fetchrow_array;
+									while (my @aryA = $sthA->fetchrow_array) {
 										$VD_gmt_offset_now = $aryA[0];
 										$VD_state = $aryA[1];
 										$VD_list_id = $aryA[2];
@@ -1719,7 +1730,7 @@ sub process_request {
 											}
 											$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 											$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-											if (@aryA = $sthA->fetchrow_array) {
+											while (my @aryA = $sthA->fetchrow_array) {
 												$comp_id = $aryA[0];
 												$dnc_method = $aryA[1];
 											}
@@ -1732,7 +1743,9 @@ sub process_request {
 												}
 												$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 												$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-												$VD_aff_dnc_count += $aryA[0] if (@aryA = $sthA->fetchrow_array);
+												while (my @aryA = $sthA->fetchrow_array) {
+													$VD_aff_dnc_count += $aryA[0];
+												}
 												$sthA->finish();
 											}
 											$dncsskip++ if ($dnc_method =~ /COMPANY/);
@@ -1745,7 +1758,9 @@ sub process_request {
 											}
 											$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 											$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-											$VD_aff_dnc_count += $aryA[0] if (@aryA = $sthA->fetchrow_array);
+											while (my @aryA = $sthA->fetchrow_array) {
+												$VD_aff_dnc_count += $aryA[0];
+											}
 											$sthA->finish();
 										}
 									}
