@@ -249,7 +249,7 @@ my $tgz='.tgz';
 if ($blist->{'db'}>0) {
 	print "  -- Exporting Database\n" if (!$CLOquiet);
 	### BACKUP THE MYSQL FILES ON THE DB SERVER ###
-	`$mysqldumpbin --lock-tables --flush-logs --port='$osd->{'VARDB_port'}' --host='$osd->{'VARDB_server'}' --user='$osd->{'VARDB_user'}' --password='$osd->{'VARDB_pass'}' $osd->{'VARDB_database'} | $gzipbin > $osd->{'BACKUPpath'}/temp/$pre$osd->{'VARserver_ip'}$sql$dt.sql$gz`;
+	`$mysqldumpbin --hex-blob --routines --triggers --lock-tables --flush-logs --port='$osd->{'VARDB_port'}' --host='$osd->{'VARDB_server'}' --user='$osd->{'VARDB_user'}' --password='$osd->{'VARDB_pass'}' $osd->{'VARDB_database'} | $gzipbin > $osd->{'BACKUPpath'}/temp/$pre$osd->{'VARserver_ip'}$sql$dt.sql$gz`;
 }
 
 if ($blist->{'conf'}>0) {
