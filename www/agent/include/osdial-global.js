@@ -43,6 +43,7 @@ var all_record_count=0;
 var all_record='NO';
 var alt_dial_active=0;
 var alt_dial_menu=0;
+var alt_num_status=0;
 var acct_remaining=0;
 var acct_method='NONE';
 var auto_dial_alt_dial=0;

@@ -1056,7 +1056,6 @@
 // Insert or update the osdial_log entry for a customer call
 	function DialLog(taskMDstage,nodeletevdac) {
 		debug("<b>DialLog:</b> taskMDstage=" + taskMDstage + " nodeletevdac=" + nodeletevdac,2);
-		var alt_num_status=0;
 		if (taskMDstage == "start") {
 			var MDlogEPOCH = 0;
 			var UID_test = document.osdial_form.uniqueid.value;
@@ -1072,7 +1071,6 @@
 			}
 			alt_phone_dialing=1;
 			if (document.osdial_form.DiaLAltPhonE.checked==true) {
-				alt_num_status = 1;
 				reselect_alt_dial = 1;
 				alt_dial_active = 1;
 				alt_dial_menu = 1;
@@ -1175,8 +1173,8 @@
 // Request list of USERONLY callbacks for this agent
 	function CalLBacKsLisTCheck() {
 		debug("<b>CalLBacKsLisTCheck:</b>",2);
-		if ( (VD_live_customer_call==1) || (alt_dial_active==1) ) {
-			osdalert("You must hangup and disposition your active call before you can place a call to a callback.");
+		if ( (VD_live_customer_call==1) || (alt_dial_active==1) || (manual_dial_in_progress==1)) {
+			osdalert("You must skip or complete your active call before you can place a call to a callback.");
 		} else {
 			if (AutoDialWaiting==1 && VD_live_customer_call==0 && alt_dial_active==0) {
 				AutoDial_ReSume_PauSe('VDADpause','NEW_ID');
@@ -1269,8 +1267,8 @@
 	function NeWManuaLDiaLCalL(TVfast) {
 		debug("<b>NeWManuaLDiaLCalL:</b> TVfast=" + TVfast,2);
 		dial_timedout=0;
-		if ( (VD_live_customer_call==1) || (alt_dial_active==1) ) {
-			osdalert("You must hangup and disposition your active call before you can place a call to a manually entered number.");
+		if ( (VD_live_customer_call==1) || (alt_dial_active==1) || (manual_dial_in_progress==1)) {
+			osdalert("You must skip or complete your active call before you can place a call to a manually entered number.");
 		} else {
 			if (AutoDialWaiting==1 && VD_live_customer_call==0 && alt_dial_active==0) {
 				AutoDial_ReSume_PauSe('VDADpause','NEW_ID');
@@ -1598,6 +1596,7 @@
 		all_record_count=0;
 		if (taskaltnum == 'ALTPhoneE') {
 			var manDiaLonly_num = document.osdial_form.alt_phone.value;
+			alt_num_status=1;
 			if (manDiaLonly_num=='') {
 				osdalert('ERROR: alt_phone entry is empty, not dialing!',2);
 				return;
@@ -1609,6 +1608,7 @@
 		} else {
 			if (taskaltnum == 'AddresS3') {
 				var manDiaLonly_num = document.osdial_form.address3.value;
+				alt_num_status=1;
 				if (manDiaLonly_num=='') {
 					osdalert('ERROR: address3 entry is empty, not dialing!',2);
 					return;
@@ -1619,6 +1619,10 @@
 				WebFormRefresH('');
 			} else {
 				var manDiaLonly_num = document.osdial_form.phone_number.value;
+				alt_num_status=0;
+				if (taskaltnum == 'MaiNPhonE') {
+					alt_num_status=1;
+				}
 				if (manDiaLonly_num=='') {
 					osdalert('ERROR: phone_number entry is empty, not dialing!',2);
 					return;
@@ -2248,8 +2252,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 // Generate the Pause Code Chooser panel
 	function PauseCodeSelectContent_create() {
 		debug("<b>PauseCodeSelectContent_create:</b>",2);
-		if ( (VD_live_customer_call==1) || (alt_dial_active==1) ) {
-			osdalert("You must hangup and disposition your call before clicking \"Pause\".");
+		if ( (VD_live_customer_call==1) || (alt_dial_active==1) || (manual_dial_in_progress==1)) {
+			osdalert("You must complete your call before clicking \"Pause\".");
 		} else {
 			if (AutoDialReady==1) {
 				AutoDial_ReSume_PauSe('VDADpause','NEW_ID');
@@ -2653,6 +2657,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				osdalert("STILL A LIVE CALL! Hang it up then you can log out. " + VD_live_customer_call);
 				return;
 			}
+		} else if (manual_dial_in_progress==1) {
+			ManualDialSkip();
 		}
 		clearTimeout(start_all_timeout_id);
 		clearTimeout(agentlogtime_timeout_id);
@@ -4493,69 +4499,66 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 	function ManualDialSkip() {
 		debug("<b>ManualDialSkip:</b>",2);
 		dial_timedout=0;
-		if (manual_dial_in_progress==1) {
-			osdalert('You cannot skip a Call-Back or a call placed to a manually entered number.');
+
+		CBcommentsBoxhide();
+		if (previewFD_time > 0) {
+			clearTimeout(previewFD_timeout_id);
+			clearInterval(previewFD_display_id);
+			document.getElementById("PreviewFDTimeSpan").innerHTML = "";
+		}
+
+		alt_dial_active=0;
+		if (dial_method!='MANUAL') {
+			manual_dial_finished();
+			alt_phone_dialing=0;
+			document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML;
+			document.osdial_form.DiaLAltPhonE.checked=false;
+		} else if (inbound_man > 0) {
+			auto_dial_level=starting_dial_level;
+			//document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
+			document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><span class=ResumeButtonOff>Resume</span><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
 		} else {
-			CBcommentsBoxhide();
-			if (previewFD_time > 0) {
-				clearTimeout(previewFD_timeout_id);
-				clearInterval(previewFD_display_id);
-				document.getElementById("PreviewFDTimeSpan").innerHTML = "";
-			}
+			//document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
+			document.getElementById("DiaLControl").innerHTML = "<span class=DialNextButtonOff>Dial Next Number</span>";
+		}
 
-			alt_dial_active=0;
-			if (dial_method!='MANUAL') {
-				manual_dial_finished();
-				alt_phone_dialing=0;
-				document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML;
-				document.osdial_form.DiaLAltPhonE.checked=false;
-			} else if (inbound_man > 0) {
-				auto_dial_level=starting_dial_level;
-				//document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
-				document.getElementById("DiaLControl").innerHTML = "<span class=PauseButtonOff>Pause</span><span class=ResumeButtonOff>Resume</span><font size=-5><br><br/></font><span class=DialNextButtonOff>Dial Next Number</span>";
-			} else {
-				//document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
-				document.getElementById("DiaLControl").innerHTML = "<span class=DialNextButtonOff>Dial Next Number</span>";
-			}
+		var xmlhttp=getXHR();
+		if (xmlhttp) { 
+			manDiaLskip_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLskip&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&lead_id=" + document.osdial_form.lead_id.value + "&stage=" + previous_dispo + "&called_count=" + previous_called_count;
+			xmlhttp.open('POST', 'vdc_db_query.php'); 
+			xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
+			xmlhttp.send(manDiaLskip_query); 
+			xmlhttp.onreadystatechange = function() { 
+				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+					var MDSnextResponse = null;
+					//osdalert(manDiaLskip_query,30);
+					//osdalert(xmlhttp.responseText,30);
+					MDSnextResponse = xmlhttp.responseText;
 
-			var xmlhttp=getXHR();
-			if (xmlhttp) { 
-				manDiaLskip_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLskip&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&lead_id=" + document.osdial_form.lead_id.value + "&stage=" + previous_dispo + "&called_count=" + previous_called_count;
-				xmlhttp.open('POST', 'vdc_db_query.php'); 
-				xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
-				xmlhttp.send(manDiaLskip_query); 
-				xmlhttp.onreadystatechange = function() { 
-					if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-						var MDSnextResponse = null;
-						//osdalert(manDiaLskip_query,30);
-						//osdalert(xmlhttp.responseText,30);
-						MDSnextResponse = xmlhttp.responseText;
+					var MDSnextResponse_array=MDSnextResponse.split("\n");
+					MDSnextCID = MDSnextResponse_array[0];
+					if (MDSnextCID == "LEAD NOT REVERTED") {
+						osdalert("Lead was not reverted, there was an error: " + MDSnextResponse);
+					} else {
+						previous_called_count = '';
+						previous_dispo = '';
+						custchannellive=1;
 
-						var MDSnextResponse_array=MDSnextResponse.split("\n");
-						MDSnextCID = MDSnextResponse_array[0];
-						if (MDSnextCID == "LEAD NOT REVERTED") {
-							osdalert("Lead was not reverted, there was an error: " + MDSnextResponse);
+						afterCallClearing();
+
+						document.getElementById("MainStatuSSpan").innerHTML = " Lead skipped, go on to next lead";
+
+						if (dial_method!='MANUAL') {
+							AutoDial_ReSume_PauSe('VDADready','NEW_ID');
+						} else if (inbound_man > 0) {
+							AutoDial_ReSume_PauSe('VDADready','NEW_ID');
 						} else {
-							previous_called_count = '';
-							previous_dispo = '';
-							custchannellive=1;
-
-							afterCallClearing();
-
-							document.getElementById("MainStatuSSpan").innerHTML = " Lead skipped, go on to next lead";
-
-							if (dial_method!='MANUAL') {
-								AutoDial_ReSume_PauSe('VDADready','NEW_ID');
-							} else if (inbound_man > 0) {
-								AutoDial_ReSume_PauSe('VDADready','NEW_ID');
-							} else {
-								document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"ManualDialNext('','','','','','');\"><span class=DialNextButton>Dial Next Number</span></a>";
-							}
+							document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"ManualDialNext('','','','','','');\"><span class=DialNextButton>Dial Next Number</span></a>";
 						}
 					}
 				}
-				delete xmlhttp;
 			}
+			delete xmlhttp;
 		}
 	}
 
@@ -7159,8 +7162,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 // Request hopper list for this campaign
 	function MDHopperListCheck() {
 		debug("<b>MDHopperListCheck:</b>",2);
-		if ( (VD_live_customer_call==1) || (alt_dial_active==1) ) {
-			osdalert("You must hangup and disposition your active call before you can access the hopper list.");
+		if ( (VD_live_customer_call==1) || (alt_dial_active==1) || (manual_dial_in_progress==1)) {
+			osdalert("You must skip or complete your active call before you can access the hopper list.");
 		} else {
 			if (AutoDialWaiting==1 && VD_live_customer_call==0 && alt_dial_active==0) {
 				AutoDial_ReSume_PauSe('VDADpause','NEW_ID');

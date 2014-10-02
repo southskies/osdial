@@ -531,9 +531,17 @@ if ($ACTION == 'manDiaLnextCaLL') {
         if ( (OSDstrlen($callback_id)==0) and (OSDstrlen($lead_id)>0) ) {
             $affected_rows=1;
 
-            $stmt=sprintf("UPDATE osdial_hopper SET status='QUEUE',user='%s' WHERE campaign_id='%s' AND lead_id='%s';",mres($user),mres($campaign),mres($lead_id));
-            if ($DB) echo "$stmt\n";
+            $stmt=sprintf("SELECT COUNT(*) as cnt FROM osdial_hopper WHERE lead_id='%s' AND campaign_id='%s';",mres($lead_id),mres($campaign));
             $rslt=mysql_query($stmt, $link);
+            if ($DB) echo "$stmt\n";
+            $row=mysql_fetch_row($rslt);
+            if ($row[0]>0) {
+                $stmt=sprintf("UPDATE osdial_hopper SET status='QUEUE',user='%s' WHERE campaign_id='%s' AND lead_id='%s';",mres($user),mres($campaign),mres($lead_id));
+                if ($DB) echo "$stmt\n";
+                $rslt=mysql_query($stmt, $link);
+            } else {
+                $CBleadIDset=1;
+            }
 
         ### check if this is a callback, if it is, skip the grabbing of a new lead and mark the callback as INACTIVE
         } else if ( (OSDstrlen($callback_id)>0) and (OSDstrlen($lead_id)>0) ) {
@@ -1123,8 +1131,8 @@ if ($ACTION == 'manDiaLskip') {
         exit;
     } else {
         $called_count = ($called_count - 1);
-        ### flag the lead as called and change it's status to INCALL
-        $stmt=sprintf("UPDATE osdial_list SET status='%s',called_count='%s',user='%s' WHERE lead_id='%s';",mres($stage),mres($called_count),mres($user),mres($lead_id));
+        ### flag the lead as not called and change it's status from INCALL
+        $stmt=sprintf("UPDATE osdial_list SET status='%s',called_count='%s',user='%s',called_since_last_reset='N' WHERE lead_id='%s';",mres($stage),mres($called_count),mres($user),mres($lead_id));
         if ($DB) echo "$stmt\n";
         $rslt=mysql_query($stmt, $link);
 
