@@ -155,11 +155,13 @@ def listen_process():
             except asterisk.manager.ManagerSocketException as err:
                 errno, reason = err
                 proclogger.error("Error connecting to the manager: %s", reason)
+                time.sleep(15)
             except asterisk.manager.ManagerAuthException as reason:
                 proclogger.error("Error logging in to the manager: %s", reason)
                 ami.exitnow = True
             except asterisk.manager.ManagerException as reason:
                 proclogger.error("Error: %s", reason)
+                time.sleep(15)
             except KeyboardInterrupt, e:
                 proclogger.info("Exiting")
                 ami.exitnow = True
