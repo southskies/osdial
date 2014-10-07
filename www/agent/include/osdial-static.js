@@ -1932,6 +1932,7 @@
 		AgaiNCalLCID = CalLCID;
 		var process_post_hangup=0;
 		if ( (RedirecTxFEr < 1) && ( (MD_channel_look==1) || (auto_dial_level == 0) ) ) {
+			dial_timedout=1;
 			MD_channel_look=0;
 			DialTimeHangup('MAIN');
 		}
@@ -2119,6 +2120,7 @@
 		var xfer_channel = lastxferchannel;
 		var process_post_hangup=0;
 		if (MD_channel_look==1 && leaving_threeway<1) {
+			dial_timedout=1;
 			MD_channel_look=0;
 			DialTimeHangup('XFER');
 		}
