@@ -300,13 +300,12 @@ class FastAGIServer(threading.Thread):
                       if vars['dial_time'] > vars['answered_time']:
                           vars['ring_time'] = vars['dial_time'] - vars['answered_time']
   
-                  if not re.search('^M',vars['agi_accountcode']):
-                      if vars['agi_uniqueid'] != vars['linkedid'] and vars['linkedid'] != "":
-                          vars['agi_uniqueid'] = vars['linkedid']
+                  if vars['agi_uniqueid'] != vars['linkedid'] and vars['linkedid'] != "":
+                      vars['agi_uniqueid'] = vars['linkedid']
   
                   cnt = 0
                   if re.search('^M',vars['agi_accountcode']):
-                      osdial.sql().execute("SELECT uniqueid,start_epoch,channel,end_epoch,channel_group FROM call_log WHERE (end_epoch IS NULL OR end_epoch=0) AND caller_code=%s AND channel NOT LIKE 'Local/%%' AND server_ip=%s;", (vars['agi_accountcode'],osdial.VARserver_ip))
+                      osdial.sql().execute("SELECT uniqueid,start_epoch,channel,end_epoch,channel_group FROM call_log WHERE (end_epoch IS NULL OR end_epoch=0) AND caller_code=%s AND channel=%s AND server_ip=%s;", (vars['agi_accountcode'],vars['agi_channel'],osdial.VARserver_ip))
                   else:
                       osdial.sql().execute("SELECT uniqueid,start_epoch,channel,end_epoch,channel_group FROM call_log WHERE uniqueid=%s AND server_ip=%s;", (vars['agi_uniqueid'],osdial.VARserver_ip))
                   CLstart_epoch = 0

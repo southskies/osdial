@@ -723,9 +723,7 @@ sub process_request {
 				&agi_output;
 			}
 
-			if ($accountcode !~ /^M/) {
-				$uniqueid=$linkedid if ($uniqueid ne $linkedid and $linkedid ne '');
-			}
+			$uniqueid=$linkedid if ($uniqueid ne $linkedid and $linkedid ne '');
 
 			### If HVcauses and DIALSTATUS is blank, skip call END.
 			if ($DShasvalue<1) {
@@ -736,7 +734,7 @@ sub process_request {
 			### get uniqueid and start_epoch from the call_log table
 			$stmtA = sprintf("SELECT uniqueid,start_epoch,channel,end_epoch,channel_group FROM call_log WHERE uniqueid='%s' AND server_ip='%s';",$osdial->mres($uniqueid),$osdial->mres($VARserver_ip));
 			if ($accountcode =~ /^M/) {
-				$stmtA = sprintf("SELECT uniqueid,start_epoch,channel,end_epoch,channel_group FROM call_log WHERE (end_epoch IS NULL OR end_epoch='0') AND caller_code='%s' AND channel NOT LIKE 'Local/%%' AND server_ip='%s';",$osdial->mres($accountcode),$osdial->mres($VARserver_ip));
+				$stmtA = sprintf("SELECT uniqueid,start_epoch,channel,end_epoch,channel_group FROM call_log WHERE (end_epoch IS NULL OR end_epoch='0') AND caller_code='%s' AND channel='%s' AND server_ip='%s';",$osdial->mres($accountcode),$osdial->mres($channel),$osdial->mres($VARserver_ip));
 			}
 			if ($AGILOG) {
 				$agi_string = "|$stmtA|";
