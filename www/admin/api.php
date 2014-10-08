@@ -26,6 +26,56 @@ require_once("include/dbconnect.php");
 require_once("include/functions.php");
 require_once("include/variables.php");
 
+class JsonXMLElement extends SimpleXMLElement implements JsonSerializable {
+    public function jsonSerialize() {
+        $array = array();
+
+        // json encode attributes if any.
+        if ($attributes = $this->attributes()) {
+            $attrarray = array_map('strval',iterator_to_array($attributes));
+            foreach ($attrarray as $name => $element) {
+                if (isset($array[$name])) {
+                    if (!is_array($array[$name])) {
+                        $array[$name] = [$array[$name]];
+                    }
+                    $array[$name][] = $element;
+                } else {
+                    $array[$name] = $element;
+                }
+            }
+        }
+
+        // json encode child elements if any. group on duplicate names as an array.
+        foreach ($this as $name => $element) {
+            if (isset($array[$name])) {
+                if (!is_array($array[$name])) {
+                    $array[$name] = [$array[$name]];
+                }
+                $array[$name][] = $element;
+            } else {
+                $array[$name] = $element;
+            }
+        }
+
+        // json encode non-whitespace element simplexml text values.
+        $text = trim($this);
+        if (strlen($text)) {
+            if ($array) {
+                $array['value'] = $text;
+            } else {
+                $array = $text;
+            }
+        }
+
+        // return empty elements as NULL (self-closing or empty tags)
+        if (!$array) {
+            $array = NULL;
+        }
+
+        return $array;
+    }
+}
+
 # This flag allows us to import the authentication and permissions function, allowing us to authenticate within this module.
 $osdial_skip_auth=1;
 require_once("include/auth.php");
@@ -112,6 +162,12 @@ if (preg_match('/^Y$|^YES$|^T$|^TRUE$|^1$/i',$xml['vdcompat'])) {
 } else {
     $xml['vdcompat'] = 0;
     $mimetype = "text/xml";
+}
+
+if (preg_match('/^Y$|^YES$|^T$|^TRUE$|^1$/i',$xml['json'])) {
+    $xml['json'] = 1;
+} else {
+    $xml['json'] = 0;
 }
 
 header("Content-type: $mime_type; charset=utf-8");
@@ -1965,16 +2021,17 @@ if ($xml['vdcompat'] > 0) {
         echo "\n\nDEBUG\n-------------------------------------------\n" . $result->debug . "\n\n";
 } elseif ($xml['json'] > 0) {
     if ($xml['pretty'] > 0) {
-        #echo json_encode($result,JSON_PRETTY_PRINT);
-        echo json_encode($result);
+        $txml = simplexml_load_string($result->asXML(),'JsonXMLElement');
+        echo json_encode($txml,JSON_PRETTY_PRINT) . "\n";
     } else {
-        echo json_encode($result);
+        $txml = simplexml_load_string($result->asXML(),'JsonXMLElement');
+        echo json_encode($txml) . "\n";
     }
 } else {
     if ($xml['pretty'] > 0) {
-        echo prettyXML($result->asXML());
+        echo prettyXML($result->asXML()) . "\n";
     } else {
-        echo $result->asXML();
+        echo $result->asXML() . "\n";
     }
 }
 
