@@ -301,7 +301,7 @@ if ($ADD==7111111) {
 
     echo "Preview Script: $script_id<BR>\n";
     echo "<center>";
-    echo "<table class=shadedtable width=600 cellpadding=10>";
+    echo "<table class=shadedtable width=700 cellpadding=10>";
     echo "  <tr bgcolor=$oddrows>";
     echo "    <td>";
     echo "      <center><b>$script_name</b></center>\n";
@@ -329,175 +329,265 @@ if ($ADD==1111111)
 	{
 ?>
 
-<script type="text/javascript" src="/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="/tinymce/tinymce.min.js"></script>
 <script type="text/javascript">
 // Creates a new plugin class and a custom listbox
-tinymce.create('tinymce.plugins.ExamplePlugin', {
-    createControl: function(n, cm) {
-        switch (n) {
-            case 'helpb':
-                var helpb = cm.createButton('helpb', {
-                    title: 'Help',
-                     image : '/admin/help.gif',
-                     onclick : function() {
-                        window.open('/admin/admin.php?ADD=99999#osdial_scripts-script_text','','width=800,height=500,scrollbars=yes,menubar=yes,address=yes');
-                     }
-                });
-                return helpb;
+tinymce.PluginManager.add('example', function(editor, url) {
+    menuonclick = function(e) {editor.selection.setContent('<span class="osdial_template_field" title="'+this.value()+'">[['+this.value()+']]</span> ');editor.focus();};
+    menuefonclick = function(e) {editor.selection.setContent('<span style="border: 1px solid #000; padding: 3px 20px 2px 4px; margin: 0px 2px 0px 2px;" class="osdial_template_field" title="'+this.value()+'">[['+this.value()+']]</span> ');editor.focus();};
+    menubuttononclick = function(e) {editor.selection.setContent('<span style="border: 2px outset buttonface; color: buttontext; background-color: buttonface;" class="osdial_template_button" title="'+this.value()+'">{{'+this.value()+'}}</span> ');editor.focus();};
 
-            case 'myfields':
-                var mlbf = cm.createListBox('myfields', {
-                     title : 'Form Fields',
-                     onselect : function(v) {
-                        tinyMCE.activeEditor.focus();
-                        tinyMCE.activeEditor.selection.setContent('<b>[[' + v + ']]</b>');
-                        tinyMCE.activeEditor.controlManager.get('myfields').set(-1);
-                     }
-                });
 
-                // Add some values to the list box
-                mlbf.add('vendor_lead_code', 'vendor_lead_code');
-                mlbf.add('source_id', 'source_id');
-                mlbf.add('list_id', 'list_id');
-                mlbf.add('gmt_offset_now', 'gmt_offset_now');
-                mlbf.add('called_since_last_reset', 'called_since_last_reset');
-                mlbf.add('phone_code', 'phone_code');
-                mlbf.add('phone_number', 'phone_number');
-                mlbf.add('title', 'title');
-                mlbf.add('first_name', 'first_name');
-                mlbf.add('middle_initial', 'middle_initial');
-                mlbf.add('last_name', 'last_name');
-                mlbf.add('address1', 'address1');
-                mlbf.add('address2', 'address2');
-                mlbf.add('address3', 'address3');
-                mlbf.add('city', 'city');
-                mlbf.add('state', 'state');
-                mlbf.add('province', 'province');
-                mlbf.add('postal_code', 'postal_code');
-                mlbf.add('country_code',' country_code');
-                mlbf.add('gender', 'gender');
-                mlbf.add('date_of_birth', 'date_of_birth');
-                mlbf.add('alt_phone', 'alt_phone');
-                mlbf.add('email', 'email');
-                mlbf.add('custom1', 'custom1');
-                mlbf.add('custom2', 'custom2');
-                mlbf.add('comments', 'comments');
-                mlbf.add('fullname', 'fullname');
-                mlbf.add('user', 'user');
-                mlbf.add('pass', 'pass');
-                mlbf.add('lead_id', 'lead_id');
-                mlbf.add('campaign', 'campaign');
-                mlbf.add('phone_login', 'phone_login');
-                mlbf.add('group', 'group');
-                mlbf.add('channel_group', 'channel_group');
-                mlbf.add('SQLdate', 'SQLdate');
-                mlbf.add('epoch', 'epoch');
-                mlbf.add('uniqueid', 'uniqueid');
-                mlbf.add('customer_zap_channel', 'customer_zap_channel');
-                mlbf.add('server_ip', 'server_ip');
-                mlbf.add('SIPexten', 'SIPexten');
-                mlbf.add('session_id', 'session_id');
-                mlbf.add('organization', 'organization');
-                mlbf.add('organization_title', 'organization_title');
+    editor.addButton('helpb', {
+        tooltip: 'Help',
+        image: '/admin/help.gif',
+        onclick: function() {
+            editor.windowManager.open({
+                title: 'Help',
+                url: '/admin/admin.php?ADD=99999#osdial_scripts-script_text',
+                width: 800,
+                height: 500
+            });
+        }
+    });
 
-                // Return the new listbox instance
-                return mlbf;
 
-            case 'myeditfields':
-                var mlbef = cm.createListBox('myeditfields', {
-                     title : 'Editable Fields',
-                     onselect : function(v) {
-                        tinyMCE.activeEditor.focus();
-                        tinyMCE.activeEditor.selection.setContent('[[' + v + ']]');
-                        tinyMCE.activeEditor.controlManager.get('myeditfields').set(-1);
-                     }
-                });
+    var myfieldsmenu = [
+        {text: 'vendor_lead_code', value: 'vendor_lead_code', onclick: menuonclick},
+        {text: 'source_id', value: 'source_id', onclick: menuonclick},
+        {text: 'list_id', value: 'list_id', onclick: menuonclick},
+        {text: 'gmt_offset_now', value: 'gmt_offset_now', onclick: menuonclick},
+        {text: 'called_since_last_reset', value: 'called_since_last_reset', onclick: menuonclick},
+        {text: 'phone_code', value: 'phone_code', onclick: menuonclick},
+        {text: 'phone_number', value: 'phone_number', onclick: menuonclick},
+        {text: 'title', value: 'title', onclick: menuonclick},
+        {text: 'first_name', value: 'first_name', onclick: menuonclick},
+        {text: 'middle_initial', value: 'middle_initial', onclick: menuonclick},
+        {text: 'last_name', value: 'last_name', onclick: menuonclick},
+        {text: 'address1', value: 'address1', onclick: menuonclick},
+        {text: 'address2', value: 'address2', onclick: menuonclick},
+        {text: 'address3', value: 'address3', onclick: menuonclick},
+        {text: 'city', value: 'city', onclick: menuonclick},
+        {text: 'state', value: 'state', onclick: menuonclick},
+        {text: 'province', value: 'province', onclick: menuonclick},
+        {text: 'postal_code', value: 'postal_code', onclick: menuonclick},
+        {text: 'country_code',value: ' country_code', onclick: menuonclick},
+        {text: 'gender', value: 'gender', onclick: menuonclick},
+        {text: 'date_of_birth', value: 'date_of_birth', onclick: menuonclick},
+        {text: 'alt_phone', value: 'alt_phone', onclick: menuonclick},
+        {text: 'email', value: 'email', onclick: menuonclick},
+        {text: 'custom1', value: 'custom1', onclick: menuonclick},
+        {text: 'custom2', value: 'custom2', onclick: menuonclick},
+        {text: 'comments', value: 'comments', onclick: menuonclick},
+        {text: 'lead_id', value: 'lead_id', onclick: menuonclick},
+        {text: 'campaign', value: 'campaign', onclick: menuonclick},
+        {text: 'phone_login', value: 'phone_login', onclick: menuonclick},
+        {text: 'group', value: 'group', onclick: menuonclick},
+        {text: 'channel_group', value: 'channel_group', onclick: menuonclick},
+        {text: 'SQLdate', value: 'SQLdate', onclick: menuonclick},
+        {text: 'epoch', value: 'epoch', onclick: menuonclick},
+        {text: 'uniqueid', value: 'uniqueid', onclick: menuonclick},
+        {text: 'customer_zap_channel', value: 'customer_zap_channel', onclick: menuonclick},
+        {text: 'server_ip', value: 'server_ip', onclick: menuonclick},
+        {text: 'SIPexten', value: 'SIPexten', onclick: menuonclick},
+        {text: 'session_id', value: 'session_id', onclick: menuonclick},
+        {text: 'organization', value: 'organization', onclick: menuonclick},
+        {text: 'organization_title', value: 'organization_title', onclick: menuonclick}
+    ];
+    editor.addButton('myfields', {
+        type: 'menubutton',
+        text: 'Form Fields',
+        menu: myfieldsmenu
+    });
+    editor.addMenuItem('myfields', {
+        type: 'menuitem',
+        text: 'Form Fields',
+        menu: myfieldsmenu
+    });
 
-                // Add some values to the list box
-                mlbef.add('title',            'EFtitle');
-                mlbef.add('first_name',       'EFfirst_name');
-                mlbef.add('middle_initial',   'EFmiddle_initial');
-                mlbef.add('last_name',        'EFlast_name');
-                mlbef.add('address1',         'EFaddress1');
-                mlbef.add('address2',         'EFaddress2');
-                mlbef.add('address3',         'EFaddress3');
-                mlbef.add('city',             'EFcity');
-                mlbef.add('state',            'EFstate');
-                mlbef.add('province',         'EFprovince');
-                mlbef.add('postal_code',      'EFpostal_code');
-                mlbef.add('country_code',     'EFcountry_code');
-                mlbef.add('email',            'EFemail');
-                mlbef.add('phone_code',       'EFphone_code');
-                mlbef.add('phone_number',     'EFphone_number');
-                mlbef.add('alt_phone',        'EFalt_phone');
-                mlbef.add('comments',         'EFcomments');
-                mlbef.add('date_of_birth',    'EFdate_of_birth');
-                mlbef.add('gender',           'EFgender');
-                mlbef.add('post_date',        'EFpost_date');
-                mlbef.add('vendor_lead_code', 'EFvendor_lead_code');
-                mlbef.add('custom1',          'EFcustom1');
-                mlbef.add('custom2',          'EFcustom2');
-                mlbef.add('organization',     'EForganization');
-                mlbef.add('organization_title','EForganization_title');
 
-                // Return the new listbox instance
-                return mlbef;
+    myeditfieldsmenu = [
+        {text: 'title',            value: 'EFtitle', onclick: menuefonclick},
+        {text: 'first_name',       value: 'EFfirst_name', onclick: menuefonclick},
+        {text: 'middle_initial',   value: 'EFmiddle_initial', onclick: menuefonclick},
+        {text: 'last_name',        value: 'EFlast_name', onclick: menuefonclick},
+        {text: 'address1',         value: 'EFaddress1', onclick: menuefonclick},
+        {text: 'address2',         value: 'EFaddress2', onclick: menuefonclick},
+        {text: 'address3',         value: 'EFaddress3', onclick: menuefonclick},
+        {text: 'city',             value: 'EFcity', onclick: menuefonclick},
+        {text: 'state',            value: 'EFstate', onclick: menuefonclick},
+        {text: 'province',         value: 'EFprovince', onclick: menuefonclick},
+        {text: 'postal_code',      value: 'EFpostal_code', onclick: menuefonclick},
+        {text: 'country_code',     value: 'EFcountry_code', onclick: menuefonclick},
+        {text: 'email',            value: 'EFemail', onclick: menuefonclick},
+        {text: 'phone_code',       value: 'EFphone_code', onclick: menuefonclick},
+        {text: 'phone_number',     value: 'EFphone_number', onclick: menuefonclick},
+        {text: 'alt_phone',        value: 'EFalt_phone', onclick: menuefonclick},
+        {text: 'comments',         value: 'EFcomments', onclick: menuefonclick},
+        {text: 'date_of_birth',    value: 'EFdate_of_birth', onclick: menuefonclick},
+        {text: 'gender',           value: 'EFgender', onclick: menuefonclick},
+        {text: 'post_date',        value: 'EFpost_date', onclick: menuefonclick},
+        {text: 'vendor_lead_code', value: 'EFvendor_lead_code', onclick: menuefonclick},
+        {text: 'custom1',          value: 'EFcustom1', onclick: menuefonclick},
+        {text: 'custom2',          value: 'EFcustom2', onclick: menuefonclick},
+        {text: 'organization',     value: 'EForganization', onclick: menuefonclick},
+        {text: 'organization_title',value: 'EForganization_title', onclick: menuefonclick}
+    ];
+    editor.addButton('myeditfields', {
+        type: 'menubutton',
+        text: 'Editable Fields',
+        menu: myeditfieldsmenu
+    });
+    editor.addMenuItem('myeditfields', {
+        type: 'menuitem',
+        text: 'Editable Fields',
+        menu: myeditfieldsmenu
+    });
 
-            case 'myaddtlfields':
-                var mlbaf = cm.createListBox('myaddtlfields', {
-                     title : 'Addtl Fields',
-                     onselect : function(v) {
-                        tinyMCE.activeEditor.focus();
-                        tinyMCE.activeEditor.selection.setContent('<b>[[' + v + ']]</b>');
-                        tinyMCE.activeEditor.controlManager.get('myaddtlfields').set(-1);
-                         //tinyMCE.activeEditor.windowManager.alert('Value selected:' + v);
-                     }
-                });
 
-                // Add some values to the list box
+    myaddtlfieldsmenu = [
 <?php
     $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'",'');
     if (is_array($forms)) {
         foreach ($forms as $form) {
-	        $fcamps = OSDpreg_split('/,/',$form['campaigns']);
+            $fcamps = OSDpreg_split('/,/',$form['campaigns']);
             if (is_array($fcamps)) {
-	            foreach ($fcamps as $fcamp) {
+                foreach ($fcamps as $fcamp) {
                     $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'",'');
                     if (is_array($fields)) {
                         foreach ($fields as $field) {
-                            echo "      mlbaf.add('" . $form['name'] . '_' . $field['name'] . "','" . $form['name'] . '_' . $field['name'] . "');\n";
+                            echo "{text: '" . $form['name'] . '_' . $field['name'] . "',value: '" . $form['name'] . '_' . $field['name'] . "', onclick: menuonclick},\n";
                         }
-			        }
+                    }
                 }
-		    }
-	    }
+            }
+        }
     }
 ?>
+    ];
+    editor.addButton('myaddtlfields', {
+        type: 'menubutton',
+        text: 'Addtl Fields',
+        title: 'Additional Form Fields',
+        menu: myaddtlfieldsmenu
+    });
+    editor.addMenuItem('myaddtlfields', {
+        type: 'menuitem',
+        text: 'Addtl Fields',
+        title: 'Additional Form Fields',
+        menu: myaddtlfieldsmenu
+    });
 
-                // Return the new listbox instance
-                return mlbaf;
-
-        }
-
-        return null;
-    }
 });
 
-// Register plugin with a short name
-tinymce.PluginManager.add('example', tinymce.plugins.ExamplePlugin);
 
 // Initialize TinyMCE with the new plugin and listbox
 tinyMCE.init({
-    plugins : '-example', // - tells TinyMCE to skip the loading of the plugin
-    mode : "textareas",
-    theme : "advanced",
-    theme_advanced_buttons1 : "separator,fontselect,fontsizeselect,forecolor,backcolor,separator,bold,italic,underline,strikethrough,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,separator,hr,sub,sup,separator,cut,copy,paste,separator,undo,redo,separator",
-    theme_advanced_buttons2 : "separator,myfields,separator,myeditfields,separator,myaddtlfields,separator,helpb,separator",
-    theme_advanced_buttons3 : "",
-    theme_advanced_toolbar_location : "top",
-    theme_advanced_toolbar_align : "center",
-    theme_advanced_statusbar_location : "bottom"
+    plugins: '-example textcolor lists colorpicker contextmenu hr image table code charmap link advlist autolink paste visualblocks visualchars',
+    selector: "textarea",
+    theme: "modern",
+    menubar: false,
+    skin: 'osdial',
+    contextmenu: "cut copy paste | myfields myeditfields myaddtlfields | link image inserttable | cell row column deletetable",
+    forced_root_block: '',
+    toolbar: [
+        "bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist advlist outdent indent blockquote | subscript superscript | cut copy paste | undo redo",
+        "removeformat | styleselect | fontselect | fontsizeselect | forecolor backcolor | table | hr link image charmap code | visualblocks visualchars",
+        "myfields | myeditfields | myaddtlfields | previewb | helpb",
+    ],
+    setup: function(e) {
+        e.on('init', function(ed) {
+            tbs = tinymce.DOM.select('[role="toolbar"]');
+            for (var tb in tbs) {
+                tbs[tb].firstChild.style.textAlign='center';
+            }
+            var lastsel;
+            tinymce.activeEditor.getBody().onclick = function (t) {
+                if (t.target.nodeName == 'SPAN') {
+                    if (t.target.className && t.target.className.match('osdial_template_field|osdial_template_button')) {
+                        e.stopPropagation();
+                        tinymce.activeEditor.selection.select(t.target,true);
+                        lastsel = e.selection.getNode();
+                    }
+                }
+            };
+            tinymce.activeEditor.getBody().onkeyup = function (t) {
+                if (t.keyCode == 39 || t.keyCode == 37) {
+                    if (e.selection.getNode().className && e.selection.getNode().className.match('osdial_template_field|osdial_template_button')) {
+                        if (t.keyCode==37) {
+                            e.selection.setCursorLocation(e.selection.getNode(),0);
+                            e.selection.select(e.selection.getNode(),true);
+                            lastsel=e.selection.getNode();
+                        } else {
+                            if (lastsel !== e.selection.getNode() || e.selection.getRng().startOffset==1) {
+                                e.selection.select(e.selection.getNode(),true);
+                                lastsel=e.selection.getNode();
+                            } else {
+                                lastsel=null;
+                            }
+                        }
+                    }
+                }
+            };
+        });
+        e.on('BeforeSetContent', function(ed) {
+            var RGmatch = new RegExp("\\[\\[(\\S+)\\]\\]","g");
+            ed.content = ed.content.replace(RGmatch,function(match,p1,offset,str) {
+                var RGEFmatch = new RegExp("^EF","g");
+                if (p1.match(RGEFmatch)) {
+                    return '<span style="border: 1px solid #000; padding: 3px 20px 2px 4px; margin: 0px 2px 0px 2px;" class="osdial_template_field" title="' + p1 + '">[[' + p1 + ']]</span> ';
+                } else {
+                    return '<span class="osdial_template_field" title="' + p1 + '">[[' + p1 + ']]</span> ';
+                }
+            });
+            var RGmatch2 = new RegExp("\\{\\{([\\w\\:\\-\\\\/\\+ ]+)\\}\\}","g");
+            ed.content = ed.content.replace(RGmatch2,function(match,p1,offset,str) {
+                return '<span style="border: 2px outset buttonface; color: buttontext; background-color: buttonface;" class="osdial_template_button" title="' + p1 + '">{{' + p1 + '}}</span> ';
+            });
+        });
+        e.on('LoadContent', function(ed) {
+            var RGmatch = new RegExp("\\[\\[(\\S+)\\]\\]","g");
+            ed.content = ed.content.replace(RGmatch,function(match,p1,offset,str) {
+                var RGEFmatch = new RegExp("^EF","g");
+                if (p1.match(RGEFmatch)) {
+                    return '<span style="border: 1px solid #000; padding: 3px 20px 2px 4px; margin: 0px 2px 0px 2px;" class="osdial_template_field" title="' + p1 + '">[[' + p1 + ']]</span> ';
+                } else {
+                    return '<span class="osdial_template_field" title="' + p1 + '">[[' + p1 + ']]</span> ';
+                }
+            });
+            var RGmatch2 = new RegExp("\\{\\{([\\w\\:\\-\\\\/\\+ ]+)\\}\\}","g");
+            ed.content = ed.content.replace(RGmatch2,function(match,p1,offset,str) {
+                return '<span style="border: 2px outset buttonface; color: buttontext; background-color: buttonface;" class="osdial_template_button" title="' + p1 + '">{{' + p1 + '}}</span> ';
+            });
+        });
+        e.on('BeforeGetContent', function(ed) {
+            flds = e.dom.select('.osdial_template_field');
+            for (var fld in flds) {
+                thisfld = flds[fld];
+                e.dom.setHTML(thisfld,'[['+thisfld.title+']] ');
+            }
+            flds = e.dom.select('.osdial_template_button');
+            for (var fld in flds) {
+                thisfld = flds[fld];
+                e.dom.setHTML(thisfld,'{{'+thisfld.title+'}} ');
+            }
+        });
+        e.on('SaveContent', function(ed) {
+            oldhtml = e.getBody().innerHTML;
+            flds = e.dom.select('.osdial_template_field');
+            for (var fld in flds) {
+                e.dom.setOuterHTML(flds[fld],'[['+flds[fld].title+']] ');
+            }
+            flds2 = e.dom.select('.osdial_template_button');
+            for (var fld in flds2) {
+                e.dom.setOuterHTML(flds2[fld],'{{'+flds2[fld].title+'}} ');
+            }
+            ed.content = tinymce.trim(e.serializer.serialize(e.getBody()));
+            e.dom.setHTML(e.getBody(), oldhtml);
+        });
+    }
 });
+
 </script>
 
 <?php
@@ -690,233 +780,392 @@ if ($ADD==3111111)
 	{
 ?>
 
-<script type="text/javascript" src="/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="/tinymce/tinymce.min.js"></script>
 <script type="text/javascript">
+var mystatuslist;
+var myscriptlist;
 // Creates a new plugin class and a custom listbox
-tinymce.create('tinymce.plugins.ExamplePlugin', {
-    createControl: function(n, cm) {
-        switch (n) {
-            case 'helpb':
-                var helpb = cm.createButton('helpb', {
-                    title: 'Help',
-                     image : '/admin/help.gif',
-                     onclick : function() {
-                        window.open('/admin/admin.php?ADD=99999#osdial_scripts-script_text','','width=800,height=500,scrollbars=yes,menubar=yes,address=yes');
-                     }
-                });
-                return helpb;
-
-            case 'previewb':
-                var previewb = cm.createButton('previewb', {
-                    label: 'Preview',                    
-                    onclick : function() {
-                        window.open('/admin/admin.php?ADD=7111111&script_id=<?php echo $script_id; ?>','','width=1000,height=700,scrollbars=yes,menubar=yes,address=yes');
-                     }
-                });
-                return previewb;
-
-            case 's0':
-                var s = cm.createButton('s0',{label: ' '});
-                return s;
-            case 's1':
-                var s = cm.createButton('s1',{label: ' '});
-                return s;
+tinymce.PluginManager.add('example', function(editor, url) {
+    menuonclick = function(e) {editor.selection.setContent('<span class="osdial_template_field" title="'+this.value()+'">[['+this.value()+']]</span> ');editor.focus();};
+    menuefonclick = function(e) {editor.selection.setContent('<span style="border: 1px solid #000; padding: 3px 20px 2px 4px; margin: 0px 2px 0px 2px;" class="osdial_template_field" title="'+this.value()+'">[['+this.value()+']]</span> ');editor.focus();};
+    menubuttononclick = function(e) {editor.selection.setContent('<span style="border: 2px outset buttonface; color: buttontext; background-color: buttonface;" class="osdial_template_button" title="'+this.value()+'">{{'+this.value()+'}}</span> ');editor.focus();};
+    ondispoclick = function(e) {e.stopPropagation();editor.selection.setContent('<span style="border: 2px outset buttonface; color: buttontext; background-color: buttonface;" class="osdial_template_button" title="'+this.value()+'">{{'+this.value()+'}}</span> ');editor.getContainer('mydispo').click();editor.focus();};
 
 
-            case 'myfields':
-                var mlbf = cm.createListBox('myfields', {
-                     title : 'Form Fields',
-                     onselect : function(v) {
-                        tinyMCE.activeEditor.focus();
-                        tinyMCE.activeEditor.selection.setContent('<b>[[' + v + ']]</b>');
-                        tinyMCE.activeEditor.controlManager.get('myfields').set(-1);
-                     }
-                });
-                mlbf.add('vendor_lead_code', 'vendor_lead_code');
-                mlbf.add('source_id', 'source_id');
-                mlbf.add('list_id', 'list_id');
-                mlbf.add('gmt_offset_now', 'gmt_offset_now');
-                mlbf.add('called_since_last_reset', 'called_since_last_reset');
-                mlbf.add('phone_code', 'phone_code');
-                mlbf.add('phone_number', 'phone_number');
-                mlbf.add('title', 'title');
-                mlbf.add('first_name', 'first_name');
-                mlbf.add('middle_initial', 'middle_initial');
-                mlbf.add('last_name', 'last_name');
-                mlbf.add('address1', 'address1');
-                mlbf.add('address2', 'address2');
-                mlbf.add('address3', 'address3');
-                mlbf.add('city', 'city');
-                mlbf.add('state', 'state');
-                mlbf.add('province', 'province');
-                mlbf.add('postal_code', 'postal_code');
-                mlbf.add('country_code',' country_code');
-                mlbf.add('gender', 'gender');
-                mlbf.add('date_of_birth', 'date_of_birth');
-                mlbf.add('alt_phone', 'alt_phone');
-                mlbf.add('email', 'email');
-                mlbf.add('custom1', 'custom1');
-                mlbf.add('custom2', 'custom2');
-                mlbf.add('comments', 'comments');
-                mlbf.add('lead_id', 'lead_id');
-                mlbf.add('campaign', 'campaign');
-                mlbf.add('phone_login', 'phone_login');
-                mlbf.add('group', 'group');
-                mlbf.add('channel_group', 'channel_group');
-                mlbf.add('SQLdate', 'SQLdate');
-                mlbf.add('epoch', 'epoch');
-                mlbf.add('uniqueid', 'uniqueid');
-                mlbf.add('customer_zap_channel', 'customer_zap_channel');
-                mlbf.add('server_ip', 'server_ip');
-                mlbf.add('SIPexten', 'SIPexten');
-                mlbf.add('session_id', 'session_id');
-                mlbf.add('organization', 'organization');
-                mlbf.add('organization_title', 'organization_title');
-                return mlbf;
+    editor.addButton('helpb', {
+        tooltip: 'Help',
+        image: '/admin/help.gif',
+        onclick: function() {
+            editor.windowManager.open({
+                title: 'Help',
+                url: '/admin/admin.php?ADD=99999#osdial_scripts-script_text',
+                width: 800,
+                height: 500
+            });
+        }
+    });
 
-            case 'myeditfields':
-                var mlbef = cm.createListBox('myeditfields', {
-                     title : 'Editable Fields',
-                     onselect : function(v) {
-                        tinyMCE.activeEditor.focus();
-                        tinyMCE.activeEditor.selection.setContent('[[' + v + ']]');
-                        tinyMCE.activeEditor.controlManager.get('myeditfields').set(-1);
-                     }
-                });
-                mlbef.add('title',            'EFtitle');
-                mlbef.add('first_name',       'EFfirst_name');
-                mlbef.add('middle_initial',   'EFmiddle_initial');
-                mlbef.add('last_name',        'EFlast_name');
-                mlbef.add('address1',         'EFaddress1');
-                mlbef.add('address2',         'EFaddress2');
-                mlbef.add('address3',         'EFaddress3');
-                mlbef.add('city',             'EFcity');
-                mlbef.add('state',            'EFstate');
-                mlbef.add('province',         'EFprovince');
-                mlbef.add('postal_code',      'EFpostal_code');
-                mlbef.add('country_code',     'EFcountry_code');
-                mlbef.add('email',            'EFemail');
-                mlbef.add('phone_code',       'EFphone_code');
-                mlbef.add('phone_number',     'EFphone_number');
-                mlbef.add('alt_phone',        'EFalt_phone');
-                mlbef.add('comments',         'EFcomments');
-                mlbef.add('date_of_birth',    'EFdate_of_birth');
-                mlbef.add('gender',           'EFgender');
-                mlbef.add('post_date',        'EFpost_date');
-                mlbef.add('vendor_lead_code', 'EFvendor_lead_code');
-                mlbef.add('custom1',          'EFcustom1');
-                mlbef.add('custom2',          'EFcustom2');
-                mlbef.add('organization',     'EForganization');
-                mlbef.add('organization_title','EForganization_title');
-                return mlbef;
 
-            case 'myaddtlfields':
-                var mlbaf = cm.createListBox('myaddtlfields', {
-                     title : 'Addtl Fields',
-                     onselect : function(v) {
-                        tinyMCE.activeEditor.focus();
-                        tinyMCE.activeEditor.selection.setContent('[[' + v + ']]');
-                        tinyMCE.activeEditor.controlManager.get('myaddtlfields').set(-1);
-                         //tinyMCE.activeEditor.windowManager.alert('Value selected:' + v);
-                     }
-                });
+    editor.addButton('previewb', {
+        text: 'Preview',
+        onclick: function() {
+            editor.windowManager.open({
+                title: 'Preview',
+                url: '/admin/admin.php?ADD=7111111&script_id=<?php echo $script_id; ?>',
+                width: 800,
+                height: 500
+            });
+        }
+    });
+
+
+    var myfieldsmenu = [
+        {text: 'vendor_lead_code', value: 'vendor_lead_code', onclick: menuonclick},
+        {text: 'source_id', value: 'source_id', onclick: menuonclick},
+        {text: 'list_id', value: 'list_id', onclick: menuonclick},
+        {text: 'gmt_offset_now', value: 'gmt_offset_now', onclick: menuonclick},
+        {text: 'called_since_last_reset', value: 'called_since_last_reset', onclick: menuonclick},
+        {text: 'phone_code', value: 'phone_code', onclick: menuonclick},
+        {text: 'phone_number', value: 'phone_number', onclick: menuonclick},
+        {text: 'title', value: 'title', onclick: menuonclick},
+        {text: 'first_name', value: 'first_name', onclick: menuonclick},
+        {text: 'middle_initial', value: 'middle_initial', onclick: menuonclick},
+        {text: 'last_name', value: 'last_name', onclick: menuonclick},
+        {text: 'address1', value: 'address1', onclick: menuonclick},
+        {text: 'address2', value: 'address2', onclick: menuonclick},
+        {text: 'address3', value: 'address3', onclick: menuonclick},
+        {text: 'city', value: 'city', onclick: menuonclick},
+        {text: 'state', value: 'state', onclick: menuonclick},
+        {text: 'province', value: 'province', onclick: menuonclick},
+        {text: 'postal_code', value: 'postal_code', onclick: menuonclick},
+        {text: 'country_code',value: ' country_code', onclick: menuonclick},
+        {text: 'gender', value: 'gender', onclick: menuonclick},
+        {text: 'date_of_birth', value: 'date_of_birth', onclick: menuonclick},
+        {text: 'alt_phone', value: 'alt_phone', onclick: menuonclick},
+        {text: 'email', value: 'email', onclick: menuonclick},
+        {text: 'custom1', value: 'custom1', onclick: menuonclick},
+        {text: 'custom2', value: 'custom2', onclick: menuonclick},
+        {text: 'comments', value: 'comments', onclick: menuonclick},
+        {text: 'lead_id', value: 'lead_id', onclick: menuonclick},
+        {text: 'campaign', value: 'campaign', onclick: menuonclick},
+        {text: 'phone_login', value: 'phone_login', onclick: menuonclick},
+        {text: 'group', value: 'group', onclick: menuonclick},
+        {text: 'channel_group', value: 'channel_group', onclick: menuonclick},
+        {text: 'SQLdate', value: 'SQLdate', onclick: menuonclick},
+        {text: 'epoch', value: 'epoch', onclick: menuonclick},
+        {text: 'uniqueid', value: 'uniqueid', onclick: menuonclick},
+        {text: 'customer_zap_channel', value: 'customer_zap_channel', onclick: menuonclick},
+        {text: 'server_ip', value: 'server_ip', onclick: menuonclick},
+        {text: 'SIPexten', value: 'SIPexten', onclick: menuonclick},
+        {text: 'session_id', value: 'session_id', onclick: menuonclick},
+        {text: 'organization', value: 'organization', onclick: menuonclick},
+        {text: 'organization_title', value: 'organization_title', onclick: menuonclick}
+    ];
+    editor.addButton('myfields', {
+        type: 'menubutton',
+        text: 'Form Fields',
+        menu: myfieldsmenu
+    });
+    editor.addMenuItem('myfields', {
+        type: 'menuitem',
+        text: 'Form Fields',
+        menu: myfieldsmenu
+    });
+
+
+    myeditfieldsmenu = [
+        {text: 'title',            value: 'EFtitle', onclick: menuefonclick},
+        {text: 'first_name',       value: 'EFfirst_name', onclick: menuefonclick},
+        {text: 'middle_initial',   value: 'EFmiddle_initial', onclick: menuefonclick},
+        {text: 'last_name',        value: 'EFlast_name', onclick: menuefonclick},
+        {text: 'address1',         value: 'EFaddress1', onclick: menuefonclick},
+        {text: 'address2',         value: 'EFaddress2', onclick: menuefonclick},
+        {text: 'address3',         value: 'EFaddress3', onclick: menuefonclick},
+        {text: 'city',             value: 'EFcity', onclick: menuefonclick},
+        {text: 'state',            value: 'EFstate', onclick: menuefonclick},
+        {text: 'province',         value: 'EFprovince', onclick: menuefonclick},
+        {text: 'postal_code',      value: 'EFpostal_code', onclick: menuefonclick},
+        {text: 'country_code',     value: 'EFcountry_code', onclick: menuefonclick},
+        {text: 'email',            value: 'EFemail', onclick: menuefonclick},
+        {text: 'phone_code',       value: 'EFphone_code', onclick: menuefonclick},
+        {text: 'phone_number',     value: 'EFphone_number', onclick: menuefonclick},
+        {text: 'alt_phone',        value: 'EFalt_phone', onclick: menuefonclick},
+        {text: 'comments',         value: 'EFcomments', onclick: menuefonclick},
+        {text: 'date_of_birth',    value: 'EFdate_of_birth', onclick: menuefonclick},
+        {text: 'gender',           value: 'EFgender', onclick: menuefonclick},
+        {text: 'post_date',        value: 'EFpost_date', onclick: menuefonclick},
+        {text: 'vendor_lead_code', value: 'EFvendor_lead_code', onclick: menuefonclick},
+        {text: 'custom1',          value: 'EFcustom1', onclick: menuefonclick},
+        {text: 'custom2',          value: 'EFcustom2', onclick: menuefonclick},
+        {text: 'organization',     value: 'EForganization', onclick: menuefonclick},
+        {text: 'organization_title',value: 'EForganization_title', onclick: menuefonclick}
+    ];
+    editor.addButton('myeditfields', {
+        type: 'menubutton',
+        text: 'Editable Fields',
+        menu: myeditfieldsmenu
+    });
+    editor.addMenuItem('myeditfields', {
+        type: 'menuitem',
+        text: 'Editable Fields',
+        menu: myeditfieldsmenu
+    });
+
+
+    myaddtlfieldsmenu = [
 <?php
     $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'",'');
     if (is_array($forms)) {
         foreach ($forms as $form) {
-	        $fcamps = OSDpreg_split('/,/',$form['campaigns']);
+            $fcamps = OSDpreg_split('/,/',$form['campaigns']);
             if (is_array($fcamps)) {
-	            foreach ($fcamps as $fcamp) {
+                foreach ($fcamps as $fcamp) {
                     $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'",'');
                     if (is_array($fields)) {
                         foreach ($fields as $field) {
-                            echo "      mlbaf.add('" . $form['name'] . '_' . $field['name'] . "','" . $form['name'] . '_' . $field['name'] . "');\n";
-			            }
-		            }
-	            }
+                            echo "{text: '" . $form['name'] . '_' . $field['name'] . "',value: '" . $form['name'] . '_' . $field['name'] . "', onclick: menuonclick},\n";
+                        }
+                    }
+                }
             }
         }
     }
 ?>
-                return mlbaf;
+    ];
+    editor.addButton('myaddtlfields', {
+        type: 'menubutton',
+        text: 'Addtl Fields',
+        title: 'Additional Form Fields',
+        menu: myaddtlfieldsmenu
+    });
+    editor.addMenuItem('myaddtlfields', {
+        type: 'menuitem',
+        text: 'Addtl Fields',
+        title: 'Additional Form Fields',
+        menu: myaddtlfieldsmenu
+    });
 
-            case 'mybuttons':
-                var mlb = cm.createListBox('mybuttons', {
-                     title : "Script Buttons<br>Objections / Rebuttals",
-                     onselect : function(v) {
-                        tinyMCE.activeEditor.focus();
-                        tinyMCE.activeEditor.selection.setContent('{{' + v + '}}');
-                        tinyMCE.activeEditor.controlManager.get('mybuttons').set(-1);
-                         //tinyMCE.activeEditor.windowManager.alert('Value selected:' + v);
-                     }
-                });
+
+    mybuttonsmenu = [
 <?php
+    $DBscripts = '';
     $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='$script_id'",'');
     if (is_array($buttons)) {
         foreach ($buttons as $button) {
-            echo "      mlb.add('" . $button['script_button_id'] . ': ' . $button['script_button_label'] . "','" . $button['script_button_id'] . "');\n";
-	    }
+            echo "{text: '" . $button['script_button_id'] . ': ' . $button['script_button_label'] . "',value: '" . $button['script_button_id'] . "', onclick: menubuttononclick},\n";
+            $DBscripts .= "{text:'".$button['script_button_id']."', value: '".$button['script_button_id']."', tooltip: '".$button['script_button_label']."'},\n";
+        }
     }
 ?>
-                return mlb;
+    ];
+    myscriptlist = [<?php echo $DBscripts; ?>];
+    editor.addButton('mybuttons', {
+        type: 'menubutton',
+        text: "Script Buttons",
+        title: "Objections Rebuttals",
+        menu: mybuttonsmenu
+    });
+    editor.addMenuItem('mybuttons', {
+        type: 'menuitem',
+        text: "Script Buttons",
+        title: "Objections Rebuttals",
+        menu: mybuttonsmenu
+    });
 
-            case 'mydispo':
-                var mldb = cm.createListBox('mydispo', {
-                     title : 'Dispo Buttons<br>Hangup and Disposition',
-                     onselect : function(v) {
-                        tinyMCE.activeEditor.focus();
-                        tinyMCE.activeEditor.selection.setContent('{{' + v + '}}');
-                        tinyMCE.activeEditor.controlManager.get('mydispo').set(-1);
-                         //tinyMCE.activeEditor.windowManager.alert('Value selected:' + v);
-                     }
-                });
+
+    mydispomenu = [
 <?php
     $DBdispo = Array();
     $stmt = "SELECT status,status_name FROM (SELECT status,status_name FROM osdial_statuses WHERE selectable='Y' UNION SELECT status,status_name FROM osdial_campaign_statuses WHERE selectable='Y') AS stat GROUP BY status;";
-	$rslt=mysql_query($stmt, $link);
+$rslt=mysql_query($stmt, $link);
     while ($row=mysql_fetch_row($rslt)) {
         $DBdispo[$row[0]] = $row[1];
-	}
+    }
+    $DBstatuses='';
     $DBdefault='';
     $DBnormal='';
     $DBwebform1='';
     $DBwebform2='';
     if (is_array($DBdispo)) {
         foreach ($DBdispo as $DBcode => $DBdesc) {
-            $DBdefault .= "      mldb.add('" . $DBcode . " <!-- \"" . $DBdesc . "\" (Use Campaign/InGroup submit method) -->','DISPO:" . $DBcode . ":" . $DBdesc . "',{title : '" . $DBdesc . "'});\n";
-            $DBnormal .= "      mldb.add('NORMAL:" . $DBcode . " <!-- \"" . $DBdesc . "\" (NORMAL submit method, no webforms) -->','DISPO_NORMAL:" . $DBcode . ":" . $DBdesc . "',{title : '" . $DBdesc . "'});\n";
-            $DBwebform1 .= "      mldb.add('WEBFORM1:" . $DBcode . " <!-- \"" . $DBdesc . "\" (WEBFORM1 submit method) -->','DISPO_WEBFORM1:" . $DBcode . ":" . $DBdesc . "',{title : '" . $DBdesc . "'});\n";
-            $DBwebform2 .= "      mldb.add('WEBFORM2:" . $DBcode . " <!-- \"" . $DBdesc . "\" (WEBFORM2 submit method) -->','DISPO_WEBFORM2:" . $DBcode . ":" . $DBdesc . "',{title : '" . $DBdesc . "'});\n";
-	    }
-    }
-    echo $DBdefault . $DBwebform1 . $DBwebform2 . $DBnormal;
-?>
-                return mldb;
-
+            $DBnormal = "{text:'NORMAL',value:'DISPO_NORMAL:" . $DBcode . ":" . $DBdesc . "',tooltip: 'NORMAL: " . $DBdesc . "', onclick: ondispoclick},\n";
+            $DBwebform1 = "{text:'WEBFORM1',value:'DISPO_WEBFORM1:" . $DBcode . ":" . $DBdesc . "',tooltip: 'WEBFORM1: " . $DBdesc . "', onclick: ondispoclick},\n";
+            $DBwebform2 = "{text:'WEBFORM2',value:'DISPO_WEBFORM2:" . $DBcode . ":" . $DBdesc . "',tooltip: 'WEBFORM2: " . $DBdesc . "', onclick: ondispoclick},\n";
+            $DBdefault .= "{text:'" . $DBcode . "',value:'DISPO:" . $DBcode . ":" . $DBdesc . "',tooltip: '" . $DBdesc . "', menu:[".$DBnormal.$DBwebform1.$DBwebform2."], onclick: ondispoclick},\n";
+            $DBstatuses .= "{text:'".$DBcode."', value: '".$DBcode."', tooltip: '".$DBdesc."'},\n";
         }
-
-        return null;
     }
+    echo $DBdefault;
+?>
+    ];
+    mystatuslist = [<?php echo $DBstatuses; ?>];
+    editor.addButton('mydispo', {
+        type: 'menubutton',
+        text: 'Dispo Buttons',
+        title: 'Hangup and Disposition',
+        menu: mydispomenu
+    });
+    editor.addMenuItem('mydispo', {
+        type: 'menuitem',
+        text: 'Dispo Buttons',
+        title: 'Hangup and Disposition',
+        menu: mydispomenu
+    });
+
 });
 
-// Register plugin with a short name
-tinymce.PluginManager.add('example', tinymce.plugins.ExamplePlugin);
 
 // Initialize TinyMCE with the new plugin and listbox
 tinyMCE.init({
-    plugins : '-example', // - tells TinyMCE to skip the loading of the plugin
-    mode : "textareas",
-    theme : "advanced",
-//     theme_advanced_buttons1 : "separator,fontselect,fontsizeselect,forecolor,backcolor,separator,bold,italic,underline,strikethrough,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,separator,hr,sub,sup,separator,cut,copy,paste,separator,undo,redo,separator,code,separator",
-    theme_advanced_buttons1 : "fontselect,fontsizeselect,forecolor,backcolor,separator,bold,italic,underline,strikethrough,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,separator,hr,sub,sup,separator,cut,copy,paste,separator,undo,redo,separator,code",
-//     theme_advanced_buttons2 : "separator,myfields,separator,separator,myeditfields,separator,separator,myaddtlfields,separator,s0,separator,mydispo,separator,separator,mybuttons,separator,s1,separator,previewb,separator,separator,helpb,separator",
-    theme_advanced_buttons2 : "myfields,space,myeditfields,myaddtlfields,separator,mydispo,mybuttons,previewb,separator,helpb",
-    
-    theme_advanced_buttons3 : "",
-    theme_advanced_toolbar_location : "top",
-    theme_advanced_toolbar_align : "center",
-    theme_advanced_statusbar_location : "bottom"
+    plugins: '-example textcolor lists colorpicker contextmenu hr image table code charmap link advlist autolink paste visualblocks visualchars',
+    selector: "textarea",
+    theme: "modern",
+    menubar: false,
+    skin: 'osdial',
+    contextmenu: "cut copy paste | myfields myeditfields myaddtlfields mydispo mybuttons | link image inserttable | cell row column deletetable",
+    forced_root_block: '',
+    toolbar: [
+        "bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist advlist outdent indent blockquote | subscript superscript | cut copy paste | undo redo",
+        "removeformat | styleselect | fontselect | fontsizeselect | forecolor backcolor | table | hr link image charmap code | visualblocks visualchars",
+        "myfields | myeditfields | myaddtlfields | mydispo | mybuttons | previewb | helpb",
+    ],
+    setup: function(e) {
+        e.on('init', function(ed) {
+            tbs = tinymce.DOM.select('[role="toolbar"]');
+            for (var tb in tbs) {
+                tbs[tb].firstChild.style.textAlign='center';
+            }
+            var lastsel;
+            tinymce.activeEditor.getBody().onclick = function (t) {
+                if (t.target.nodeName == 'SPAN') {
+                    if (t.target.className && t.target.className.match('osdial_template_field|osdial_template_button')) {
+                        e.stopPropagation();
+                        tinymce.activeEditor.selection.select(t.target,true);
+                        lastsel = e.selection.getNode();
+                        if (t.target.className.match('osdial_template_button')) {
+                            bdata = t.target.title.split(':');
+                            if (t.target.title.match(/^DISPO/)) {
+                                e.windowManager.open({
+                                    width: 500,
+                                    height: 200,
+                                    title: 'Modify Disposition Options',
+                                    body: [
+                                        {type: 'listbox', name: 'action', label: 'Action', value: bdata[0], values: [
+                                            {text: 'Use Default', value: 'DISPO'},
+                                            {text: 'NORMAL', value: 'DISPO_NORMAL'},
+                                            {text: 'WEBFORM1', value: 'DISPO_WEBFORM1'},
+                                            {text: 'WEBFORM2', value: 'DISPO_WEBFORM2'},
+                                        ]},
+                                        {type: 'listbox', name: 'status', label: 'Status', value: bdata[1], values: mystatuslist},
+                                        {type: 'textbox', name: 'label', label: 'Label', value: bdata[2]},
+                                    ],
+                                    onsubmit: function(ed) {
+                                        newtitle = ed.data.action+':'+ed.data.status;
+                                        if (ed.data.label.length>0) newtitle += ':'+ed.data.label;
+                                        t.target.innerHTML = '{{' + newtitle + '}}';
+                                        t.target.title = newtitle;
+                                    }
+                                });
+
+                            } else {
+                                e.windowManager.open({
+                                    width: 500,
+                                    height: 200,
+                                    title: 'Modify Script Button Options',
+                                    body: [
+                                        {type: 'listbox', name: 'script', label: 'Script ID', value: bdata[0], values: myscriptlist},
+                                        {type: 'textbox', name: 'label', label: 'Label', value: bdata[1]},
+                                    ],
+                                    onsubmit: function(ed) {
+                                        newtitle = ed.data.script;
+                                        if (ed.data.label.length>0) newtitle += ':'+ed.data.label;
+                                        t.target.innerHTML = '{{' + newtitle + '}}';
+                                        t.target.title = newtitle;
+                                    }
+                                });
+
+                            }
+                        }
+                    }
+                }
+            };
+            tinymce.activeEditor.getBody().onkeyup = function (t) {
+                if (t.keyCode == 39 || t.keyCode == 37) {
+                    if (e.selection.getNode().className && e.selection.getNode().className.match('osdial_template_field|osdial_template_button')) {
+                        if (t.keyCode==37) {
+                            e.selection.setCursorLocation(e.selection.getNode(),0);
+                            e.selection.select(e.selection.getNode(),true);
+                            lastsel=e.selection.getNode();
+                        } else {
+                            if (lastsel !== e.selection.getNode() || e.selection.getRng().startOffset==1) {
+                                e.selection.select(e.selection.getNode(),true);
+                                lastsel=e.selection.getNode();
+                            } else {
+                                lastsel=null;
+                            }
+                        }
+                    }
+                }
+            };
+        });
+        e.on('BeforeSetContent', function(ed) {
+            var RGmatch = new RegExp("\\[\\[(\\S+)\\]\\]","g");
+            ed.content = ed.content.replace(RGmatch,function(match,p1,offset,str) {
+                var RGEFmatch = new RegExp("^EF","g");
+                if (p1.match(RGEFmatch)) {
+                    return '<span style="border: 1px solid #000; padding: 3px 20px 2px 4px; margin: 0px 2px 0px 2px;" class="osdial_template_field" title="' + p1 + '">[[' + p1 + ']]</span> ';
+                } else {
+                    return '<span class="osdial_template_field" title="' + p1 + '">[[' + p1 + ']]</span> ';
+                }
+            });
+            var RGmatch2 = new RegExp("\\{\\{([\\w\\:\\-\\\\/\\+ ]+)\\}\\}","g");
+            ed.content = ed.content.replace(RGmatch2,function(match,p1,offset,str) {
+                return '<span style="border: 2px outset buttonface; color: buttontext; background-color: buttonface;" class="osdial_template_button" title="' + p1 + '">{{' + p1 + '}}</span> ';
+            });
+        });
+        e.on('LoadContent', function(ed) {
+            var RGmatch = new RegExp("\\[\\[(\\S+)\\]\\]","g");
+            ed.content = ed.content.replace(RGmatch,function(match,p1,offset,str) {
+                var RGEFmatch = new RegExp("^EF","g");
+                if (p1.match(RGEFmatch)) {
+                    return '<span style="border: 1px solid #000; padding: 3px 20px 2px 4px; margin: 0px 2px 0px 2px;" class="osdial_template_field" title="' + p1 + '">[[' + p1 + ']]</span> ';
+                } else {
+                    return '<span class="osdial_template_field" title="' + p1 + '">[[' + p1 + ']]</span> ';
+                }
+            });
+            var RGmatch2 = new RegExp("\\{\\{([\\w\\:\\-\\\\/\\+ ]+)\\}\\}","g");
+            ed.content = ed.content.replace(RGmatch2,function(match,p1,offset,str) {
+                return '<span style="border: 2px outset buttonface; color: buttontext; background-color: buttonface;" class="osdial_template_button" title="' + p1 + '">{{' + p1 + '}}</span> ';
+            });
+        });
+        e.on('BeforeGetContent', function(ed) {
+            flds = e.dom.select('.osdial_template_field');
+            for (var fld in flds) {
+                thisfld = flds[fld];
+                e.dom.setHTML(thisfld,'[['+thisfld.title+']] ');
+            }
+            flds = e.dom.select('.osdial_template_button');
+            for (var fld in flds) {
+                thisfld = flds[fld];
+                e.dom.setHTML(thisfld,'{{'+thisfld.title+'}} ');
+            }
+        });
+        e.on('SaveContent', function(ed) {
+            oldhtml = e.getBody().innerHTML;
+            flds = e.dom.select('.osdial_template_field');
+            for (var fld in flds) {
+                e.dom.setOuterHTML(flds[fld],'[['+flds[fld].title+']] ');
+            }
+            flds2 = e.dom.select('.osdial_template_button');
+            for (var fld in flds2) {
+                e.dom.setOuterHTML(flds2[fld],'{{'+flds2[fld].title+'}} ');
+            }
+            ed.content = tinymce.trim(e.serializer.serialize(e.getBody()));
+            e.dom.setHTML(e.getBody(), oldhtml);
+        });
+    }
 });
+
 </script>
 
 <?php
