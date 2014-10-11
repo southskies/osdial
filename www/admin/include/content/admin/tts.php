@@ -71,15 +71,15 @@ if ($ADD=="11tts") {
         echo "<table class=shadedtable width=$section_width cellspacing=3>\n";
         echo "  <tr bgcolor=$oddrows><td colspan=2>&nbsp;</td></tr>";
         echo "  <tr bgcolor=$oddrows>\n";
-        echo "    <td align=right width=50%>Description: </td>\n";
+        echo "    <td align=right width=30%>Description: </td>\n";
         echo "    <td align=left><input type=text name=tts_description size=50 maxlength=100 value=\"\">".helptag("tts-description")."</td>\n";
         echo "  </tr>\n";
         echo "  <tr bgcolor=$oddrows>\n";
-        echo "    <td align=right width=50%>Extension: </td>\n";
+        echo "    <td align=right>Extension: </td>\n";
         echo "    <td align=left><input type=text name=tts_extension size=10 maxlength=20 value=\"\" onclick=\"if (this.value=='') { this.value='".($config['settings']['last_general_extension']+1)."';}\">".helptag("tts-extension")."</td>\n";
         echo "  </tr>\n";
         echo "  <tr bgcolor=$oddrows>\n";
-        echo "    <td align=right width=50%>Voice: </td>\n";
+        echo "    <td align=right>Voice: </td>\n";
         echo "    <td align=left>\n";
         echo "      <select name=tts_voice>\n";
         foreach ($fest_voices as $voice) {
@@ -190,7 +190,7 @@ if ($ADD=="41tts") {
             if ($ttsupd) {
                 echo "<br><font color=$default_text>TEXT-TO-SPEECH MODIFIED: $tts_id : $tts_description</font>\n";
 
-                $tts_phrase = OSDpreg_replace('/&nbsp;/',' ',htmlspecialchars_decode(strip_tags(OSDpreg_replace('/(\<br\/\>|\<br\>)/',"\n",$tts_phrase))));
+                $tts_phrase = OSDpreg_replace('/&nbsp;/',' ',htmlspecialchars_decode(strip_tags(OSDpreg_replace('/(\<br \/\>|\<br\/\>|\<br\>)/',"\n",$tts_phrase))));
                 $stmt=sprintf("UPDATE osdial_tts SET description='%s',extension='%s',phrase='%s',voice='%s' WHERE id='%s';",mres($tts_description),mres($tts_extension),mres($tts_phrase),mres($tts_voice),mres($tts_id));
                 $rslt=mysql_query($stmt, $link);
             }
@@ -253,156 +253,143 @@ if ($ADD=="61tts") {
 ######################
 if ($ADD=="31tts") {
     if ($LOG['modify_servers']>0) {
-        $tts = get_first_record($link, 'osdial_tts', '*', sprintf("id='%s'",mres($tts_id)) );
-
-        echo "<center><br/><font class=top_header color=$default_text size=+1>MODIFY TEXT-TO-SPEECH TEMPLATE</font><form action=$PHP_SELF method=POST name=osdial_form id=osdial_form enctype=\"multipart/form-data\"><br/><br/>\n";
-        echo "<input type=hidden name=ADD value=41tts>\n";
-        echo "<input type=hidden name=tts_id value=$tts[id]>\n";
-        echo "<input type=hidden name=last_general_extension value=\"".($config['settings']['last_general_extension']+1)."\">\n";
-        echo "<table class=shadedtable width=$section_width cellspacing=3>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>ID: </td><td align=left><font color=$default_text>" . $tts['id'] . "</font></td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Description: </td><td align=left><input type=text name=tts_description size=50 maxlength=255 value=\"$tts[description]\">".helptag("tts-description")."</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Extension: </td><td align=left><input type=text name=tts_extension size=10 maxlength=20 value=\"$tts[extension]\" onclick=\"if (this.value=='') { this.value='".($config['settings']['last_general_extension']+1)."';}\">".helptag("tts-extension")."</td></tr>\n";
-        echo "  <tr bgcolor=$oddrows>\n";
-        echo "    <td align=right width=50%>Voice: </td>\n";
-        echo "    <td align=left>\n";
-        echo "      <select name=tts_voice>\n";
-        foreach ($fest_voices as $voice) {
-            $vsel=''; if ($tts['voice']==$voice) $vsel='selected'; echo "        <option value=\"$voice\" $vsel>$fest_types[$voice]</option>\n";
-        }
-        echo "      </select>".helptag("tts-voice")."</td>\n";
-        echo "  </tr>\n";
-        $tts['phrase'] = OSDpreg_replace("/\n/",'<br/>',$tts['phrase']);
-        echo "<tr bgcolor=$oddrows><td align=center colspan=2><div id=ttscon name=ttscon class=ttscon>Phrase<br/><textarea name=tts_phrase rows=20 cols=120>" . $tts['phrase'] . "</textarea></div></td></tr>\n";
-        echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit value=SUBMIT></td></tr>\n";
-        echo "</table></form></center>\n";
-
-        echo "<br/><br/>\n";
-
-//         echo "<br/><br/><a href=\"$PHP_SELF?ADD=51tts&tts_id=$tts[id]\">DELETE TEXT-TO-SPEECH TEMPLATE</a>\n";
 ?>
 
-<script type="text/javascript" src="/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="/tinymce/tinymce.min.js"></script>
 <script type="text/javascript">
 // Creates a new plugin class and a custom listbox
-tinymce.create('tinymce.plugins.ExamplePlugin', {
-    createControl: function(n, cm) {
-        switch (n) {
-            case 'helpb':
-                var helpb = cm.createButton('helpb', {
-                    title: 'Help',
-                     image : '/admin/help.gif',
-                     onclick : function() {
-                        window.open('/admin/admin.php?ADD=99999#tts-phrase','','width=800,height=500,scrollbars=yes,menubar=yes,address=yes');
-                     }
-                });
-                return helpb;
-            case 's0':
-                var s = cm.createButton('s0',{label: ' '});
-                return s;
-            case 's1':
-                var s = cm.createButton('s1',{label: ' '});
-                return s;
-            case 'myfields':
-                var mlbf = cm.createListBox('myfields', {
-                     title : 'Form Fields',
-                     onselect : function(v) {
-                        tinyMCE.activeEditor.focus();
-                        tinyMCE.activeEditor.selection.setContent('[[' + v + ']]');
-                        tinyMCE.activeEditor.controlManager.get('myfields').set(-1);
-                     }
-                });
-                mlbf.add('vendor_lead_code', 'vendor_lead_code');
-                mlbf.add('source_id', 'source_id');
-                mlbf.add('list_id', 'list_id');
-                mlbf.add('gmt_offset_now', 'gmt_offset_now');
-                mlbf.add('called_since_last_reset', 'called_since_last_reset');
-                mlbf.add('phone_code', 'phone_code');
-                mlbf.add('phone_number', 'phone_number');
-                mlbf.add('title', 'title');
-                mlbf.add('first_name', 'first_name');
-                mlbf.add('middle_initial', 'middle_initial');
-                mlbf.add('last_name', 'last_name');
-                mlbf.add('address1', 'address1');
-                mlbf.add('address2', 'address2');
-                mlbf.add('address3', 'address3');
-                mlbf.add('city', 'city');
-                mlbf.add('state', 'state');
-                mlbf.add('province', 'province');
-                mlbf.add('postal_code', 'postal_code');
-                mlbf.add('country_code',' country_code');
-                mlbf.add('gender', 'gender');
-                mlbf.add('date_of_birth', 'date_of_birth');
-                mlbf.add('alt_phone', 'alt_phone');
-                mlbf.add('email', 'email');
-                mlbf.add('custom1', 'custom1');
-                mlbf.add('custom2', 'custom2');
-                mlbf.add('comments', 'comments');
-                mlbf.add('lead_id', 'lead_id');
-                mlbf.add('campaign', 'campaign');
-                mlbf.add('phone_login', 'phone_login');
-                mlbf.add('group', 'group');
-                mlbf.add('channel_group', 'channel_group');
-                mlbf.add('SQLdate', 'SQLdate');
-                mlbf.add('epoch', 'epoch');
-                mlbf.add('uniqueid', 'uniqueid');
-                mlbf.add('customer_zap_channel', 'customer_zap_channel');
-                mlbf.add('server_ip', 'server_ip');
-                mlbf.add('SIPexten', 'SIPexten');
-                mlbf.add('session_id', 'session_id');
-                mlbf.add('organization', 'organization');
-                mlbf.add('organization_title', 'organization_title');
-                return mlbf;
-            case 'myaddtlfields':
-                var mlbaf = cm.createListBox('myaddtlfields', {
-                     title : 'Addtl Fields',
-                     onselect : function(v) {
-                        tinyMCE.activeEditor.focus();
-                        tinyMCE.activeEditor.selection.setContent('[[' + v + ']]');
-                        tinyMCE.activeEditor.controlManager.get('myaddtlfields').set(-1);
-                     }
-                });
+tinymce.PluginManager.add('example', function(editor, url) {
+    menuonclick = function(e) {editor.selection.setContent('<span class="osdial_template_field" title="'+this.value()+'">[['+this.value()+']]</span> ');editor.focus();};
+    mediaonclick = function(e) {editor.selection.setContent('<span class="osdial_template_media" title="'+this.value()+'">{{'+this.value()+'}}</span> ');editor.focus();};
+    asteriskonclick = function(e) {editor.selection.setContent('<span class="osdial_template_media" title="'+this.value()+'">{{'+this.value()+'}}</span> ');editor.focus();};
+
+
+    editor.addButton('helpb', {
+        tooltip: 'Help',
+        image: '/admin/help.gif',
+        onclick: function() {
+            editor.windowManager.open({
+                title: 'Help',
+                url: '/admin/admin.php?ADD=99999#tts-phrase',
+                width: 800,
+                height: 500
+            });
+        }
+    });
+
+
+    var myfieldsmenu = [
+        {text: 'vendor_lead_code', value: 'vendor_lead_code', onclick: menuonclick},
+        {text: 'source_id', value: 'source_id', onclick: menuonclick},
+        {text: 'list_id', value: 'list_id', onclick: menuonclick},
+        {text: 'gmt_offset_now', value: 'gmt_offset_now', onclick: menuonclick},
+        {text: 'called_since_last_reset', value: 'called_since_last_reset', onclick: menuonclick},
+        {text: 'phone_code', value: 'phone_code', onclick: menuonclick},
+        {text: 'phone_number', value: 'phone_number', onclick: menuonclick},
+        {text: 'title', value: 'title', onclick: menuonclick},
+        {text: 'first_name', value: 'first_name', onclick: menuonclick},
+        {text: 'middle_initial', value: 'middle_initial', onclick: menuonclick},
+        {text: 'last_name', value: 'last_name', onclick: menuonclick},
+        {text: 'address1', value: 'address1', onclick: menuonclick},
+        {text: 'address2', value: 'address2', onclick: menuonclick},
+        {text: 'address3', value: 'address3', onclick: menuonclick},
+        {text: 'city', value: 'city', onclick: menuonclick},
+        {text: 'state', value: 'state', onclick: menuonclick},
+        {text: 'province', value: 'province', onclick: menuonclick},
+        {text: 'postal_code', value: 'postal_code', onclick: menuonclick},
+        {text: 'country_code',value: ' country_code', onclick: menuonclick},
+        {text: 'gender', value: 'gender', onclick: menuonclick},
+        {text: 'date_of_birth', value: 'date_of_birth', onclick: menuonclick},
+        {text: 'alt_phone', value: 'alt_phone', onclick: menuonclick},
+        {text: 'email', value: 'email', onclick: menuonclick},
+        {text: 'custom1', value: 'custom1', onclick: menuonclick},
+        {text: 'custom2', value: 'custom2', onclick: menuonclick},
+        {text: 'comments', value: 'comments', onclick: menuonclick},
+        {text: 'lead_id', value: 'lead_id', onclick: menuonclick},
+        {text: 'campaign', value: 'campaign', onclick: menuonclick},
+        {text: 'phone_login', value: 'phone_login', onclick: menuonclick},
+        {text: 'group', value: 'group', onclick: menuonclick},
+        {text: 'channel_group', value: 'channel_group', onclick: menuonclick},
+        {text: 'SQLdate', value: 'SQLdate', onclick: menuonclick},
+        {text: 'epoch', value: 'epoch', onclick: menuonclick},
+        {text: 'uniqueid', value: 'uniqueid', onclick: menuonclick},
+        {text: 'customer_zap_channel', value: 'customer_zap_channel', onclick: menuonclick},
+        {text: 'server_ip', value: 'server_ip', onclick: menuonclick},
+        {text: 'SIPexten', value: 'SIPexten', onclick: menuonclick},
+        {text: 'session_id', value: 'session_id', onclick: menuonclick},
+        {text: 'organization', value: 'organization', onclick: menuonclick},
+        {text: 'organization_title', value: 'organization_title', onclick: menuonclick}
+    ];
+    editor.addButton('myfields', {
+        type: 'menubutton',
+        text: 'Form Fields',
+        menu: myfieldsmenu
+    });
+    editor.addMenuItem('myfields', {
+        type: 'menuitem',
+        text: 'Form Fields',
+        menu: myfieldsmenu
+    });
+
+
+    var myaddtlfieldsmenu = [
 <?php
     $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'",'');
-    foreach ($forms as $form) {
-        $fcamps = OSDpreg_split('/,/',$form['campaigns']);
-        foreach ($fcamps as $fcamp) {
-            $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'",'');
-            foreach ($fields as $field) {
-                echo "      mlbaf.add('" . $form['name'] . '_' . $field['name'] . "','" . $form['name'] . '_' . $field['name'] . "');\n";
+    if (is_array($forms)) {
+        foreach ($forms as $form) {
+            $fcamps = OSDpreg_split('/,/',$form['campaigns']);
+            if (is_array($fcamps)) {
+                foreach ($fcamps as $fcamp) {
+                    $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'",'');
+                    if (is_array($fields)) {
+                        foreach ($fields as $field) {
+                            echo "{text: '" . $form['name'] . '_' . $field['name'] . "', value: '" . $form['name'] . '_' . $field['name'] . "', onclick: menuonclick},\n";
+                        }
+                    }
+                }
             }
         }
     }
 ?>
-                return mlbaf;
-            case 'mediafiles':
-                var mflist = cm.createListBox('mediafiles', {
-                     title : 'Media Files',
-                     onselect : function(v) {
-                        tinyMCE.activeEditor.focus();
-                        tinyMCE.activeEditor.selection.setContent('{{' + v + '}}');
-                        tinyMCE.activeEditor.controlManager.get('mediafiles').set(-1);
-                     }
-                });
+    ];
+    editor.addButton('myaddtlfields', {
+        type: 'menubutton',
+        text: 'Addtl Fields',
+        title: 'Additional Form Fields',
+        menu: myaddtlfieldsmenu
+    });
+    editor.addMenuItem('myaddtlfields', {
+        type: 'menuitem',
+        text: 'Addtl Fields',
+        title: 'Additional Form Fields',
+        menu: myaddtlfieldsmenu
+    });
+
+
+   var mediafilesmenu = [
 <?php
     $mflist = get_krh($link, 'osdial_media', 'filename,description','','','');
     if (is_array($mflist)) {
         foreach ($mflist as $mfile) {
             $mfile['filename'] = OSDpreg_replace('/.*\/|\..*/','',$mfile['filename']);
-            echo "      mflist.add('" . $mfile['filename'] . ": " . $mfile['description'] . "','" . $mfile['filename'] . "');\n";
+            echo "{text: '" . $mfile['filename'] . ': ' . $mfile['description'] . "', value: '" . $mfile['filename'] . "', onclick: mediaonclick},\n";
         }
     }
 ?>
-                return mflist;
-            case 'asmenumb':
-                var c = cm.createListBox('asmenumb', {
-                     title : 'Asterisk Files',
-                     max_height : 200
-                });
-                var dm = cm.createDropMenu('asmenudm',{title : 'Asterisk Files' });
-                c.add("Select Sound File...","select_file");
-                c.onRenderMenu.add(function(c, m) {
-                    m.settings['max_height'] = 300;
+    ];
+    editor.addButton('mediafiles', {
+        type: 'menubutton',
+        text: 'Media Files',
+        menu: mediafilesmenu
+    });
+    editor.addMenuItem('mediafiles', {
+        type: 'menuitem',
+        text: 'Media Files',
+        menu: mediafilesmenu
+    });
+
+
+    var asteriskfilesmenu = [
 <?php
     $assep = array();
     $aslist=file($WeBServeRRooT . '/admin/include/content/admin/tts-sounds-list.php');
@@ -422,111 +409,190 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
             $assep[$astmp[0]][$astmp[1]][$astmp[2]][$astmp[3]][] = $astmp[4];
         } elseif (count($astmp)==6) {
             $assep[$astmp[0]][$astmp[1]][$astmp[2]][$astmp[3]][$astmp[4]][] = $astmp[5];
+        } elseif (count($astmp)==7) {
+            $assep[$astmp[0]][$astmp[1]][$astmp[2]][$astmp[3]][$astmp[4]][$astmp[5]][] = $astmp[6];
         }
     }
-    $tcnt=0;
     foreach ($assep as $ask1 => $asv1) {
         if (is_array($asv1)) {
-            echo "    var as1sub$tcnt = m.addMenu({id : 'as1sub$tcnt', title : '$ask1' });\n";
-            echo "    as1sub$tcnt.settings['max_height'] = 300;\n";
-            $tcnt2=0;
+            echo "  {text: '".$ask1."', menu: [\n";
             foreach ($asv1 as $ask2 => $asv2) {
                 if (is_array($asv2)) {
-                    echo "    var as2sub$tcnt2 = as1sub$tcnt.addMenu({id : 'as2sub$tcnt2', title : '$ask2'});\n";
-                    echo "    as2sub$tcnt2.settings['max_height'] = 300;\n";
-                    $tcnt3=0;
+                    echo "    {text: '".$ask2."', menu: [\n";
                     foreach ($asv2 as $ask3 => $asv3) {
                         if (is_array($asv3)) {
-                            echo "    var as3sub$tcnt3 = as2sub$tcnt2.addMenu({id : 'as3sub$tcnt3', title : '$ask3'});\n";
-                            echo "    as3sub$tcnt3.settings['max_height'] = 300;\n";
-                            $tcnt4=0;
+                            echo "      {text: '".$ask3."', menu: [\n";
                             foreach ($asv3 as $ask4 => $asv4) {
                                 if (is_array($asv4)) {
-                                    echo "    var as4sub$tcnt4 = as3sub$tcnt3.addMenu({id : 'as4sub$tcnt4', title : '$ask4'});\n";
-                                    echo "    as4sub$tcnt4.settings['max_height'] = 300;\n";
-                                    $tcnt5=0;
+                                    echo "        {text: '".$ask4."', menu: [\n";
                                     foreach ($asv4 as $ask5 => $asv5) {
                                         if (is_array($asv5)) {
-                                            echo "    var as5sub$tcnt5 = as4sub$tcnt4.addMenu({id : 'as5sub$tcnt5', title : '$ask5'});\n";
-                                            echo "    as5sub$tcnt5.settings['max_height'] = 300;\n";
-                                        } else {
-                                            echo "    as4sub$tcnt4.add({title : '$asv5', onclick : function() { asmenusel('$ask1/$ask2/$ask3/$asv5'); } });\n";
-                                        }
-                                        $tcnt5++;
+                                            echo "          {text: '".$ask5."', menu: [\n";
+                                            foreach ($asv5 as $ask6 => $asv6) {
+                                                echo "              {text: '".$asv6."', value: '".$ask1.'/'.$ask2.'/'.$ask3.'/'.$ask4.'/'.$ask5.'/'.$asv6."', onclick: asteriskonclick},\n";
+                                            }
+                                            echo "          ]},\n";
+                                        } else
+                                            echo "            {text: '".$asv5."', value: '".$ask1.'/'.$ask2.'/'.$ask3.'/'.$ask4.'/'.$asv5."', onclick: asteriskonclick},\n";
                                     }
-                                } else {
-                                    echo "    as3sub$tcnt3.add({title : '$asv4', onclick : function() { asmenusel('$ask1/$ask2/$ask3/$asv4'); } });\n";
-                                }
-                                $tcnt4++;
+                                    echo "        ]},\n";
+                                } else
+                                    echo "        {text: '".$asv4."', value: '".$ask1.'/'.$ask2.'/'.$ask3.'/'.$asv4."', onclick: asteriskonclick},\n";
                             }
-                        } else {
-                            echo "    as2sub$tcnt2.add({title : '$asv3', onclick : function() { asmenusel('$ask1/$ask2/$asv3'); } });\n";
-                        }
-                        $tcnt3++;
+                            echo "      ]},\n";
+                        } else
+                            echo "      {text: '".$asv3."', value: '".$ask1.'/'.$ask2.'/'.$asv3."', onclick: asteriskonclick},\n";
                     }
-                } else {
-                    echo "    as1sub$tcnt.add({title : '$asv2', onclick : function() { asmenusel('$ask1/$asv2'); } });\n";
-                }
-                $tcnt2++;
+                    echo "    ]},\n";
+                } else
+                    echo "    {text: '".$asv2."', value: '".$ask1.'/'.$asv2."', onclick: asteriskonclick},\n";
             }
-        } else {
-            echo "    m.add({title : '$asv1', onclick : function() { asmenusel('$ask1/$asv1'); } });\n";
-        }
-        $tcnt++;
+            echo "  ]},\n";
+        } else
+            echo "  {text: '".$asv1."', value: '".$ask1.'/'.$asv1."', onclick: asteriskonclick},\n";
     }
 ?>
-                });
-                c.renderMenu();
-                return c;
-        }
-        return null;
-    }
+    ];
+    editor.addButton('asteriskfiles', {
+        type: 'menubutton',
+        text: 'Asterisk Files',
+        menu: asteriskfilesmenu
+    });
+    editor.addMenuItem('asteriskfiles', {
+        type: 'menuitem',
+        text: 'Asterisk Files',
+        menu: asteriskfilesmenu
+    });
+
 });
 
-
-// Register plugin with a short name
-tinymce.PluginManager.add('example', tinymce.plugins.ExamplePlugin);
 
 // Initialize TinyMCE with the new plugin and listbox
 tinyMCE.init({
-    plugins : '-example', // - tells TinyMCE to skip the loading of the plugin
-    mode : "textareas",
-    editor_deselector : "NoEditor",
-    theme : "advanced",
-    theme_advanced_buttons1 : "separator,cut,copy,paste,separator,undo,redo,separator,s0,separator,myfields,separator,myaddtlfields,separator,separator,mediafiles,separator,asmenumb,separator,s1,separator,separator,helpb,separator",
-    theme_advanced_buttons2 : "",
-    theme_advanced_buttons3 : "",
-    theme_advanced_toolbar_location : "top",
-    theme_advanced_toolbar_align : "center",
-    theme_advanced_statusbar_location : "bottom",
-    theme_advanced_resizing : true,
-    constrain_menus : true,
-    height : '250px',
-    width : '700px',
-    oninit : ttsformat
+    plugins: '-example lists contextmenu hr code charmap advlist paste visualblocks visualchars',
+    selector: "textarea",
+    theme: "modern",
+    menubar: false,
+    skin: 'osdial',
+    contextmenu: "cut copy paste | myfields myaddtlfields mediafiles asteriskfiles",
+    forced_root_block: '',
+    toolbar: [
+        "cut copy paste | undo redo | charmap code | visualblocks visualchars",
+        "myfields | myaddtlfields | mediafiles | asteriskfiles | helpb"
+    ],
+    setup: function(e) {
+        e.on('init', function(ed) {
+            tbs = tinymce.DOM.select('[role="toolbar"]');
+            for (var tb in tbs) {
+                tbs[tb].firstChild.style.textAlign='center';
+            }
+            var lastsel;
+            e.getBody().onclick = function (t) {
+                if (t.target.nodeName == 'SPAN') {
+                    if (t.target.className && t.target.className.match('osdial_template_field|osdial_template_media')) {
+                        e.stopPropagation();
+                        e.selection.select(t.target,true);
+                        lastsel = e.selection.getNode();
+                    }
+                }
+            };
+            e.getBody().onkeyup = function (t) {
+                if (t.keyCode == 39 || t.keyCode == 37) {
+                    if (e.selection.getNode().className && e.selection.getNode().className.match('osdial_template_field|osdial_template_media')) {
+                        if (t.keyCode==37) {
+                            e.selection.setCursorLocation(e.selection.getNode(),0);
+                            e.selection.select(e.selection.getNode(),true);
+                            lastsel=e.selection.getNode();
+                        } else {
+                            if (lastsel !== e.selection.getNode() || e.selection.getRng().startOffset==1) {
+                                e.selection.select(e.selection.getNode(),true);
+                                lastsel=e.selection.getNode();
+                            } else {
+                                lastsel=null;
+                            }
+                        }
+                    }
+                }
+            };
+        });
+        e.on('BeforeSetContent', function(ed) {
+            var RGmatch = new RegExp("\\[\\[(\\S+)\\]\\]","g");
+            ed.content = ed.content.replace(RGmatch,function(match,p1,offset,str) {
+                return '<span class="osdial_template_field" title="' + p1 + '">[[' + p1 + ']]</span> ';
+            });
+            var RGmatch2 = new RegExp("\\{\\{([\\w\\:\\-\\\\/\\+ ]+)\\}\\}","g");
+            ed.content = ed.content.replace(RGmatch2,function(match,p1,offset,str) {
+                return '<span class="osdial_template_media" title="' + p1 + '">{{' + p1 + '}}</span> ';
+            });
+        });
+        e.on('LoadContent', function(ed) {
+            var RGmatch = new RegExp("\\[\\[(\\S+)\\]\\]","g");
+            ed.content = ed.content.replace(RGmatch,function(match,p1,offset,str) {
+                return '<span class="osdial_template_field" title="' + p1 + '">[[' + p1 + ']]</span> ';
+            });
+            var RGmatch2 = new RegExp("\\{\\{([\\w\\:\\-\\\\/\\+ ]+)\\}\\}","g");
+            ed.content = ed.content.replace(RGmatch2,function(match,p1,offset,str) {
+                return '<span class="osdial_template_media" title="' + p1 + '">{{' + p1 + '}}</span> ';
+            });
+        });
+        e.on('BeforeGetContent', function(ed) {
+            flds = e.dom.select('.osdial_template_field');
+            for (var fld in flds) {
+                thisfld = flds[fld];
+                e.dom.setHTML(thisfld,'[['+thisfld.title+']] ');
+            }
+            flds = e.dom.select('.osdial_template_media');
+            for (var fld in flds) {
+                thisfld = flds[fld];
+                e.dom.setHTML(thisfld,'{{'+thisfld.title+'}} ');
+            }
+        });
+        e.on('SaveContent', function(ed) {
+            oldhtml = e.getBody().innerHTML;
+            flds = e.dom.select('.osdial_template_field');
+            for (var fld in flds) {
+                e.dom.setOuterHTML(flds[fld],'[['+flds[fld].title+']] ');
+            }
+            flds2 = e.dom.select('.osdial_template_media');
+            for (var fld in flds2) {
+                e.dom.setOuterHTML(flds2[fld],'{{'+flds2[fld].title+'}} ');
+            }
+            ed.content = tinymce.trim(e.serializer.serialize(e.getBody()));
+            e.dom.setHTML(e.getBody(), oldhtml);
+        });
+    }
 });
-
-
-function asmenusel(asms) {
-    tinyMCE.activeEditor.focus();
-    tinyMCE.activeEditor.selection.setContent('{{'+asms+'}}');
-}
-
-function ttsformat() {
-    tinyMCE.activeEditor.focus();
-    tinyMCE.activeEditor.selection.select(tinyMCE.activeEditor.dom.select('p')[0]);
-    tinymce.activeEditor.formatter.register('ttsformat', {
-        inline : 'span',
-        styles : {fontSize : '16px'}
-    });
-
-    tinymce.activeEditor.formatter.apply('ttsformat');
-    tinyMCE.activeEditor.selection.setCursorLocation(tinyMCE.activeEditor.dom.select('p')[0],0);
-}
 
 </script>
 
 <?php
+        $tts = get_first_record($link, 'osdial_tts', '*', sprintf("id='%s'",mres($tts_id)) );
+
+        echo "<center><br/><font class=top_header color=$default_text size=+1>MODIFY TEXT-TO-SPEECH TEMPLATE</font><form action=$PHP_SELF method=POST name=osdial_form><br/><br/>\n";
+        echo "<input type=hidden name=ADD value=41tts>\n";
+        echo "<input type=hidden name=tts_id value=$tts[id]>\n";
+        echo "<input type=hidden name=last_general_extension value=\"".($config['settings']['last_general_extension']+1)."\">\n";
+        echo "<table class=shadedtable width=$section_width cellspacing=3>\n";
+        echo "<tr bgcolor=$oddrows><td align=right width='30%'>ID: </td><td align=left><font color=$default_text>" . $tts['id'] . "</font></td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Description: </td><td align=left><input type=text name=tts_description size=50 maxlength=255 value=\"$tts[description]\">".helptag("tts-description")."</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Extension: </td><td align=left><input type=text name=tts_extension size=10 maxlength=20 value=\"$tts[extension]\" onclick=\"if (this.value=='') { this.value='".($config['settings']['last_general_extension']+1)."';}\">".helptag("tts-extension")."</td></tr>\n";
+        echo "  <tr bgcolor=$oddrows>\n";
+        echo "    <td align=right>Voice: </td>\n";
+        echo "    <td align=left>\n";
+        echo "      <select name=tts_voice>\n";
+        foreach ($fest_voices as $voice) {
+            $vsel=''; if ($tts['voice']==$voice) $vsel='selected'; echo "        <option value=\"$voice\" $vsel>$fest_types[$voice]</option>\n";
+        }
+        echo "      </select>".helptag("tts-voice")."</td>\n";
+        echo "  </tr>\n";
+        $tts['phrase'] = OSDpreg_replace("/\n/",'<br/>',$tts['phrase']);
+        echo "<tr bgcolor=$oddrows><td align=center colspan=2><textarea name=tts_phrase rows=20 cols=120>" . $tts['phrase'] . "</textarea></td></tr>\n";
+        echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit value=SUBMIT></td></tr>\n";
+        echo "</table></form></center>\n";
+
+        echo "<br/><br/>\n";
+
+//         echo "<br/><br/><a href=\"$PHP_SELF?ADD=51tts&tts_id=$tts[id]\">DELETE TEXT-TO-SPEECH TEMPLATE</a>\n";
 
 
     } else {

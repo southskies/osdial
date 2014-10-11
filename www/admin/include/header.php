@@ -107,6 +107,8 @@ echo "document.write(getEditableSelectStyles());\n";
 echo "setEditableSelectImagePath('templates/default/images');\n";
 echo "</script>\n";
 
+if (!$osdial_skip_menu) {
+
 ######################### HTML HEADER BEGIN #######################################
 if ($hh=='users') {
     $users_hh="bgcolor =\"$users_color\"";
@@ -2284,7 +2286,6 @@ if (OSDstrlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
 echo "</table>\n";
 echo "</div>";
 ######################### HTML HEADER END #######################################
-
-
+}
 
 ?>
