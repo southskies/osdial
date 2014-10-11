@@ -997,4 +997,11 @@ if (strlen($dial_status) > 0) {
 	$status = $dial_status;
 }
 
+$osdial_skip_menu=0;
+
+if ($ADD==7111111 or $ADD=="7email") {
+    $osdial_skip_auth=1;
+    $osdial_skip_menu=1;
+}
+
 ?>
