@@ -86,7 +86,7 @@ function report_lead_performance_list() {
     } else {
         $group_SQL = OSDpreg_replace("/,$/",'',$group_SQL);
 
-        $group_logSQLand = sprintf("AND osdial_log.campaign_id IN %s AND osdial_lists.list_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
+        $group_logSQLand = sprintf("AND osdial_log.campaign_id IN %s AND osdial_list.list_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
         $group_olSQLand = sprintf("AND osdial_lists.campaign_id IN %s AND osdial_lists.list_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
         $group_ocSQLand = sprintf("AND osdial_campaigns.campaign_id IN %s AND osdial_campaigns.list_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
         $group_SQLand = sprintf("AND campaign_id IN %s AND list_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
